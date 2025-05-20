@@ -1,0 +1,29 @@
+.details-tab{
+    min-height: 300px;
+}
+.footer{
+    position: relative;
+}
+.mt-100{
+    margin-top:100px;
+}
+.completed > a {
+    background-color: #22a354 !important;
+    color: white !important;
+}
+
+.completed.active > a {
+    background-color: #2fc268 !important;
+    color: #030 !important;
+}
+
+.instructions{
+    font-size: 16px;
+    /* font-weight: bold; */
+    font-family: arial;
+    padding-left: 20px;
+}
+
+.instructions li{
+    padding: 5px;
+}

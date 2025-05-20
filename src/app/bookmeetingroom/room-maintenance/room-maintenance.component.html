@@ -1,0 +1,327 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Room Booking
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Room Maintenance</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box shadow">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Room Maintenance</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" matTooltip="Click for add new room" [matTooltipPosition]="'after'"
+          class="btn btn-primary pull-right btn-sm" (click)="onaddnewRoom(false,roomInfoModel)"><i class="fa fa-plus"
+            aria-hidden="true"></i> Add New Room</button>
+      </div>
+    </div>
+    <div class="box-body table-responsive">
+      <table id="roomsTable" class="table  table-striped" cellspacing="0">
+        <thead style="background-color: #0099cc; color:white;">
+          <tr>
+            <th class="col-sm-1">SNo</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th class="col-sm-1">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let room of roomsInfoList; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{room.name}}</td>
+            <td>{{getLocationName(room.fk_Location)}}</td>
+            <td>{{getRoomType(room.fk_Type)}}</td>
+            <td>
+              <table>
+                <tr>
+                  <td class="pr-2">
+                    <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to Edit Entry"
+                      class="btn btn-primary btn-xs" (click)="onaddnewRoom(true,room)">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                  <td class="pr-2">
+                    <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to delete Entry"
+                      class="btn btn-primary btn-xs" (click)="deleteRoomDetails(room)">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-primary btn-xs" (click)="openAuditLogs(room.id)">
+                      <i class="fa fa-history"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">{{isEdit==true?'Update Room':'Add New Room'}}
+        </h3>
+      </div>
+      <div class="modal-body" style="box-shadow: none;">
+        <div class="row">
+          <div class="overlay" *ngIf="isLoadingPop">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+          <div class="col-sm-12">
+            <form #meetingroomForm="ngForm">
+              <div class="col-sm-12">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group" [ngClass]="(roomNameEnt.touched && !roomNameEnt.valid)?'has-error':''">
+                      <label for="roomName">
+                        Room Name<span style="color:red">*</span>
+                      </label>
+                      <input [(ngModel)]="roomInfoModel.name" ngControl="roomInfoModel.name" class="form-control"
+                        id="roomName" placeholder="Room Name" matTooltip="Room Name" name="roomName"
+                        #roomNameEnt="ngModel" required (change)="roomInfoModel.name=roomInfoModel.name.trim()">
+                      <span class="help-block" *ngIf="roomNameEnt.touched && !roomNameEnt.valid">Please
+                        enter Room Name</span>
+                    </div>
+                    <div class="form-group" [ngClass]="(selectedRoomType.length<0 && isRoomSelect)?'has-error':''">
+                      <label for="roomType">
+                        Room Type<span style="color:red">*</span>
+                      </label>
+                      <ng-multiselect-dropdown id="roomType" name="roomType" #roomTypeEnt="ngModel"
+                        [placeholder]="'select Room Type'" [data]="roomTypeList" [(ngModel)]="selectedRoomType"
+                        matTooltip="room type" [settings]="ddlroomTypeSettings"
+                        (onDeSelect)="onRoomItemDeSelect($event)" (onSelect)="onRoomTypeSelect($event)" required>
+                      </ng-multiselect-dropdown>
+                      <!--[disabled]="roomInfoModel.fk_Type==1"-->
+                      <span class="help-block" *ngIf="selectedRoomType.length<0 && isRoomSelect">Please
+                        select Room Type</span>
+                    </div>
+                    <div class="form-group"
+                      [ngClass]="(descriptionEnt.touched && !descriptionEnt.valid)?'has-error':''">
+                      <label for="description">
+                        Description<span style="color:red">*</span>
+                      </label>
+                      <textarea [(ngModel)]="roomInfoModel.description" ngControl="roomInfoModel.description"
+                        class="form-control" matTooltip="description" placeholder="Description" id="description"
+                        name="description" #descriptionEnt="ngModel" required
+                        (change)="roomInfoModel.description=roomInfoModel.description.trim()"></textarea>
+                      <span class="help-block" *ngIf="descriptionEnt.touched && !descriptionEnt.valid">Please enter
+                        Description</span>
+                    </div>
+                    <div class="form-group" [ngClass]="(lmApprovalEnt.touched && !lmApprovalEnt.valid)?'has-error':''">
+                      <label for="LMApproval">
+                        Line Manager Approval?<span style="color:red">*</span>
+                      </label>
+                      <div class="row">
+                        <mat-radio-group aria-label="Select Approval?" id="LMApproval" name="LMApproval"
+                          [(ngModel)]="roomInfoModel.manager_Approval" ngControl="roomInfoModel.manager_Approval"
+                          #lmApprovalEnt="ngModel" required>
+                          <mat-radio-button [value]='true'>Yes</mat-radio-button>
+                          &nbsp;&nbsp;&nbsp;
+                          <mat-radio-button [value]='false'>No</mat-radio-button>
+                        </mat-radio-group>
+                        <span class="help-block" *ngIf="lmApprovalEnt.touched && !lmApprovalEnt.valid">Please select
+                          Line Manager Approval?</span>
+                      </div>
+                    </div>
+                    <div class="form-group"
+                      [ngClass]="(adminApprovalEnt.touched && !adminApprovalEnt.valid)?'has-error':''">
+                      <label for="AdminApproval">
+                        Admin Approval?<span style="color:red">*</span>
+                      </label>
+                      <div class="row">
+                        <mat-radio-group aria-label="Select Approval?" id="AdminApproval" name="AdminApproval"
+                          [(ngModel)]="roomInfoModel.admin_Approval" ngControl="roomInfoModel.admin_Approval"
+                          #adminApprovalEnt="ngModel" required>
+                          <mat-radio-button [value]='true'>Yes</mat-radio-button>
+                          &nbsp;&nbsp;&nbsp;
+                          <mat-radio-button [value]='false'>No</mat-radio-button>
+                        </mat-radio-group>
+                        <span class="help-block" *ngIf="adminApprovalEnt.touched && !adminApprovalEnt.valid">Please
+                          Select
+                          Admin Approval?</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="Location">
+                        Location
+                      </label>
+                      <input [(ngModel)]="currentLocation" ngControl="currentLocation" class="form-control"
+                        id="location" placeholder="Location" name="location" #locationEnt="ngModel" readonly>
+                    </div>
+                    <div class="form-group" [ngClass]="(capacityEnt.touched && !capacityEnt.valid)?'has-error':''">
+                      <label for="Capacity">
+                        Capacity<span style="color:red">*</span>
+                      </label>
+                      <input type="number" [(ngModel)]="roomInfoModel.capacity" matTooltip="capacity"
+                        ngControl="roomInfoModel.capacity" class="form-control" id="capacity" placeholder="Capacity"
+                        name="capacity" #capacityEnt="ngModel" required>
+                      <span class="help-block" *ngIf="capacityEnt.touched && !capacityEnt.valid">Please
+                        enter Capacity</span>
+                    </div>
+                    <div class="form-group" [ngClass]="(selectedItems.length<0 && isSelect)?'has-error':''">
+                      <label for="facilities">
+                        Room facilities<span style="color:red">*</span>
+                      </label>
+                      <ng-multiselect-dropdown id="facilities" name="facilities" matTooltip="room facilities"
+                        #facilitiesEnt="ngModel" [placeholder]="'select facilities(multiple)'"
+                        [data]="roomsFacilityList" [(ngModel)]="selectedItems" [settings]="dropdownSettings"
+                        (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                        (onSelectAll)="onSelectAll($event)" required>
+                      </ng-multiselect-dropdown>
+                      <span class="help-block" *ngIf="selectedItems.length<0 && isSelect">Please
+                        Select
+                        Room facilities</span>
+                    </div>
+                    <div class="form-group" [ngClass]="(!reason.valid && reason.touched)?'has-error':''">
+                      <label for="reason"> Audit Reason<span style="color:red">*</span></label>
+                      <textarea type="text" class="form-control" name="reason" id="reason" placeholder="Audit Reason"
+                        [(ngModel)]="aduitpurpose" ngControl="aduitpurpose" (change)="aduitpurpose=aduitpurpose.trim()"
+                        #reason="ngModel" required></textarea>
+                      <span class="help-block" *ngIf="!reason.valid && reason.touched">Please Enter audit Reason.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="pictures">
+                        Add Pictures<span style="color:red">*</span>
+                      </label>
+                      <input type="file" #file placeholder="Choose file" (change)="uploadFiles($event)"
+                        style="display:none;" multiple accept="image/*">
+                      &nbsp;&nbsp;<button type="button" class="btn btn-success btn-sm"
+                        (click)="file.click()">Upload</button>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div *ngIf="images?.length > 0">
+                      <table class="table table-striped" cellspacing="0">
+                        <thead class="bg-primary">
+                          <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let image of images">
+                            <td><img [src]="image.url" style="width: 30px; height: 30px; border-radius:50%;" /></td>
+                            <td>{{image.name}}</td>
+                            <td><a href="javascript:void(0)" (click)="deleteImage(image)"><i
+                                  class="fa fa-trash"></i></a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" [matTooltipPosition]="'below'" matTooltip="Click to Save/Update"
+          [disabled]="isLoadingPop ||!meetingroomForm.valid"
+          (click)="onSaveRoomDetails()">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-default btn-outlined" [matTooltipPosition]="'below'"
+          matTooltip="Click to Close" style="background-color:darkgray;color:white;" data-dismiss="modal"
+          [disabled]="isLoadingPop">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgModalPop.length>0"><i class="fa fa-check"></i>{{errMsgModalPop}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<!-- Audit Modal -->
+<div id="auditModal" class="modal fade">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;</button>
+        <h4 class="modal-title">Audit history</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="auditTable">
+          <thead>
+            <tr>
+              <th>Sl.no</th>
+              <th>Action</th>
+              <th>ActionBy</th>
+              <th>DateTime</th>
+              <th>KeyField</th>
+              <th>Changes</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <!-- <ng-container > -->
+          <tbody>
+            <tr *ngFor="let item of auditLogList;let i = index">
+              <td>{{auditLogList.length - i + '.0'}}</td>
+              <td class="col-sm-1">{{item.auditType}}</td>
+              <td class="col-sm-1">{{item.aduitUser}}</td>
+              <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy HH:mm"}}</td>
+              <td class="col-sm-1">{{item.keyValue}}</td>
+              <td class="col-sm-4">
+                <table class="table table-bordered" style="margin-bottom: 0;">
+                  <tr>
+                    <th>Field name</th>
+                    <th>Old value</th>
+                    <th>New value</th>
+                  </tr>
+                  <tr *ngFor="let ch of objParser(item.changes)">
+                    <td>{{ch.fieldname}}</td>
+                    <td>{{ch.oldvalue}}</td>
+                    <td>{{ch.newvalue}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td class="col-sm-4">{{item.purpose}}</td>
+            </tr>
+          </tbody>
+          <!-- </ng-container> -->
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

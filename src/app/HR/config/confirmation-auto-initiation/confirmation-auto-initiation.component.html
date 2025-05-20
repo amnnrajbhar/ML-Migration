@@ -1,0 +1,228 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Confirmation Auto Initiation Config
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Confirmation Auto Initiation Config</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="form-group">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="detailsModal" (click)="onAddClick()">
+      Add New</button>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Plant</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.plantId" class="form-control" id="plant" name="plant">
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.code}} - {{pll.name}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Pay Group</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.payGroupId" class="form-control" id="paygroup" name="paygroup"
+                matTooltip="paygroup" >
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Employee Category</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.employeeCategoryId" class="form-control" id="employeecategory"
+                name="employeecategory" matTooltip="employeecategory">
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group text-center">
+            <button class="btn btn-primary btn-sm" (click)="getListData();" matTooltip="click to Go">
+              Filter</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 table-responsive">
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+      <table class="table table-hover table-striped table-bordered" id="data">
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Sl No</th>
+            <th>Plant Code</th>
+            <th>Plant Name</th>
+            <th>Pay Group</th>
+            <th>Employee Category</th>
+            <th>Initiate Thru</th>
+            <th>Before Days</th>
+            <th>Created By</th>
+            <th>Created On</th>
+            <th>Modified By</th>
+            <th>Modified On</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filterData.list; let i = index">
+            <td>
+              <button (click)="EditLine(item, i)" title="click to edit this " class="btn btn-xs btn-primary">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button (click)="deleteData(item.confirmationAutoInitiationConfigId,i)" title="click to remove this "
+                class="btn btn-xs btn-danger">
+                <i class="fas fa-times"></i>
+              </button>
+            </td>
+            <td>{{i+1}}</td>
+            <td>{{item.plantCode}}</td>
+            <td>{{item.plantName}}</td>
+            <td>{{item.payGroupName}}</td>
+            <td>{{item.employeeCategoryName}}</td>
+            <td>{{item.initiateThru}}</td>
+            <td>{{item.initiateBeforeDays}}</td>
+            <td>{{item.createdByName}}</td>
+            <td>{{item.createdDate | date: "dd/MM/yyyy"}}</td>
+            <td>{{item.modifiedByName}}</td>
+            <td>{{item.modifiedDate | date: "dd/MM/yyyy"}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+           <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <ul class="pagination" *ngIf="filterData.totalCount>0">
+           <li>
+              <a (click)="gotoPage(filterData.pageNo)">
+              Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> - <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b> of <b>{{filterData.totalCount}}</b> records
+              </a>
+           </li>
+           <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+           <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+           <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+           <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+           <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+           <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+           <li><a *ngIf="filterData.totalPages>filterData.pageNo+1" (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+           <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+           <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+           <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of <b>{{filterData.totalPages}}</b></a></li>
+           <li>
+              <a>
+                 Page Size 
+                 <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                 <option value="10">10</option>
+                 <option value="25">25</option>
+                 <option value="50">50</option>
+                 <option value="100">100</option>
+                 </select>
+              </a>
+           </li>
+        </ul>
+     </div>
+    </div>
+  </div>
+
+</section>
+
+
+<div id="detailsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirmation Auto Initiation Config Details</h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <form #detailsForm="ngForm">
+          <div class="form-group">
+            <label class="col-md-4">Plant <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select [(ngModel)]="item.plantId" class="form-control" id="PlantId" name="PlantId" matTooltip="Plant"
+                #plantEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Plant </option>
+                <option *ngFor="let pl of plantList" [ngValue]="pl.id">{{pl.name}} - {{pl.code}} </option>
+              </select>
+              <span class="help-block" *ngIf="plantEnt.touched && !plantEnt.valid">Please select Plant</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Pay Group <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select [(ngModel)]="item.payGroupId" class="form-control" id="PayGroup" name="PayGroup"
+                matTooltip="Plant" #payGroupEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Pay Group </option>
+                <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}} - {{pl.payGroup}}</option>
+              </select>
+              <span class="help-block" *ngIf="payGroupEnt.touched && !payGroupEnt.valid">Please select Pay Group</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Employee Category <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select [(ngModel)]="item.employeeCategoryId" class="form-control" id="EmployeeCategory"
+                name="EmployeeCategory" matTooltip="Employee Category" #empCatEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Employee Category </option>
+                <option *ngFor="let pl of employeeCategoryList" [ngValue]="pl.id">{{pl.catltxt}} </option>
+              </select>
+              <span class="help-block" *ngIf="empCatEnt.touched && !empCatEnt.valid">Please select Employee
+                Category</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Initiate Thru <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select [(ngModel)]="item.initiateThru" class="form-control" id="initiateThru" name="initiateThru"
+                matTooltip="Initiate Thru" #initiateThruEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Initiate Thru </option>
+                <option *ngFor="let pl of initiateThruList" [ngValue]="pl">{{pl}} </option>
+              </select>
+              <span class="help-block" *ngIf="initiateThruEnt.touched && !initiateThruEnt.valid">Please select Initiate
+                Thru</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-md-4">Initiate Before Days <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <input type="number" class="form-control" [(ngModel)]="item.initiateBeforeDays" name="initiateBeforeDays"
+                #initiateBeforeDaysEnt="ngModel" required maxlength="2" />
+              <span class="help-block" *ngIf="initiateBeforeDaysEnt.touched && !initiateBeforeDaysEnt.valid">
+                Please enter no of days to initiate before due date</span>
+            </div>
+          </div>
+        </form>
+        <div class="text-center actionButtons">
+          <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !detailsForm.valid"
+            *ngIf="!isEdit" (click)="addData()">
+            <i class="fas fa-plus"></i> Add</button>
+          <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !detailsForm.valid"
+            *ngIf="isEdit" (click)="updateData()">
+            <i class="fas fa-check"></i> Update</button>
+          <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+            Cancel</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

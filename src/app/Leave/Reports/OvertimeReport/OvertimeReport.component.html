@@ -1,0 +1,331 @@
+<section class="content-header">
+    <h1>
+        Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+            <h3 class="box-title">Monthly OT Report</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Plant <span style="color: red;">*</span></label>
+                        <select [(ngModel)]="filterPlant" class="form-control" id="locationName" name="locationName"
+                            (change)="getPaygroupsBasedOnPlant()">
+                            <option [ngValue]="null">select plant</option>
+                            <option *ngFor="let location of locationList" value="{{location.code}}">
+                                {{location.code + '-' + location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Month <span style="color: red;">*</span></label>
+                        <select [(ngModel)]="filterMonth" class="form-control" id="locationName" name="locationName"
+                            required>
+                            <option [ngValue]="null">select Month</option>
+                            <option *ngFor="let location of MonthsList" value="{{location.id}}">
+                                {{location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                            [(ngModel)]="CalenderYear" placeholder="Year">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="Action">Attendance Type</label>
+                        <div class="row">
+                            <mat-radio-group aria-label="Select option?" id="filterType1" name="filterType1"
+                                [(ngModel)]="AttendanceType" [disabled]="isEdit" ngControl="filterType1"
+                                #filterType1Ent="ngModel">
+                                <mat-radio-button value="Calendar">Calendar Month</mat-radio-button>
+                                &nbsp;&nbsp;&nbsp;
+                                <mat-radio-button value='Payable'>Payable Month</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="Action">Report Type</label>
+                        <div class="row">
+                            <mat-radio-group aria-label="Select option?" id="filterType" name="filterType"
+                                [(ngModel)]="ViewType" [disabled]="isEdit" ngControl="filterType"
+                                #filterTypeEnt="ngModel">
+                                <mat-radio-button value="Summary">Summary</mat-radio-button>
+                                &nbsp;&nbsp;&nbsp;
+                                <mat-radio-button value='Detailed'>Detailed</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label>&nbsp;</label>
+                    <div class="form-group">
+                        <button class="btn btn-success" (click)="GetMonthlyOTReport();"
+                            matTooltip="click to get data"><i class="fas fa-arrow-right"></i>&nbsp; Go</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-warning" (click)="printMonthlyOTreport();"
+                            [disabled]="!MonthlyOTReport.length>0" matTooltip="click to export"><i
+                                class="fa fa-file-pdf"></i>&nbsp; Export</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-danger" (click)="ClearData();" matTooltip="enter Expected Out Time"><i
+                                class="fas fa-file-excel"></i>&nbsp; Clear</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="box-body table-responsive" *ngIf="ViewType=='Detailed'">
+            <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                <thead style="background-color: #0099cc; color:white;">
+                    <tr>
+                        <th>Sl.No.</th>
+                        <th>Employee_ID</th>
+                        <th>Full_Name</th>
+                        <th>Designation</th>
+                        <th>Role</th>
+                        <th>Department</th>
+                        <th>Contractor_Name</th>
+                        <th>OTDate</th>
+                        <th> Shift </th>
+                        <th>Shift_Start_Time</th>
+                        <th>Shift_End_Time</th>
+                        <th>In_Time</th>
+                        <th>OUT_Time</th>
+                        <th>Attendance_Status</th>
+                        <th>Total_Hour_Worked</th>
+                        <th>OT_Hour</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let lp of MonthlyOTReport;let i=index">
+                        <td style="width: 5%;">{{i+1}}</td>
+                        <td style="width: 8%;">{{lp.pernr}}</td>
+                        <td style="width: 10%;">{{lp.empName}}</td>
+                        <td style="width: 8%;">{{lp.designation}}</td>
+                        <td style="width: 5%;">{{lp.role}}</td>
+                        <td style="width: 8%;">{{lp.department}}</td>
+                        <td style="width: 8%;">{{lp.contractorId}}</td>
+                        <td style="width: 8%;">{{lp.otDate | date:'dd/MM/yyyy'}}</td>
+                        <td style="width: 5%;">{{lp.shift}}</td>
+                        <td style="width: 5%;">{{lp.shiftStartTime}}</td>
+                        <td style="width: 5%;">{{lp.shiftEndTime}}</td>
+                        <td style="width: 5%;">{{lp.employeeInTime}}</td>
+                        <td style="width: 5%;">{{lp.employeeOutTime}}</td>
+                        <td style="width: 5%;">{{lp.attendanceStatus}}</td>
+                        <td style="width: 5%;">{{lp.total}}</td>
+                        <td style="width: 5%;">{{lp.ot}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="box-body table-responsive" *ngIf="ViewType=='Summary'">
+            <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                <thead style="background-color: #0099cc; color:white;">
+                    <tr>
+                        <th>Sl.No.</th>
+                        <th>Employee_ID</th>
+                        <th>Full_Name</th>
+                        <th>Designation</th>
+                        <th>Role</th>
+                        <th>Department</th>
+                        <th>Contractor_Name</th>
+                        <th>Total OT Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let lp of MonthlyOTReport;let i=index">
+                        <td style="width: 5%;">{{i+1}}</td>
+                        <td style="width: 10%;">{{lp.pernr}}</td>
+                        <td style="width: 25%;">{{lp.empName}}</td>
+                        <td style="width: 20%;">{{lp.designation}}</td>
+                        <td style="width: 15%;">{{lp.role}}</td>
+                        <td style="width: 15%;">{{lp.department}}</td>
+                        <td style="width: 8%;">{{lp.contractorId}}</td>
+                        <td style="width: 10%;"><a (click)="ShowForm(lp.pernr);"
+                                style="cursor: pointer;text-decoration: underline; color: #68a7d2;"
+                                [matTooltipPosition]="'below'" matTooltip="Click to see details">{{lp.totalOT}}</a>
+                        </td>
+                        <!-- <td>{{lp.totalOT}}</td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+</section>
+
+<div hidden *ngIf="ViewType=='Detailed'" id="MonthlyOT">
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <!-- <tr>
+            <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+        </tr> -->
+            <tr>
+                <th>Sl.No.</th>
+                <th>Employee_ID</th>
+                <th>Full_Name</th>
+                <th>Designation</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Contractor_Name</th>
+                <th>OTDate</th>
+                <th> Shift </th>
+                <th>Shift_Start_Time</th>
+                <th>Shift_End_Time</th>
+                <th>In_Time</th>
+                <th>OUT_Time</th>
+                <th>Attendance_Status</th>
+                <th>Total_Hour_Worked</th>
+                <th>OT_Hour</th>
+
+            </tr>
+            <tr *ngFor="let lp of MonthlyOTReport;let i=index">
+                <td style="width: 5%;">{{i+1}}</td>
+                <td style="width: 8%;">{{lp.pernr}}</td>
+                <td style="width: 10%;">{{lp.empName}}</td>
+                <td style="width: 8%;">{{lp.designation}}</td>
+                <td style="width: 5%;">{{lp.role}}</td>
+                <td style="width: 8%;">{{lp.department}}</td>
+                <td style="width: 8%;">{{lp.contractorId}}</td>
+                <td style="width: 8%;">{{lp.otDate | date:'dd/MM/yyyy'}}</td>
+                <td style="width: 5%;">{{lp.shift}}</td>
+                <td style="width: 5%;">{{lp.shiftStartTime}}</td>
+                <td style="width: 5%;">{{lp.shiftEndTime}}</td>
+                <td style="width: 5%;">{{lp.employeeInTime}}</td>
+                <td style="width: 5%;">{{lp.employeeOutTime}}</td>
+                <td style="width: 5%;">{{lp.attendanceStatus}}</td>
+                <td style="width: 5%;">{{lp.total}}</td>
+                <td style="width: 5%;">{{lp.ot}}</td>
+
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div hidden *ngIf="ViewType=='Summary'" id="MonthlyOT1">
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <!-- <tr>
+            <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+        </tr> -->
+            <tr>
+                <th>Sl.No.</th>
+                <th>Employee_ID</th>
+                <th>Full_Name</th>
+                <th>Designation</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Total OT Hours</th>
+            </tr>
+            <tr *ngFor="let lp of MonthlyOTReport;let i=index">
+                <td style="width: 5%;">{{i+1}}</td>
+                <td style="width: 10%;">{{lp.pernr}}</td>
+                <td style="width: 25%;">{{lp.empName}}</td>
+                <td style="width: 20%;">{{lp.designation}}</td>
+                <td style="width: 15%;">{{lp.role}}</td>
+                <td style="width: 15%;">{{lp.department}}</td>
+                <td style="width: 10%;">{{lp.totalOT}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- Details OT View -->
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Employee OT Detailed View</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table id="OTTable" class="table table-bordered  table-striped">
+                                <thead style="background-color: #0099cc; color:white;">
+                                    <tr>
+                                        <th>Sl.No.</th>
+                                        <th>Employee_ID</th>
+                                        <th>Full_Name</th>
+                                        <th>Designation</th>
+                                        <th>Role</th>
+                                        <th>Department</th>
+                                        <th>Contractor_Name</th>
+                                        <th>OTDate</th>
+                                        <th> Shift </th>
+                                        <th>Shift_Start_Time</th>
+                                        <th>Shift_End_Time</th>
+                                        <th>In_Time</th>
+                                        <th>OUT_Time</th>
+                                        <th>Attendance_Status</th>
+                                        <th>Total_Hour_Worked</th>
+                                        <th>OT_Hour</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let lp of details;let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{lp.pernr}}</td>
+                                        <td>{{lp.empName}}</td>
+                                        <td>{{lp.designation}}</td>
+                                        <td>{{lp.role}}</td>
+                                        <td>{{lp.department}}</td>
+                                        <td>{{lp.contractorId}}</td>
+                                        <td>{{lp.otDate | date:'dd/MM/yyyy'}}</td>
+                                        <td>{{lp.shift}}</td>
+                                        <td>{{lp.shiftStartTime}}</td>
+                                        <td>{{lp.shiftEndTime}}</td>
+                                        <td>{{lp.employeeInTime}}</td>
+                                        <td>{{lp.employeeOutTime}}</td>
+                                        <td>{{lp.attendanceStatus}}</td>
+                                        <td>{{lp.total}}</td>
+                                        <td>{{lp.ot}}</td>
+
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>

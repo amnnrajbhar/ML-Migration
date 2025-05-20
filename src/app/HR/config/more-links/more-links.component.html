@@ -1,0 +1,167 @@
+<section class="content-header">
+  <h1 class="display-1">
+    More Links
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">More Links</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  
+  <div class="form-group">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="detailsModal" (click)="onAddClick()">
+      Add New</button>
+  </div>
+
+  <div class="table-responsive">
+
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Sl No</th>
+          <th>Link Text</th>
+          <th>Url</th>
+          <th>Description</th>
+          <th>Open in New Window</th>
+          <th>Social Media Link</th>
+          <th>Active</th>
+          <th>Order</th>
+          <th>Icon</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of itemList; let i = index">
+          <td>
+            <button (click)="EditLine(item, i)" title="click to edit this " class="btn btn-xs btn-primary">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button (click)="deleteData(item.moreLinkId,i)" title="click to remove this " class="btn btn-xs btn-danger">
+              <i class="fas fa-times"></i>
+            </button>
+          </td>
+          <td>{{i+1}}</td>
+          <td>{{item.linkText}}</td>
+          <td>{{item.linkUrl}}</td>
+          <td>{{item.description}}</td>
+          <td>{{item.openInNewWindow ? 'Yes' : 'No'}}</td>
+          <td>{{item.isSocialMediaLink ? 'Yes' : 'No'}}</td>
+          <td>{{item.isActive? 'Yes' : 'No'}}</td>
+          <td>{{item.order}}</td>
+          <td>{{item.icon}} <i class="fas fa-lg fa-{{item.icon}}"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+
+<div id="detailsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">More Link Details</h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <form #moreLinksForm="ngForm">          
+          <div class="form-group">
+            <label class="col-md-4">Link Text</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" [(ngModel)]="item.linkText" ngControl="item.linkText" name="linkText"
+                #linkTextEnt="ngModel" required maxlength="100" />
+              <span class="help-block" *ngIf="linkTextEnt.touched && !linkTextEnt.valid">
+                Please enter link text</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Url</label>
+            <div class="col-md-8">
+              <textarea type="text" class="form-control" [(ngModel)]="item.linkUrl"
+                ngControl="item.linkUrl" name="linkUrl" #linkUrlEnt="ngModel" maxlength="500" required
+                rows="2"></textarea>
+                <span class="help-block" *ngIf="linkUrlEnt.touched && !linkUrlEnt.valid">
+                  Please enter link url</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Description</label>
+            <div class="col-md-8">
+              <textarea type="text" class="form-control" [(ngModel)]="item.description" ngControl="item.description"
+                name="description" #descriptionEnt="ngModel" maxlength="200" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Icon</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" [(ngModel)]="item.icon" ngControl="item.icon" name="icon"
+                #iconEnt="ngModel" required maxlength="50" />
+              <span class="help-block" *ngIf="iconEnt.touched && !iconEnt.valid">
+                Please enter link icon class name</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Open in New Window</label>
+            <div class="col-md-8">
+              <div class="checkbox">
+                <label for="openInNewWindow">
+                  <input type="checkbox" [(ngModel)]="item.openInNewWindow" name="openInNewWindow" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Social Media Link</label>
+            <div class="col-md-8">
+              <div class="checkbox">
+                <label for="isSocialMediaLink">
+                  <input type="checkbox" [(ngModel)]="item.isSocialMediaLink" name="isSocialMediaLink" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Active</label>
+            <div class="col-md-8">
+              <div class="checkbox">
+                <label for="isActive">
+                  <input type="checkbox" [(ngModel)]="item.isActive" name="isActive" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Order</label>
+            <div class="col-md-8">
+              <input type="number" class="form-control" [(ngModel)]="item.order" ngControl="item.order" name="order"
+                #orderEnt="ngModel" required maxlength="2" />
+              <span class="help-block" *ngIf="orderEnt.touched && !orderEnt.valid">
+                Please enter link order</span>
+            </div>
+          </div>
+        </form>
+        <div class="text-center actionButtons">
+          <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !moreLinksForm.valid"
+            *ngIf="!isEdit" (click)="addData()">
+            <i class="fas fa-plus"></i> Add</button>
+          <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !moreLinksForm.valid"
+            *ngIf="isEdit" (click)="updateData()">
+            <i class="fas fa-check"></i> Update</button>
+          <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+            Cancel</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

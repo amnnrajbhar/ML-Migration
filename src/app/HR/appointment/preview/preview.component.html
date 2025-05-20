@@ -1,0 +1,29 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Preview Appointment Letter
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Preview Appointment Letter</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div>
+    <div class="form-group text-center">
+      <button type="button" (click)="goBack()" class="btn btn-sm btn-default" [matTooltipPosition]="'after'"
+        matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+    </div>
+  </div>
+  <div class="printable" style="font-family:'Times New Roman', Times, serif">
+    <div class="panel panel-default" id="pdfcontent">
+      <div class="panel-body">
+        <div [innerHTML]="details.content | safeHtml"></div>
+      </div>
+    </div>
+  </div>
+</section>

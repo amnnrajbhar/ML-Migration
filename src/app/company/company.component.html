@@ -1,0 +1,297 @@
+﻿<!-- <section class="content-header" *ngIf="appService.validateUrlAccess('12')"> -->
+<section class="content-header">
+  <h1>
+    Company
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Company</li>
+  </ol>
+</section>
+<!-- Main content -->
+<!-- <section class="content" *ngIf="appService.validateUrlAccess('12')"> -->
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Company List</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div [hidden]="regBtnHide" class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddCompany(false,companyItem)"><i class="fa fa-plus" aria-hidden="true"></i> Register Company</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="licenseTable" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:120px">Company Id</th>
+            <th style="width:50px"> Name</th>
+            <th style="width:50px">Legal Name </th>
+            <th style="width:50px">Email</th>
+            <th style="width:80px">Creation Date</th>
+            <!--<th style="width:80px">Expiration Date</th>-->
+            <th style="width:40px">Company Status</th>
+            <th style="width:30px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let comp of companyList;let i = index">
+            <td>{{comp.id}}</td>
+            <td>{{comp.name}}</td>
+            <td>{{comp.legalName}}</td>
+            <td>{{comp.email}}</td>
+            <td>{{comp.activationDate | date:'dd-MM-yyyy'}}</td>
+            <!--<td>{{comp.validTillDate | date:'dd-MM-yyyy'}}</td>-->
+            <td><span class="label" [ngClass]="(comp.isActive==true)?'label-success':'label-danger'">{{(comp.isActive==true)?'ACTIVE':'IN ACTIVE'}}</span></td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddCompany(true,lic)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+            <!--<td>-->
+            <!-- <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddCompany(true,company)">
+               <img src="../../../assets/dist/img/Picture2.png" />
+             </button>-->
+            <!--<button type="button" class="btn btn-xs" [ngClass]="(entity.status==true)?'btn-danger':'btn-success'" (click)="onStatusChange(entity.enid)"
+              title="{{(entity.status==true)?'IN ACTIVE':'ACTIVE'}}">
+                  <i class="fa fa-toggle-on" aria-hidden="true" *ngIf="entity.status==true"></i>
+                  <i class="fa fa-toggle-off" aria-hidden="true" *ngIf="entity.status!=true"></i>
+                </button>-->
+            <!--</td>-->
+          </tr>
+        </tbody>
+      </table>
+      
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+
+<!-- <div *ngIf="appService.validateUrlAccess('12')" id="myModal" role="dialog" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" -->
+<div  id="myModal" role="dialog" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Company</h4>
+      </div>
+      <div class="modal-body box box-primary">
+        <div class="row">
+          <form role="form" #companyForm="ngForm">
+            <div class="box-body" style="background-color:white">
+              <div class="col-sm-6" style="background-color:white">
+                <div class="form-group">
+                  <label for="cmpName">Company Name</label>
+                  <input type="text" class="form-control" id="cmpName" placeholder="Company Name" [(ngModel)]="companyItem.name" name="name" maxlength="18" />
+                </div>
+                <div class="form-group">
+                  <label for="cmpAddr1">Address</label>
+                  <input type="text" class="form-control" id="cmpAddr1" placeholder="Address" [(ngModel)]="companyItem.address" name="address" maxlength="500" />
+                </div>
+                <div class="form-group">
+                  <label for="cmpCity">City</label>
+                  <input type="text" class="form-control" id="cmpCity" placeholder="City" [(ngModel)]="companyItem.city" name="city" maxlength="50">
+                </div>
+                <div class="form-group">
+                  <label for="cmpPin">Postal Code</label>
+                  <input type="number" class="form-control" id="cmpPin" placeholder="PIN Code" [(ngModel)]="companyItem.postalCode" name="postalCode" maxlength="10">
+                </div>
+                <!--<div class="form-group" [ngClass]="(!stateName.valid && stateName.touched)?'has-error':''">
+                  <label for="cmpState"><i class="fa fa-times-circle-o" *ngIf="!stateName.valid && stateName.touched"></i> State<span style="color:red">*</span></label>
+                  <select [(ngModel)]="SelState" class="form-control" id="cmpState" name="stateName" ngControl="SelState" #stateName="ngModel"
+                          required>
+                    <option *ngFor="let cmpSt of stateList" [ngValue]="cmpSt">{{cmpSt.sname}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="!stateName.valid && stateName.touched">Please Select State.</span>
+                </div>-->
+
+                <div class="form-group" [ngClass]="(!stateName.valid && stateName.touched)?'has-error':''">
+                  <label for="cmpState"><i class="fa fa-times-circle-o" *ngIf="!stateName.valid && stateName.touched"></i> State<span style="color:red">*</span></label>
+                  <select [(ngModel)]="SelState" class="form-control" id="cmpState" name="stateName" ngControl="SelState" #stateName="ngModel" (ngModelChange)="onStateChange()"
+                          required>
+                    <option *ngFor="let cmpSt of stateList" [ngValue]="cmpSt">{{cmpSt.sname}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="!stateName.valid && stateName.touched">Please Select State.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="cmpCountry">Country</label>
+                  <input type="text" class="form-control" id="cmpCountry" placeholder="Country" [(ngModel)]="companyItem.countryName" name="countryName" maxlength="50">
+                </div>
+
+                <div class="form-group">
+                  <label for="cmpPan">PAN</label>
+                  <input type="text" class="form-control" id="cmpPan" placeholder="PAN" [(ngModel)]="companyItem.pan" name="pan" (blur)="onPANChange($event.target.value)"
+                         ngControl="companyItem.pan" #pan="ngModel" maxlength="10">
+                  <span class="help-block" style="color:red">{{errMsgPAN}}</span>
+                </div>
+                <div class="form-group" [ngClass]="(!gstn.valid && gstn.touched)?'has-error':''">
+                  <label for="cmpGstin"><i class="fa fa-times-circle-o" *ngIf="!gstn.valid && gstn.touched"></i>GSTIN</label>
+                  <input type="text" class="form-control" pattern="[0-9]{2}[(A-Z)]{5}\d{4}[(A-Z)]{1}[(A-Z)(0-9)]{1}Z[(A-Z)(0-9)]{1}" id="cmpGstin" placeholder="GSTIN" [(ngModel)]="companyItem.gstn" name="gstn"
+                         (blur)="validateGstin($event.target.value)" ngControl="companyItem.gstn" #gstn="ngModel" maxlength="15">
+                  <span class="help-block" *ngIf="!gstn.valid && gstn.touched">Please Enter valid GSTIN.</span>
+                  <span class="help-block" style="color:red">{{errMsgGSTIN}}</span>
+                </div>
+
+                <div [hidden]="!isEdit" class="form-group">
+                  <label>Company Logo</label>
+                  <input type="file" class="form-control" style="padding-right:5px;" Id="exampleInputFile" (change)="onImgFileChange($event)">
+                </div>
+                <div [hidden]="!isEdit" class="form-group">
+                  <button type="button" class="btn btn-primary" (click)="uploadLogo()">Upload Logo</button>
+                  <span class="text-black" *ngIf="fileUploadMsgPop.length>0">{{fileUploadMsgPop}}</span>
+                </div>
+
+                <!--<div class="form-group">
+                  <label for="licActDate">Activation Date</label>
+                  <input type="date" class="form-control" id="licActDate" [ngModel]="activationDate | date:'yyyy-MM-dd'"
+                         (ngModelChange)="activationDate = $event" name="activationDate">
+                </div>
+
+                <div class="form-group">
+                  <label for="licExpDate">Expiry Date</label>
+                  <input type="date" class="form-control" id="licExpDate" [ngModel]="expiryDate | date:'yyyy-MM-dd'"
+                         (ngModelChange)="expiryDate = $event" name="expiryDate">
+                </div>
+
+                
+
+                <div class="form-group">
+                  <label for="cmpLicStatus">License Status</label>
+                  <select [(ngModel)]="companyItem.isActive" class="form-control" id="cmpLicStatus" name="isActive" ngControl="companyItem.isActive"
+                          #isActive="ngModel" required>
+                    <option [ngValue]="true">Active</option>
+                    <option [ngValue]="false">Inactive</option>
+                  </select>
+                </div>-->
+
+                <!-- <div class="form-group">
+                  <label for="enCurr">Currency</label>
+                  <input type="text" class="form-control" id="enCurr" placeholder="Currency" [(ngModel)]="companyItem.en_curr" name="enCurr">
+                </div> -->
+              </div>
+              
+              <div class="col-sm-6">
+                <div class="form-group" [ngClass]="(!legalName.valid && legalName.touched)?'has-error':''">
+                  <label for="cmpNbr"><i class="fa fa-times-circle-o" *ngIf="!legalName.valid && legalName.touched"></i>Company Legal Name<span style="color:red">*</span></label>
+                  <input type="text" class="form-control" id="cmpNbr" placeholder="Company Code" [(ngModel)]="companyItem.legalName" name="legalName"
+                         ngControl="companyItem.legalName" #legalName="ngModel" required maxlength="50">
+                  <span class="help-block" *ngIf="!legalName.valid && legalName.touched">Please Enter Legal Name.</span>
+                </div>
+                <div class="form-group" [ngClass]="(!domainName.valid && domainName.touched)?'has-error':''">
+                  <label for="cmpDomain"><i class="fa fa-times-circle-o" *ngIf="!domainName.valid && domainName.touched"></i>Preferable Domain Name<span style="color:red">*</span></label>
+                  <input type="text" class="form-control" id="cmpDomain" placeholder="Domain Name" [(ngModel)]="companyItem.domainName" name="domainName"
+                         ngControl="companyItem.domainName" #domainName="ngModel" required maxlength="10">
+                  <span class="help-block" *ngIf="!domainName.valid && domainName.touched">Please Enter Domain Name.</span>
+                </div>
+                <div class="form-group">
+                  <label for="cmpType">Type</label>
+                  <input type="text" class="form-control" id="cmpType" placeholder="Type" [(ngModel)]="companyItem.type"
+                         name="type" maxlength="25">
+                </div>
+                <div class="form-group">
+                  <label for="cmpWebsite">Website</label>
+                  <input type="text" class="form-control" id="cmpWebsite" placeholder="Website" [(ngModel)]="companyItem.webSite" name="webSite" maxlength="100">
+                </div>
+                <div class="form-group">
+                  <label for="cmpPriContact">Primary Contact No</label>
+                  <input type="text" class="form-control" id="cmpPriContact" placeholder="Contact No" [(ngModel)]="companyItem.primaryContactNo" name="primaryContactNo" maxlength="15">
+                </div>
+                <div class="form-group">
+                  <label for="cmpContNO">Contact No</label>
+                  <input type="text" class="form-control" id="cmpContNO" placeholder="Contact No" [(ngModel)]="companyItem.contactNumber" name="contactNumber" maxlength="15">
+                </div>
+                <!--<div class="form-group">
+                  <label for="cmpPhone">Phone</label>
+                  <input type="text" class="form-control" id="cmpPhone" placeholder="Phone" [(ngModel)]="companyItem.cmp_phone" name="cmp_phone">
+                </div>-->
+
+                <div class="form-group">
+                  <label for="cmpEmail">Email</label>
+                  <input type="text" class="form-control" id="cmpEmail" placeholder="Email" [(ngModel)]="companyItem.email" maxlength="100"
+                         name="email">
+                </div>
+
+                <div class="form-group">
+                  <label for="totalLic">Total License</label>
+                  <input [disabled]="companyItem.cmpid==1 || !isEdit?false:true" type="number" class="form-control" id="totalLic" placeholder="Total License" [(ngModel)]="companyItem.totalLicenses" 
+                         name="totalLicenses" maxlength="11">
+                </div>
+
+                <!--<div class="form-group" [ngClass]="(!status.valid && status.touched)?'has-error':''">
+                  <label for="cmpStatus"><i class="fa fa-times-circle-o" *ngIf="!status.valid && status.touched"></i>Status<span style="color:red">*</span></label>
+                  <select [(ngModel)]="companyItem.status" class="form-control" id="cmpStatus" name="status" ngControl="companyItem.status"
+                          #status="ngModel" required>
+                    <option [ngValue]="true">Active</option>
+                    <option [ngValue]="false">Inactive</option>
+                  </select>
+                  <span class="help-block" *ngIf="!status.valid && status.touched">Please Select Status.</span>
+                </div>-->
+               
+                <!--<div class="form-group">
+                  <label for="totLic">Total License</label>
+                  <input type="number" class="form-control" id="totLic" placeholder="Total License" [(ngModel)]="companyItem.totalLicense" name="totalLicense">
+                </div>
+
+                <div class="form-group">
+                  <label for="usedLic">Used License</label>
+                  <input type="number" class="form-control" id="usedLic" placeholder="Used License" [(ngModel)]="companyItem.usedLicense" name="usedLicense">
+                </div>-->
+              </div>
+            </div>
+            <!--<div class="col-md-6" style="width:100%">
+              <div class="form-group table-responsive">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>Activation Date</th>
+                      <th>Expiry Date</th>
+                      <th>Total License</th>
+                      <th>Used License</th>
+                      <th>Remaining License</th>
+                      <th>License Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input style="width:125px; text-align:right;" type="date" (ngModelChange)="activationDate = $event" name="activationDate" [ngModel]="activationDate | date:'yyyy-MM-dd'" /></td>
+                      <td><input style="width:125px; text-align:right;" type="date" (ngModelChange)="expiryDate = $event" name="expiryDate" [ngModel]="expiryDate | date:'yyyy-MM-dd'" /></td>
+                      <td><input style="width:100px; text-align:right;" type="number" name="totalLicense" [(ngModel)]="companyItem.totalLicense" /></td>
+                      <td><input style="width:100px; text-align:right;" type="number" name="usedLicense" [(ngModel)]="companyItem.usedLicense" /></td>
+                      <td style="width:100px; text-align:center;">{{calculateRemainingLicense(companyItem.totalLicense,companyItem.usedLicense)}}</td>
+                      <td>
+                        <select style="width:100px;" name="isActive" [ngModelOptions]="{standalone: true}" [(ngModel)]="companyItem.isActive" ngControl="companyItem.isActive" #isActive="ngModel">
+                          <option [ngValue]="true">Active</option>
+                          <option [ngValue]="false">Inactive</option>
+                        </select>
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+              </div>
+            </div>-->
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+        <button type="button" class="btn btn-primary" (click)="onSaveCompany(true)" [disabled]="isLoadingPop || !companyForm.valid || isValidgstin">{{isEdit==true?'Update Company':'Register Company'}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+

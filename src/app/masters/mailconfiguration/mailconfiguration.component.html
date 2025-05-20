@@ -1,0 +1,237 @@
+<section class="content-header">
+  <h1>
+    Gate Entry Daily Report Mail Configuration
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active"> Gate Entry Daily Report Mail Configuration</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title"> Gate Entry Daily Report Mail Configuration</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="location" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th>SNo</th>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Inward Mails</th>
+            <th>Outward Mails</th>
+            <th>Visitor Mails</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lm of LocationMasterList; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{lm.code}}</td>
+            <td class="col-sm-2">{{lm.name}}</td>
+            <td style="word-break: break-all;">{{lm.toMail}}</td>
+            <td style="word-break: break-all;">{{lm.outwardMail}}</td>
+            <td style="word-break: break-all;">{{lm.visitorMail}}</td>
+            <td>
+              <table>
+                <tr>
+                  <td class="pr-2"> <button type="button" class="btn btn-primary btn-xs" (click)="onAddLocationMaster(true,lm)">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button></td>
+                  <td>
+                  <td>
+                    <button type="button" class="btn btn-primary btn-xs" (click)="openAuditLogs(lm.id)">
+                      <i class="fa fa-history"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">{{isEdit==true?'Update Location Master ':'Add New Location Master'}}</h4>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+
+        <form #locationMasterForm="ngForm">
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label for="locationcode" class="col-sm-3"> Location Code</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" name="locationcode" id="locationcode"
+                  placeholder="Location Code" [ngModel]="locationMasterItem.code" ngControl="locationMasterItem.code"
+                  #locationcode="ngModel" readonly>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="locationname" class="col-sm-3">Location Name</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" name="locationname" id="locationname"
+                  placeholder="Location Name" [ngModel]="locationMasterItem.name" ngControl="locationMasterItem.name"
+                  #locationname="ngModel" readonly>
+              </div>
+            </div>
+            <div class="form-group" [ngClass]="(inwardmails.touched && !inwardmails.valid)?'has-error':''">
+              <label for="inwardmails" class="col-sm-3">
+                Inward Mails <span style="color:red">*</span>
+              </label>
+              <div class="col-sm-9">
+                <textarea type="text" class="form-control" id="inwardmails" placeholder="Inward Mails"
+                  matTooltip="enter to Inward mails" [(ngModel)]="locationMasterItem.toMail" name="inwardmails"
+                  #inwardmails="ngModel" rows="3" required></textarea>
+                <span class="help-block" *ngIf="inwardmails.touched && !inwardmails.valid">Please
+                  enter Inward mails</span>
+                <span style="color:red">Note: Please enter comma separate Email Id's</span>
+              </div>
+            </div>
+            <div class="form-group" [ngClass]="(outwardMail.touched && !outwardMail.valid)?'has-error':''">
+              <label for="outwardMail" class="col-sm-3">
+                Outward Mails <span style="color:red">*</span>
+              </label>
+              <div class="col-sm-9">
+                <textarea type="text" class="form-control" id="outwardMail" placeholder="Outward Mail"
+                  matTooltip="enter to Outward mails" [(ngModel)]="locationMasterItem.outwardMail" name="outwardMail"
+                  #outwardMail="ngModel" rows="3" required></textarea>
+                <span class="help-block" *ngIf="outwardMail.touched && !outwardMail.valid">Please
+                  enter Outward mails</span>
+                <span style="color:red">Note: Please enter comma separate Email Id's</span>
+              </div>
+            </div>
+            <div class="form-group" [ngClass]="(visitorMail.touched && !visitorMail.valid)?'has-error':''">
+              <label for="visitorMail" class="col-sm-3">
+                Visitor Mails <span style="color:red">*</span>
+              </label>
+              <div class="col-sm-9">
+                <textarea type="text" class="form-control" id="visitorMail" placeholder="Visitor Mail"
+                  matTooltip="enter to visitor mails" [(ngModel)]="locationMasterItem.visitorMail" name="visitorMail"
+                  #visitorMail="ngModel" rows="3" required></textarea>
+                <span class="help-block" *ngIf="visitorMail.touched && !visitorMail.valid">Please
+                  enter Visitor mails</span>
+                <span style="color:red">Note: Please enter comma separate Email Id's</span>
+              </div>
+            </div>
+            <div class="form-group" [ngClass]="(!reason.valid && reason.touched)?'has-error':''">
+              <label for="reason" class="col-sm-3"><i class="fa fa-times-circle-o"
+                  *ngIf="!reason.valid && reason.touched"></i> Audit Reason<span style="color:red">*</span></label>
+              <div class="col-sm-9">
+                <textarea type="text" class="form-control" name="reason" id="reason" placeholder="Audit Reason"
+                  [(ngModel)]="aduitpurpose" ngControl="aduitpurpose" (change)="aduitpurpose=aduitpurpose.trim()"
+                  #reason="ngModel" required></textarea>
+                <span class="help-block" *ngIf="!reason.valid && reason.touched">Please Enter audit Reason.</span>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveLocationMaster()"
+          [disabled]="isLoadingPop || !locationMasterForm.valid">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-default" (click)="getLocationMasterList()"
+          style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- Audit Modal -->
+<div id="auditModal" class="modal fade">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;</button>
+        <h4 class="modal-title">Audit history</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="auditTable">
+          <thead>
+            <tr>
+              <th>Sl.no</th>
+              <th>Action</th>
+              <th>ActionBy</th>
+              <th>DateTime</th>
+              <th>KeyField</th>
+              <th>Changes</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <!-- <ng-container > -->
+          <tbody>
+            <tr *ngFor="let item of auditLogList;let i = index">
+              <td>{{auditLogList.length - i + '.0'}}</td>
+              <td class="col-sm-1">{{item.auditType}}</td>
+              <td class="col-sm-1">{{item.aduitUser}}</td>
+              <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy HH:mm"}}</td>
+              <td class="col-sm-1">{{item.keyValue}}</td>
+              <td class="col-sm-4">
+                <table class="table table-bordered" style="margin-bottom: 0;">
+                  <tr>
+                    <th>Field name</th>
+                    <th>Old value</th>
+                    <th>New value</th>
+                  </tr>
+                  <tr *ngFor="let ch of objParser(item.changes)">
+                    <td>{{ch.fieldname}}</td>
+                    <td>{{ch.oldvalue}}</td>
+                    <td>{{ch.newvalue}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td class="col-sm-4">{{item.purpose}}</td>
+            </tr>
+          </tbody>
+          <!-- </ng-container> -->
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

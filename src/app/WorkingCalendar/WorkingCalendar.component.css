@@ -1,0 +1,6 @@
+/* Custom style for SweetAlert buttons */
+.sweet-alert button {
+    background-color: #ff9500 !important; /* Set your desired color */
+    color: #ffae00 !important; /* Set text color */
+    border: 2px !important; /* Remove border if necessary */
+  }

@@ -1,0 +1,410 @@
+<section class="content-header">
+    <h1 class="display-1">
+      Financial Report
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i>Home</a></li>
+      <li class="active">Financial Reports</li>
+    </ol>
+  </section>  
+  <section class="content">  
+    <div class="box">
+      <div class="box-header">
+      </div>
+      <div class="box-body">
+        <div class="col-sm-12">
+          <form #financialForm="ngForm">
+            <div class="row">              
+              <!-- <div class="col-sm-3">
+                <div class="form-group form-group-sm">
+                  <label for="TypeOfGuest">Guest Type<span style="color: red;">*</span></label><br>
+                  <select [(ngModel)]="filterTypeOfGuest" class="form-control" id="TypeOfGuest" name="TypeOfGuest"
+                     #TypeOfGuest1Ent="ngModel" required>
+                    <option [ngValue]="null" disabled>Select Guest Type</option>
+                    <option *ngFor="let pl of TypeOfGuestList" value={{pl.typeOfGuest1}}>{{pl.typeOfGuest1}}</option>                 
+                  </select>    
+                </div>
+              </div> -->
+              <div class="col-sm-3">
+                <div class="form-group form-group-sm">
+                  <label for="TypeOfGuest">Guest Type</label>
+                  <ng-multiselect-dropdown id="TypeOfGuest" multiple name="TypeOfGuest" #TypeOfGuestE="ngModel"
+                  [placeholder]="'Select Type Of Guest'" [data]="TypeOfGuestList" [(ngModel)]="filterTypeOfGuest" [settings]="dropdownSettings7"
+                    (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)" (onSelect)="onItemSelect($event)"
+                    (onSelectAll)="onSelectAll($event)" matTooltip="Select Type Of Guest">
+                  </ng-multiselect-dropdown>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group form-group-sm">
+                  <label for="PayGroup">Division</label>
+                  <ng-multiselect-dropdown id="filterPayGroup" multiple name="filterPayGroup" #filterPayGroupE="ngModel"
+                  [placeholder]="'Select Division'" [data]="payGroupList" [(ngModel)]="filterPayGroup" [settings]="dropdownSettings"
+                    (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)" (onSelect)="onItemSelect($event)"
+                    (onSelectAll)="onSelectAll($event)" matTooltip="Select Division">
+                  </ng-multiselect-dropdown>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group form-group-sm">
+                  <label for="reportType">Report Type<span style="color: red;">*</span></label><br>
+                  <select [(ngModel)]="reportType" #filterReportTypeEnt="ngModel" class="form-control" name="reportType" id="reportType" required>
+                    <option [ngValue]="undefined" disabled>Select Report Type</option>
+                    <option value="financialYear">Financial Year</option>
+                    <option value="calYear">Full Year</option>
+                    <option value="yearMonth">Year & Month</option>
+                  </select>
+                </div>
+              </div> 
+              <!-- <div class="col-sm-3" *ngIf="reportType == 'selectedYear'">
+                <div class="form-group form-group-sm">
+                  <label for="fullYear">Full Year</label>
+                  <select [(ngModel)]="fullYear" class="form-control" name="fullYear" id="fullYear">
+                    <option [ngValue]="undefined" disabled>select year</option>
+                    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                  </select>
+                </div>
+              </div> -->
+            <!-- <div class="col-sm-2">
+              <div class="form-group form-group-sm" *ngIf="reportType == 'financialYear'">
+                  <label for="fiscalyr">Financial Year</label>
+                  <input type="text" class="form-control" id="usrLName" placeholder="Financial Year" [(ngModel)]="fiscalYear"
+                      ngControl="fiscalYear" name="fiscalyr" readonly />
+
+              </div>
+          </div> -->
+              <div class="col-sm-3" *ngIf="reportType == 'financialYear'">
+                <div class="form-group form-group-sm">
+                  <label for="financialYear">Financial Year</label>
+                  <select [(ngModel)]="financialYear"  #financialYearEnt="ngModel" class="form-control" name="financialYear" id="financialYear">
+                    <option [ngValue]="undefined" disabled>select financial year</option>
+                    <option value="2024-2025">2024-2025</option>
+                    <option value="2023-2024">2023-2024</option>
+                    <option value="2022-2023">2022-2023</option>
+                    <option value="2021-2022">2021-2022</option>
+                    <option value="2020-2021">2020-2021</option>
+                  </select>
+                </div>
+              </div> 
+              <div class="col-sm-3" *ngIf="reportType == 'calYear'">
+                <div class="form-group form-group-sm">
+                  <label for="calYear">Year</label>
+                  <select [(ngModel)]="calYear"  #calYearEnt="ngModel" class="form-control" name="calYear" id="calYear">
+                    <option [ngValue]="undefined" disabled>Select Year</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                  </select>
+                </div>
+              </div> 
+
+              <div class="col-sm-3" *ngIf="reportType == 'yearMonth'">
+                <div class="form-group form-group-sm">
+                  <label for="Year">Year</label>
+                  <select [(ngModel)]="calYear" #yearEnt="ngModel" class="form-control" name="Year" id="Year">
+                    <option [ngValue]="undefined" disabled>Select Year</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group form-group-sm" *ngIf="reportType == 'yearMonth'">
+                  <label for="month">Month</label>
+                  <ng-multiselect-dropdown  id="month" multiple name="month" #monthE="ngModel" [placeholder]="'Select Month'" [data]="dropdownList" [(ngModel)]="selectedItems"
+                    [settings]="dropdownSettings5" (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)"
+                    (onDeSelect)="onItemDeSelect($event)">
+                  </ng-multiselect-dropdown>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>  
+        <div class="col-sm-4">
+          <label>&nbsp;</label>
+          <div class="form-group form-group-sm">
+            <button class="btn btn-primary btn-sm" (click)="getFilteredList();">Search</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm" (click)="clearFilter();">Clear</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm" (click)="Print();" [disabled]="AccountSubmissionList.length == 0">Print
+              PDF</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm" (click)="exportAsXLSX();" [disabled]="AccountSubmissionList.length <= 0">
+              <i class="fa fa-download fa-sm text-white-50"></i> Export to excel</button>
+          </div>
+        </div>  
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp; 
+        <div class="col-sm-12" *ngIf="reportType == 'yearMonth'">
+          <div class="box-body table-responsive">
+            <table id="AccountTable" class="table table-bordered table-striped">
+              <thead style="background-color: #68a7d2;color:white;">
+                <tr>
+                  <th  width="1.25%"style="text-align: center; vertical-align: bottom; ">SLNo</th>               
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; ">Division</th>                 
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; ">Guest Type</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Jan')> -1">Jan</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Feb')> -1">Feb</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Mar')> -1">Mar</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Apr')> -1">Apr</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('May')> -1">May</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Jun')> -1">Jun</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Jul')> -1">Jul</th> 
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Aug')> -1">Aug</th> 
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Sep')> -1">Sep</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Oct')> -1">Oct</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Nov')> -1">Nov</th>
+                  <th  width="6.25%"style="text-align: center; vertical-align: bottom; " *ngIf="month.indexOf('Dec')> -1">Dec</th>
+                  <th  width="11.25%"style="text-align: center; vertical-align: bottom; ">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let acc of dataTable;  let i = index">
+                  <td>{{i+1}}</td>                
+                  <td style="vertical-align: middle; align-items: center; text-align: center;" [attr.rowspan]="acc.taskColumnSpan" *ngIf="acc.taskColumnSpan" >{{acc.division}}</td>
+                  <td>{{acc.typeOfGuest}}</td>
+                  <td *ngIf="month.indexOf('Jan')> -1">{{acc.jan}}</td>
+                  <td *ngIf="month.indexOf('Feb')> -1">{{acc.feb}}</td>
+                  <td *ngIf="month.indexOf('Mar')> -1">{{acc.mar}}</td>
+                  <td *ngIf="month.indexOf('Apr')> -1">{{acc.apr}}</td>
+                  <td *ngIf="month.indexOf('May')> -1">{{acc.may}}</td>
+                  <td *ngIf="month.indexOf('Jun')> -1">{{acc.jun}}</td>
+                  <td *ngIf="month.indexOf('Jul')> -1">{{acc.jul}}</td>
+                  <td *ngIf="month.indexOf('Aug')> -1">{{acc.aug}}</td>
+                  <td *ngIf="month.indexOf('Sep')> -1">{{acc.sep}}</td>
+                  <td *ngIf="month.indexOf('Oct')> -1">{{acc.oct}}</td>
+                  <td *ngIf="month.indexOf('Nov')> -1">{{acc.nov}}</td>
+                  <td *ngIf="month.indexOf('Dec')> -1">{{acc.dec}}</td>
+                  <td>{{acc.total}}</td>              
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div> 
+        <div class="col-sm-12" *ngIf="reportType == 'calYear'">
+          <div class="box-body table-responsive">
+            <table id="AccountTable" class="table table-bordered table-striped">
+              <thead style="background-color: #68a7d2;color:white;">
+                <tr>
+                  <th class="col-sm-1">SLNo</th>               
+                  <th>Division</th>                 
+                  <th>Guest Type</th>
+                  <th>Jan</th>
+                  <th>Feb</th>
+                  <th>Mar</th>
+                  <th>Apr</th>
+                  <th>May</th>
+                  <th>Jun</th>
+                  <th>Jul</th> 
+                  <th>Aug</th> 
+                  <th>Sep</th>
+                  <th>Oct</th>
+                  <th>Nov</th>
+                  <th>Dec</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let acc of dataTable;  let i = index">
+                  <td>{{i+1}}</td>                
+                  <td style="vertical-align: middle; align-items: center; text-align: center;" [attr.rowspan]="acc.taskColumnSpan" *ngIf="acc.taskColumnSpan" >{{acc.division}}</td>
+                  <td>{{acc.typeOfGuest}}</td>
+                  <td>{{acc.jan}}</td>
+                  <td>{{acc.feb}}</td>
+                  <td>{{acc.mar}}</td>
+                  <td>{{acc.apr}}</td>
+                  <td>{{acc.may}}</td>
+                  <td>{{acc.jun}}</td>
+                  <td>{{acc.jul}}</td>
+                  <td>{{acc.aug}}</td>
+                  <td>{{acc.sep}}</td>
+                  <td>{{acc.oct}}</td>
+                  <td>{{acc.nov}}</td>
+                  <td>{{acc.dec}}</td>
+                  <td>{{acc.total}}</td>              
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-sm-12" *ngIf="reportType == 'financialYear'">
+          <div class="box-body table-responsive" >
+            <table id="AccountTable" class="table table-bordered table-striped">
+              <thead style="background-color: #68a7d2;color:white;">
+                <tr>
+                  <th class="col-sm-1">SLNo</th>               
+                  <th>Division</th>                 
+                  <th>Guest Type</th>                  
+                  <th>Apr</th>
+                  <th>May</th>
+                  <th>Jun</th>
+                  <th>Jul</th> 
+                  <th>Aug</th> 
+                  <th>Sep</th>
+                  <th>Oct</th>
+                  <th>Nov</th>
+                  <th>Dec</th>
+                  <th>Jan</th>
+                  <th>Feb</th>
+                  <th>Mar</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let acc of dataTable;  let i = index">
+                  <td>{{i+1}}</td>                
+                  <td style="vertical-align: middle; align-items: center; text-align: center;" [attr.rowspan]="acc.taskColumnSpan" *ngIf="acc.taskColumnSpan" >{{acc.division}}</td>
+                  <td>{{acc.typeOfGuest}}</td>                 
+                  <td>{{acc.apr}}</td>
+                  <td>{{acc.may}}</td>
+                  <td>{{acc.jun}}</td>
+                  <td>{{acc.jul}}</td>
+                  <td>{{acc.aug}}</td>
+                  <td>{{acc.sep}}</td>
+                  <td>{{acc.oct}}</td>
+                  <td>{{acc.nov}}</td>
+                  <td>{{acc.dec}}</td>
+                  <td>{{acc.jan}}</td>
+                  <td>{{acc.feb}}</td>
+                  <td>{{acc.mar}}</td>
+                  <td>{{acc.total}}</td>              
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+              *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+        </div>
+      </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+  
+  <div hidden id="pdf1" *ngIf="reportType == 'yearMonth'">    
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+      <tr>
+        <td colspan="16" style="text-align: center;" *ngIf="reportType == 'calYear'">
+          <strong><b>Below expenses are created for - {{calYear}}</b></strong>
+        <td colspan="16" style="text-align: center;" *ngIf="reportType == 'yearMonth'">
+        <strong><b>Below expenses are created for the month of - {{month}} - {{calYear}}</b></strong>              
+        </td>
+      </tr>
+      <tr>
+        <th width="1.25%"style="text-align: center; vertical-align: bottom; ">Sl.No</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Division</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Guest Type</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Jan</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Feb</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Mar</th> 
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Apr</th>     
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">May</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Jun</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Jul</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Aug</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Sep</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Oct</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Nov</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Dec</th>        
+        <th width="11.25%"style="text-align: center; vertical-align: bottom; ">Total</th>
+      </tr>
+      <tr *ngFor="let acc of dataTable;  let i = index">
+        <td><b>{{i+1}}</b></td>
+        <td style="vertical-align: middle; align-items: center; text-align: center;" [attr.rowspan]="acc.taskColumnSpan" *ngIf="acc.taskColumnSpan" >{{acc.division}}</td>
+        <!-- <td style="color: blue;">{{acc.division}}</td> -->
+        <td style="color: blue;">{{acc.typeOfGuest}}</td>
+        <td style="color: blue;">{{acc.jan}}</td>
+        <td style="color: blue;">{{acc.feb}}</td>
+        <td style="color: blue;">{{acc.mar}}</td>
+        <td style="color: blue;">{{acc.apr}}</td>      
+        <td style="color: blue;">{{acc.may}}</td>
+        <td style="color: blue;">{{acc.jun}}</td>
+        <td style="color: blue;">{{acc.jul}}</td>
+        <td style="color: blue;">{{acc.aug}}</td>
+        <td style="color: blue;">{{acc.sep}}</td>
+        <td style="color: blue;">{{acc.oct}}</td>
+        <td style="color: blue;">{{acc.nov}}</td>        
+        <td style="color: blue;">{{acc.dec}}</td>
+         <td style="color: blue;">{{acc.total}}</td> 
+      </tr>
+      <tr>
+        <td colspan="15" style="text-align: right;font-size:15px"><b>Total Expense</b></td>
+        <td colspan="1" style="font-size:15px">{{TotalAmount}}</td>
+        <!-- <td colspan="5"></td> -->
+      </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+  </div>
+
+  <div hidden id="pdf1" *ngIf="reportType == 'financialYear'">    
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+      <tr>
+        <td colspan="16" style="text-align: center;">
+          <strong><b>Below expenses are created for the financial year - {{financialYear}}</b></strong>      
+      </tr>
+      <tr>
+        <th width="1.25%"style="text-align: center; vertical-align: bottom; ">Sl.No</th>
+        <th width="7.25%"style="text-align: center; vertical-align: bottom; ">Division</th>
+        <th width="7.25%"style="text-align: center; vertical-align: bottom; ">Guest Type</th>        
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Apr</th>     
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">May</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Jun</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Jul</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Aug</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Sep</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Oct</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Nov</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Dec</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Jan</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Feb</th>
+        <th width="6.25%"style="text-align: center; vertical-align: bottom; ">Mar</th>        
+        <th width="9.25%"style="text-align: center; vertical-align: bottom; ">Total</th>
+      </tr>
+      <tr *ngFor="let acc of dataTable;  let i = index">
+        <td><b>{{i+1}}</b></td>
+        <td style="vertical-align: middle; align-items: center; text-align: center;" [attr.rowspan]="acc.taskColumnSpan" *ngIf="acc.taskColumnSpan" >{{acc.division}}</td>
+        <!-- <td style="color: blue;">{{acc.division}}</td> -->
+        <td style="color: blue;">{{acc.typeOfGuest}}</td>        
+        <td style="color: blue;">{{acc.apr}}</td>      
+        <td style="color: blue;">{{acc.may}}</td>
+        <td style="color: blue;">{{acc.jun}}</td>
+        <td style="color: blue;">{{acc.jul}}</td>
+        <td style="color: blue;">{{acc.aug}}</td>
+        <td style="color: blue;">{{acc.sep}}</td>
+        <td style="color: blue;">{{acc.oct}}</td>
+        <td style="color: blue;">{{acc.nov}}</td>        
+        <td style="color: blue;">{{acc.dec}}</td>
+        <td style="color: blue;">{{acc.jan}}</td>
+        <td style="color: blue;">{{acc.feb}}</td>
+        <td style="color: blue;">{{acc.mar}}</td>
+         <td style="color: blue;">{{acc.total}}</td> 
+      </tr>
+      <tr>
+        <td colspan="16" style="text-align: right;font-size:15px"><b>Total Expense</b></td>
+        <td colspan="1" style="font-size:15px">{{TotalAmount}}</td>
+        <!-- <td colspan="5"></td> -->
+      </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+  </div>

@@ -1,0 +1,148 @@
+<section class="content-header">
+  <h1 class="display-1">
+    View Service Withdrawn Details
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">View Service Withdrawn Details</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId" *ngIf="employeeId > 0"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='details'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Details</a></li>
+    <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a
+        (click)="onTabClick(1)">Attachments</a></li>
+    <!-- <li> [ngClass]="currentTab=='history'?'active':''" id="tab_history"><a
+          (click)="onTabClick(2)">History</a></li> -->
+  </ul>
+  <div class="details-tab">
+
+    <div *ngIf="currentTab=='details'">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">Service Withdrawn Details</h3>
+        </div>
+        <div class="panel-body form-horizontal">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="terminationDate">Service Withdrawn Status</label>
+                <div class="col-md-8">
+                  <span class="label label-lg label-warning">{{terminationStatus}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Notice Period</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" [(ngModel)]="noticePeriod" [disabled]="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Reason</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="reason" name="Reason"
+                    [(ngModel)]="terminationDetails.reason" [disabled]="true">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Service Withdrawn Date</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="terminationDate" name="terminationDate"
+                    [ngModel]="TerminationDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="reasonNotes">Payout Months</label>
+                <div class="col-md-8">
+                  <input type="number" [(ngModel)]="terminationDetails.payoutMonths" class="form-control"
+                    id="payoutMonths" name="payoutMonths" #payoutMonthsEnt="ngModel" required minlength="1"
+                    maxlength="4" [disabled]="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="additionalNotes">Additional Notes</label>
+                <div class="col-md-8">
+                  <textarea [matTooltipPosition]="'below'" matTooltip="Additional Notes"
+                    [(ngModel)]="terminationDetails.additionalNotes" class="form-control" id="additionalNotes"
+                    name="additionalNotes" #reasonTerminationDateChange="ngModel" disabled></textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <app-employee-attachments [objectId]="terminationId" [objectType]="this.objectType" [employeeId]="this.employeeId"
+      [editAllowed]="true" [deleteAllowed]="false" *ngIf="currentTab=='attachments'"></app-employee-attachments>
+
+    <!--app-separation-history [employeeId]="employeeId" *ngIf="currentTab=='history' && employeeId > 0"></app-separation-history-->
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>Comments</label>
+        <textarea rows="3" class="form-control" [(ngModel)]="reason"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="row text-center">
+    <div class="col-md-12 actionButtons">
+      <button type="button" (click)="Back()" class="btn btn-default" [matTooltipPosition]="'after'"
+        matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="approve()"
+        matTooltip="Click to Approve Service Withdrawn">Approve</button>
+
+      <button type="button" class="btn btn-danger" (click)="rejectTask()"
+        matTooltip="Click to Reject Service Withdrawn">Reject</button>
+    </div>
+  </div>
+
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="this.terminationId" [objectType]="this.objectType"></app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="this.terminationId" [objectType]="this.objectType"></app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>

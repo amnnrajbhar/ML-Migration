@@ -1,0 +1,211 @@
+<section class="content-header">
+  <h1 class="display-1">
+     Initiate Extension 
+  </h1>
+  <ol class="breadcrumb">
+     <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+     <li class="active">Initiate Extension</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="panel panel-info">
+     <div class="panel-heading">
+        <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+     </div>
+     <div class="panel-body">
+        <div class="row">
+           <div class="col-xs-12">
+              <div class="form-group row">
+                 <label class="col-md-2 control-label text-right">Plant</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="selectedPlant" class="form-control" id="plant" name="plant" 
+                    (change)="getPayGroupList()">
+                    <option value="null" [selected]="true"> All </option>
+                    <option *ngFor="let pll of plantList" [ngValue]="pll">{{pll.code}} - {{pll.name}}</option>
+                    </select>
+                 </div>
+                 <label class="col-md-2 control-label text-right">Pay Group</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="selectedPayGroup" class="form-control" id="paygroup" name="paygroup"
+                    matTooltip="paygroup" >
+                    <option value="null" [selected]="true"> All </option>
+                    <option *ngFor="let pl of payGroupList" [ngValue]="pl">{{pl.long_Desc}}</option>
+                    </select>
+                 </div>
+              </div>
+              <div class="form-group row">
+                 <label class="col-md-2 control-label text-right">Employee Category</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="selectedEmployeeCategory" class="form-control" id="employeecategory"
+                    name="employeecategory" matTooltip="employeecategory">
+                    <option value="null" [selected]="true"> All </option>
+                    <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl">{{cl.catltxt}}</option>
+                    </select>
+                 </div>
+                 <label class="col-md-2 control-label text-right">Retirement On</label>
+                 <div class="col-md-4">
+                    <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="ToDate" class="form-control"
+                    [(ngModel)]="to_date" #toDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+                 </div>
+              </div>  
+              
+               <div class="form-group row">
+
+                  <label class="col-md-2 control-label text-right">Extension Status</label>
+                  <div class="col-md-4">
+                     <select [(ngModel)]="selectedStatus" class="form-control" id="status" name="status" #statusEnt="ngModel">
+                     <option value="null" [selected]="true"> All </option>
+                     <option *ngFor="let sl of statusList" [ngValue]="sl">{{sl.type}}</option>
+                     </select> 
+                  </div>
+                 <label class="col-md-2 control-label text-right">Employee Name/No</label>
+                 <div class="col-md-4">
+                    <input name="name" class="form-control" id="name" [(ngModel)]="name" />
+                 </div>
+
+               </div>   
+             
+                 <div class="form-group text-center">
+                  <button class="btn btn-primary btn-sm" (click)="getRetirementList();" matTooltip="click to Go"
+                  [disabled]="(!toDate.valid && toDate.touched)">
+                  Filter</button>
+               </div>
+              </div>
+          
+        </div>
+        </div>
+     </div>
+  
+  <div class="row">
+     <div class="col-md-12 form-group">
+        <div class="pull-right">
+           <button type="button" class="btn btn-sm btn-primary" (click)="exportData()">Export</button>
+        </div>
+     </div>
+  </div>
+  <div class="row">
+     <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+           <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table mat-table class="table table-hover table-striped table-bordered" id="data">
+           <thead>
+              <tr>
+                 <th style="width: 200px;">Action</th>
+                 <th class="personalDetails">Employee No</th>
+                 <th class="personalDetails">Name</th>
+                 <th>Employee Status</th>
+                 <th>Date Of Birth</th>
+                 <th>Retirement Date</th>
+                 <th>Age</th>                 
+                 <th>Extension Status</th>  
+                 <th>Extension Start Date</th>                    
+                 <th>Extension End Date</th>                                  
+                 <th>Joining Date</th>
+                 <th class="jobDetails">Plant Code</th>
+                 <th class="jobDetails">Plant Name</th>
+                 <th class="jobDetails">Pay Group</th>
+                 <th class="jobDetails">Employee Category</th>
+                 <th class="jobDetails">Location</th>
+                 <th class="jobDetails">Designation</th>
+                 <th class="jobDetails">Role</th>
+                 <th class="jobDetails">Reporting Manager</th>
+                 <th class="jobDetails">HOD</th>
+              </tr>
+           </thead>
+           <tbody>
+              <tr *ngFor="let retirement of filterData.list; let i = index">
+                 <td style="width: 200px;">
+
+                  <a [routerLink]="['/HR/Employee/profile', retirement.employeeId]" class="btn btn-primary btn-xs"
+                  [matTooltipPosition]="'after'" matTooltip="Click to view full profile">
+                  <i class="fas fa-user"></i></a>
+
+                  <a [routerLink]="['/HR/retirement/retirement-extension',retirement.employeeId]" class="btn btn-xs btn-info"
+                  [matTooltipPosition]="'after'" matTooltip="Click to initiate the service extension" *ngIf="retirement.extensionEndDate < oneMonthFromNow || retirement.status=='Service Extended'|| retirement.extenstionStatus=='Approved'">
+                  <i class="fas fa-check"></i></a>
+
+                  <a [routerLink]="['/HR/retirement/view-extension', retirement.retirementId, retirement.employeeId]" class="btn btn-xs btn-info"
+                  [matTooltipPosition]="'after'" matTooltip="Click to view the details" *ngIf="retirement.retirementId > 0">
+                  <i class="fas fa-eye"></i></a>
+
+                 </td>
+                 <td class="personalDetails">{{retirement.employeeNo}}</td>
+                 <td class="personalDetails">{{retirement.firstName}} {{retirement.middleName}} {{retirement.lastName}}</td>
+                 <td><span class="label label-default label-{{retirement.statusColor}}">{{retirement.status}}</span></td>
+                 <td class="jobDetails">{{retirement.dateOfBirth | date:'dd/MM/yyyy'}}</td>
+                 <td class="jobDetails">{{retirement.dateOfRetirement | date:'dd/MM/yyyy'}}</td>
+                 <td class="personalDetails">{{retirement.age}}</td>                 
+                 <td><span class="label label-default label-{{retirement.extensionStatusColor}}">{{retirement.extensionStatus}}</span></td>                 
+                 <td class="jobDetails">{{retirement.extensionStartDate | date:'dd/MM/yyyy'}}</td>
+                 <td class="jobDetails">{{retirement.extensionEndDate | date:'dd/MM/yyyy'}}</td>                 
+                 <td class="jobDetails">{{retirement.dateOfJoining | date:'dd/MM/yyyy'}}</td>
+                 <td class="jobDetails">{{retirement.plantCode}}</td>
+                 <td class="jobDetails">{{retirement.plantName}}</td>
+                 <td class="jobDetails">{{retirement.payGroupName}}</td>
+                 <td class="jobDetails">{{retirement.employeeCategoryName}}</td>
+                 <td class="jobDetails">{{retirement.location}}</td>
+                 <td class="jobDetails">{{retirement.designation}}</td>
+                 <td class="jobDetails">{{retirement.role}}</td>
+                 <td class="jobDetails">{{retirement.reportingManagerName}}</td>
+                 <td class="jobDetails">{{retirement.approvingManagerName}}</td>
+              </tr>
+           </tbody>
+        </table>
+        <div class="text-center">
+           <div class="overlay text-center h3" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+           </div>
+           <ul class="pagination" *ngIf="filterData.totalCount>0">
+              <li>
+                 <a (click)="gotoPage(filterData.pageNo)">
+                 Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> - <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b> of <b>{{filterData.totalCount}}</b> records
+                 </a>
+              </li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+              <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+              <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo+1" (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+              <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of <b>{{filterData.totalPages}}</b></a></li>
+              <li>
+                 <a>
+                    Page Size 
+                    <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    </select>
+                 </a>
+              </li>
+           </ul>
+        </div>
+     </div>
+  </div>
+</section>
+<!-- Comments Modal -->
+<div id="CommentsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+     <!-- Modal content-->
+     <div class="modal-content">
+        <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal">&times;</button>
+           <h4 class="modal-title">Enter Comments</h4>
+        </div>
+        <div class="modal-body">
+           <label>Comments</label>
+           <textarea rows="3" class="form-control" [(ngModel)]="comments"></textarea>
+        </div>
+        <div class="modal-footer">
+           <button type="button" class="btn btn-primary" (click)="performTask()">Submit</button>
+           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+     </div>
+  </div>
+</div>

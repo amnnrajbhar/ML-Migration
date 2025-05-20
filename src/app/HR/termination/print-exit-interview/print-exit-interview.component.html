@@ -1,0 +1,130 @@
+
+<section class="content">
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-center actionButtons">
+      <button type="button" (click)="Back()" class="btn btn-default" [matTooltipPosition]="'after'"
+          matTooltip="Click to go back ">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>   
+      <button type="button" class="btn btn-warning" (click)="Print()" [disabled]="isLoading">Print</button>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body form-horizontal" id="printArea">
+      <h2>Exit Interview</h2>
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <th>Employee Number</th>
+            <td>{{terminationDetails.employeeNo}}</td>
+            <th>Employee Name</th>
+            <td>{{terminationDetails.firstName}} {{terminationDetails.middleName}}
+              {{terminationDetails.lastName}}</td>
+          </tr>
+          <tr>
+            <th>Pay Group</th>
+            <td>{{terminationDetails.payGroupName}}</td>
+            <th>Staff Category</th>
+            <td>{{terminationDetails.employeeCategoryName}}</td>
+          </tr>
+          <tr>
+            <th>Designation</th>
+            <td>{{terminationDetails.designation}}</td>
+            <th>Role</th>
+            <td>{{terminationDetails.role}}</td>
+          </tr>
+          <tr>
+            <th>Reporting Manager</th>
+            <td>{{terminationDetails.reportingManagerName}}</td>
+            <th>HOD</th>
+            <td>{{terminationDetails.approvingManagerName}}</td>
+          </tr>
+          <tr>
+            <th>Official Email ID</th>
+            <td>{{terminationDetails.officialEmailId}}</td>
+            <th>Personal Email ID</th>
+            <td>{{terminationDetails.personalEmailId}}</td>
+          </tr>
+          <tr>
+            <th>Mobile No</th>
+            <td>{{terminationDetails.mobileNo}}</td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-bordered">
+        <tbody>
+          <tr>
+            <th>Date of Joining</th>
+            <td>{{terminationDetails.dateOfJoining | date: "dd/MM/yyyy"}}</td>
+            <th>Date of Service Withdrawn</th>
+            <td>{{terminationDetails.terminationDate | date: "dd/MM/yyyy"}}</td>
+            <th>Last Date of Working</th>
+            <td>{{terminationDetails.terminationDate | date: "dd/MM/yyyy"}}</td>
+          </tr>
+        </tbody>
+      </table>
+     
+      <span class="text-danger" *ngIf="questions == null || questions.length == 0">Exit Process not initiated. Interview
+        template selection pending.</span>
+
+      <ul class="list-group" *ngIf="questions.length > 0">
+
+        <li class="list-group-item" *ngFor="let item of questions; let i = index">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-6">
+                <div class="{{item.parentQuestionId != null ? 'col-md-offset-1 col-md-11':'col-md-12'}}">
+                  <label>{{item.questionId}} {{item.questionText}} <span style="color:red"
+                      *ngIf="item.isMandatory == true">*</span></label>
+                </div>
+              </div>
+              <div class="col-md-6">
+
+                <ng-template [ngIf]="item.questionType=='Textbox'">
+                  <textarea [disabled]="true" name="answer" rows="2" class="form-control">{{item.answer}}</textarea>
+                </ng-template>
+
+                 <select [disabled]="true" class="form-control" name="answer" *ngIf="item.questionType=='Dropdown'">
+                  <option [ngValue]="null" disabled>Select a value</option>
+                  <option *ngFor="let opt of item.options; let j = index" [value]="opt.optionText" [attr.selected]="opt.optionText==item.answer?'': null">{{opt.optionId}}
+                    {{opt.optionText}}</option>
+                </select>
+
+                <div *ngIf="item.questionType=='Checkbox'">
+                  <div *ngFor="let opt of item.options; let j = index">
+                    <div class="checkbox">
+                      <label>
+                        <input [disabled]="true" type="checkbox" id="{{'chk_'+j}}" name="{{'chk_'+j}}" [attr.checked]="opt.isSelected==true?'': null">{{opt.optionId}} {{opt.optionText}}</label>
+                    </div>
+                    <div *ngIf="opt.takeTextInput == true && opt.isSelected == true">                      
+                      <textarea [disabled]="true" name="answer" rows="1" class="form-control">{{opt.textInput}}</textarea>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div *ngIf="questions.length > 0" class="row">
+        <div class="col-md-12">
+          <h3><input [disabled]="true" type="checkbox" [(ngModel)]="isDeclared" />
+            I here by declare that the above answers are true and accurate to the best of my knowledge.
+          </h3>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>

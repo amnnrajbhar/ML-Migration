@@ -1,0 +1,230 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Additional Information <small>This section is mandatorily to be filled for Non-Field Staff employees.</small>
+  </h1>
+
+</section>
+
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-body">
+      <h4>Previous Experience</h4>
+      <div class="table-responsive">
+        <table class="table ">
+          <thead>
+            <tr>
+              <th *ngIf="editAllowed" style="max-width: 50px;">Remove</th>
+              <th style="max-width: 50px;">Sl No</th>
+              <th>Company <span style="color:red">*</span></th>
+              <th style="max-width: 100px;">From Date <span style="color:red">*</span></th>
+              <th style="max-width: 100px;">To Date <span style="color:red">*</span></th>
+              <th>Position <span style="color:red">*</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of previousExpList; let i = index">
+              <td *ngIf="editAllowed" style="max-width: 50px;">
+                <button (click)="RemoveExperience(i)" title="click to remove this line" class="btn btn-xs btn-danger">
+                  <i class="fas fa-times"></i>
+                </button></td>
+              <td style="max-width: 50px;">{{i+1}}</td>
+              <td>
+                <input type="text" [(ngModel)]="item.company" maxlength="100" class="form-control" required
+                  name="company" [disabled]="!editAllowed" />
+              </td>
+              <td style="max-width: 100px;">
+                <input type="text" [(ngModel)]="item.fromDate" class="form-control" required name="fromDate"
+                  #fromDateEnt="ngModel" [owlDateTime]="dtFromDate" [owlDateTimeTrigger]="dtFromDate"
+                  [disabled]="!editAllowed" />
+                <owl-date-time [pickerType]="'calendar'" #dtFromDate></owl-date-time>
+              </td>
+              <td style="max-width: 100px;">
+                <input type="text" [(ngModel)]="item.toDate" class="form-control" required name="toDate"
+                  #toDateEnt="ngModel" [owlDateTime]="dtToDate" [owlDateTimeTrigger]="dtToDate"
+                  [disabled]="!editAllowed" />
+                <owl-date-time [pickerType]="'calendar'" #dtToDate></owl-date-time>
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="item.position" maxlength="50" class="form-control" required
+                  name="Position" [disabled]="!editAllowed" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="editAllowed">
+        <button type="button" class="btn btn-info" (click)="AddExperience()"><i class="fas fa-plus"></i> Add new
+          line</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-body">
+      <h4>Interviewed By </h4>
+      <div class="table-responsive">
+        <table class="table ">
+          <thead>
+            <tr>
+              <th *ngIf="editAllowed" style="max-width: 50px;">Remove</th>
+              <th style="max-width: 50px;">Sl No</th>
+              <th>Interviewer <span style="color:red">*</span></th>
+              <th style="max-width: 150px;">Designation </th>
+              <th style="max-width: 100px;">Interview Date </th>
+              <th>Comments </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of interviewerList; let i = index">
+              <td *ngIf="editAllowed" style="max-width: 50px;">
+                <button (click)="RemoveInterviewer(i)" title="click to remove this line" class="btn btn-xs btn-danger">
+                  <i class="fas fa-times"></i>
+                </button></td>
+              <td style="max-width: 50px;">{{i+1}}</td>
+              <td>
+                <input type="text" [id]="'txtInterviewer_'+i" [(ngModel)]="item.name" maxlength="100"
+                  class="form-control" required name="name" (keyup)="getInterviewerName($event, i)" autocomplete="off"
+                  [disabled]="!editAllowed" ngControl="item.name"/>
+
+                <input type="hidden" [id]="'hdnInterviewerEmpNo_'+i" [(ngModel)]="item.employeeNo" class="form-control"
+                  name="employeeNo" ngControl="item.employeeNo"/>
+                <input type="hidden" [id]="'hdnInterviewerEmpId_'+i" [(ngModel)]="item.employeeId" class="form-control"
+                  name="employeeId" ngControl="item.employeeId"/>
+              </td>
+              <td style="max-width: 150px;">
+                <input type="text" [id]="'txInterviewerDesignation_'+i" [(ngModel)]="item.designation"
+                  class="form-control" name="designation" ngControl="item.designation" [disabled]="true" />
+              </td>
+              <td style="max-width: 100px;">
+                <input type="text" [(ngModel)]="item.date" class="form-control" name="date" #fromDateEnt="ngModel"
+                  [owlDateTime]="dtIntDate" [owlDateTimeTrigger]="dtIntDate" [disabled]="!editAllowed" />
+                <owl-date-time [pickerType]="'calendar'" #dtIntDate></owl-date-time>
+              </td>
+              <td>
+                <input type="text" [(ngModel)]="item.comments" maxlength="100" class="form-control" 
+                  name="comments" [disabled]="!editAllowed" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="editAllowed">
+        <button type="button" class="btn btn-info" (click)="AddInterviewer()"><i class="fas fa-plus"></i> Add new
+          line</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-info">
+        <div class="panel-body">
+          <h4>Job Description </h4>
+          <span>Provide brief job description and at least 3-5 specific job responsibilities</span>
+          <div class="table-responsive">
+            <table class="table ">
+              <thead>
+                <tr>
+                  <th *ngIf="editAllowed" style="max-width: 50px;">Remove</th>
+                  <th style="max-width: 50px;">Sl No</th>
+                  <th>Description <span style="color:red">*</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of jdList; let i = index">
+                  <td *ngIf="editAllowed" style="max-width: 50px;">
+                    <button (click)="RemoveJd(i)" title="click to remove this line" class="btn btn-xs btn-danger">
+                      <i class="fas fa-times"></i>
+                    </button></td>
+                  <td style="max-width: 50px;">{{i+1}}</td>
+                  <td>
+                    <textarea [(ngModel)]="item.description" maxlength="500" class="form-control" required
+                      name="description" [disabled]="!editAllowed" rows="2"></textarea>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf="editAllowed">
+            <button type="button" class="btn btn-info" (click)="AddJd()"><i class="fas fa-plus"></i> Add new
+              line</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel panel-info">
+        <div class="panel-body">
+          <h4>Final Remarks </h4>
+          <div class="row">
+            <div class="table-responsive">
+              <table class="table ">
+                <thead>
+                  <tr>
+                    <th style="max-width: 50px;">Sl No</th>
+                    <th>Criteria <span style="color:red">*</span></th>
+                    <th style="max-width: 100px;">Rating <span style="color:red">*</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of interviewRemarksList; let i = index">
+
+                    <td style="max-width: 50px;">{{i+1}}</td>
+                    <td>
+                      <input type="text" [(ngModel)]="item.criteria" class="form-control" name="criteria"
+                        [disabled]="true" />
+                    </td>
+                    <td style="max-width: 100px;">
+                      <select [(ngModel)]="item.rating" class="form-control" name="rating"
+                        [disabled]="!editAllowed">
+                        <option value="A">A - Excellent</option>
+                        <option value="B">B - Good</option>
+                        <option value="C">C - Average</option>
+                        <option value="D">D - Below Average</option>
+                      </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="form-horizontal">
+            <div class="row form-group">
+              <label class="col-md-4 control-label">Name</label>
+              <div class="col-md-8">
+                <input type="text" [id]="'txtFinalName'" [(ngModel)]="finalRemarks.name" class="form-control" name="employeeName"
+                  [disabled]="!editAllowed" autocomplete="off" (keyup)="getFinalName($event)" ngControl="finalRemarks.name"/>
+
+                <input type="hidden" [id]="'hdnFinalEmpNo'" [(ngModel)]="finalRemarks.employeeNo" class="form-control" name="employeeNo" ngControl="finalRemarks.employeeNo"/>
+                <input type="hidden" [id]="'hdnFinalEmpId'" [(ngModel)]="finalRemarks.employeeId" class="form-control" name="employeeId" ngControl="finalRemarks.employeeId"/>
+
+              </div>
+            </div>
+            <div class="row form-group">
+              <label class="col-md-4 control-label">Designation</label>
+              <div class="col-md-8">
+                <input type="text" [id]="'txtFinalDesignation'" [(ngModel)]="finalRemarks.designation" class="form-control" name="designation"
+                  [disabled]="true" />
+              </div>
+            </div>
+            <div class="row form-group">
+              <label class="col-md-4 control-label">Date</label>
+              <div class="col-md-8">
+                <input type="text" [(ngModel)]="finalRemarks.remarksDate" class="form-control" name="remarksDate"
+                  [disabled]="!editAllowed" [owlDateTime]="dtDate" [owlDateTimeTrigger]="dtDate" />
+
+                <owl-date-time [pickerType]="'calendar'" #dtDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

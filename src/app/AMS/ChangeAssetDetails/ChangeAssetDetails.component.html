@@ -1,0 +1,948 @@
+<section class="content-header">
+  <h1 class="display-1">
+      Change Asset Details
+      <small> AMS </small>
+  </h1>
+  <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+  </ol>
+</section>
+
+<!--Main Content-->
+<section class="content">
+  <div class="box">
+      <div class="box-header">
+          <div id="dateFilterPanel">
+              <div class="col-sm-12">
+                  <div class="card-body" style="border: black; box-shadow: grey;">
+                      <form #filterForm="ngForm">
+                          <div class="row">
+                              <div class="col-xs-12">
+                                  <div class="form-group row">
+                                      <label for="changetype" class="col-md-3 control-label">Change Type:
+                                      </label>
+                                      <div class="col-md-4">
+                                          <select [(ngModel)]="filterchangetype" class="form-control" id="changetype"
+                                              (change)="setList(filterassetNo1)" name="assetNo1"
+                                              ngControl="filterchangetype" #changetypeEnt="ngModel"
+                                              [disabled]="isEdit" matTooltip="Select AssetType" required>
+                                              <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                              <option value="CAD">Change in Asset Details</option>
+                                              <option value="CUD">Change in Usage Type</option>
+                                              <option value="CAS">Change in Status</option>
+                                              <option value="CAC">Change in Configuration</option>
+                                              <option value="CAP">Change in Purchase Order</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          &nbsp;&nbsp;&nbsp;
+
+                          <div id="dateFilterPanel" *ngIf="filterchangetype!= null">
+                              <div class="col-sm-12">
+                                  <div class="box">
+                                      <div class="card-body"
+                                          style="border: rgb(0, 0, 0); box-shadow: rgb(255, 0, 0);">
+                                          <div class="row">
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="assetId"> Asset Id </label>
+                                                      <input class="form-control" type="text" name="assetId"
+                                                          [(ngModel)]="filterassetId1" placeholder="Asset Id"
+                                                          value="assetId" [disabled]="isEdit" [id]="assetId"
+                                                          matTooltip="Enter Asset Id" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="assetNo1"> Asset No </label>
+                                                      <input class="form-control suggestion" type="text"
+                                                          name="assetNo1" [(ngModel)]="filterassetNo1"
+                                                          #assetNo1Ent="ngModel" placeholder="Asset No"
+                                                          value="assetNo1" id="assetNo1" [disabled]="isEdit"
+                                                          matTooltip="Enter Asset No." required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="location"> Location </label>
+                                                      <input class="form-control" type="text" name="location"
+                                                          [(ngModel)]="filterlocation1" placeholder="Location"
+                                                          value="location" [disabled]="isEdit" [id]="location"
+                                                          matTooltip="Enter Location" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="category">Category</label>
+                                                      <input class="form-control" type="text" name="category"
+                                                          [(ngModel)]="filtercategory1" placeholder="Category"
+                                                          value="category" [disabled]="isEdit" [id]="category"
+                                                          matTooltip="Enter Category" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="barcode"> Barcode </label>
+                                                      <input class="form-control" type="text" name="barcode"
+                                                          [(ngModel)]="filterbarcode1" placeholder="Barcode"
+                                                          value="barcode" [disabled]="isEdit" [id]="barcode"
+                                                          matTooltip="Enter Barcode" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="model"> Model </label>
+                                                      <input class="form-control" type="text" name="model"
+                                                          [(ngModel)]="filtermodel1" placeholder="Model" value="model"
+                                                          [disabled]="isEdit" [id]="model" matTooltip="Enter Model"
+                                                          required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="manufacturer"> Manufacturer </label>
+                                                      <input class="form-control" type="text" name="manufacturer"
+                                                          [(ngModel)]="filtermanufacturer1" placeholder="Manufacturer"
+                                                          value="manufacturer" [disabled]="isEdit" [id]="manufacturer"
+                                                          matTooltip="Enter Manufacturer" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="partNo"> Part No.</label>
+                                                      <input class="form-control" type="text" name="partNo"
+                                                          [(ngModel)]="filterpartNo1" placeholder="Part No"
+                                                          value="partNo" [disabled]="isEdit" [id]="partNo"
+                                                          matTooltip="Enter Part No" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="serialNo"> Serial No. </label>
+                                                      <input class="form-control" type="text" name="serialNo"
+                                                          [(ngModel)]="filterserialNo1" placeholder="Serial No"
+                                                          value="serialNo" [disabled]="isEdit" [id]="serialNo"
+                                                          matTooltip="Enter Serial No" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3" *ngIf="filterchangetype == 'CAC'">
+                                                  <div class="form-group">
+                                                      <label for="processor"> Processor </label>
+                                                      <input class="form-control" type="text" name="processor"
+                                                          [(ngModel)]="filterprocessor1" placeholder="Processor"
+                                                          value="processor" [disabled]="isEdit" [id]="processor"
+                                                          matTooltip="Enter Processor" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-xs-1" *ngIf="filterchangetype == 'CAC'">
+                                                  <div class="form-group">
+                                                      <label for="ram"> RAM</label>
+                                                      <input class="form-control" type="text" name="ram"
+                                                          [(ngModel)]="filterram1" placeholder="Ram" value="ram"
+                                                          [disabled]="isEdit" [id]="ram" matTooltip="Enter Ram"
+                                                          required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-xs-1" *ngIf="filterchangetype == 'CAC'">
+                                                  <div class="form-group">
+                                                      <label for="hdd"> HDD.</label>
+                                                      <input class="form-control" type="text" name="hdd"
+                                                          [(ngModel)]="filterhdd1" placeholder="HDD" value="hdd"
+                                                          [disabled]="isEdit" [id]="hdd" matTooltip="Enter Hdd"
+                                                          required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-2" *ngIf="filterchangetype == 'CAC'">
+                                                  <div class="form-group">
+                                                      <label for="ipAddress"> IP Address</label>
+                                                      <input class="form-control" type="text" name="ipAddress"
+                                                          [(ngModel)]="filteripAddress1" placeholder="Ip Address"
+                                                          value="ipAddress" [disabled]="isEdit" [id]="ipAddress"
+                                                          matTooltip="Enter Ip Address" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-2">
+                                                  <div class="form-group">
+                                                      <label for="gxp"> GxP Applicable </label>
+                                                      <input class="form-control" type="text" name="gxp"
+                                                          [(ngModel)]="filtergxp1" placeholder="GxP" value="gxp"
+                                                          [disabled]="isEdit" [id]="gxp" matTooltip="Enter GxP"
+                                                          required readonly="true" />
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="row">
+                                              <div class="col-sm-12">
+                                                  <div class="form-group">
+                                                      <label for="config"> Configurations. </label>
+                                                      <input class="form-control" type="text" name="config"
+                                                          [(ngModel)]="filterconfig1" placeholder="Config"
+                                                          value="config" [disabled]="isEdit" [id]="config"
+                                                          matTooltip="Enter Config" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="row">
+                                              <div class="col-sm-3" *ngIf="filterchangetype == 'CAS'">
+                                                  <div class="form-group">
+                                                      <label for="currstate"> Current Asset State</label>
+                                                      <input class="form-control" ngContrl="filtercurrstate"
+                                                          [(ngModel)]="filtercurrstate" value="currstate" type="text"
+                                                          id="currstate" name="currstate" [disabled]="isEdit"
+                                                          placeholder="AssetState" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3" *ngIf="filterchangetype == 'CUD'">
+                                                  <div class="form-group">
+                                                      <label for="ussType"> Usage Type</label>
+                                                      <input class="form-control" ngContrl="filterusageType"
+                                                          [(ngModel)]="filterusageType" value="ussType" type="text"
+                                                          id="ussType" name="ussType" [disabled]="isEdit"
+                                                          placeholder="Usage Type" required readonly="true" />
+                                                  </div>
+                                              </div>
+
+                                              <!--User & Field Staff-->
+                                              <div class="col-sm-3"
+                                                  *ngIf="filterusageType == 'User' || filterusageType == 'Field Staff'">
+                                                  <div class="form-group">
+                                                      <label for="empNo"> Employee Number</label>
+                                                      <input class="form-control" ngContrl="filterempNo"
+                                                          [(ngModel)]="filterempNo" value="empNo" type="text"
+                                                          id="empNo" name="empNo" [disabled]="isEdit"
+                                                          placeholder="Emp No" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3"
+                                                  *ngIf="filterusageType == 'User' || filterusageType == 'Field Staff'">
+                                                  <div class="form-group">
+                                                      <label for="empName"> Employee Name</label>
+                                                      <input class="form-control" ngContrl="filterempName"
+                                                          [(ngModel)]="filterempName" value="empName" type="text"
+                                                          id="empName" name="empName" [disabled]="isEdit"
+                                                          placeholder="Emp No" required readonly="true" />
+                                                  </div>
+                                              </div>
+
+                                              <!--Common-->
+                                              <div class="col-sm-3" *ngIf="filterusageType == 'Common'">
+                                                  <div class="form-group">
+                                                      <label for="comDept"> Common Department</label>
+                                                      <input class="form-control" ngContrl="filtercomDept"
+                                                          [(ngModel)]="filtercomDept" value="comDept" type="text"
+                                                          id="comDept" name="comDept" [disabled]="isEdit"
+                                                          placeholder="Common Departmnet" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3" *ngIf="filterusageType == 'Common'">
+                                                  <div class="form-group">
+                                                      <label for="comFloor"> Common Floor</label>
+                                                      <input class="form-control" ngContrl="filtercomFloor"
+                                                          [(ngModel)]="filtercomFloor" value="comFloor" type="text"
+                                                          id="comFloor" name="comFloor" [disabled]="isEdit"
+                                                          placeholder="Common Floor" required readonly="true" />
+                                                  </div>
+                                              </div>
+
+                                              <!--Instrument-->
+                                              <div class="col-sm-3" *ngIf="filterusageType == 'Instrument'">
+                                                  <div class="form-group">
+                                                      <label for="insName"> Instrument Name</label>
+                                                      <input class="form-control" ngContrl="filterinsName"
+                                                          [(ngModel)]="filterinsName" value="insName" type="text"
+                                                          id="insName" name="insName" [disabled]="isEdit"
+                                                          placeholder="Instrument Name" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3" *ngIf="filterusageType == 'Instrument'">
+                                                  <div class="form-group">
+                                                      <label for="insType"> Instrument Type</label>
+                                                      <input class="form-control" ngContrl="filterinsType"
+                                                          [(ngModel)]="filterinsType" value="insType" type="text"
+                                                          id="insType" name="insType" [disabled]="isEdit"
+                                                          placeholder="Instrument Type" required readonly="true" />
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div id="dateFilterPanel" *ngIf="filterchangetype == 'CAD'">
+                              <div class="text-left">
+                                  <h2><b>Change in Asset Details</b></h2>
+                              </div>
+                              <div class="col-sm-12">
+                                  <div class="box">
+                                      <div class="card-body"
+                                          style="border: rgb(0, 0, 0); box-shadow: rgb(255, 0, 0);">
+                                          <form #changeForm10="ngForm">
+                                              <div class="row">
+                                                  <div class="col-sm-3">
+                                                      <div class="form-group">
+                                                          <label for="assetNo1"> Asset No <span
+                                                                  style="color:red">*</span></label>
+                                                          <input class="form-control suggestion" type="text"
+                                                              name="assetNo1" [(ngModel)]="filterassetNo"
+                                                              #assetNo1Ent="ngModel" placeholder="Asset No"
+                                                              value="assetNo1" id="assetNo1" [disabled]="isEdit"
+                                                              matTooltip="Enter Asset No." required />
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-3">
+                                                      <div class="form-group">
+                                                          <label for="hostname1"> Host Name <span
+                                                                  style="color:red">*</span></label>
+                                                          <input class="form-control suggestion" type="text"
+                                                              name="hostname1" [(ngModel)]="filterhostName1"
+                                                              #hostname1Ent="ngModel" placeholder="Host Name"
+                                                              value="hostname1" id="hostname1" [disabled]="isEdit"
+                                                              matTooltip="Enter Host Name" required />
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-3">
+                                                      <div class="form-group">
+                                                          <label for="barcode"> Barcode </label>
+                                                          <input class="form-control" type="text" name="barcode"
+                                                              [(ngModel)]="filterbarcode1" placeholder="Barcode"
+                                                              value="barcode" [disabled]="isEdit" [id]="barcode"
+                                                              matTooltip="Enter Barcode" readonly />
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-3">
+                                                      <div class="form-group">
+                                                          <label for="model"> Model </label>
+                                                          <input class="form-control" type="text" name="model"
+                                                              [(ngModel)]="filtermodel1" placeholder="Model"
+                                                              value="model" [disabled]="isEdit" [id]="model"
+                                                              matTooltip="Enter Model" />
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-3">
+                                                      <div class="form-group">
+                                                          <label for="manufacturer"> Manufacturer </label>
+                                                          <input class="form-control" type="text" name="manufacturer"
+                                                              [(ngModel)]="filtermanufacturer1"
+                                                              placeholder="Manufacturer" value="manufacturer"
+                                                              [disabled]="isEdit" [id]="manufacturer"
+                                                              matTooltip="Enter Manufacturer" />
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-3">
+                                                      <div class="form-group">
+                                                          <label for="partNo"> Part No.</label>
+                                                          <input class="form-control" type="text" name="partNo"
+                                                              [(ngModel)]="filterpartNo1" placeholder="Part No"
+                                                              value="partNo" [disabled]="isEdit" [id]="partNo"
+                                                              matTooltip="Enter Part No" />
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-3">
+                                                      <div class="form-group">
+                                                          <label for="serialNo"> Serial No. </label>
+                                                          <input class="form-control" type="text" name="serialNo"
+                                                              [(ngModel)]="filterserialNo1" placeholder="Serial No"
+                                                              value="serialNo" [disabled]="isEdit" [id]="serialNo"
+                                                              matTooltip="Enter Serial No" />
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-sm-2">
+                                                      <div class="form-group">
+                                                          <label for="gxp"> GxP Applicable </label>
+                                                          <input class="form-control" type="text" name="gxp"
+                                                              [(ngModel)]="filtergxp1" placeholder="GxP" value="gxp"
+                                                              [disabled]="isEdit" [id]="gxp" matTooltip="Enter GxP"
+                                                              readonly />
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <div class="row">
+                                                  <div class="col-sm-8">
+                                                      <div class="form-group">
+                                                          <label for="config"> Configurations. </label>
+                                                          <input class="form-control" type="text" name="config"
+                                                              [(ngModel)]="filterconfig1" placeholder="Config"
+                                                              value="config" [disabled]="isEdit" [id]="config"
+                                                              matTooltip="Enter Config" required />
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <br>
+                                              <div class="text-center">
+                                                  <button type="button" class="btn btn-primary" (click)="onUpdate10()"
+                                                      [disabled]="!changeForm10.valid">Update</button>
+                                                  <label>&nbsp;</label>
+                                                  <button class="btn btn-primary btn-primary" (click)="clearFilter();"
+                                                      matTooltip="click to reset">Clear</button>
+                                                  &nbsp;&nbsp;
+                                              </div>
+                                          </form>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div id="dateFilterPanel" *ngIf="filterchangetype == 'CUD'">
+                              <div class="text-left">
+                                  <h2><b>Change in Usage Details</b></h2>
+                              </div>
+                              <div class="col-sm-12">
+                                  <div class="box">
+                                      <div class="card-body"
+                                          style="border: rgb(0, 0, 0); box-shadow: rgb(255, 0, 0);">
+                                          <form #changeForm15="ngForm">
+                                              <div class="row">
+                                                  <div class="col-sm-3">
+                                                      <div class="form-group"
+                                                          [ngClass]="(!usageTypeEnt.valid && usageTypeEnt.touched)?'has-error':''">
+                                                          <label for="usageType">Usage Type <span
+                                                                  style="color:red">*</span></label>
+                                                          <select [(ngModel)]="filterusageType1" class="form-control"
+                                                              id="usageType" name="usageType"
+                                                              ngControl="filterusageType1" #usageTypeEnt="ngModel"
+                                                              [disabled]="isEdit" matTooltip="Select Usage Type"
+                                                              required>
+                                                              <option [ngValue]="undefined" disabled>--Select an
+                                                                  Option--
+                                                              </option>
+                                                              <option>User</option>
+                                                              <option>Common</option>
+                                                              <option>Instrument</option>
+                                                              <option>Field Staff</option>
+                                                          </select>
+                                                          <span class="help-block"
+                                                              *ngIf="!usageTypeEnt.valid && usageTypeEnt.touched">Please
+                                                              Select Usage Type</span>
+                                                      </div>
+                                                  </div>
+                                              </div>
+
+                                              <div id="dateFilterPanel"
+                                                  *ngIf="filterusageType1 == 'User' || filterusageType1 == 'Field Staff'">
+                                                  <div class="row">
+                                                      <div class="col-sm-3">
+                                                          <div class="form-group"
+                                                              [ngClass]="(!empNoEnt.valid && empNoEnt.touched)?'has-error':''">
+                                                              <label for="empNo1"> Employee No. <span
+                                                                      style="color:red">*</span>
+                                                              </label>
+                                                              <input class="form-control suggestion" type="text"
+                                                                  name="empNo1" [(ngModel)]="filterempNo1"
+                                                                  #empNoEnt="ngModel" placeholder="Emp No"
+                                                                  ngControl="filterempNo1" maxlength="10"
+                                                                  (keyup)="setDet(filterempNo1)" id="empNo1"
+                                                                  [disabled]="isEdit" matTooltip="Enter Employee No."
+                                                                  required />
+                                                              <span class="help-block"
+                                                                  *ngIf="!empNoEnt.valid && empNoEnt.touched">Please
+                                                                  Enter Emp
+                                                                  No.</span>
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-sm-3">
+                                                          <div class="form-group">
+                                                              <label for="empName1"> Employee Name </label>
+                                                              <input class="form-control" type="text" name="empName1"
+                                                                  [(ngModel)]="filterempAd1" placeholder="Emp Name"
+                                                                  #empNameEnt="ngModel" ngControl="filterempAd1"
+                                                                  [disabled]="isEdit" [id]="empName1"
+                                                                  matTooltip="Enter Employee Name" readonly="true" />
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-sm-3">
+                                                          <div class="form-group">
+                                                              <label for="desg"> Designation </label>
+                                                              <input class="form-control" type="text" name="desg"
+                                                                  [(ngModel)]="filterdesg" placeholder="Designation"
+                                                                  value="desg" [disabled]="isEdit" [id]="desg"
+                                                                  #desgEnt="ngModel"
+                                                                  matTooltip="Enter Employee Designation"
+                                                                  readonly="true" />
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-sm-3">
+                                                          <div class="form-group">
+                                                              <label for="dept"> Department <span
+                                                                      style="color:red">*</span></label>
+                                                              <input class="form-control" type="text" name="dept"
+                                                                  [(ngModel)]="filterdept" placeholder="Department"
+                                                                  value="dept" [disabled]="isEdit" [id]="dept"
+                                                                  #deptEnt="ngModel"
+                                                                  matTooltip="Enter Employee Department"
+                                                                  readonly="true" />
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+
+                                              <div id="dateFilterPanel" *ngIf="filterusageType1 == 'Common'">
+                                                  <div class="row">
+                                                      <div class="col-sm-4">
+                                                          <div class="form-group">
+                                                              <label for="department"> Department <span
+                                                                      style="color:red">*</span></label>
+                                                              <select [(ngModel)]="filtercomDept1"
+                                                                  class="form-control" id="department"
+                                                                  name="department" ngControl="filtercomDept1"
+                                                                  #department1Ent="ngModel"
+                                                                  matTooltip="Select Department">
+                                                                  <option [ngValue]="undefined" disabled>--Select an
+                                                                      Option--
+                                                                  </option>
+                                                                  <option *ngFor="let Dept of departmentList"
+                                                                      value={{Dept.id}}>
+                                                                      {{Dept.name}}
+                                                                  </option>
+                                                              </select>
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-sm-4">
+                                                          <div class="form-group">
+                                                              <label for="floor"> Floor <span
+                                                                      style="color:red">*</span></label>
+                                                              <input [(ngModel)]="filtercomFloor1"
+                                                                  class="form-control" id="floor"
+                                                                  placeholder="Max of 20 chars." name="floor"
+                                                                  ngControl="filtercomFloor1" #floor1Ent="ngModel">
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+
+                                              <div id="dateFilterPanel" *ngIf="filterusageType1 == 'Instrument'">
+                                                  <div class="row">
+                                                      <div class="col-sm-4">
+                                                          <div class="form-group">
+                                                              <label for="instName"> Inst. Name <span
+                                                                      style="color:red">*</span></label>
+                                                              <input [(ngModel)]="filterinstName1"
+                                                                  class="form-control" id="instName"
+                                                                  placeholder="Max of 30 chars." name="floor"
+                                                                  ngControl="filterinstName1" #instName1Ent="ngModel">
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-sm-4">
+                                                          <div class="form-group">
+                                                              <label for="instType"> Inst. Type <span
+                                                                      style="color:red">*</span></label>
+                                                              <input [(ngModel)]="filterinstType1"
+                                                                  class="form-control" id="instType"
+                                                                  placeholder="Max of 20 chars." name="instType"
+                                                                  ngControl="filterinstType1" #instType1Ent="ngModel">
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-sm-4">
+                                                          <div class="form-group">
+                                                              <label for="version"> Version </label>
+                                                              <input [(ngModel)]="filterinstVer1" class="form-control"
+                                                                  id="version" placeholder="Max of 20 chars."
+                                                                  name="version" ngControl="filterinstVer1"
+                                                                  #version1Ent="ngModel">
+                                                          </div>
+                                                      </div>
+                                                      <div class="col-sm-4">
+                                                          <div class="form-group">
+                                                              <label for="software"> Software </label>
+                                                              <input [(ngModel)]="filterinstSoft1"
+                                                                  class="form-control" id="software"
+                                                                  placeholder="Max of 20 chars." name="software"
+                                                                  ngControl="filterinstSoft1" #software1Ent="ngModel">
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <br>
+                                              &nbsp;
+                                              <div class="text-center">
+                                                  <button type="button" class="btn btn-primary"
+                                                      (click)="onUpdate15()">
+                                                      Update</button>
+                                                  <label>&nbsp;</label>
+                                                  &nbsp;
+                                                  <button class="btn btn-primary btn-primary" (click)="clearFilter();"
+                                                      matTooltip="click to reset">Clear</button>
+                                                  &nbsp;&nbsp;
+                                              </div>
+                                          </form>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div id="dateFilterPanel" *ngIf="filterchangetype == 'CAS' ">
+                              <div class="text-left">
+                                  <h2><b>Change in Asset Status</b></h2>
+                              </div>
+                              <div class="col-sm-12">
+                                  <div class="card-body" style="border: black; box-shadow: gray;">
+                                      <form #changeForm="ngForm">
+                                          <div class="row">
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="filterstatus">Asset State<span
+                                                              style="color:red">*</span></label>
+                                                      <select [(ngModel)]="filterstatus" class="form-control"
+                                                          id="filterstatus" name="filterstatus"
+                                                          ngControl="filterstatus" #filterstatusEnt="ngModel"
+                                                          matTooltip="Select type" required>
+                                                          <option [ngValue]="null" disabled>--Select an Option--
+                                                          </option>
+                                                          <option *ngFor="let status of statuslist"
+                                                              value={{status.name}}>
+                                                              {{status.name}}
+                                                          </option>
+                                                      </select>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="row">
+                                              <div class="col-sm-10">
+                                                  <div class="form-group">
+                                                      <label for="filternature"> Nature of Activities
+                                                          Performed/Functioned
+                                                          <span style="color:red">*</span></label>
+                                                      <textarea maxlength="200" placeholder="Max of 200 chars."
+                                                          [(ngModel)]="filternature" class="form-control"
+                                                          id="filternature" name="filternature"
+                                                          ngControl="filternature" #filternatureEnt="ngModel"
+                                                          onkeyup="this.value = this.value.replace(/'/g,'`')"
+                                                          required></textarea>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <br>
+                                          <div class="text-center">
+                                              <button type="button" class="btn btn-primary" (click)="onUpdate1()"
+                                                  [disabled]="!changeForm.valid">Update</button>
+                                              <label>&nbsp;</label>
+                                              <button class="btn btn-primary btn-primary" (click)="clearFilter();"
+                                                  matTooltip="click to reset">Clear</button>
+                                              &nbsp;&nbsp;
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div id="dateFilterPanel" *ngIf="filterchangetype == 'CAC' ">
+                              <div class="text-left">
+                                  <h2><b>Change in Asset Configurations</b></h2>
+                              </div>
+                              <div id="dateFilterPanel">
+                                  <div class="col-sm-12">
+                                      <div class="card-body" style="border: black; box-shadow: grey;">
+                                          <form #changeForm2="ngForm">
+                                              <div class="row">
+                                                  <div class="col-sm-3">
+                                                      <div class="form-group">
+                                                          <label for="sizechange">Change Type <span
+                                                                  style="color:red">*</span></label>
+                                                          <select [(ngModel)]="filtersizechange" class="form-control"
+                                                              id="sizechange" name="sizechange"
+                                                              (change)=OnConfigType(filtersizechange)
+                                                              ngControl="filtersizechange" #sizechangeEnt="ngModel"
+                                                              [disabled]="isEdit" matTooltip="Select Change Type"
+                                                              required>
+                                                              <option [ngValue]="undefined" disabled>--Select an
+                                                                  Option--</option>
+                                                              <option>Change in RAM</option>
+                                                              <option>Change in HDD</option>
+                                                          </select>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-12" *ngIf="filtersizechange == 'Change in RAM'">
+                                                  <div class="card-body" style="border: black; box-shadow: gray;">
+                                                      <div class="row">
+                                                          <div class="col-xs-1">
+                                                              <div class="form-group">
+                                                                  <label for="ram"> RAM <span
+                                                                          style="color:red">*</span></label>
+                                                                  <input [(ngModel)]="filterram" class="form-control"
+                                                                      id="ram" placeholder="No." name="ram"
+                                                                      ngControl="filterram" #ramEnt="ngModel">
+                                                              </div>
+                                                          </div>
+                                                          <div class="col-xs-2">
+                                                              <label for="size"> Size <span
+                                                                      style="color:red">*</span></label>
+                                                              <select [(ngModel)]="filtersize" class="form-control"
+                                                                  id="size" name="size" ngControl="filtersize"
+                                                                  #sizeEnt="ngModel" [disabled]="isEdit"
+                                                                  matTooltip="Select Size" required>
+                                                                  <option [ngValue]="undefined" disabled>--Select--
+                                                                  </option>
+                                                                  <option *ngFor="let mat of sizeList"
+                                                                      value={{mat.storId}}>
+                                                                      {{mat.storTxt}}</option>
+                                                              </select>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-12" *ngIf="filtersizechange == 'Change in HDD'">
+                                                  <div class="card-body" style="border: black; box-shadow: gray;">
+                                                      <div class="row">
+                                                          <div class="col-xs-1">
+                                                              <div class="form-group">
+                                                                  <label for="hdd"> HDD. <span
+                                                                          style="color:red">*</span></label>
+                                                                  <input [(ngModel)]="filterhdd" class="form-control"
+                                                                      id="hdd" placeholder="No." name="hdd"
+                                                                      ngControl="filterhdd" #hddEnt="ngModel">
+                                                              </div>
+                                                          </div>
+                                                          <div class="col-xs-2">
+                                                              <label for="size1"> Size <span
+                                                                      style="color:red">*</span></label>
+                                                              <select [(ngModel)]="filtersize1" class="form-control"
+                                                                  id="size1" name="size1" ngControl="filtersize1"
+                                                                  #sizeEnt="ngModel" [disabled]="isEdit"
+                                                                  matTooltip="Select Size" required>
+                                                                  <option [ngValue]="undefined" disabled>
+                                                                      --Select--
+                                                                  </option>
+                                                                  <option *ngFor="let mat of sizeList"
+                                                                      value={{mat.storId}}>
+                                                                      {{mat.storTxt}}</option>
+                                                              </select>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-12" *ngIf="filtersizechange != null">
+                                                  <div class="card-body" style="border: black; box-shadow: gray;">
+                                                      <div class="row">
+                                                          <div class="col-sm-12">
+                                                              <div class="form-group">
+                                                                  <label for="config"> Configurations. <span
+                                                                          style="color:red">*</span></label>
+                                                                  <textarea maxlength="200" [(ngModel)]="filterconfig"
+                                                                      placeholder="Max of 200 chars."
+                                                                      class="form-control" id="config" name="config"
+                                                                      ngControl="filterconfig" #configEnt="ngModel"
+                                                                      onkeyup="this.value = this.value.replace(/'/g,'`')"></textarea>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <br>
+                                              <div class="text-center" *ngIf="filtersizechange == 'Change in RAM'">
+                                                  <button type="button" class="btn btn-primary" (click)="onUpdate2()"
+                                                      [disabled]="!changeForm2.valid || (filterram1 == filterram) ">Update</button>
+                                                  <label>&nbsp;</label>
+                                                  <button class="btn btn-primary btn-primary" (click)="clearFilter();"
+                                                      matTooltip="click to reset">Clear</button>
+                                                  &nbsp;&nbsp;
+                                              </div>
+                                              <div class="text-center" *ngIf="filtersizechange == 'Change in HDD'">
+                                                  <button type="button" class="btn btn-primary" (click)="onUpdate7()"
+                                                      [disabled]="!changeForm2.valid || (filterhdd1 == filterhdd) ">Update</button>
+                                                  <label>&nbsp;</label>
+                                                  <button class="btn btn-primary btn-primary" (click)="clearFilter();"
+                                                      matTooltip="click to reset">Clear</button>
+                                                  &nbsp;&nbsp;
+                                              </div>
+                                          </form>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div id="dateFilterPanel" *ngIf="filterchangetype == 'CAP' ">
+                              <div class="text-left">
+                                  <h2><b>Change in Asset Purchase Details</b></h2>
+                              </div>
+                              <div class="col-sm-12">
+                                  <div class="card-body" style="border: black; box-shadow: gray;">
+                                      <form #changeForm4="ngForm">
+                                          <div class="row">
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="poNumber"> PO Number <span
+                                                              style="color:red">*</span></label>
+                                                      <input class="form-control" type="text" name="poNumber"
+                                                          [(ngModel)]="filterpoNumber" placeholder="PO No"
+                                                          ngControl="filterpoNumber" #filterpoNumberEnt="ngModel"
+                                                          [disabled]="isEdit" [id]="poNumber"
+                                                          matTooltip="Enter PO Number" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="poDate">PO Date</label>
+                                                      <input [matTooltipPosition]="'below'"
+                                                          matTooltip="Click to change po date" [owlDateTime]="dt55"
+                                                          [owlDateTimeTrigger]="dt55" name="poDate"
+                                                          class="form-control" [(ngModel)]="filterpoDate"
+                                                          [disabled]="isEdit" #filterpoDateEnt="ngModel"
+                                                          placeholder="DD-MM-YYYY" readonly="true">
+                                                      <owl-date-time [pickerType]="'calendar'" #dt55
+                                                          style="width: 250px;">
+                                                      </owl-date-time>
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="invNumber"> Invoice Number <span
+                                                              style="color:red">*</span></label>
+                                                      <input class="form-control" type="text" name="invNumber"
+                                                          [(ngModel)]="filterinvNumber" placeholder="Invoice Number"
+                                                          ngControl="filterinvNumber" #filterinvNumberEnt="ngModel"
+                                                          [disabled]="isEdit" [id]="invNumber"
+                                                          matTooltip="Enter PO Number" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="invDate">Invoice Date</label>
+                                                      <input [matTooltipPosition]="'below'"
+                                                          matTooltip="Click to change Invoice date"
+                                                          [owlDateTime]="dt77" [owlDateTimeTrigger]="dt77"
+                                                          name="invDate" class="form-control"
+                                                          [(ngModel)]="filterinvDate" [disabled]="isEdit"
+                                                          #filterinvDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                          readonly="true">
+                                                      <owl-date-time [pickerType]="'calendar'" #dt77
+                                                          style="width: 250px;">
+                                                      </owl-date-time>
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="suppName"> Supplier Name <span
+                                                              style="color:red">*</span></label>
+                                                      <input class="form-control" type="text" name="suppName"
+                                                          [(ngModel)]="filtersuppName" placeholder="Supplier Name"
+                                                          ngControl="filtersuppName" #filtersuppNameEnt="ngModel"
+                                                          [disabled]="isEdit" [id]="suppName"
+                                                          matTooltip="Enter SuppName" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-3">
+                                                  <div class="form-group">
+                                                      <label for="val"> Value <span style="color:red">*</span></label>
+                                                      <input class="form-control" type="text" name="val"
+                                                          [(ngModel)]="filterval" placeholder="Value"
+                                                          ngControl="filterval" #filtervalEnt="ngModel"
+                                                          [disabled]="isEdit" [id]="val" matTooltip="Enter val" />
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-4">
+                                                  <div class="form-group">
+                                                      <label for="warDate">Warranty Expiration Date</label>
+                                                      <input [matTooltipPosition]="'below'"
+                                                          matTooltip="Click to change warranty expiration date"
+                                                          [owlDateTime]="dt18" [owlDateTimeTrigger]="dt18"
+                                                          name="warDate" class="form-control"
+                                                          [(ngModel)]="filterwarDate" [disabled]="isEdit"
+                                                          #filterwarDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                          readonly="true">
+                                                      <owl-date-time [pickerType]="'calendar'" #dt18
+                                                          style="width: 250px;">
+                                                      </owl-date-time>
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-4">
+                                                  <div class="form-group">
+                                                      <label for="insDate">Insallation Date</label>
+                                                      <input [matTooltipPosition]="'below'"
+                                                          matTooltip="Click to change install date"
+                                                          [owlDateTime]="dt19" [owlDateTimeTrigger]="dt19"
+                                                          name="insDate" class="form-control"
+                                                          [(ngModel)]="filterinsDate" [disabled]="isEdit"
+                                                          #filterinsDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                          readonly="true">
+                                                      <owl-date-time [pickerType]="'calendar'" #dt19
+                                                          style="width: 250px;">
+                                                      </owl-date-time>
+                                                  </div>
+                                              </div>
+                                          </div>
+
+                                          <div class="row">
+                                              <div class="col-sm-4">
+                                                  <div class="form-group">
+                                                      <label for="issDate"> Date of Issue</label>
+                                                      <input [matTooltipPosition]="'below'"
+                                                          matTooltip="Click to change issue date" [owlDateTime]="dt20"
+                                                          [owlDateTimeTrigger]="dt20" name="issDate"
+                                                          class="form-control" [(ngModel)]="filterissDate"
+                                                          [disabled]="isEdit" #filterissDateEnt="ngModel"
+                                                          placeholder="DD-MM-YYYY" readonly="true">
+                                                      <owl-date-time [pickerType]="'calendar'" #dt20
+                                                          style="width: 250px;">
+                                                      </owl-date-time>
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-4">
+                                                  <div class="form-group">
+                                                      <label for="srevDate">System Revalidation Date</label>
+                                                      <input [matTooltipPosition]="'below'"
+                                                          matTooltip="Click to change sys. revalidation date"
+                                                          [owlDateTime]="dt21" [owlDateTimeTrigger]="dt21"
+                                                          name="srevDate" class="form-control"
+                                                          [(ngModel)]="filtersrevDate" [disabled]="isEdit"
+                                                          #filtersrevDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                          readonly="true">
+                                                      <owl-date-time [pickerType]="'calendar'" #dt21
+                                                          style="width: 250px;">
+                                                      </owl-date-time>
+                                                  </div>
+                                              </div>
+                                              <div class="col-sm-4">
+                                                  <div class="form-group">
+                                                      <label for="prevDate">Preventive Maintenance Date
+
+                                                      </label>
+                                                      <input [matTooltipPosition]="'below'"
+                                                          matTooltip="Click to change prev. maintenance date"
+                                                          [owlDateTime]="dt22" [owlDateTimeTrigger]="dt22"
+                                                          name="prevDate" class="form-control"
+                                                          [(ngModel)]="filterprevDate" [disabled]="isEdit"
+                                                          #filterprevDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                          readonly="true">
+                                                      <owl-date-time [pickerType]="'calendar'" #dt22
+                                                          style="width: 250px;">
+                                                      </owl-date-time>
+                                                  </div>
+                                              </div>
+                                          </div>
+
+                                          <div class="row">
+                                              <div class="col-sm-12">
+                                                  <div class="form-group">
+                                                      <label for="rem"> Remarks <span
+                                                              style="color:red">*</span></label>
+                                                      <textarea maxlength="200" [(ngModel)]="filterrem"
+                                                          placeholder="Max of 200 chars." class="form-control"
+                                                          id="rem" name="rem" ngControl="filterrem" #remEnt="ngModel"
+                                                          required
+                                                          onkeyup="this.value = this.value.replace(/'/g,'`')"></textarea>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <br>
+                                          <div class="text-center">
+                                              <button type="button" class="btn btn-primary" (click)="onUpdate4()"
+                                                  [disabled]="!changeForm4.valid">Update</button>
+                                              <label>&nbsp;</label>
+                                              <button class="btn btn-primary" (click)="clearFilter();"
+                                                  matTooltip="click to reset">Clear</button>
+                                              &nbsp;&nbsp;
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>

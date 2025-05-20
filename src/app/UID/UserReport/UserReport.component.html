@@ -1,0 +1,348 @@
+<section class="content-header">
+    <h1 class="display-1">
+        UserId Management Report
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">UserId Management Report</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="box">
+        <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+            <div class="col-xs-6">
+                <h3 class="box-title">Filters</h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label for="fltrloc">Plant</label>
+                            <select [(ngModel)]="filterlocation" class="form-control" id="fltrloc" name="fltrloc"
+                                #plantEnt="ngModel" (change)="getsoftwaresBasedOnplant()" matTooltip="Select location">
+                                <option [ngValue]=null selected>All</option>
+                                <option *ngFor="let mat of plantAssignedList" value={{mat.fkPlantId}}>
+                                    {{mat.code}}-{{mat.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label for="fltrsoftwareType">Software Type</label>
+                            <select [(ngModel)]="filtersoftwareType" class="form-control" id="fltrsoftwareType"
+                                name="fltrsoftwareType" (change)="getsoftwaresBasedOnplant()"
+                                ngControl="filtersoftwareType" #fltrsoftwareEnt="ngModel" matTooltip="Select software">
+                                <option [ngValue]="null" selected>All</option>
+                                <option>Enterprise</option>
+                                <option>Plant Level</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label for="fltrsoftware">Software</label>
+                            <select [(ngModel)]="filtersoftware" class="form-control" id="fltrsoftware"
+                                name="fltrsoftware" ngControl="filtersoftware" #fltrsoftwareEnt="ngModel"
+                                matTooltip="Select software">
+                                <option [ngValue]="null" selected>All</option>
+                                <option *ngFor="let loc of softwareList" value={{loc.id}}>{{loc.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group ">
+                            <label for="empId">Employee Id <span style="color: red;">*</span> </label>
+                            <input [(ngModel)]="filterEmployee" class="form-control" id="empId"
+                                placeholder="Employee ID" name="empId" ngControl="filterEmployee" #empIdEnt="ngModel"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-md-3">
+                        <div class="form-group ">
+                            <label for="fltrtype"> Request Type</label>
+                            <select [(ngModel)]="filterType" class="form-control" id="fltrtype" name="fltrtype"
+                                ngControl="filterType" #fltrtypeEnt="ngModel" matTooltip="Select Type">
+                                <option [ngValue]="null" selected>All</option>
+                                <option>Creation</option>
+                                <option>Modification</option>
+                                <option>Activation/Inactivation</option>
+                                <option>Unlocking</option>
+                                <option>Password Reset</option>
+                                <option>Discontinuation</option>
+                            </select>
+
+                        </div>
+                    </div> -->
+
+                    <!-- <div class="col-md-3">
+                        <div class="form-group ">
+                            <label for="fltrstatus">Status</label>
+                            <select [(ngModel)]="filterstatus" class="form-control" id="fltrstatus" name="fltrstatus"
+                                ngControl="filterstatus" #fltrstatusEnt="ngModel" matTooltip="Select Status">
+                                <option [ngValue]="null" disabled>--Select an Option--</option>
+                                <option *ngFor="let status of statuslist" value={{status.name}}>{{status.name}}</option>
+                            </select>
+                        </div>
+                    </div> -->
+
+                    <div class="col-md-2">
+                        <label>&nbsp;</label>
+                        <div class="form-group ">
+                            <button class="btn btn-primary btn-sm" (click)="getlist();"
+                                matTooltip="click to go">Go</button>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+                                matTooltip="click to reset">Clear</button>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+        &nbsp; &nbsp; &nbsp;
+
+        <!-- /.box-header -->
+        &nbsp; &nbsp; &nbsp;
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <a data-toggle="collapse" href="#divOfferDetails">Employee Details</a>
+                        </h3>
+                    </div>
+                    <div class="panel-body form-horizontal">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="plant">Plant</label>
+                                    <div class="col-md-8"><input name="plant" id="plant" placeholder="Plant"
+                                            class="form-control" value="{{userIdRequest.plant}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="requesterId">Employee Id</label>
+                                    <div class="col-md-8"><input name="requesterId" id="requesterId"
+                                            placeholder="Employee Id" class="form-control"
+                                            value="{{userIdRequest.employeeId}}" readonly required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="firstName">First Name</label>
+                                    <div class="col-md-8"><input name="firstName" id="firstName"
+                                            placeholder="Employee Name" class="form-control"
+                                            value="{{userIdRequest.firstName}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="lastName">Last Name</label>
+                                    <div class="col-md-8"><input name="lastName" id="lastName"
+                                            placeholder="Employee Name" class="form-control"
+                                            value="{{userIdRequest.lastName}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="date">Paygroup</label>
+                                    <div class="col-md-8"><input name="date" id="date" placeholder="Pay Group"
+                                            class="form-control" value="{{userIdRequest.payGroup}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="date">Category</label>
+                                    <div class="col-md-8"><input name="date" id="date" placeholder="Category"
+                                            class="form-control" value="{{userIdRequest.catogery}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="department">Department</label>
+                                    <div class="col-md-8"><input name="department" id="department"
+                                            placeholder="Department" class="form-control"
+                                            value="{{userIdRequest.department}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="designation">Designation</label>
+                                    <div class="col-md-8"><input name="designation" id="designation"
+                                            placeholder="Designation" class="form-control"
+                                            value="{{userIdRequest.designation}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4"
+                                *ngIf="userIdRequest.sid !=14 && userIdRequest.sid !=4 && userIdRequest.sid !=3">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="reportingManager">Reporting To</label>
+                                    <div class="col-md-8"><input name="reportingManager" id="reportingManager"
+                                            placeholder="reportingManager" class="form-control"
+                                            value="{{userIdRequest.reportingManager}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group ">
+                                    <label class="col-md-4" for="joiningDate">Joining Date</label>
+                                    <div class="col-md-8"><input name="joiningDate" id="joiningDate"
+                                            placeholder="joiningDate" class="form-control"
+                                            value="{{userIdRequest.joiningDate| date:'dd/MM/yyyy'}}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <div class="pull-right actionButtons">
+                        <button type="button" class="btn btn-sm btn-primary" (click)="exportData('Excel')">Export to
+                            Excel</button>
+                        <button type="button" class="btn btn-sm btn-primary" (click)="exportData('PDF')">Export to
+                            PDF</button>
+                    </div>
+                </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            <div class="col-md-12 table-responsive">
+                <table class="table table-hover table-striped table-bordered" id="data">
+                    <thead style="background-color: #68a7d2;color:white;">
+                        <tr>
+                            <th style="background-color: #68a7d2;color:white;">Request No</th>
+                            <th style="background-color: #68a7d2;color:white;">Requested On</th>
+                            <th style="background-color: #68a7d2;color:white;">Requested By</th>
+                            <th style="background-color: #68a7d2;color:white;">Software Type</th>
+                            <th style="background-color: #68a7d2;color:white;">Software</th>
+                            <th style="background-color: #68a7d2;color:white;">Request Type</th>
+                            <th style="background-color: #68a7d2;color:white;">Plant</th>
+                            <th style="background-color: #68a7d2;color:white;">User ID</th>
+                            <th style="background-color: #68a7d2;color:white;">Status</th>
+                            <th style="background-color: #68a7d2;color:white;">Created On</th>
+                            <th style="background-color: #68a7d2;color:white;">Created By</th>
+                            <th style="background-color: #68a7d2;color:white;">Disabled On</th>
+                            <th style="background-color: #68a7d2;color:white;">Disabled By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of userIdRequestlist; let i = index">
+                            <td>{{item.requestNo}}</td>
+                            <!-- <td>{{item.requestNo}}</td> -->
+                            <td>{{item.requestDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                            <td>{{item.requesterId}}</td>
+                            <td>{{item.softwareType}}</td>
+                            <td>{{item.softwarename}}</td>
+                            <td>{{item.requestType}}</td>
+                            <td>{{item.locationName}}</td>
+                            <td>{{item.allottedUserId}}</td>
+                            <td>{{item.isActive==false?'InActive':'Active'}}</td>
+                            <td>{{item.requestType !='Creation'?null : [item.modifiedDate | date:'dd/MM/yyyy HH:mm']}}</td>
+                            <td>{{item.requestType =='Creation'?item.lastApprover:null}}</td>                            
+                            <td>{{item.requestType !='Creation'?[item.modifiedDate | date:'dd/MM/yyyy HH:mm']:null}}</td>
+                            <td>{{item.requestType !='Creation'?item.lastApprover:null}}</td>  
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <div class="overlay text-center h3" *ngIf="isLoading">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+                <ul class="pagination" *ngIf="userIdRequestlist.length>0">
+                    <li>
+                        <a (click)="gotoPage(pageNo)">
+                            Showing <b>{{((pageNo-1)*pageSize)+1}}</b> -
+                            <b>{{(pageNo*pageSize)>totalCount?totalCount:pageNo*pageSize}}</b> of <b>{{totalCount}}</b>
+                            records
+                        </a>
+                    </li>
+                    <li><a *ngIf="pageNo>1" (click)="gotoPage(1)">First</a></li>
+                    <li><a *ngIf="pageNo>1" (click)="gotoPage(pageNo-1)">Previous</a></li>
+                    <li><a *ngIf="pageNo>2" (click)="gotoPage(pageNo-1)">{{pageNo-2}}</a></li>
+                    <li><a *ngIf="pageNo>1" (click)="gotoPage(pageNo-1)">{{pageNo-1}}</a></li>
+                    <li class="active"><a (click)="gotoPage(pageNo)">{{pageNo}}</a></li>
+                    <li><a *ngIf="totalPages>pageNo" (click)="gotoPage(pageNo+1)">{{pageNo+1}}</a></li>
+                    <li><a *ngIf="totalPages>pageNo+1" (click)="gotoPage(pageNo+2)">{{pageNo+2}}</a></li>
+                    <li><a *ngIf="totalPages>pageNo" (click)="gotoPage(pageNo+1)">Next</a></li>
+                    <li><a *ngIf="totalPages>pageNo" (click)="gotoPage(totalPages)">Last</a></li>
+                    <li><a (click)="gotoPage(pageNo)">Page <b>{{pageNo}}</b> of <b>{{totalPages}}</b></a></li>
+                    <li><a>Page Size
+                            <select id="ddlPageSize" [(ngModel)]="pageSize" (change)="pageSizeChange()">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+</section>
+
+
+<div hidden id="pdf">
+
+    <table class="table table-hover table-striped table-bordered" id="data">
+        <thead>
+            <tr>
+                <th>Request No</th>
+                <th>Requested Date</th>
+                <th>Requested By</th>
+                <th>Software Type</th>
+                <th>Software</th>
+                <th>Request Type</th>
+                <th>Plant</th>
+                <th>User ID</th>
+                <th>Status</th>
+                <th>Created On</th>
+                <th>Created By</th>
+                <th>Disabled On</th>
+                <th>Disabled By</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of userIdRequestlist1; let i = index">
+                <td>{{item.requestNo}}</td>
+                <!-- <td>{{item.requestNo}}</td> -->
+                <td>{{item.requestDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                <td>{{item.requesterId}}</td>
+                <td>{{item.softwareType}}</td>
+                <td>{{item.softwarename}}</td>
+                <td>{{item.requestType}}</td>
+                <td>{{item.locationName}}</td>
+                <td>{{item.allottedUserId}}</td>
+                <td>{{item.isActive==false?'InActive':'Active'}}</td>
+                <td>{{item.requestType !='Creation'?null : [item.modifiedDate | date:'dd/MM/yyyy HH:mm']}}</td>
+                <td>{{item.requestType =='Creation'?item.lastApprover:null}}</td>                            
+                <td>{{item.requestType !='Creation'?[item.modifiedDate | date:'dd/MM/yyyy HH:mm']:null}}</td>
+                <td>{{item.requestType !='Creation'?item.lastApprover:null}}</td>  
+
+            </tr>
+        </tbody>
+    </table>
+</div>

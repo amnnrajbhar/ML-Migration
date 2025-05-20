@@ -1,0 +1,496 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Salary Head Config
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Salary Head Config</li>
+  </ol>
+</section>
+
+<section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Salary Type</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.salaryType" class="form-control" id="salaryTypeFilter" name="salaryTypeFilter"
+                #typeEnt="ngModel" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let sl of salaryTypes" [ngValue]="sl.type">{{sl.text}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Salary Frequency</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.frequency" class="form-control" id="frequency" name="frequency"
+                #typeEnt="ngModel" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let sl of salaryFrequency" [ngValue]="sl.type">{{sl.text}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Active</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.status" class="form-control" id="status" name="status" #typeEnt="ngModel"
+                required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let sl of yesNoList" [ngValue]="sl.type">{{sl.text}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Eligible for Gratuity</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.gratuity" class="form-control" id="gratuity" name="gratuity"
+                #typeEnt="ngModel" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let sl of yesNoList" [ngValue]="sl.type">{{sl.text}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Eligible for Bonus</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.bonus" class="form-control" id="bonus" name="bonus" #typeEnt="ngModel"
+                required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let sl of yesNoList" [ngValue]="sl.type">{{sl.text}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Eligible for PF</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.pf" class="form-control" id="pf" name="pf" #typeEnt="ngModel" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let sl of yesNoList" [ngValue]="sl.type">{{sl.text}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">ST/LT/Description</label>
+            <div class="col-md-3">
+              <input name="textSearch" class="form-control" id="textSearch" [(ngModel)]="filterModel.textSearch" />
+            </div>
+          </div>
+          <div class="form-group text-center">
+            <button class="btn btn-primary btn-sm" (click)="getListData();" matTooltip="click to Go">
+              Filter</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="pull-right actionButtons">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="detailsModal"
+        (click)="onAddClick()">
+        Add New</button>
+        <button type="button" class="btn btn-primary" (click)="exportData()">Export</button>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-md-12 table-responsive">
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+      <table class="table table-hover table-striped table-bordered" id="data">
+        <thead>
+          <tr>
+            <th>Action</th>
+            <!-- <th>Sl No</th> -->
+            <th>Client</th>
+            <th>Salary ST</th>
+            <th>Salary LT</th>
+            <th>Salary Type</th>
+            <th>Salary Payable Frequency</th>
+            <th>Description In Pay Slip</th>
+
+            <th>Investment Code</th>
+            <th>SAP SalaryId</th>
+            <th>Salary Sequence No</th>
+            <th>Prerequisite Id</th>
+            <th>Salary Calculation Type</th>
+            <th>Salary Rounding To</th>
+            <th>Grouping Salary Head</th>
+
+
+            <th>Active</th>
+            <th>LWPIs Applicable</th>
+            <th>Show Salary in PaySlip</th>
+            <th>Eligible for PF Deduction</th>
+            <th>Eligible for ESI Deduction</th>
+            <th>Eligible for PT Deduction</th>
+            <th>Eligible for Bonus Payment</th>
+            <th>Eligible for IT Deduction</th>
+            <th>Eligible for IT Projection Calculation</th>
+            <th>Eligible for Gratuity Calculation</th>
+
+
+            <th>Created By</th>
+            <th>Created On</th>
+            <th>Modified By</th>
+            <th>Modified On</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filterData.list; let i = index">
+            <td>
+              <button (click)="EditLine(item, i)" title="click to edit this " class="btn btn-xs btn-primary">
+                <i class="fas fa-pen"></i>
+              </button>
+
+            </td>
+            <!-- <td>{{i+1}}</td> -->
+            <td>{{item.client}}</td>
+            <td>{{item.salaryST}}</td>
+            <td>{{item.salaryLT}}</td>
+            <td>{{item.salaryTypeText}}</td>
+            <td>{{item.salaryPayableFrequencyText}}</td>
+            <td>{{item.descriptionInPaySlip}}</td>
+
+            <td>{{item.investmentCode}}</td>
+            <td>{{item.salaryId}}</td>
+            <td>{{item.salarysequencenumber}}</td>
+            <td>{{item.perquisiteID}}</td>
+            <td>{{item.salaryCalculationType}}</td>
+            <td>{{item.salaryRoundingTo	}}</td>
+            <td>{{item.groupingSalaryHeadsforITProcessing}}</td>
+
+
+            <td>{{item.statusBool == true ? "Yes" : "No"}}</td>
+            <td>{{item.lWPIsapplicableBool  == true ? "Yes" : "No"}}</td>
+            <td>{{item.showSalaryinPaySlipBool  == true ? "Yes" : "No"}}</td>
+            <td>{{item.eligibleforPFDeductionBool  == true ? "Yes" : "No"}}</td>
+            <td>{{item.eligibleforESIDeductionBool  == true ? "Yes" : "No"}}</td>
+            <td>{{item.eligibleforPTDeductionBool  == true ? "Yes" : "No"}}</td>
+            <td>{{item.eligibleforBonusPaymentBool  == true ? "Yes" : "No"}}</td>
+            <td>{{item.eligibleforITDeductionBool  == true ? "Yes" : "No"}}</td>
+            <td>{{item.eligibleforITProjectionCalculationBool  == true ? "Yes" : "No"}}</td>
+            <td>{{item.eligibleforGratuityCalculationBool  == true ? "Yes" : "No"}}</td>
+
+            <td>{{item.createdByName}}</td>
+            <td>{{item.createdOn | date: "dd/MM/yyyy"}}</td>
+            <td>{{item.modifiedByName}}</td>
+            <td>{{item.modifiedOn | date: "dd/MM/yyyy"}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <ul class="pagination" *ngIf="filterData.totalCount>0">
+          <li>
+            <a (click)="gotoPage(filterData.pageNo)">
+              Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> -
+              <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b>
+              of <b>{{filterData.totalCount}}</b> records
+            </a>
+          </li>
+          <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+          <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+          <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+          <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+          <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo"
+              (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo+1"
+              (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+          <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of
+              <b>{{filterData.totalPages}}</b></a></li>
+          <li>
+            <a>
+              Page Size
+              <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<div id="detailsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Salary Structure Master Config Details</h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <form #detailsForm="ngForm">
+
+          <div class="form-group">
+            <label class="col-md-2">Client</label>
+            <div class="col-md-4">
+              <input class="form-control" [(ngModel)]="item.client" name="client" #clientEnt="ngModel" />
+              <!-- <span class="help-block" *ngIf="clientEnt.touched && !clientEnt.valid">
+                Please enter value</span> -->
+            </div>
+            <label class="col-md-2">Salary ST <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input class="form-control" [(ngModel)]="item.salaryST" name="salaryST" #salarySTEnt="ngModel" required />
+              <span class="help-block" *ngIf="salarySTEnt.touched && !salarySTEnt.valid">
+                Please enter value</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Salary LT <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input class="form-control" [(ngModel)]="item.salaryLT" name="salaryLT" #salaryLTEnt="ngModel"
+              required />
+              <span class="help-block" *ngIf="salaryLTEnt.touched && !salaryLTEnt.valid">
+                Please enter value</span>
+            </div>
+
+            <label class="col-md-2">Salary Type <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <!-- <input  class="form-control" [(ngModel)]="item.salaryType" name="salaryType" #salaryTypeEnt="ngModel" required
+                maxlength="6" /> -->
+              <!-- <span class="help-block" *ngIf="osEnt.touched && !osEnt.valid">
+                Please enter value</span> -->
+              <select [(ngModel)]="item.salaryType" class="form-control" id="salaryType" name="salaryType"
+                #salaryTypeEnt="ngModel" required>
+                <option *ngFor="let sl of salaryTypes" [ngValue]="sl.type">{{sl.text}}</option>
+              </select>
+              <span class="help-block" *ngIf="salaryTypeEnt.touched && !salaryTypeEnt.valid">Please
+                select value</span>
+            </div>
+
+
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Salary Payable Frequency <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <!-- <input class="form-control" [(ngModel)]="item.salaryPayableFrequency" name="salaryPayableFrequency" #salaryPayableFrequencyEnt="ngModel" required
+                maxlength="6" /> -->
+              <!-- <span class="help-block" *ngIf="saEnt.touched && !saEnt.valid">
+                Please enter value</span> -->
+              <select [(ngModel)]="item.salaryPayableFrequency" class="form-control" id="salaryPayableFrequency"
+                name="salaryPayableFrequency" #salaryPayableFrequencyEnt="ngModel" required>
+                <option *ngFor="let sl of salaryFrequency" [ngValue]="sl.type">{{sl.text}}</option>
+              </select>
+              <span class="help-block"
+                *ngIf="salaryPayableFrequencyEnt.touched && !salaryPayableFrequencyEnt.valid">Please
+                select value</span>
+            </div>
+            <label class="col-md-2">Investment Code</label>
+            <div class="col-md-4">
+              <input class="form-control" [(ngModel)]="item.investmentCode" name="investmentCode"
+                #investmentCodeEnt="ngModel" />
+              <!-- <span class="help-block" *ngIf="hsEnt.touched && !hsEnt.valid">
+                Please enter value</span> -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">SAP Salary Id <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="text" class="form-control" [(ngModel)]="item.salaryId" name="salaryId"
+                #salaryIdEnt="ngModel" required maxlength="6" (keypress)="keyPressAllowOnlyNumber($event)" />
+              <span class="help-block" *ngIf="salaryIdEnt.touched && !salaryIdEnt.valid">
+                Please enter value</span>
+            </div>
+            <label class="col-md-2">Salary Sequence No <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="text" class="form-control" [(ngModel)]="item.salarysequencenumber"
+                name="salarysequencenumber" #salarysequencenumberEnt="ngModel" required maxlength="6" (keypress)="keyPressAllowOnlyNumber($event)" />
+              <span class="help-block" *ngIf="salarysequencenumberEnt.touched && !salarysequencenumberEnt.valid">
+                Please enter value</span>
+            </div>
+
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Description In Pay Slip <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input class="form-control" [(ngModel)]="item.descriptionInPaySlip" name="descriptionInPaySlip"
+                #descriptionInPaySlipEnt="ngModel" required />
+              <span class="help-block" *ngIf="descriptionInPaySlipEnt.touched && !descriptionInPaySlipEnt.valid">
+                Please enter value</span>
+            </div>
+            <label class="col-md-2">Prerequisite Id <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="text" class="form-control" [(ngModel)]="item.perquisiteID" name="perquisiteID"
+                #perquisiteIDEnt="ngModel" maxlength="6" required (keypress)="keyPressAllowOnlyNumber($event)" />
+              <span class="help-block" *ngIf="perquisiteIDEnt.touched && !perquisiteIDEnt.valid">
+                Please enter value</span>
+            </div>
+            <!-- <label class="col-md-2">Salary Calculation Type</label>
+            <div class="col-md-4">
+              <input type="number" class="form-control" [(ngModel)]="item.salaryCalculationType" name="salaryCalculationType" #salaryCalculationTypeEnt="ngModel" required
+                maxlength="6" />
+              <span class="help-block" *ngIf="salaryCalculationTypeEnt.touched && !salaryCalculationTypeEnt.valid">
+                Please enter value</span>
+            </div> -->
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Salary Rounding To <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="text" class="form-control" [(ngModel)]="item.salaryRoundingTo" name="salaryRoundingTo"
+                #salaryRoundingToEnt="ngModel" required maxlength="6" (keypress)="keyPressAllowOnlyNumber($event)" />
+              <span class="help-block" *ngIf="salaryRoundingToEnt.touched && !salaryRoundingToEnt.valid">
+                Please enter value</span>
+            </div>
+            <label class="col-md-2">Grouping Salary Head <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input class="form-control" [(ngModel)]="item.groupingSalaryHeadsforITProcessing"
+                name="groupingSalaryHeadsforITProcessing" #groupingSalaryHeadsforITProcessingEnt="ngModel" required
+                 />
+              <span class="help-block"
+                *ngIf="groupingSalaryHeadsforITProcessingEnt.touched && !groupingSalaryHeadsforITProcessingEnt.valid">
+                Please enter value</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Salary Calculation Type <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="text" class="form-control" [(ngModel)]="item.salaryCalculationType"
+                name="salaryCalculationType" #salaryCalculationTypeEnt="ngModel" required maxlength="6" (keypress)="keyPressAllowOnlyNumber($event)" />
+              <span class="help-block" *ngIf="salaryCalculationTypeEnt.touched && !salaryCalculationTypeEnt.valid">
+                Please enter value</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Active</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="statusBool">
+                  <input type="checkbox" [(ngModel)]="item.statusBool" name="statusBool" />
+                </label>
+              </div>
+            </div>
+            <!-- <label class="col-md-2">Metro</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="metro">
+                  <input type="checkbox" [(ngModel)]="item.metroBool" name="metro" />
+                </label>
+              </div>
+            </div> -->
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">LWPIs Applicable</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="openInNewWindow">
+                  <input type="checkbox" [(ngModel)]="item.lWPIsapplicableBool" name="lWPIsapplicableBool" />
+                </label>
+              </div>
+            </div>
+            <label class="col-md-2">Show Salary in PaySlip</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="showSalaryinPaySlipBool">
+                  <input type="checkbox" [(ngModel)]="item.showSalaryinPaySlipBool" name="showSalaryinPaySlipBool" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Eligible for PF Deduction</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="eligibleforPFDeductionBool">
+                  <input type="checkbox" [(ngModel)]="item.eligibleforPFDeductionBool"
+                    name="eligibleforPFDeductionBool" />
+                </label>
+              </div>
+            </div>
+            <label class="col-md-2">Eligible for ESI Deduction</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="eligibleforESIDeductionBool">
+                  <input type="checkbox" [(ngModel)]="item.eligibleforESIDeductionBool"
+                    name="eligibleforESIDeductionBool" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Eligible for PT Deduction</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="eligibleforPTDeductionBool">
+                  <input type="checkbox" [(ngModel)]="item.eligibleforPTDeductionBool"
+                    name="eligibleforPTDeductionBool" />
+                </label>
+              </div>
+            </div>
+            <label class="col-md-2">Eligible for Bonus Payment</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="eligibleforBonusPaymentBool">
+                  <input type="checkbox" [(ngModel)]="item.eligibleforBonusPaymentBool"
+                    name="eligibleforBonusPaymentBool" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Eligible for IT Deduction</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="eligibleforITDeductionBool">
+                  <input type="checkbox" [(ngModel)]="item.eligibleforITDeductionBool"
+                    name="eligibleforITDeductionBool" />
+                </label>
+              </div>
+            </div>
+            <label class="col-md-2">Eligible for IT Projection Calculation</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="eligibleforITProjectionCalculationBool">
+                  <input type="checkbox" [(ngModel)]="item.eligibleforITProjectionCalculationBool"
+                    name="eligibleforITProjectionCalculationBool" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Eligible for Gratuity Calculation </label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="eligibleforGratuityCalculationBool">
+                  <input type="checkbox" [(ngModel)]="item.eligibleforGratuityCalculationBool"
+                    name="eligibleforGratuityCalculationBool" />
+                </label>
+              </div>
+            </div>
+            <!-- <label class="col-md-2">Status</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="metro">
+                  <input type="checkbox" [(ngModel)]="item.Status" name="metro" />
+                </label>
+              </div>
+            </div> -->
+          </div>
+        </form>
+        <div class="text-center actionButtons">
+          <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !detailsForm.valid"
+            *ngIf="!isEdit" (click)="addData()">
+            <i class="fas fa-plus"></i> Add</button>
+          <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !detailsForm.valid"
+            *ngIf="isEdit" (click)="updateData()">
+            <i class="fas fa-check"></i> Update</button>
+          <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+            Cancel</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

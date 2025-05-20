@@ -1,0 +1,166 @@
+<section class="content-header">
+  <h1 class="display-1">
+     FNF Approval List
+  </h1>
+  <ol class="breadcrumb">
+     <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+     <li class="active">FNF Approval List</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="panel panel-info">
+     <div class="panel-heading">
+        <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+     </div>
+     <div class="panel-body">
+        <div class="row">
+           <div class="col-xs-12">
+            <div class="form-group row">
+               <label class="col-md-2 control-label text-right">Plant</label>
+               <div class="col-md-4">
+                  <select [(ngModel)]="selectedPlant" class="form-control" id="plant" name="plant" 
+                  (change)="getPayGroupList()">
+                  <option value="null" [selected]="true"> Select Plant </option>
+                  <option *ngFor="let pll of plantList" [ngValue]="pll">{{pll.code}} - {{pll.name}}</option>
+                  </select>
+               </div>
+               <label class="col-md-2 control-label text-right">Pay Group</label>
+               <div class="col-md-4">
+                  <select [(ngModel)]="selectedPayGroup" class="form-control" id="paygroup" name="paygroup"
+                  matTooltip="paygroup" >
+                  <option value="null" [selected]="true"> Select Pay Group </option>
+                  <option *ngFor="let pl of payGroupList" [ngValue]="pl">{{pl.long_Desc}}</option>
+                  </select>
+               </div>
+            </div>
+            <div class="form-group row">
+               <label class="col-md-2 control-label text-right">Employee Category</label>
+               <div class="col-md-4">
+                  <select [(ngModel)]="selectedEmployeeCategory" class="form-control" id="employeecategory"
+                  name="employeecategory" matTooltip="employeecategory">
+                  <option value="null" [selected]="true"> Select Category </option>
+                  <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl">{{cl.catltxt}}</option>
+                  </select>
+               </div>
+               <label class="col-md-2 control-label text-right">Location</label>
+               <div class="col-md-4">
+                  <select [(ngModel)]="selectedLocation" class="form-control" id="employeelocation"
+                  name="employeelocation" matTooltip="employeelocation">
+                  <option [ngValue]="null" [selected]="true"> Select Location </option>
+                  <option *ngFor="let pl of locationList" [ngValue]="pl.id">{{pl.name }} </option>
+                </select>
+               </div>
+            </div>  
+ 
+                 <div class="form-group row">
+                    <label class="col-md-2 control-label text-right">From Date</label>
+                    <div class="col-md-4">
+                       <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control"
+                       [(ngModel)]="from_date" #fromDate="ngModel">
+                       <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                    </div>
+                    <label class="col-md-2 control-label text-right">To Date</label>
+                    <div class="col-md-4">
+                       <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="ToDate" class="form-control"
+                       [(ngModel)]="to_date" #toDate="ngModel">
+                       <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+                    </div>
+                    
+                 </div>
+                 <div class="form-group text-center">
+                  <button class="btn btn-primary btn-sm" (click)="getFNFList();" matTooltip="click to Go"
+                  [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">
+                  Filter</button>
+               </div>
+              </div>
+           
+              
+          
+        </div>
+        </div>
+     </div>
+  
+  <div class="row">
+     <div class="col-md-12 form-group">
+        <div class="pull-right">
+           <button type="button" class="btn btn-sm btn-primary" (click)="exportData()">Export</button>
+        </div>
+     </div>
+  </div>
+  <div class="row">
+     <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+           <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table mat-table class="table table-hover table-striped table-bordered" id="data">
+           <thead>
+              <tr>
+                  <th class="personalDetails">Sl No</th>
+                 <th class="personalDetails">Employee Code</th>
+                 <th class="personalDetails">Employee Name</th>
+                 <th>Designation</th>            
+                 <th>Plant Code</th>           
+                 <th>Plant</th>        
+                 <th>Location</th>        
+                 <th>Date of Joining</th>
+                 <th>Date of Leaving</th>
+                 <th *ngFor="let head of earningHeads; let i = index"> {{head.head}}</th>
+                 <th>Sub Total</th>
+                 <th *ngFor="let head of deductionHeads; let i = index"> {{head.head}}</th>
+                 <th>Net Pay</th>
+               </tr>
+           </thead>
+           <tbody>
+              <tr *ngFor="let fnf of filterData.list; let i = index">
+               <td class="personalDetails">{{i+1}}</td>
+                 <td class="personalDetails">{{fnf.employeeNo}}</td>
+                 <td class="personalDetails">{{fnf.firstName}} {{fnf.middleName}} {{fnf.lastName}}</td>       
+                  <td>{{fnf.designation}}</td>        
+                  <td>{{fnf.plantCode}}</td>      
+                  <td>{{fnf.plantName}}</td>                           
+                  <td>{{fnf.location }}</td>
+                  <td>{{fnf.dateOfJoining | date:'dd/MM/yyyy'}}</td>
+                  <td>{{fnf.dateOfLeaving | date:'dd/MM/yyyy'}}</td>
+                  <td *ngFor="let head of earningHeads; let j = index" class="text-right"> {{getAmount(i, head.head)}}</td>
+                  <td  class="text-right"><b>{{fnf.earningsTotal}}</b></td>
+                  <td *ngFor="let head of deductionHeads; let j = index"  class="text-right"> {{getAmount(i, head.head)}}</td>
+                  <td  class="text-right"><b>{{fnf.netAmt}}</b></td>
+                  </tr>
+           </tbody>
+        </table>
+        <div class="text-center">
+           <div class="overlay text-center h3" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+           </div>
+           <ul class="pagination" *ngIf="filterData.totalCount>0">
+              <li>
+                 <a (click)="gotoPage(filterData.pageNo)">
+                 Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> - <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b> of <b>{{filterData.totalCount}}</b> records
+                 </a>
+              </li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+              <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+              <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo+1" (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+              <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of <b>{{filterData.totalPages}}</b></a></li>
+              <li>
+                 <a>
+                    Page Size 
+                    <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    </select>
+                 </a>
+              </li>
+           </ul>
+        </div>
+     </div>
+  </div>
+</section>

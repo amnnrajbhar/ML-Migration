@@ -1,0 +1,112 @@
+<section class="content-header">
+   <h1 class="display-1">
+      Add Email Notification
+   </h1>
+   <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+      <li class="active"> Email Notification</li>
+   </ol>
+</section>
+<section class="content">
+   <div class="panel panel-info">
+      <div class="panel-heading">
+         <div class="panel-title"><i class="glyphicon glyphicon-plus"></i> Add Details</div>
+      </div>
+      <div class="panel-body">
+         <div class="form-group row">
+            <label class="col-md-2 control-label text-right">Plant<span style="color:red">*</span></label>
+            <div class="col-md-4">
+               <select [(ngModel)]="selectedPlant" class="form-control" id="plant" name="plant"
+                  (change)="onPlantChange()">
+                  <option value="null" [selected]="true"> Select </option>
+                  <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.code}} - {{pll.name}}</option>
+               </select>
+            </div>
+            <label class="col-md-2 control-label text-right">Pay Group<span style="color:red">*</span></label>
+            <div class="col-md-4">
+               <select [(ngModel)]="selectedPayGroup" class="form-control" id="paygroup" name="paygroup"
+                  matTooltip="paygroup" >
+                  <option value="null" [selected]="true"> Select </option>
+                  <option *ngFor="let pl of payGroupList" [ngValue]="pl">{{pl.long_Desc}}</option>
+               </select>
+            </div>
+         </div>
+         <div class="form-group row">
+            <label class="col-md-2 control-label text-right">Employee Category<span style="color:red">*</span></label>
+            <div class="col-md-4">
+               <select [(ngModel)]="selectedEmployeeCategory" class="form-control" id="employeecategory"
+                  name="employeecategory" matTooltip="employeecategory">
+                  <option value="null" [selected]="true"> Select </option>
+                  <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl">{{cl.catltxt}}</option>
+               </select>
+            </div>
+            <label class="col-md-2 control-label text-right">State</label>
+            <div class="col-md-4">
+               <select [(ngModel)]="selectedState" class="form-control" id="state" name="state" #stateEnt="ngModel">
+                  <option value="null" [selected]="true"> Select </option>
+                  <option *ngFor="let sl of stateList" [ngValue]="sl">{{sl.bezei}}</option>
+               </select>
+            </div>
+         </div>
+
+         <div class="form-group row">
+
+            <label class="col-md-2 control-label text-right">Email Type<span style="color:red">*</span></label>
+            <div class="col-md-4">
+               <select [(ngModel)]="selectedEmailType" class="form-control" id="emailType" name="emailType"
+                  #emailTypeEnt="ngModel">
+                  <option value="null" [selected]="true"> Select </option>
+                  <option *ngFor="let sl of emailTypeList" [ngValue]="sl">{{sl.type}}</option>
+               </select>
+            </div>
+            <label class="col-md-2 control-label text-right">Email Id<span style="color:red">*</span></label>
+            <div class="col-md-4">
+               <input type="email" [matTooltipPosition]="'below'" matTooltip="Input Email Id"
+                  [(ngModel)]="emailNotificationDetails.emailId" class="form-control" id="emailId" name="emailId"
+                  #emailEnt="ngModel" email="true" [pattern]= emailPattern required>
+               <span class="help-block" *ngIf="emailEnt.touched && !emailEnt.valid">Please enter valid email id</span>
+            </div>
+         </div>
+
+         <div class="form-group row">
+            <label class="col-md-2 control-label text-right">User Type<span style="color:red">*</span></label>
+            <div class="col-md-4">
+               <select class="form-control" [(ngModel)]="emailNotificationDetails.userType">
+                  <option value="Employee">Employee</option>
+                  <option value="Non-Employee">Non-Employee</option>
+               </select>
+            </div>
+            <label class="col-md-2 control-label text-right" for="initial" *ngIf="emailNotificationDetails.userType == 'Non-Employee'">Name<span
+               style="color:red">*</span></label>
+            <div class="col-md-4" *ngIf="emailNotificationDetails.userType == 'Non-Employee'">
+               <input  type="text" class="form-control"
+                  id="emailNotificationDetails.name" [(ngModel)]="emailNotificationDetails.name"
+                  ngControl="emailNotificationDetails.name" name="emailNotificationDetails.name" />
+            </div>
+
+            <label class="col-md-2 control-label text-right" *ngIf="emailNotificationDetails.userType == 'Employee'" for="employeeName">Select Employee<span
+                  style="color:red">*</span></label>
+            <div class="col-md-4" *ngIf="emailNotificationDetails.userType == 'Employee'">
+               <input  type="text" id="employeeName"
+                  class="form-control" #employeeCatEnt="ngModel" (keyup)="getEmployees($event)"
+                  [(ngModel)]="employeeName" ngControl="employeeName" name="employeeName" required autocomplete="off" />
+               <span class="help-block" *ngIf="employeeCatEnt.touched && !employeeCatEnt.valid">Please select
+                  employee</span>
+               <input type="hidden" id="employeeId" [(ngModel)]="emailNotificationDetails.employeeId"
+                  name="employeeId" />
+            </div>
+         </div>
+
+         <div class="row text-center actionButtons">
+            <div class="col-md-12">
+               <button type="button" (click)="goBack()" class="btn btn-default" [matTooltipPosition]="'after'"
+                  matTooltip="Click to go back to list">
+                  <i class="fas fa-arrow-left"></i> Back
+               </button>
+               <button class="btn btn-primary" *ngIf="!canEdit" (click)="validate('Save');" matTooltip="click to Go">
+                  Save</button>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>

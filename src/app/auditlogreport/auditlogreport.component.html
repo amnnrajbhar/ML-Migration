@@ -1,0 +1,160 @@
+<section class="content-header">
+  <h1>
+    Audit Log Report
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Audit Log Report</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Audit Log Report</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <!-- <button class="btn btn-primary pull-right" (click)="exportAsXLSX()" matTooltip="click to export to Excel"
+          [disabled]="auditLogList.length==0"><i class="fa fa-file-excel"></i> Export Excel</button>
+          &nbsp; -->
+          <button class="btn btn-primary pull-right" (click)="downloadPdf()" matTooltip="click to export to PDF" 
+          [disabled]="auditLogList.length==0"><i class="fa fa-file-pdf-a"></i> Export PDF</button>
+      </div>
+    </div>
+    <div id="dateFilterPanel">
+      <div class="row ml-3">
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <label for="Master">Master Name</label>
+            <ng-multiselect-dropdown id="fltMasterName" name="fltMasterName" #fltMasterNameEnt="ngModel" matTooltip="select Master Name"
+              [placeholder]="'select Master(multiple)'" [data]="masterList" [(ngModel)]="selectedMaster"
+              [settings]="ddlMasterSettings" (onDeSelect)="onMasterDeSelect($event)" (onDeSelectAll)="onMasterDeSelectAll($event)"
+              (onSelectAll)="onMasterSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <label for="action">Action</label>
+            <ng-multiselect-dropdown id="fltaction" name="fltaction" #fltrdelrymodeEnt="ngModel" matTooltip="select action"
+              [placeholder]="'select action(multiple)'" [data]="ActionTypeList" [(ngModel)]="selectedActionType"
+              [settings]="ddlActionSettings" (onDeSelect)="onActionDeSelect($event)" (onDeSelectAll)="onActionDeSelectAll($event)"
+              (onSelectAll)="onActionSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="row ml-3">
+        <div class="col-sm-3">
+          <label>From Date</label>
+          <div class="form-group form-group-sm">
+            <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dt11"
+              [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control" [(ngModel)]="from_date" #fromDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <label>To Date</label>
+          <div class="form-group form-group-sm">
+            <input [min]="from_date" [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+              [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="endDate" class="form-control" [(ngModel)]="to_date"
+              #toDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+          </div>
+        </div>
+
+        <div class="col-sm-3">
+          <label>&nbsp;</label>
+          <div class="form-group form-group-sm">
+            <button class="btn btn-primary btn-sm" (click)="AuditLogs();" matTooltip="click to Go"
+              [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">Go</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm" (click)="clearFilter();" matTooltip="click to clear filters">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table id="AuditTable" class="table  table-striped" cellspacing="0">
+        <thead style="background-color: #0099cc; color:white;">
+          <tr>
+            <th>Sl.no</th>
+            <th>Master</th>
+            <th>Action</th>
+            <th>ActionBy</th>
+            <th>DateTime</th>
+            <th>KeyField</th>
+            <th>Changes</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of auditLogList;let i = index">
+            <td>{{i+1}}</td>
+            <td class="col-sm-1">{{item.masterName}}</td>
+            <td class="col-sm-1">{{item.auditType}}</td>
+            <td class="col-sm-1">{{item.aduitUser}}</td>
+            <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy HH:mm"}}</td>
+            <td class="col-sm-1">{{item.keyValue}}</td>
+            <td class="col-sm-4">
+              <table class="table table-bordered" style="margin-bottom: 0;">
+                <tr>
+                  <th>Field name</th>
+                  <th>Old value</th>
+                  <th>New value</th>
+                </tr>
+                <tr *ngFor="let ch of objParser(item.changes)">
+                  <td>{{ch.fieldname}}</td>
+                  <td>
+                    <div style='word-break: break-all;'>{{ch.oldvalue}}</div>
+                  </td>
+                  <td>
+                    <div style='word-break: break-all;'>{{ch.newvalue}}</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td class="col-sm-4">{{item.purpose}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div hidden id ="pdf">
+      <table hidden >
+      <thead>
+        <tr>
+          <th>Sl.no</th>
+          <th>Master</th>
+          <th>Action</th>
+          <th>ActionBy</th>
+          <th>DateTime</th>
+          <th>KeyField</th>
+          <th>FieldName</th>
+          <th>OldValue</th>
+          <th>NewValue</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of pdfdata;let i = index">
+          <td>{{i+1}}</td>
+          <td style="width: 10%;">{{item.MasterName}}</td>
+          <td style="width: 10%;">{{item.Action}}</td>
+          <td style="width: 10%;">{{item.ActionBy}}</td>
+          <td style="width: 10%;">{{item.DateTime | date:"dd/MM/yyyy HH:mm"}}</td>
+          <td style="width: 10%;">{{item.KeyField}}</td>
+          <td style="width: 10%;">{{item.FieldName}}</td>
+          <td style="width: 14%;">{{item.OldValue}}</td>
+          <td style="width: 14%;">{{item.NewValue}}</td>           
+          <td style="width: 12%;">{{item.Reason}}</td>
+        </tr>
+      </tbody>
+  </table>
+  </div>
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>

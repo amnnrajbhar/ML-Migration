@@ -1,0 +1,221 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Pending Appraisals By Initiator
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Appraisals Initiated</li>
+  </ol>
+</section>
+
+
+<section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">     
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Plant</label>
+            <select [(ngModel)]="filterModel.plantId" class="form-control">
+              <option value="" [selected]="true">All</option>
+              <option *ngFor="let pl of plantList" [ngValue]="pl.id">{{pl.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Pay Group</label>
+            <select [(ngModel)]="filterModel.payGroupId" class="form-control">
+              <option value="" [selected]="true">All</option>
+              <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Employee Category</label>
+            <select [(ngModel)]="filterModel.empCategoryId" class="form-control">
+              <option value="" [selected]="true">All</option>
+              <option *ngFor="let pl of empCategoryList" [ngValue]="pl.id">{{pl.catltxt}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-1 control-label text-right">Department</label>
+            <select [(ngModel)]="filterModel.departmentId" class="form-control" id="department" name="department">
+              <option value="" [selected]="true">All</option>
+              <option *ngFor="let dl of departmentList" [ngValue]="dl.id">{{dl.description }} </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-1 control-label text-right">Status</label>
+            <select [(ngModel)]="filterModel.status" class="form-control" id="status" name="status">
+              <option value="" [selected]="true">All</option>
+              <option *ngFor="let dl of statusList" [ngValue]="dl.type">{{dl.type }} </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Employee Name / No</label>
+            <input name="name" class="form-control" id="name" [(ngModel)]="filterModel.name" />
+          </div>
+        </div>
+
+        <!-- <div class="col-md-4">
+          <div class="form-group">
+            <label>Employee No</label>
+            <input name="name" class="form-control" id="name" [(ngModel)]="filterModel.employeeNo" />
+          </div>
+        </div> -->
+  
+        <div class="col-xs-12 text-center">
+          <button type="button" class="btn btn-primary" (click)="filterData()">Filter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 table-responsive">
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+      <table class="table table-hover table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Appraisal Period</th>
+            <th>Employee No</th>
+            <th>Name</th>
+            <th>Appraisal Type</th>
+            <th>Reporting Manager</th>
+            <th>Initiated By</th>
+            <th>Initiated Date</th>
+            <th>Plant Code</th>
+            <th>Plant Name</th>
+            <th>Paygroup</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Role</th>
+            <th>Initiation Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of myTasks.list; let i = index">
+            <td>
+              <a [routerLink]="['/HR/Employee/profile', task.employeeId]" class="btn btn-primary btn-xs"
+                [matTooltipPosition]="'after'" matTooltip="Click to view full profile">
+                <i class="fas fa-user"></i></a>
+              <ng-template [ngIf]="[task.status] == 'Appraisal Initiated' || [task.status] == 'Pending For Recommendation'">
+                <button type="button"
+                  (click)="viewInitialAppraisalDetails(task.employeeId, task.employeeInitialAppraisalDetailId, task.flowTaskId)"
+                  class="btn btn-xs btn-info" [matTooltipPosition]="'after'" matTooltip="Click to add recommendations">
+                  <i class="fas fa-comment-dollar"></i>
+                </button>
+              </ng-template>
+              <ng-template
+              [ngIf]="[task.status] == 'Email Sent' || [task.status] == 'Approved' || [task.status] == 'Pending for Approval' || [task.status] == 'Recommendation Submitted' || [task.status] == 'Pending For Recommendation'">
+
+              <button type="button"
+                (click)="viewAppraisalDetails(task.employeeId, task.employeeInitialAppraisalDetailId)"
+                class="btn btn-xs btn-info" [matTooltipPosition]="'after'"
+                matTooltip="Click to view appraisal details">
+                <i class="fas fa-eye"></i>
+              </button>
+            </ng-template>
+      
+            </td>
+            <td>{{task.employeeInitialAppraisalDetailId}}</td>
+            <td><span class="label label-default label-{{task.statusColor}}">{{task.status}}</span></td>
+            <td>{{task.appraisalPeriod}}</td>
+            <td>{{task.employeeNo}}</td>
+            <td>{{task.name}}</td>
+            <td>{{task.appraisalType}}</td>
+            <td>{{task.reportingManager}}</td>
+            <td>{{task.initiatedBy}}</td>
+            <td>{{task.initiatedDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+            <td>{{task.plantCode}}</td>
+            <td>{{task.plant}}</td>
+            <td>{{task.payGroup}}</td>
+            <td>{{task.employeeCategory}}</td>
+            <td>{{task.location}}</td>
+            <td>{{task.departmentName}}</td>
+            <td>{{task.designation}}</td>
+            <td>{{task.role}}</td>
+            <td>{{task.initiationComment}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <ul class="pagination" *ngIf="myTasks.totalCount>0">
+          <li>
+            <a (click)="gotoPage(myTasks.pageNo)">
+              Showing <b>{{((myTasks.pageNo-1)*myTasks.pageSize)+1}}</b> -
+              <b>{{(myTasks.pageNo*myTasks.pageSize)>myTasks.totalCount?myTasks.totalCount:myTasks.pageNo*myTasks.pageSize}}</b>
+              of <b>{{myTasks.totalCount}}</b> records
+            </a>
+          </li>
+          <li><a *ngIf="myTasks.pageNo>1" (click)="gotoPage(1)">First</a></li>
+          <li><a *ngIf="myTasks.pageNo>1" (click)="gotoPage(myTasks.pageNo-1)">Previous</a></li>
+          <li><a *ngIf="myTasks.pageNo>2" (click)="gotoPage(myTasks.pageNo-1)">{{myTasks.pageNo-2}}</a></li>
+          <li><a *ngIf="myTasks.pageNo>1" (click)="gotoPage(myTasks.pageNo-1)">{{myTasks.pageNo-1}}</a></li>
+          <li class="active"><a (click)="gotoPage(myTasks.pageNo)">{{myTasks.pageNo}}</a></li>
+          <li><a *ngIf="myTasks.totalPages>myTasks.pageNo"
+              (click)="gotoPage(myTasks.pageNo+1)">{{myTasks.pageNo+1}}</a></li>
+          <li><a *ngIf="myTasks.totalPages>myTasks.pageNo+1"
+              (click)="gotoPage(myTasks.pageNo+2)">{{myTasks.pageNo+2}}</a></li>
+          <li><a *ngIf="myTasks.totalPages>myTasks.pageNo" (click)="gotoPage(myTasks.pageNo+1)">Next</a></li>
+          <li><a *ngIf="myTasks.totalPages>myTasks.pageNo" (click)="gotoPage(myTasks.totalPages)">Last</a>
+          </li>
+          <li><a (click)="gotoPage(myTasks.pageNo)">Page <b>{{myTasks.pageNo}}</b> of
+              <b>{{myTasks.totalPages}}</b></a></li>
+          <li><a>Page Size
+              <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- Comments Modal -->
+<div id="CommentsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Comments</h4>
+      </div>
+      <div class="modal-body">
+        <label>Comments</label>
+        <textarea rows="3" class="form-control" [(ngModel)]="comments"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="rejectTask()">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

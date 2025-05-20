@@ -1,0 +1,234 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Process Attendance
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Process Attendance</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-warning pull-right" (click)="ShowProcessingHistory()"><i
+                        class="fa fa-eye" aria-hidden="true"></i>
+                    View Data</button>
+            </div>
+        </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <div class="box-body">
+        <div id="datafilterPanel">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="baseplant"> Plant <span style="color: red;">*</span> </label>
+                        <select [(ngModel)]="Plant" class="form-control" id="plant" name="plant" matTooltip="plant"
+                            (change)="getpaygroupbasedonplant()" #plantEnt="ngModel">
+                            <option [ngValue]="null" disabled [selected]="true"> Select plant </option>
+                            <option *ngFor="let pl of plantList" value={{pl.code}}>{{pl.code}}-{{pl.name}}</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="payGroup"> Pay Group <span style="color: red;">*</span></label>
+                        <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup" name="payGroup"
+                            matTooltip="Pay Group" #payGroup1Ent="ngModel" required>
+                            <option [ngValue]="null" disabled [selected]="true"> Select Pay Group </option>
+                            <option *ngFor="let pl of payGroupList1" value={{pl.id}}>{{pl.short_desc}}</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="empcat">Employee Category</label>
+                        <select [(ngModel)]="filterCategory" class="form-control" id="empcat" name="empcat"
+                            matTooltip="Employee Category" #empcatEnt="ngModel">
+                            <option [ngValue]="null" disabled [selected]="true"> Select Employee Category </option>
+                            <option *ngFor="let pl of empCatList" value={{pl.id}}>{{pl.catltxt}}</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="dept">Department</label>
+                        <select [(ngModel)]="filterDepartment" class="form-control" id="dept" name="dept"
+                            matTooltip="Department" #deptEnt="ngModel">
+                            <option [ngValue]="null" disabled [selected]="true"> Select Department </option>
+                            <option *ngFor="let pl of departmentList" value={{pl.id}}>{{pl.name}}</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="sdept">Sub Department</label>
+                        <select [(ngModel)]="filterSubDepartment" class="form-control" id="sdept" name="sdept"
+                            matTooltip="Sub Department" #sdeptEnt="ngModel">
+                            <option [ngValue]="null" disabled [selected]="true"> Select Pay Group </option>
+                            <option *ngFor="let pl of subDeptList" value={{pl.id}}>{{pl.sdptidstxt}}</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="startDate">
+                            Start Date <span style="color:red">*</span>
+                        </label>
+                        <div class='input-group date'>
+                            <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                [min]="min" [owlDateTime]="dtStart" [owlDateTimeTrigger]="dtStart"
+                                placeholder="DD/MM/YYYY" [matTooltipPosition]="'below'"
+                                matTooltip="Click to change startDate" #startDate1="ngModel" [disabled]="isEdit"
+                                required>
+                            <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                        <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+                        <span class="help-block" *ngIf="!startDate1.valid && startDate1.touched">Please enter valid
+                            Start
+                            Date.</span>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="endDate">
+                            End Date <span style="color:red">*</span>
+                        </label>
+                        <div class='input-group date'>
+                            <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate" [min]="min"
+                                [owlDateTime]="dtEnd" [owlDateTimeTrigger]="dtEnd" [matTooltipPosition]="'below'"
+                                placeholder="DD/MM/YYYY" matTooltip="Click to change End Date" #endDate1="ngModel"
+                                [disabled]="isEdit" required>
+                            <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtEnd">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                        <owl-date-time [pickerType]="'calendar'" #dtEnd></owl-date-time>
+                        <span class="help-block" *ngIf="!endDate1.valid && endDate1.touched">Please enter valid End
+                            Date.</span>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="col-sm-3">
+                    <label>&nbsp;</label>
+                    <button class="btn btn-success" (click)="ProcessAttendance();" matTooltip="click to Execute"><i
+                            class="fas fa-angle-double-right"></i>&nbsp; Process
+                        Attendance</button> &nbsp;
+                    <button class="btn btn-danger" (click)="ClearData();" matTooltip="click to clear"><i
+                            class="fas fa-times"></i>&nbsp; Clear</button>&nbsp;
+                </div>
+
+                <div class="col-sm-12">
+                    <label for="NOTE" style="color: red;"> <strong> Note : Once the processing is done then
+                            attendance will be
+                            locked/Freezed for the selected date range.
+                            No modifications will be possible further.</strong></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Attendance Data for Payroll</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="col-sm-12">
+                        <button type="button" class="btn btn-primary pull-right" (click)="export()"><i
+                                class="fa fas-file-excel" aria-hidden="true"></i>
+                            Export</button>
+                    </div>
+                    &nbsp;&nbsp;
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                                <thead>
+                                    <tr style="font: bolder;">
+                                        <th rowspan="2">Employee Code</th>
+                                        <th rowspan="2">Name</th>
+                                        <th rowspan="2">Department</th>
+                                        <th rowspan="2">Designation</th>
+                                        <th rowspan="2">Division</th>
+                                        <th rowspan="2">No of Working Days</th>
+                                        <th rowspan="2">No of Days Worked</th>
+                                        <th rowspan="2">No of Days LOP</th>
+                                        <th rowspan="2">Previous Month LOP</th>
+                                        <th rowspan="2">Reimbursement Days</th>
+                                        <th colspan="3" style="text-align: center;">Leaves Availed</th>
+                                        <th colspan="3" style="text-align: center;">Leave Balance</th>
+                                    </tr>
+                                    <tr>
+
+                                        <th>Sick</th>
+                                        <th>Casual</th>
+                                        <th>Privilage</th>
+                                        <th>Sick</th>
+                                        <th>Casual</th>
+                                        <th>Privilage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let ty of ProcessingHistoryData; let i = index">
+                                        <td>{{ty.employeeId}}</td>
+                                        <td>{{ty.empName}}</td>
+                                        <td>{{ty.department}}</td>
+                                        <td>{{ty.designation}}</td>
+                                        <td>{{ty.division}}</td>
+                                        <td>{{ty.workingDays}}</td>
+                                        <td>{{ty.workedDays}}</td>
+                                        <td>{{ty.lopdays}}</td>
+                                        <td>{{ty.lastlop}}</td>
+                                        <td>{{ty.reimbursementdays}}</td>
+                                        <td>{{ty.sickLeavesTaken}}</td>
+                                        <td>{{ty.casualLeavesTaken}}</td>
+                                        <td>{{ty.privilageLeavesTaken}}</td>
+                                        <td>{{ty.slBalance}}</td>
+                                        <td>{{ty.clBalance}}</td>
+                                        <td>{{ty.plBalance}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="overlay" *ngIf="isLoading" style="text-align: center;">
+                        <i class="fa fa-spinner fa-pulse" style="font-size:100px; text-align: center;"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,374 @@
+<section class="content-header">
+  <h1>
+    Shift Master
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Shift Master</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-sm-8">
+        <h3 class="box-title">Shift Master</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-sm-4">
+        <button type="button" class="btn btn-warning" matTooltip="Click to export to Excel"
+          (click)="exportExcelShifts()"><i class="fas fa-file-excel" aria-hidden="true"></i>&nbsp; Export to
+          Excel</button>
+          &nbsp;
+        <button type="button" class="btn btn-info pull-right" matTooltip="Click to Add New Shift"
+          (click)="onAddEmpShiftMaster(false,EmpShiftMasterItem)"><i class="fa fa-plus" aria-hidden="true"></i> Add New
+          Shift</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="location" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th class="col-sm-1">SNo</th>
+            <th class="col-sm-2">Shift Code</th>
+            <th>Shift Name</th>
+            <th class="col-sm-1">Night Shift</th>
+            <th>Shift Start Time</th>
+            <th>Shift End Time</th>
+            <th class="col-sm-1">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lm of EmpShiftMasterList; let i = index">
+            <td>{{i+1}}</td>
+            <td><b>{{lm.shiftCode}}</b></td>
+            <td><b>{{lm.shiftName}}</b></td>
+            <td>{{(lm.nightShift==1)?'Yes':'No'}}</td>
+            <td>{{transform(lm.shiftStartTime)}}</td>
+            <td>{{transform(lm.shiftEndTime) }}</td>
+            <td>
+              <table>
+                <tr>
+                  <td class="pr-2">
+                    <button type="button" class="btn btn-info btn-xs" (click)="onAddEmpShiftMaster(true,lm)"
+                      matTooltip="Click to edit details">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                  <td class="pr-2">
+                    <button type="button" class="btn btn-danger btn-xs" (click)="deleteShift(lm)"
+                      matTooltip="Click to delete details">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                  <td class="pr-2">
+                    <button type="button" class="btn btn-warning btn-xs" (click)="openAuditLogs(lm.id)"
+                      matTooltip="Click to open audit details">
+                      <i class="fa fa-history"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">{{isEdit==true?'Update Shift Master ':'Add New Shift'}}</h4>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+        <form #EmpShiftMasterForm="ngForm">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="shiftCode"> Shift Code</label>
+                <b><input type="text" class="form-control" name="shiftCode" id="shiftCode" placeholder="Shift Code"
+                    [(ngModel)]="EmpShiftMasterItem.shiftCode" ngControl="EmpShiftMasterItem.shiftCode"
+                    (change)="EmpShiftMasterItem.shiftCode=EmpShiftMasterItem.shiftCode.trim()" #shiftCode="ngModel"
+                    disabled maxlength="50"
+                    (input)="EmpShiftMasterItem.shiftCode=$event.target.value.toUpperCase()"></b>
+              </div>
+              <div class="col-sm-6" [ngClass]="(!shiftname.valid && shiftname.touched)?'has-error':''">
+                <label for="shiftname"><i class="fa fa-times-circle-o"
+                    *ngIf="!shiftname.valid && shiftname.touched"></i> Shift Name<span
+                    style="color:red">*</span></label>
+                <b><input type="text" class="form-control" name="shiftname" id="shiftname" placeholder="Shift Name"
+                    [(ngModel)]="EmpShiftMasterItem.shiftName" ngControl="EmpShiftMasterItem.shiftName"
+                    matTooltip="Shift Name" (change)="EmpShiftMasterItem.shiftName=EmpShiftMasterItem.shiftName.trim()"
+                    #shiftname="ngModel" required maxlength="100"
+                    (input)="EmpShiftMasterItem.shiftName=$event.target.value.toUpperCase()"></b>
+                <span class="help-block" *ngIf="!shiftname.valid && shiftname.touched">Please enter shift name
+                  name.</span>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-3" [ngClass]="(!shiftstarttime.valid && shiftstarttime.touched)?'has-error':''">
+                <label for="shiftstarttime">Shift Start Time <span style="color: red;">*</span> </label>
+                <input type="time" matTooltip="Shift Start Time" placeholder="HH:MM" name="shiftstarttime"
+                  id="shiftstarttime" class="form-control" [(ngModel)]="EmpShiftMasterItem.shiftStartTime"
+                  #shiftstarttime="ngModel" required>
+                <span class="help-block" *ngIf="!shiftstarttime.valid && shiftstarttime.touched">Please select shift
+                  start time.</span>
+              </div>
+              <!-- <div class="col-sm-3" [ngclass]="(!shiftgracetime.valid && shiftgracetime.touched)?'has-error':''">
+                <label for="shiftgracetime">shift grace time <span style="color: red;">*</span> </label>
+                <input type="time" mattooltip="shift grace time" placeholder="hh:mm" name="shiftgracetime"
+                  class="form-control" [(ngmodel)]="empshiftmasteritem.shiftgracetime" #shiftgracetime="ngmodel"
+                  required>
+                <span class="help-block" *ngif="!shiftgracetime.valid && shiftgracetime.touched">please select shift
+                  grace time.</span>
+              </div> -->
+              <div class="col-sm-3" [ngClass]="(!comeLate.valid && comeLate.touched)?'has-error':''">
+                <label for="comeLate">Come Late By <span style="color: red;">*</span> </label>
+                <input type="time" matTooltip="Come Late By" placeholder="HH:MM" name="comeLate" class="form-control"
+                  [(ngModel)]="EmpShiftMasterItem.comeLate" #comeLate="ngModel" required>
+                <span class="help-block" *ngIf="!comeLate.valid && comeLate.touched">Please select time.</span>
+              </div>
+              <div class="col-sm-3" [ngClass]="(!punchStartTime.valid && punchStartTime.touched)?'has-error':''">
+                <label for="punchStartTime">Punch Start Time <span style="color: red;">*</span> </label>
+                <input type="time" matTooltip="Punch Start Time" placeholder="HH:MM" name="punchStartTime"
+                  class="form-control" [(ngModel)]="EmpShiftMasterItem.punchStartTime" #punchStartTime="ngModel"
+                  required>
+                <span class="help-block" *ngIf="!punchStartTime.valid && punchStartTime.touched">Please select punch
+                  start time.</span>
+              </div>
+              <div class="col-sm-3" [ngClass]="(!firstHalfEndTime.valid && firstHalfEndTime.touched)?'has-error':''">
+                <label for="firstHalfEndTime">First Half End Time <span style="color: red;">*</span> </label>
+                <input type="time" matTooltip="First Half End Time" placeholder="HH:MM" name="firstHalfEndTime"
+                  class="form-control" [(ngModel)]="EmpShiftMasterItem.firstHalfEndTime" #firstHalfEndTime="ngModel"
+                  required>
+                <span class="help-block" *ngIf="!firstHalfEndTime.valid && firstHalfEndTime.touched">Please select first
+                  half end time.</span>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-3" [ngClass]="(!shStartTime.valid && shStartTime.touched)?'has-error':''">
+                <label for="shStartTime">Second Half Start Time <span style="color: red;">*</span> </label>
+                <input type="time" matTooltip="Second Half Start Time" placeholder="HH:MM" name="shStartTime"
+                  class="form-control" [(ngModel)]="EmpShiftMasterItem.shStartTime" #shStartTime="ngModel" required>
+                <span class="help-block" *ngIf="!shStartTime.valid && shStartTime.touched">Please select second half
+                  start time.</span>
+              </div>
+              <div class="col-sm-3" [ngClass]="(!goEarly.valid && goEarly.touched)?'has-error':''">
+                <label for="goEarly">Go Early By <span style="color: red;">*</span> </label>
+                <input type="time" matTooltip="Go Early By" placeholder="HH:MM" name="goEarly" class="form-control"
+                  [(ngModel)]="EmpShiftMasterItem.goEarly" #goEarly="ngModel" required>
+                <span class="help-block" *ngIf="!goEarly.valid && goEarly.touched">Please select time.</span>
+              </div>
+
+              <div class="col-sm-3" [ngClass]="(!shiftEndTime.valid && shiftEndTime.touched)?'has-error':''">
+                <label for="shiftEndTime">Shift End Time <span style="color: red;">*</span> </label>
+                <input type="time" matTooltip="Shift End Time" placeholder="HH:MM" name="shiftEndTime"
+                  class="form-control" [(ngModel)]="EmpShiftMasterItem.shiftEndTime" #shiftEndTime="ngModel" required>
+                <span class="help-block" *ngIf="!shiftEndTime.valid && shiftEndTime.touched">Please select shift end
+                  time.</span>
+              </div>
+              <div class="col-sm-3" [ngClass]="(!punchEndTime.valid && punchEndTime.touched)?'has-error':''">
+                <label for="punchEndTime">Punch End Time <span style="color: red;">*</span> </label>
+                <input type="time" matTooltip="Punch End Time" placeholder="HH:MM" name="punchEndTime"
+                  class="form-control" [(ngModel)]="EmpShiftMasterItem.punchEndTime" #punchEndTime="ngModel" required>
+                <span class="help-block" *ngIf="!punchEndTime.valid && punchEndTime.touched">Please select punch end
+                  time.</span>
+              </div>
+            </div>
+            <br>
+            <!-- <div class="row">
+              <div class="col-sm-3" [ngClass]="(!punchValidTill.valid && punchValidTill.touched)?'has-error':''">
+                <label for="punchValidTill">Punch Valid Till <span style="color: red;">*</span> </label>
+                <input type="time" matTooltip="Punch Valid Till" placeholder="HH:MM" name="punchValidTill"
+                  class="form-control" [(ngModel)]="EmpShiftMasterItem.punchValidTill" #punchValidTill="ngModel"
+                  required>
+                <span class="help-block" *ngIf="!punchValidTill.valid && punchValidTill.touched">Please select
+                  time.</span>
+              </div>
+            </div>
+            <br> -->
+            <div class="col-sm-3">
+              <div class="checkbox">
+                <label for="null">&nbsp;</label>
+                <label><input type="checkbox" id="chkdelete" name="delete"
+                    [(ngModel)]="EmpShiftMasterItem.nightShift"><b>Night Shift</b></label>
+              </div>
+            </div>
+          </div>
+
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-success" (click)="onSaveEmpShiftMaster()"
+          [disabled]="isLoadingPop || !EmpShiftMasterForm.valid">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-default" (click)="getEmpShiftMasterList()"
+          style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Delete Shift</h4>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+
+        <form #EmpShiftForm="ngForm">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="code">Shift Code</label>
+                <b><input type="text" class="form-control" name="shiftCode" id="shiftCode" placeholder="Shift Code"
+                  [(ngModel)]="EmpShiftMasterItem.shiftCode" ngControl="EmpShiftMasterItem.shiftCode"
+                  #shiftCode="ngModel" maxlength="50" readonly></b>
+              </div>
+              <div class="col-sm-9">
+                <label for="code">Shift Name</label>
+                <b><input type="text" class="form-control" name="shiftName" id="shiftName" placeholder="Shift Code"
+                  [(ngModel)]="EmpShiftMasterItem.shiftName" ngControl="EmpShiftMasterItem.shiftName"
+                  #shiftName="ngModel" readonly></b>
+              </div>
+            </div>
+              <br>
+            <div class="row">
+              <div class="col-sm-12" [ngClass]="(!deletedReason.valid && deletedReason.touched)?'has-error':''">
+                <label for="deletedReason"><i class="fa fa-times-circle-o"
+                    *ngIf="!deletedReason.valid && deletedReason.touched"></i> Reason For Deletion<span
+                    style="color:red">*</span></label>
+                <textarea type="text" class="form-control" name="deletedReason" id="deletedReason"
+                  placeholder="Shift Code" [(ngModel)]="EmpShiftMasterItem.deletedReason"
+                  ngControl="EmpShiftMasterItem.deletedReason" placeholder="Enter Reason of Max 150 characters"
+                  (change)="EmpShiftMasterItem.deletedReason=EmpShiftMasterItem.deletedReason.trim()"
+                  #deletedReason="ngModel" required maxlength="150"
+                  (input)="EmpShiftMasterItem.deletedReason=$event.target.value.toUpperCase()"></textarea>
+                <span class="help-block" *ngIf="!deletedReason.valid && deletedReason.touched">Please Enter
+                  Reason.</span>
+              </div>
+              <br>
+            </div>
+            <br>
+          </div>
+          <br>
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-danger" (click)="deleteEmpShiftMaster(this.EmpShiftMasterItem.shiftCode)"
+          [disabled]="isLoadingPop || !EmpShiftForm.valid">Delete</button>
+        <button type="button" class="btn btn-default" (click)="getEmpShiftMasterList()"
+          style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- Audit Modal -->
+<div id="auditModal" class="modal fade">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;</button>
+        <h4 class="modal-title">Audit history</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="auditTable">
+          <thead>
+            <tr>
+              <th>Sl.no</th>
+              <th>Action</th>
+              <th>ActionBy</th>
+              <th>DateTime</th>
+              <th>KeyField</th>
+              <th>Changes</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <!-- <ng-container > -->
+          <tbody>
+            <tr *ngFor="let item of auditLogList;let i = index">
+              <td>{{auditLogList.length - i + '.0'}}</td>
+              <td class="col-sm-1">{{item.auditType}}</td>
+              <td class="col-sm-1">{{item.aduitUser}}</td>
+              <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy hh:mm a"}}</td>
+              <td class="col-sm-1">{{item.keyValue}}</td>
+              <td class="col-sm-4">
+                <table class="table table-bordered" style="margin-bottom: 0;">
+                  <tr>
+                    <th>Field name</th>
+                    <th>New value</th>
+                    <th>Old value</th>
+                  </tr>
+                  <tr *ngFor="let ch of objParser(item.changes)">
+                    <td>{{ch.fieldname}}</td>
+                    <td>{{ch.oldvalue}}</td>
+                    <td>{{ch.newvalue}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td class="col-sm-4">{{item.purpose}}</td>
+            </tr>
+          </tbody>
+          <!-- </ng-container> -->
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

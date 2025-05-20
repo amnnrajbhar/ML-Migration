@@ -1,0 +1,331 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Guest House Booking
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Book Guest House</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box shadow">
+    <div class="box-header">
+      <div class="col-xs-12">
+        <h3 class="box-title">Book Guest House</h3>
+      </div>
+    </div>
+    <div class="box-body table-responsive">
+      <div class="col-sm-12">
+        <!-- <form role="form" class='form-horizontal'> -->
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="Location">Location</label>
+              <select [(ngModel)]="baseLocation" class="form-control" id="locationName" name="locationName"
+                (change)="onSelect($event.target.value)">
+                <option *ngFor="let location of locationList" value="{{location.id}}">
+                  {{location.name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="roomsInfoList.length>0">
+          <!-- <div class="col-sm-12"> -->
+          <div class="col-xs-3">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs tabs-left sideways">
+              <li *ngFor="let room of roomsInfoList; let i=index" [class.active]="isActiveTab(i)"><a href="#{{room.id}}"
+                  data-toggle="tab" (click)="onSelectRoom(room)">{{room.name}}</a></li>
+            </ul>
+          </div>
+          <div class="col-xs-9" style="padding-left: 0px;">
+            <!-- Tab panes -->
+            <div class="tab-content">
+              <div class="tab-pane active" id="{{roomInformation.id}}">
+                <!-- <div class="col-md-12"> -->
+                <div class="card shadow" style="border: none;">
+                  <div class="card-body">
+                    <button type="button" matTooltip="Click for add new room" [matTooltipPosition]="'after'"
+                      matTooltip="Click to book" class="btn btn-primary pull-right btn-sm" (click)="onBookEvent()"><i
+                        class="fa fa-plus" aria-hidden="true"></i> Book</button>
+                    <div class="table-responsive-sm c-mt-5">
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td class="success col-md-3">Name: </td>
+                            <td colspan="3">{{roomInformation.name}}</td>
+                          </tr>
+                          <tr>
+                            <td class="success col-md-3">No of Room: </td>
+                            <td>{{roomInformation.no_Of_Room}}</td>
+                            <td class="success col-md-3">No of Bed: </td>
+                            <td>{{roomInformation.no_Of_Bed}}</td>
+                          </tr>
+                          <tr>
+                            <td class="success col-md-3">Address: </td>
+                            <td>{{roomInformation.address}}</td>
+                            <td class="success col-md-3">Facilities: </td>
+                            <td>
+                              <ul>
+                                <li *ngFor="let facility of selectedItems">{{facility.name}}</li>
+                              </ul>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="success col-md-3">Description: </td>
+                            <td colspan="3">{{roomInformation.description}}</td>
+                          </tr>
+                          <tr>
+                            <td class="success col-md-3"> Manager Approval: </td>
+                            <td>{{roomInformation.manager_Approval?'yes':'no'}}</td>
+                            <td class="success col-md-3"> Admin Approval: </td>
+                            <td>{{roomInformation.admin_Approval?'yes':'no'}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="card-title">
+                      Gallery
+                    </div>
+                    <div *ngFor="let image of images; let i=index">
+                      <div class="col-xs-3 flex-fluid">
+                        <img alt="picture" [src]="image.url" (click)="open(i)" width="150px" height="100px"
+                          class="img-fluid lb-image">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+          <!-- </div> -->
+        </div>
+        <div class="overlay" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <!-- </form> -->
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" style="color:white; background:#68a7d2;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">{{isEdit==true?'Update Booking ':'Add New Booking'}}
+          </h4>
+        </div>
+        <div class="modal-body" style="border-top:none;background-size:cover;">
+          <form #calendarForm="ngForm">
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group" [ngClass]="(!startDate.valid && startDate.touched)?'has-error':''">
+                  <label for="startDate">
+                    Start Date <span style="color:red">*</span>
+                  </label>
+                  <div class='input-group date'>
+                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="calendarMeeting.fromDate"
+                      [min]="min" [owlDateTime]="dtStart" [owlDateTimeTrigger]="dtStart" [matTooltipPosition]="'below'"
+                      matTooltip="Click to change startDate" #startDate="ngModel" required>
+                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                      <i class="fas fa-calendar-alt"></i>
+                    </span>
+                  </div>
+                  <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+                  <span class="help-block" *ngIf="!startDate.valid && startDate.touched">Please enter valid Start
+                    Date.</span>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [ngClass]="(!startTime.valid && startTime.touched)?'has-error':''">
+                  <label for="startTime">
+                    Time <span style="color:red">*</span>
+                  </label>
+                  <!-- <input #startTime="ngModel" [matTooltipPosition]="'below'" matTooltip="Click to change Start Time" id="startTime"
+                    name="startTime" class="form-control" [(ngModel)]="calendarMeeting.fromTime" required> -->
+                  <input #startTime="ngModel" [matTooltipPosition]="'below'" matTooltip="Click to change Start Time" [owlDateTime]="dt2"
+                    [owlDateTimeTrigger]="dt2" id="startTime" name="startTime" class="form-control" [(ngModel)]="calendarMeeting.fromTime"
+                    onkeydown="return false;" required>
+                  <owl-date-time [pickerType]="'timer'" hour12Timer="true" #dt2></owl-date-time>
+                  <span class="help-block" *ngIf="!startTime.valid && startTime.touched">
+                    <span *ngIf="startTime.errors.required">
+                      Please enter valid Start Time.
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [ngClass]="(!endDate.valid && endDate.touched)?'has-error':''">
+                  <label for="endDate">
+                    End Date <span style="color:red">*</span>
+                  </label>
+                  <div class='input-group date'>
+                    <input id="endDate" name="endDate" class="form-control" [(ngModel)]="calendarMeeting.toDate"
+                      [min]="min" [owlDateTime]="dtEnd" [owlDateTimeTrigger]="dtEnd" [matTooltipPosition]="'below'"
+                      matTooltip="Click to change End Date" #endDate="ngModel" required>
+                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtEnd">
+                      <i class="fas fa-calendar-alt"></i>
+                    </span>
+                  </div>
+                  <owl-date-time [pickerType]="'calendar'" #dtEnd></owl-date-time>
+                  <span class="help-block" *ngIf="!endDate.valid && endDate.touched">Please enter valid End Date.</span>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [ngClass]="(!endTime.valid && endTime.touched)?'has-error':''">
+                  <label for="endTime">
+                    Time <span style="color:red">*</span>
+                  </label>
+                  <!-- <input #endTime="ngModel" [matTooltipPosition]="'below'" matTooltip="Click to change End Time" id="endTime"
+                    name="endTime" class="form-control" [(ngModel)]="calendarMeeting.toTime" required> -->
+                  <input #endTime="ngModel" [matTooltipPosition]="'below'" matTooltip="Click to change End Time"
+                    [owlDateTime]="dt4" [owlDateTimeTrigger]="dt4" id="endTime" name="endTime" class="form-control"
+                    [(ngModel)]="calendarMeeting.toTime" onkeydown="return false;" required>
+                  <owl-date-time [pickerType]="'timer'" hour12Timer="true" #dt4></owl-date-time>
+                  <span class="help-block" *ngIf="!endTime.valid && endTime.touched">Please enter valid End Time.</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group" [ngClass]="(purposeEnt.touched && !purposeEnt.valid)?'has-error':''">
+                  <label for="purpose">
+                    Purpose<span style="color:red">*</span>
+                  </label>
+                  <select [(ngModel)]="selectedPurpose" class="form-control" id="purpose" name="purpose"
+                    matTooltip="Purpose" #purposeEnt="ngModel" required>
+                    <option [ngValue]="null" disabled [selected]="true"> Select Purpose </option>
+                    <option *ngFor="let pl of purposeList" [ngValue]="pl">{{pl.purpose}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="purposeEnt.touched && !purposeEnt.valid">Please select Purpose</span>
+
+                </div>
+
+              </div>
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group"
+                  [ngClass]="(numberOfPersonsEnt.touched && !numberOfPersonsEnt.valid && calendarMeeting.numberOfPerson==0)?'has-error':''">
+                  <label for="SelCompetency">
+                    Number Of Person<span style="color:red">*</span>
+                  </label>
+                  <input type="number" min="1" class="form-control" id="numberOfPersons" placeholder="Person Count"
+                    matTooltip="Number od person's" [(ngModel)]="calendarMeeting.numberOfPerson"
+                    ngControl="calendarMeeting.numberOfPerson" name="numberOfPersons" #numberOfPersonsEnt="ngModel"
+                    (keypress)="keyPressNumber($event)" required>
+                  <span class="help-block"
+                    *ngIf="numberOfPersonsEnt.touched && !numberOfPersonsEnt.valid  && calendarMeeting.numberOfPerson==0">Please
+                    enter number greater than 0</span>
+
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                Add More Person Details
+                <div class="box-body table-responsive">
+                  <table id="personTable" class="table table-bordered" *ngIf="showTable==true">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>
+                          Phone
+                        </th>
+                        <th>
+                          Email
+                        </th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let per of person; let rec=index">
+                        <td style="width:30%">
+                          <input class="form-control" type="text" [name]="'name'+rec" [(ngModel)]="per.name"
+                            matTooltip="enter person name" (change)="per.name=per.name.trim()" placeholder="Name" />
+                        </td>
+                        <td style="width:30%">
+                          <div class="col-sm-4">
+                            <input class="form-control" [name]="'code'+rec" [readonly]="!per.name"
+                              matTooltip="enter mobile code" [(ngModel)]="per.mobileCode" placeholder="Code" />
+                          </div>
+                          <div class="col-sm-8">
+                            <input class="form-control" type="text" minlength="10" maxlength="10" [name]="'mobile'+rec"
+                              matTooltip="enter mobile number" [readonly]="!per.mobileCode" [(ngModel)]="per.mobile"
+                              placeholder="mobile" (keypress)="keyPressNumber($event)" />
+                          </div>
+                        </td>
+                        <td style="width:30%">
+                          <input class="form-control" type="email" [name]="'email'+rec" [(ngModel)]="per.email"
+                            matTooltip="enter email" placeholder="Email" />
+                        </td>
+
+                        <td>
+                          <button title="Remove Details" (click)="removePersonDetails((per.id!=0)?per.id:rec, rec);"
+                            class="btn btn-secondary pull-right" matTooltip="Click to remove">
+                            <i class="fa fa-trash"></i></button>
+                        </td>
+                      </tr>
+
+
+                    </tbody>
+                  </table>
+                  <div class="col-md-6" style="float: right;margin-top:10px;margin-right:-5px;">
+                    <button title="Add Person Details" [matTooltipPosition]="'below'"
+                      matTooltip="Click to Add more Person Details" (click)="addPersonDetails();"
+                      class="btn btn-primary pull-right"
+                      [disabled]="calendarMeeting.numberOfPerson<2 || (calendarMeeting.numberOfPerson-1)==recCount">
+                      <i class="fa fa-plus"></i></button>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                  <label for="calEnId">Remarks
+                    <!-- <span style="color:red">*</span> -->
+                  </label>
+                  <textarea type="text" class="form-control" id="remarks" placeholder="Remarks" matTooltip="remarks"
+                    [(ngModel)]="calendarMeeting.comments" name="entityRemarks" #entityRemarks="ngModel"
+                    (change)="calendarMeeting.comments =calendarMeeting.comments.trim()"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+          <button type="button" class="btn btn-primary" (click)="onSaveMeeting()" matTooltip="Click to submit"
+            [disabled]="isLoadingPop || !calendarForm.valid ">{{isEdit==true?'Update':'Submit'}}</button>
+          <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+            matTooltip="Click to close modal" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+              *ngIf="errMsgModalPop.length>0"><i class="fa fa-check"></i>{{errMsgModalPop}}</span></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

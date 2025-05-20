@@ -1,0 +1,12 @@
+<div class="container col-md-6">
+  <div>
+    <h3>AngularJS Autocomplete Textbox</h3>
+    <label>Enter Country Name</label>
+    <input type="text" name="country" id="country" [(ngModel)]="country" (keyup)="complete(country)" class="form-control" (focus)="selectedName=true" />
+    <select [(ngModel)]="country" class="form-control" size="6" *ngIf="selectedName">
+                  <option *ngFor="let countrydata of filterCountry" (click)="fillTextbox(countrydata)">{{countrydata}}</option>
+                </select>
+    
+                
+  </div>
+</div>

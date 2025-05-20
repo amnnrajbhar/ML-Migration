@@ -1,0 +1,711 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Confirmation
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Confirmation</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <form #appraisalForm="ngForm" id="appraisalForm">
+
+    <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+    <app-confirmation-hod-recommendations *ngIf="employeeDetail.isRecommendationExists"
+      [employeeConfirmationId]="employeeConfirmationId"></app-confirmation-hod-recommendations>
+
+    <div class="row" *ngIf="employeeDetail.status =='Pending For Recommendation'">
+      <div class="col-md-12">
+        <div class="form-group">
+          <span class="text-danger">There are pending recommendations for this employee, Please be informed that the
+            recommendations will automatically cancel if you proceed for this appraisal.
+            else you can wait for the recommendations to be submitted before proceeding.
+          </span>
+        </div>
+      </div>
+
+    </div>
+    <!-- <app-confirmation-hod-recommendations *ngIf="employeeDetail.hodRating != null"
+      [employeeConfirmationId]="employeeConfirmationId"></app-confirmation-hod-recommendations> -->
+
+    <ul class="nav nav-tabs">
+      <li [ngClass]="currentTab=='general'?'active':''">
+        <a (click)="onTabClick(0)">Official</a>
+      </li>
+      <li [ngClass]="currentTab=='salary'?'active':''">
+        <a (click)="onTabClick(1)">Salary</a>
+      </li>
+      <li [ngClass]="currentTab=='attachment'?'active':''">
+        <a (click)="onTabClick(2)">Attachments</a>
+      </li>
+      <li [ngClass]="currentTab=='history'?'active':''">
+        <a (click)="onTabClick(3)">History</a>
+      </li>
+
+    </ul>
+
+    <div class="details-tab">
+
+      <!-- Details-->
+      <div id="tabGeneral" class="panel panel-info" *ngIf="currentTab=='general'">
+        <div class="panel-heading">
+          <h3 class="panel-title"></h3>
+        </div>
+        <div class="panel-body">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Confirmation Type</h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Date of Joining</label>
+                    <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="dateOfJoining" class="form-control"
+                      [(ngModel)]="employeeDetail.dateOfJoining" #fromDate="ngModel" disabled="true">
+                    <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Probation Period (months)</label>
+                    <input name="probationPeriod" class="form-control" [(ngModel)]="employeeDetail.probationPeriod"
+                      disabled="true">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Confirmation Due Date</label>
+
+                    <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="dateOfConfirmation"
+                      class="form-control" [(ngModel)]="employeeDetail.dateOfConfirmation" #fromDate="ngModel"
+                      disabled="true">
+                    <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Confirmation Type<span style="color:red">*</span></label>
+                    <select [(ngModel)]="newConfirmation.confirmationType" class="form-control" id="confirmationType"
+                      name="confirmationType" #appraisalTypeEnt="ngModel" required (change)="onConfimationTypeChange()">
+                      <option *ngFor="let sl of confirmationType" [ngValue]="sl.type">{{sl.type}}</option>
+                    </select>
+                    <span class="help-block" *ngIf="appraisalTypeEnt.touched && !appraisalTypeEnt.valid">Please select
+                      Appraisal Type</span>
+                  </div>
+
+                </div>
+              </div>
+              <div class="row" *ngIf="isExtension">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="col-md-12 control-label text-left">New Confirmation Date<span
+                        style="color:red">*</span></label>
+
+                    <input required [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate"
+                      class="form-control" [(ngModel)]="newConfirmation.newConfirmationDate" #fromDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="col-md-12 control-label text-left">Reason Type <span
+                        style="color:red">*</span></label>
+                    <select [(ngModel)]="newConfirmation.extensionReason" class="form-control" id="hodExtensionReason"
+                      name="hodExtensionReason" #extensionReasonEnt="ngModel" required>
+                      <option *ngFor="let sl of reasonList" [ngValue]="sl.type">{{sl.type}}</option>
+                    </select>
+                    <span class="help-block" *ngIf="extensionReasonEnt.touched && !extensionReasonEnt.valid">Please
+                      select Reason</span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="control-label text-left">Reason Detail <span style="color:red">*</span></label>
+                    <textarea required [(ngModel)]="newConfirmation.extensionReasonText" class="form-control"
+                      id="hodExtensionReasonText" name="hodExtensionReasonText" #reasonTextEnt="ngModel"
+                      required></textarea>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default" *ngIf="!isExtension">
+            <div class="panel-heading">
+              <h3 class="panel-title">Date Details</h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Confirmation Date <span style="color:red">*</span></label>
+                    <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control"
+                      [(ngModel)]="newConfirmation.confirmationDate" #fromDate="ngModel" required>
+                    <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Performance Rating <span style="color:red">*</span></label>
+                  <select [(ngModel)]="newConfirmation.rating" class="form-control" id="performance" name="performance"
+                    #performanceRatingEnt="ngModel" required>
+                    <option *ngFor="let sl of performanceType" [ngValue]="sl.type">{{sl.text}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="performanceRatingEnt.touched && !performanceRatingEnt.valid">Please
+                    select Performance Rating</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default" *ngIf="!isExtension">
+            <div class="panel-heading">
+              <h3 class="panel-title">Approver Details</h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="appraisedBYEmployeeName">Confirmed By (Reporting Manager / HOD)<span
+                        style="color:red">*</span></label>
+                    <input type="text" id="appraisedBYEmployeeName" class="form-control" #appraisedByCatEnt="ngModel"
+                      (keyup)="getAppraiserEmployees($event)" [(ngModel)]="filterModel.appraisedBYEmployeeName"
+                      ngControl="filterModel.appraisedBYEmployeeName" name="appraisedBYEmployeeName" required
+                      autocomplete="off" />
+                    <span class="help-block" *ngIf="appraisedByCatEnt.touched && !appraisedByCatEnt.valid">Please enter
+                      Confirmed by</span>
+                    <input type="hidden" id="appraisedBYEmployeeId" [(ngModel)]="filterModel.appraisedBYEmployeeId"
+                      name="appraisedBYEmployeeId" />
+
+                  </div>
+                </div>
+
+                <!-- <div class="col-md-4" *ngIf="filterModel.confirmedById != null">
+                  <div class="form-group">
+                    <label for="appraisedBYEmployeeName">Confirmed By (Reporting Manager / HOD)<span
+                        style="color:red">*</span></label>
+                    <input type="text" disabled id="appraisedBYEmployeeName" class="form-control"
+                      #appraisedByCatEnt="ngModel" [(ngModel)]="employeeDetail.approvingManagerName"
+                      ngControl="employeeDetail.reportingManagerName" name="appraisedBYEmployeeName" required
+                      autocomplete="off" />
+                    <input type="hidden" id="appraisedBYEmployeeId" [(ngModel)]="employeeDetail.approvingManagerId"
+                      name="appraisedBYEmployeeId" />
+
+                  </div>
+                </div> -->
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="approvedBYEmployeeName">Approved By (Management)<span style="color:red">*</span></label>
+                    <input type="text" id="approvedBYEmployeeName" class="form-control" #approvedByCatEnt="ngModel"
+                      (keyup)="getApproverEmployees($event)" [(ngModel)]="filterModel.approvedBYEmployeeName"
+                      ngControl="filterModel.approvedBYEmployeeName" name="approvedBYEmployeeName" required
+                      autocomplete="off" />
+                    <span class="help-block" *ngIf="approvedByCatEnt.touched && !approvedByCatEnt.valid">Please enter
+                      Approved by</span>
+                    <input type="hidden" id="approvedBYEmployeeId" [(ngModel)]="filterModel.approvedBYEmployeeId"
+                      name="approvedBYEmployeeId" />
+
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label> <input type="checkbox" [(ngModel)]="secondSignatoryRequired" name="secondSignatory" />
+                      Second Signatory </label>
+
+                  </div>
+                </div>
+                <div class="col-md-4" *ngIf="secondSignatoryRequired == true">
+                  <div class="form-group">
+                    <label> Select Signatory <span style="color:red">*</span></label>
+                    <select class="form-control" id="secondSignatoryId" name="secondSignatoryId"
+                      [(ngModel)]="newConfirmation.secondSignatoryId" ngControl="newConfirmation.secondSignatoryId"
+                      name="secondSignatoryId" #secondSignatoryEnt="ngModel" required>
+                      <option [ngValue]="null" disabled [selected]="true"> Select signatory</option>
+                      <option *ngFor="let pl of signatoryList" [ngValue]="pl.employeeId">{{pl.name}}</option>
+                    </select>
+                    <span class="help-block" *ngIf="secondSignatoryEnt.touched && !secondSignatoryEnt.valid">
+                      Please select a value</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default" *ngIf="!isExtension">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <input type="checkbox" name="isDesignationChange" [(ngModel)]="isDesignationChange" />
+                Designation Change</h3>
+            </div>
+
+            <div class="panel-body">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Current Designation</label>
+                  <input type="text" class="form-control" id="oldDesignation" [(ngModel)]="employeeDetail.designation"
+                    disabled name="oldDesignation" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">New Designation</label>
+                  <select [(ngModel)]="filterModel.designationId" (change)="onDesignationSelected($event)"
+                    class="form-control" id="designation" name="designation" matTooltip="Designation"
+                    #designationEnt="ngModel" required [disabled]="!isDesignationChange">
+                    <option [ngValue]="null" disabled [selected]="true"> Select Designation </option>
+                    <option *ngFor="let pl of designationList" [ngValue]="pl.id">{{pl.name}} </option>
+                  </select>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default" *ngIf="!isExtension">
+            <div class="panel-heading">
+              <h3 class="panel-title"><input type="checkbox" name="isRoleChange" [(ngModel)]="isRoleChange" />
+                Role Change</h3>
+            </div>
+            <div class="panel-body">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Current Role</label>
+                  <input type="text" class="form-control" id="oldRole" [(ngModel)]="employeeDetail.role"
+                    ngControl="employee.oldRole" disabled name="oldRole" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">New Role</label>
+                  <select [disabled]="!isRoleChange" [(ngModel)]="filterModel.roleId" class="form-control"
+                    matTooltip="Role" #roleEnt="ngModel" required name="roleId" (change)="onRoleSelected($event)">
+                    <option [ngValue]="null" disabled [selected]="true"> Select Role </option>
+                    <option *ngFor="let pl of roleList" [ngValue]="pl.id">{{pl.role_ltxt}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default" *ngIf="!isExtension">
+            <div class="panel-heading">
+              <h3 class="panel-title"><input type="checkbox" name="isTransfer" [(ngModel)]="isTransfer" />
+                Transfer Details</h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Current Plant</label>
+                    <input type="text" class="form-control" id="oldPlant" [(ngModel)]="employeeDetail.plantName"
+                      ngControl="employee.oldPlant" disabled name="oldPlant" />
+
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">New Plant</label>
+                    <select [disabled]="!isTransfer" [(ngModel)]="filterModel.plantId" class="form-control"
+                      id="appraisalNewPlant" name="appraisalNewPlant" matTooltip="Plant" #plantEnt="ngModel"
+                      (change)="onPlantChange($event)" required>
+                      <option [ngValue]="null" [selected]="true"> Select Plant </option>
+                      <option *ngFor="let pl of plantList" [ngValue]="pl.id">{{pl.code}} - {{pl.name}} </option>
+                    </select>
+                    <!-- <span class="help-block" *ngIf="plantEnt.touched">Please select Plant</span> -->
+
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Current PayGroup</label>
+                    <input type="text" class="form-control" id="oldPaygroup" [(ngModel)]="employeeDetail.payGroupName"
+                      ngControl="employee.oldPaygroup" disabled name="oldPaygroup" />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">New PayGroup</label>
+                    <select [disabled]="!isTransfer" [(ngModel)]="filterModel.payGroupId" class="form-control"
+                      id="offerPayGroup" name="offerPayGroup" matTooltip="Plant" #payGroupEnt="ngModel"
+                      (change)="onPayGroupChange($event)" required>
+                      <option [ngValue]="null" [selected]="true"> Select Pay Group </option>
+                      <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}} - {{pl.payGroup}}
+                      </option>
+                    </select>
+                    <!-- <span class="help-block" *ngIf="payGroupEnt.touched">Please select Pay
+                      Group</span> -->
+
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Current State</label>
+                    <input type="text" class="form-control" id="oldState" [(ngModel)]="employeeDetail.state"
+                      ngControl="employee.oldState" disabled name="oldState" />
+
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">New State</label>
+                    <select [disabled]="!isTransfer" [(ngModel)]="filterModel.stateId" class="form-control"
+                      (change)="onStateChange($event)" id="offerlocationState" name="offerlocationState"
+                      matTooltip="State" #locationStateEnt="ngModel" required>
+                      <option [ngValue]="null" disabled [selected]="true"> Select State </option>
+                      <option *ngFor="let pl of stateList" [ngValue]="pl.id">{{pl.bezei}}</option>
+                    </select>
+                    <!-- <span class="help-block" *ngIf="locationStateEnt.touched">Please select
+                      State</span> -->
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Current Location</label>
+                    <input type="text" class="form-control" id="oldLocation" [(ngModel)]="employeeDetail.location"
+                      ngControl="employee.oldLocation" disabled name="oldLocation" />
+
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">New Location</label>
+                    <select [disabled]="!isTransfer" [(ngModel)]="filterModel.locationId" class="form-control"
+                      id="offerLocation" name="offerLocation" (change)="onLocationSelected($event)"
+                      matTooltip="Location" #locationEnt="ngModel" required>
+                      <option [ngValue]="null" disabled [selected]="true"> Select Location </option>
+                      <option *ngFor="let pl of locationList" [ngValue]="pl.id">{{pl.name }} </option>
+                    </select>
+                    <!-- <span class="help-block" *ngIf="locationEnt.touched">Please select
+                      Location</span> -->
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Current Department</label>
+                    <input type="text" class="form-control" id="oldDepartment" [(ngModel)]="employeeDetail.department"
+                      ngControl="employee.oldDepartment" disabled name="oldDepartment" />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">New Department</label>
+                    <select [disabled]="!isTransfer" [(ngModel)]="filterModel.departmentId" class="form-control"
+                      id="department" name="department" #departmentEnt="ngModel" (change)="onDepartmentChange($event)">
+                      <option *ngFor="let dl of departmentList" [ngValue]="dl.id">{{dl.description }} </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Current Sub-Department</label>
+                    <input type="text" class="form-control" id="oldSubDepartment" ngControl="employee.oldSubDepartment"
+                      [(ngModel)]="employeeDetail.subDepartmentName" disabled name="oldSubDepartment" />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">New Sub-Department</label>
+                    <select [disabled]="!isTransfer" class="form-control" id="subDepartmentId"
+                      [(ngModel)]="filterModel.subDepartmentId" (change)="onSubDepartmentSelected($event)"
+                      ngControl="filterModel.subDepartmentId" name="subDepartmentId">
+                      <option [ngValue]="null" disabled [selected]="true"> Select sub-department </option>
+                      <option *ngFor="let pl of subDepartmentList" [ngValue]="pl.id">{{pl.sdptidLtxt}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Current Reporting Manager</label>
+                    <input type="text" class="form-control" id="oldRM" [(ngModel)]="employeeDetail.reportingManagerName"
+                      ngControl="employeeDetail.rmName" disabled name="oldRM" />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="rmName">New Reporting Manager</label>
+                    <input [disabled]="!isTransfer" type="text" id="rmName" class="form-control" #rmCatEnt="ngModel"
+                      (keyup)="getRMEmployees($event)" [(ngModel)]="filterModel.rmName" ngControl="filterModel.rmName"
+                      name="rmName" required autocomplete="off" />
+                    <span class="help-block" *ngIf="rmCatEnt.touched && !rmCatEnt.valid">Please enter
+                      RM</span>
+                    <input type="hidden" id="rmId" [(ngModel)]="filterModel.rmId" name="rmId" />
+
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Current HOD</label>
+                    <input type="text" class="form-control" id="oldHod"
+                      [(ngModel)]="employeeDetail.approvingManagerName" ngControl="employee.hodName" disabled
+                      name="oldHod" />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="hodName">New HOD</label>
+                    <input [disabled]="!isTransfer" type="text" id="hodName" class="form-control" #hodCatEnt="ngModel"
+                      (keyup)="getHodEmployees($event)" [(ngModel)]="filterModel.hodName"
+                      ngControl="filterModel.hodName" name="hodName" required autocomplete="off" />
+                    <span class="help-block" *ngIf="hodCatEnt.touched && !hodCatEnt.valid">Please enter
+                      Hod</span>
+                    <input type="hidden" id="hodId" [(ngModel)]="filterModel.hodId" name="hodId" />
+
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                 <label for="noticePeriod">Current Notice Period</label>
+                 <input type="text" class="form-control" id="noticePeriod" [(ngModel)]="employeeDetail.noticePeriod"
+                   ngControl="employee.noticePeriod" disabled name="noticePeriod" />
+               </div>
+               <div class="col-md-4">
+                   <label for ="noticePeriod">New Notice Period in Months</label>
+                   <select class="form-control" id="newNoticePeriod" name="newNoticePeriod"
+                   [(ngModel)]="filterModel.noticePeriod" ngControl="filterModel.noticePeriod" [disabled]="!isTransfer" >
+                     <option disabled> Select months </option>
+                     <option value="0">0</option>
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                   </select>
+                     <span class="help-block" *ngIf="submitted && !noticePeriodEnt.valid">
+                       Please select a value</span> 
+               </div>
+               </div>
+            </div>
+          </div>
+          <div class="panel panel-default" *ngIf="!isExtension">
+            <div class="panel-heading">
+              <h3 class="panel-title"><input type="checkbox" name="isStaffCategoryChange"
+                  [(ngModel)]="isStaffCategoryChange" />
+                Staff Category Change</h3>
+            </div>
+            <div class="panel-body">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Current Category</label>
+                  <input type="text" class="form-control" id="oldCategory"
+                    [(ngModel)]="employeeDetail.employeeCategoryName" ngControl="employee.oldCategory" disabled
+                    name="oldCategory" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">New Category</label>
+                  <select [disabled]="!isStaffCategoryChange" [(ngModel)]="filterModel.employeeCategoryId"
+                    class="form-control" id="offerEmployeeCategory" (change)="onStaffCategorySelected($event)"
+                    name="offerEmployeeCategory" matTooltip="Employee Category" #empCatEnt="ngModel" required>
+                    <option [ngValue]="null" disabled [selected]="true"> Select Employee Category </option>
+                    <option *ngFor="let pl of employeeCategoryList" [ngValue]="pl.id">{{pl.catltxt}} </option>
+                  </select>
+                  <!-- <span class="help-block" *ngIf="empCatEnt.touched">Please select Employee
+                    Category</span> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default" *ngIf="!isExtension">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                Additional Notes</h3>
+            </div>
+            <div class="panel-body">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="additionalNotes">Additional Notes</label>
+                  <textarea [(ngModel)]="newConfirmation.additionalNotes" class="form-control" id="additionalNotes"
+                    name="additionalNotes" #additionalNotesEnt="ngModel"></textarea>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Salary Details-->
+      <div id="tabSalary" class="panel panel-default" *ngIf="currentTab=='salary'">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            <input type="checkbox" name="isSalaryChange" [(ngModel)]="isSalaryChange" />
+            Salary Recommendation</h3>
+        </div>
+        <div class="panel-body">
+          <div *ngIf="isSalaryChange">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="col-md-4">
+                    <label for="initial">Salary Processing Month<span style="color:red">*</span></label>
+                    <select [(ngModel)]="newConfirmation.salaryProcessingMonth" class="form-control"
+                      id="salaryProcessingMonth" name="salaryProcessingMonth" #salaryProcessingMonthEnt="ngModel"
+                      required>
+                      <option *ngFor="let sl of salaryProcessingMonths" [ngValue]="sl.type">{{sl.type}}</option>
+                    </select>
+                    <span class="help-block"
+                      *ngIf="salaryProcessingMonthEnt.touched && !salaryProcessingMonthEnt.valid">Please select month
+                      Month</span>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="initial">Salary Processing Year<span style="color:red">*</span></label>
+                    <input type="number" class="form-control" [(ngModel)]="newConfirmation.salaryProcessingYear"
+                      id="salaryProcessingYear" name="salaryProcessingYear" #salaryProcessingYearEnt="ngModel" required
+                      minlength="4" maxlength="4" />
+                    <span class="help-block"
+                      *ngIf="salaryProcessingYearEnt.touched && !salaryProcessingYearEnt.valid">Please enter year</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="col-md-4">
+                    <label for="initial">Effective Month<span style="color:red">*</span></label>
+                    <select [(ngModel)]="newConfirmation.effectiveDateMonth" class="form-control"
+                      id="effectiveDateMonth" name="effectiveDateMonth" #effectiveDateMonthEnt="ngModel"
+                      (change)="setEffectiveDate()" required>
+                      <option *ngFor="let sl of salaryProcessingMonths" [ngValue]="sl.type">{{sl.type}}</option>
+                    </select>
+                    <span class="help-block"
+                      *ngIf="effectiveDateMonthEnt.touched && !effectiveDateMonthEnt.valid">Please select
+                      Month</span>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="initial">Effective Year<span style="color:red">*</span></label>
+                    <input type="number" class="form-control" [(ngModel)]="newConfirmation.effectiveDateYear"
+                      id="effectiveDateYear" name="effectiveDateYear" #effectiveDateYearEnt="ngModel"
+                      (change)="setEffectiveDate()" required minlength="4" maxlength="4" />
+                    <span class="help-block" *ngIf="effectiveDateYearEnt.touched && !effectiveDateYearEnt.valid">Please
+                      enter year</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Next Revision Date</label>
+                    <input [owlDateTime]="dt20" [owlDateTimeTrigger]="dt20" name="nextRevisionDate" class="form-control"
+                      [(ngModel)]="newConfirmation.nextRevisionDate" #fromDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dt20></owl-date-time>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <app-confirmation-employee-readonlysalary [employeeId]="employeeId" *ngIf="currentTab=='salary'">
+
+                  </app-confirmation-employee-readonlysalary>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="form-group" *ngIf="isSalaryChange">
+                  <app-confirmation-employee-salary [employeeId]="employeeId" [isSalaryChange]="isSalaryChange"
+                    [employeeConfirmationId]="employeeConfirmationId" (dataSaved)="onDataSaved($event)"
+                    [newPlantId]="filterModel.plantId" [effectiveDate]="selectedEffectiveText"
+                    [newPayGroupId]="filterModel.payGroupId" [newDesignationId]="filterModel.designationId"
+                    [newEmployeeCategoryId]="filterModel.employeeCategoryId" *ngIf="currentTab=='salary'">
+
+                  </app-confirmation-employee-salary>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="tabAttachment" *ngIf="currentTab=='attachment'">
+        <app-employee-attachments [employeeId]="this.employeeId" [editAllowed]="true" [deleteAllowed]="true"
+          [objectId]="this.employeeConfirmationId" [objectType]="this.objectType"></app-employee-attachments>
+      </div>
+      <!-- History Details -->
+      <div id="tabHistory" *ngIf="currentTab=='history'">
+
+        <app-confirmation-history [employeeId]="employeeId" *ngIf="employeeId > 0"></app-confirmation-history>
+      </div>
+
+
+
+    </div>
+  </form>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="form-group text-center actionButtons">
+    <span class="text-red pull-left" *ngIf="errMsg.length>0"><i class="fa fa-warning"></i>{{errMsg}}</span>
+
+    <button type="button" (click)="goBack()" class="btn btn-sm btn-default" [matTooltipPosition]="'after'"
+      matTooltip="Click to go back to list">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <button type="button" class="btn btn-default" *ngIf="currentTab=='salary' || currentTab=='attachment'" (click)="onPrevious()">Previous</button>
+
+    <button type="button" class="btn btn-primary" *ngIf="(currentTab=='general' || currentTab=='salary') && !isExtension" (click)="onNext()"
+      matTooltip="Click to save details and add other details"
+      [disabled]="isLoading || !appraisalForm.valid">Next</button>
+
+    <button type="button" class="btn btn-success" *ngIf="currentTab=='attachment' || isExtension" (click)="submit()"
+      matTooltip="Click to save details and submit for approval"
+      [disabled]="isLoading || !appraisalForm.valid">Submit</button>
+
+  </div>
+
+
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="employeeConfirmationId" [objectType]="this.objectType">
+        </app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="employeeConfirmationId" [objectType]="this.objectType">
+        </app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>

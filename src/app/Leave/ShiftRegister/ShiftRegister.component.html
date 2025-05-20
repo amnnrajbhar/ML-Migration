@@ -1,0 +1,221 @@
+<section class="content-header">
+  <h1>
+    Shift Register
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Shift Register</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Shift Register</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <!-- <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right"
+          (click)="onAddRulesMaster(false,RulesMasterItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add
+          New Rule</button>
+      </div> -->
+    </div>
+
+    <div class="datafilter">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="baseplant"> Plant <span style="color: red;">*</span> </label>
+              <select [(ngModel)]="filterLocation" class="form-control" id="plant" name="plant" matTooltip="plant"
+                #plantEnt="ngModel" (change)="onplantchange()">
+                <option [ngValue]="undefined" disabled [selected]="true"> Select plant </option>
+                <option *ngFor="let pl of plantList" value={{pl.fkPlantId}}>{{pl.code}}-{{pl.name}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="payGroup"> Pay Group</label>
+              <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup" name="payGroup"
+                matTooltip="Pay Group" #payGroup1Ent="ngModel" (change)="getUsersList();">
+                <option [ngValue]="null" disabled [selected]="true"> Select Pay Group </option>
+                <option *ngFor="let pl of payGroupList1" value={{pl.id}}>{{pl.short_desc}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="empcat">Employee Category</label>
+              <select [(ngModel)]="filterCategory" class="form-control" id="empcat" name="empcat" matTooltip="staff Cat"
+                #empcatEnt="ngModel" (change)="getUsersList();">
+                <option [ngValue]="null" disabled [selected]="true"> Select Emp Category </option>
+                <option *ngFor="let pl of empCatList" value={{pl.id}}>{{pl.catltxt}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="dept">Department</label>
+              <select [(ngModel)]="filterDepartment" class="form-control" id="dept" name="dept" matTooltip="Department"
+                #deptEnt="ngModel" (change)="getUsersList();">
+                <option [ngValue]="null" disabled [selected]="true"> Select Department </option>
+                <option *ngFor="let pl of departmentList" value={{pl.id}}>{{pl.name}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="sdept">Sub Department</label>
+              <select [(ngModel)]="filterSubDepartment" class="form-control" id="sdept" name="sdept"
+                matTooltip="Sub Department" #sdeptEnt="ngModel" (change)="getUsersList();">
+                <option [ngValue]="null" disabled [selected]="true"> Select Sub Department </option>
+                <option *ngFor="let pl of subDeptList" value={{pl.id}}>{{pl.sdptidStxt}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label #native for="Year"> Year </label>
+              <input type="number" [(ngModel)]="calYear" class="form-control" id="year" placeholder="Year" name="year"
+                ngControl="calYear" #calYearEnt="ngModel" [disabled]="showCalendar">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="month">Month <span style="color:red">*</span> </label>
+              <select name="fltrmonth" id="fltrmonth" class="form-control" [(ngModel)]="month"
+                placeholder="Select Month" required ngControl="filterMonth">
+                <option [ngValue]="null" disabled [selected]="true">--Select Month--</option>
+                <option value="1">Jan</option>
+                <option value="2">Feb</option>
+                <option value="3">Mar</option>
+                <option value="4">Apr</option>
+                <option value="5">May</option>
+                <option value="6">Jun</option>
+                <option value="7">Jul</option>
+                <option value="8">Aug</option>
+                <option value="9">Sep</option>
+                <option value="10">Oct</option>
+                <option value="11">Nov</option>
+                <option value="12">Dec</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="Action">Rotational</label>
+              <div class="row">
+                <mat-radio-group aria-label="Select option?" id="filterStatus" name="filterStatus"
+                  [(ngModel)]="filterStatus" [disabled]="isEdit" ngControl="filterStatus" #filterStatusEnt="ngModel">
+                  <mat-radio-button value=true>Yes</mat-radio-button>
+                  &nbsp;&nbsp;&nbsp;
+                  <mat-radio-button value=false>No</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="emp">Employee No.</label>
+            <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode" #fltrdelrymodeEnt="ngModel"
+              matTooltip="select Employee no" [placeholder]="'Select Employee No.(s)'" [data]="empListCon"
+              [(ngModel)]="selectedEmployeeList" [settings]="deliveryModeSettings" (onDeSelect)="onItemDeSelect($event)"
+              (onDeSelectAll)="onDeSelectAll($event)" (onSelectAll)="onSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+          <div class="col-sm-4">
+            <label>&nbsp;</label>
+            <div class="form-group">
+              <button class="btn btn-success" (click)="getFilteredList();" matTooltip="click to go"
+                [disabled]="isLoading"><i class="fas fa-angle-double-right"></i>&nbsp; Go</button>
+              &nbsp;&nbsp;
+              <button class="btn btn-danger" (click)="clearFilter();" matTooltip="click to reset"><i
+                  class="fas fa-times"></i>&nbsp; Clear</button>
+              &nbsp;&nbsp;
+              <button class="btn btn-warning" (click)="exportExcel();" matTooltip="click to export"><i
+                  class="fas fa-file-excel"></i>&nbsp; Export to Excel
+              </button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <br>
+    <br>
+    &nbsp;
+    &nbsp;
+
+    <p style="color: rgb(0, 26, 255);">
+      <b>
+        &nbsp;&nbsp; NOTE: W: WORKING, WO: WEEKOFF, SS: SECOND
+        SATURDAY, TS: THIRD SATURDAY, PH: PUBLIC HOLIDAY, SH: SPECIAL HOLIDAY
+      </b>
+    </p>
+    <br>
+
+    <div class="box-body table-responsive">
+
+      <table id="location" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <!-- <th>
+            <input type="checkbox" [(ngModel)]="isMasterSel" name="list_name" (change)="checkUncheckAll()">
+            &nbsp;&nbsp;&nbsp;
+            <label for="selectall">Select All</label>
+          </th> -->
+            <th>SNo</th>
+            <th>Plant</th>
+            <th>Pay Group</th>
+            <th>Emp Code</th>
+            <th>Emp Name</th>
+            <th>Designation</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Date</th>
+            <th>Day</th>
+            <th>Status</th>
+            <th>Shift </th>
+            <th>Shift Start Time</th>
+            <th>Shift End Time</th>
+            <th>Rotational</th>
+
+            <!-- <th class="col-sm-1"></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lm of ShiftAssignmentList; let i = index">
+            <!-- <td> <input type="checkbox" [id]="'chkusage'+lm.id" [name]="'send'+lm.id" [(ngModel)]="lm.isSelected"
+              (change)="isAllSelected()" #usageEnt="ngModel">
+          </td> -->
+            <td>{{i+1}}</td>
+            <td>{{lm.locid}}</td>
+            <td>{{lm.short_desc}}</td>
+            <td>{{lm.pernr}}</td>
+            <td>{{lm.emp_fullname}}</td>
+            <td>{{lm.dsgstxt}}</td>
+            <td>{{lm.role }}</td>
+            <td>{{lm.dptstxt }}</td>
+            <td>{{lm.date | date : 'dd/MM/yyyy' }}</td>
+            <td>{{lm.day}}</td>
+            <td>{{lm.status}}</td>
+            <td>{{lm.shift}} -{{lm.shift_Name}}</td>
+            <td>{{lm.shift_start_time }}</td>
+            <td>{{lm.shift_End_Time }}</td>
+            <td>{{lm.rotational==true?'Yes':'No'}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>

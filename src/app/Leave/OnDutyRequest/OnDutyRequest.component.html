@@ -1,0 +1,825 @@
+<section class="content-header">
+    <h1 class="display-1">
+        OnDuty
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">OnDuty</li>
+    </ol>
+</section>
+<section class="content">
+
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-info pull-right" (click)="ApplyOnDuty(false,'','')"><i
+                        class="fa fa-plus" aria-hidden="true"></i>
+                    New OnDuty Request</button>
+            </div>
+        </div>
+    </div>
+
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+
+    <div class="box">
+        <div class="box-header" style="height:2in ;text-align: ceter; background-color:#dcdcdc;
+                  align-items: center;">
+            <div class="col-xs-12" style="text-align: ceter;">
+                <h4 style="text-align: center;">Next Holiday</h4>
+                <h2 style="text-align: center;"><strong>{{Holiday}}</strong></h2>
+                <h4 *ngIf="HolidayDate != null" style="text-align: center;">{{HolidayDate | date:'EEE, MMM d, y'}}
+                </h4><br>
+                <div class="col-sm-12">
+                    <div class="col-sm-4">&nbsp;</div>
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-2">
+
+                        <select [(ngModel)]="holidayname" class="form-control" id="holidayname" name="holidayname"
+                            matTooltip="Holidays" #holidayt1Ent="ngModel">
+                            <option [ngValue]="null" disabled [selected]="true">--Show All--</option>
+                            <option *ngFor="let pl of holidaysList" disabled>{{pl.date | date:'dd/MM/yyyy, EEE'}} -
+                                {{pl.holidayName}}</option>
+                        </select>
+                        <!-- <select class="accordion" (click)="toggleAccordian($event, i)"> Show All
+                                    Holidays</select>
+                                <div class="panel" hide="!Active">
+                                    <p *ngFor="let pl of holidaysList"> {{pl.holidayName}} </p>
+                                </div> -->
+
+                    </div>
+                    <div class="col-sm-1">&nbsp;</div>
+                    <div class="col-sm-4">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body">
+
+            &nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label for="head" class="align-left">
+                            <h2><strong>Upcoming OnDuty Requests</strong></h2>
+                        </label>
+                        <div *ngIf="!upcomingRequests.length>0" class="bordered"
+                            style="border-style:dashed ; border-color: #777; border-width: 1px;">
+                            &nbsp;<label for="label">&nbsp;</label><br>
+                            &nbsp;<label for="label">&nbsp;</label><br>
+                            &nbsp;<label for="label">No upcoming onduty requests</label><br>
+                            &nbsp;<label for="label">&nbsp;</label><br>
+                            &nbsp;<label for="label">&nbsp;</label><br>
+
+                        </div>
+                        <div *ngIf="upcomingRequests.length>0" class="bordered"
+                            style="border-style:dashed ; border-color: #777; border-width: 1px;">
+                            <div *ngFor="let up of upcomingRequests;let i=index;">
+                                <label>{{up.onDutyType}} - {{up.startDate | date:'EEE, MMM d, y'}}- {{up.location}} -
+                                    {{up.approverStatus}}</label><br>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div class="col-sm-12 pull-left">
+                    <label>
+                        <h2><strong>History</strong></h2>
+                    </label>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-3">
+                        <label for="calyear">Calender Year</label>
+                        <input type="number" [(ngModel)]="CalYear" class="form-control" id="year" placeholder="Year"
+                            matTooltip="Year" name="year" ngControl="CalYear" #calYear1Ent="ngModel"
+                            (change)="getEmpOnDutyRequests()">
+                    </div>
+                    <div class="col-sm-4">
+                        &nbsp;
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-danger" (click)="cancelapprovedleavelist()"
+                            matTooltip="Click to cancel onduty"> <i class="fas fa-times"></i>&nbsp;Cancel
+                            OnDuty</button>
+                    </div>
+                    <div class="col-sm-3" *ngIf="CancelLeaveflag">
+                        <button type="button" class="btn btn-info" (click)="getEmpOnDutyRequests()"
+                            matTooltip="Click to get employee onduty requests"><i class="fa fa-history"></i>&nbsp;Show
+                            All OnDuty Requests</button>
+                    </div>
+                </div>
+                <div class="box-body table-responsive ">
+                    <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr *ngIf="CancelLeaveflag">
+                                <th colspan="14" style="text-align: center;background-color: #0099cc; color:white;">My
+                                    Approved OnDuty Requests</th>
+                            </tr>
+                            <tr *ngIf="CancelLeaveflag">
+                                <th colspan="14" style="background-color: #0099cc; color:white;">Note : Request of
+                                    Cancellation of Onduty can be applied for the
+                                    previous 2 months only</th>
+                            </tr>
+                            <tr>
+                                <th class="col-sm-1">Sl.No</th>
+                                <th>Request No</th>
+                                <th>OnDuty Type</th>
+                                <th>Plant</th>
+                                <th>Request Date</th>
+                                <th>Start Date</th>
+                                <th>Start Time</th>
+                                <th>End Date</th>
+                                <th>End Time</th>
+                                <th>Status</th>
+                                <th>Pending With</th>
+                                <th class="col-sm-1">View</th>
+                                <th class="col-sm-1">Edit</th>
+                                <th>Cancel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let categ of OnDutyRequestList;  let i = index">
+                                <td>{{i+1}}</td>
+                                <td><b>{{categ.requestNo}}</b></td>
+                                <td>{{categ.onDutyType}}</td>
+                                <td>{{categ.location}}</td>
+                                <td>{{categ.submitDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+                                <td>{{categ.startDate | date:'dd/MM/yyyy'}}</td>
+                                <td>{{binddatetime1(categ.startTime) | date:'hh:mm a'}}</td>
+                                <td>{{categ.endDate | date:'dd/MM/yyyy'}}</td>
+                                <td>{{binddatetime1(categ.endTime) | date:'hh:mm a'}}</td>
+                                <td>{{categ.approverStatus}}</td>
+                                <td>{{categ.pendingApprover}}</td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td class="pr-2">
+                                                <button type="button" class="btn btn-info btn-xs"
+                                                    (click)="ApplyOnDuty(true,categ,'View')"
+                                                    matTooltip="Click to view details">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                &nbsp;
+                                                <button type="button" class="btn btn-warning btn-xs"
+                                                    (click)="printOnDuty(categ)"
+                                                    matTooltip="Click to Print On Duty details">
+                                                    <i class="fas fa-print"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td class="pr-2">
+                                                <button type="button" class="btn btn-info btn-xs"
+                                                    *ngIf="categ.approverStatus == 'DRAFT'"
+                                                    (click)="ApplyOnDuty(true,categ,'')"
+                                                    matTooltip="Click to edit details">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </button>
+                                                &nbsp;
+                                                <button type="button" class="btn btn-info btn-xs" *ngIf="categ.onDutyType=='Work From Home' && (categ.approverStatus == 'Pending'
+                                                    || categ.approverStatus == 'In Process')"
+                                                    (click)="ApplyOnDuty(true,categ,'')"
+                                                    matTooltip="Click to edit details">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td class="pr-2">
+                                                <button
+                                                    *ngIf="categ.approverStatus=='In Process' || categ.approverStatus == 'Pending'"
+                                                    type="button" class="btn btn-xs btn-danger"
+                                                    (click)="CancelOnDuty(categ)"
+                                                    matTooltip="Click to self cancel OnDuty">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                                <button *ngIf="CancelLeaveflag && categ.approverStatus=='Approved'"
+                                                    type="button" class="btn btn-xs btn-danger"
+                                                    (click)="CancelApprovedLeaveView(false,categ,'View')"
+                                                    matTooltip="Click to cancel OnDuty">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">New OnDuty Request</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #onDutyForm="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-6" *ngIf="router.url !='/OnDutyRequestEss'">
+                                <div class="form-group">
+                                    <label for="ApplyFor">Apply for </label>
+                                    <select [(ngModel)]="ApplyFor" class="form-control" id="ApplyFor" name="ApplyFor"
+                                        matTooltip="Apply For" #ApplyForEnt="ngModel" [disabled]="isEdit" required>
+                                        <option [ngValue]="null" disabled [selected]="true">--Select--</option>
+                                        <option>Self</option>
+                                        <option>Others</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-4" *ngIf="ApplyFor=='Others'">
+                                <div class="form-group">
+                                    <label for="userId">Employee Id <span style="color: red;">*</span> </label>
+                                    <input type="text" name="userId" id="userId" (keyup)="getEmployee($event)"
+                                        [(ngModel)]="userId" placeholder="Enter Emp No to get Approvers"
+                                        class="form-control" matTooltip="userId" [disabled]="isEdit"
+                                        #userIdEnt="ngModel" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-2" *ngIf="ApplyFor=='Others'">
+                                <label for="">&nbsp;</label>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success btn mr-3" style="width: 100px;"
+                                        (click)="getApproversList(userId);">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="OnDutyType">OnDuty Type <span style="color: red;">*</span> </label>
+                                    <select [(ngModel)]="OnDutyType" class="form-control" id="OnDutyType"
+                                        name="OnDutyType" matTooltip="OnDuty Type" #OnDutyTypeEnt="ngModel"
+                                        [disabled]="isEdit" required>
+                                        <option [ngValue]="null" disabled [selected]="true"> Select OnDuty Type
+                                        </option>
+                                        <option *ngFor="let pl of ReasonList" value={{pl.detailedReason}}>
+                                            {{pl.detailedReason}}
+                                        </option>
+                                    </select>
+                                    <span class="help-block"
+                                        *ngIf="!OnDutyTypeEnt.valid && OnDutyTypeEnt.touched">Please select
+                                        OnDuty
+                                        Type .</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="location">Plant </label>
+                                    <select [(ngModel)]="Plant" class="form-control" id="location" name="location"
+                                        matTooltip="Plant" #locationEnt="ngModel" [disabled]="isEdit">
+                                        <option [ngValue]="null" disabled [selected]="true"> Select Plant
+                                        </option>
+                                        <option *ngFor="let pl of locationAllList" value={{pl.code}}>
+                                            {{pl.code}}-{{pl.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="area">Area/Location</label>
+                                    <input type="text" name="area" id="area" placeholder="Area OR Location"
+                                        [(ngModel)]="Areaorlocation" class="form-control" matTooltip="Area/Location"
+                                        [disabled]="isEdit" #areaEnt="ngModel">
+
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="startDate">
+                                        Start Date <span style="color:red">*</span>
+                                    </label>
+                                    <div class='input-group date'>
+                                        <input id="startDate" name="startDate" class="form-control"
+                                            [(ngModel)]="fromDate" [min]="min" [owlDateTime]="dtStart"
+                                            placeholder="DD/MM/YYYY" [owlDateTimeTrigger]="dtStart"
+                                            (ngModelChange)="getTimings(fromDate);" [matTooltipPosition]="'below'"
+                                            matTooltip="Click to change startDate" #startDate1="ngModel"
+                                            [disabled]="isEdit" required>
+                                        <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                    <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+                                    <span class="help-block" *ngIf="!startDate1.valid && startDate1.touched">Please
+                                        enter valid Start
+                                        Date.</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="startTime">
+                                        Start Time <span style="color:red">*</span>
+                                    </label>
+                                    <input #startTime1="ngModel" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change Start Time" [owlDateTime]="dt2"
+                                        [owlDateTimeTrigger]="dt2" id="startTime" name="startTime" class="form-control"
+                                        onkeydown="return false;" [(ngModel)]="fromTime" [disabled]="isEdit" required>
+                                    <owl-date-time [pickerType]="'timer'" hour12Timer="true" #dt2></owl-date-time>
+                                    <span class="help-block" *ngIf="!startTime1.valid && startTime1.touched">Please
+                                        enter valid Start
+                                        Time.</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="endDate">
+                                        End Date <span style="color:red">*</span>
+                                    </label>
+                                    <div class='input-group date'>
+                                        <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate"
+                                            [min]="fromDate" [owlDateTime]="dtEnd" [owlDateTimeTrigger]="dtEnd"
+                                            placeholder="DD/MM/YYYY" [matTooltipPosition]="'below'"
+                                            (ngModelChange)="getDate(toDate)" matTooltip="Click to change End Date"
+                                            #endDate1="ngModel" [disabled]="isEdit" required>
+                                        <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtEnd">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                    <owl-date-time [pickerType]="'calendar'" #dtEnd></owl-date-time>
+                                    <span class="help-block" *ngIf="!endDate1.valid && endDate1.touched">Please enter
+                                        valid End Date.</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="endTime">
+                                        End Time <span style="color:red">*</span>
+                                    </label>
+                                    <input #endTime1="ngModel" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change End Time" [owlDateTime]="dt4"
+                                        [owlDateTimeTrigger]="dt4" id="endTime" name="endTime" class="form-control"
+                                        onkeydown="return false;" [(ngModel)]="toTime" [disabled]="isEdit" required>
+                                    <owl-date-time [pickerType]="'timer'" hour12Timer="true" #dt4></owl-date-time>
+                                    <span class="help-block" *ngIf="!endTime1.valid && endTime1.touched ">Please
+                                        enter valid End Time.</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="detailedReason">Detailed Reason (max 300 char) <span
+                                            style="color: red;">*</span></label>
+                                    <textarea name="detailedReason" id="detailedReason" cols="30" rows="4"
+                                        placeholder="Enter Detailed Reason" maxlength="300" matTooltip="Detailed Reason"
+                                        [(ngModel)]="DetailedReason" class="form-control" [disabled]="isEdit"
+                                        required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="lvaddress">Address during OnDuty</label>
+                                    <textarea name="lvaddress" id="lvaddress" maxlength="150" matTooltip="Address"
+                                        placeholder="Address during OnDuty" [(ngModel)]="OnDutyAddress"
+                                        class="form-control" [disabled]="isEdit"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="lvcontact">Contact Number </label>
+                                    <input type="text" name="lvcontact" id="lvcontact" [(ngModel)]="OnDutyContactNo"
+                                        placeholder="Contact No." class="form-control" matTooltip="Contact Number"
+                                        [disabled]="isEdit" #lvcontactEnt="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="person">Person responsible in my absence</label>
+                                    <input type="text" name="personName" id="personName"
+                                        placeholder="Personal responsible in my Absence"
+                                        (keyup)="getpersonResponsible($event)" [(ngModel)]="personName"
+                                        class="form-control" matTooltip="Person Responsible" [disabled]="isEdit"
+                                        #responsibleEnt="ngModel">
+                                    <input type="hidden" id="person" class="form-control"
+                                        (keyup)="getpersonResponsible($event)" [(ngModel)]="personResponsible"
+                                        ngControl="personResponsible" name="person" />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col-sm-12">
+                                <label style="color: #009cd1;"><strong>NOTE:If OnDuty type is selected as 'Work from
+                                        Home' then a Report should
+                                        be uploaded after Submission of Request. </strong></label>
+                            </div>
+                        </div>
+                        &nbsp; &nbsp; &nbsp;
+                        <div class="row">
+                            <div class="box">
+                                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                                    <div class="col-xs-6">
+                                        <h3 class="box-title">Supporting Documents</h3>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row" *ngIf="!isEdit">
+                                        <label style="color: red;">NOTE:Attachments should be of type DOC, PDF and JPG
+                                            only and maximum size of 5 mb allowed. </label>
+                                    </div>
+                                    <div class="row" *ngIf="!isEdit">
+                                        <div class="col-sm-12" *ngIf="!isEdit">
+                                            <input #myInput type="file" accept=".jpeg,.pdf,.docx,.png" id="file"
+                                                (change)="handleFileInput($event.target.files)" multiple>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row" *ngFor="let attach of fileslist1">
+                                        <div class="col-sm-9">
+                                            <label for="attachments"></label><a (click)="downloadFile(reqNo,attach);"
+                                                style="cursor: pointer;text-decoration: underline; color: #68a7d2;"
+                                                [matTooltipPosition]="'below'"
+                                                matTooltip="Click to download the file">{{attach}}</a>
+                                        </div>
+                                        <div class="col-sm-3" *ngIf="!isEdit && attach!= null">
+                                            <button title="Remove Files" (click)="removefile(attach,reqNo);"
+                                                matTooltip="Click to delete" class="btn btn-secondary btn-sm">
+                                                <i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        &nbsp; &nbsp; &nbsp;
+                        <div class="row">
+                            <table class="table table-striped table-bordered">
+                                <tr style="background-color: #b2d1e5;">
+                                    <td colspan="7" style="width: 100%;">
+                                        <strong><b>Approver Details</b></strong>
+                                    </td>
+                                </tr>
+                                <tr style="background-color: #b2d1e5;">
+                                    <th style="width: 10%;"><b>Type</b></th>
+                                    <th style="width: 10%;"><b>Employee Code</b></th>
+                                    <th style="width: 20%;"><b>Name</b></th>
+                                    <th style="width: 20%;"><b>Designation</b></th>
+                                    <th style="width: 20%;"><b>Role</b></th>
+                                    <th style="width: 10%;"><b>Approver Status</b></th>
+                                    <th style="width: 10%;"><b>Approved Date</b></th>
+                                </tr>
+                                <tr *ngFor="let ty of ApproversList; let i = index">
+                                    <td>{{ty.type}}</td>
+                                    <td>{{ty.employeeId}}</td>
+                                    <td>{{ty.name}}</td>
+                                    <td>{{ty.designation}}</td>
+                                    <td>{{ty.role}}</td>
+                                    <td>{{approverStatus}}</td>
+                                    <td>{{approvedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button *ngIf="!view" type="button" class="btn btn-info" matTooltip="Click to submit to draft"
+                    (click)="OnSaveOnDutyRequest('Draft')" [disabled]="isLoadingPop || (!onDutyForm.valid)"><i
+                        class="fa fa-clock"></i>&nbsp; Save Draft</button>
+                <button *ngIf="!view" type="button" class="btn btn-success" matTooltip="Click to submit OnDuty"
+                    (click)="OnSaveOnDutyRequest('Applied')" [disabled]="isLoadingPop || (!onDutyForm.valid)"><i
+                        class="fas fa-angle-double-right"></i>&nbsp; Submit</button>
+                <button *ngIf="!view" type="button" class="btn btn-danger" matTooltip="Click to clear the details"
+                    (click)="ClearData()"><i class="fas fa-times"></i>&nbsp; Clear</button>
+                <button type="button" class="btn btn-default" matTooltip="Click to close the form"
+                    style="background-color:darkgray;color:white;" data-dismiss="modal"
+                    [disabled]="isLoadingPop">Close</button>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade" id="CancelModal" tabindex="-1" role="dialog" aria-labelledby="CancelModalLabel"
+    aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Cancel OnDuty Request</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #onDutyForm1="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="OnDutyType">OnDuty Type <span style="color: red;">*</span> </label>
+                                    <select [(ngModel)]="OnDutyType" class="form-control" id="OnDutyType"
+                                        name="OnDutyType" matTooltip="OnDuty Type" #OnDutyTypeEnt="ngModel" disabled>
+                                        <option [ngValue]="null" disabled [selected]="true"> Select OnDuty Type
+                                        </option>
+                                        <option *ngFor="let pl of ReasonList" value={{pl.detailedReason}}>
+                                            {{pl.detailedReason}}
+                                        </option>
+                                    </select>
+                                    <span class="help-block"
+                                        *ngIf="!OnDutyTypeEnt.valid && OnDutyTypeEnt.touched">Please select
+                                        OnDuty
+                                        Type .</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="location">Plant <span style="color: red;">*</span> </label>
+                                    <select [(ngModel)]="Plant" class="form-control" id="location" name="location"
+                                        matTooltip="Plant" #locationEnt="ngModel" disabled>
+                                        <option [ngValue]="null" disabled [selected]="true"> Select Plant
+                                        </option>
+                                        <option *ngFor="let pl of locationAllList" value={{pl.code}}>
+                                            {{pl.code}}-{{pl.name}}</option>
+                                    </select>
+                                    <span class="help-block" *ngIf="!locationEnt.valid && locationEnt.touched">Please
+                                        select
+                                        plant.</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="startDate">
+                                        Start Date <span style="color:red">*</span>
+                                    </label>
+                                    <div class='input-group date'>
+                                        <input id="startDate" name="startDate" class="form-control"
+                                            [(ngModel)]="fromDate" [min]="min" [owlDateTime]="dtStart1"
+                                            [owlDateTimeTrigger]="dtStart1" [matTooltipPosition]="'below'"
+                                            matTooltip="Click to change startDate" #startDate1="ngModel" disabled>
+
+                                    </div>
+                                    <owl-date-time [pickerType]="'calendar'" #dtStart1></owl-date-time>
+                                    <span class="help-block" *ngIf="!startDate1.valid && startDate1.touched">Please
+                                        enter valid Start
+                                        Date.</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="startTime">
+                                        Start Time <span style="color:red">*</span>
+                                    </label>
+                                    <input #startTime1="ngModel" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change Start Time" [owlDateTime]="dt211"
+                                        [owlDateTimeTrigger]="dt211" id="startTime" name="startTime"
+                                        class="form-control" onkeydown="return false;" [(ngModel)]="fromTime" disabled>
+                                    <owl-date-time [pickerType]="'timer'" hour12Timer="true" #dt211></owl-date-time>
+                                    <span class="help-block" *ngIf="!startTime1.valid && startTime1.touched">Please
+                                        enter valid Start
+                                        Time.</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="endDate">
+                                        End Date <span style="color:red">*</span>
+                                    </label>
+                                    <div class='input-group date'>
+                                        <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate"
+                                            [min]="min" [owlDateTime]="dtEnd1" [owlDateTimeTrigger]="dtEnd1"
+                                            [matTooltipPosition]="'below'" matTooltip="Click to change End Date"
+                                            #endDate1="ngModel" disabled>
+
+                                    </div>
+                                    <owl-date-time [pickerType]="'calendar'" #dtEnd1></owl-date-time>
+                                    <span class="help-block" *ngIf="!endDate1.valid && endDate1.touched">Please enter
+                                        valid End Date.</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="endTime">
+                                        End Time <span style="color:red">*</span>
+                                    </label>
+                                    <input #endTime1="ngModel" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change End Time" [owlDateTime]="dt411"
+                                        [owlDateTimeTrigger]="dt411" id="endTime" name="endTime" class="form-control"
+                                        onkeydown="return false;" [(ngModel)]="toTime" disabled>
+                                    <owl-date-time [pickerType]="'timer'" hour12Timer="true" #dt411></owl-date-time>
+                                    <span class="help-block" *ngIf="!endTime1.valid && endTime1.touched ">Please
+                                        enter valid End Time.</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="lvaddress">Address during OnDuty</label>
+                                    <textarea name="lvaddress" id="lvaddress" maxlength="150" matTooltip="Address"
+                                        [(ngModel)]="OnDutyAddress" class="form-control" disabled></textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="lvcontact">Contact Number </label>
+                                    <input type="text" name="lvcontact" id="lvcontact" [(ngModel)]="OnDutyContactNo"
+                                        class="form-control" matTooltip="Contact Number" disabled
+                                        #lvcontactEnt="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="person">Person responsible in my absence</label>
+                                    <input type="text" name="personName" id="personName"
+                                        (keyup)="getpersonResponsible($event)" [(ngModel)]="personName"
+                                        class="form-control" matTooltip="Person Responsible" disabled
+                                        #responsibleEnt="ngModel">
+                                    <input type="hidden" id="person" class="form-control"
+                                        (keyup)="getpersonResponsible($event)" [(ngModel)]="personResponsible"
+                                        ngControl="personResponsible" name="person" />
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="detailedReason">Detailed Reason (max 300 char) <span
+                                            style="color: red;">*</span></label>
+                                    <textarea name="detailedReason" id="detailedReason" cols="30" rows="4"
+                                        maxlength="300" matTooltip="Detailed Reason" [(ngModel)]="DetailedReason"
+                                        class="form-control" disabled></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label><strong>NOTE:If onduty type is selected as 'Work from Home' then a Report should
+                                        be uploaded after Submission of Request. </strong></label>
+                            </div>
+                        </div>
+
+                        &nbsp; &nbsp; &nbsp;
+                        <div class="row">
+                            <table class="table table-striped table-bordered">
+                                <tr style="background-color: #b2d1e5;">
+                                    <td colspan="7" style="width: 100%;">
+                                        <strong><b>Approver Details</b></strong>
+                                    </td>
+                                </tr>
+                                <tr style="background-color: #b2d1e5;">
+                                    <th style="width: 10%;"><b>Type</b></th>
+                                    <th style="width: 10%;"><b>Employee Code</b></th>
+                                    <th style="width: 20%;"><b>Name</b></th>
+                                    <th style="width: 20%;"><b>Designation</b></th>
+                                    <th style="width: 20%;"><b>Role</b></th>
+                                    <th style="width: 10%;"><b>Approver Status</b></th>
+                                    <th style="width: 10%;"><b>Approved Date</b></th>
+                                </tr>
+                                <tr *ngFor="let ty of ApproversList; let i = index">
+                                    <td>{{ty.type}}</td>
+                                    <td>{{ty.employeeId}}</td>
+                                    <td>{{ty.name}}</td>
+                                    <td>{{ty.designation}}</td>
+                                    <td>{{ty.role}}</td>
+                                    <td>{{approverStatus}}</td>
+                                    <td>{{approvedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+
+                <button *ngIf="!view" type="button" class="btn btn-success" matTooltip="Click to submit OnDuty"
+                    (click)="CancelApprovedLeave()" [disabled]="isLoadingPop || (!onDutyForm1.valid) || isLoadPop"><i
+                        class="fas fa-angle-double-right"></i>&nbsp;Submit
+                    for cancellation</button>
+                <button type="button" class="btn btn-default" matTooltip="Click to close the form"
+                    style="background-color:darkgray;color:white;" data-dismiss="modal"
+                    [disabled]="isLoadingPop">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div hidden id="pdf1">
+    <table class="table table-bordered table table-striped" style="align-self: auto; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong><b>Requester Details</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Employee No</b></td>
+            <td style="width: 25%; color: blue;">{{EmployeeId}}</td>
+            <td style="width: 25%;"><b>Employee Name</b></td>
+            <td style="width: 25%; color: blue;">{{FullName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 20%;"><b>Plant</b></td>
+            <td style="width: 25%; color: blue;">{{getLocationName(Plant)}}</td>
+            <td style="width: 10%;"><b>PayGroup </b></td>
+            <td style="width: 25%; color: blue;">{{getPay(PayGroup)}}</td>
+        </tr>
+        <tr>
+            <td style="width: 20%;"><b>Designation</b></td>
+            <td style="width: 20%; color: blue;">{{Designation}}</td>
+            <td style="width: 10%;"><b>Role </b></td>
+            <td style="width: 10%; color: blue;">{{getRole(RoleId)}}</td>
+        </tr>
+        <tr>
+            <td style="width: 10%;"><b>Department</b></td>
+            <td style="width: 10%; color: blue;">{{Department}}</td>
+            <td style="width: 25%;"><b>Date Of Joining</b></td>
+            <td style="width: 25%; color: blue;">{{JoiningDate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 30%;"><b>Request No</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{reqNo}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong><b>OnDuty Details</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>OnDuty Type:</b></td>
+            <td style="width: 25%; color: blue;">{{onType}}</td>
+            <td style="width: 25%;"><b>Plant:</b></td>
+            <td style="width: 25%; color: blue;">{{location}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>From Date:</b></td>
+            <td style="width: 25%; color: blue;">{{strDate | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Start Time:</b></td>
+            <td style="width: 25%; color: blue;">{{startDur}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>To Date:</b></td>
+            <td style="width: 25%; color: blue;">{{endDate | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>End Time</b></td>
+            <td style="width: 25%; color: blue;">{{endDur}}</td>
+        </tr>
+        <tr>
+            <td style="width: 30%;"><b>Reason:</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{detReason}}</td>
+        </tr>
+        <tr>
+            <td style="width: 30%;"><b>Address During OnDuty:</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{addLeave}}</td>
+        </tr>
+        <tr>
+            <td style="width: 30%;"><b>Contact Number During OnDuty:</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{conLeave}}</td>
+        </tr>
+        <tr>
+            <td style="width: 30%;"><b>Person Responsible in my absence:</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{perLeave}}</td>
+        </tr>
+    </table>
+</div>

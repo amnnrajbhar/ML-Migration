@@ -1,0 +1,442 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Appraisals List </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Appraisals List</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Plant</label>
+            <select (change)="getPayGroupList()" [(ngModel)]="filterModel.plantId" class="form-control" id="plant"
+              name="plant" #plantEnt="ngModel">
+              <option value="" [selected]="true">All</option>
+              <option *ngFor="let pl of plantList" [ngValue]="pl.id">{{pl.code}} - {{pl.name}}</option>
+            </select>
+            <span class="help-block" *ngIf="plantEnt.touched && !plantEnt.valid">Please select Plant</span>
+
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Pay Group</label>
+            <select [(ngModel)]="filterModel.payGroupId" class="form-control"
+              id="paygroup" name="paygroup" #payGroupEnt="ngModel">
+              <option value="" [selected]="true">All</option>
+              <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+            </select>
+            <span class="help-block" *ngIf="payGroupEnt.touched && !payGroupEnt.valid">Please select Pay group</span>
+
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Employee Category</label>
+            <select [(ngModel)]="filterModel.employeeCategoryId" id="employeecategory" name="employeecategory"
+              class="form-control">
+              <option value="" [selected]="true">All</option>
+              <option *ngFor="let pl of empCategoryList" [ngValue]="pl.id">{{pl.catltxt}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Department</label>
+          <select [(ngModel)]="filterModel.departmentId" class="form-control" id="department" name="department"
+            #departmentEnt="ngModel" (change)="onDepartmentChange()">
+            <option value="" [selected]="true">All</option>
+            <option *ngFor="let dl of departmentList" [ngValue]="dl.id">{{dl.description }} </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Sub-Department</label>
+          <select class="form-control" id="subDepartmentId" [(ngModel)]="filterModel.subDepartmentId"
+            ngControl="filterModel.subDepartmentId" name="subDepartmentId">
+            <option value="" disabled [selected]="true"> All </option>
+            <option *ngFor="let pl of subDepartmentList" [ngValue]="pl.id">{{pl.sdptidLtxt}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Designation</label>
+          <select [(ngModel)]="filterModel.designationId" class="form-control" id="designation" name="designation"
+            matTooltip="Designation" #designationEnt="ngModel" required>
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let pl of designationList" [ngValue]="pl.id">{{pl.name}} </option>
+          </select>
+        </div>
+      </div>
+      <!-- <div class="col-md-3">
+        <div class="form-group">
+          <label> State</label>
+          <select [(ngModel)]="filterModel.stateId" class="form-control" id="state" name="state" matTooltip="State"
+            #stateEnt="ngModel" (change)="onStateChange()" required>
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let pl of stateList" [ngValue]="pl.id">{{pl.bezei}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Location</label>
+          <select [(ngModel)]="filterModel.locationId" class="form-control" id="location" name="location"
+            matTooltip="Location" #locationEnt="ngModel" required>
+            <option value="" [selected]="true">All </option>
+            <option *ngFor="let pl of locationList" [ngValue]="pl.id">{{pl.name }} </option>
+          </select>
+        </div>
+      </div> -->
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Appraisal Status</label>
+          <select [(ngModel)]="filterModel.status" class="form-control" id="status" name="status">
+            <option value="" [selected]="true">All</option>
+            <option *ngFor="let dl of statusList" [ngValue]="dl.type">{{dl.type }} </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Initiator Type</label>
+          <select [(ngModel)]="filterModel.initiatorType " class="form-control" id="initiatorType" name="initiatorType">
+            <option value="" [selected]="true">All</option>
+            <option *ngFor="let dl of initiatorTypeList" [ngValue]="dl.type">{{dl.type }} </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Appraisal Type</label>
+          <select [(ngModel)]="filterModel.appraisalType " class="form-control" id="appraisalType" name="appraisalType">
+            <option value="" [selected]="true">All</option>
+            <option *ngFor="let dl of appraisalTypeList" [ngValue]="dl.type">{{dl.type }} </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Appraisal Period</label>
+          <select [(ngModel)]="filterModel.appraisalPeriod " class="form-control" id="appraisalPeriod"
+            name="appraisalPeriod">
+            <option value="" [selected]="true">All</option>
+            <option *ngFor="let dl of appraisalPeriodDates" [ngValue]="dl.type">{{dl.type }} </option>
+          </select>
+        </div>
+      </div>     
+      <!-- <div class="col-md-3">
+        <div class="form-group">
+          <label>Employee No</label>
+          <input name="name" class="form-control" id="name" [(ngModel)]="filterModel.employeeNo" />
+        </div>
+      </div> -->
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Is Bulk Upload</label>
+          <select [(ngModel)]="filterModel.isBulkUpload" class="form-control" id="isBulkUpload" name="isBulkUpload">
+            <option value="" [selected]="true">All</option>
+            <option *ngFor="let dl of isBulkUploadList" [ngValue]="dl.type">{{dl.type }} </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Employee Name / No</label>
+          <input name="name" class="form-control" id="name" [(ngModel)]="filterModel.name" />
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Appraisal ID</label>
+          <input name="appraisalId" class="form-control" id="appraisalId" [(ngModel)]="filterModel.appraisalId" />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Submitted by Name/No</label>
+          <input name="submittedBy" class="form-control" id="submittedBy" [(ngModel)]="filterModel.submittedBy" />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Pending With /Updated By</label>
+          <input name="pendingWith" class="form-control" id="pendingWith" [(ngModel)]="filterModel.pendingWith" />
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="row">
+            <label class="control-label text-right">Employee No</label>
+        </div>
+        <div class="col-md-6">
+          <input name="fromEmployeeNo" class="form-control" id="fromEmployeeNo" [(ngModel)]="filterModel.fromEmployeeNo" placeholder="From"/>
+        </div>
+        <div class="col-md-6">
+          <input name="toEmployeeNo" class="form-control" id="toEmployeeNo" [(ngModel)]="filterModel.toEmployeeNo" placeholder="To" />
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>Emplyee Status</label>
+          <select [(ngModel)]="filterModel.employeeStatus" class="form-control" id="employeeStatus" name="employeeStatus"
+          #statusEnt="ngModel">
+          <option value="" [selected]="true"> All </option>
+          <option *ngFor="let pll of empStatusList" [ngValue]="pll.type">{{pll.type}}</option>
+        </select>
+        </div>
+      </div>
+
+      <!-- </div> -->
+      <!-- </div> -->
+      <!-- </div> -->
+      <div class="col-xs-12 text-center">
+        <button type="button" class="btn btn-primary" (click)="getList()">Filter</button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <div class="btn-group">
+          <button class="btn btn-default active btn-sm columnGroup" data-group="all">All</button>
+          <button class="btn btn-default active btn-sm columnGroup" data-group="personalDetails">Personal</button>
+          <button class="btn btn-default active btn-sm columnGroup" data-group="jobDetails">Job</button>
+          <button class="btn btn-default active btn-sm columnGroup" data-group="otherDetails">Other</button>
+        </div>
+        <div class="pull-right actionButtons">
+          <button type="button" class="btn btn-sm btn-warning" (click)="approvalSubmitBulk()">Submit For Approval</button>
+          <button type="button" class="btn btn-sm btn-primary" (click)="exportDataWithoutCTC()">Export without CTC</button>
+          <button type="button" class="btn btn-sm btn-primary" (click)="exportDataWithCTC()" *ngIf="exportWithCTC == true">Export with CTC</button>
+          <button type="button" class="btn btn-sm btn-success" (click)="exportRecommendation()">Export Recommendation</button>
+          <button type="button" class="btn btn-sm btn-primary" (click)="exportCTCData()" *ngIf="exportWithCTC == true">Export CTC Data</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table class="table table-hover table-striped table-bordered" id="data">
+          <thead>
+            <tr>
+              <th ><input type="checkbox" [(ngModel)]="selectAll" (change)="SelectAll()" /> Select All</th>
+              <th style="min-width: 150px;">Action</th> 
+              <th>Appraisal ID</th>
+              <th>Appraisal Status</th>
+              <th>Pending With / Updated By</th>
+              <th>Letter Status</th>
+              <th>Is Bulk Upload</th>
+              <th>Appraisal Period</th>
+              <th>Initiated By</th>
+              <th>Initiated Date</th>
+              <th>Employee Status</th>
+              <th>Employee No</th>
+              <th>Name</th>
+              <th class="jobDetails">Plant Code</th>
+              <th class="jobDetails">Plant Name</th>
+              <th class="jobDetails">PayGroup</th>
+              <th class="jobDetails">Employee Category</th>
+              <th class="jobDetails">Location</th>
+              <th class="jobDetails">Department</th>
+              <th class="jobDetails">Designation</th>
+              <th class="jobDetails">Role</th>
+              <th class="salaryDetails">Rating</th>
+              <th class="salaryDetails">Present CTC</th>
+              <th class="salaryDetails">New CTC</th>
+              <th class="salaryDetails">Increment Amount</th>
+              <!-- <th class="salaryDetails">Recommended Salary Type</th>
+              <th class="salaryDetails">Recommended Salary</th>
+              <th class="salaryDetails">Promotion</th>
+              <th class="salaryDetails">Reason for Promotion</th>
+              <th class="salaryDetails">Recommended Designation</th>
+              <th class="salaryDetails">Recommended Role</th>
+              <th class="salaryDetails">Special Achievement</th> -->
+              <th>Appraisal Type</th>
+              <th>Initiator Type</th>
+              <th class="salaryDetails">Comment</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filterData.list; let i = index">              
+               <td> 
+                <input type="checkbox" [(ngModel)]="item.selected" />
+            </td>           
+           
+              <td>
+
+                <a [routerLink]="['/HR/Employee/profile', item.employeeId]" class="btn btn-primary btn-xs"
+                  [matTooltipPosition]="'after'" matTooltip="Click to view full profile">
+                  <i class="fas fa-user"></i></a>
+                <ng-template
+                  [ngIf]="[item.status] == 'Appraisal Initiated' || [item.status] == 'Recommendation Submitted' || [item.status] == 'Rejected' || [item.status] == 'Pending For Recommendation'">
+                  <button type="button"
+                    (click)="initiateFinalAppraisal(item.employeeId, item.employeeInitialAppraisalDetailId)"
+                    class="btn btn-xs btn-success" [matTooltipPosition]="'after'"
+                    matTooltip="Click to enter details and intitiate Approval">
+                    <i class="fas fa-coins"></i>
+                  </button>
+                </ng-template>
+                <!-- <ng-template
+                  [ngIf]="[item.employeeAppraisalStatus] == 'Email Sent' || [item.status] == 'Approved' || [item.status] == 'Pending for Approval' || [item.status] == 'Recommendation Submitted' || [item.status] == 'Rejected' || [item.status] == 'Pending For Recommendation'"> -->
+
+                  <button type="button"
+                    (click)="viewAppraisalDetails(item.employeeId, item.employeeInitialAppraisalDetailId)"
+                    class="btn btn-xs btn-info" [matTooltipPosition]="'after'"
+                    matTooltip="Click to view appraisal details">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                <!-- </ng-template> -->
+
+
+              </td>
+              <td>{{item.employeeInitialAppraisalDetailId}}</td>
+              <td><span class="label label-{{item.statusColor}}">{{item.status}}</span> </td>             
+              <td>
+                <span *ngIf="item.pendingWith">
+                  {{item.pendingWith}}
+                </span>
+                <span *ngIf="!item.pendingWith"> 
+                  {{item.modifiedByFirstName}} {{item.modifiedByMiddleName}} {{item.modifiedByLastName}} ({{item.modifiedByNo}})</span>
+              </td>
+              <td class="letterStatus">
+                <i class="fas fa-print icon round green" *ngIf="item.printed" [title]="'Printed: '+ (item.printedDate | date:'dd/MM/yyyy hh:mm a') + ' by '+item.printedByName"></i>
+                <i class="far fa-envelope icon round orange" *ngIf="item.emailed" [title]="'Emailed: '+ (item.emailedDate | date:'dd/MM/yyyy hh:mm a') + ' by '+item.emailedByName"></i>
+                <i class="fas fa-download icon round blue" *ngIf="item.downloaded" [title]="'Downloaded: '+ (item.downloadedDate | date:'dd/MM/yyyy hh:mm a') + ' by '+item.downloadedByName"></i>
+              </td>
+              <td>{{item.isBulkUpload}} </td>
+              <td>{{item.appraisalPeriod}} </td>
+              <td>{{item.initiatedBy}} </td>
+              <td>{{item.initiatedDate | date: "dd/MM/yyyy"}} </td>
+              <td><span class="label label-{{item.empStatusColor}}">{{item.employeeStatus}}</span> </td>             
+              <td>{{item.employeeNo}} </td>
+              <td>{{item.name}} </td>
+              <td class="jobDetails">{{item.plantCode}} </td>
+              <td class="jobDetails">{{item.plant}} </td>
+              <td class="jobDetails">{{item.payGroup}} </td>
+              <td class="jobDetails">{{item.employeeCategory}} </td>
+              <td class="jobDetails">{{item.location}} </td>
+              <td class="jobDetails">{{item.departmentName}} </td>
+              <td class="jobDetails">{{item.oldDesignation}}</td>
+              <td class="jobDetails">{{item.oldRole}} </td>
+              <td class="salaryDetails">{{item.rating}} </td>
+              <td class="salaryDetails"><b>{{item.currentCTC | number: "1.0-2"}}</b> </td>
+              <td class="salaryDetails"><b>{{item.newCTC | number: "1.0-2"}}</b> </td>
+              <td class="salaryDetails"><b>{{item.incrementAmount | number: "1.0-2"}}</b> </td>
+              <!-- <td class="salaryDetails">{{item.salaryType}} </td>
+              <td class="salaryDetails">{{item.recommendedSalary}} </td>
+              <td class="salaryDetails">{{item.isPromotionRecommended}} </td>
+              <td class="salaryDetails">{{item.promotionComment}} </td>
+              <td class="salaryDetails">{{item.recommendedDesignation}} </td>
+              <td class="salaryDetails">{{item.recommendedRole}} </td>
+              <td class="salaryDetails">{{item.specialAchievement}} </td> -->
+              <td>{{item.appraisalType}} </td>
+              <td>{{item.appraisalInitiatorType}} </td>
+              <td class="salaryDetails">{{item.comment}} </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-center">
+          <div class="overlay text-center h3" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+          <ul class="pagination" *ngIf="filterData.totalCount>0">
+            <li>
+              <a (click)="gotoPage(filterData.pageNo)">
+                Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> -
+                <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b>
+                of <b>{{filterData.totalCount}}</b> records
+              </a>
+            </li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+            <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+            <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo"
+                (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo+1"
+                (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a>
+            </li>
+            <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of
+                <b>{{filterData.totalPages}}</b></a></li>
+            <li><a>Page Size
+                <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Email Modal -->
+<div id="EmailModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Email Appraisal Letter</h4>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12">
+          <div class="row form-group">
+            <label class="col-md-4">Email To</label>
+            <div class="col-md-8">
+              <select class="form-control" [(ngModel)]="request.emailType">
+                <option value="0">Select</option>
+                <option value="Candidate">Candidate</option>
+                <option value="Everyone">Everyone</option>
+                <option value="Intimation">Intimation</option>
+                <option value="Custom">Custom</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12" *ngIf="request.emailType == 'Custom'">
+          <div class="row form-group">
+            <label class="col-md-4">Custom Email IDs</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="emailId" placeholder="Comma separated Email Ids to send email"
+                [(ngModel)]="request.EmailId" ngControl="request.EmailId" name="emailId" #emailEnt="ngModel" required
+                 />
+              <span class="help-block" *ngIf="emailEnt.touched && !emailEnt.valid">Please enter valid email id</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" [disabled]="sending" (click)="GenerateAndSendEmail()">Send</button>
+        <button type="button" class="btn btn-default" [disabled]="sending" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

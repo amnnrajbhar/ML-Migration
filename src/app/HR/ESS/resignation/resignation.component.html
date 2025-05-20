@@ -1,0 +1,295 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Resignation
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Resignation</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Resignation Details</h3>
+    </div>
+    <div class="panel-body">
+      <form #resgForm="ngForm" class="form-horizontal">
+
+        <div class="row" *ngIf="isSubmitted">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="resignationDate">Resignation Status</label>
+              <div class="col-md-8">
+                <span class="label label-lg label-{{isRejected?'danger':'warning'}}">{{resignationStatus}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="resignationDate">Date Of Resignation</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="resignationDate" name="resignationDate"
+                  [(ngModel)]="ResignationDate" [owlDateTime]="resignationDate" [owlDateTimeTrigger]="resignationDate"
+                  [disabled]="true">
+                <owl-date-time [pickerType]="'calendar'" #resignationDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4">Notice Period</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" name="noticePeriod" [(ngModel)]="noticePeriod"
+                  [disabled]="true" />
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="lastWorkingDate">Last Working Day</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="lastWorkingDate" name="lastWorkingDate"
+                  [(ngModel)]="DateLastWorkingDay" [owlDateTime]="dtlastworkingDate"
+                  [owlDateTimeTrigger]="dtlastworkingDate" [disabled]="true">
+                <owl-date-time [pickerType]="'calendar'" #dtlastworkingDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="reason"> Reason <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <select [(ngModel)]="resignationDetails.reason" class="form-control" id="reason" name="reason"
+                  matTooltip="Reason For Resignation" #reasonEnt="ngModel" required [disabled]="!editAllowed">
+                  <option [ngValue]="null" disabled [selected]="true"> Select Reason </option>
+                  <option *ngFor="let pl of reason" [ngValue]="pl.type">{{pl.type}}</option>
+                </select>
+                <span class="help-block" *ngIf="reasonEnt.touched && !reasonEnt.valid">Please Select Reason</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="detailsReasonResignation">Detailed Reason <span
+                  style="color:red">*</span></label>
+              <div class="col-md-8">
+                <textarea [matTooltipPosition]="'below'"
+                  matTooltip="Input Detail Reason For Resignation(Max 1000 Chars)"
+                  [(ngModel)]="resignationDetails.reasonDetail" class="form-control" id="detailsReasonResignation"
+                  name="detailsReasonResignation" #detailsReasonResignationEnt="ngModel" [disabled]="!editAllowed"
+                  minlength="1" maxlength="1000" required></textarea>
+                <span class="help-block"
+                  *ngIf="detailsReasonResignationEnt.touched && !detailsReasonResignationEnt.valid">
+                  <span *ngIf="detailsReasonResignationEnt.errors.required"> Please enter detailed reason (Max 1000
+                    Chars)</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="expectedLastDate">Expected Relieving Date</label>
+              <div class="col-md-8">
+                <input [matTooltipPosition]="'below'" matTooltip="Click to change last working date"
+                  [owlDateTime]="dt11" id="expectedLastWorkingDate" #joiningDateEnt="ngModel"
+                  placeholder="Expected Relieving Date" [owlDateTimeTrigger]="dt11" name="expectedLastWorkingDate"
+                  class="form-control" [(ngModel)]="resignationDetails.expectedLastWorkingDate"
+                  [disabled]="!editAllowed">
+                <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="reasonResignationDateChange">Reason For Change In Relieving Date</label>
+              <div class="col-md-8">
+                <textarea [matTooltipPosition]="'below'"
+                  matTooltip="Input Reason For Resignation Date Change(Max 1000 Chars)"
+                  [(ngModel)]="resignationDetails.reasonExpectedDateChange" class="form-control"
+                  id="reasonResignationDateChange" name="reasonResignationDateChange"
+                  #reasonResignationDateChange="ngModel" maxlength="1000" [disabled]="!editAllowed"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="resignationDetails.actualLastWorkingDate && isSubmitted">
+            <div class="form-group">
+              <label class="col-md-4" for="actualLastWorkingDate">Actual Relieving Date</label>
+              <div class="col-md-8">
+                <input id="actualLastWorkingDate" placeholder="Actual Relieving Date" name="actualLastWorkingDate"
+                [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12"
+                  class="form-control" [(ngModel)]="resignationDetails.actualLastWorkingDate"
+                  [disabled]="true">
+                  <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="row" *ngIf="editAllowed || isSubmitted">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Attachment</label>
+            <div class="col-md-6">
+              <input #attachment type="file" name="attachment" id="attachment"
+                accept="application/pdf, image/jpeg, image/jpg, image/png" multiple max-file-size="2000"
+                (change)="selectFiles($event)" />
+              <span class="text-danger">Only pdf/jpeg/png files are allowed. Maximum file size allowed is 2MB.</span>
+            </div>
+            <div class="col-md-2" *ngIf="isSubmitted">
+              <button type="button" class="btn btn-primary" (click)="addAttachments(false)"
+                matTooltip="Click to Upload attachment" [disabled]="isLoading">Upload</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="isSubmitted">
+        <div class="row">
+          <div class="col-md-12">
+            <h3>Attachments</h3>
+            <div class="form-group">
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>Sl No</th>
+                      <th>File Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of fileList; let i = index">
+                      <td>{{i+1}}</td>
+                      <td><a class="btn-link"
+                          (click)="getFile(item.employeeDocumentId, item.fileName)">{{item.fileName}}</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-resignation-shortfall-details *ngIf="resignationDetails && isSubmitted"
+        [resignationDetails]="resignationDetails"></app-resignation-shortfall-details>
+
+      <div class="row text-center actionButtons">
+        <div class="col-md-12">
+
+          <button *ngIf="editAllowed && !isRejected" type="button" class="btn btn-primary" (click)="submit()"
+            matTooltip="Click to Submit Resignation" [disabled]="isLoading || !resgForm.valid">Submit</button>
+
+          <button *ngIf="isSubmitted && canWithdraw" type="button" class="btn btn-danger"
+            (click)="withdraw(resignationDetails.resignationId)" matTooltip="click to withdraw the Resignation"
+            data-toggle="modal" data-target="#ReasonModal" [disabled]="isLoading">Withdraw</button>
+
+          <button *ngIf="isSubmitted && isRejected && canResubmit" type="button" class="btn btn-warning"
+            (click)="resubmit(resignationDetails.resignationId)" matTooltip="Click to Resubmit Resignation"
+            [disabled]="isLoading">Re-Submit</button>
+
+          <button *ngIf="isSubmitted && isRejected && !canResubmit" type="button" class="btn btn-warning"
+            matTooltip="Cannot Resubmit as it is more than 7 days from Rejection" [disabled]="true">Re-Submit</button>
+
+          <button *ngIf="isSubmitted && isRejected" type="button" class="btn btn-success"
+            (click)="accept(resignationDetails.resignationId)" matTooltip="Click to Accept Rejection of Resignation"
+            [disabled]="isLoading">Accept Rejection</button>
+
+          <button *ngIf="isSubmitted && !isRejected" type="button" class="btn btn-warning"
+            (click)="print(resignationDetails.resignationId)" matTooltip="Click to print Resignation letter"
+            [disabled]="isLoading">Print</button>
+
+          <p *ngIf="isRejected" class="text-danger">Re-Submission Can Be Done within 7 Days Of Rejection</p>
+          <p *ngIf="isSubmitted && canWithdraw" class="text-danger">You can withdraw Resignation before HR approvals.
+            For any further queries contact your Reporting Manager or HR.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div>
+    <ul class="nav nav-tabs">
+      <li *ngIf="isSubmitted" [ngClass]="currentTab=='checklist'?'active':''" id="tab_checklist"><a
+          (click)="onTabClick(0)">Checklist</a></li>
+      <li *ngIf="isSubmitted" [ngClass]="currentTab=='exitinterview'?'active':''" id="tab_exitinterview"><a
+          (click)="onTabClick(1)">Exit Interview</a></li>
+      <li [ngClass]="currentTab=='history'?'active':''" id="tab_history"><a (click)="onTabClick(2)">History</a></li>
+    </ul>
+
+    <div class="details-tab">
+
+      <app-resignation-checklist [resignationId]="this.resignationDetails.resignationId" [editAllowed]="false"
+        *ngIf="currentTab=='checklist'"></app-resignation-checklist>
+
+
+      <app-exit-interview [resignationId]="this.resignationDetails.resignationId" [editAllowed]="true"
+        *ngIf="currentTab=='exitinterview'"></app-exit-interview>
+
+      <app-separation-history [employeeId]="employeeId" *ngIf="currentTab=='history'"></app-separation-history>
+
+    </div>
+
+    <div *ngIf="isSubmitted">
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+        </li>
+        <li>
+          <a data-toggle="tab" href="#tabActivity">Activity</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div id="tabApprovals" class="tab-pane fade in active">
+          <app-flow-viewer [objectId]="this.resignationId" [objectType]="this.objectType"></app-flow-viewer>
+        </div>
+        <div id="tabActivity" class="tab-pane fade">
+          <app-activity-viewer [objectId]="this.resignationId" [objectType]="this.objectType"></app-activity-viewer>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Reason Modal -->
+<div id="ReasonModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Reason for Withdrawal</h4>
+      </div>
+      <div class="modal-body">
+        <label>Reason</label>
+        <textarea rows="3" class="form-control" [(ngModel)]="comments"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="performTask()">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>

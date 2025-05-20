@@ -1,0 +1,150 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Print Offer Letter
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Print Offer Letter</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div>
+    <div class="row">
+      <div class="col-sm-6 text-right">
+        <button type="button" (click)="goBack()" class="btn btn-sm btn-default" [matTooltipPosition]="'after'"
+        matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+      <button type="button" (click)="print1()" class="btn btn-sm btn-info" [matTooltipPosition]="'after'"
+        matTooltip="Click to print the letter" [disabled]="isLoading">
+        <i class="fas fa-print"></i> Print
+      </button>
+      <button type="button" (click)="download()" class="btn btn-sm btn-warning" [matTooltipPosition]="'after'"
+        matTooltip="Click to download the letter" [disabled]="isLoading">
+        <i class="fas fa-download"></i> Download
+      </button>
+      </div>      
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="personalEmailId" placeholder="Email Id to send email"
+        [(ngModel)]="offerDetails.personalEmailId" ngControl="offerDetails.personalEmailId" name="personalEmailId"
+        #emailEnt="ngModel" required email="true"/>
+      </div>
+      <div class="col-sm-3">
+        <button type="button" (click)="sendEmail()" class="btn btn-sm btn-success" [matTooltipPosition]="'after'"
+        matTooltip="Click to send the letter" [disabled]="isLoading">
+        <i class="fas fa-arrow-right"></i> Send</button>
+      </div>
+    </div>
+  </div>
+    <div class="printable">
+      <div class="panel panel-default" id="pdfcontent">
+        <div class="panel-body">
+          <div>
+            <p>{{offerDetails.offerNo}}</p>
+          </div>
+          <div class="pull-right">
+            <b>Date: {{offerDetails.createdDate | date: 'dd.MM.yyyy'}}</b>
+          </div>
+          <div>
+            <p><b>{{offerDetails.firstName}} {{offerDetails.middleName}} {{offerDetails.lastName}}
+                {{offerDetails.initial}}
+                <br />{{offerDetails.addressLine1}}
+                <ng-template [ngIf]="offerDetails.addressLine2">
+                  <br />{{offerDetails.addressLine2}}
+                </ng-template>
+                <ng-template [ngIf]="offerDetails.addressLine3">
+                  <br />{{offerDetails.addressLine3}}
+                </ng-template>
+                <br />{{offerDetails.city}}, {{offerDetails.state}} - {{offerDetails.pinCode}}
+              </b></p>
+          </div>
+          <br />
+          <div>
+            <b><u>Sub: Offer of Employment</u></b>
+          </div>
+          <br />
+          <div>
+            <p>
+              Dear {{offerDetails.firstName}} {{offerDetails.middleName}} {{offerDetails.lastName}}
+              {{offerDetails.initial}}
+            </p>
+          </div>
+          <div>
+            <p>
+              This has reference to your application for employment in our company and the subsequent interview you
+              had with us. We are pleased to offer you an employment with our organization as
+              "<b>{{offerDetails.designation}} {{offerDetails.role}}</b>"
+              in the "<b>{{offerDetails.payGroupPrintName}}</b>" at head office <b>Bengaluru</b>. The remuneration
+              package as mutually
+              agreed upon shall be communicated to you on your joining with us.
+            </p>
+          </div>
+          <div>
+            <p>
+              Please note that this is merely an Offer Letter. The Company’s standard Appointment Letter containing
+              exhaustive terms and conditions of employment will be issued to you on your joining the company,
+              which shall be binding on you.
+            </p>
+          </div>
+          <div>
+            <p>
+              You are requested to join us latest <b>{{offerDetails.joiningDate | date: 'dd.MM.yyyy'}}</b> failing which
+              this Offer of
+              employment stands withdrawn.
+              Kindly also confirm your exact Date of Joining at least 2 days prior to your joining the Organization.
+            </p>
+          </div>
+          <div>
+            <p>
+              You are required to submit the following mandatory documents at the time of joining to create your
+              Appointment Order on time.
+            </p>
+          </div>
+          <div>
+            <ul>
+              <li>Duly filled Joining Report (Copy Enclosed)</li>
+              <li>Passport size photographs - 3 Nos.</li>
+              <li>Photocopy of your educational Certificates – From SSLC onwards</li>
+              <li>Previous employment documents – Offer / Appointment Letter, Resignation / relieving letter,
+                Last three months’ Salary Slip / Salary Certificate, Form 16 (if applicable)</li>
+              <li>Copy of PAN Card &amp; Aadhar Card</li>
+              <li>PF – UAN (Universal Account Number) Number or Form 11 in case of fresher as applicable</li>
+              <li>ESI (Employees’ State Insurance) Number of previous employment, if applicable</li>
+              <li>Saving Bank Account Number with Cancelled Cheque leaf / Passbook Copy</li>
+              <li>Pre-employment Medical Fitness Certificate from a Registered Medical Practitioner</li>
+            </ul>
+          </div>
+          <div>
+            <p>
+              “Post the acceptance of offer letter, you would get an invite for training from our L &amp; D department.
+              In
+              any circumstance, if you do not attend the training within the specified period, the offer would be null
+              and void”
+            </p>
+          </div>
+          <div>
+            <p>
+              Kindly confirm your acceptance of joining on the duplicate copy of this Offer Letter with the date of
+              joining.
+            </p>
+          </div>
+          <div>
+            <p>
+              Yours cordially,
+              <br /><b>For MICRO LABS LIMITED,</b>
+              <br /><img src="{{this.signatory.image}}"
+                *ngIf="this.signatory != undefined && this.signatory.imageUrl != undefined && this.signatory.imageUrl.length>0">
+              <br /><b>{{this.signatory.name}}
+                <br />{{this.signatory.designation}}</b>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span>Created By: {{offerDetails.createdByName}}</span>
+      </div>
+    </div>
+</section>

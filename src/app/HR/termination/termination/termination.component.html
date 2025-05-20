@@ -1,0 +1,118 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Withdraw Service 
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Withdraw Service</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Service Withdrawn Details</h3>
+    </div>
+
+    <div class="panel-body">
+      <form #resgForm="ngForm" class="form-horizontal">
+
+        <div class="row">
+
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4">Notice Period</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" name="noticePeriod" [(ngModel)]="noticePeriod"
+                  [disabled]="true" />
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="reason">Reason <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <select [(ngModel)]="terminationDetails.reason" class="form-control" id="reason" name="reason"
+                  matTooltip="Reason For Service Withdrawn" #reasonEnt="ngModel" required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Reason </option>
+                  <option *ngFor="let pl of reason" [ngValue]="pl.type">{{pl.type}}</option>
+                </select>
+                <span class="help-block" *ngIf="reasonEnt.touched && !reasonEnt.valid">Please Select Reason</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="terminationDate">Service Withdrawn Date <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input [matTooltipPosition]="'below'" matTooltip="Click to change Service Withdrawn  date"
+                  [owlDateTime]="dt11" id="terminationDate" #joiningDateEnt="ngModel" placeholder="Service Withdrawn Date"
+                  [owlDateTimeTrigger]="dt11" name="terminationDate" class="form-control" required
+                  [(ngModel)]="terminationDetails.terminationDate" [disabled]="!isVisible">
+                <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="reasonNotes">Payout Months</label>
+              <div class="col-md-8">
+                <input type="number" [(ngModel)]="terminationDetails.payoutMonths" class="form-control"
+                  id="payoutMonths" name="payoutMonths" #payoutMonthsEnt="ngModel" minlength="1"
+                  maxlength="4" />
+                <span class="help-block" *ngIf="payoutMonthsEnt.touched && !payoutMonthsEnt.valid">Please
+                  enter Effective year</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="reasonNotes">Additional Notes</label>
+              <div class="col-md-8">
+                <textarea [matTooltipPosition]="'below'" matTooltip="Input Notes For Service Withdrawn(Max 1000 Chars)"
+                  [(ngModel)]="terminationDetails.additionalNotes" class="form-control" id="reasonNotes"
+                  name="reasonNotes" #reasonNotes="ngModel" maxlength="1000" [disabled]="!isVisible"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4">Attachment <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input #attachment type="file" name="attachment" id="attachment" (change)="selectFiles($event)"
+                  accept="application/pdf, image/jpeg, image/jpg, image/png" multiple max-file-size="2000" />
+                <p class="text-danger">Only pdf/jpeg/png files are allowed. Maximum file size allowed is 2MB.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row text-center actionButtons">
+          <div class="col-md-12">
+            <button type="button" (click)="goBack()" class="btn btn-default" [matTooltipPosition]="'after'"
+              matTooltip="Click to go back to list">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="button" class="btn btn-success" (click)="submit()" matTooltip="Click to Submit Termination"
+              [disabled]="isLoading || !resgForm.valid">Submit</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</section>

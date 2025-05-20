@@ -1,0 +1,196 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Print Resignation Letter
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Print Resignation Letter</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class=" form-hroup row">
+    <div class="col-sm-12">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Select Email</label>
+          <div class="col-md-8">
+            <select class="form-control" [(ngModel)]="request.emailType">
+              <option value="0">Select Email</option>
+              <option value="Candidate">Candidate</option>
+              <option value="Everyone">Everyone</option>
+              <option value="Intimation">Intimation</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3" *ngIf="request.emailType == 'Custom'">
+        <input type="text" class="form-control" id="emailId" placeholder="Comma separated Email Ids to send email"
+          [(ngModel)]="request.EmailId" ngControl="request.EmailId" name="emailId" #emailEnt="ngModel" required/>
+        <span class="help-block" *ngIf="emailEnt.touched && !emailEnt.valid">Please enter valid email id</span>
+      </div>
+      <div class="col-sm-5 actionButtons">
+        <button type="button" (click)="sendEmail()" class="btn btn-sm btn-success" [matTooltipPosition]="'after'"
+          matTooltip="Click to send the letter" [disabled]="isLoading">
+          <i class="fas fa-arrow-right"></i> Send
+        </button>
+        <button type="button" (click)="print()" class="btn btn-sm btn-info" [matTooltipPosition]="'after'"
+          matTooltip="Click to print the letter" [disabled]="isLoading">
+          <i class="fas fa-print"></i> Print
+        </button>
+        <button type="button" (click)="download()" class="btn btn-sm btn-warning" [matTooltipPosition]="'after'"
+          matTooltip="Click to download the letter" [disabled]="isLoading">
+          <i class="fas fa-download"></i> Download
+        </button>
+        <button type="button" (click)="goBack()" class="btn btn-sm btn-default" [matTooltipPosition]="'after'"
+          matTooltip="Click to go back to list">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>       
+      </div>
+    </div>
+  </div>
+  <div class="printable" style="font-family:'Times New Roman', Times, serif">
+    <div class="panel panel-default" id="printable">
+      <div class="panel-body" id="pdfcontent">
+        <div>
+          <strong>To,</strong> <br /> <br />
+          <strong>{{employeeDetails.title}} {{employeeDetails.firstName}} {{employeeDetails.middleName}}
+            {{employeeDetails.lastName}}</strong> <br />
+          <span>Employee Code: {{employeeDetails.employeeNo}}</span> <br />
+          <span>{{employeeDetails.payGroupName}}</span> <br />
+          <span>{{employeeDetails.location}}, {{employeeDetails.state}}</span>
+        </div>
+        <br />
+        <div> 
+          Dear {{employeeDetails.title}} {{employeeDetails.firstName}} {{employeeDetails.middleName}}
+          {{employeeDetails.lastName}}, 
+        </div>
+        <br />
+        <div> 
+          With regards to your Resignation date: {{resignationDetails.resignationDate | date:"dd/MM/yyyy"}}, Please
+          find your details. 
+        </div>
+        <br />
+        <div>
+          <strong>**Note that the Resignation will be accepted post acceptance from RM, HOD and HR</strong> 
+        </div>
+        <br />
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Employee Details</h3>
+          </div>
+          <div class="panel-body">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <th>Employee No</th>
+                  <td>{{employeeDetails.employeeNo}}</td>
+                  <th>Name</th>
+                  <td>{{employeeDetails.firstName}} {{employeeDetails.middleName}} {{employeeDetails.lastName}}</td>
+                  <th>Status</th>
+                  <td>{{employeeDetails.status}}</td>
+                </tr>
+                <tr>
+                  <th>Plant</th>
+                  <td>{{employeeDetails.plantName}}</td>
+                  <th>Pay Group</th>
+                  <td>{{employeeDetails.payGroupName}}</td>
+                  <th>Category</th>
+                  <td>{{employeeDetails.employeeCategoryName}}</td>
+                </tr>
+                <tr>
+                  <th>Designation</th>
+                  <td>{{employeeDetails.designation}}</td>
+                  <th>Role</th>
+                  <td>{{employeeDetails.role}}</td>
+                  <th>Grade</th>
+                  <td>{{employeeDetails.grade}}</td>
+                </tr>
+                <tr>
+                  <th>Department</th>
+                  <td>{{employeeDetails.department}}</td>
+                  <th>Sub-Department</th>
+                  <td>{{employeeDetails.subDepartmentName}}</td>
+                  <th>Tenure</th>
+                  <td>{{employeeDetails.tenure}}</td>
+                </tr>
+                <tr>
+                  <th>State</th>
+                  <td>{{employeeDetails.state}}</td>
+                  <th>Location</th>
+                  <td>{{employeeDetails.location}}</td>
+                  <th>Total Experience</th>
+                  <td>{{employeeDetails.totalExperience}}</td>
+                </tr>
+                <tr>
+                  <th>Reporting Manager</th>
+                  <td>{{employeeDetails.reportingManagerName}}</td>
+                  <th>HOD</th>
+                  <td>{{employeeDetails.approvingManagerName}}</td>
+                  <th>Highest Qualification</th>
+                  <td>{{employeeDetails.highestQualification}}</td>
+                </tr>
+                <tr>
+                  <th>Date of Joining</th>
+                  <td>{{employeeDetails.dateOfJoining | date:'dd/MM/yyyy'}}</td>
+                  <th>Date of Confirmation</th>
+                  <td>{{employeeDetails.dateOfConfirmation | date:'dd/MM/yyyy'}}</td>
+                  <th>Employment Type</th>
+                  <td>{{employeeDetails.employmentType}}</td>                
+                </tr>               
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Resignation Details</h3>
+          </div>
+          <div class="panel-body">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <th>Resignation Status</th>
+                  <td>{{resignationStatus}}</td>
+                  <th></th>
+                  <td></td>
+                  <th></th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>Date Of Resignation</th>
+                  <td>{{resignationDetails.resignationDate | date:"dd/MM/yyyy"}}</td>
+                  <th>Notice Period</th>
+                  <td>{{resignationDetails.noticePeriod}} month(s)</td>
+                  <th>Last Working Day</th>
+                  <!-- <td>{{resignationDetails.lastWorkingDate | date: "dd/MM/yyyy"}}</td> -->
+                  <td>TBD</td>
+                </tr>
+                <tr>
+                  <th>Reason</th>
+                  <td>{{resignationDetails.reason}}</td>
+                  <th>Detailed Reason</th>
+                  <td>{{resignationDetails.reasonDetail}}</td>
+                  <th></th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>Expected Relieving Date</th>
+                  <td>{{resignationDetails.expectedLastWorkingDate | date:'dd/MM/yyyy'}}</td>
+                  <th>Reason For Change In Relieving Date</th>
+                  <td>{{resignationDetails.reasonExpectedDateChange}}</td>
+                  <th></th>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

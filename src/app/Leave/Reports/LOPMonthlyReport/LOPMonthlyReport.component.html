@@ -1,0 +1,113 @@
+<section class="content-header">
+    <h1>
+        Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+            <h3 class="box-title">Monthly Manual Entry Audit Report</h3>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Plant <span style="color: red;">*</span></label>
+                        <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                            name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                            <option [ngValue]="null">select plant</option>
+                            <option *ngFor="let location of locationList" value="{{location.code}}">
+                                {{location.code + '-' + location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Month <span style="color: red;">*</span></label>
+                        <select [(ngModel)]="filterMonth" class="form-control" id="locationName"
+                            name="locationName" required>
+                            <option [ngValue]="null">select Month</option>
+                            <option *ngFor="let location of MonthsList" value="{{location.id}}">
+                                {{location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                            [(ngModel)]="CalenderYear" placeholder="Year">
+                    </div>
+                </div>
+
+
+                <div class="col-sm-4">
+                    <label>&nbsp;</label>
+                    <div class="form-group">
+                        <button class="btn btn-success" (click)="GetManualEntryAuditReport();"
+                            matTooltip="click to get details">GO</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-info" (click)="printManualreport();"
+                            [disabled]="!ManualEntryAuditReport.length>0"
+                            matTooltip="click to export">Export</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-danger" (click)="ClearData();"
+                            matTooltip="enter Expected Out Time">Clear</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <div id="manualaudit">
+        <table class="table table-bordered table-striped">
+            <!-- <tr>
+                <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+            </tr> -->
+            <tr>
+                <th>Sl.No.</th>
+                <th>Employee No.</th>
+                <th>Employee Name</th>
+                <th>Location</th>
+                <th>Swipe Date</th>
+                <th>Swipe Type</th>
+                <th>Prev Time</th>
+                <th>Actual Time</th>
+                <th>Reason Type</th>
+                <th>Remarks</th>
+                <th>User Name</th>
+                <th>User Ip</th>
+                <th>User Designation</th>
+                <th>User Department</th>
+                <th>Updated date </th>
+            </tr>
+            <tr *ngFor="let lp of ManualEntryAuditReport;let i=index">
+                <td style="width: 5%;">{{i+1}}</td>
+                <td>{{lp.pernr}}</td>
+                <td>{{lp.empName}}</td>
+                <td>{{lp.locid}}</td>
+                <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+                <td>{{lp.inout == 'I'?'In':'Out'}}</td>
+                <td>{{lp.prevTime}}</td>
+                <td>{{lp.start}}</td>
+                <td>{{lp.reasonType}}</td>
+                <td>{{lp.remarks}}</td>
+                <td>{{lp.username}}</td>
+                <td>{{lp.ipAddress}}</td>
+                <td>{{lp.designation}}</td>
+                <td>{{lp.department}}</td>
+                <td>{{lp.createdDate | date:'dd/MM/yyyy'}}</td>
+            </tr>
+        </table>
+    </div>
+</section>
+

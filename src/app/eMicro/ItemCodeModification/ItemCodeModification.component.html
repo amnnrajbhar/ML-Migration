@@ -1,0 +1,553 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Item Code
+    <small>Modification</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Item Code Modification</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="box">
+    <div class="box-header my-3">
+      <div class="col-xs-6">
+        <h3 class="box-title">Item Code Modification</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right"
+          (click)="onClickNewRequest(false, null, false, '')"><i class="fa fa-plus"
+            aria-hidden="true"></i> New Request</button>
+      </div>
+    </div>
+    <div id="dateFilterPanel">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="requestno"> Request Number</label>
+              <input [(ngModel)]="filterrequest" class="form-control" id="requestno" placeholder="Request Number"
+                name="requestno" ngControl="filterrequest" #requestnoEnt="ngModel">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="fltrMaterialCode">Material Code</label>
+              <input [(ngModel)]="filterMaterialCode" class="form-control" id="MaterialCode" placeholder="Material Code"
+                name="MaterialCode" ngControl="filterMaterialCode" #requestnoEnt="ngModel">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="fltrstatus">Status</label>
+              <select [(ngModel)]="filterstatus" class="form-control" id="fltrstatus" name="fltrstatus"
+                ngControl="filterstatus" #fltrstatusEnt="ngModel" matTooltip="Select Status">
+                <option [ngValue]="null" disabled>--Select an Option--</option>
+                <option *ngFor="let status of statuslist" value={{status.name}}>{{status.name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label>From Date</label>
+            <div class="form-group form-group-sm" [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+              <div class="input-group date">
+                <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dt11"
+                  [owlDateTimeTrigger]="dt11" [max]="today" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                  #fromDate="ngModel">
+                <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+              <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+              <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From Date.</span>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <label>To Date</label>
+            <div class="form-group form-group-sm" [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+              <div class="input-group date">
+                <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+                  [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="endDate" class="form-control"
+                  [(ngModel)]="to_date" #toDate="ngModel">
+                <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+              <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;"></owl-date-time>
+              <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid To Date.</span>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-sm-12 center-contents">
+            <div class="form-group form-group-sm">
+              <button class="btn btn-primary btn-sm mr-3" (click)="getAllEntries();"
+                [disabled]="!toDate.valid && toDate.touched || !fromDate.valid && fromDate.touched || isLoading">
+                <i class="fa" [ngClass]="{'fa-spin fa-spinner': isLoading}"></i><span *ngIf="isLoading">&nbsp;</span>Go
+              </button>
+              <button class="btn btn-info btn-sm" (click)="clearFilter();" matTooltip="click to reset">Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="userTable" class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Request Number</th>
+            <th>Requested By</th>
+            <th>Material Code</th>
+            <th>Subject</th>
+            <th>Status</th>
+            <th>Last Approver</th>
+            <th>Pending Approver</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of ItemCodeModificationFilter; let i = index">
+            <td>{{item.requestNo}}</td>
+            <td>{{item.requestedBy}}</td>
+            <td>{{item.itemCode}}</td>
+            <td>{{item.subject}}</td>
+            <td>{{item.status}}</td>
+            <td>{{item.lastApprover}}</td>
+            <td>{{item.pendingApproverName}}</td>
+            <td>
+              <div class="row center-contents">
+                <button *ngIf="(item.status == 'Created' || item.status == 'Reverted to initiator') && item.createdBy == this.currentUser.employeeId"
+                  type="button" [matTooltipPosition]="'after'" matTooltip="Click to view details"
+                  class="btn btn-primary btn-xs mr-3" (click)="onClickNewRequest(false, item, false, '')">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button *ngIf="item.status != 'Created' && item.status != 'Reverted to initiator' && (item.pendingApproverName == this.currentUser.fullName || item.approver1 == userid ||
+                  item.approver2 == userid || item.approver3 == userid ||  item.approver4 == userid)" type="button"
+                  [matTooltipPosition]="'after'" matTooltip="Click to edit details" class="btn btn-primary btn-xs mr-3"
+                  (click)="onClickNewRequest(true, item, false, '')">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to view details"
+                  class="btn btn-info btn-xs" (click)="onClickNewRequest(true,item,false,'View')">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <table *ngIf="false">
+                <tr>
+                  <td>
+                    <button *ngIf="item.status == 'Created'  && item.createdBy == this.currentUser.employeeId"
+                      type="button" [matTooltipPosition]="'after'" matTooltip="Click to view details"
+                      class="btn btn-primary btn-xs" (click)="onClickNewRequest(false, item, false, '')">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </td>
+                  &nbsp;
+                  <td *ngIf="item.status != 'Created'">
+                    <button *ngIf="item.pendingApproverName == this.currentUser.fullName || item.approver1 == userid ||  item.approver2 == userid || 
+                      item.approver3 ==userid || item.approver4 ==userid" type="button"
+                      [matTooltipPosition]="'after'" matTooltip="Click to edit details" class="btn btn-primary btn-xs"
+                      (click)="onClickNewRequest(true, item, false, '')">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </td>
+                  <!-- <td>
+                      <button
+                        *ngIf="item.modifiedBy==null && item.status =='Created' && item.createdBy==this.currentUser.employeeId"
+                        type="button" [matTooltipPosition]="'after'" matTooltip="Click to view details"
+                        class="btn btn-primary btn-xs" (click)="onClickNewRequest(false,item,false,'')">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    </td>
+                    &nbsp;
+                    <td *ngIf="item.status !='Created'">
+                      <button *ngIf="item.pendingApproverName==currentUser.fullName || item.approver1 ==userid ||  item.approver2 ==userid || 
+                      item.approver3 ==userid ||  item.approver4 ==userid" type="button" [matTooltipPosition]="'after'"
+                        matTooltip="Click to view details" class="btn btn-primary btn-xs"
+                        (click)="onClickNewRequest(true,item,false,'')">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    </td> -->
+                  &nbsp;
+                  <td>
+                    <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to view details"
+                      class="btn btn-primary btn-xs" (click)="onClickNewRequest(true,item,false,'View')">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </td>
+
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <!-- <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div> -->
+  </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Item Code Modification Form
+        </h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="row">
+          <div class="col-sm-12">
+            <form #dataForm="ngForm" (keydown.enter)="$event.preventDefault()">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group form-group-sm">
+                    <label for="requestDate"> Request Date</label>
+                    <input name="requestDate" id="requestDate" placeholder="Request Date" class="form-control"
+                      value="{{ItemCodeModificationModel.requestDate | date:'dd/MM/yyyy'}}" readonly>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group form-group-sm">
+                    <label for="Type">Requester<span style="color:red">*</span></label>
+                    <input name="requestedBy" id="requestedBy" placeholder="Requester" class="form-control"
+                      value="{{ItemCodeModificationModel.requestedBy}}" readonly>
+
+                  </div>
+                </div>
+                <div class="col-sm-4" *ngIf="isEdit">
+                  <div class="form-group form-group-sm">
+                    <label for="Type">Request No<span style="color:red">*</span></label>
+                    <input name="requestNo" id="requestNo" placeholder="Request NO" class="form-control"
+                      value="{{ItemCodeModificationModel.requestNo}}" readonly>
+
+                  </div>
+                </div>
+
+              </div>
+              <hr class="m-3">
+              <div class="box">
+                <div class="box-header" style="background-color: #b6cedf;height: 35px;">\
+                  <div class="col-xs-6">
+                    <h3 class="box-title">Request details</h3>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-sm-4">
+                    <!-- <div class="row"> -->
+                    <div class=" form-group form-group-sm">
+                      <label for="itemCode"> Material Code<span style="color:red">*</span></label>
+                      <input name="itemCode" id="itemCode" placeholder="Material Code" class="form-control"
+                        [(ngModel)]="SelectedCode" ngControl="SelectedCode"
+                        (input)="SelectedCode=$event.target.value.toUpperCase()" [disabled]="isEdit" required>
+                      <!-- <ng-multiselect-dropdown style="width:100%;" id="pc" name="pc" ngControl="SelectedCode"
+                          #ProjectCodeEnt="ngModel" required [placeholder]="'select Item Code'" [data]="ItemcodesListCon"
+                          [(ngModel)]="SelectedCode" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)"
+                          (onDeSelect)="onItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" [disabled]="isEdit"
+                          (onDeSelectAll)="onDeSelectAll($event)">
+                        </ng-multiselect-dropdown> -->
+                    </div>
+                  </div>
+                  <div class="col-sm-1" *ngIf="!isEdit">
+                    <label>&nbsp;</label>
+                    <div class="form-group form-group-sm">
+                      <button class="btn btn-primary btn-sm" (click)="getApproverslatest(SelectedCode, true)"
+                        [disabled]="SelectedCode == null" matTooltip="click to Continue">Get Data</button>
+                      <!-- </div> -->
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="mat_type">Material Type</label>
+                      <select [(ngModel)]="ItemCodeModificationModel.materialTypeId" class="form-control" id="mat_type"
+                        name="mat_type" ngControl="ItemCodeModificationModel.materialTypeId" #mat_typeEnt="ngModel"
+                        matTooltip="select Material Type" disabled>
+                        <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                        <option *ngFor="let mat_type of materialList" value={{mat_type.id}}>
+                          {{mat_type.type}}-{{mat_type.description}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="MaterialGroup">Material Group</label>
+                      <select [(ngModel)]="ItemCodeModificationModel.materialGroupId" class="form-control" id="mtrlgrp"
+                        name="mtrlgrp" ngControl="ItemCodeModificationModel.materialGroupId" #mtrlgrpEnt="ngModel"
+                        disabled matTooltip="Select MaterialGroup">
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngFor="let mat of materialgroupList" value={{mat.materialGroupId}}>
+                          {{mat.materialGroupId}}-{{mat.ltxt}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- <div class="row"> -->
+                  <div class="col-sm-6">
+                    <div class="form-group form-group-sm">
+                      <label for="shortnaame">Short Name</label>
+                      <input [(ngModel)]="ItemCodeModificationModel.materialShortName" class="form-control"
+                        id="shortnaame" placeholder="Material Name" name="shortnaame"
+                        ngControl="ItemCodeModificationModel.materialShortName"
+                        (input)="ItemCodeModificationModel.materialShortName=$event.target.value.toUpperCase()"
+                        #shortnaameEnt="ngModel" disabled>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group form-group-sm">
+                      <label for="longname">Long Name</label>
+                      <input [(ngModel)]="ItemCodeModificationModel.materialLongName" class="form-control" id="longname"
+                        placeholder="Material Name" name="longname"
+                        ngControl="ItemCodeModificationModel.materialLongName"
+                        (input)="ItemCodeModificationModel.materialLongName=$event.target.value.toUpperCase()"
+                        #longnameEnt="ngModel" disabled>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group form-group-sm"
+                      [ngClass]="(subjectEnt.touched && !subjectEnt.valid)?'has-error':''">
+                      <label for="FromPlant">Subject<span style="color:red">*</span></label>
+                      <textarea [(ngModel)]="ItemCodeModificationModel.subject" name="subject" id="subject"
+                        placeholder="Subject" class="form-control" #subjectEnt="ngModel"
+                        ngControl="ItemCodeModificationModel.subject" [readonly]="isEdit" type="text"
+                        required></textarea>
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="form-group form-group-sm"
+                      [ngClass]="(descriptionEnt.touched && !descriptionEnt.valid)?'has-error':''">
+                      <label for="Customer">Description<span style="color:red">*</span></label>
+                      <textarea [(ngModel)]="ItemCodeModificationModel.description" rows="10" class="form-control"
+                        placeholder="Description" id="description" name="description"
+                        ngControl="ItemCodeModificationModel.description" [readonly]="isEdit"
+                        matTooltip="Enter description" #descriptionEnt="ngModel" type="text" required></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" *ngIf="isEdit && !view">
+                  <div class="col-sm-12">
+                    <div class="form-group form-group-sm"
+                      [ngClass]="(commentsEnt.touched && !commentsEnt.valid)?'has-error':''">
+                      <label for="Customer">Comments<span style="color:red">*</span></label>
+                      <textarea [(ngModel)]="comments" class="form-control" placeholder="comments" id="comments"
+                        name="comments" ngControl="comments" [disabled]="View" matTooltip="Enter Comments"
+                        #commentsEnt="ngModel" type="text" required></textarea>
+                      <span class="help-block" *ngIf="!commentsEnt.valid && commentsEnt.touched">Please Enter
+                        comments.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="box mt-3">
+                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                  <div class="col-xs-6">
+                    <h3 class="box-title">Attachments</h3>
+                  </div>
+                </div>
+                <div class="row mt-3" *ngIf="!isEdit">
+                  <div class="col-sm-4">
+                    <input #myInput type="file" accept=".doc,.pdf" id="file"
+                      (change)="handleFileInput($event.target.files)" multiple>
+                  </div>
+                  <div class="col-sm-3">
+                    <span class="text-red pull-left" *ngIf="errMsg1.length>0"><i
+                        class="fa fa-warning"></i>{{errMsg1}}</span>
+                  </div>
+                  <div class="col-sm-4">
+                    <span class="text-red pull-left"><i class="fa fa-warning"></i>
+                      NOTE:Maximum Upto 2Mb Can Be Uploaded</span>
+                  </div>
+                </div>
+                <div class="row mt-3" *ngFor="let attach of fileslist">
+                  <div class="col-sm-4">
+                    <!-- <label for="attachments">{{attach}}</label> -->
+                    <label for="attachments"></label><a (click)="downloadFile1(attach);"
+                      style="cursor: pointer;text-decoration: underline; color: #68a7d2;" [matTooltipPosition]="'below'"
+                      matTooltip="Click to download the file">{{attach}}</a>
+                  </div>
+                  <div class="col-sm-4" *ngIf="!isEdit && attach!= null">
+                    <button title="Remove Files" (click)="removefile(attach);" matTooltip="Click to delete"
+                      class="btn btn-secondary btn-sm">
+                      <i class="fa fa-trash"></i></button>
+                  </div>
+                </div>
+                <div class="row" *ngFor="let attach of attachments;let i=index">
+                  <div class="col-sm-4" *ngIf="attach != null">
+                    <label for="attachments"></label><a
+                      (click)="downloadFile(ItemCodeModificationModel.requestNo,attach);"
+                      style="cursor: pointer;text-decoration: underline; color: #68a7d2;" [matTooltipPosition]="'below'"
+                      matTooltip="Click to download the file">{{attach}}</a>
+                  </div>
+                  <div class="col-sm-4" *ngIf="!isEdit && attach!= null">
+                    <button title="Remove Files" (click)="deletefile(ItemCodeModificationModel,attach);"
+                      matTooltip="Click to delete" class="btn btn-secondary btn-sm">
+                      <i class="fa fa-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="box mt-3">
+                <div class="box-header mb-3" style="background-color: #b6cedf; height: 35px;">
+                  <div class="col-xs-6">
+                    <h3 class="box-title">Approvers List</h3>
+                  </div>
+                </div>
+                <div class="row" *ngIf='!isEdit && ItemCodeModificationModel.status != "Created" && ItemCodeModificationModel.status != "Reverted to initiator"'>
+                  <div class="col-sm-12">
+                    <div class="table">
+                      <table id="approversTable" class="table">
+                        <thead>
+                          <tr>
+                            <th>Priority</th>
+                            <th>Location</th>
+                            <th>Employee ID</th>
+                            <th>ApproverName</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let user of Approverslist; let i = index">
+                            <td>{{user.priority}}</td>
+                            <td>{{getloc(user)}}</td>
+                            <td>{{user.approverId}}</td>
+                            <td>{{user.approverName}}</td>
+                            <td>{{user.role}}</td>
+                            <td>{{user.department}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" *ngIf="isEdit || (!isEdit && (ItemCodeModificationModel.status == 'Created' || ItemCodeModificationModel.status == 'Reverted to initiator'))">
+                  <div class="col-sm-12">
+                    <div class="table">
+                      <table id="approversTable" class="table">
+                        <thead>
+                          <tr>
+                            <th>Priority</th>
+                            <th *ngIf="!isEdit">Location</th>
+                            <th>Employee ID</th>
+                            <th>ApproverName</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Comments</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let user of transactionslist; let i = index">
+                            <td>{{user.approvalPriority}}</td>
+                            <td>{{user.doneBy}}</td>
+                            <td>{{user.approverName}}</td>
+                            <td>{{user.role}}</td>
+                            <td>{{user.department}}</td>
+                            <td>{{user.status}}</td>
+                            <td>{{user.doneOn |date:'dd/MM/yyyy HH:mm'}}</td>
+                            <td>{{user.comments}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <div *ngIf="!view" class="row pull-right">
+          <div class="dropdown" *ngIf="!isApproversLoading && !isTransactionsLoading">
+            <button type="button" class="btn btn-primary mr-3" (click)="oncloserequest()"
+              matTooltip="Click to Close the Request" *ngIf="Closure" [disabled]="comments == '' || comments == null">Closure</button>
+            <button type="button" class="btn btn-primary mr-3" (click)="onCreate()" matTooltip="Click to Create"
+              [disabled]="!dataForm.valid || comments == '' || comments == null"
+              *ngIf="isEdit && Creator && !Closure && ItemCodeModificationModel.createdBy != this.currentUser.employeeId">Create</button>
+            <button type="button" class="btn btn-primary mr-3" (click)="onreview('InProcess')" matTooltip="Click to Submit"
+              [disabled]="!dataForm.valid" *ngIf="isEdit && Review && !Closure && !Creator">Submit</button>
+            <button type="button" class="btn btn-danger mr-3" (click)="onreview('Rejected')" matTooltip="Click to Reject"
+              *ngIf="isEdit && Review && !Closure" [disabled]="comments == '' || comments == null">Reject</button>
+            <a *ngIf="isEdit && Review" data-toggle="dropdown" class="dropdown-toggle" href="#">
+              <span>
+                <button [disabled]="comments == '' || comments == null" type="button" class="btn btn-danger mr-3"
+                  matTooltip="Click to Revert">Revert
+                </button>
+              </span>
+            </a>
+            <ul *ngIf="isEdit && Review" class="dropdown-menu">
+              <li><a *ngIf="Aprlpriority > 1" (click)="onRevertRequest('ReverttoLastApprover')">Previous Approver</a>
+              </li>
+              <li><a (click)="onRevertRequest('ReverttoInitiator')">Initiator</a></li>
+            </ul>
+            <!-- <button type="button" class="btn btn-default" *ngIf="isEdit" style="background-color:darkgray;color:white;"
+              data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close
+            </button> -->
+          </div>
+          <div class="row center-contents" *ngIf="isApproversLoading || isTransactionsLoading">
+            <i class="fa fa-spin fa-spinner"></i>
+          </div>
+          <!-- <div *ngIf="isEdit" class="dropdown profile-element"> <a data-toggle="dropdown" class="dropdown-toggle" href="#"><span>
+            <button type="button" class="btn btn-primary" matTooltip="Click to Submit">Save</button>
+          </span>
+          </a>
+          <ul class="dropdown-menu animated fadeInRight m-t-xs">
+            <li><a (click)="onRevertRequest(ReverttoLastApprover)">Previous Approver</a></li>
+            <li><a (click)="onRevertRequest(ReverttoInitiator)">Initiator</a></li>          
+          </ul>
+          </div> -->
+          <div class="mt-3">
+            <button type="button" class="btn btn-primary mr-3" (click)="onSaveEntry('Submit')"
+              matTooltip="Click to Save & Submit" [disabled]="!dataForm.valid "
+              *ngIf="!isEdit && ItemCodeModificationModel.status == null">Save & Submit</button>
+            <button type="button" class="btn btn-primary mr-3" (click)="onSubmitEntry(ItemCodeModificationModel)"
+              matTooltip="Click to Save & Submit" [disabled]="!dataForm.valid" *ngIf="!isEdit && (ItemCodeModificationModel.status == 'Created' 
+              || ItemCodeModificationModel.status == 'Reverted to initiator')">
+              Save & Submit</button>
+            <button type="button" class="btn btn-info mr-3" (click)="OnClickback()" data-dismiss="modal" *ngIf="!isEdit"
+              [disabled]="isLoadingPop" matTooltip="Click to Go Back">Back</button>
+            <button type="button" class="btn btn-info mr-3" (click)="resetForm()" *ngIf="!isEdit"
+              matTooltip="Click to Clear">Clear</button>
+            <button type="button" class="btn btn-default mr-3" style="background-color:darkgray;color:white;"
+              data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+          </div>
+        </div>
+        <div *ngIf="view" class="row pull-right">
+          <!-- <button *ngIf="IsPrint" type="button" class="btn btn-primary" (click)="print()"
+                     [disabled]="isLoadingPop" matTooltip="Click to Print">Print</button> -->
+          <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+            data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>

@@ -1,0 +1,548 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Workflow Approver Config
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active"> Workflow Approver Config</li>
+  </ol>
+</section>
+
+<section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="plant"> Plant</label>
+            <select [(ngModel)]="filterModel.plantId" class="form-control" id="plantId" name="plantId"
+              matTooltip="Plant" (change)="onFilterPlantChange()" #plantEnt="ngModel" required>
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let pl of plantList" [ngValue]="pl.id">{{pl.code}} - {{pl.name}} </option>
+            </select>
+
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="payGroupId"> Pay Group </label>
+            <select [(ngModel)]="filterModel.payGroupId" class="form-control" id="payGroupId" name="payGroupId"
+              matTooltip="Pay Group" #payGroupEnt="ngModel" required>
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let pl of filterPayGroupList" [ngValue]="pl.id">{{pl.long_Desc}} - {{pl.payGroup}}
+              </option>
+            </select>
+
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="employeeCategory"> Employee Category</label>
+            <select [(ngModel)]="filterModel.employeeCategoryId" class="form-control" id="employeeCategoryIdFil"
+              name="employeeCategoryIdFil" matTooltip="Employee Category" #empCatEnt="ngModel" required>
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let pl of employeeCategoryList" [ngValue]="pl.id">{{pl.catltxt}} </option>
+            </select>
+
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="plant"> Grade</label>
+            <select [(ngModel)]="filterModel.gradeId" class="form-control" id="gradeIdFilter" name="gradeIdFilter"
+              matTooltip="Employee Grade" #gradeIdEnt="ngModel" required>
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let pl of gradeList" [ngValue]="pl.id">{{pl.grdid}} - {{pl.grdtxt}} </option>
+            </select>
+          </div>
+        </div>
+
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="plant"> Department </label>
+            <select [(ngModel)]="filterModel.departmentId" class="form-control" id="departmentFilter"
+              name="departmentFilter" matTooltip="Department" #flowTypeEnt="ngModel" required>
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let dl of departmentList" [ngValue]="dl.id">{{dl.description}} </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="plant"> Approver Type </label>
+            <select [(ngModel)]="filterModel.approverType" class="form-control" id="approverTypeFilter"
+              name="approverTypeFilter" matTooltip="Flow Type" #approverTypeEnt="ngModel" required>
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let pl of approverTypeList" [ngValue]="pl">{{pl}} </option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="plant"> Flow Type </label>
+            <select [(ngModel)]="filterModel.flowType" class="form-control" id="flowTypeFilter" name="flowTypeFilter"
+              matTooltip="Flow Type" #flowTypeEnt="ngModel" required>
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let pl of flowTypeList" [ngValue]="pl">{{pl}} </option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="nameText"> Approver Name / No </label>
+            <input name="nameText" class="form-control" id="nameText" [(ngModel)]="filterModel.nameText" />
+          </div>
+        </div>
+      
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="plant"> Approver Rule </label>
+            <select [(ngModel)]="filterModel.approverRule" class="form-control" id="approverRuleFilter"
+              name="approverRuleFilter" matTooltip="Approver Rule" #approverRuleEnt="ngModel" required>
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let pl of approverRuleList" [ngValue]="pl">{{pl}} </option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="level"> Approver Level </label>
+            <input type="number" name="level" class="form-control" id="level" [(ngModel)]="filterModel.level" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group text-center">
+        <button class="btn btn-primary btn-sm" (click)="getListData();" matTooltip="click to Go">
+          Filter</button>
+      </div>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="pull-right actionButtons">
+      <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="detailsModal"
+        (click)="onAddClick()">Add New</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="exportData()">Export</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="delete()">Delete Selected</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="deleteAll()">Delete All</button>
+      <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="replaceApproversModal"
+        (click)="onReplaceClick()">Replace Approver</button>
+      <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="bulkUploadModal"
+        (click)="onBulkUploadClick()"> Bulk Upload Approvers</button>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-md-12 table-responsive">
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+      <table class="table table-hover table-striped table-bordered" id="data">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Action</th>
+            <!-- <th>Sl No</th> -->
+            <th>Flow Type</th>
+            <th>Plant</th>
+            <th>Pay Group</th>
+            <th>Employee Category</th>
+            <th>Grade</th>
+            <th>Department</th>
+            <th>Approver Level</th>
+            <th>Approver Type</th>
+            <th>Approver</th>
+            <th>Approver Rule</th>
+            <th>Auto Approve</th>
+            <th>Approve in Days</th>
+            <th>Auto reject</th>
+            <th>Reject in Days</th>
+            <th>Allow Edit</th>
+            <th>Created By</th>
+            <th>Created On</th>
+            <th>Modified By</th>
+            <th>Modified On</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filterData.list; let i = index">
+            <td>
+              <input type="checkbox" [(ngModel)]="item.selected" />
+            </td>
+            <td>
+              <button (click)="EditLine(item, i)" title="click to edit this " class="btn btn-xs btn-primary">
+                <i class="fas fa-pen"></i>
+              </button>
+
+            </td>
+            <!-- <td>{{i+1}}</td> -->
+            <td>{{item.flowType}}</td>
+            <td>{{item.plantName}}</td>
+            <td>{{item.payGroupName}}</td>
+            <td>{{item.employeeCategoryName}}</td>
+            <td>{{item.gradeName}}</td>
+            <td>{{item.departmentName}}</td>
+            <td>{{item.approverOrder}}</td>
+            <td>{{item.approverType}}</td>
+            <td>{{item.approverName}}</td>
+            <td>{{item.approverRule}}</td>
+            <td>{{item.autoApprove == true ? "Yes" : "No"}}</td>
+            <td>{{item.approveInDays}}</td>
+            <td>{{item.autoReject == true ? "Yes" : "No"}}</td>
+            <td>{{item.rejectInDays}}</td>
+            <td>{{item.allowEdit == true ? "Yes" : "No"}}</td>
+            <td>{{item.createdByName}}</td>
+            <td>{{item.createdDate | date: "dd/MM/yyyy"}}</td>
+            <td>{{item.modifiedByName}}</td>
+            <td>{{item.modifiedDate | date: "dd/MM/yyyy"}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <ul class="pagination" *ngIf="filterData.totalCount>0">
+          <li>
+            <a (click)="gotoPage(filterData.pageNo)">
+              Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> -
+              <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b>
+              of <b>{{filterData.totalCount}}</b> records
+            </a>
+          </li>
+          <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+          <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+          <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+          <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+          <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo"
+              (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo+1"
+              (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+          <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of
+              <b>{{filterData.totalPages}}</b></a></li>
+          <li>
+            <a>
+              Page Size
+              <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<div id="detailsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Workflow Approvers Config Details</h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <form #detailsForm="ngForm">
+
+          <div class="form-group">
+            <label class="col-md-2">Flow Type <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.flowType" class="form-control" id="flowType" name="flowType"
+                matTooltip="Flow Type" #flowTypeEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Flow Type </option>
+                <option *ngFor="let pl of flowTypeList" [ngValue]="pl">{{pl}} </option>
+              </select>
+              <span class="help-block" *ngIf="flowTypeEnt.touched && !flowTypeEnt.valid">Please select workflow type
+                </span>
+            </div>
+            <label class="col-md-2">Plant <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.plantId" class="form-control" id="PlantId" name="PlantId" matTooltip="Plant"
+                #plantEnt="ngModel" (change)="onPlantChange()" required>
+                <option [ngValue]="null" [selected]="true"> Select Plant </option>
+                <option *ngFor="let pl of plantList" [ngValue]="pl.id">{{pl.code}} - {{pl.name}} </option>
+              </select>
+              <span class="help-block" *ngIf="plantEnt.touched && !plantEnt.valid">Please select Plant</span>
+            </div>
+
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Pay Group <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.payGroupId" class="form-control" id="PayGroup" name="PayGroup"
+                matTooltip="Plant" #payGroupEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Pay Group </option>
+                <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}} - {{pl.payGroup}}</option>
+              </select>
+              <span class="help-block" *ngIf="payGroupEnt.touched && !payGroupEnt.valid">Please select pay group</span>
+            </div>
+            <label class="col-md-2">Employee Category <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.employeeCategoryId" class="form-control" id="employeeCategoryId"
+                name="employeeCategoryId" matTooltip="Employee Category" #empCatEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Employee Category </option>
+                <option *ngFor="let pl of employeeCategoryList" [ngValue]="pl.id">{{pl.catltxt}} </option>
+              </select>
+              <span class="help-block" *ngIf="empCatEnt.touched && !empCatEnt.valid">Please select employee category
+              </span>
+            </div>
+
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Employee Grade </label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.gradeId" class="form-control" id="gradeId" name="gradeId"
+                matTooltip="Employee Grade" #gradeIdEnt="ngModel">
+                <option [ngValue]="null" [selected]="true"> Select Grade </option>
+                <option *ngFor="let pl of gradeList" [ngValue]="pl.id">{{pl.grdid}} - {{pl.grdtxt}} </option>
+              </select>
+            </div>
+            <label class="col-md-2">Employee Department </label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.departmentId" class="form-control" id="departmentId" name="departmentId"
+                matTooltip="Employee Department" #departmentIdEnt="ngModel">
+                <option [ngValue]="null" [selected]="true"> Select Department </option>
+                <option *ngFor="let dl of departmentList" [ngValue]="dl.id">{{dl.description}} </option>
+              </select>
+            </div>
+
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Approver Type <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.approverType" class="form-control" id="approverType" name="approverType"
+                matTooltip="Approver Type" #approverTypeEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Approver Type </option>                
+                <option *ngFor="let pl of approverTypeList" [ngValue]="pl">{{pl}} </option>
+              </select>
+            </div>
+            <div *ngIf="item.approverType == 'Custom'">
+              <label class="col-md-2">Select Approver <span style="color:red">*</span></label>
+              <div class="col-md-4">
+                <input type="text" id="employeeName" class="form-control" #employeeCatEnt="ngModel"
+                  (keyup)="getEmployeesList($event)" [(ngModel)]="item.employeeName" ngControl="item.employeeName"
+                  name="employeeName" autocomplete="off" required/>
+                <span class="help-block" *ngIf="employeeCatEnt.touched && !employeeCatEnt.valid">Please select
+                  employee</span>
+                <input type="hidden" id="employeeId" [(ngModel)]="item.employeeId" name="employeeId" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Approver Level <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="text" id="approverOrder" class="form-control" #approverOrderCatEnt="ngModel"
+                [(ngModel)]="item.approverOrder" maxlength="2" ngControl="item.approverOrder" name="approverOrder"
+                required autocomplete="off" (keypress)="keyPressAllowOnlyNumber($event)" />
+              <span class="help-block" *ngIf="approverOrderCatEnt.touched && !approverOrderCatEnt.valid">Please enter
+                value</span>
+            </div>
+            <label class="col-md-2">Approver Rule</label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.approverRule" class="form-control" id="approverRule" name="approverRule"
+                matTooltip="Approver Rule" #approverRuleEnt="ngModel">
+                <option [ngValue]="null" [selected]="true"> Select Approver Rule </option>
+                <option *ngFor="let pl of approverRuleList" [ngValue]="pl">{{pl}} </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Auto Approve</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="autoApprove">
+                  <input type="checkbox" [(ngModel)]="item.autoApprove" name="autoApprove" />
+                </label>
+              </div>
+            </div>
+            <div *ngIf="item.autoApprove == true">
+              <label class="col-md-2">Approve in Days <span style="color:red">*</span></label>
+              <div class="col-md-4">
+                <input type="text" id="approveInDays" class="form-control" #approveInDaysCatEnt="ngModel"
+                  [(ngModel)]="item.approveInDays" maxlength="2" ngControl="item.approveInDays" name="approveInDays" required
+                  autocomplete="off" (keypress)="keyPressAllowOnlyNumber($event)" />
+                <span class="help-block" *ngIf="approveInDaysCatEnt.touched && !approveInDaysCatEnt.valid">Please enter
+                  value</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+
+            <label class="col-md-2">Auto Reject</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="autoReject">
+                  <input type="checkbox" [(ngModel)]="item.autoReject" name="autoReject" />
+                </label>
+              </div>
+            </div>
+            <div *ngIf="item.autoReject == true">
+              <label class="col-md-2">Reject in Days <span style="color:red">*</span></label>
+              <div class="col-md-4">
+                <input type="text" id="rejectInDays" class="form-control" #rejectInDaysCatEnt="ngModel"
+                  [(ngModel)]="item.rejectInDays" maxlength="2" (keypress)="keyPressAllowOnlyNumber($event)"  ngControl="item.rejectInDays" name="rejectInDays"
+                  autocomplete="off" required/>
+                <span class="help-block" *ngIf="rejectInDaysCatEnt.touched && !rejectInDaysCatEnt.valid">Please enter
+                  value</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Allow Edit</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="allowEdit">
+                  <input type="checkbox" [(ngModel)]="item.allowEdit" name="allowEdit" />
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </form>
+        <div class="text-center actionButtons">
+          <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !detailsForm.valid"
+            *ngIf="!isEdit" (click)="addData()">
+            <i class="fas fa-plus"></i> Add</button>
+          <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !detailsForm.valid"
+            *ngIf="isEdit" (click)="updateData()">
+            <i class="fas fa-check"></i> Update</button>
+          <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+            Cancel</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="bulkUploadModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Bulk Upload Approvers</h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <form #bulkUploadForm="ngForm">
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="col-md-2">Select File</label>
+                <div class="col-md-4">
+                  <input #file type="file" id="file" multiple (change)="getFiles($event)" />
+                  <span class="text-danger">Upload excel files only. Maximum file size
+                    allowed is 2MB.</span>
+                </div>
+                <div class="col-md-4">
+                  <button type="button" class="btn btn-info" (click)="uploadFile()">
+                    Upload
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br>
+        <div>
+          <h4>Instructions:</h4>
+          <ul>
+            <li>Please download the attached sample Upload sheet with instructions</li>
+            <li>The sample sheet contains sample data and upload instructions for reference</li>
+            <li>Please populate the sheet with approvers data and upload</li>
+            <li>The column names must not be changed and must be present at all times even if the value is optional, the
+              optional values can be blank though</li>
+            <li>If the upload file contains invalid data the whole file gets rejected and an error file is generated for
+              reference</li>
+          </ul>
+        </div>
+        <hr>
+        <div>
+          <h4>Sample Bulk Upload File for reference:</h4>
+          <span class="text-danger">Download the below sample upload sheet.</span>
+          <ul>
+            <li><a href="assets/forms/WorkFlowApprovers_Bulk_Upload_Sample.xlsx"
+                download="WorkFlowApprovers_Bulk_Upload_Sample.xlsx">WorkFlowApprovers_Bulk_Upload_Sample.xlsx</a></li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="replaceApproversModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Replace Approver</h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <form #replaceApproversForm="ngForm">
+          <div class="form-group">
+            <label class="col-md-2">Select Old Approver<span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="text" id="oldEmployeeName" class="form-control" #oldEmployeeNameCatEnt="ngModel"
+                (keyup)="getOldEmployeesList($event)" [(ngModel)]="item.oldEmployeeName"
+                ngControl="item.oldEmployeeName" name="oldEmployeeName" required autocomplete="off" />
+              <span class="help-block" *ngIf="oldEmployeeNameCatEnt.touched && !oldEmployeeNameCatEnt.valid">Please
+                select
+                old Approver</span>
+              <input type="hidden" id="oldEmployeeId" [(ngModel)]="item.oldEmployeeId" name="oldEmployeeId" />
+            </div>
+
+            <label class="col-md-2">Select New Approver<span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="text" id="newEmployeeName" class="form-control" #newEmployeeCatEnt="ngModel"
+                (keyup)="getNewEmployeesList($event)" [(ngModel)]="item.newEmployeeName"
+                ngControl="item.newEmployeeName" name="newEmployeeName" required autocomplete="off" />
+              <span class="help-block" *ngIf="newEmployeeCatEnt.touched && !newEmployeeCatEnt.valid">Please select
+                new Approver</span>
+              <input type="hidden" id="newEmployeeId" [(ngModel)]="item.newEmployeeId" name="newEmployeeId" />
+            </div>
+
+          </div>
+        </form>
+        <div class="text-center actionButtons">
+          <button type="button" class="btn btn-info" (click)="replaceApprovers()">
+            Replace
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

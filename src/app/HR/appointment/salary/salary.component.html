@@ -1,0 +1,430 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Salary Details
+  </h1>
+
+</section>
+
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="form-horizontal">
+    <!-- <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="col-md-4">Salary Type <span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <select [(ngModel)]="details.salaryType" class="form-control" id="salaryType" name="salaryType"
+              matTooltip="salary type" #salaryTypeEnt="ngModel" required [disabled]="!allowSalaryChange">
+              <option [ngValue]="null" disabled [selected]="true"> Select Salary Type </option>
+              <option *ngFor="let pl of salaryTypes" [ngValue]="pl.type">{{pl.type}} </option>
+            </select>
+            <span class="help-block" *ngIf="salaryTypeEnt.touched && !salaryTypeEnt.valid">Please salary type</span>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="col-md-4">Package Type <span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <select [(ngModel)]="details.packageType" class="form-control" id="packageType" name="packageType"
+              matTooltip="package type" #packageTypeEnt="ngModel" required [disabled]="!allowSalaryChange">
+              <option [ngValue]="null" disabled [selected]="true"> Select Package Type </option>
+              <option *ngFor="let pl of packageTypes" [ngValue]="pl.type">{{pl.type}} </option>
+            </select>
+            <span class="help-block" *ngIf="packageTypeEnt.touched && !packageTypeEnt.valid">Please select package
+              type</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="col-md-4">Offered Salary <span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" id="offeredSalary" placeholder="Offered Salary"
+              [(ngModel)]="details.offeredSalary" (keypress)="keyPressAllowOnlyNumber($event)" name="offeredSalary"
+              #offeredSalaryEnt="ngModel" minlength="3" maxlength="10" ngControl="newOffer.offeredSalary"
+              name="offeredSalary" [disabled]="!allowSalaryChange"/>
+            <span class="help-block" *ngIf="offeredSalaryEnt.touched && !offeredSalaryEnt.valid">
+              <span *ngIf="offeredSalaryEnt.errors.required"> Please enter offered salary</span>
+              <span *ngIf="offeredSalaryEnt.errors.maxlength">Maximum of 10 digits allowed.</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th *ngIf="editAllowed">Remove</th>
+                    <th>Sl No</th>
+                    <th>Salary Head <span style="color:red">*</span></th>
+                    <th>Description</th>
+                    <th>Salary Type</th>
+                    <th>Amount <span style="color:red">*</span></th>
+                    <th>Frequency </th>
+                    <th>Annual Amount </th>
+                    <th>Start Date <span style="color:red">*</span></th>
+                    <th>End Date <span style="color:red">*</span></th>
+                    <th>Payable Months </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of salaryList; let i = index">
+                    <td *ngIf="editAllowed">
+                      <button (click)="RemoveLine(i)" title="click to remove this line" class="btn btn-xs btn-danger">
+                        <i class="fas fa-times"></i>
+                      </button></td>
+                    <td>{{i+1}}</td>
+                    <td><select [(ngModel)]="item.salaryHeadId" class="form-control" required name="salaryHeadId"
+                        [disabled]="!editAllowed" (change)="onSalaryHeadChange(i)">
+                        <option [ngValue]="null" disabled [selected]="true"> Select salary head </option>
+                        <option *ngFor="let pl of salaryHeads" [ngValue]="pl.id">{{pl.salaryLT}} ({{pl.salaryTypeDescription}})</option>
+                      </select></td>
+                    <td><input type="text" class="form-control" [(ngModel)]="item.description"
+                        ngControl="item.description" name="description" [disabled]="true" /></td>
+                    <td><input type="text" class="form-control" [(ngModel)]="item.salaryType"
+                        ngControl="item.salaryType" name="salaryType" [disabled]="true" /></td>
+                    <td><input type="text" class="form-control text-right" [(ngModel)]="item.amount" ngControl="item.amount"
+                        name="amount" [disabled]="!editAllowed" (change)="calculateTotals()"/></td>
+                    <td><input type="text" class="form-control" [(ngModel)]="item.frequency" ngControl="item.frequency"
+                        name="frequency" [disabled]="true" /></td>
+                    <td><input type="text" class="form-control text-right" [(ngModel)]="item.annualAmount" ngControl="item.annualAmount"
+                          name="annualAmount" [disabled]="true" /></td>
+                    <td><input type="text" class="form-control" [(ngModel)]="item.startDate" ngControl="item.startDate"
+                        name="startDate" [owlDateTime]="dtStartDate" [owlDateTimeTrigger]="dtStartDate"
+                        [disabled]="!editAllowed" />
+                      <owl-date-time [pickerType]="'calendar'" #dtStartDate></owl-date-time>
+                    </td>
+                    <td><input type="text" class="form-control" [(ngModel)]="item.endDate" ngControl="item.endDate"
+                        name="endDate" [owlDateTime]="dtEndDate" [owlDateTimeTrigger]="dtEndDate"
+                        [disabled]="!editAllowed" />
+                      <owl-date-time [pickerType]="'calendar'" #dtEndDate></owl-date-time>
+                    </td>
+                    <td>
+                      <div *ngIf="item.frequency && item.frequency!='Monthly'">
+                        <span *ngFor="let t of payableList">
+                          <ng-template [ngIf]="t.salaryHeadId == item.salaryHeadId && t.payable">
+                            {{t.month}},
+                          </ng-template>
+                        </span>
+                        <button type="button" class="btn btn-xs btn-info" (click)="onPayableSelect(i)"><i class="fas fa-pen"></i></button>
+                      </div>
+                      <span *ngIf="item.frequency && item.frequency=='Monthly'">All months</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th *ngIf="editAllowed"></th>
+                    <th class="text-right" colspan="4">Monthly Gross</th>
+                    <th class="text-right">{{details.monthlyGrossTotal | number: "1.0-2"}}</th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row actionButtons" *ngIf="editAllowed">
+              <button type="button" class="btn btn-info" (click)="onAddLineClick()">
+                <i class="fas fa-plus"></i> Add Salary Head</button>
+                <button type="button" class="btn btn-primary" (click)="getOtherBenefits()">
+                  <i class="fas fa-check"></i> Calculate Other Benefits</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-7">
+        <!-- <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="col-md-4">2nd Year CTC</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="secondYearCTC" [(ngModel)]="details.secondYearCTC"
+                  ngControl="details.secondYearCTC" name="secondYearCTC"  [disabled]="!editAllowed"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="col-md-4">3rd Year CTC</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="thirdYearCTC" [(ngModel)]="details.thirdYearCTC"
+                  ngControl="details.thirdYearCTC" name="thirdYearCTC"  [disabled]="!editAllowed"/>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-3">Allowance Type </label>
+              <div class="col-md-3">
+                <select [(ngModel)]="details.allowanceId" class="form-control" (change)="onAllowanceChange()"
+                  id="allowanceType" name="allowanceType" #allowanceTypeEnt="ngModel"
+                  [disabled]="!editAllowed">
+                  <option [ngValue]="null" disabled [selected]="true"> Select allowance type </option>
+                  <option *ngFor="let pl of allowanceList" [ngValue]="pl.id">{{pl.allowanceType}} </option>
+                </select>
+                <span class="help-block" *ngIf="allowanceTypeEnt.touched && !allowanceTypeEnt.valid">Please select
+                  allowance type</span>
+              </div>
+              <div class="col-md-6">
+                <span>{{allowanceDetails}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-3">Note</label>
+              <div class="col-md-9">
+                <textarea type="text" class="form-control" rows="3" [(ngModel)]="details.note" ngControl="details.note"
+                  name="note" [disabled]="!editAllowed"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-3">Print note on AO</label>
+              <div class="col-md-4">
+                <input type="checkbox" [(ngModel)]="details.printNoteOnAO" name="printNoteOnAO" 
+                [disabled]="!editAllowed"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="row" *ngIf="details.packageType == 'Annual CTC' && editAllowed">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-4">Calculate CTC <span style="color:red">*</span></label>
+              <div class="col-md-5">
+                <input type="text" class="form-control text-right" id="calculateCTC" [(ngModel)]="details.calculateCTC"
+                  ngControl="details.calculateCTC" name="calculateCTC" [disabled]="!allowSalaryChange"/>
+              </div>
+              <div class="col-md-3">
+                <button type="button" class="btn btn-sm btn-primary" (click)="getCTCBreakup()">Calculate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="(details.packageType == 'Monthly Gross' || details.packageType == 'Monthly Takehome') && editAllowed">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-4">{{details.packageType}} <span style="color:red">*</span></label>
+              <div class="col-md-5">
+                <input type="text" class="form-control text-right" id="monthlyGross" [(ngModel)]="details.monthlyGross"
+                  ngControl="details.monthlyGross" name="monthlyGross" [disabled]="!allowSalaryChange"/>
+              </div>
+              <div class="col-md-3">
+                <button type="button" class="btn btn-sm btn-primary" (click)="getCTCBreakupOnGross()">Calculate CTC</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-4">Total CTC <span style="color:red">*</span></label>
+              <div class="col-md-5">
+                <input type="text" class="form-control text-right" id="totalCTC" [(ngModel)]="details.totalCTC"
+                  ngControl="details.totalCTC" name="totalCTC" [disabled]="true"/>
+              </div>
+              <div class="col-md-3">
+                <button type="button" class="btn btn-sm btn-info" (click)="showDetails('All', 'Total CTC')"><i class="fas fa-list"></i> Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-4">Total Annual Earnings <span style="color:red">*</span></label>
+              <div class="col-md-5">
+                <input type="text" class="form-control text-right" id="totalIncome" [(ngModel)]="details.totalIncome"
+                  ngControl="details.totalIncome" name="totalIncome" [disabled]="true"/>
+              </div>
+              <div class="col-md-3">
+                <button type="button" class="btn btn-sm btn-info" (click)="showDetails('I', 'Annual Earnings')"><i class="fas fa-list"></i> Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-4">Total Annual Reimbursements <span style="color:red">*</span></label>
+              <div class="col-md-5">
+                <input type="text" class="form-control text-right" id="totalReimbursement" [(ngModel)]="details.totalReimbursements"
+                  ngControl="details.totalReimbursement" name="totalReimbursement" [disabled]="true"/>
+              </div>
+              <div class="col-md-3">
+                <button type="button" class="btn btn-sm btn-info" (click)="showDetails('R', 'Annual Reimbursements')"><i class="fas fa-list"></i> Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-4">Total Other Annual Benefits <span style="color:red">*</span></label>
+              <div class="col-md-5">
+                <input type="text" class="form-control text-right" id="totalOtherBenefits" [(ngModel)]="details.totalOtherBenefits"
+                  ngControl="details.totalOtherBenefits" name="totalOtherBenefits" [disabled]="true"/>
+              </div>
+              <div class="col-md-3">
+                <button type="button" class="btn btn-sm btn-info" (click)="showDetails('B', 'Other Other Annual Benefits')"><i class="fas fa-list"></i> Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-4">Total Annual Deductions <span style="color:red">*</span></label>
+              <div class="col-md-5">
+                <input type="text" class="form-control text-right" id="totalDeductions" [(ngModel)]="details.totalDeductions"
+                  ngControl="details.totalDeductions" name="totalDeductions" [disabled]="true"/>
+              </div>
+              <div class="col-md-3">
+                <button type="button" class="btn btn-sm btn-info" (click)="showDetails('D', 'Annual Deductions')"><i class="fas fa-list"></i> Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-4">Total Annual Variable Pay <span style="color:red">*</span></label>
+              <div class="col-md-5">
+                <input type="text" class="form-control text-right" id="totalVariablePay" [(ngModel)]="details.totalVariablePay"
+                  ngControl="details.totalVariablePay" name="totalVariablePay" [disabled]="true"/>
+              </div>
+              <div class="col-md-3">
+                <button type="button" class="btn btn-sm btn-info" (click)="showDetails('V', 'Annual Variable Pay')"><i class="fas fa-list"></i> Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-4">Total One Time Pay <span style="color:red">*</span></label>
+              <div class="col-md-5">
+                <input type="text" class="form-control text-right" id="totalOnetime" [(ngModel)]="details.totalOnetime"
+                  ngControl="details.totalOnetime" name="totalOnetime" [disabled]="true"/>
+              </div>
+              <div class="col-md-3">
+                <button type="button" class="btn btn-sm btn-info" (click)="showDetails('O', 'Total One Time Pay')"><i class="fas fa-list"></i> Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="payableModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{{payableSelectedHead}} Payable Months</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4" *ngFor="let item of payableSelectedList">
+            <label><input type="checkbox" name="payable" [disabled]="!editAllowed" [(ngModel)]="item.payable"> {{item.month}}</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" [disabled]="!editAllowed" (click)="onPayableSave()">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="salaryDetailsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{{salaryDetailsHead}} Details</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>                  
+                  <th>Sl No</th>
+                  <th>Salary Head </th>
+                  <th>Salary Type</th>
+                  <th>Amount </th>
+                  <th>Frequency </th>
+                  <th>Annual Amount </th>
+                  <th>Payable Months </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of salaryDetails; let i = index">                  
+                  <td>{{i+1}}</td>
+                  <td><select [(ngModel)]="item.salaryHeadId" class="form-control" required name="salaryHeadId"
+                      [disabled]="true" >
+                      <option [ngValue]="null" disabled [selected]="true"> Select salary head </option>
+                      <option *ngFor="let pl of salaryHeads" [ngValue]="pl.id">{{pl.salaryLT}}</option>
+                    </select></td>                  
+                  <td><input type="text" class="form-control" [(ngModel)]="item.salaryType"
+                      ngControl="item.salaryType" name="salaryType" [disabled]="true" /></td>
+                  <td><input type="text" class="form-control text-right" [(ngModel)]="item.amount" ngControl="item.amount"
+                      name="amount" [disabled]="true"/></td>
+                  <td><input type="text" class="form-control" [(ngModel)]="item.frequency" ngControl="item.frequency"
+                      name="frequency" [disabled]="true" /></td>
+                  <td><input type="text" class="form-control text-right" [(ngModel)]="item.annualAmount" ngControl="item.annualAmount"
+                        name="annualAmount" [disabled]="true" /></td>                  
+                  <td>
+                    <div *ngIf="item.frequency && item.frequency!='Monthly'">
+                      <span *ngFor="let t of payableList">
+                        <ng-template [ngIf]="t.salaryHeadId == item.salaryHeadId && t.payable">
+                          {{t.month}},
+                        </ng-template>
+                      </span>                      
+                    </div>
+                    <span *ngIf="item.frequency && item.frequency=='Monthly'">All months</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="onPayableSave()">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

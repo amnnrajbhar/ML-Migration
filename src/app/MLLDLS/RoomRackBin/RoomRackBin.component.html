@@ -1,0 +1,309 @@
+<section class="content-header">
+    <h1 class="display-1">
+        MLLDLS
+        <small> Room/Rack/Bin </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Room/Rack/Bin</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title"> Room/Rack/Bin </h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <div  class="dropdown "> <a data-toggle="dropdown" class="dropdown-toggle" href="#"><span>
+                    <button type="button" class="btn btn-primary pull-right"
+                      matTooltip="Click to Create New">Create</button>
+                  </span>
+                </a>
+                <ul class="dropdown-menu  pull-right" >
+                  <li><a (click)="onAddRoomRackBin(false,RoomRackBinItem,'Room')">Room</a></li>
+                  <li><a (click)="onAddRoomRackBin(false,RoomRackBinItem,'Rack')">Rack</a></li>
+                  <li><a (click)="onAddRoomRackBin(false,RoomRackBinItem,'Bin')">Bin</a></li>
+                </ul>
+              </div>
+            </div>
+        </div>
+        <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="card-body" style="border: black; box-shadow: gray;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="location">Location</label>
+                                <input [(ngModel)]="filterLocation" class="form-control" id="location"
+                                    placeholder="Location" name="location" ngControl="filterLocation"
+                                    #locationEnt="ngModel" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="room">Room</label>
+                                <select [(ngModel)]="RoomRackBinItem.room" class="form-control"
+                                    id="room" name="room" ngControl="RoomRackBinItem.room"
+                                    #roomEnt="ngModel"
+                                    (change)="GetRacMasterkList(RoomRackBinItem.room)"
+                                    matTooltip="Select Room" >
+                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let mat of RoomList" value={{mat.room}}>
+                                        {{mat.room}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="rack">Rack</label>
+                                <select [(ngModel)]="RoomRackBinItem.rack" class="form-control"
+                                    id="rack" name="rack" ngControl="RoomRackBinItem.rack"
+                                    #rackEnt="ngModel" (change)="GetBins(RoomRackBinItem)"
+                                    matTooltip="Select Rack" required>
+                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let mat of RackList" value={{mat.rack}}>
+                                        {{mat.rack}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <span style="color: green ;">{{success}}</span>
+                        </div>
+                        <div class="col-sm-12">
+                            <ol start="6" style="width: 85em; margin: 0 auto; display: block;">
+                                <li id="thismonth" style="list-style: none;">
+                                    <ol>
+
+                                        <!-- <% while (rs3.next()) { l++; %> -->
+                                        <div *ngFor="let item of BinList; let i = index">
+                                            <li title="{{item.prefix}}" style="width: 7em; height: 7em; float: left; margin: .2em; border: 2px solid #444;
+                                                padding: .2em; overflow: auto;">
+
+                                                <a [routerLink]=""
+                                                    (click)="det(item.bin)">{{item.bin}}</a>
+                                                <!-- <% String k="" ; String currentkey=location + "$" + category + "$" + room + "$"
+                                                            + rackrange + "$" + binname; String
+                                                            a=" select case when (box_no = '' or box_no is null) then doc_no else 'b$'+box_no end d "
+                                                            + " from Doc_Create where location= '" + location + "' and Doc_Room='" +
+                                                            room + "'and Doc_Rack='" + rackrange + "' and doc_bin='" + binname + "'  "
+                                                            + " group by case when (box_no = '' or box_no is null) then doc_no else 'b$'+box_no end "
+                                                            ; ResultSet rsb=ad.selectQuery(a); while (rsb.next()) { if
+                                                            (rsb.getString("d").contains("b$")) { %> -->
+                                                <ul>
+                                                    <li style="font-size: 12px; color: red">
+                                                        <a style="font-size: 9px; color: red">
+                                                            {{item.docNo}}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <!-- <sub>
+                                                                    {{RoomRackBinItem.docNo}}
+                                                                </sub> -->
+                                            </li>
+                                        </div>
+
+                                        <!-- <% } %> -->
+                                    </ol>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+       
+       
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+                        *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Box Details</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="row">
+                        <div class="col-sm-12">
+                                <!-- <button (click)="addMaterialMaster();" class="btn btn-danger btn-xs" *ngIf="!isEdit">Add New
+              Material</button> -->
+                            <div class="table-responsive" *ngIf="Type!='Bin'">
+                                <button title="Add Rows" [matTooltipPosition]="'below'"
+                                    matTooltip="Click to Add more Rows" (click)="addRows(rec);"
+                                    class="btn btn-primary btn-xs pull-right" *ngIf="!isEdit" [disabled]="isEdit">
+                                    <i class="fa fa-plus"></i></button>
+                                <table id="personTable" class="table table-bordered" cellspacing="0"
+                                    style="margin-bottom: 0px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl. No</th>
+                                            <th>Room</th>
+                                            <th>Rack</th>
+                                            <th>Rack Description</th>
+                                            <th style="width: 2%;" *ngIf="!isEdit"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let per of dynamicArray; let rec=index">
+                                            <td>
+                                                <label>{{rec+1}}.</label>
+                                            </td>
+                                            <td *ngIf="Type=='Rack'">
+                                                <select [(ngModel)]="per.room" class="form-control input-sm" [name]="'room'+per.id"
+                                                    matTooltip="Select room" #roomEnt="ngModel" required>
+                                                    <option [ngValue]="null" disabled [selected]="true">--Select
+                                                        an Option--</option>
+                                                    <option *ngFor="let pDept of RoomList" [ngValue]="pDept.room">
+                                                        {{pDept.room}}</option>
+                                                </select>
+                                            </td>
+                                            <td *ngIf="Type=='Room'">
+                                                <input class="form-control input-sm suggestion" type="text"  
+                                                    matTooltip="Enter room"
+                                                     [name]="'room'+per.id" [id]="'room'+per.id"
+                                                    [(ngModel)]="per.room"  placeholder="Room" #roomEnt="ngModel"
+                                                    [value]="per.room"  required />
+                                            </td>
+                                            <td>
+                                                <input class="form-control input-sm suggestion" type="text"
+                                                matTooltip="Enter Rack" 
+                                                [name]="'rack'+per.id" [id]="'rack'+per.id"
+                                                [(ngModel)]="per.rack"  placeholder="Rack" #rackEnt="ngModel"
+                                                [value]="per.rack" required />
+                                            </td>
+                                            <td>
+                                                <input class="form-control input-sm suggestion" type="text" 
+                                                    matTooltip="Enter Rack Description" [name]="'prefix'+per.id" [id]="'prefix'+per.id"
+                                                    [(ngModel)]="per.prefix" placeholder="Rack Description" #prefixEnt="ngModel"
+                                                    [value]="per.prefix"  required />
+                                            </td>
+                                            <td *ngIf="!isEdit">
+                                                <button title="Remove Details" (click)="removeRows(per);" matTooltip="Click to delete"
+                                                    class="btn btn-secondary btn-sm" [disabled]="isEdit">
+                                                    <i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="table-responsive" *ngIf="Type=='Bin'">
+                                <button title="Add Rows" [matTooltipPosition]="'below'"
+                                    matTooltip="Click to Add more Rows" (click)="addRows(rec);"
+                                    class="btn btn-primary btn-xs pull-right" *ngIf="!isEdit" [disabled]="isEdit">
+                                    <i class="fa fa-plus"></i></button>
+                                <table id="personTable" class="table table-bordered" cellspacing="0"
+                                    style="margin-bottom: 0px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl. No</th>
+                                            <th>Room</th>
+                                            <th>Rack</th>
+                                            <th>Bin</th>
+                                            <th>Bin Description</th>
+                                            <th style="width: 2%;" *ngIf="!isEdit"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let per of dynamicArray; let rec=index">
+                                            <td>
+                                                <label>{{rec+1}}.</label>
+                                            </td>
+                                            <td>
+                                                <select [(ngModel)]="per.room" class="form-control input-sm" [name]="'room'+per.id"
+                                                    matTooltip="Select room" #roomEnt="ngModel" 
+                                                    (change)="GetRacMasterkList(per.room)" required>
+                                                    <option [ngValue]="null" disabled [selected]="true">--Select
+                                                        an Option--</option>
+                                                    <option *ngFor="let pDept of RoomList" [ngValue]="pDept.room">
+                                                        {{pDept.room}}</option>
+                                                </select>
+                                            </td>                                           
+                                            <td>
+                                                <select [(ngModel)]="per.rack" class="form-control input-sm" [name]="'rack'+per.id"
+                                                matTooltip="Select rack" #rackEnt="ngModel" required>
+                                                <option [ngValue]="null" disabled [selected]="true">--Select
+                                                    an Option--</option>
+                                                <option *ngFor="let pDept of RackList" [ngValue]="pDept.rack">
+                                                    {{pDept.rack}}</option>
+                                            </select>
+                                            </td>
+                                            <td>
+                                                <input class="form-control input-sm suggestion" type="text" 
+                                                    matTooltip="Enter Bin" [name]="'bin'+per.id" [id]="'bin'+per.id"
+                                                    [(ngModel)]="per.bin" placeholder="Bin" #binEnt="ngModel"
+                                                    [value]="per.bin"  required />
+                                            </td>
+                                            <td>
+                                                <input class="form-control input-sm suggestion" type="text" 
+                                                    matTooltip="Enter Bin Description" [name]="'prefix'+per.id" [id]="'prefix'+per.id"
+                                                    [(ngModel)]="per.prefix" placeholder="Bin Description" #prefixEnt="ngModel"
+                                                    [value]="per.prefix"  required />
+                                            </td>
+                                            <td *ngIf="!isEdit">
+                                                <button title="Remove Details" (click)="removeRows(per);" matTooltip="Click to delete"
+                                                    class="btn btn-secondary btn-sm" [disabled]="isEdit">
+                                                    <i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button type="button" class="btn btn-primary" (click)="onSaveRoomRackBin()"
+                    [disabled]="isLoadingPop || (!desigForm.valid) || isLoadPop">{{isEdit==true?'Update':'Save'}}</button>
+                <button type="button" class="btn btn-default" 
+                    style="background-color:darkgray;color:white;" data-dismiss="modal"
+                    [disabled]="isLoadingPop">Close</button>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+

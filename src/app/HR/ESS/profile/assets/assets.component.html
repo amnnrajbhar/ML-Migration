@@ -1,0 +1,167 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Assets Details
+  </h1>
+
+</section>
+
+<section class="content">
+  <div>
+    <div class="panel panel-info" *ngIf="editAllowed">
+      <div class="panel-body form-horizontal">    
+        <form #assetForm="ngForm">    
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Asset Type <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <select [(ngModel)]="selectedAssetType" class="form-control" required name="assetTypeId">
+                  <option [ngValue]="null" disabled [selected]="true"> Select Asset Type </option>
+                  <option *ngFor="let pl of assetTypes" [ngValue]="pl">{{pl.assetType}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Asset ID</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="assetID" [(ngModel)]="item.assetID"
+                  ngControl="item.assetID" name="assetID" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Asset No <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="assetNo" [(ngModel)]="item.assetNo"
+                  ngControl="item.assetNo" name="assetNo" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Asset Value <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="assetValue"
+                  [(ngModel)]="item.assetValue" ngControl="item.assetValue" name="assetValue"
+                  #assetValueByEnt="ngModel" required />
+                <span class="help-block" *ngIf="assetValueByEnt.touched && !assetValueByEnt.valid">
+                  Please enter asset value</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Perquisites On</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="perquisitesOn"
+                  [(ngModel)]="item.perquisitesOn" ngControl="item.perquisitesOn" name="perquisitesOn" />
+              </div>
+            </div>
+          </div>
+        </div>        
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Start Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="item.startDate" ngControl="item.startDate"
+                  name="startDate" [owlDateTime]="dtstartDate" [owlDateTimeTrigger]="dtstartDate" />
+                <owl-date-time [pickerType]="'calendar'" #dtstartDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Return Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="item.returnDate" ngControl="item.returnDate"
+                  name="returnDate" [owlDateTime]="dtreturnDate" [owlDateTimeTrigger]="dtreturnDate" />
+                <owl-date-time [pickerType]="'calendar'" #dtreturnDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Remarks</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="remarks"
+                  [(ngModel)]="item.remarks" ngControl="item.remarks" name="remarks" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Attachment <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input #attachment type="file" name="attachment" id="attachment" [(ngModel)]="item.attachment" accept=".png, .jpg, .jpeg, .pdf"/>
+                <span class="text-danger">Upload image files (jpeg, png) or pdf files only. Maximum file size allowed is 2MB.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !assetForm.valid"
+            *ngIf="!isEdit" (click)="onAddLine(attachment.files)">
+            <i class="fas fa-plus"></i> Add</button>
+          <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !assetForm.valid"
+            *ngIf="isEdit" (click)="onUpdateLine(attachment.files)">
+            <i class="fas fa-check"></i> Update</button>
+          <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+            Cancel</button>
+        </div>
+      </form>
+    </div>
+    </div>
+    
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th *ngIf="editAllowed">Action</th>
+              <th>Sl No</th>
+              <th>Asset Type</th>
+              <th>Asset ID</th>
+              <th>Asset No</th>
+              <th>Asset Value</th>
+              <th>Perquisites On</th>
+              <th>Start Date</th>
+              <th>Return Date</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of assetList; let i = index">
+              <td *ngIf="editAllowed">
+                <button (click)="EditLine(item, i)" title="click to edit this" class="btn btn-xs btn-primary">
+                  <i class="fas fa-pen"></i>
+                </button>
+                <button (click)="deleteData(item.appointmentAssetId, i)" title="click to remove this" class="btn btn-xs btn-danger">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+              <td>{{i+1}}</td>
+              <td>{{item.assetType}}</td>
+              <td>{{item.assetId}}</td>
+              <td>{{item.assetNo}}</td>
+              <td>{{item.assetValue}}</td>
+              <td>{{item.perquisitesOn}}</td>
+              <td>{{item.startDate | date:'dd/MM/yyyy'}}</td>
+              <td>{{item.returnDate | date:'dd/MM/yyyy'}}</td>
+              <td>{{item.remarks}}</td>
+            </tr>
+          </tbody>
+        </table>        
+      </div>
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+  </div>
+</section>
+  

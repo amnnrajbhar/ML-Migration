@@ -1,0 +1,291 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Family member details
+  </h1>
+</section>
+<section class="content">
+
+  <div class="panel panel-info" *ngIf="editAllowed">
+    <div class="panel-body form-horizontal">
+      <form #familyForm="ngForm">
+        <div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Relationship <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <select [(ngModel)]="selectedRelationshipType" class="form-control" required
+                    name="relationshipTypeId" #relationshipEnt="ngModel" (change)="onRelationshipChange()">
+                    <option [ngValue]="null" disabled [selected]="true"> Select relationship </option>
+                    <option *ngFor="let pl of relationshipTypes" [ngValue]="pl">{{pl.relationship}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="relationshipEnt.touched && !relationshipEnt.valid">
+                    Please select relationship</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Title <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <select class="form-control" id="title" [(ngModel)]="item.title" 
+                  ngControl="item.title" name="title" #titleEnt="ngModel" required>
+                    <option [ngValue]="null" disabled [selected]="true"> Select Title </option>
+                    <option *ngFor="let pl of titles" [ngValue]="pl.type">{{pl.type}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="titleEnt.touched && !titleEnt.valid">
+                    Please select title</span>
+                </div>
+              </div>
+            </div>            
+          </div>
+          <div class="row">
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Name <span style="color:red">*</span></label>
+                <div class="col-md-8"><input type="text" class="form-control" id="firstName"
+                    [(ngModel)]="item.firstName" ngControl="item.firstName" name="firstName" #firstNameByEnt="ngModel"
+                    required maxlength="30"/>
+                  <span class="help-block" *ngIf="firstNameByEnt.touched && !firstNameByEnt.valid">
+                    Please enter First Name</span>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Middle Name</label>
+                <div class="col-md-8"><input type="text" class="form-control" id="middleName"
+                    [(ngModel)]="item.middleName" ngControl="item.middleName" name="middleName" maxlength="30"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Last Name</label>
+                <div class="col-md-8"><input type="text" class="form-control" id="lastName" [(ngModel)]="item.lastName"
+                    ngControl="item.lastName" name="lastName" maxlength="30"/>
+                </div>
+              </div>
+            </div> -->
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Gender <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <select [(ngModel)]="item.gender" class="form-control" #genderEnt="ngModel" required name="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                  <span class="help-block" *ngIf="genderEnt.touched && !genderEnt.valid">
+                    Please select gender</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Occupation <span style="color:red">*</span></label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="item.occupation"
+                    ngControl="item.occupation" name="occupation" #occupationEnt="ngModel" required maxlength="50"/>
+                    <span class="help-block" *ngIf="occupationEnt.touched && !occupationEnt.valid">
+                      Please enter occupation</span>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Birth Place</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="item.birthPlace"
+                    ngControl="item.birthPlace" name="birthPlace" maxlength="30"/>
+                </div>
+              </div>
+            </div> -->
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Date of Birth <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" [(ngModel)]="item.birthDate" ngControl="item.birthDate"
+                    name="birthDate" [owlDateTime]="birthDate" [owlDateTimeTrigger]="birthDate" #dobEnt="ngModel" required />
+                  <owl-date-time [pickerType]="'calendar'" #birthDate></owl-date-time>
+                  <span class="help-block" *ngIf="dobEnt.touched && !dobEnt.valid">
+                    Please enter date of birth</span>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Telephone No</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="item.telephoneNumber"
+                    ngControl="item.telephoneNumber" name="telephoneNumber" maxlength="15"
+                    (keypress)="keyPressAllowOnlyNumber($event)" />
+                </div>
+              </div>
+            </div> -->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Mobile No</label>
+                <div class="col-md-8">
+                  <input type="number" class="form-control" [(ngModel)]="item.mobileNumber" ngControl="item.mobileNumber"
+                    name="mobileNumber" (keypress)="keyPressAllowOnlyNumber($event)" maxlength="10"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Email Address</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" [(ngModel)]="item.emailAddress" ngControl="item.emailAddress"
+                    name="emailAddress" email="true" maxlength="50"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Blood Group</label>
+                <div class="col-md-8">
+                  <select [(ngModel)]="item.bloodGroup" class="form-control" name="bloodGroup">
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Is Dependent <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <select [(ngModel)]="item.isDependent" class="form-control" #dependantEnt="ngModel" required name="isDependent">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                  <span class="help-block" *ngIf="dependantEnt.touched && !dependantEnt.valid">
+                    Please select the answer</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-6"> Is Micro Lab Employee <span style="color:red">*</span></label>
+                <div class="col-md-6">
+                  <select [(ngModel)]="item.isEmployee" class="form-control" #isMicroLabEnt="ngModel"  required name="isEmployee">
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                  <span class="help-block" *ngIf="isMicroLabEnt.touched && !isMicroLabEnt.valid">
+                    Please select the answer</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group" *ngIf="item.isEmployee == 'Yes'">
+                <label class="col-md-5"> Employee Number <span style="color:red">*</span></label>
+                <div class="col-md-7">
+                  <input type="number" class="form-control" [(ngModel)]="item.employeeNumber"
+                    ngControl="item.employeeNumber" name="employeeNumber" maxlength="10"
+                    (keypress)="keyPressAllowOnlyNumber($event)" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !familyForm.valid"
+              *ngIf="!isEdit" (click)="onAddLineClick()">
+              <i class="fas fa-plus"></i> Add</button>
+            <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !familyForm.valid"
+              *ngIf="isEdit" (click)="onUpdateClick()">
+              <i class="fas fa-check"></i> Update</button>
+            <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+              Cancel</button>
+          </div>
+          <div>
+            <span class="text-danger">Note: Father and Mother details are mandatory. If married, Spouse details are mandatory.</span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th *ngIf="editAllowed">Action</th>
+          <th>Sl No</th>
+          <th>Relationship</th>
+          <th>Title</th>
+          <!-- <th>Initial</th> -->
+          <th>First Name</th>
+          <th>Middle Name</th>
+          <th>Last Name</th>
+          <th>Gender</th>
+          <th>Occupation</th>
+          <th>Birth Place</th>
+          <th>Date of Birth</th>
+          <th>Telephone No</th>
+          <th>Mobile No</th>
+          <th>Email Address</th>
+          <th>Blood Group</th>
+          <th>Is Dependant</th>
+          <th>Is Employee</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of familyList; let i = index">
+
+          <td *ngIf="editAllowed">
+            <button (click)="EditLine(item, i)" title="click to edit this " class="btn btn-xs btn-primary">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button (click)="RemoveLine(i)" title="click to remove this " class="btn btn-xs btn-danger">
+              <i class="fas fa-times"></i>
+            </button>
+          </td>
+          <td>{{i+1}}</td>
+          <td>{{item.relationshipType}}</td>
+          <td>{{item.title}}</td>
+          <!-- <td>{{item.initial}}</td> -->
+          <td>{{item.firstName}}</td>
+          <td>{{item.middleName}}</td>
+          <td>{{item.lastName}}</td>
+          <td>{{item.gender}}</td>
+          <td>{{item.occupation}}</td>
+          <td>{{item.birthPlace}}</td>
+          <td>{{item.birthDate | date: "dd/MM/yyyy"}}</td>
+          <td>{{item.telephoneNumber}}</td>
+          <td>{{item.mobileNumber}}</td>
+          <td>{{item.emailAddress}}</td>
+          <td>{{item.bloodGroup}}</td>
+          <td>{{item.isDependent}}</td>
+          <td>{{item.isEmployee}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+</section>

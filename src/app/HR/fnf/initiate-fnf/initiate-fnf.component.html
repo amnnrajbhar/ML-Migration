@@ -1,0 +1,780 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Initiate FNF
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Initiate FNF</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+  <div class="panel panel-info" *ngIf="isShortfall">
+    <div class="panel-heading">
+      <h3 class="panel-title">Shortfall Days Payment Details</h3>
+    </div>
+
+    <div class="panel-body">
+      <form #paymentForm="ngForm" class="form-horizontal">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Settlement Type</label>
+              <div class="col-md-8">
+                <input type="text" [(ngModel)]="resignationDetails.settlementType"
+                  class="form-control" id="settlementType" name="settlementType" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Notice Shortfall Days</label>
+              <div class="col-md-8">
+                <input type="text" [(ngModel)]="resignationDetails.shortfallDays"
+                  class="form-control" id="shortfallDays" name="shortfallDays" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="payable">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Date of Receipt </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="receiptDate" name="receiptDate"
+                  [(ngModel)]="DateToday" [owlDateTime]="receiptDate" 
+                  [owlDateTimeTrigger]="receiptDate" [max]="DateToday" readonly>
+                <owl-date-time [pickerType]="'calendar'" #receiptDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Mode Of Payment</label>
+              <div class="col-md-8">
+                <input type="text" [(ngModel)]="resignationDetails.paymode"
+                  class="form-control" id="payMode" name="payMode" readonly>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Paid Amount</label>
+              <div class="col-md-8">
+                <input type="text"  [(ngModel)]="resignationDetails.paidAmount"
+                  class="form-control" id="paidamount" name="paidamount" readOnly>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="resignationDetails.paymode=='Online Payment'">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Mode Of Transfer</label>
+              <div class="col-md-8">
+                <input type="text" [(ngModel)]="resignationDetails.modeOfTransfer"
+                  class="form-control" id="transferMode" name="transferMode">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" >
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="chequeDate">{{resignationDetails.paymode}} Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="chequeDate" name="chequeDate"
+                  [(ngModel)]="resignationDetails.chequeDate" [owlDateTime]="chequeDate" 
+                  [owlDateTimeTrigger]="chequeDate" readonly >
+                <owl-date-time [pickerType]="'calendar'" #chequeDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="resignationDetails.paymode!='Online Payment'">
+            <div class="form-group">
+              <label class="col-md-4" for="ChequeNo">{{resignationDetails.paymode}} No</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Cheque/DD No" [(ngModel)]="resignationDetails.chequeNo"
+                  class="form-control" id="ChequeNo" name="ChequeNo" readonly >
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="bankName">Bank Name</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Cheque/DD No" [(ngModel)]="resignationDetails.issuingBank"
+                  class="form-control" id="bankName" name="bankName" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="resignationDetails.paymode=='Cheque'">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="AccountNo">Account No</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Account No" [(ngModel)]="resignationDetails.accountNo"
+                  class="form-control" id="AccountNo" name="AccountNo" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="issuingPersonName">Issuing Person Name</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Issuing Person Name" [(ngModel)]="resignationDetails.issuingPersonName"
+                  class="form-control" id="issuingPersonName" name="issuingPersonName" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="chequeName">Name Of The Cheque</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="InputName Of The Cheque" [(ngModel)]="resignationDetails.nameOfTheCheque"
+                  class="form-control" id="chequeName" name="chequeName" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4" *ngIf="resignationDetails.paymode=='Online Payment'">
+            <div class="form-group">
+              <label class="col-md-4" for="referenceNo">Reference No</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Transaction Reference No" [(ngModel)]="resignationDetails.referenceNo"
+                  class="form-control" id="referenceNo" name="referenceNo" readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="resignationDetails.paymode=='Demand Draft(DD)'">
+            <div class="form-group">
+              <label class="col-md-4" for="Favouring">Favouring</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Favouring " [(ngModel)]="resignationDetails.favouring"
+                  class="form-control" id="Favouring" name="Favouring" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+      </div>
+  </div>
+      
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='initiate'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Initiate</a></li>
+    <li [ngClass]="currentTab=='submit'?'active':''" id="tab_submit" *ngIf="isApproved || isVisible"><a
+        (click)="onTabClick(1)">Submit To Accounts</a></li>
+    <li [ngClass]="currentTab=='payment'?'active':''" id="tab_payment" *ngIf="isSubmitted || isVisible"><a
+        (click)="onTabClick(2)">Update Payment</a></li>
+    <li [ngClass]="currentTab=='issue'?'active':''" id="tab_issue" *ngIf="isPayment || isVisible"><a
+        (click)="onTabClick(3)">Issue</a> </li>
+  </ul>
+  <div class="panel panel-default" *ngIf="currentTab=='initiate'">    
+    <div class="panel-body">
+      <form #fnfForm="ngForm" class="form-horizontal">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="dateOfResignation">Date of Resignation </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="dateOfResignation" name="dateOfResignation"
+                  [ngModel]="resignationDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="noticePeriod">Notice Period</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="noticePeriod" name="noticePeriod"
+                  [ngModel]="resignationDetails.noticePeriod" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="expectedLastDate">Exptected Last Working Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="expectedLastDate" name="expectedLastDate"
+                  [ngModel]="lastWorkingDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="actualLastDate">Actual Last Working Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="actualLastDate" name="actualLastDate"
+                  [ngModel]="actualLastDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="noticeShortfallDays">Notice Shortfall Days</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input Notice Shortfall days" [ngModel]="diffDays" class="form-control"
+                  id="noticeShortfallDays" name="noticeShortfallDays" #noticeShortfallDays="ngModel" [disabled]="!isEditable">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="monthlyGross">Monthly Gross</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input Monthly Gross" [(ngModel)]="monthlyTotal" class="form-control"
+                  id="monthlyGross" name="monthlyGross" #monthlyGross="ngModel" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="payableDays">Payable Days<span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Payable Days" [(ngModel)]="fnfDetails.payableDays"
+                  class="form-control" id="payableDays" name="payableDays" #payableDays="ngModel"
+                  [disabled]="!isEditable">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="cl">CL</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input CL" [(ngModel)]="fnfDetails.cl" class="form-control" id="cl"
+                  name="cl" #cl="ngModel" [disabled]="!isEditable">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="ml">SL</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input SL" [(ngModel)]="fnfDetails.ml" class="form-control" id="ml"
+                  name="ml" #ml="ngModel" [disabled]="!isEditable">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="el">EL</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input EL" [(ngModel)]="fnfDetails.el" class="form-control" id="el"
+                  name="el" #el="ngModel" [disabled]="!isEditable">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="waivedoffdays">Waived Off Days</label>
+              <div class="col-md-8">
+              <input type="number" matTooltip="Input Waived Off Days" [(ngModel)]="fnfDetails.waivedOffDays" class="form-control" id="waivedoffdays"
+              name="waivedoffdays" #waivedoffdays="ngModel" [disabled]="!isEditable">            
+            </div>
+          </div>
+        </div>
+      
+        <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4" for="remarks">Reason</label>
+          <div class="col-md-8">
+              <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Reson(Max 100 Chars)"
+                [(ngModel)]="fnfDetails.reason" class="form-control" id="reason" name="reason" #remarks="ngModel"
+                [disabled]="!isEditable" minlength="10" maxlength="500" required></textarea>
+            </div>
+          </div>
+          </div>
+          <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4" for="remarks">Remarks</label>
+          <div class="col-md-8">
+              <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Remarks(Max 500 Chars)"
+                [(ngModel)]="fnfDetails.remarks" class="form-control" id="remarks" name="remarks" #remarks="ngModel"
+                [disabled]="!isEditable" minlength="10" maxlength="500" required></textarea>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4">Attachment <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input #attachment type="file" name="attachment" id="attachment" (change)="selectFiles($event)"
+                  accept="application/pdf, image/jpeg, image/jpg, image/png" multiple max-file-size="2000" />
+                <p class="text-danger">Only pdf/jpeg/png files are allowed. Maximum file size allowed is 2MB.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="overlay text-center h3" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+
+          <div class="col-md-12" *ngIf="!isApproved">
+            <h3>
+              Payment Details <button type="button" class="btn btn-info btn-xs" [matTooltipPosition]="'after'"
+              matTooltip="Click to View Salary Details" data-toggle="modal" data-target="#SalaryModal">
+              <i class="fas fa-eye"></i> View Salary Details
+            </button>
+            </h3>            
+          </div>
+        </div>
+
+        <div class="row" *ngIf="!isApproved">
+          <div class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="table-responsive">
+                  <table class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th style="max-width: 50px;">Remove</th>
+                        <th>Sl No</th>
+                        <th style="max-width: 100px;">Head <span style="color:red">*</span></th>
+                        <th>Details <span style="color:red">*</span></th>
+                        <th style="max-width: 100px;">Type <span style="color:red">*</span></th>
+                        <!-- <th>Description</th> -->
+                        <!-- <th>Salary Type</th> -->
+                        <th style="max-width: 100px;">Eligible Amount <span style="color:red">*</span></th>
+                        <th style="max-width: 100px;">Payable Amount <span style="color:red">*</span></th>
+                        <th>Remarks </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of headList; let i = index">
+                        <td *ngIf="editAllowed" style="max-width: 50px;">
+                          <button (click)="RemoveLine(i)" title="click to remove this line"
+                            class="btn btn-xs btn-danger">
+                            <i class="fas fa-times"></i>
+                          </button></td>
+                        <td>{{i+1}}</td>
+                        <td style="max-width: 100px;">
+                          <select [(ngModel)]="item.head" class="form-control" required name="head"
+                            [disabled]="!editAllowed" [ngModelOptions]="{standalone:true}">
+                            <option [ngValue]="null" disabled [selected]="true"> Select Head </option>
+                            <option *ngFor="let pl of heads" [ngValue]="pl.head">{{pl.head}}</option>
+                          </select></td>
+                        <td>
+                          <input type="text" class="form-control" [(ngModel)]="item.details" ngControl="item.details"
+                            name="details" [ngModelOptions]="{standalone:true}" /></td>
+                        <td style="max-width: 100px;">
+                          <select [(ngModel)]="item.type" class="form-control" required name="type"
+                            [disabled]="!editAllowed" [ngModelOptions]="{standalone:true}">
+                            <option [ngValue]="null" disabled [selected]="true"> Select Type </option>
+                            <option *ngFor="let pl of types" [ngValue]="pl.type">{{pl.type}}</option>
+                          </select></td>
+                        <td style="max-width: 100px;">
+                          <input type="number" class="form-control text-right" [(ngModel)]="item.eligibleAmount"
+                            ngControl="item.eligibleAmount" name="eligibleAmount" id="eligibleAmount" placeholder="0"
+                            [disabled]="!editAllowed" [ngModelOptions]="{standalone:true}" /></td>
+                        <td style="max-width: 100px;">
+                          <input type="number" class="form-control text-right" name="payableAmount"
+                            [(ngModel)]="item.payableAmount" (ngModelChange)="onChange($event)"
+                            ngControl="item.payableAmount" placeholder="0" [disabled]="!editAllowed"
+                            [ngModelOptions]="{standalone:true}"></td>
+                        <td>
+                          <input type="text" class="form-control" [(ngModel)]="item.remarks" ngControl="item.remarks"
+                            name="remarks" [disabled]="!editAllowed" [ngModelOptions]="{standalone:true}" /></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row" *ngIf="editAllowed">
+                  <button type="button" class="btn btn-info" (click)="onAddLineClick()">
+                    <i class="fas fa-plus"></i> Add New Line</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+
+        <div *ngIf="isApproved">
+          <span class="h4 display-1">
+            Settlement Details
+          </span> <button type="button" class="btn btn-info btn-xs" [matTooltipPosition]="'after'"
+            matTooltip="Click to View Salary Details" data-toggle="modal" data-target="#SalaryModal">
+            <i class="fas fa-eye"></i> View Salary Details
+          </button>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th width="20%">Head</th>
+                  <th width="25%">Details</th>
+                  <th width="10%">Type</th>
+                  <th width="10%">Eligible Amount</th>
+                  <th width="10%">Payable Amount</th>
+                  <th width="25%">Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of settlementDetails; let i = index">
+                  <td width="20%">{{item.head}}</td>
+                  <td width="25%">{{item.details}}</td>
+                  <td width="10%">{{item.type}}</td>
+                  <td width="10%" class="text-right">{{item.eligibleAmount | number: "1.0-2"}}</td>
+                  <td width="10%" class="text-right">{{item.payableAmount | number: "1.0-2"}}</td>
+                  <td width="25%">{{item.remarks}}</td>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+
+          <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-offset-5 col-md-6">
+                  <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th></th>
+                          <th>Eligible</th>
+                          <th>Payable</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Total Earnings</td>
+                          <td><input type="text" class="form-control text-right" id="totalEarningsEligible"
+                              name="totalEarningsEligible" [(ngModel)]="details.totalEarningsEligible"
+                              [disabled]="true">
+                          </td>
+                          <td><input type="text" class="form-control text-right" id="totalEarningsPayable"
+                              name="totalEarningsPayable" [(ngModel)]="details.totalEarningsPayable" [disabled]="true">
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Total Deductions</td>
+                          <td><input type="text" class="form-control text-right" id="totalDeductionsEligible"
+                              name="totalDeductionsEligible" [(ngModel)]="details.totalDeductionsEligible"
+                              [disabled]="true"></td>
+                          <td><input type="text" class="form-control text-right" id="totalDeductionsPayable"
+                              name="totalDeductionsPayable" [(ngModel)]="details.totalDeductionsPayable"
+                              [disabled]="true">
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Total Payable</td>
+                          <td><input type="text" class="form-control text-right" id="totalEligible" name="totalEligible"
+                              [(ngModel)]="details.totalEligible" [disabled]="true"></td>
+                          <td><input type="text" class="form-control text-right" id="totalPayable" name="totalPayable"
+                              [(ngModel)]="details.totalPayable" [disabled]="true"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+          </div>
+      </form>
+    </div>
+  </div>
+  <div class="panel panel-info" *ngIf="currentTab=='submit'">
+    <div class="panel-heading">
+      <h3 class="panel-title">Submit To Accounts</h3>
+    </div>
+    <div class="panel-body">
+      <form #fnfForm="ngForm" class="form-horizontal">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Date of Submission </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="todaysDate" name="todaysDate"
+                  [(ngModel)]="fnfDetails.submittedDate" [owlDateTime]="todaysDate"
+                   [owlDateTimeTrigger]="todaysDate" [max]="DateToday" [disabled]="isSubmitted">
+                <owl-date-time [pickerType]="'calendar'" #todaysDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="relievingDate">Submitted To </label>
+              <div class="col-md-8">
+                <input type="text" id="employeeName" class="form-control" (keyup)="getEmployeeName($event)" (change)="getEmployeeName($event)"
+                [(ngModel)]="employee.fullName" autocomplete="off"  ngControl="fnfDetails.submittedToName" 
+                name="employeeName" [disabled]="isSubmitted" />    
+                <input type="hidden" id="employeeId" 
+                [(ngModel)]="employee.id" 
+                name="employeeId"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+  <div class="panel panel-info" *ngIf="currentTab=='payment'">
+    <div class="panel-heading">
+      <h3 class="panel-title">Update Payment</h3>
+    </div>
+    <div class="panel-body">
+      <form #fnfForm="ngForm" class="form-horizontal">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Date of Receipt </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="receiptDate" name="receiptDate"
+                  [(ngModel)]="fnfDetails.receiptDate" [owlDateTime]="receiptDate" 
+                  [owlDateTimeTrigger]="receiptDate" [max]="DateToday" [disabled]="isPayment">
+                <owl-date-time [pickerType]="'calendar'" #receiptDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="relievingDate">Mode of Payment</label>
+              <div class="col-md-8">
+                <select [(ngModel)]="fnfDetails.modeOfPayment" class="form-control" id="mode" name="mode"
+                  matTooltip="Mode Of Payment" #modeEnt="ngModel" [disabled]="isPayment" required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Mode Of Payment </option>
+                  <option *ngFor="let pl of modes" [ngValue]="pl.mode">{{pl.mode}}</option>
+                </select>
+                <span class="help-block" *ngIf="modeEnt.touched && !modeEnt.valid">Please Select Mode</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">{{fnfDetails.modeOfPayment}} Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="chequeDate" name="chequeDate"
+                  [(ngModel)]="fnfDetails.chequeDate" [owlDateTime]="chequeDate" 
+                  [owlDateTimeTrigger]="chequeDate"  [disabled]="isPayment">
+                <owl-date-time [pickerType]="'calendar'" #chequeDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="ChequeNo">{{fnfDetails.modeOfPayment}} No</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input Cheque/DD No" [(ngModel)]="fnfDetails.chequeNo"
+                  class="form-control" id="ChequeNo" name="ChequeNo" [disabled]="isPayment">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="bankName">Bank Name</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Cheque/DD No" [(ngModel)]="fnfDetails.bankName"
+                  class="form-control" id="bankName" name="bankName" [disabled]="isPayment">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Amount</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input Cheque/DD Amount" [(ngModel)]="fnfDetails.amount"
+                  class="form-control" id="amount" name="amount" min="1" [disabled]="isPayment">
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+  <div class="panel panel-info" *ngIf="currentTab=='issue'">
+    <div class="panel-heading">
+      <h3 class="panel-title">Issued Details</h3>
+    </div>
+    <div class="panel-body">
+      <form #fnfForm="ngForm" class="form-horizontal">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Date of Issue </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="issueDate" name="issueDate"
+                  [(ngModel)]="fnfDetails.issueDate" [owlDateTime]="issueDate" 
+                  [max]="DateToday" [owlDateTimeTrigger]="issueDate">
+                <owl-date-time [pickerType]="'calendar'" #issueDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="issuemode">Mode of Issue</label>
+              <div class="col-md-8">
+                <select [(ngModel)]="fnfDetails.modeOfIssue" class="form-control" id="issuemode" name="issuemode"
+                  matTooltip="Mode Of Payment" #issuemodeEnt="ngModel"  [disabled]="isIssued" required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Mode Of Issue </option>
+                  <option *ngFor="let pl of issuemodes" [ngValue]="pl.issuemode">{{pl.issuemode}}</option>
+                </select>
+                <span class="help-block" *ngIf="issuemodeEnt.touched && !issuemodeEnt.valid">Please Select Issue
+                  Mode</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row" *ngIf="fnfDetails.modeOfIssue=='In Person'">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Issued To </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="issueName" name="issueName" 
+                matTooltip="Issuing Person Name" [(ngModel)]="fnfDetails.issuingPersonName"  [disabled]="isIssued">  
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="issueMobile">Mobile No</label>
+              <div class="col-md-8">
+                <input type="tel" matTooltip="Issuing Person Mobile" [(ngModel)]="fnfDetails.issuingPersonMobile"
+                  class="form-control" id="issueMobile" name="issueMobile" maxlength=10  [disabled]="isIssued">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="issueEmail">Email ID</label>
+              <div class="col-md-8">
+                <input type="email" matTooltip="Issuing Person Email" [(ngModel)]="fnfDetails.issuingPersonEmail"
+                  class="form-control" id="issueEmail" name="issueEmail"  [disabled]="isIssued">
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row" *ngIf="fnfDetails.modeOfIssue=='Courier'">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="carrierName">Courier Name</label>
+              <div class="col-md-8">
+                <input type="test" matTooltip="Courier/Speed Post Name" [(ngModel)]="fnfDetails.carrierName"
+                  class="form-control" id="courierName" name="courierName"  [disabled]="isIssued">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="docketno">Docket No</label>
+              <div class="col-md-8">
+                <input type="test" matTooltip="Docket No" [(ngModel)]="fnfDetails.docketno" class="form-control"
+                  id="docketno" name="docketno" [disabled]="isIssued">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Date of Dispatch </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="dispatchDate" name="dispatchDate"
+                  [(ngModel)]="fnfDetails.dispatchDate" [owlDateTime]="dispatchDate"
+                  [max]="DateToday" [owlDateTimeTrigger]="dispatchDate" [disabled]="isIssued">
+                <owl-date-time [pickerType]="'calendar'" #dispatchDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+  <div class="row text-center actionButtons">
+    <div class="col-md-12">
+      <button type="button" (click)="goBack()" class="btn btn-default" matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+
+      <button type="button" class="btn btn-success" (click)="submit()" matTooltip="Click to Submit Details"
+        [disabled]="isLoading">Submit</button>
+
+      <button type="button" class="btn btn-primary"
+        *ngIf="(isApproved && currentTab=='initiate') || (isSubmitted && currentTab=='submit')|| (isPayment && currentTab=='payment')"
+        (click)="showNext()" matTooltip="Click to submit to accounts">Next</button>
+    </div>
+  </div>
+
+  <div *ngIf="isSubmitted">
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="fnfId" [objectType]="this.objectType">
+        </app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="fnfId" [objectType]="this.objectType">
+        </app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="SalaryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="color:white; background:#68a7d2;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Salary Details
+        </h4>
+      </div>
+      <div class="modal-body" style="border-top:none;background-size:cover;">
+        <app-profile-salary [employeeId]="this.employeeId"></app-profile-salary>
+
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

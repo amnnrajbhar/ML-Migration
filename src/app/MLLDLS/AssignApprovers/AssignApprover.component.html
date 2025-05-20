@@ -1,0 +1,324 @@
+<section class="content-header">
+    <h1 class="display-1">
+        MLLDLS
+        <small> Approvers </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">AssignApprover</li>
+    </ol>
+</section>
+<!--Main Contect-->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title"> Assign Approvers </h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-primary pull-right"
+                    (click)="onUserActions(false,DocBorrowModel,False,'')"><i class="fa fa-plus" aria-hidden="true"></i>
+                    Create Approvers </button>
+            </div>
+        </div>
+        <!-- <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="card-body" style="border: black; box-shadow: grey;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="approvername"> Approver Name</label>
+                                <input [(ngModel)]="filterapprovername" class="form-control" id="approvername"
+                                    placeholder="Approver name" name="approvername" ngControl="filterapprovername"
+                                    #approvername="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label class="control-label templatemo-block">Location</label>
+                                <select [(ngModel)]="filterstatus" class="form-control" id="fltrstatus"
+                                    name="fltrstatus" ngControl="filterstatus" #fltrstatusEnt="ngModel"
+                                    matTooltip="Select Status">
+                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                    <option *ngFor="let status of locListCon" value={{status.code}}>{{status.name1}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>&nbsp;</label>
+                        <div class="form-group form-group-sm">
+                            <button class="btn btn-primary btn-sm" (click)="getAllEntries();"
+                                matTooltip="click to go">Go</button>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+                                matTooltip="click to reset">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+
+    <div class="box-body table-representative">
+        <table id="USERSTable" class="table table-bordered table-striped">
+            <thead style="background-color: hsl(204, 100%, 73%);color: white;">
+                <tr>
+                    <th>Sl No</th>
+                    <th>Location</th>
+                    <th>Approver Id</th>
+                    <th>Req Type</th>
+                    <th>Doc Type</th>
+                    <th>Category</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of AssignApproverlist; let i = index">
+                    <td> {{i+1}}
+                    </td>
+                    <td>{{item.location}}</td>
+                    <td>{{item.approverId}}</td>
+                    <td>{{item.reqType }}</td>
+                    <td>{{item.docType}}</td>
+                    <td>{{item.categoryGroup}}</td>
+                    <td>
+                        <table>
+                            <tr>
+
+                                &nbsp;
+                                <td>
+                                    <button
+                                        *ngIf="item.apprvrStatus =='Saved' && item.requestedBy==this.currentUser.employeeId"
+                                        type="button" [matTooltipPosition]="'after'" matTooltip="Click to edit details"
+                                        class="btn btn-primary btn-xs" (click)="onUserActions(false,item,false,'')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                                &nbsp;
+
+                                <!-- *ngIf="Apprvr" -->
+                                <td *ngIf="item.hod==currentUser.employeeId && item.apprvrStatus !='Completed'">
+                                    <button type="button" [matTooltipPosition]="'after'"
+                                        matTooltip="Click to edit details" class="btn btn-primary btn-xs"
+                                        (click)="onUserActions(true,item,false,'')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                                <td
+                                    *ngIf="item.pendingApprover==currentUser.employeeId && item.hod!=currentUser.employeeId">
+                                    <button type="button" [matTooltipPosition]="'after'"
+                                        matTooltip="Click to edit details" class="btn btn-primary btn-xs"
+                                        (click)="onUserActions(true,item,false,'')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                                &nbsp;
+                                <td>
+                                    <button type="button" [matTooltipPosition]="'after'"
+                                        matTooltip="Click to view details" class="btn btn-primary btn-xs"
+                                        (click)="onUserActions(true,item,false,'View')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                                &nbsp;
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+                        *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #70c6ff;color:white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title"> Master Approvers
+                </h3>
+            </div>
+            <div class="col-sm-12">
+                <form #approversForm="ngForm">
+                    <div class="card-body" style="border: black; box-shadow: grey;">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group form-group-sm">
+                                    <label class="control-label templatemo-block">Location<span
+                                            style="color:red">*</span></label>
+                                    <select [(ngModel)]="AssignApprovermodel.location" class="form-control"
+                                        id="location" name="location" ngControl="location" #locationEnt="ngModel"
+                                        (change)="GetTypes(AssignApprovermodel.location)" [disabled]="isEdit"
+                                        matTooltip="Select location">
+                                        <option [ngValue]="null" disabled>--Select an Option--</option>
+                                        <option *ngFor="let status of locListCon" value={{status.code}}>{{status.name1}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group form-group-sm">
+                                    <label for="docType">Type<span style="color:red">*</span></label>
+                                    <select [(ngModel)]="AssignApprovermodel.docType" class="form-control" id="docType"
+                                        name="docType" ngControl="docType" #docTypeEnt="ngModel"
+                                        (change)="GetCategory(AssignApprovermodel.docType)" [disabled]="isEdit"
+                                        matTooltip="Select Type" required>
+                                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                        <option *ngFor="let mat of CategoryListfilterd" value={{mat.type}}>
+                                            {{mat.type}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group form-group-sm">
+                                    <label for="category">Category<span style="color:red">*</span></label>
+                                    <select [(ngModel)]="AssignApprovermodel.categoryGroup" class="form-control"
+                                        id="category" name="category" ngControl="category" #categoryEnt="ngModel"
+                                        [disabled]="isEdit" matTooltip="Select category" required>
+                                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                        <option *ngFor="let mat of CategoryList1" value={{mat.category}}>
+                                            {{mat.category}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group form-group-sm">
+                                    <label class="control-label templatemo-block">Req Type<span
+                                            style="color:red">*</span></label>
+                                    <select [(ngModel)]="AssignApprovermodel.reqType" class="form-control" id="reqType"
+                                        name="reqType" ngControl="reqType" #reqTypeEnt="ngModel"
+                                        matTooltip="Select type">
+                                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                        <option>Create</option>
+                                        <option>Borrow</option>
+                                        <option>Create and Borrow</option>
+                                        <option>Destruction</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table-responsive">
+                                    <table id="personTable" class="table table-bordered" cellspacing="0"
+                                        style="margin-bottom: 0px;">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-sm-1">Priority</th>
+                                                <th class="col-sm-1">Role</th>
+                                                <th class="col-sm-2">Approver</th>
+                                                <th class="col-sm-2">Parallel Approver 1</th>
+                                                <th class="col-sm-2">Parallel Approver 2</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input [(ngModel)]="AssignApprovermodel.priority"
+                                                        class="form-control" id="priority" placeholder="Priority"
+                                                        name="priority" ngControl="priority" #priority="ngModel"></td>
+                                                <td><select [(ngModel)]="AssignApprovermodel.role" class="form-control"
+                                                        id="role" name="role" ngControl="role" #roleeEnt="ngModel"
+                                                        matTooltip="Select role">
+                                                        <option [ngValue]="undefined" disabled>--Select--</option>
+                                                        <option>Approver</option>
+                                                        <option>Librarian</option>
+                                                    </select></td>
+                                                <td><select [(ngModel)]="AssignApprovermodel.approverId"
+                                                        class="form-control" id="approverId" placeholder="Approver"
+                                                        name="approverId" ngControl="approverId" #approverId="ngModel">
+                                                        <option [ngValue]="null" disabled>--ApproverId--</option>
+                                                        <option *ngFor="let status of EmpMaster" value={{status.employeeId}}>
+                                                            {{status.employeeId}} -{{status.firstName}} {{status.middleName}} {{status.lastName}}
+                                                        </option>
+                                                    </select>
+                                                </td>
+                                                <td><select [(ngModel)]="AssignApprovermodel.parllelApprover1"
+                                                        class="form-control" id="parllelApprover1"
+                                                        placeholder="Parallel Approver 1" name="parllelApprover1"
+                                                        ngControl="parllelApprover1" #parllelApprover1="ngModel">
+                                                        <option [ngValue]="null" disabled>--Parallel Approver1 Id--</option>
+                                                        <option *ngFor="let status of EmpMaster" value={{status.employeeId}}>
+                                                            {{status.employeeId}} -{{status.firstName}} {{status.middleName}} {{status.lastName}}
+                                                        </option>
+                                                    </select>
+                                                </td>
+                                                <td><select [(ngModel)]="AssignApprovermodel.parllelApprover2"
+                                                        class="form-control" id="parllelApprover2"
+                                                        placeholder="Parallel Approver 2" name="parllelApprover2"
+                                                        ngControl="parllelApprover2" #parllelApprover2="ngModel">
+                                                        <option [ngValue]="null" disabled>--Parallel Approver2 Id--</option>
+                                                        <option *ngFor="let status of EmpMaster" value={{status.employeeId}}>
+                                                            {{status.employeeId}} -{{status.firstName}} {{status.middleName}} {{status.lastName}}
+                                                        </option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <!-- <tr>
+                                            <td>2</td>
+                                            <td>Librarian</td>
+                                            <td><input [(ngModel)]="filterapprov" class="form-control" id="approv"
+                                                    placeholder="Approver" name="approv" ngControl="filterapprov"
+                                                    #approvername="ngModel"></td>
+                                            <td><input [(ngModel)]="filterparallappr1" class="form-control"
+                                                    id="parallappr1" placeholder="Parallel Approver 1"
+                                                    name="parallappr1" ngControl="filterparallelappr1"
+                                                    #approvername="ngModel"></td>
+                                            <td><input [(ngModel)]="filterparallappr2" class="form-control"
+                                                    id="parallapprname2" placeholder="Parallel Approver 2"
+                                                    name="parallappr2" ngControl="filterparallappr2"
+                                                    #approvername="ngModel"></td>
+                                        </tr> -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            &nbsp;
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="onSaveEntry('SAVE')" matTooltip="Click to Save"
+                    [disabled]="isLoadingPop || (!approversForm.valid) || isLoadPop">{{isEdit==true?'Update':'Save'}}</button>
+                <button type="button" class="btn btn-primary" (click)="resetForm()" *ngIf="!isEdit"
+                    matTooltip="Click to Clear">Clear</button>
+                <button type="button" class="btn btn-default" style="background-color:rgb(56, 56, 56);color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

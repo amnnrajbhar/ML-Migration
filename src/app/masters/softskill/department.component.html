@@ -1,0 +1,136 @@
+﻿<section class="content-header" >
+  <h1>
+    Soft Skills Master
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Soft Skills</li>
+  </ol>
+</section>
+<section class="content" >
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Soft Skills</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddDepart(false,depItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add Soft Skill</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="department" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:20px">Id</th>
+            <th>Skill</th>
+            <th>Description</th>
+            <th>Profile</th>
+            <th style="width:20px">.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let depart of depList; let i = index">
+            <td>{{depart.id}}</td>
+            <td>{{depart.skills}}</td>
+            <td>{{depart.description}}</td>
+            <td>{{depart.fkProfileId}}</td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddDepart(true,depart)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Soft skills</h4>
+      </div>
+      <div class="modal-body box box-primary" style="box-shadow: none;">
+        <div class="row">
+          <form #depForm="ngForm">
+            <div class="form-horizontal">
+              <div class="form-group" [ngClass]="(!name.valid && name.touched)?'has-error':''">
+                <label for="dName" class="col-sm-3"><i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i> Soft Skill<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="dName" placeholder="Department Name" [(ngModel)]="depItem.skills" name="name"
+                         ngControl="depItem.skills" #name="ngModel" required maxlength="50">
+                  <span class="help-block" *ngIf="!name.valid && name.touched">Please Enter Soft Skill.</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="dDesc" class="col-sm-3">Description</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="dDesc" placeholder="Description" [(ngModel)]="depItem.description" name="description" maxlength="200" />
+                  </div>
+                </div>
+              <!--<div class="form-group">
+                <label for="rParentId" class="col-sm-3">Parent Role</label>
+                <div class="col-sm-9">
+                  <input type="number" class="form-control" id="rParentId" placeholder="Parent Role" [(ngModel)]="roleItem.ParentId"
+                         name="ParentId" />
+                  </div>
+                </div>-->
+              <div class="form-group">
+                <label for="dParentId" class="col-sm-3"> Profile</label>
+                <div class="col-sm-9">
+                  <select [(ngModel)]="selParentRole" class="form-control" id="dParentId" name="parentId" ngControl="selParentRole" #parentId="ngModel">
+                    <option *ngFor="let pDept of parentList" [ngValue]="pDept">{{pDept.fkProfileId}}</option>
+                  </select>
+                  </div>
+                </div>
+              <!-- <div class="form-group" [ngClass]="(!ParentId.valid && ParentId.touched)?'has-error':''">
+                <label for="rParentId"><i class="fa fa-times-circle-o" *ngIf="!ParentId.valid && ParentId.touched"></i> Parent Role<span style="color:red">*</span></label>
+                <select [(ngModel)]="ParentId" class="form-control" id="rParentId" name="ParentId" ngControl="SelRole" #ParentId="ngModel"
+                        required>
+                  <option *ngFor="let parent of parentList" [ngValue]="parent">{{parent.Description}}</option>
+                </select>
+                <span class="help-block" *ngIf="!ParentId.valid && ParentId.touched">Please Select Parent Role.</span>
+              </div> -->
+
+              <!-- <div class="form-group" *ngIf="isEdit" [ngClass]="(!dept_status.valid && dept_status.touched)?'has-error':''">
+                <label for="dept_status"  class="col-lg-3"><i class="fa fa-times-circle-o" *ngIf="!dept_status.valid && dept_status.touched"></i> Status<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                <select [(ngModel)]="departmentItem.isActive" class="form-control" id="dept_status" name="dept_status" ngControl="departmentItem.isActive"
+                        #dept_status="ngModel" required>
+                  <option [ngValue]="true">Active</option>
+                  <option [ngValue]="false">Inactive</option>
+                </select>
+              
+                <span class="help-block" *ngIf="!dept_status.valid && dept_status.touched">Please Select Status.</span>
+              </div></div> -->
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveDepart()" [disabled]="isLoadingPop || !depForm.valid">{{isEdit==true?'Update Department':'Save Department'}}</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

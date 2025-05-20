@@ -1,0 +1,1125 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Leave
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Leave</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-info pull-right" (click)="ApplyLeave(false,'','')">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+          New Leave Request
+        </button>
+      </div>
+    </div>
+  </div>
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  <div class="box">
+    <div class="box-header" style="height:2in ;text-align: ceter; background-color:#c5c5c5;
+                  align-items: center;">
+      <div class="col-xs-12" style="text-align: ceter;">
+        <h4 style="text-align: center;">Next Holiday</h4>
+        <h2 style="text-align: center;"><strong>{{Holiday}}</strong></h2>
+        <h4 *ngIf="HolidayDate != null" style="text-align: center;">{{HolidayDate | date:'EEE, MMM d, y'}} </h4>
+        <br>
+        <div class="col-sm-12">
+          <div class="col-sm-4">&nbsp;</div>
+          <div class="col-sm-1">&nbsp;</div>
+          <div class="col-sm-2">
+            <select [(ngModel)]="holidayname" class="form-control" id="payGroup" name="payGroup" matTooltip="Holidays"
+              #payGroup1Ent="ngModel">
+              <option [ngValue]="null" disabled [selected]="true">--Show All--</option>
+              <option *ngFor="let pl of holidaysList" disabled>
+                {{pl.date | date:'dd/MM/yyyy, EEE'}} |
+                {{pl.holidayName}}
+              </option>
+            </select>
+          </div>
+          <div class="col-sm-1">&nbsp;</div>
+          <div class="col-sm-4">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box-body">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-6">
+            <label for="head" class="align-left">
+              <h2><strong>Upcoming days off</strong></h2>
+            </label>
+            <div class="bordered" style="border-style:dashed ; border-color: #777; border-width: 1px;">
+              <div *ngIf="!upcomingLeaves.length>0">
+                &nbsp;<label for="label">&nbsp;</label><br>
+                &nbsp;<label for="label">&nbsp;</label><br>
+                &nbsp;<label for="label">&nbsp;</label><br>
+                &nbsp;<label for="label">No upcoming days off</label><br>
+                &nbsp;<label for="label">&nbsp;</label><br>
+                &nbsp;<label for="label">&nbsp;</label><br>
+                &nbsp;<label for="label">&nbsp;</label><br>
+                &nbsp;<label for="label">&nbsp;</label><br>
+              </div>
+              <div *ngIf="upcomingLeaves.length > 0">
+                <div *ngFor="let up of upcomingLeaves;let i=index;">
+                  <label>
+                    {{up.leaveType}} - {{up.startDate | date:'EEE, MMM d, y'}}-
+                    {{up.approvelStatus}}
+                  </label><br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <label for="head" class="align-left">
+              &nbsp;
+            </label>
+            <br>
+            <table class="table table-striped table-bordered">
+              <tr style="background-color: #008eec;">
+                <td colspan="5" style="width: 100%;">
+                  <strong><b>Leave Balances (In Days)-{{CalYear}}</b></strong>
+                </td>
+              </tr>
+              <tr style="background-color: #008eec;">
+                <th style="width: 20%;"><b>Leave Type</b></th>
+                <th style="width: 20%;"><b>Opening Balance</b></th>
+                <th style="width: 20%;"><b>Availed</b></th>
+                <th style="width: 20%;"><b>Closing Balance</b></th>
+                <th style="width: 20%;"><b>Awaiting for Approval</b></th>
+              </tr>
+              <tr *ngFor="let ty of lvbalaneList; let i = index">
+                <td><b>{{ty.lvType}}</b></td>
+                <td>{{ty.lvOpbal}}</td>
+                <td>{{ty.lvAvailed}}</td>
+                <td>{{ty.lvClbal}}</td>
+                <td>{{ty.lvAwtBal}}</td>
+              </tr>
+              <tr>
+                <th>
+                  <b>Total Balance</b>
+                </th>
+                <th>{{totOpbal}}</th>
+                <th>{{totUsbal}}</th>
+                <th>{{totClbal}}</th>
+                <th>{{totAvbal}}</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12">
+        <div class="col-sm-12 pull-left">
+          <label>
+            <h2><strong>History</strong></h2>
+          </label>
+        </div>
+        <div class="col-sm-12">
+          <div class="col-sm-3">
+            <label for="calyear">CalenderYear</label>
+            <input type="number" [(ngModel)]="CalYear" class="form-control" id="year" placeholder="Year"
+              matTooltip="Year" name="year" ngControl="CalYear" #calYear1Ent="ngModel" (change)="getEmpleaveRequests()">
+          </div>
+          <div class="col-sm-4">
+            &nbsp;
+          </div>
+          <div class="col-sm-2">
+            <button type="button" class="btn btn-danger" (click)="cancelapprovedleavelist()"
+              matTooltip="Click to cancel approved leaves"><i class="fas fa-times"></i>&nbsp;
+              Cancel Leave
+            </button>
+          </div>
+          <div class="col-sm-3" *ngIf="CancelLeaveflag">
+            <button type="button" class="btn btn-info" (click)="getEmpleaveRequests()"
+              matTooltip="Click to get employee leave requests"><i class="fa fa-history"></i>&nbsp;
+              Show All Leave Requests
+            </button>
+          </div>
+          <div *ngIf="!CancelLeaveflag">
+            <button type="button" class="btn btn-warning" (click)="Print()" matTooltip="Click to print leave card"><i
+                class="fa fa-file-pdf"></i>&nbsp;
+              Print Leave Card
+            </button>
+          </div>
+        </div>
+        <div class="box-body table-responsive ">
+          <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+            <thead style="background-color: #0099cc; color:white;">
+              <tr *ngIf="CancelLeaveflag">
+                <th colspan="14" style="text-align: center;background-color: #0099cc; color:white;">
+                  My
+                  Approved Leave Requests
+                </th>
+              </tr>
+              <tr *ngIf="CancelLeaveflag">
+                <th colspan="14" style="background-color: #0099cc; color:white;">
+                  Note : Request of
+                  Cancellation of leaves can be applied for the
+                  previous 2 months only
+                </th>
+              </tr>
+              <tr>
+                <th class="col-sm-1">Sl.No</th>
+                <th>Request No</th>
+                <th>Leave Type</th>
+                <th>Request Date</th>
+                <th>From Date</th>
+                <th>Duration</th>
+                <th>To Date</th>
+                <th>Duration</th>
+                <th>Days</th>
+                <th>Status</th>
+                <th>Pending With</th>
+                <th class="col-sm-2">View</th>
+                <th class="col-sm-1">Edit</th>
+                <th>Cancel</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let categ of LeaveRequestList;  let i = index">
+                <td>{{i+1}}</td>
+                <td><b>{{categ.reqId}}</b></td>
+                <td>{{categ.leaveType}}</td>
+                <td>{{categ.submitDate}}</td>
+                <td>{{categ.startDate | date:'dd/MM/yyyy'}}</td>
+                <td>{{categ.startDuration}}</td>
+                <td>{{categ.endDate | date:'dd/MM/yyyy'}}</td>
+                <td>{{categ.endDuration}}</td>
+                <td>{{categ.noOfDays}}</td>
+                <td>{{categ.approvelStatus}}</td>
+                <td>{{categ.pendingApprover}}</td>
+                <td>
+                  <table>
+                    <tr>
+                      <td class="pr-6">
+                        <button type="button" class="btn btn-info btn-xs" (click)="ApplyLeave(true,categ,'View')"
+                          matTooltip="Click to view details">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        &nbsp;
+                        <button type="button" class="btn btn-warning btn-xs" (click)="printLeave(categ)"
+                          matTooltip="Click to Print Leave details">
+                          <i class="fas fa-print"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <table>
+                    <tr>
+                      <td class="pr-2">
+                        <button type="button" class="btn btn-primary btn-xs" *ngIf="categ.approvelStatus == 'DRAFT'"
+                          (click)="ApplyLeave(true,categ,'')" matTooltip="Click to edit details">
+                          <i class="fas fa-pencil-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <table>
+                    <tr>
+                      <td class="pr-2">
+                        <button *ngIf="categ.a=='Pending'" type="button" class="btn btn-xs btn-danger"
+                          (click)="CancelLeave(categ)" matTooltip="Click to self cancel leave">
+                          <i class="fas fa-times"></i>
+                        </button>
+                        <button *ngIf="categ.approvelStatus=='Pending'" type="button" class="btn btn-xs btn-danger"
+                          (click)="CancelLeave(categ)" matTooltip="Click to self cancel leave">
+                          <i class="fas fa-times"></i>
+                        </button>
+                        <button *ngIf="CancelLeaveflag && categ.approvelStatus=='Approved' " type="button"
+                          class="btn btn-xs btn-danger" (click)="CancelApprovedLeaveView(false,categ,'View')"
+                          matTooltip="Click to cancel leave">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </td>
+
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">New Leave Request</h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+        <form #leaveForm="ngForm">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-12">
+                <label for="head" class="align-left">
+                  &nbsp;
+                </label>
+                <table class="table table-striped table-bordered">
+                  <tr style="background-color: #0099ff;">
+                    <td colspan="5" style="width: 100%; color: white;">
+                      <strong><b>Leave Balance -- {{CalYear}}</b></strong>
+                    </td>
+                  </tr>
+                  <tr style="background-color: #0099ff;">
+                    <th style="width: 20%; color: white;"><b>Leave Type</b></th>
+                    <th style="width: 20%; color: white;"><b>Opening Balance</b></th>
+                    <th style="width: 20%; color: white;"><b>Availed</b></th>
+                    <th style="width: 20%; color: white;"><b>Closing Balance</b></th>
+                    <th style="width: 20%; color: white;"><b>Awaiting for Approval</b></th>
+                  </tr>
+                  <tr *ngFor="let ty of lvbalaneList; let i = index">
+                    <td><b>{{ty.lvType}}</b></td>
+                    <td>{{ty.lvOpbal}}</td>
+                    <td>{{ty.lvAvailed}}</td>
+                    <td>{{ty.lvClbal}}</td>
+                    <td>{{ty.lvAwtBal}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="row" *ngIf="lvType == '6'">
+              <table class="table table-striped table-bordered">
+                <tr style="background-color: #15b5ff;">
+                  <td colspan="4" style="text-align: center; width: 100%;">
+                    <strong><b>Comp-Off Available List</b></strong>
+                  </td>
+                </tr>
+                <tr style="background-color: hsl(204, 100%, 70%);">
+                  <th><b>Worked Date</b></th>
+                  <th><b>No. Of Days</b></th>
+                  <th><b>Comp-Off Balance</b></th>
+                  <th><b>Lapse By Date</b></th>
+                </tr>
+                <tr *ngFor="let ty of CompOffAvailList; let i = index">
+                  <td>{{ty.startDate | date:'dd/MM/yyyy'}}</td>
+                  <td>{{ty.numberOfDays}}</td>
+                  <td>{{ty.compOffBalance}}</td>
+                  <td>{{ty.lapsBydate | date:'dd/MM/yyyy'}}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong><b>Total</b></strong>
+                  </td>
+                  <td>{{totNoDays}}</td>
+                  <td>{{totCobal}}</td>
+                  <td> </td>
+                </tr>
+              </table>
+            </div>
+            <div class="row">
+              <div class="col-sm-6" *ngIf="router.url !='/ApplyLeaveEss'">
+                <div class="form-group">
+                  <label for="ApplyFor">Apply for <span style="color: red;">*</span> </label>
+                  <select [(ngModel)]="ApplyFor" class="form-control" id="ApplyFor" name="ApplyFor"
+                    matTooltip="Apply For" #ApplyForEnt="ngModel" [disabled]="isEdit" required>
+                    <option [ngValue]="null" disabled [selected]="true">--Select--</option>
+                    <option>Self</option>
+                    <option>Others</option>
+                  </select>
+
+                </div>
+              </div>
+              <div class="col-sm-4" *ngIf="ApplyFor=='Others'">
+                <div class="form-group">
+                  <label for="userId">Employee Id <span style="color: red;">*</span> </label>
+                  <input type="text" name="userId" id="userId" (keyup)="getEmployee($event)" [(ngModel)]="userId"
+                    placeholder="Enter Emp No to get Approvers" class="form-control" matTooltip="userId"
+                    [disabled]="isEdit" #userIdEnt="ngModel" required>
+                </div>
+              </div>
+              <div class="col-sm-2" *ngIf="ApplyFor=='Others'">
+                <label for="">&nbsp;</label>
+                <div class="form-group">
+                  <button type="button" class="btn btn-success btn mr-3" style="width: 100px;"
+                    (click)="getApproversList(userId);">
+                    <i class="fas fa-angle-double-right"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="calyear">Calendar Year <span style="color: red;">*</span> </label>
+                  <input type="number" [(ngModel)]="CalenderYear" class="form-control" id="year" placeholder="Year"
+                    name="year" ngControl="CalenderYear" #calYearEnt="ngModel" [disabled]="isEdit">
+                  <span class="help-block" *ngIf="!calYearEnt.valid && calYearEnt.touched">
+                    Please
+                    select calendar year.
+                  </span>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="lvType">Leave Type <span style="color: red;">*</span> </label>
+                  <select [(ngModel)]="lvType" class="form-control" id="lvType" name="lvType" matTooltip="Leave Type"
+                    #lvTypeEnt="ngModel" (change)="getLvReasonList(lvType)" [disabled]="isEdit" required>
+                    <option [ngValue]="null" disabled [selected]="true">
+                      Select Leave Type
+                    </option>
+                    <option *ngFor="let pl of lvTypeList" value={{pl.lvTypeid}}>
+                      {{pl.lvType}}
+                    </option>
+                  </select>
+                  <span class="help-block" *ngIf="!lvTypeEnt.valid && lvTypeEnt.touched">
+                    Please select
+                    Leave
+                    Type .
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="FromDate">Start Date <span style="color: red;">*</span> </label>
+                  <input [matTooltipPosition]="'below'" matTooltip="Click to change date" placeholder="DD/MM/YYYY"
+                    [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="FromDate" class="form-control"
+                    [(ngModel)]="StartDate" [disabled]="isEdit" #FromDate="ngModel" (ngModelChange)="CalculateDays()"
+                    required>
+                  <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;">
+                  </owl-date-time>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="dur1">Start Date Duration <span style="color: red;">*</span> </label>
+                  <select [(ngModel)]="Duration1" class="form-control" id="dur1" name="dur1" matTooltip="Duration"
+                    #dur1Ent="ngModel" (change)="CalculateDays()" [disabled]="isEdit" required>
+                    <option [ngValue]="null" disabled [selected]="true">
+                      Select Duration
+                    </option>
+                    <option value="FD">Full Day</option>
+                    <option value="FH">First Half</option>
+                    <option value="SH">Second Half</option>
+                  </select>
+                  <span class="help-block" *ngIf="!dur1Ent.valid && dur1Ent.touched">
+                    Please select
+                    duration
+                    .
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="todate">End Date <span style="color: red;">*</span> </label>
+                  <input [matTooltipPosition]="'below'" [min]="StartDate" matTooltip="Click to change date"
+                    [owlDateTime]="dt14" placeholder="DD/MM/YYYY" [owlDateTimeTrigger]="dt14" name="todate"
+                    class="form-control" [(ngModel)]="EndDate" #todate="ngModel" (ngModelChange)="CalculateDays()"
+                    [disabled]="isEdit" required>
+                  <owl-date-time [pickerType]="'calendar'" (dateChange)="CalculateDays()" #dt14 style="width: 250px;">
+                  </owl-date-time>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="dur2">End Date Duration <span style="color: red;">*</span> </label>
+                  <select [(ngModel)]="Duration2" class="form-control" id="dur2" name="dur2" matTooltip="Duration"
+                    #dur2Ent="ngModel" [disabled]="isEdit" (change)="CalculateDays()" required>
+                    <option [ngValue]="null" disabled [selected]="true">Select Duration</option>
+                    <option value="FD">Full Day</option>
+                    <option value="FH">First Half</option>
+                    <option value="SH">Second Half</option>
+                  </select>
+                  <span class="help-block" *ngIf="!dur2Ent.valid && dur2Ent.touched">
+                    Please select
+                    duration.
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="days">No. of Days<span style="color: red;">*</span> </label>
+                  <input type="text" name="days" id="days" [(ngModel)]="NoOfDays" class="form-control"
+                    placeholder="NO. OF DAYS" matTooltip="No. of Days" #daysEnt="ngModel" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="reason">Reason <span style="color: red;">*</span> </label>
+                  <select [(ngModel)]="LvReason" class="form-control" id="reason" name="reason"
+                    matTooltip="Leave Reason" #reasonEnt="ngModel" [disabled]="isEdit" required>
+                    <option [ngValue]="null" disabled [selected]="true">
+                      Select Reason
+                    </option>
+                    <option *ngFor="let res of ReasonList" value={{res.reason}}>
+                      {{res.detailedReason}}
+                    </option>
+                  </select>
+                  <span class="help-block" *ngIf="!reasonEnt.valid && reasonEnt.touched">
+                    Please select
+                    reason.
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="detailedReason">
+                    Detailed Reason (max 150 char) <span style="color: red;">*</span>
+                  </label>
+                  <textarea name="detailedReason" id="detailedReason" maxlength="150" placeholder="DETAILED REASON"
+                    matTooltip="Detailed Reason" [(ngModel)]="DetailedReason" class="form-control" [disabled]="isEdit"
+                    required></textarea>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="lvaddress">Address during leave</label>
+                  <textarea name="lvaddress" id="lvaddress" maxlength="150" matTooltip="Address"
+                    placeholder="ADDRES DURING LEAVE" [(ngModel)]="LeaveAddress" class="form-control"
+                    [disabled]="isEdit"></textarea>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="lvcontact">Contact Number </label>
+                  <input type="text" name="lvcontact" id="lvcontact" [(ngModel)]="LeaveContactNo"
+                    placeholder="CONTACT NUMBER" class="form-control" matTooltip="Contact Number" [disabled]="isEdit"
+                    #lvcontactEnt="ngModel">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="person">Person responsible in my absence</label>
+                  <input type="text" name="personName" id="personName" (keyup)="getpersonResponsible($event)"
+                    [(ngModel)]="personName" placeholder="ENTER (EMP NO - EMP NAME)" class="form-control"
+                    matTooltip="Person Responsible" [disabled]="isEdit" #responsibleEnt="ngModel">
+                  <!-- <input type="hidden" id="person" class="form-control"
+                      (keyup)="getpersonResponsible($event)" [(ngModel)]="personResponsible"
+                      ngControl="personResponsible" name="person" /> -->
+                </div>
+              </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            <div class="row">
+              <div class="box">
+                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                  <div class="col-xs-6">
+                    <h3 class="box-title">Supporting Documents</h3>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div class="row" *ngIf="!isEdit">
+                    <label style="color: red;">
+                      NOTE:Attachments should be of type PDF, DOCX, JPEG
+                      only and maximum size of 5 mb allowed.
+                    </label>
+                  </div>
+                  <div class="row" *ngIf="!isEdit">
+                    <div class="col-sm-12" *ngIf="!isEdit">
+                      <input #myInput type="file" accept=".png,.jpeg,.pdf,.docx" id="file"
+                        (change)="handleFileInput($event.target.files)" multiple>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row" *ngFor="let attach of fileslist1">
+                    <div class="col-sm-9">
+                      <label for="attachments"></label><a (click)="downloadFile(reqId,attach);"
+                        style="cursor: pointer;text-decoration: underline; color: #68a7d2;"
+                        [matTooltipPosition]="'below'" matTooltip="Click to download the file">{{attach}}</a>
+                    </div>
+                    <div class="col-sm-3" *ngIf="!isEdit && attach!= null">
+                      <button title="Remove Files" (click)="removefile(attach,reqId);" matTooltip="Click to delete"
+                        class="btn btn-secondary btn-sm">
+                        <i class="fa fa-trash"></i></button>
+                    </div>
+                  </div>
+                  <!-- <div class="row" *ngFor="let attach of fileslist1">
+                    <div class="col-sm-12">
+                      <label for="attachments"></label><a (click)="downloadFile(reqId,attach.name);"
+                        style="cursor: pointer;text-decoration: underline; color: #68a7d2;"
+                        [matTooltipPosition]="'below'" matTooltip="Click to download the file">{{attach.name}}</a>
+                    </div>
+                    <div class="col-sm-12" *ngIf="attach!= null">
+                      <button title="Remove Files" (click)="removefile(reqID,attach.name);"
+                        matTooltip="Click to delete" class="btn btn-secondary btn-sm">
+                        <i class="fa fa-trash"></i></button>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            <div class="row" *ngIf="ApplyFor == 'Others'">
+              <table class="table table-striped table-bordered">
+                <tr style="background-color: #b4d9f1;">
+                  <td colspan="7" style="width: 100%;">
+                    <strong><b>Approver Details</b></strong>
+                  </td>
+                </tr>
+                <tr style="background-color: #b4d9f1;">
+                  <th style="width: 10%;"><b>Type</b></th>
+                  <th style="width: 10%;"><b>Employee Code</b></th>
+                  <th style="width: 20%;"><b>Name</b></th>
+                  <th style="width: 20%;"><b>Designation</b></th>
+                  <th style="width: 20%;"><b>Role</b></th>
+                  <th style="width: 10%;"><b>Approver Status</b></th>
+                  <th style="width: 10%;"><b>Approved Date</b></th>
+                </tr>
+                <tr *ngFor="let ty of ApproversList; let i = index">
+                  <td>{{ty.type}}</td>
+                  <td>{{ty.employeeId}}</td>
+                  <td>{{ty.name}}</td>
+                  <td>{{ty.designation}}</td>
+                  <td>{{ty.role}}</td>
+                  <td>{{approvalStatus}}</td>
+                  <td>{{approvedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="row" *ngIf="ApplyFor != 'Others'">
+              <table class="table table-striped table-bordered">
+                <tr style="background-color: #b4d9f1;">
+                  <td colspan="7" style="width: 100%;">
+                    <strong><b>Approver Details</b></strong>
+                  </td>
+                </tr>
+                <tr style="background-color: #b4d9f1;">
+                  <th style="width: 10%;"><b>Type</b></th>
+                  <th style="width: 10%;"><b>Employee Code</b></th>
+                  <th style="width: 20%;"><b>Name</b></th>
+                  <th style="width: 20%;"><b>Designation</b></th>
+                  <th style="width: 20%;"><b>Role</b></th>
+                  <th style="width: 10%;"><b>Approver Status</b></th>
+                  <th style="width: 10%;"><b>Approved Date</b></th>
+                </tr>
+                <tr *ngFor="let ty of ApproversList; let i = index">
+                  <td>{{ty.type}}</td>
+                  <td>{{ty.employeeId}}</td>
+                  <td>{{ty.name}}</td>
+                  <td>{{ty.designation}}</td>
+                  <td>{{ty.role}}</td>
+                  <td>{{approvalStatus}}</td>
+                  <td>{{approvedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+      &nbsp; &nbsp; &nbsp;
+      &nbsp; &nbsp; &nbsp;
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0">
+          <i class="fa fa-warning"></i>{{errMsgPop}}
+        </span>
+        <button *ngIf="!isEdit" type="button" class="btn btn-info" matTooltip="Click to submit to draft"
+          (click)="OnSaveLeaveRequest('Draft')" [disabled]="isLoading || (!leaveForm.valid)"><i
+            class="fa fa-clock"></i>&nbsp;
+          Save
+          Draft
+        </button>
+        <button *ngIf="!view" type="button" class="btn btn-success" matTooltip="Click to submit leave"
+          (click)="OnSaveLeaveRequest('Applied')" [disabled]="isLoading || (!leaveForm.valid)"><i
+            class="fas fa-angle-double-right"></i>&nbsp;
+          Submit
+        </button>
+        <button *ngIf="!view" type="button" class="btn btn-danger" matTooltip="Click to clear the details"
+          (click)="ClearData()"><i class="fas fa-times"></i>&nbsp;
+          Clear
+        </button>
+        <button type="button" class="btn btn-default" matTooltip="Click to close the form"
+          style="background-color:darkgray;color:white;" data-dismiss="modal">
+          Close
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="CancelLeaveModal" tabindex="-1" role="dialog" aria-labelledby="CancelLeaveModalLabel"
+  aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Cancel Leave Request</h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+        <form #cancelForm="ngForm">
+          <div class="col-sm-12">
+
+            &nbsp; &nbsp; &nbsp;
+
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="calyear">Calendar Year <span style="color: red;">*</span> </label>
+                  <input type="number" [(ngModel)]="CalenderYear" class="form-control" id="year" placeholder="Year"
+                    name="year" ngControl="CalenderYear" #calYearEnt="ngModel" readonly>
+                  <span class="help-block" *ngIf="!calYearEnt.valid && calYearEnt.touched">
+                    Please
+                    select
+                    calendar
+                    year.
+                  </span>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="lvType">Leave Type <span style="color: red;">*</span> </label>
+                  <select [(ngModel)]="lvType" class="form-control" id="lvType" name="lvType" matTooltip="Leave Type"
+                    #lvTypeEnt="ngModel" (change)="getLvReasonList(lvType)" readonly>
+                    <option [ngValue]="null" disabled [selected]="true">
+                      Select Leave Type
+                    </option>
+                    <option *ngFor="let pl of lvTypeList" value={{pl.lvTypeid}}>
+                      {{pl.lvType}}
+                    </option>
+                  </select>
+                  <span class="help-block" *ngIf="!lvTypeEnt.valid && lvTypeEnt.touched">
+                    Please select
+                    Leave
+                    Type .
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="FromDate">Start Date <span style="color: red;">*</span> </label>
+                  <input [matTooltipPosition]="'below'" matTooltip="Click to change date" [owlDateTime]="dt121"
+                    [owlDateTimeTrigger]="dt121" name="FromDate" class="form-control" [(ngModel)]="StartDate"
+                    [disabled]="isEdit" #FromDate="ngModel" (ngModelChange)="CalculateDays()" readonly>
+                  <owl-date-time [pickerType]="'calendar'" #dt121 style="width: 250px;">
+                  </owl-date-time>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="dur1">Start Date Duration <span style="color: red;">*</span> </label>
+                  <select [(ngModel)]="Duration1" class="form-control" id="dur1" name="dur1" matTooltip="Duration"
+                    #dur1Ent="ngModel" [disabled]="isEdit" readonly>
+                    <option [ngValue]="null" disabled [selected]="true">
+                      Select Duration
+                    </option>
+                    <option value="FD">Full Day</option>
+                    <option value="FH">First Half</option>
+                    <option value="SH">Second Half</option>
+                  </select>
+                  <span class="help-block" *ngIf="!dur1Ent.valid && dur1Ent.touched">
+                    Please select
+                    duration
+                    .
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="todate">End Date <span style="color: red;">*</span> </label>
+                  <input [matTooltipPosition]="'below'" [min]="StartDate" matTooltip="Click to change date"
+                    [owlDateTime]="dt141" [owlDateTimeTrigger]="dt141" name="todate" class="form-control"
+                    [(ngModel)]="EndDate" #todate="ngModel" (ngModelChange)="CalculateDays()" [disabled]="isEdit"
+                    readonly>
+                  <owl-date-time [pickerType]="'calendar'" (dateChange)="CalculateDays()" #dt141 style="width: 250px;">
+                  </owl-date-time>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="dur2">End Date Duration <span style="color: red;">*</span> </label>
+                  <select [(ngModel)]="Duration2" class="form-control" id="dur2" name="dur2" matTooltip="Duration"
+                    #dur2Ent="ngModel" [disabled]="isEdit" (change)="CalculateDays()" readonly>
+                    <option [ngValue]="null" disabled [selected]="true">
+                      Select Duration
+                    </option>
+                    <option value="FD">Full Day</option>
+                    <option value="FH">First Half</option>
+                    <option value="SH">Second Half</option>
+                  </select>
+                  <span class="help-block" *ngIf="!dur2Ent.valid && dur2Ent.touched">
+                    Please select
+                    duration.
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="days">No. of Days<span style="color: red;">*</span> </label>
+                  <input type="text" name="days" id="days" [(ngModel)]="NoOfDays" class="form-control"
+                    matTooltip="No. of Days" #daysEnt="ngModel" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="reason">Reason <span style="color: red;">*</span> </label>
+                  <select [(ngModel)]="LvReason" class="form-control" id="reason" name="reason"
+                    matTooltip="Leave Reason" #reasonEnt="ngModel" readonly>
+                    <option [ngValue]="null" disabled [selected]="true">
+                      Select Reason
+                    </option>
+                    <option *ngFor="let res of ReasonList" value={{res.reason}}>
+                      {{res.detailedReason}}
+                    </option>
+                  </select>
+                  <span class="help-block" *ngIf="!reasonEnt.valid && reasonEnt.touched">
+                    Please select
+                    reason.
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="detailedReason">
+                    Detailed Reason (max 150 char) <span style="color: red;">*</span>
+                  </label>
+                  <textarea name="detailedReason" id="detailedReason" maxlength="150" matTooltip="Detailed Reason"
+                    [(ngModel)]="DetailedReason" class="form-control" [disabled]="isEdit" readonly></textarea>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="lvaddress">Address during leave</label>
+                  <textarea name="lvaddress" id="lvaddress" maxlength="150" matTooltip="Address"
+                    [(ngModel)]="LeaveAddress" class="form-control" readonly></textarea>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="lvcontact">Contact Number </label>
+                  <input type="text" name="lvcontact" id="lvcontact" [(ngModel)]="LeaveContactNo" class="form-control"
+                    matTooltip="Contact Number" readonly #lvcontactEnt="ngModel">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="person">Person responsible in my absence</label>
+                  <input type="text" name="personName" id="personName" (keyup)="getpersonResponsible($event)"
+                    [(ngModel)]="personName" class="form-control" matTooltip="Person Responsible" readonly
+                    #responsibleEnt="ngModel">
+                  <input type="hidden" id="person" class="form-control" (keyup)="getpersonResponsible($event)"
+                    [(ngModel)]="personResponsible" ngControl="personResponsible" name="person" />
+                </div>
+              </div>
+            </div>
+
+            &nbsp; &nbsp; &nbsp;
+            <div class="row">
+              <table class="table table-striped table-bordered">
+                <tr style="background-color: #b4d9f1;">
+                  <td colspan="7" style="width: 100%;">
+                    <strong><b>Approver Details</b></strong>
+                  </td>
+                </tr>
+                <tr style="background-color: #b4d9f1;">
+                  <th style="width: 10%;"><b>Type</b></th>
+                  <th style="width: 10%;"><b>Employee Code</b></th>
+                  <th style="width: 20%;"><b>Name</b></th>
+                  <th style="width: 20%;"><b>Designation</b></th>
+                  <th style="width: 20%;"><b>Role</b></th>
+                  <th style="width: 10%;"><b>Approver Status</b></th>
+                  <th style="width: 10%;"><b>Approved Date</b></th>
+                </tr>
+                <tr *ngFor="let ty of ApproversList; let i = index">
+                  <td>{{ty.type}}</td>
+                  <td>{{ty.employeeId}}</td>
+                  <td>{{ty.name}}</td>
+                  <td>{{ty.designation}}</td>
+                  <td>{{ty.role}}</td>
+                  <td>{{approvalStatus}}</td>
+                  <td>{{approvedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+      &nbsp; &nbsp; &nbsp;
+      &nbsp; &nbsp; &nbsp;
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0">
+          <i class="fa fa-warning"></i>{{errMsgPop}}
+        </span>
+        <button *ngIf="!view" type="button" class="btn btn-success" matTooltip="Click to submit leave"
+          (click)="CancelApprovedLeave()" [disabled]="isLoading || (!cancelForm.valid)"><i
+            class="fas fa-angle-double-right"></i>
+          Submit
+          for Cancellation
+        </button>
+        <button type="button" class="btn btn-default" matTooltip="Click to close the form"
+          style="background-color:darkgray;color:white;" data-dismiss="modal">
+          Close
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div hidden id="pdf">
+  <table class="table table-striped table-bordered">
+    <tr>
+      <th style="width: 25%;"><strong> Employee No.</strong></th>
+      <td style="width: 25%;">{{EmployeeId}}</td>
+      <th style="width: 25%;"><strong>Name</strong></th>
+      <td style="width: 25%;">{{FullName}}</td>
+    </tr>
+    <tr>
+      <th style="width: 25%;"><strong> Plant.</strong></th>
+      <td style="width: 25%;">{{getLocationName(Plant)}}</td>
+      <th style="width: 25%;"><strong>PayGroup</strong></th>
+      <td style="width: 25%;">{{getPay(PayGroup)}}</td>
+    </tr>
+    <tr>
+      <th style="width: 25%;"><strong> Designation.</strong></th>
+      <td style="width: 25%;">{{Designation}}</td>
+      <th style="width: 25%;"><strong>Department</strong></th>
+      <td style="width: 25%;">{{Department}}</td>
+    </tr>
+    <tr>
+      <th style="width: 25%;"><strong> Role.</strong></th>
+      <td colspan="3" style="width: 75%;">{{getRole(RoleId)}}</td>
+    </tr>
+    <tr>
+      <th style="width: 25%;"><strong> Date Of Joining</strong></th>
+      <td style="width: 25%;">{{JoiningDate | date:'dd/MM/yyyy'}}</td>
+      <th style="width: 25%;"><strong>Year</strong></th>
+      <td style="width: 25%;">{{CalYear}}</td>
+    </tr>
+  </table>
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  <table class="table table-striped table-bordered">
+    <tr>
+      <th colspan="5" style="width: 100%;">
+        <strong><b>Leave Balances (In Days)-{{CalYear}}</b></strong>
+      </th>
+    </tr>
+    <tr>
+      <th style="width: 20%;"><b>Leave Type</b></th>
+      <th style="width: 20%;"><b>Opening Balance</b></th>
+      <th style="width: 20%;"><b>Availed</b></th>
+      <th style="width: 20%;"><b>Closing Balance</b></th>
+      <th style="width: 20%;"><b>Awaiting for Approval</b></th>
+    </tr>
+    <tr *ngFor="let ty of lvbalaneList; let i = index">
+      <td><b>{{ty.lvType}}</b></td>
+      <td>{{ty.lvOpbal}}</td>
+      <td>{{ty.lvAvailed}}</td>
+      <td>{{ty.lvClbal}}</td>
+      <td>{{ty.lvAwtBal}}</td>
+    </tr>
+
+    <tr>
+      <th>
+        <b>Total Balance</b>
+      </th>
+      <th>{{totOpbal}}</th>
+      <th>{{totUsbal}}</th>
+      <th>{{totClbal}}</th>
+      <th>{{totAvbal}}</th>
+    </tr>
+  </table>
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  <table class="table table-striped table-bordered">
+    <tr>
+      <th rowspan="2" style="text-align: center; vertical-align: bottom; ">Sl.No</th>
+      <th rowspan="2" style="text-align: center; vertical-align: bottom; ">Leave Type</th>
+      <th colspan="2" style="text-align: center; vertical-align: bottom; ">Leave Applied</th>
+      <th rowspan="2" style="text-align: center; vertical-align: bottom; ">No. of Days</th>
+      <th rowspan="2" style="text-align: center; vertical-align: bottom; ">Approved On</th>
+      <th rowspan="2" style="text-align: center; vertical-align: bottom; ">Reason</th>
+      <th rowspan="2" style="text-align: center; vertical-align: bottom; ">Approval Status</th>
+    </tr>
+    <tr>
+      <th>From </th>
+      <th>To</th>
+    </tr>
+    <tr *ngFor="let categ of LeaveRequestList;  let i = index">
+      <td style="width: 5%;">{{i+1}}</td>
+      <td style="width: 10%;">{{categ.leaveType}}</td>
+      <td style="width: 12%;">{{categ.startDate | date:'dd/MM/yyyy'}}</td>
+      <td style="width: 12%;">{{categ.endDate | date:'dd/MM/yyyy'}}</td>
+      <td style="width: 10%;">{{categ.noOfDays}}</td>
+      <td style="width: 15%;">{{categ.approvedDate | date:'dd/MM/yyyy'}}</td>
+      <td style="width: 21%;">{{categ.reason}}</td>
+      <td style="width: 21%;">{{categ.approvelStatus}}</td>
+
+    </tr>
+
+  </table>
+</div>
+
+<div hidden id="pdf1">
+  <table class="table table-bordered table table-striped" style="align-self: auto; ">
+    <tr>
+      <td colspan="4" style="text-align: center;">
+        <strong><b>Requester Details</b></strong>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 25%;"><b>Employee No</b></td>
+      <td style="width: 25%; color: blue;">{{EmployeeId}}</td>
+      <td style="width: 25%;"><b>Employee Name</b></td>
+      <td style="width: 25%; color: blue;">{{FullName}}</td>
+    </tr>
+    <tr>
+      <th style="width: 25%;"> <b>Plant </b></th>
+      <td style="width: 25%; color: blue;">{{getLocationName(Plant)}}</td>
+      <th style="width: 25%;"><b>PayGroup </b></th>
+      <td style="width: 25%; color: blue;">{{getPay(PayGroup)}}</td>
+    </tr>
+    <tr>
+      <td style="width: 20%;"><b>Designation</b></td>
+      <td style="width: 20%; color: blue;">{{Designation}}</td>
+      <td style="width: 10%;"><b>Role </b></td>
+      <td style="width: 10%; color: blue;">{{getRole(RoleId)}}</td>
+    </tr>
+    <tr>
+      <td style="width: 10%;"><b>Department</b></td>
+      <td style="width: 10%; color: blue;">{{Department}}</td>
+      <td style="width: 25%;"><b>Date Of Joining</b></td>
+      <td style="width: 25%; color: blue;">{{JoiningDate | date:'dd/MM/yyyy'}}</td>
+    </tr>
+    <tr>
+      <td style="width: 30%;"><b>Request No</b></td>
+      <td colspan="3" style="width: 70%; color: blue;">{{reqNo}}</td>
+    </tr>
+  </table>
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+    <tr>
+      <td colspan="4" style="text-align: center;">
+        <strong><b>Leave Details</b></strong>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 25%;"><b>Leave Type:</b></td>
+      <td style="width: 25%; color: blue;">{{lvType}}</td>
+      <td style="width: 25%;"><b>No. of Days</b></td>
+      <td style="width: 25%; color: blue;">{{numDays}}</td>
+    </tr>
+    <tr>
+      <td style="width: 25%;"><b>Start Date:</b></td>
+      <td style="width: 25%; color: blue;">{{fromDate | date:'dd/MM/yyyy'}}</td>
+      <td style="width: 25%;"><b>Start Duration:</b></td>
+      <td style="width: 25%; color: blue;">{{startDur}}</td>
+    </tr>
+    <tr>
+      <td style="width: 25%;"><b>End Date:</b></td>
+      <td style="width: 25%; color: blue;">{{toDate | date:'dd/MM/yyyy'}}</td>
+      <td style="width: 25%;"><b>End Duration</b></td>
+      <td style="width: 25%; color: blue;">{{endDur}}</td>
+    </tr>
+    <tr>
+      <td style="width: 30%;"><b>Reason:</b></td>
+      <td colspan="3" style="width: 70%; color: blue;">{{detReason}}</td>
+    </tr>
+    <tr>
+      <td style="width: 30%;"><b>Address During Leave:</b></td>
+      <td colspan="3" style="width: 70%; color: blue;">{{addLeave}}</td>
+    </tr>
+    <tr>
+      <td style="width: 30%;"><b>Contact Number During Leave:</b></td>
+      <td colspan="3" style="width: 70%; color: blue;">{{conLeave}}</td>
+    </tr>
+    <tr>
+      <td style="width: 30%;"><b>Person Responsible in my absence:</b></td>
+      <td colspan="3" style="width: 70%; color: blue;">{{perLeave}}</td>
+    </tr>
+  </table>
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;<table class="table table-bordered table table-striped" style="align-self: auto;; ">
+    <tr>
+      <td colspan="8" style="text-align: center;">
+        <strong><b>Approver Details</b></strong>
+      </td>
+    </tr>
+    <tr>
+      <th><b>Approver ID</b></th>
+      <th><b>Approver Name</b></th>
+      <th><b>Designation</b></th>
+      <th><b>Role</b></th>
+      <th><b>Department</b></th>
+      <th><b>Approved Date and Time</b></th>
+      <th><b>Rejected Date and Time</b></th>
+      <th><b>Status</b></th>
+    </tr>
+    <tr>
+      <td style="color: blue;">{{appid}}</td>
+      <td style="color: blue;">{{appName}}</td>
+      <td style="color: blue;">{{appDesg}}</td>
+      <td style="color: blue;">{{appRole}}</td>
+      <td style="color: blue;">{{appDept}}</td>
+      <td style="color: blue;">{{appDate | date:'yyyy-MM-dd hh:mm'}}</td>
+      <td style="color: blue;">{{rejDate | date:'yyyy-MM-dd hh:mm'}}</td>
+      <td style="color: blue;">{{appStatus}}</td>
+    </tr>
+  </table>
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+    <tr>
+      <td colspan="5" style="text-align: center;">
+        <strong><b>Leave Balance Details(In Days)-{{CalYear}}</b></strong>
+      </td>
+    </tr>
+    <tr>
+      <th style="width: 20%;"><b>Leave Type</b></th>
+      <th style="width: 20%;"><b>Opening Balance</b></th>
+      <th style="width: 20%;"><b>Availed</b></th>
+      <th style="width: 20%;"><b>Closing Balance</b></th>
+      <th style="width: 20%;"><b>Awaiting for Approval</b></th>
+    </tr>
+    <tr *ngFor="let ty of lvbalaneList; let i = index">
+      <td><b>{{ty.lvType}}</b></td>
+      <td style="color: blue;">{{ty.lvOpbal}}</td>
+      <td style="color: blue;">{{ty.lvAvailed}}</td>
+      <td style="color: blue;">{{ty.lvClbal}}</td>
+      <td style="color: blue;">{{ty.lvAwtBal}}</td>
+    </tr>
+    <tr>
+      <th>
+        <b>Total Balance</b>
+      </th>
+      <th style="color: blue;">{{totOpbal}}</th>
+      <th style="color: blue;">{{totUsbal}}</th>
+      <th style="color: blue;">{{totClbal}}</th>
+      <th style="color: blue;">{{totAvbal}}</th>
+    </tr>
+  </table>
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  <br>
+
+  <b>FD: FULL DAY</b>
+  <br>
+  <b>FH: FIST HALF</b>
+  <br>
+  <b>SH: SECOND HALF</b>
+
+</div>

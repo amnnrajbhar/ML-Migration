@@ -1,0 +1,166 @@
+<section class="content-header">
+    <h1>
+        Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+            <h3 class="box-title">Yearly Leave Balance Report</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Plant</label>
+                        <select [(ngModel)]="filterPlant" class="form-control" id="locationName" name="locationName"
+                            (change)="getPaygroupsBasedOnPlant()">
+                            <option [ngValue]="null">Select Plant</option>
+                            <option *ngFor="let location of locationList" value="{{location.code}}">
+                                {{location.code + '-' + location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="paygroup">Pay Group</label>
+                        <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                            <option [ngValue]="null">Select PayGroup</option>
+                            <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                {{location.short_desc}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="staffcat">Staff Category</label>
+                        <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat"
+                            (change)="getUsersList();">
+                            <option [ngValue]="null">Select Staff Category</option>
+                            <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                {{cat.catltxt}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Department">Department</label>
+                        <select [(ngModel)]="filterDepartment" class="form-control" id="departmentName"
+                            name="departmentName">
+                            <option [ngValue]="null">Select Department</option>
+                            <option *ngFor="let location of departmentList" value="{{location.id}}">
+                                {{location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Reporting">Reporting Group <span style="color: red;">*</span> </label>
+                        <select [(ngModel)]="filterReportingGroup" class="form-control" id="ReportingGroup"
+                            (change)="getUsersList();" name="ReportingGroup" required>
+                            <option [ngValue]="null">Select Reporting Group</option>
+                            <option *ngFor="let location of ReportingGroupList" value="{{location.reportingGroup}}">
+                                {{location.reportingGroupLt}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                            [(ngModel)]="CalenderYear" placeholder="Year">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="emp">Employee No.</label>
+                    <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode" #fltrdelrymodeEnt="ngModel"
+                        matTooltip="select delivery Mode" [placeholder]="'Select Employee No. (multiple)'"
+                        [data]="empListCon" [(ngModel)]="selectedEmployeeList" [settings]="deliveryModeSettings"
+                        (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                        (onSelectAll)="onSelectAll($event)">
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="col-sm-4">
+                    <label>&nbsp;</label>
+                    <div class="form-group">
+                        <button class="btn btn-success" (click)="GetLeaveBalanceReport();"
+                            matTooltip="click to get data"><i class="fas fa-search"></i> Get Data</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-warning" (click)="generateExcel();" matTooltip="click to export"><i
+                                class="fas fa-file-excel"></i>&nbsp;Export
+                            to Excel</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-danger" (click)="ClearData();" matTooltip="click to clear"><i
+                                class="fas fa-times"></i>&nbsp;Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table table-responsive">
+            <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th rowspan="2">SNo</th>
+                        <th rowspan="2">Employee No</th>
+                        <th rowspan="2">Employee Name</th>
+                        <th rowspan="2">Department</th>
+                        <th rowspan="2">Designation</th>
+                        <th style="text-align: center;" colspan="3">Casual Leave</th>
+                        <th style="text-align: center;" colspan="3">Sick Leave</th>
+                        <th style="text-align: center;" colspan="3">Earned Leave</th>
+                        <th style="text-align: center;" colspan="3">Total Leave</th>
+                        <th style="text-align: center;" colspan="3">Previous Year</th>
+                    </tr>
+                    <tr>
+
+                        <th>Opening</th>
+                        <th>Availed</th>
+                        <th>Closing</th>
+                        <th>Opening</th>
+                        <th>Availed</th>
+                        <th>Closing</th>
+                        <th>Opening</th>
+                        <th>Availed</th>
+                        <th>Closing</th>
+                        <th>Opening</th>
+                        <th>Availed</th>
+                        <th>Closing</th>
+                        <th>Opening</th>
+                        <th>Availed</th>
+                        <th>Closing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let lv of ReportData;let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{lv.pernr}}</td>
+                        <td>{{lv.fullName}}</td>
+                        <td>{{lv.department}}</td>
+                        <td>{{lv.designation}}</td>
+                        <td>{{lv.cl_open}}</td>
+                        <td>{{lv.cl_avail}}</td>
+                        <td>{{lv.cl_close}}</td>
+                        <td>{{lv.sl_open}}</td>
+                        <td>{{lv.sl_avail}}</td>
+                        <td>{{lv.sl_close}}</td>
+                        <td>{{lv.el_open}}</td>
+                        <td>{{lv.el_avail}}</td>
+                        <td>{{lv.el_close}}</td>
+                        <td>{{lv.tot_open}}</td>
+                        <td>{{lv.tot_availed}}</td>
+                        <td>{{lv.tot_close}}</td>
+                        <td>{{lv.prev_open}}</td>
+                        <td>{{lv.prev_availed}}</td>
+                        <td>{{lv.prev_close}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

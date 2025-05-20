@@ -1,0 +1,1740 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Vendor Master
+    <small>Creation</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Vendor Master Creation</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="box">
+    <div class="box-header my-3">
+      <div class="col-xs-6">
+        <h3 class="box-title">Vendor Master Creation</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onClickNewRequest()"><i class="fa fa-plus"
+            aria-hidden="true"></i> New Request</button>
+      </div>
+    </div>
+    <div id="dateFilterPanel">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="requestno"> Request Number</label>
+              <input [(ngModel)]="filterrequest" class="form-control" id="requestno" placeholder="Request Number"
+                name="requestno" ngControl="filterrequest" #requestnoEnt="ngModel">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="place"> Place</label>
+              <input [(ngModel)]="filterplace" class="form-control" id="place" placeholder="Place" name="place"
+                ngControl="filterplace" #placeEnt="ngModel">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="fltrstatus">Status</label>
+              <select [(ngModel)]="filterstatus" class="form-control" id="fltrstatus" name="fltrstatus"
+                ngControl="filterstatus" #fltrstatusEnt="ngModel" matTooltip="Select Status">
+                <option [ngValue]="null" disabled>--Select an Option--</option>
+                <option *ngFor="let status of statuslist" value={{status.name}}>{{status.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="fltrlocation">Location</label>
+              <select [(ngModel)]="filterlocation" class="form-control" id="fltrlocation" name="fltrlocation"
+                ngControl="filterlocation" #fltrlocationEnt="ngModel" matTooltip="Select Location">
+                <option [ngValue]="null" disabled>--Select an Option--</option>
+                <option *ngFor="let loc of locationList" value={{loc.id}}>{{loc.code}}-{{loc.name}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-3">
+            <label>From Date</label>
+            <!-- <input type="date" class="form-control" placeholder="From Date"  [(ngModel)]="ItemCodeExtensionModel.from_date"/> -->
+            <div class="form-group form-group-sm" [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+              <div class="input-group date">
+                <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dt11"
+                  [owlDateTimeTrigger]="dt11" [max]="today" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                  #fromDate="ngModel">
+                <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+              <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+              <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From
+                Date.</span>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <label>To Date</label>
+            <div class="form-group form-group-sm" [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+              <!-- <input type="date" [disabled]="from_date==null||from_date==''" class="form-control" placeholder="To Date"  [(ngModel)]="ItemCodeExtensionModel.to_date"> -->
+              <div class="input-group date">
+              <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+                [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="endDate" class="form-control"
+                [(ngModel)]="to_date" #toDate="ngModel">
+              <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+              </div>
+              <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;"></owl-date-time>
+              <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid To
+                Date.</span>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-sm-12 center-contents">
+            <div class="form-group form-group-sm">
+              <button class="btn btn-primary btn-sm mr-3" (click)="getAllEntries();"
+                [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched) || isLoading"
+                matTooltip="click to go">
+                <i class="fa" [ngClass]="{'fa-spin fa-spinner': isLoading}"></i><span *ngIf="isLoading">&nbsp;</span>Go
+              </button>
+              <button class="btn btn-info btn-sm" (click)="clearFilter();" matTooltip="click to reset">Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 mt-3">
+      <div class="row">
+        <div class="col-xs-6">
+          <label for="label">Click to Download template for Multiple Requests</label>
+          <a class="button" title="Excel" href='../assets/dist/img/VendorMasterTemplate.xlsx'
+            download="VendorMasterTemplate.xlsx"><br>
+            <button> Download</button><br>
+          </a>
+        </div>
+        <div class="col-xs-6">
+          <label> Choose the File to upload:</label><br>
+          <div class="row">
+            <div class="col-sm-6">
+              <input #myInput type="file" id="file" name="file" (change)="uploadfiles($event.target.files)" />
+
+            </div>
+            <div class="col-sm-3">
+              <input type="button" class="btn btn-primary" (click)="upload()" value="Upload" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-sm-12">
+          <div class="form-group form-group-sm">
+            <button type="button" class="btn btn-primary mr-3" (click)="bulkApprove('Create')" [disabled]="!checkedRequestList.length>0" matTooltip="Click to Submit">Approve </button>
+            <button type="button" class="btn btn-primary"  (click)="bulkApprove('Rejected')" [disabled]="!checkedRequestList.length>0" matTooltip="Click to Reject">Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="userTable" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th></th>
+            <th>Request Number</th>
+            <th>Requested Date</th>
+            <th>Vendor Name</th>
+            <th>Place</th>
+            <th>Requested By</th>
+            <th>Plant</th>
+            <th>Status</th>
+            <th>Last Approver</th>
+            <th>Pending Approver</th>
+            <th>Submit for Approval</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of VendorMasterFilter; let i = index">
+            <td>
+              <input *ngIf="item.pendingApprover == currentUser.employeeId" type="checkbox" [id]="'chkusage'+item.id"
+                [name]="'send'+item.id" [(ngModel)]="item.isSelected" (change)="isAllSelected()" #usageEnt="ngModel">
+            </td>
+            <td>{{item.requestNo}}</td>
+            <td>{{item.requestDate | date:'dd/MM/yyyy HH:mm'}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.city}}</td>
+            <td>{{item.requestedBy}}</td>
+            <td>{{getLocation(item.locationId)}}</td>
+            <td>{{item.approveStatus}}</td>
+            <td>{{item.lastApprover}}</td>
+            <td>{{item.pendingApprover}}</td>
+            <td>
+              <button
+                *ngIf="item.approveStatus =='Created'|| item.approveStatus =='Reverted to initiator' && item.createdBy==this.currentUser.employeeId"
+                type="button" [matTooltipPosition]="'after'" matTooltip="Click to Submit" class="btn btn-primary btn-xs"
+                (click)="onSubmitEntry(item)">
+                <i class="fas fa-check"></i>
+              </button>
+            </td>
+            <td>
+              <table>
+                <tr>
+                  <td *ngIf="item.approveStatus =='Created'|| item.approveStatus =='Reverted to initiator'">
+                    <button *ngIf="item.createdBy==this.currentUser.employeeId" type="button"
+                      [matTooltipPosition]="'after'" matTooltip="Click to edit details" class="btn btn-primary btn-xs"
+                      (click)="onUserActions(false,item,false,'')">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </td>
+                  <!-- &nbsp;
+                  <td>
+                    <button
+                      *ngIf="item.modifiedBy==null && item.approveStatus =='Created'|| item.approveStatus =='Reverted to initiator' && item.createdBy==this.currentUser.employeeId"
+                      type="button" [matTooltipPosition]="'after'" matTooltip="Click to edit details"
+                      class="btn btn-primary btn-xs" (click)="onUserActions(false,item,false,'')">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </td> -->
+                  &nbsp;
+                  <td *ngIf="item.approveStatus !='Created' && item.approveStatus !='Reverted to initiator'">
+                    <button *ngIf="item.pendingApprover==currentUser.fullName || item.approver1 ==userid ||  item.approver2 ==userid || 
+                      item.approver3 ==userid ||  item.approver4 ==userid " type="button"
+                      [matTooltipPosition]="'after'" matTooltip="Click to edit details" class="btn btn-primary btn-xs"
+                      (click)="onUserActions(true,item,false,'')">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </td>
+                  &nbsp;
+                  <td>
+                    <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to view details"
+                      class="btn btn-primary btn-xs" (click)="onUserActions(true,item,false,'View')">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </td>
+                  &nbsp;
+                  <td>
+                    <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to Copy Data"
+                      class="btn btn-primary btn-xs" (click)="onUserActions(false,item,false,'Copy')">
+                      <i class="fa fa-copy"></i>
+                    </button>
+                  </td>
+                  &nbsp;
+                  <td>
+                    <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to print"
+                      class="btn btn-primary btn-xs" (click)="showprintmodel(item)">
+                      <i class="fas fa-print"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <!-- <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div> -->
+  </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="searchModal" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Vendor Master Code Search
+        </h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="row">
+          <div class="col-sm-12">
+            <form #searchForm="ngForm" (keydown.enter)="$event.preventDefault()">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group form-group-sm">
+                    <label for="name">Name<span style="color:red">*</span></label>
+                    <input [(ngModel)]="vendormastermodel.name" class="form-control" id="name1" placeholder="Name"
+                      (input)="vendormastermodel.name=$event.target.value.toUpperCase()" name="name1"
+                      ngControl="vendormastermodel.name" #nameEnt="ngModel" required>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group form-group-sm">
+                    <label for="city">City<span style="color:red">*</span></label>
+                    <input [(ngModel)]="vendormastermodel.city" class="form-control" id="city1" placeholder="City"
+                      (input)="vendormastermodel.city=$event.target.value.toUpperCase()" name="city1"
+                      ngControl="vendormastermodel.city" #cityEnt="ngModel" required>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm" [ngClass]="((vendormastermodel.countryId==null || vendormastermodel.countryId=='' 
+                  || vendormastermodel.countryId==undefined)  && !notFirst)?'has-error':''">
+                    <label for="countryId">
+                      Country <span style="color:red">*</span>
+                    </label><br>
+                    <ng-select [items]="countrylist" (blur)="checkCountry();" bindLabel="land1+landx" required name="Country"
+                    bindValue="land1" [multiple]="false" [virtualScroll]="true" id="Country"
+                    ngControl="vendormastermodel.countryId" placeholder="Select Country"
+                    [(ngModel)]="vendormastermodel.countryId">
+                      <ng-option *ngFor="let mat of countrylist" value={{mat.land1}}>{{mat.land1}}-{{mat.landx}}
+                      </ng-option>
+                    </ng-select>
+                    <span class="help-block" *ngIf="(vendormastermodel.countryId==null || vendormastermodel.countryId==''
+                     || vendormastermodel.countryId==undefined) && !notFirst">
+                      Please select Country</span>
+                  </div>
+                </div>
+
+                <!-- <div class="col-sm-3">
+                  <div class="form-group form-group-sm" [ngClass]="((vendormastermodel.countryId==null || vendormastermodel.countryId=='' 
+                  || vendormastermodel.countryId==undefined)  && !notFirst)?'has-error':''">
+                    <label for="countryId">
+                      Country <span style="color:red">*</span>
+                    </label><br>
+                    <ng-select [items]="countrylist" (blur)="checkCountry();" bindLabel="land1+landx" required name="Country"
+                      bindValue="land1" [multiple]="false" [virtualScroll]="true" id="Country"
+                      ngControl="vendormastermodel.countryId" placeholder="Select Country"
+                      [(ngModel)]="vendormastermodel.countryId">
+                    </ng-select>
+                    <span class="help-block" *ngIf="(vendormastermodel.countryId==null || vendormastermodel.countryId==''
+                     || vendormastermodel.countryId==undefined) && !notFirst">
+                      Please select Country</span>
+                  </div>
+                </div> -->
+                <!-- <div class="col-sm-4">
+                  <div class="form-group form-group-sm">
+                    <label for="countryId">Country</label>
+                    <select [(ngModel)]="vendormastermodel.countryId" class="form-control" id="Country"
+                      name="Country" ngControl="vendormastermodel.countryId" #CountryEnt="ngModel"
+                      [disabled]="isEdit" matTooltip="Select Country">
+                      <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                      <option *ngFor="let mat of countrylist" value={{mat.land1}}>{{mat.land1}}-{{mat.landx}}
+                      </option>
+                    </select>
+                  </div>
+                </div> -->
+              </div>
+              &nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;
+              <div class="row">
+                <div class="col-sm-4 pull-center">
+                  <label>&nbsp;</label>
+                  <div class="form-group form-group-sm">
+                    <button *ngIf="continue" class="btn btn-primary btn-sm"
+                      (click)="onUserActions(false,vendormastermodel,false,'');" matTooltip="Click to Continue"
+                      [disabled]="!searchForm.valid" data-dismiss="modal">
+                      Continue to Create</button>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-primary btn-sm" [disabled]="!searchForm.valid" (click)="getSearchResult();"
+                      matTooltip="Click to Search">search</button>
+                  </div>
+                </div>
+
+              </div>
+
+
+              &nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;
+
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="table-responsive">
+                    <table id="userTable" class="table table-striped">
+                      <thead style="background-color: #68a7d2; color:white;">
+                        <tr>
+                          <th>Account Group</th>
+                          <th>SAP Code No</th>
+                          <th>Name</th>
+                          <th>City</th>
+                          <th>CREATED ON</th>
+                          <th>REQUESTED ON</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of vendormastersearchlist; let i = index">
+                          <td>{{accgrp(item.accountGroupId)}}</td>
+                          <td>{{item.sapCodeNo}}</td>
+                          <td>{{item.name}}</td>
+                          <td>{{item.city}}</td>
+                          <td>{{item.sapCreationDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                          <td>{{item.requestDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+
+            </form>
+          </div>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Vendor Master Form
+        </h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="row">
+          <div class="col-sm-12">
+            <form #dataForm="ngForm" (keydown.enter)="$event.preventDefault()">
+
+              <div class="box">
+                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                  <div class="col-xs-6">
+                    <h3 class="box-title">General Information</h3>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+
+                  <div class="col-sm-3" *ngIf="isEdit">
+                    <div class="form-group form-group-sm">
+                      <label for="requestdate"> Request Date</label>
+                      <input name="requestdate" id="requestdate" placeholder="Request Date" class="form-control"
+                        value="{{vendormastermodel.requestDate | date:'dd/MM/yyyy'}}" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-3" *ngIf="!isEdit">
+                    <div class="form-group form-group-sm">
+                      <label for="requestdate"> Request Date</label>
+                      <input name="requestdate" id="requestdate" placeholder="Request Date" class="form-control"
+                        value="{{requestdate | date:'dd/MM/yyyy'}}" readonly>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group"
+                      [ngClass]="((vendormastermodel.vendorCat==null || vendormastermodel.vendorCat=='' || vendormastermodel.vendorCat==undefined)  && !notFirst)?'has-error':''">
+                      <label for="vendorcatlist">
+                        Vendor Category <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="vendorcatlist" (blur)="checkVencat();" bindLabel="name" required name="vendorCat" bindValue="id"
+                        [multiple]="false" [virtualScroll]="true" placeholder="Select Vendor Category"
+                        [(ngModel)]="vendormastermodel.vendorCat">                       
+                      </ng-select>
+                      <span class="help-block"
+                        *ngIf="(vendormastermodel.vendorCat==null || vendormastermodel.vendorCat=='' || vendormastermodel.vendorCat==undefined) && !notFirst">Please
+                        Select Vendor Category
+                      </span>
+                    </div>
+                  </div> -->
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="vendorCat">Vendor Category<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.vendorCat" class="form-control" id="vendorCat"
+                        name="vendorCat" ngControl="vendormastermodel.vendorCat" #vendorCatEnt="ngModel"
+                        matTooltip="select accountGroup" [disabled]="isEdit" required>
+                        <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                        <option value="RM">RM - Raw Material Vendor</option>
+                        <option value="PM">PM - Packing Material Vendor</option>
+                        <option value="GM">GM - General Material & Service Vendor </option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group"
+                      [ngClass]="((vendormastermodel.vendorSubCat==null || vendormastermodel.vendorSubCat=='' || vendormastermodel.vendorSubCat==undefined)  && !notFirst)?'has-error':''">
+                      <label for="vendorSubCat">
+                        Vendor Sub-Category <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="vendorsubcatlist" (blur)="checkvensubcat();" bindLabel="name" required name="vendorSubCat"
+                        bindValue="id" [multiple]="false" [virtualScroll]="true" placeholder="Select Vendor Sub-Category "
+                        [(ngModel)]="vendormastermodel.vendorSubCat">
+                      </ng-select>
+                      <span class="help-block"
+                        *ngIf="(vendormastermodel.vendorSubCat==null || vendormastermodel.vendorSubCat=='' || vendormastermodel.vendorSubCat==undefined) && !notFirst">Please
+                        Select Vendor Sub-Category
+                      </span>
+                    </div>
+                  </div> -->
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="vendorSubCat">Vendor Sub-Category<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.vendorSubCat"
+                        (change)='getApproversList(vendormastermodel)' class="form-control" id="vendorSubCat"
+                        name="vendorSubCat" ngControl="vendormastermodel.vendorSubCat" #vendorSubCatEnt="ngModel"
+                        [disabled]="isEdit" matTooltip="Select vendorSubCat" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngIf="vendormastermodel.vendorCat=='RM'" value="1">1 - RM Supplier</option>
+                        <option *ngIf="vendormastermodel.vendorCat=='RM'" value="2">2 - RM Manufacture</option>
+                        <option *ngIf="vendormastermodel.vendorCat=='RM'" value="3">3 - RM Supplier & Manufacturer</option>
+                        <option *ngIf="vendormastermodel.vendorCat=='PM'" value="4">4 - PM Supplier</option>
+                        <option *ngIf="vendormastermodel.vendorCat=='PM'" value="5">5 - PM Manufacture</option>
+                        <option *ngIf="vendormastermodel.vendorCat=='PM'" value="6">6 - PM Supplier & Manufacturer</option>
+                        <option *ngIf="vendormastermodel.vendorCat=='GM'" value="7">7 - Supplier</option>
+                        <option *ngIf="vendormastermodel.vendorCat=='GM'" value="8">8 - Service</option>
+                      </select>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="viewType">View Type</label>
+                      <div class="row">
+                        <mat-radio-group aria-label="Select option?" id="viewType" name="viewType"
+                          [(ngModel)]="vendormastermodel.viewType" [disabled]="isEdit"
+                          ngControl="vendormastermodel.viewType" #viewTypeEnt="ngModel">
+                          <mat-radio-button value='P'>Purchase View</mat-radio-button>
+                          &nbsp;&nbsp;&nbsp;
+                          <mat-radio-button value='A'>Account View</mat-radio-button>
+                        </mat-radio-group>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group"
+                      [ngClass]="((vendormastermodel.accountGroupId==null || vendormastermodel.accountGroupId=='' || vendormastermodel.accountGroupId==undefined)  && !notFirst)?'has-error':''">
+                      <label for="accountGroupId">
+                        Account Group <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="AccGroupList" (blur)="checkAccGp();" bindLabel="accountGroupName" required name="accountGroupId"
+                        bindValue="accountGroupId" [multiple]="false" [virtualScroll]="true" placeholder="Select Account Group "
+                        [(ngModel)]="vendormastermodel.accountGroupId" [disabled]="isEdit">
+                        <ng-option *ngFor="let loc of AccGroupList" value={{loc.accountGroupId}}>
+                          {{loc.accountGroupId}}-{{loc.accountGroupName}}
+                        </ng-option>
+                      </ng-select>
+                      <span class="help-block"
+                        *ngIf="(vendormastermodel.accountGroupId==null || vendormastermodel.accountGroupId=='' || vendormastermodel.accountGroupId==undefined) && !notFirst">Please
+                        Select Account Group
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="accountGroupId">Account Group<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.accountGroupId" class="form-control" id="accountGroupId"
+                        name="accountGroupId" ngControl="vendormastermodel.accountGroupId" #accountGroupIdEnt="ngModel"
+                        matTooltip="select accountGroup" [disabled]="isEdit" required>
+                        <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                        <option *ngFor="let loc of AccGroupList" value={{loc.accountGroupId}}>
+                          {{loc.accountGroupId}}-{{loc.accountGroupName}}
+                        </option>
+                      </select>
+
+                    </div>
+                  </div> -->
+                  <div class="col-sm-3">
+                    <div class="form-group"
+                      [ngClass]="((vendormastermodel.typeOfVendor==null || vendormastermodel.typeOfVendor=='' || vendormastermodel.typeOfVendor==undefined)  && !notFirst)?'has-error':''">
+                      <label for="typeOfVendor">
+                        Vendor Type <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="VendorTypeList" (blur)="checkVenTyp();" bindLabel="vDescription" required name="typeOfVendor"
+                        bindValue="vCode" [multiple]="false" [virtualScroll]="true" placeholder="Select Vendor Type"
+                        [(ngModel)]="vendormastermodel.typeOfVendor" [disabled]="isEdit">
+                        <ng-option *ngFor="let mat of VendorTypeList" value={{mat.vCode}}>
+                          {{mat.vCode}}-{{mat.vDescription}}
+                        </ng-option>
+                      </ng-select>
+                      <span class="help-block"
+                        *ngIf="(vendormastermodel.typeOfVendor==null || vendormastermodel.typeOfVendor=='' || vendormastermodel.typeOfVendor==undefined) && !notFirst">Please
+                        Select Vendor Type
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="typeOfVendor">Vendor Type<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.typeOfVendor" class="form-control" id="typeOfVendor"
+                        name="typeOfVendor" ngControl="vendormastermodel.typeOfVendor" #typeOfVendorEnt="ngModel"
+                        [disabled]="isEdit" matTooltip="Select typeOfVendor" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngFor="let mat of VendorTypeList" value={{mat.vCode}}>
+                          {{mat.vCode}}-{{mat.vDescription}}</option>
+                      </select>
+
+                    </div>
+                  </div> -->
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group"
+                      [ngClass]="((vendormastermodel.title==null || vendormastermodel.title=='' || vendormastermodel.title==undefined)  && !notFirst)?'has-error':''">
+                      <label for="title">
+                        Vendor Type <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="VendorTypeList" (blur)="checkVenTyp();" bindLabel="title" required name="typeOfVendor"
+                        bindValue="title" [multiple]="false" [virtualScroll]="true" placeholder="Select Vendor Type"
+                        [(ngModel)]="vendormastermodel.typeOfVendor">
+                      </ng-select>
+                      <span class="help-block"
+                        *ngIf="(vendormastermodel.title==null || vendormastermodel.title=='' || vendormastermodel.title==undefined) && !notFirst">Please
+                        Select Vendor Type
+                      </span>
+                    </div>
+                  </div> -->
+                  <div class="col-sm-2">
+                    <div class="form-group form-group-sm">
+                      <label for="title">Title<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.title" class="form-control" id="title" name="title"
+                        ngControl="vendormastermodel.title" #titleEnt="ngModel" [disabled]="isEdit"
+                        matTooltip="Select title" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option value='MR'>MR</option>
+                        <option value='MRS'>MRS</option>
+                        <option value='DR'>DR</option>
+                        <option value='Company'>Company</option>
+                      </select>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group form-group-sm">
+                      <label for="name">Name<span style="color:red">*</span></label>
+                      <input [(ngModel)]="vendormastermodel.name" class="form-control" id="name" placeholder="Name"
+                        name="name" (input)="vendormastermodel.name=$event.target.value.toUpperCase()"
+                        ngControl="vendormastermodel.name" #nameEnt="ngModel" [disabled]="isEdit" required>
+                    </div>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group form-group-sm">
+                      <label for="address1">Address1<span style="color:red">*</span></label>
+                      <input [(ngModel)]="vendormastermodel.address1" class="form-control" id="address1"
+                        placeholder="Address" name="address1" [disabled]="isEdit" ngControl="vendormastermodel.address1"
+                        #address1Ent="ngModel" required>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group form-group-sm">
+                      <label for="address2">Address2</label>
+                      <input [(ngModel)]="vendormastermodel.address2" class="form-control" id="address2"
+                        placeholder="Address" name="address2" [disabled]="isEdit" ngControl="vendormastermodel.address2"
+                        #address2Ent="ngModel">
+                    </div>
+                  </div>
+
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group form-group-sm">
+                      <label for="address3">Address3</label>
+                      <input [(ngModel)]="vendormastermodel.address3" class="form-control" id="address3"
+                        placeholder="Address" name="address3" [disabled]="isEdit" ngControl="vendormastermodel.address3"
+                        #address3Ent="ngModel">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group form-group-sm">
+                      <label for="address4">Address4</label>
+                      <input [(ngModel)]="vendormastermodel.address4" class="form-control" id="address4"
+                        placeholder="Address" name="address4" [disabled]="isEdit" ngControl="vendormastermodel.address4"
+                        #address4Ent="ngModel">
+                    </div>
+                  </div>
+
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="city">City<span style="color:red">*</span></label>
+                      <input [(ngModel)]="vendormastermodel.city" class="form-control" id="city" placeholder="City"
+                        name="city" (input)="vendormastermodel.city=$event.target.value.toUpperCase()"
+                        [disabled]="isEdit" ngControl="vendormastermodel.city" #cityEnt="ngModel" required>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="pincode">Pin Code</label>
+                      <input [(ngModel)]="vendormastermodel.pincode" class="form-control" id="pincode"
+                        placeholder="Pin Code" name="pincode" [disabled]="isEdit" ngControl="vendormastermodel.pincode"
+                        #pincodeEnt="ngModel">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm" [ngClass]="((vendormastermodel.countryId==null || vendormastermodel.countryId=='' 
+                    || vendormastermodel.countryId==undefined)  && !notFirst)?'has-error':''">
+                      <label for="countryId">
+                        Country <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="countrylist" (blur)="checkCountry();" bindLabel="landx" required name="Country"
+                        bindValue="land1" [multiple]="false" [virtualScroll]="true" id="Country" (change)="getstatelist(vendormastermodel.countryId)"
+                        ngControl="vendormastermodel.countryId" placeholder="Select Country"
+                        [(ngModel)]="vendormastermodel.countryId" [disabled]="isEdit">
+                        <ng-option *ngFor="let mat of countrylist" value={{mat.land1}}>{{mat.land1}}-{{mat.landx}}
+                        </ng-option>
+                      </ng-select>
+                      <span class="help-block" *ngIf="(vendormastermodel.countryId==null || vendormastermodel.countryId==''
+                       || vendormastermodel.countryId==undefined) && !notFirst">
+                        Please select Country</span>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="Country">Country<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.countryId" class="form-control" id="Country" name="Country"
+                        ngControl="vendormastermodel.countryId" #CountryEnt="ngModel" [disabled]="isEdit"
+                        matTooltip="Select Country" (change)="getstatelist(vendormastermodel.countryId)">
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngFor="let mat of countrylist" value={{mat.land1}}>{{mat.land1}}-{{mat.landx}}
+                        </option>
+                      </select>
+
+                    </div>
+                  </div> -->
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm"
+                     [ngClass]="((vendormastermodel.state==null || vendormastermodel.state=='' 
+                    || vendormastermodel.state==undefined)  && !notFirst)?'has-error':''">
+                      <label for="state">
+                        State <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="stateList1" (blur)="checkState();" bindLabel="bezei" required name="bezei"
+                        bindValue="id" [multiple]="false" [virtualScroll]="true" id="state"
+                        ngControl="vendormastermodel.state" placeholder="Select State"
+                        [(ngModel)]="vendormastermodel.state" [disabled]="isEdit">
+                        <ng-option *ngFor="let item of stateList1" value={{item.id}}>
+                          {{item.id}} - {{item.bezei}}
+                        </ng-option>
+                      </ng-select>
+                      <span class="help-block" *ngIf="(vendormastermodel.state==null || vendormastermodel.state==''
+                       || vendormastermodel.state==undefined) && !notFirst">
+                        Please select state</span>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="state">State<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.state" class="form-control" id="state" name="state"
+                        ngControl="vendormastermodel.state" #stateEnt="ngModel" [disabled]="isEdit"
+                        matTooltip="Select state" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngFor="let item of stateList1" value={{item.id}}>
+                          {{item.bezei}}</option>
+                      </select>
+                    </div>
+                  </div> -->
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="landlineNo">LandLine</label>
+                      <input [(ngModel)]="vendormastermodel.landlineNo" class="form-control" id="landlineNo"
+                        placeholder="LandLine" name="landlineNo" [disabled]="isEdit"
+                        ngControl="vendormastermodel.landlineNo" #landlineNoEnt="ngModel">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="mobileNo">Mobile <span style="color: red;">*</span> </label>
+                      <input [(ngModel)]="vendormastermodel.mobileNo" class="form-control" id="mobileNo"
+                        placeholder="Mobile" name="mobileNo" ngControl="vendormastermodel.mobileNo"
+                        #mobileNoEnt="ngModel" [disabled]="isEdit" required>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="emailId">Email<span style="color: red;">*</span></label>
+                      <input [(ngModel)]="vendormastermodel.emailId" class="form-control" id="emailId"
+                        placeholder="Email ID" name="emailId" [disabled]="isEdit" ngControl="vendormastermodel.emailId"
+                        #emailIdEnt="ngModel" required>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="faxNo">Fax</label>
+                      <input [(ngModel)]="vendormastermodel.faxNo" class="form-control" id="faxNo" placeholder="Fax No"
+                        name="faxNo" ngControl="vendormastermodel.faxNo" #faxNoEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+
+
+              </div>
+
+              &nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;
+              <div class="box">
+                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                  <div class="col-xs-6">
+                    <h3 class="box-title">Tax Details</h3>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group" 
+                      [ngClass]="((vendormastermodel.currencyId==null || vendormastermodel.currencyId=='' || vendormastermodel.currencyId==undefined)  && !notFirst)?'has-error':''">
+                      <label for="currencyId">
+                        Currency <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="currencyList" (blur)="checkCurrency();" bindLabel="isocd" required
+                        name="currencyId" bindValue="waers" [multiple]="false" [virtualScroll]="true"
+                        placeholder="Select Currency" [(ngModel)]="vendormastermodel.currencyId" [disabled]="isEdit">
+                        <ng-option *ngFor="let mat of currencyList" value={{mat.waers}}>
+                          {{mat.waers}}-{{mat.isocd}}
+                        </ng-option>
+                      </ng-select>
+                      <span class="help-block"
+                        *ngIf="(vendormastermodel.currencyId==null || vendormastermodel.currencyId=='' || vendormastermodel.currencyId==undefined) && !notFirst">Please
+                        Select Currency
+                      </span>
+                    </div>
+                  </div>
+                    <!-- <div class="form-group form-group-sm">
+                      <label for="currencyId">Currency<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.currencyId" class="form-control" id="currencyId"
+                        name="currencyId" ngControl="vendormastermodel.currencyId" #currencyIdEnt="ngModel"
+                        [disabled]="isEdit" matTooltip="Select currencyId" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngFor="let mat of currencyList" value={{mat.waers}}>
+                          {{mat.waers}}-{{mat.isocd}}</option>
+                      </select>
+                    </div> -->
+                    <div class="col-sm-3">
+                      <div class="form-group" 
+                        [ngClass]="((vendormastermodel.reconcilationActId==null || vendormastermodel.reconcilationActId=='' || vendormastermodel.reconcilationActId==undefined)  && !notFirst)?'has-error':''">
+                        <label for="reconcilationActId">
+                          Reconciliation A/c <span style="color:red">*</span>
+                        </label><br>
+                        <ng-select [items]="ReconciliationAccList" (blur)="checkCurrency();" bindLabel="reconciliationAccountName" required
+                          name="reconcilationActId" bindValue="reconciliationAccountId" [multiple]="false" [virtualScroll]="true"
+                          placeholder="Select Reconciliation A/c" [(ngModel)]="vendormastermodel.reconcilationActId" [disabled]="isEdit">
+                          <ng-option *ngFor="let mat of ReconciliationAccList" value={{mat.reconciliationAccountId}}>
+                            {{mat.reconciliationAccountId}}-{{mat.reconciliationAccountName}}
+                          </ng-option>
+                        </ng-select>
+                        <span class="help-block"
+                          *ngIf="(vendormastermodel.reconcilationActId==null || vendormastermodel.reconcilationActId=='' || vendormastermodel.reconcilationActId==undefined) && !notFirst">Please
+                          Select Reconciliation A/c
+                        </span>
+                      </div>
+                    </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="reconcilationActId">Reconciliation A/c.<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.reconcilationActId" class="form-control"
+                        id="reconcilationActId" name="reconcilationActId"
+                        ngControl="vendormastermodel.reconcilationActId" #reconcilationActIdEnt="ngModel"
+                        [disabled]="isEdit" matTooltip="Select reconcilationActId" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngFor="let mat of ReconciliationAccList" value={{mat.reconciliationAccountId}}>
+                          {{mat.reconciliationAccountId}}-{{mat.reconciliationAccountName}}</option>
+                      </select>
+                    </div>
+                  </div> -->
+                  <div class="col-sm-3">
+                    <div class="form-group" 
+                      [ngClass]="((vendormastermodel.paymentTermId==null || vendormastermodel.paymentTermId=='' || vendormastermodel.paymentTermId==undefined)  && !notFirst)?'has-error':''">
+                      <label for="paymentTermId">
+                        Payment Term <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="PaymentTermList" (blur)="checkPaymentTerm();" bindLabel="paymentTermName" required
+                        name="paymentTermId" bindValue="paymentTermId" [multiple]="false" [virtualScroll]="true"
+                        placeholder="Select Payment Term" [(ngModel)]="vendormastermodel.paymentTermId" [disabled]="isEdit">
+                        <ng-option *ngFor="let id of PaymentTermList" value={{id.paymentTermId}}>
+                          {{id.paymentTermId}}-{{id.paymentTermName}}
+                        </ng-option>
+                      </ng-select>
+                      <span class="help-block"
+                        *ngIf="(vendormastermodel.paymentTermId==null || vendormastermodel.paymentTermId=='' || vendormastermodel.paymentTermId==undefined) && !notFirst">Please
+                        Select Payment Term
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="paymentTermId">Payment Term<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.paymentTermId" class="form-control" id="paymentTermId"
+                        name="paymentTermId" ngControl="vendormastermodel.paymentTermId" #paymentTermIdEnt="ngModel"
+                        [disabled]="isEdit" matTooltip="Select paymentTermId" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngFor="let id of PaymentTermList" value={{id.paymentTermId}}>
+                          {{id.paymentTermId}}-{{id.paymentTermName}}</option>
+                      </select>
+                    </div>
+                  </div> -->
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="tdseligible">Is Eligible for TDS<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.isEligibleForTds" class="form-control" id="tdseligible"
+                        name="tdseligible" ngControl="vendormastermodel.isEligibleForTds" #tdseligibleEnt="ngModel"
+                        [disabled]="isEdit" matTooltip="Select tdseligible" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option value=true>Yes</option>
+                        <option value=false>NO</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group" 
+                      [ngClass]="((vendormastermodel.tdsCode==null || vendormastermodel.tdsCode=='' || vendormastermodel.tdsCode==undefined)  && !notFirst)?'has-error':''">
+                      <label for="tdsCode">
+                        TDS Code <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="TdsSectionList" (blur)="checkTdsCode();" bindLabel="tdsSectionDesc" required
+                        name="tdsCode" bindValue="tdsSectionId" [multiple]="false" [virtualScroll]="true"
+                        placeholder="Select TDS Code" [(ngModel)]="vendormastermodel.tdsCode" [disabled]="isEdit">
+                        <ng-option *ngFor="let Group of TdsSectionList" value={{Group.tdsSectionId}}>
+                          {{Group.tdsSectionId}} - {{Group.tdsSectionDesc}}
+                        </ng-option>
+                      </ng-select>
+                      <span class="help-block"
+                        *ngIf="(vendormastermodel.tdsCode==null || vendormastermodel.tdsCode=='' || vendormastermodel.tdsCode==undefined) && !notFirst">Please
+                        Select TDS Code
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="tdsCode">TDS Code<span style="color:red"
+                          *ngIf="vendormastermodel.isEligibleForTds ==true">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.tdsCode" class="form-control" id="tdsCode" name="tdsCode"
+                        ngControl="vendormastermodel.tdsCode" #tdsCodeEnt="ngModel" [disabled]="isEdit"
+                        matTooltip="Select tdsCode" [required]="vendormastermodel.isEligibleForTds ==true">
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngFor="let Group of TdsSectionList" value={{Group.tdsSectionId}}>
+                          {{Group.tdsSectionId}}-{{Group.tdsSectionDesc}}</option>
+                      </select>
+                    </div>
+                  </div> -->
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="gstinNumber">GSTIN Number<span style="color:red">*</span></label>
+                      <input [(ngModel)]="vendormastermodel.gstinNumber" class="form-control" id="gstinNumber"
+                        placeholder="GSTIN Number" name="gstinNumber" [disabled]="isEdit"
+                        ngControl="vendormastermodel.gstinNumber" #gstinNumberEnt="ngModel" required>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="lstNo">LST No</label>
+                      <input [(ngModel)]="vendormastermodel.lstNo" class="form-control" id="lstNo" placeholder="LST No"
+                        name="lstNo" ngControl="vendormastermodel.lstNo" #lstNoEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="tinNo">TIN No</label>
+                      <input [(ngModel)]="vendormastermodel.tinNo" class="form-control" id="tinNo" placeholder="TIN No"
+                        name="tinNo" ngControl="vendormastermodel.tinNo" #tinNoEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="cstNo">CST No</label>
+                      <input [(ngModel)]="vendormastermodel.cstNo" class="form-control" id="cstNo" placeholder="CST No"
+                        name="cstNo" ngControl="vendormastermodel.cstNo" #cstNoEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="panNo">PAN No</label>
+                      <input [(ngModel)]="vendormastermodel.panNo" class="form-control" id="panNo" placeholder="PAN No"
+                        name="panNo" ngControl="vendormastermodel.panNo" #panNoEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="serviceTaxRegistrationNo">Service Tax Reg. No</label>
+                      <input [(ngModel)]="vendormastermodel.serviceTaxRegistrationNo" class="form-control"
+                        id="serviceTaxRegistrationNo" placeholder="Service Tax Reg. No" name="serviceTaxRegistrationNo"
+                        ngControl="vendormastermodel.serviceTaxRegistrationNo" #serviceTaxRegistrationNoEnt="ngModel"
+                        [disabled]="isEdit">
+                    </div>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="isRegdExciseVendor">Is Reg.Excise Vendor<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.isRegdExciseVendor" class="form-control"
+                        id="isRegdExciseVendor" name="isRegdExciseVendor"
+                        ngControl="vendormastermodel.isRegdExciseVendor" #isRegdExciseVendorEnt="ngModel"
+                        [disabled]="isEdit" matTooltip="Select isRegdExciseVendor" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option value=true>Yes</option>
+                        <option value=false>NO</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="eccNo">ECC No</label>
+                      <input [(ngModel)]="vendormastermodel.eccNo" class="form-control" id="eccNo" placeholder="ECC No"
+                        name="eccNo" ngControl="vendormastermodel.eccNo" #eccNoEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="exciseRegNo">Excise Reg. No</label>
+                      <input [(ngModel)]="vendormastermodel.exciseRegNo" class="form-control" id="exciseRegNo"
+                        placeholder="Excise Reg. No" name="exciseRegNo" ngControl="vendormastermodel.exciseRegNo"
+                        #exciseRegNoEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="exciseRange">Excise Range</label>
+                      <input [(ngModel)]="vendormastermodel.exciseRange" class="form-control" id="exciseRange"
+                        placeholder="Excise Range" name="exciseRange" ngControl="vendormastermodel.exciseRange"
+                        #exciseRangeEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="exciseDivision">Excise Division</label>
+                      <input [(ngModel)]="vendormastermodel.exciseDivision" class="form-control" id="exciseDivision"
+                        placeholder="Excise Division" name="exciseDivision" ngControl="vendormastermodel.exciseDivision"
+                        #exciseDivisionEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="commissionerate">Commissionerate</label>
+                      <input [(ngModel)]="vendormastermodel.commissionerate" class="form-control" id="commissionerate"
+                        placeholder="commissionerate" name="commissionerate"
+                        ngControl="vendormastermodel.commissionerate" #commissionerateEnt="ngModel" [disabled]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group" 
+                      [ngClass]="((vendormastermodel.accountClerkId==null || vendormastermodel.accountClerkId=='' || vendormastermodel.accountClerkId==undefined)  && !notFirst)?'has-error':''">
+                      <label for="accountClerkId">
+                        Account Clerk <span style="color:red">*</span>
+                      </label><br>
+                      <ng-select [items]="AccClerckList" (blur)="checkTdsCode();" bindLabel="accClerkDesc" required
+                        name="accountClerkId" bindValue="accClerkId" [multiple]="false" [virtualScroll]="true"
+                        placeholder="Select Account Clerk" [(ngModel)]="vendormastermodel.accountClerkId" [disabled]="isEdit">
+                        <ng-option *ngFor="let mat of AccClerckList" value={{mat.accClerkId}}>
+                          {{mat.accClerkId}} - {{mat.accClerkDesc}}
+                        </ng-option>
+                      </ng-select>
+                      <span class="help-block"
+                        *ngIf="(vendormastermodel.accountClerkId==null || vendormastermodel.accountClerkId=='' || vendormastermodel.accountClerkId==undefined) && !notFirst">Please
+                        Select Account Clerk 
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="accountClerkId">Account Clerk<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.accountClerkId" class="form-control" id="accountClerkId"
+                        name="accountClerkId" ngControl="vendormastermodel.accountClerkId" #accountClerkIdEnt="ngModel"
+                        [disabled]="isEdit" matTooltip="Select accountClerkId" required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option *ngFor="let mat of AccClerckList" value={{mat.accClerkId}}>
+                          {{mat.accClerkId}}-{{mat.accClerkDesc}}</option>
+                      </select>
+                    </div>
+                  </div> -->
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="isApprovedVendor">Is Approved Vendor<span style="color:red">*</span></label>
+                      <select [(ngModel)]="vendormastermodel.isApprovedVendor" class="form-control"
+                        id="isApprovedVendor" name="isApprovedVendor" ngControl="vendormastermodel.isApprovedVendor"
+                        #isApprovedVendorEnt="ngModel" [disabled]="isEdit" matTooltip="Select isApprovedVendor"
+                        required>
+                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                        <option value=true>Yes</option>
+                        <option value=false>NO</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row" *ngIf="isEdit && !view ">
+                  <div class="col-sm-12">
+                    <div class="form-group form-group-sm"
+                      [ngClass]="(commentsEnt.touched && !commentsEnt.valid)?'has-error':''">
+                      <label for="Customer">Comments<span style="color:red">*</span></label>
+                      <textarea [(ngModel)]="comments" class="form-control" placeholder="comments" id="comments"
+                        name="comments" ngControl="comments" [readonly]=view matTooltip="Enter Comments"
+                        #commentsEnt="ngModel" type="text" required></textarea>
+                      <span class="help-block" *ngIf="!commentsEnt.valid && commentsEnt.touched">Please Enter
+                        comments.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              &nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;
+              <div class="box" *ngIf="Creator && isEdit">
+                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                  <div class="col-xs-6">
+                    <h3 class="box-title">Material Code Details</h3>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="sapCodeExists">SAP Code Exists<span style="color:red">*</span></label>
+                      <div class="row">
+                        <mat-radio-group aria-label="Select option?" id="sapCodeExists" name="sapCodeExists"
+                          [(ngModel)]="vendormastermodel.sapCodeExists"
+                          [disabled]="vendormastermodel.createdBy==this.currentUser.employeeId || view"
+                          ngControl="vendormastermodel.sapCodeExists" #sapCodeExistsEnt="ngModel" required>
+                          <mat-radio-button value='Y'>Yes</mat-radio-button>
+                          &nbsp;&nbsp;&nbsp;
+                          <mat-radio-button value='N'>No</mat-radio-button>
+                        </mat-radio-group>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="sapCodeNo">SAP Code No<span style="color:red"
+                          *ngIf="vendormastermodel.sapCodeExists!=1">*</span></label>
+                      <input [(ngModel)]="vendormastermodel.sapCodeNo" class="form-control" placeholder="sapCodeNo"
+                        id="sapCodeNo" name="sapCodeNo" ngControl="vendormastermodel.sapCodeNo"
+                        (input)="vendormastermodel.sapCodeNo=$event.target.value.toUpperCase()" #sapCodeNoEnt="ngModel"
+                        [readonly]="vendormastermodel.createdBy==this.currentUser.employeeId || view"
+                        matTooltip="Enter SAP Code No" type="text">
+                      <span class="help-block" *ngIf="!sapCodeNoEnt.valid && sapCodeNoEnt.touched">Please Enter
+                        sap Code</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="sapCreationDate">Code Creation Date</label>
+                      <input name="sapCreationDate" id="sapCreationDate" placeholder="sapCreationDate Date"
+                        class="form-control" value="{{vendormastermodel.sapCreationDate | date:'dd/MM/yyyy  HH:mm'}}"
+                        disabled>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="sapCreatedBy">Code Created By</label>
+                      <input [(ngModel)]="vendormastermodel.sapCreatedBy" class="form-control"
+                        placeholder="sapCreatedBy" id="sapCreatedBy" name="sapCreatedBy"
+                        ngControl="vendormastermodel.sapCreatedBy" matTooltip="Enter sapCreatedBy"
+                        #sapCreatedByEnt="ngModel" type="text" disabled>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              &nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;
+              <div class="box">
+                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                  <div class="col-xs-6">
+                    <h3 class="box-title">Attachments</h3>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row" *ngIf="!isEdit">
+                  <div class="col-sm-4">
+                    <input #myInput type="file" accept=".doc,.pdf" id="file"
+                      (change)="handleFileInput($event.target.files)" multiple>
+                  </div>
+                  <div class="col-sm-3">
+                    <span class="text-red pull-left" *ngIf="errMsg1.length>0"><i
+                        class="fa fa-warning"></i>{{errMsg1}}</span>
+                  </div>
+                  <div class="col-sm-4">
+                    <span class="text-red pull-left"><i class="fa fa-warning"></i>
+                      NOTE:Maximum Upto 2Mb Can Be Uploaded</span>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row" *ngFor="let attach of fileslist">
+                  <div class="col-sm-4">
+                    <label for="attachments">{{attach}}</label>
+                  </div>
+                  <div class="col-sm-4" *ngIf="!isEdit && attach!= null">
+                    <button title="Remove Files" (click)="removefile(attach);" matTooltip="Click to delete"
+                      class="btn btn-secondary btn-sm">
+                      <i class="fa fa-trash"></i></button>
+                  </div>
+
+                </div>
+                <div class="row" *ngFor="let attach of attachments">
+                  <div class="col-sm-4">
+                    <label for="attachments"></label><a (click)="downloadFile(vendormastermodel.requestNo,attach);"
+                      style="cursor: pointer;text-decoration: underline; color: #68a7d2;" [matTooltipPosition]="'below'"
+                      matTooltip="Click to download the file">{{attach}}</a>
+                  </div>
+                  <div class="col-sm-4" *ngIf="!isEdit && attach!= null">
+                    <button title="Remove Files" (click)="deletefile(vendormastermodel,attach);"
+                      matTooltip="Click to delete" class="btn btn-secondary btn-sm">
+                      <i class="fa fa-trash"></i></button>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- <div class="box" *ngIf="isEdit">
+                  <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                    <div class="col-xs-6">
+                    <h3 class="box-title">Attachments</h3>
+                    </div>
+                  </div>
+                  &nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;
+                
+                </div> -->
+              &nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;
+              <div class="box">
+                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                  <div class="col-xs-6">
+                    <h3 class="box-title">Approvers List</h3>
+                  </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row" *ngIf='!isEdit'>
+                  <div class="col-sm-12">
+                    <div class="table">
+                      <table id="approversTable" class="table table-striped">
+                        <thead style="background-color: #68a7d2; color:white;">
+                          <tr>
+                            <th>Priority</th>
+                            <th>Location</th>
+                            <th>Employee ID</th>
+                            <th>ApproverName</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let user of Approverslist; let i = index">
+                            <td>{{user.priority}}</td>
+                            <td>{{getloc(user)}}</td>
+                            <td>{{user.approverId}}</td>
+                            <td>{{user.approverName}}</td>
+                            <td>{{user.role}}</td>
+                            <td>{{user.department}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" *ngIf='isEdit'>
+                  <div class="col-sm-12">
+                    <div class="table">
+                      <table id="approversTable" class="table table-striped">
+                        <thead style="background-color: #68a7d2; color:white;">
+                          <tr>
+                            <th>Priority</th>
+                            <th *ngIf="!isEdit">Location</th>
+                            <th>Employee ID</th>
+                            <th>ApproverName</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th *ngIf="isEdit">Status</th>
+                            <th *ngIf="isEdit">Date</th>
+                            <th *ngIf="isEdit">Comments</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let user of transactionsHistory; let i = index">
+                            <td>{{user.approvalPriority}}</td>
+                            <td>{{user.doneBy}}</td>
+                            <td>{{user.approverName}}</td>
+                            <td>{{user.role}}</td>
+                            <td>{{user.department}}</td>
+                            <td>{{user.status}}</td>
+                            <td>{{user.doneOn |date:'dd/MM/yyyy HH:mm'}}</td>
+                            <td>{{user.comments}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <!-- <button type="button" class="btn btn-primary" (click)="oncloserequest('close')"
+          matTooltip="Click to Close the Request" *ngIf="Closure" [disabled]="comments==''">Closure</button> -->
+        <div *ngIf="!view" class="row pull-right">
+          <div  class="dropdown "> 
+          <button type="button" class="btn btn-primary" (click)="onCreate()" matTooltip="Click to Create"
+            [disabled]="!dataForm.valid"
+            *ngIf="isEdit && Creator && !Closure && vendormastermodel.createdBy!=this.currentUser.employeeId">Create</button>
+          <button type="button" class="btn btn-primary" (click)="onreview('InProcess')" matTooltip="Click to Submit"
+            [disabled]="!dataForm.valid" *ngIf="isEdit && Review && !Closure && !Creator">Submit</button>
+          <button type="button" class="btn btn-primary" (click)="onreview('Rejected')" matTooltip="Click to Reject"
+            *ngIf="isEdit && Review && !Closure" [disabled]="comments==''">Reject</button>
+          &nbsp;
+         
+            <a *ngIf="isEdit && Review" data-toggle="dropdown" class="dropdown-toggle"
+              href="#"><span>
+                <button [disabled]="comments==''" type="button" class="btn btn-primary"
+                  matTooltip="Click to Revert">Revert</button>
+              </span>
+            </a>
+            <ul *ngIf="isEdit && Review" class="dropdown-menu">
+              <li><a *ngIf="Aprlpriority >1" (click)="onRevertRequest('ReverttoLastApprover')">Previous Approver</a>
+              </li>
+              <li><a (click)="onRevertRequest('ReverttoInitiator')">Initiator</a></li>
+            </ul>
+          </div>
+          &nbsp;
+          <button type="button" class="btn btn-primary" (click)="onSaveEntry('Save')" matTooltip="Click to Save"
+            [disabled]="!dataForm.valid" *ngIf="!isEdit && vendormastermodel.approveStatus==null">Save</button>
+          <button type="button" class="btn btn-primary" (click)="onSaveEntry('Submit')"
+            matTooltip="Click to Save & Submit" [disabled]="!dataForm.valid"
+            *ngIf="!isEdit && vendormastermodel.approveStatus==null">Save & Submit</button>
+          <button type="button" class="btn btn-primary" (click)="onSubmitEntry(vendormastermodel)"
+            matTooltip="Click to Save & Submit" [disabled]="!dataForm.valid" *ngIf="!isEdit && vendormastermodel.approveStatus=='Created' || vendormastermodel.approveStatus =='Reverted to initiator'
+     ">Save & Submit</button>
+          <button type="button" class="btn btn-primary" (click)="OnClickback()" data-dismiss="modal" *ngIf="!isEdit"
+            [disabled]="isLoadingPop" matTooltip="Click to Go Back">Back</button>
+          <button type="button" class="btn btn-primary" (click)="resetForm()" *ngIf="!isEdit"
+            matTooltip="Click to Clear">Clear</button>
+          <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+            data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+        </div>
+        <div *ngIf="view" class="row pull-right">
+          <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+            data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>
+
+<div class="modal fade" id="printModal" role="dialog" aria-labelledby="printModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Vendor Master Form
+        </h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="container">
+          <div class="row">
+            <table class="table table-bordered table-striped" style="align-self: auto;; ">
+              <tr>
+                <td>
+                  <div><img src="../../assets/dist/img/micrologo.png"></div>
+                </td>
+                <td colspan="2" style="align-items: center;">
+                  <h3 class="pull-center">Vendor Master Request Form</h3>
+                  <h3 class="pull-center">{{locationName}}</h3>
+                </td>
+              </tr>
+            </table>
+            <!-- <div class="col-sm-12">
+              <div class="pull-left"><img src="../../assets/dist/img/micrologo.png"></div>
+              <div class="col-sm-2">
+                <label >&nbsp;</label><br>
+                <label >&nbsp;</label><br>                
+              </div> 
+              <div class="col-sm-6">
+                <h3 >Vendor Master Request Form</h3>
+                <h3>{{locationName}}</h3>
+              </div>         
+            </div> -->
+          </div>
+          <hr>
+          <div class="row" id="print-section">
+            <div class="col-sm-12">
+              <form #dataForm1="ngForm" (keydown.enter)="$event.preventDefault()">
+                <table class="table table-bordered table-striped" style="align-self: auto;; ">
+                  <tr>
+                    <td style="width: 35%;">
+                      <label><strong>Request Date:</strong></label>{{vendormastermodel.requestDate | date:'dd/MM/yyyy'}}
+                    </td>
+                    <td style="width: 30%;">
+                      <label><strong>Account Group</strong>:</label> {{vendormastermodel.accountGroupId}}
+                    </td>
+                    <td style="width: 35%;">
+                      <label><strong>View Type</strong>: </label>{{vendormastermodel.viewType =='P'?'Purchase
+                      View':'Account View'}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>Vendor Category:</strong></label>{{vendormastermodel.vendorCat}}
+                    </td>
+                    <td>
+                      <label><strong>Vendor Sub-Category</strong>:</label> {{vendormastermodel.vendorSubCat}}
+                    </td>
+                    <td>
+                      <label><strong>Request No</strong>:</label> {{vendormastermodel.requestNo}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>Title</strong>:</label>{{vendormastermodel.title}}
+                    </td>
+                    <td colspan="2">
+                      <label><strong>Name</strong>:</label>{{vendormastermodel.name}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>Vendor Type</strong>:</label> {{vendormastermodel.typeOfVendor}}
+                    </td>
+                    <td colspan="2">
+                      <label><strong>Address1</strong>:</label>{{vendormastermodel.address1}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <label><strong>Address2</strong>:</label>{{vendormastermodel.address2}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <label><strong>Address3</strong>:</label>{{vendormastermodel.address3}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <label><strong>Address4</strong>:</label>{{vendormastermodel.address4}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>City</strong>:</label>{{vendormastermodel.city}}
+                    </td>
+                    <td>
+                      <label><strong>Pin Code</strong>: {{vendormastermodel.pincode}}</label>
+                    </td>
+                    <td>
+                      <label><strong>Country</strong>: {{vendormastermodel.countryId}}</label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>State</strong>: </label>{{vendormastermodel.state}}
+                    </td>
+                    <td>
+                      <label><strong>LandLine</strong>:</label>{{vendormastermodel.landlineNo}}
+                    </td>
+                    <td>
+                      <label><strong>Mobile</strong>:</label> {{vendormastermodel.mobileNo}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>Fax</strong>:</label> {{vendormastermodel.faxNo}}
+                    </td>
+                    <td colspan="2">
+                      <label><strong>Email Id</strong>:</label>{{vendormastermodel.emailId}}
+                    </td>
+                  </tr>
+
+                </table>
+                <table class="table table-bordered table-striped" style="align-self: auto;; ">
+                  <tr>
+                    <td colspan="3" class="align: center" style="text-align: center;"><Strong>Tax details</Strong></td>
+                  </tr>
+                  <tr>
+                    <td style="width: 35%;">
+                      <label><strong>Currency:</strong></label>{{vendormastermodel.currencyId}}
+                    </td>
+                    <td style="width: 30%;">
+                      <label><strong>Reconciliation A/c.</strong>:</label> {{vendormastermodel.reconcilationActId}}
+                    </td>
+                    <td style="width: 35%;">
+                      <label><strong>Payment Term</strong>: </label>{{vendormastermodel.paymentTermId}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>Is Eligible for TDS:</strong></label>{{vendormastermodel.isEligibleForTds==true
+                      ?'Yes':'No'}}
+                    </td>
+                    <td>
+                      <label><strong>TDS Code:</strong>:</label> {{vendormastermodel.tdsCode}}
+                    </td>
+                    <td>
+                      <label><strong>GSTIN Number</strong>: </label>{{vendormastermodel.gstinNumber}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>LST No:</strong>:</label>{{vendormastermodel.lstNo}}
+                    </td>
+                    <td>
+                      <label><strong>TIN No:</strong></label>{{vendormastermodel.tinNo}}
+                    </td>
+                    <td>
+                      <label><strong>CST No:</strong>:</label>{{vendormastermodel.cstNo}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>PAN No</strong>:</label>{{vendormastermodel.panNo}}
+                    </td>
+                    <td>
+                      <label><strong>Service Tax Reg No.</strong>:</label>
+                      {{vendormastermodel.serviceTaxRegistrationNo}}
+                    </td>
+                    <td>
+                      <label><strong>Is Reg.Excise Vendor</strong>:</label> {{vendormastermodel.isRegdExciseVendor==true
+                      ?'Yes':'No'}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>ECC No</strong>:</label> {{vendormastermodel.eccNo}}
+                    </td>
+                    <td>
+                      <label><strong>Excise Reg. No</strong>:</label>{{vendormastermodel.exciseRegNo}}
+                    </td>
+                    <td>
+                      <label><strong>Excise Range</strong>:</label> {{vendormastermodel.exciseRange}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>Excise Division</strong>: </label>{{vendormastermodel.exciseDivision}}
+                    </td>
+                    <td>
+                      <label><strong>Commissionerate</strong>:</label>{{vendormastermodel.commissionerate}}
+                    </td>
+                    <td>
+                      <label><strong>Account Clerk</strong>:</label>{{vendormastermodel.accountClerkId}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <label><strong>Is Approved Vendor</strong>:</label> {{vendormastermodel.isApprovedVendor==true
+                      ?'Yes':'No'}}
+                    </td>
+
+                  </tr>
+                </table>
+                <table class="table table-bordered table-striped" style="align-self: auto;; ">
+                  <tr>
+                    <td colspan="2">
+                      <label style="align-items: center;"><strong>Material Code Details</strong></label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 50%;">
+                      <label><strong>SAP Code Exists</strong>:</label>{{vendormastermodel.sapCodeExists==true
+                      ?'Yes':'No'}}
+                    </td>
+                    <td style="width: 50%;">
+                      <label><strong>SAP Code No</strong>:</label>{{vendormastermodel.sapCodeNo}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label><strong>CodeCreation Date</strong> :</label>{{vendormastermodel.sapCreationDate |
+                      date:'dd/MM/yyyy HH:mm'}}
+                    </td>
+                    <td>
+                      <label><strong>Code Created By</strong> :</label>{{vendormastermodel.sapCreatedBy}}
+                    </td>
+                  </tr>
+                </table>
+                <table class="table table-bordered table-striped" style="align-self: auto;; ">
+                  <tr style="align-items: center;">
+                    <td style="align-items: center;">
+                      <label style="align-items: center;"><strong>Attachments</strong></label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 100%;">
+                      <label>{{vendormastermodel.attachments}}</label>
+                    </td>
+                  </tr>
+                </table>
+                <table class="table table-bordered table-striped" style="align-self: auto;; ">
+                  <tr style="align-items: center;">
+                    <td colspan="3" style="align-items: center;">
+                      <label style="align-items: center;"><strong>Approvers List</strong></label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <div class="table">
+                        <table id="approversTable" class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th>Priority</th>
+                              <th>Employee ID</th>
+                              <th>ApproverName</th>
+                              <th>Role</th>
+                              <th>Department</th>
+                              <th>Status</th>
+                              <th>Date</th>
+                              <th>Comments</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let user of transactionsHistory; let i = index">
+                              <td>{{user.approvalPriority}}</td>
+                              <td>{{user.doneBy}}</td>
+                              <td>{{user.approverName}}</td>
+                              <td>{{user.role}}</td>
+                              <td>{{user.department}}</td>
+                              <td>{{user.status}}</td>
+                              <td>{{user.doneOn |date:'dd/MM/yyyy HH:mm'}}</td>
+                              <td>{{user.comments}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </form>
+            </div>
+            <div class="overlay" *ngIf="isLoadingPop">
+              <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary" (click)="downloadPdf(vendormastermodel)" [disabled]="isLoadingPop"
+          matTooltip="Click to Print">Print</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>
+
+<div class="modal fade" id="printReasonModal" role="dialog" aria-labelledby="printReasonModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Vendor Master Request Form
+        </h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="row">
+          <div class="col-sm-12">
+            <form #ReasonForm="ngForm" (keydown.enter)="$event.preventDefault()">
+              <div class="row">
+
+                <div class="col-sm-12">
+                  <div class="form-group form-group-sm">
+                    <label for="preason">Reason for printing <span style="color: red;">*</span> </label>
+                    <input [(ngModel)]="printReason" class="form-control" id="preason" placeholder="Reason for printing"
+                      required name="preason" ngControl="printReason" #preasonEnt="ngModel">
+                  </div>
+                </div>
+
+
+              </div>
+
+            </form>
+          </div>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button class="btn btn-primary btn-sm" (click)="onUserActions(true,printModel,true,'View')"
+          matTooltip="Click to Continue" [disabled]="!ReasonForm.valid" data-dismiss="modal">
+          Print</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>

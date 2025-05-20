@@ -1,0 +1,32 @@
+export class PermissionDetails {
+  id: number;
+  requestNo: number;
+  userId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  reason: string;
+  firstname: string;
+  approverId: string;
+  approverStatus: string;
+  forwardedEmpId: string;
+  lastApprover: string;
+  pendingApprover: string;
+  approvedDate: string;
+  rejectedDate: string;
+  comments: string;
+  inTime: string;
+  outTime: string;
+  securityId: string;
+  hrId: number;
+  securityStatus: number;
+  submitDate: string;
+  type: string;
+  cancelflag: number;
+  createdDate: string;
+  swipeType: string;
+  availMinutes: number;
+  attendanceStatus: boolean;
+  location:any;
+  permissionType:any;
+}

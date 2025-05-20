@@ -1,0 +1,578 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Offer Details
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Offer Details</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title"></h3>
+    </div>
+    <div class="panel-body">
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="offerId"> Offer ID </label>
+          <p>{{offerDetails.offerId}}</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="status"> Status </label>
+          <br/><span class="label label-{{offerDetails.statusColor}}">{{offerDetails.status}}</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="status"> Created By </label>
+          <p>{{offerDetails.createdByName}}</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="status"> Created Date </label>
+          <p>{{offerDetails.createdDate | date: 'dd/MM/yyyy hh:mm a'}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Personal Details</h3>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="title"> Title <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.title" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <span class="label label-warning" *ngIf="offerDetails.isConfidential"><i
+                class="fas fa-exclamation-circle"></i> Confidential</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="offerFName"> First Name<span style="color:red">*</span>
+            </label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.firstName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="middlename">Middle Name</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.middleName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.lastName" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="gender"> Gender <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.gender" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="dateOfBirth">Date of Birth </label>
+            <input type="text" class="form-control" id="dateOfBirth" [(ngModel)]="offerDetails.dateOfBirth"
+              name="dateOfBirth" placeholder="Date of Birth" disabled="true"
+              [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="dateOfBirth" />
+            <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="age"> Age <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.age" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="addressLine1">Address Line 1</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.addressLine1" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="addressLine2">Address Line 2</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.addressLine2" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="addressLine3">Address Line 3</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.addressLine3" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.city" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="pinCode">Pin Code</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.pinCode" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="district">District </label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.district" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.state" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="mobileNo">Mobile No</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.mobileNo" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="personalEmailId">Personal Email</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.personalEmailId" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="personalEmailId">Qualification</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.qualification" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="totalExperience">Total Experience</label>
+            <!-- <p>{{offerDetails.totalExperience | number: '1.0-2'}}</p> -->
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.totalExperience" disabled="true" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Job Details</h3>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="plant"> Plant<span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.plantName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="plant"> Pay Group <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.payGroupName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="employeeCategory"> Employee Category<span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.employeeCategoryName" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="Country"> Country<span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.countryName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="State"> State<span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.locationStateName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="location"> Location<span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.location" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="department"> Department<span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.department" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="designation"> Designation<span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.designation" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.role" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="grade">Grade</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.grade" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="interviewedBy">Interviewed By</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.interviewedBy" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="reportingManager"> Reporting Manager <span style="color:red">*</span></label>
+            <input type="text" id="reportingManager" class="form-control"
+              [(ngModel)]="offerDetails.reportingManagerName" ngControl="offerDetails.reportingManagerName"
+              name="reportingManager" disabled="true" />
+
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="approvingManager"> HOD <span style="color:red">*</span></label>
+            <input type="text" id="approvingManager" class="form-control"
+              [(ngModel)]="offerDetails.approvingManagerName" ngControl="offerDetails.approvingManagerName"
+              name="approvingManager" disabled="true" required />
+
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group checkbox">
+            <label for="assesmentReport">
+              <input type="checkbox" [(ngModel)]="offerDetails.assesmentReport" disabled="true"
+                name="assesmentReport" /> Assesment Report
+            </label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group checkbox">
+            <label for="matTest">
+              <input type="checkbox" [(ngModel)]="offerDetails.matTest" disabled="true" name="matTest" /> MAT Test
+            </label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="preJoiningInitiation">Pre-Joining Initiation <span style="color:red">*</span></label>
+            <input type="text" id="preJoiningInitiation" class="form-control"
+              [(ngModel)]="offerDetails.preJoiningInitiation" ngControl="offerDetails.preJoiningInitiation"
+              name="preJoiningInitiation" disabled="true" required />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group checkbox">
+            <label for="sendEmailNotification">
+              <input type="checkbox" [(ngModel)]="offerDetails.sendEmailNotification" disabled="true"
+                name="sendEmailNotification" /> Send
+              Email Notification</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="otherEmails">CC Email To</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.otherEmails" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="referenceThru">Reference Thru</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.referenceThru" disabled="true" />
+          </div>
+          <div id="divEmpRefDetails" *ngIf="offerDetails.referenceThru == 'Employee Referral'">
+            <div class="form-group">
+              <label for="refEmployeeNo">Reference Employee Number</label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.refEmployeeNo" disabled="true" />
+            </div>
+          </div>
+          <div id="divRefDetails"
+            *ngIf="offerDetails.referenceThru != 'Employee Referral' && offerDetails.referenceThru">
+            <div class="form-group">
+              <label for="refEmployeeNo">Reference Details</label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.refDetails" disabled="true" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label > <input type="checkbox" [(ngModel)]="secondSignatoryRequired" name="secondSignatory" [disabled]="true"/> Second Signatory </label>           
+          </div>
+        </div>
+        <div class="col-md-4" *ngIf="secondSignatoryRequired == true">
+          <div class="form-group">
+            <label class="col-md-4"> Selected Signatory <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.secondSignatoryName" disabled="true" />
+            </div>
+          </div>
+        </div>       
+      </div>
+    </div>
+  </div>
+
+
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='salary'?'active':''" id="tab_salary"><a (click)="onTabClick(0)">Salary</a></li>
+      <li [ngClass]="currentTab=='additionalInfo'?'active':''" id="tab_additionalInfo"><a (click)="onTabClick(1)">Additional Information</a></li>
+      <li [ngClass]="currentTab=='breakup'?'active':''" id="tab_breakup"><a (click)="onTabClick(2)">Salary Breakup</a>
+      </li>
+      <li [ngClass]="currentTab=='checklist'?'active':''" id="tab_checklist"><a (click)="onTabClick(3)">Checklist</a>
+      </li>
+      <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a
+          (click)="onTabClick(4)">Attachments</a></li>
+  </ul>
+  <div class="details-tab">
+    <div class="panel panel-info" *ngIf="currentTab=='salary'">
+      <div class="panel-heading">
+        <h3 class="panel-title">Salary Details</h3>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="presentEmployer">Present Employer</label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.presentEmployer" disabled="true" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="presentDesignation">Present Designation</label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.presentDesignation" disabled="true" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="presentCTC">Present CTC</label>
+              <!-- <p>{{offerDetails.presentCTC | number: '1.0-2'}}</p> -->
+              <input type="text" class="form-control text-right" [(ngModel)]="offerDetails.presentCTC"
+                disabled="true" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="presentCTC">Sales (in Lakhs)</label>
+              <!-- <p>{{offerDetails.presentCTC | number: '1.0-2'}}</p> -->
+              <input type="text" class="form-control text-right" [(ngModel)]="offerDetails.salesAmount"
+                disabled="true" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <!-- <div class="col-md-4">
+            <div class="form-group">
+              <label for="salaryType">Salary Type</label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.salaryType" disabled="true" />
+            </div>
+          </div> -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="packageType">Package Type</label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.packageType" disabled="true" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="offeredSalary">Offered Salary</label>
+              <!-- <p>{{offerDetails.offeredSalary | number: '1.0-2'}}</p> -->
+              <input type="text" class="form-control text-right" [(ngModel)]="offerDetails.offeredSalary"
+                disabled="true" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="pFApplicable">PF Applicable <span style="color:red">*</span></label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.pfApplicable" disabled="true" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="eSIApplicable">ESI Applicable <span style="color:red">*</span></label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.esiApplicable" disabled="true" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="ePSApplicable">EPS Applicable <span style="color:red">*</span></label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.epsApplicable" disabled="true" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+          
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="recruitmentType">Recruitment Type</label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.recruitmentType" disabled="true" />
+            </div>
+            <div id="divRecruitmentDetails" *ngIf="offerDetails.recruitmentType == 'Replacement'">
+              <div class="form-group">
+                <label for="replacingEmployeeNumber">Replacing Employee</label>
+                <input type="text" class="form-control" [(ngModel)]="offerDetails.replacingEmployeeName"
+                  disabled="true" />
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Plant</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Current CTC</th>
+                        <th>Date of Resignation</th>
+                        <th>Date of Leaving</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{offerDetails.replacingEmployeePlantCode}} - {{offerDetails.replacingEmployeePlantName}}</td>
+                        <td>{{offerDetails.replacingEmployeeDepartment}}</td>
+                        <td>{{offerDetails.replacingEmployeeDesignation}}</td>
+                        <td>{{offerDetails.replacingEmployeeCurrentCTC | number: '1.0-2'}}</td>
+                        <td>{{offerDetails.replacingEmployeeDOR | date:'dd/MM/yyyy'}}</td>
+                        <td>{{offerDetails.replacingEmployeeDOL | date:'dd/MM/yyyy'}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="form-group">
+                <label for="joiningDate">Tentative Joining Date</label>
+                <!-- <p>{{offerDetails.joiningDate | date:'dd/MM/yyyy'}}</p> -->
+                <input type="text" class="form-control" [value]="offerDetails.joiningDate | date:'dd/MM/yyyy'"
+                  disabled="true" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="form-group" *ngIf="offerDetails.acceptedDOJ">
+                <label for="joiningDate">Accepted Joining Date</label>
+                <input type="text" class="form-control" [value]="offerDetails.acceptedDOJ | date:'dd/MM/yyyy'"
+                  disabled="true" />
+              </div>
+              <div class="form-group" *ngIf="!offerDetails.acceptedDOJ && offerDetails.notAcceptedReason">
+                <label for="joiningDate">Not-Accepted Reason</label>
+                <input type="text" class="form-control" [value]="offerDetails.notAcceptedReason"
+                  disabled="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Additional Details</label>
+              <textarea rows="3" class="form-control" [(ngModel)]="offerDetails.additionalDetails"
+                disabled="true"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-offer-additional-info  [offerId]="this.offerDetails.offerId" 
+    [editAllowed]="false" *ngIf="currentTab=='additionalInfo'">
+    </app-offer-additional-info>
+
+    <app-hr-offer-offersalary [packageType]="this.offerDetails.packageType" [offerId]="this.offerDetails.offerId"
+      [editAllowed]="false" *ngIf="currentTab=='breakup'">
+
+    </app-hr-offer-offersalary>
+
+    <app-checklist [offerId]="this.offerId" [editAllowed]="false" *ngIf="currentTab=='checklist'"></app-checklist>
+
+    <app-offer-attachments [offerId]="this.offerId" [editAllowed]="false" [deleteAllowed]="false" (dataLoaded)="onDataLoaded($event)" *ngIf="currentTab=='attachments'"></app-offer-attachments>
+
+  </div>
+  <div class="form-group text-center actionButtons">
+
+    <button type="button" class="btn btn-default" (click)="cancel()" matTooltip="Click to go back to list"
+      [disabled]="isLoading">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <button type="button" class="btn btn-default" *ngIf="currentTab!='salary'" (click)="onPrevious()">Previous</button>
+    <button type="button" class="btn btn-primary" *ngIf="currentTab!='attachments'" (click)="onNext()"
+      matTooltip="Click to go to next details tab">Next</button>
+  </div>
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabLetters">Letters</a>
+      </li>
+      <li >
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content details-tab">
+      <div id="tabLetters" class="tab-pane fade in active">
+        <app-employee-documents [objectId]="this.offerId" [objectType]="this.objectType"></app-employee-documents>
+      </div>
+      <div id="tabApprovals" class="tab-pane fade">
+        <app-flow-viewer [objectId]="this.offerId" [objectType]="this.objectType"></app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="this.offerId" [objectType]="this.objectType"></app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>

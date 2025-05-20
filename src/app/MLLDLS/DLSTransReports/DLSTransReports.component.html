@@ -1,0 +1,176 @@
+<section class="content-header">
+    <h1 class="display-1">
+        MLLDLS
+        <small> Document Transaction Report </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">DLSReort</li>
+    </ol>
+</section>
+<!--Main Contect-->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title"> Document Transaction Report </h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-primary pull-right" [disabled]="!DLSDocReport.length>0"
+                    (click)="generateExcel()"><i class="fa fa-excel" aria-hidden="true"></i>
+                    Export to Excel</button>
+            </div>
+        </div>
+        <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="card-body" style="border: black; box-shadow: grey;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="location">Location</label>
+                                <select [(ngModel)]="filterlocation" class="form-control" id="location"
+                                    name="location" ngControl="filterlocation" #locationEnt="ngModel"
+                                    matTooltip="Select location">
+                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                    <option *ngFor="let status of locListCon" value={{status.code}}>{{status.name1}}
+                                    </option>                              
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="type">Transaction Status</label>
+                                <select [(ngModel)]="filterType" class="form-control" id="type"
+                                    name="type" ngControl="filterType" #typeEnt="ngModel"
+                                    matTooltip="Select Type">
+                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                    <option >Create</option> 
+                                    <option >Borrow</option>                             
+                                </select>   
+                            </div>
+                        </div>
+                       
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="docno"> Document No<span style="color: red;">*</span></label>
+                                <input [(ngModel)]="filterdocno" class="form-control" id="docno"
+                                    placeholder="Document No" name="docno" ngControl="filterdocno"
+                                    #docnoEnt="ngModel" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="barcode"> Barcode <span style="color: red;">*</span></label>
+                                <input [(ngModel)]="filterbarcode" class="form-control" id="barcode" placeholder="Barcode"
+                                    name="barcode" ngControl="filterbarcode" #barcodeEnt="ngModel" required>
+                            </div>
+                        </div>
+                       
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label for="fromdate">From Date</label>
+                            <div class="form-group form-group-sm"
+                                [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+                                <input [matTooltipPosition]="'below'" matTooltip="Click to change from date"
+                                    [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate"
+                                    class="form-control" [(ngModel)]="from_date" #fromDate="ngModel">
+                                <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+                                <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid
+                                    From Date.</span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label for="todate">To Date</label>
+                            <div class="form-group form-group-sm"
+                                [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+                                <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'"
+                                    matTooltip="Click to change to date" [owlDateTime]="dt12"
+                                    [owlDateTimeTrigger]="dt12" name="toDate" class="form-control" [(ngModel)]="to_date"
+                                    #toDate="ngModel">
+                                <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;"></owl-date-time>
+                                <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid
+                                    To Date.</span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group form-group-sm">
+                                <button class="btn btn-primary btn-sm" (click)="getAllEntries();"
+                                    [disabled]="filterdocno==null || filterbarcode==null"
+                                    matTooltip="click to go">Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+                                    matTooltip="click to reset">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+
+        <div class="table-responsive">
+            <table id="docTable"  class="table table-bordered table-striped">
+                <thead style="background-color: #68a7d2;color: white;">
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Document No</th>
+                        <th>Document Short Desc</th>
+                        <th>Document Description</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of DLSDocReport; let i = index">
+                        <td> {{i+1}}</td>
+                        <td>{{item.docNo }}</td>
+                        <td>{{item.docShtDesc}}</td>
+                        <td>{{item.docDesc}}</td>
+                        <td>{{item.docType}}</td>
+                        <td>{{item.category}}</td>                     
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="box-body table-representative">
+            <table id="userTable" class="table table-bordered table-striped">
+                <thead style="background-color: #68a7d2;color: white;">
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Transation Date</th>
+                        <th>Status</th>
+                        <th>Person Responsible</th>
+                        <th>Dept</th>
+                        <th>Room</th>
+                        <th>Rack</th>
+                        <th>Bin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of DLSDocReport; let i = index">
+                        <td> {{i+1}}</td>
+                        <td>{{item.initialDocDate | date:'dd/MM/yyyy HH:mm a'}}</td>
+                        <td>{{item.reqStatus}}</td>
+                        <td>{{item.personResponsible}}</td>
+                        <td>{{item.fromDept}}</td>
+                        <td>{{item.docRoom}}</td>   
+                        <td>{{item.docRack}}</td>   
+                        <td>{{item.docBin}}</td>  
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>

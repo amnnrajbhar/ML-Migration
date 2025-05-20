@@ -1,0 +1,44 @@
+.modal-header {
+    border-bottom: 0px;
+}
+
+.modal {
+    height: 100%;
+    max-height: 100%;
+    overflow: scroll;
+}
+
+.center-contents {
+    display: flex;
+    justify-content: center;
+}
+
+input,
+select,
+textarea {
+    border: 1px solid #aaa !important;
+}
+
+thead {
+    background-color: #0099cc;
+    color: white;
+}
+
+th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+tr {
+    transition: 0.2s;
+}
+
+.no-border {
+    border: 0px;
+}
+
+#userTable tbody>tr:hover,
+#approversTable tbody>tr:hover {
+    background-color: #aaa;
+    cursor: default;
+}

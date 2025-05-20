@@ -1,0 +1,676 @@
+<section class="content-header">
+    <h1 class="display-1">
+      Job Work Delivery Challen
+      <small></small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+      <li class="active">Job Work Delivery Challen</li>
+    </ol>
+  </section>
+  <!-- Main content -->
+  <section class="content">
+    <div class="box">
+      <div class="box-header">
+        <div class="col-xs-6">
+          <h3 class="box-title">Job Work Delivery Challen</h3>
+          <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+        </div>
+        <div class="col-xs-3">&nbsp;</div>
+          <div class="col-xs-1">
+          <button *ngIf="currentUser.fkProfileId==1017" class="btn btn-primary pull-right" (click)="generateExcel()"  matTooltip="click to export to Excel"
+         [disabled]="JobWorkDCReport.length<=0"><i class="fa fa-file-excel"></i> Export Excel</button>
+        </div>
+        <div class="col-xs-2">
+          <button type="button" class="btn btn-primary pull-right" matTooltip="click to New Challen"
+            (click)="onGateEntryActions(false,JobWorkM,false,'')"><i class="fa fa-plus" aria-hidden="true"></i> New
+            Challen</button>
+        </div>
+      </div>
+      <div id="dateFilterPanel">
+        <div class="row ml-3">
+          <div class="col-sm-3">
+            <label>Challen No</label>
+            <div class="form-group form-group-sm">
+              <input matTooltip="Enter Challen No" name="GONUM" class="form-control" [(ngModel)]="fltrChallenNO"
+                placeholder="Challen NO">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <label>Transporter Name</label>
+            <div class="form-group form-group-sm">
+              <input matTooltip="Enter Transporter Name" name="DCNUM" class="form-control" [(ngModel)]="fltrtransportername"
+                placeholder="Transporter Name">
+            </div>
+          </div>
+        
+        </div>
+        <div class="row ml-3">
+          <div class="col-sm-3">
+            <label>From Date</label>
+            <div class="form-group form-group-sm" [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+              <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dt11"
+                [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                #fromDate="ngModel">
+              <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+              <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From Date.</span>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <label>To Date</label>
+            <div class="form-group form-group-sm" [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+              <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+                [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="endDate" class="form-control" [(ngModel)]="to_date"
+                #toDate="ngModel">
+              <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;"></owl-date-time>
+              <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid To Date.</span>
+            </div>
+          </div>
+          
+          <div class="col-sm-2">
+            <label>&nbsp;</label>
+            <div class="form-group form-group-sm">
+              <button class="btn btn-primary btn-sm" (click)="getAllData();" matTooltip="click to Go"
+                [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">Go</button>
+              &nbsp;&nbsp;
+              <button class="btn btn-primary btn-sm" (click)="clearFilter();" matTooltip="click to clear filter">Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body table-responsive">
+        <table id="userTable" class="table  table-striped" cellspacing="0">
+          <thead style="background-color: #0099cc; color:white;">
+            <tr>
+              <th>SNo</th>
+              <th>Plant</th>
+              <th>Challen No</th>
+              <th>Challen Date</th>
+              <!-- <th>Gate No</th> -->
+              <th>Billing Address</th>
+              <th>Shipping Address</th>
+              <th>Transporter Name</th>
+              <th>Place of Supply</th>
+              <th>Sent By</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ge of JobWorkMList; let i = index">
+              <td>{{i+1}}</td>
+              <td>{{ge.plant}}</td>
+              <td>{{ge.challenNo}}</td>
+              <td>{{ge.challenDate | date:'dd/MM/yyyy'}}</td>
+              <!-- <td>{{ge.gO_GATENO}}</td> -->
+              <td>{{ge.billingAddress}}</td>
+              <td>{{ge.shippingAddress}}</td>
+              <td>{{ge.transporterName}}</td>
+              <td>{{ge.placeOfSupply}}</td>
+              <td>{{ge.doneBy}}</td>
+              <td>
+                <table>
+                  <tr>
+                    <td *ngIf="currentUser.fkProfileId==1017">
+                      <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to edit entry"
+                      class="btn btn-primary btn-xs" (click)="onGateEntryActions(false,ge,false,'')" [disabled]="!ge.isActive">
+                      <i class="fas fa-edit"></i></button>
+                    </td>
+                    &nbsp;&nbsp;&nbsp;
+                    <td class="pr-2"><button type="button" [matTooltipPosition]="'after'" matTooltip="Click to cancel entry"
+                        class="btn btn-primary btn-xs" (click)="onGateEntryActions(true,ge,false,'Cancel')" [disabled]="!ge.isActive">
+                        
+                        <i class="fas fa-trash"></i>
+                      </button></td>
+                    <td><button type="button" class="btn btn-primary btn-xs" [matTooltipPosition]="'after'"
+                        matTooltip="Click to Print" (click)="onGateEntryActions(true,ge,true,'')"><i class="fa fa-print"
+                          aria-hidden="true"></i></button>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+    </div>
+  </section>
+  <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+              *ngIf="errMsgModalPop.length>0"><i class="fa fa-check"></i>{{errMsgModalPop}}</span></h3>
+        </div>
+      </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+  <div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #68a7d2;color:white;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 class="modal-title">Job Work Delivery Challen @{{locationName}}
+            <div class="float-right">
+              Entry Date and Time - {{entryDateTime | date:'dd/MM/yyyy HH:mm'}}
+            </div>
+          </h3>
+        </div>
+        <div class="modal-body box-primary" style="box-shadow: none;">
+          <div class="row">
+            <div class="col-sm-12">
+              <form #userForm="ngForm" (keydown.enter)="$event.preventDefault()">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <div class="form-group form-group-sm">
+                      <label for="fiscalyr">Financial Year</label>
+                      <input type="text" class="form-control" id="usrLName" placeholder="Financial Year"
+                        [(ngModel)]="fiscalYear" ngControl="fiscalYear" name="fiscalyr" readonly required />
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="sendinG_PERSON">Sending Person</label>
+  
+                      <ng-select [items]="employeeList" bindLabel="empfull" name="sendinGPERSON" [multiple]="false"
+                        placeholder="Sending Person" [(ngModel)]="sendingPERSON" #sendinG_PERSONEnt="ngModel"
+                        [disabled]="true">
+                        <ng-template ng-label-tmp let-item="item">
+                          {{item.empfull}}
+                        </ng-template>
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="sendinG_DEPT_NM">Department</label>
+  
+                      <ng-select [items]="departmentList" bindLabel="name" name="sendinG_DEPT_NM" [multiple]="false"
+                        placeholder="Select Department" [(ngModel)]="sendingDEPTNAME" #sendinG_DEPT_NMEnt="ngModel"
+                        [disabled]="true">
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3" >
+                    <div class="form-group form-group-sm">
+                      <label for="fiscalyr">Challen No</label>
+                      <input type="text" class="form-control" id="challenN" placeholder="Challen No"
+                        [(ngModel)]="JobWorkMModel.challenNo" ngControl="JobWorkMModel.challenN" name="challenN" readonly  />
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm"
+                      [ngClass]="(challenDateEnt.touched && !challenDateEnt.valid)?'has-error':''">
+                      <label for="challenDate">Challen Date</label>
+                      <input [owlDateTime]="challenDate" [owlDateTimeTrigger]="challenDate" [(ngModel)]="JobWorkMModel.challenDate"
+                        class="form-control" id="challenDate" placeholder="Challen Date" name="challenDate" matTooltip="Enter Challen Date"
+                        ngControl="JobWorkMModel.challenDate" #challenDateEnt="ngModel"  [readonly]="isEdit">
+                      <owl-date-time [pickerType]="'calendar'" #challenDate></owl-date-time>
+                    </div>
+                  </div>
+                  <div class="col-1 mt-5">
+                    <div class="overlay" *ngIf="isLoadingBAPI">
+                      <i class="fa fa-spinner fa-pulse"></i>
+                    </div>
+                  </div>
+                </div>
+                <hr class="m-3">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group form-group-sm"
+                          [ngClass]="(billingEnt.touched && !billingEnt.valid)?'has-error':''">
+                          <label for="billing">Bill To Party<span style="color: red;">*</span> </label>
+                          <input [(ngModel)]="JobWorkMModel.billingAddress" class="form-control" id="billing1" placeholder="Billing Address"
+                           matTooltip="Enter Billing Address" name="billing1" (input)="goNoAutocomplete(JobWorkMModel.billingAddress)"
+                             ngControl="JobWorkMModel.billingAddress" #billingEnt="ngModel"  required 
+                              [readonly]="isEdit">
+                          
+                        </div>
+                      </div> 
+                      <div class="col-sm-6">
+                        <div class="form-group form-group-sm"
+                          [ngClass]="(shippingAddressEnt.touched && !shippingAddressEnt.valid)?'has-error':''">
+                          <label for="shippingAddress">Ship to Party/Ship from Party<span style="color: red;">*</span></label>
+                          <input [(ngModel)]="JobWorkMModel.shippingAddress" class="form-control" id="shippingAddress" placeholder="Place of Supply"
+                           matTooltip="Enter Place of Supply" (input)="goNoAutocomplete1(JobWorkMModel.shippingAddress)"
+                            name="shippingAddress" ngControl="JobWorkMModel.shippingAddress" #shippingAddressEnt="ngModel" required
+                              [readonly]="isEdit">
+                          
+                        </div>
+                      </div> 
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm"
+                      [ngClass]="(placeOfSupplyEnt.touched && !placeOfSupplyEnt.valid)?'has-error':''">
+                      <label for="placeOfSupply">Supply From</label>
+                      <input [(ngModel)]="JobWorkMModel.placeOfSupply" class="form-control" id="dcNo" placeholder="Place of Supply"
+                       matTooltip="Enter Place of Supply"
+                        name="dcNo" ngControl="JobWorkMModel.placeOfSupply" #placeOfSupplyEnt="ngModel" 
+                          [readonly]="isEdit">
+                      
+                    </div>
+                  </div>                
+                  
+                  <div class="col-sm-3" >
+                    <div class="form-group form-group-sm"
+                      [ngClass]="(transporterName.touched && !transporterName.valid)?'has-error':''">
+                      <label for="transporterName">Transporter Name
+                      </label>
+                      <input [(ngModel)]="JobWorkMModel.transporterName" class="form-control" 
+                        id="transporterName" placeholder="Transporter Name" name="transporterName"  matTooltip="Enter Transporter Name"
+                        ngControl="JobWorkMModel.transporterName" #transporterName="ngModel" [readonly]="isEdit">
+                      
+                    </div>
+                  </div>
+                  <div class="col-sm-3" >
+                    <div class="form-group form-group-sm"
+                      [ngClass]="(vehicleNoEnt.touched && !vehicleNoEnt.valid)?'has-error':''">
+                      <label for="vehicleNoEnt">Vehicle No
+                      </label>
+                      <input [(ngModel)]="JobWorkMModel.vehicleNo" class="form-control"  id="vehicleNo"
+                        placeholder="Vehicle #" name="vehicleNo" ngControl="JobWorkMModel.vehicleNo"  matTooltip="enter vehicle No"
+                        #vehicleNoEnt="ngModel" [readonly]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="lrNo"> LR No</label>
+                      <input [(ngModel)]="JobWorkMModel.lrNo" class="form-control" id="project"
+                        placeholder="LR No" name="lrNo" ngControl="JobWorkMModel.lrNo"
+                        #lrNoEnt="ngModel" [readonly]="isEdit" >
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm"
+                      [ngClass]="(lrDateEnt.touched && !lrDateEnt.valid)?'has-error':''">
+                      <label for="lrDate">LR Date</label>
+                      <input [owlDateTime]="lrDate" [owlDateTimeTrigger]="lrDate" [(ngModel)]="JobWorkMModel.lrDate"
+                        class="form-control" id="lrDate" placeholder="LR Date" name="lrDate" matTooltip="enter DC Date"
+                        ngControl="JobWorkMModel.lrDate" #lrDateEnt="ngModel"  [readonly]="isEdit">
+                      <owl-date-time [pickerType]="'calendar'" #lrDate></owl-date-time>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="eWayBillNo">E Way Bill No</label>
+                      <input [(ngModel)]="JobWorkMModel.eWayBillNo" class="form-control" id="subContractor"
+                        placeholder="E Way Bill No" name="subContractor" ngControl="JobWorkMModel.eWayBillNo"
+                        #selDestinationEnt="ngModel" [readonly]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="ponumber">PO Number</label>
+                      <input [(ngModel)]="JobWorkMModel.ponumber" class="form-control" id="ponum"
+                        placeholder="PO" name="ponum" ngControl="JobWorkMModel.ponumber"
+                        #PoEnt="ngModel" [readonly]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="pieces">No of Pieces</label>
+                      <input [(ngModel)]="JobWorkMModel.pieces" class="form-control" id="pieces"
+                        placeholder="pieces" name="pieces" ngControl="JobWorkMModel.pieces"
+                        #piecesEnt="ngModel" [readonly]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="modeOfTransport">Mode of Transport</label>
+                      <input [(ngModel)]="JobWorkMModel.modeOfTransport" class="form-control" id="modeOfTransport"
+                        placeholder="modeOfTransport" name="modeOfTransport" ngControl="JobWorkMModel.modeOfTransport"
+                        #modeOfTransportEnt="ngModel" [readonly]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group form-group-sm">
+                      <label for="reference">Reference</label>
+                      <input [(ngModel)]="JobWorkMModel.reference" class="form-control" id="reference"
+                        placeholder="Reference" name="reference" ngControl="JobWorkMModel.reference"
+                        #referenceEnt="ngModel" [readonly]="isEdit">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group form-group-sm">
+                      <label for="remarks">Remarks</label>
+                      <textarea [(ngModel)]="JobWorkMModel.remarks" class="form-control" id="remarks" maxlength="2000"  matTooltip="enter Remarks"
+                        placeholder="Remarks" name="remarks" ngControl="JobWorkMModel.remarks" #remarksEnt="ngModel"
+                        [readonly]="isEdit"></textarea>
+                    </div>
+                  </div>
+                  <div class="col-sm-6" *ngIf="Cancel">
+                    <div class="form-group form-group-sm">
+                      <label for="reasonforcancellation">Reason for Cancellation <span style="color: red;">*</span></label>
+                      <textarea [(ngModel)]="JobWorkMModel.reasonforcancellation" class="form-control" id="reasonforcancellation"  matTooltip="enter reason"
+                        placeholder="Reason" name="reasonforcancellation" ngControl="JobWorkMModel.reasonforcancellation" #reasonforcancellationEnt="ngModel"
+                        required></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                      <div class="table-responsive">
+                        <button title="Add Rows" [matTooltipPosition]="'below'" matTooltip="Click to Add more Rows"
+                          (click)="addRows(rec);" class="btn btn-primary btn-xs pull-right" *ngIf="!isEdit">
+                          <i class="fa fa-plus"></i></button>
+                        <table id="personTable" class="table table-bordered" cellspacing="0" style="margin-bottom: 0px;">
+                          <thead>
+                            <tr>
+                              <th>Sl. No</th>
+                              <th>Material Code</th>
+                              <th>Material Description</th>
+                              <th>HSN Code</th>
+                              <th>UOM</th>
+                              <th>Batch No.</th>
+                              <th>Qty</th>
+                              <th>Packing Details</th>
+                              <th>Rate</th>
+                              <th>Amount</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let per of dynamicArray; let rec=index">
+                              <td>
+                                <label>{{rec+1}}.</label>
+                              </td>
+                              <td style="width:10%">
+                                <input class="form-control input-sm suggestion" type="text" [name]="'itemCode'+per.id" [(ngModel)]="per.itemCode"
+                                 #itemCodeEnt="ngModel"  placeholder="Material Code" [value]="per.itemCode" maxlength="18" (input)="setDesc(per)" 
+                                    [id]="'itemCode'+per.id" [disabled]="isEdit"
+                                  matTooltip="Enter Material code."   required/>
+                              </td>
+                              <td>
+                                <input class="form-control input-sm" type="text" [name]="'itemDesc'+per.id" [(ngModel)]="per.itemDesc" 
+                                  placeholder="Material Desc" [value]="per.itemDesc" maxlength="80" [disabled]="isEdit"  [id]="'itemDesc'+per.id"
+                                  matTooltip="Enter material description."  required />
+                              </td>
+                              <td>
+                                <input class="form-control input-sm" type="text" [name]="'hsnCode'+per.id" [(ngModel)]="per.hsnCode" 
+                                  placeholder="Material Desc" [value]="per.hsnCode" maxlength="40" [disabled]="isEdit"  [id]="'hsnCode'+per.id"
+                                  matTooltip="Enter Hsn Code."  required />
+                              </td>
+                              <td style="width:6%">
+                                <select [(ngModel)]="per.uom" class="form-control input-sm" [name]="'uom'+per.id"
+                                  matTooltip="Select UOM" #uomEnt="ngModel" [disabled]="isEdit" required>
+                                  <option [ngValue]="null" disabled [selected]="true">--Select
+                                    an Option--</option>
+                                  <option *ngFor="let pUOM of UOMList" [ngValue]="pUOM.uom">
+                                    {{pUOM.uom}}</option>
+                                </select>
+                              </td>
+                              <td style="width:10%">
+                                <input class="form-control input-sm" type="text" [name]="'batchNo'+per.id" [(ngModel)]="per.batchNo" 
+                                  placeholder="Batch No" [value]="per.batchNo" maxlength="80" [disabled]="isEdit"  [id]="'batchNo'+per.id"
+                                  matTooltip="Enter Batch No." onClick="this.select();" required />
+                              </td>
+                              <td style="width:10%">
+                                <input class="form-control input-sm" type="number" [name]="'qty'+per.id" [(ngModel)]="per.qty"
+                                  placeholder="Qty" matTooltip="Enter Quantity" (change)="Calculateamount(per)" required [disabled]="isEdit"/>
+                              </td>
+                              <td>
+                                <input class="form-control input-sm" type="text" [name]="'packingDetails'+per.id" [(ngModel)]="per.packingDetails" 
+                                  placeholder="Packing Details" [value]="per.packingDetails"  [disabled]="isEdit"  [id]="'packingDetails'+per.id"
+                                  matTooltip="Enter Packing Details" required />
+                              </td>
+                              <td style="width:8%">
+                                <input class="form-control input-sm" type="text" [name]="'rate'+per.id" [(ngModel)]="per.rate" 
+                                #rateEnt="ngModel" (change)="Calculateamount(per)" 
+                                placeholder="Rate" [value]="per.rate" [disabled]="isEdit"  [id]="'rate'+per.id" 
+                                [readonly]="per.qty==null" 
+                                  matTooltip="Enter Rate."  required />
+                              </td>
+                              <td>
+                                <input class="form-control input-sm" type="text" [name]="'amount'+per.id" [(ngModel)]="per.amount" 
+                                 placeholder="Amount" [value]="per.amount" [disabled]="isEdit"  [id]="'amount'+per.id" 
+                                  matTooltip="Enter material description." readonly />
+                              </td>
+                              <td style="width:2%">
+                                <button title="Remove Details" (click)="removeRows(per);" class="btn btn-secondary btn-sm"
+                                  matTooltip="click to remove" [disabled]="isEdit">
+                                  <i class="fa fa-trash"></i></button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+             
+              </form>
+            </div>
+            <div class="overlay" *ngIf="isLoadingPop">
+              <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+          <button *ngIf="currentUser.fkProfileId==1017" type="button" class="btn btn-primary" (click)="UpdateEntry()"  matTooltip="click to update"
+          [disabled]="!userForm.valid" >Update</button>
+          <button *ngIf="currentUser.fkProfileId==1017" type="button" class="btn btn-primary" (click)="CancelEntry()"  matTooltip="click to cancel"
+          [disabled]="!userForm.valid" >Cancel Entry</button>
+          <button *ngIf="JobWorkMModel.challenNo ==null || JobWorkMModel.challenNo ==undefined" type="button" class="btn btn-primary" (click)="onSaveEntry()"  matTooltip="click to save"
+            [disabled]="!userForm.valid" >{{isEdit==true?'Cancel Entry':'Save'}}</button>
+          <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+            data-dismiss="modal" [disabled]="isLoadingPop"  matTooltip="click to close modal">Close</button>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+  </div>
+  <!--Print Modal-->
+ 
+  <div hidden id="pdf">
+      <table>
+        <tr style="align-items: end;">
+          <td colspan="10" style="align-items: right;text-align: right;">
+            <label>(  ) Original For Cosignee/ (  ) Duplicate For Transporter/ (  ) Triplicate For Consigner</label>
+          </td>
+        </tr>
+        <tr>
+          <td  colspan="2">
+            <img [src]="image" height="90" width="120" >
+          </td>
+          <td colspan="8" style="align-items: center;text-align: center;">
+            <label style="font-size: 12;"><strong>MICRO LABS LIMITED, API DIVISION (ML15)	</strong></label><br> 
+            <label >&nbsp;</label>					<br>           						
+            <label style="font-size: 10;"><strong>Plot No-43-45, IV Phase, KIADB, Bommasandra Industrial Area, Bangalore - 560105, Karnataka. Phone: 08110-415647/48</strong></label>	<br>	
+            <label >&nbsp;</label>					<br>
+            <label style="font-size: 8;"><strong> GSTIN No: 29AABCM2131N1ZE </strong></label>&nbsp;&nbsp;&nbsp; <label style="font-size: 8;"><strong>CIN No:U24232KA1973PLC002401</strong></label>  &nbsp;&nbsp;&nbsp;<label style="font-size: 8;"><strong> Drug Lic No. KTK/25/535/2007 DT-29.08.2017</strong></label>							
+          </td>
+          
+
+        </tr>
+        <tr>
+          <td colspan="10" style="align-items: center;text-align: center;">
+            <label >&nbsp;&nbsp;&nbsp;</label>
+            <label style="font-size: 12;" ><strong>JOB WORK  DELIVERY CHALLAN</strong></label>
+            
+        </td>
+        </tr>
+         
+          <tr>
+            <th colspan="5">
+                <label ><strong>SHIP TO PARTY/SHIP FROM PARTY:</strong></label>                
+                
+            </th>
+            
+            <td colspan="3" >
+              <strong style="color:black;"><b>CHALLAN NO. :{{JobWorkMModel1.challenNo}}</b> </strong>
+                
+            </td>
+            <td colspan="2" >
+              <strong><b>CHALLAN DATE :{{JobWorkMModel1.challenDate | date:'dd/MM/yyyy'}}</b> </strong>
+                
+            </td>
+        </tr>
+          <tr>
+              <td colspan="5">
+                <label >{{SAddress1}}</label><br>
+                <label >{{SAddress2}}</label><br>
+                <label >{{SAddress3}}</label><br>
+                <label ><strong>GST No:</strong> {{SGST}}</label>
+
+              </td>
+              <td colspan="2" style="border-bottom: none;">
+                <label ><strong>Supply From:</strong> </label><br>
+                <label ><strong>Transporter Name:</strong> </label><br>
+                <label ><strong>LR No. & Date:</strong></label><br>
+                <label><strong>Mode of Transport:</strong></label>
+              </td>
+              <td colspan="3" style=" border-bottom: none;">
+                  <label >{{JobWorkMModel1.placeOfSupply}}</label><br>
+                  <label >{{JobWorkMModel1.transporterName}}</label><br>
+                  <label >{{JobWorkMModel1.lrNo}} & {{JobWorkMModel1.lrDate | date:'dd/MM/yyyy'}}</label><br>
+                  <label >{{JobWorkMModel1.modeOfTransport}}</label>
+              </td>
+          </tr>
+          <tr>
+            <th colspan="5" >
+                <label ><strong>BILL TO PARTY:</strong></label>                
+                
+            </th>
+            
+            <td colspan="2" style="border-top: none; border-bottom: none;">
+              <strong>Vehicle No. :</strong>
+                
+            </td>
+            <td colspan="3"  style="border-top: none; border-bottom: none;">
+              {{JobWorkMModel1.vehicleNo}}                
+            </td>
+        </tr>
+          <tr>
+              <td colspan="5" style="border-bottom: none; ">
+                <label >{{BAddress1}}</label><br>
+                <label >{{BAddress2}}</label><br>
+                <label >{{BAddress3}}</label><br>
+                <label ><strong>GST No:</strong> {{BGST}}</label>
+              </td>
+              <td colspan="2" style="border-top: none;">
+                <label ><strong>E- Way Bill No :</strong> </label><br>
+                <label ><strong>PO Number & Date:</strong> </label><br>
+                <label ><strong>Reference:</strong></label><br>
+               
+              </td>
+              <td colspan="3" style="border-top: none; ">
+                  <label >{{JobWorkMModel1.eWayBillNo}}</label><br>
+                  <label >{{JobWorkMModel1.ponumber}}</label><br>
+                  <label >{{JobWorkMModel1.reference}}</label><br>
+                 
+              </td>
+          </tr>
+       <tr>
+        <td colspan="5" style="border-top: none;">
+
+        </td>
+        <td colspan="2">
+          <label ><strong>Remarks</strong></label>
+        </td>
+        <td colspan="3">
+          <label >{{JobWorkMModel1.remarks}}</label>
+        </td>
+       </tr>
+      
+        
+        <tr>
+            <th style="width: 3%;align-items: center;text-align: center;">S.No</th>
+            <th style="width:10% ;align-items: center;text-align: center;">Material Code</th>
+            <th style="width:23% ;align-items: center;text-align: center;">Material Description </th>
+            <th style="width:8%;align-items: center;text-align: center;">HSN Code</th>
+            <th style="width:4%;align-items: center;text-align: center;">UOM</th>
+            <th style="width:10% ;align-items: center;text-align: center;">Batch No</th>
+            <th style="width:7%;align-items: center;text-align: center;">Qty</th>
+            <th style="width:16% ;align-items: center;text-align: center;">Packing Details</th>
+            <th style="width:8%;align-items: center;text-align: center;">Rate</th>
+            <th style="width:10%;align-items: center;text-align: center;">Amount (Rs.)</th>
+        </tr> 
+        <tr *ngFor="let per of dynamicArray1; let rec=index">
+            <td>{{rec+1}}</td>
+            <td>{{per.itemCode}}</td>
+            <td>{{per.itemDesc}}</td>
+            <td>{{per.hsnCode}}</td>
+            <td>{{per.uom}}</td>
+            <td>{{per.batchNo}}</td>
+            <td style="text-align: right;">{{per.qty | number : '1.3-3'}}</td>
+            <td>{{per.packingDetails}}</td>
+            <td style="text-align: right;">{{per.rate | number : '1.2-2'}}</td>
+            <td style="text-align: right;">{{per.amount | number : '1.2-2'}}</td>
+        </tr>
+        <tr>
+            <td colspan="5" style="text-align: right;border-right: none;"></td>
+            <td  style="text-align: center;border-right: none;border-left: none;"><strong>TOTAL&nbsp;&nbsp;</strong></td>
+            <td style="text-align: right;border-left: none;"><strong>{{totalQty | number : '1.3-3'}}</strong> </td>
+            <td style="text-align:center ;"><strong>{{JobWorkMModel1.pieces}}</strong></td>
+            <td></td>
+            <td style="text-align: right;"><strong>{{totalAmount}}</strong></td>
+        </tr>
+       
+        <tr>    
+            <td colspan="7">
+                <strong>Rupees:</strong>{{rupees}}
+            </td>
+            <td  colspan="2" style="text-align: right;">
+                <label><strong>CGST @ %</strong></label><br>
+                <label><strong>SGST @ %</strong></label><br>
+                <label><strong>IGST @ %</strong></label><br>
+            </td>
+            <td  style="text-align: right;">
+                <label>-</label><br>
+                <label>-</label><br>
+                <label>-</label><br>
+            </td>
+        </tr>
+        <tr>    
+          <td colspan="7" style="font-size: 10; align-items: center;text-align: center;">
+            <label ><strong >
+              Not for Sale. Material(s) are sending for Job Work purpose only. No GST Applicable						
+              .</strong></label>
+            
+        </td>
+        <td  colspan="2" style="text-align: right;">
+          <label><strong>Total Value</strong></label><br>
+      </td>
+      <td  style="text-align: right;">
+          <label><strong>{{totalAmount}}</strong></label><br>
+      </td>
+      </tr>
+        <tr>
+            <td colspan="5"  style="border-right: none;">
+              <label >&nbsp;</label><br>
+                <label style="font-size: 10; align-items: center;text-align: center;"><strong >
+               Declaration : This is to Certify that the particulars given above are true and correct.</strong></label><br>
+                    <label>&nbsp;&nbsp;&nbsp;</label><br>
+                    <label>&nbsp;&nbsp;&nbsp;</label><br>
+                
+            </td>
+            <td colspan="2" style="border-left: none;border-right: none;">
+              <label>&nbsp;&nbsp;&nbsp;</label><br>
+              <label>&nbsp;&nbsp;&nbsp;</label><br>
+              <label>&nbsp;&nbsp;&nbsp;</label><br>
+              <label>&nbsp;&nbsp;&nbsp;</label><br>
+              <strong style="text-align: center;">Prepared By</strong> 
+          </td>
+            <td colspan="3" style="border-left: none;">
+                <label style="text-align: center;"><strong>For MICRO LABS LIMITED</strong></label><br>
+                <label>&nbsp;&nbsp;&nbsp;</label><br>
+                <label>&nbsp;&nbsp;&nbsp;</label><br>
+                <label>&nbsp;&nbsp;&nbsp;</label><br>
+                <strong style="text-align: center;">Authorized Signatory</strong> 
+            </td>
+        </tr>
+      </table>
+  </div>

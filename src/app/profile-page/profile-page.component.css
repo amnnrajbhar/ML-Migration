@@ -1,0 +1,16 @@
+.tab-content{
+    background: #fdfdfd;
+      line-height: 25px;
+      border: 1px solid #ddd;
+      border-top:5px solid #135890;
+      /* border-bottom:5px solid #e74c3c; */
+     
+  } 
+  .table{
+    border: none !important;
+  }
+
+  .card-img-top{
+    margin-right: 15px;
+  }
+

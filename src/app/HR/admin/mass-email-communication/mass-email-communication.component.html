@@ -1,0 +1,281 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Mass Email Communication
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Mass Email Communication</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Plant</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.plantId" class="form-control" id="plant" name="plant" #plant="ngModel"
+                (change)="getPayGroupList()" required>
+                <option value="" [selected]="true">All</option>
+                <option *ngFor="let plt of plantlist" [ngValue]="plt.id">{{plt.code}} - {{plt.name}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Pay Group</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.payGroupId" class="form-control" id="paygroup" name="paygroup"
+                matTooltip="paygroup"  required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Employee Category</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.employeeCategoryId" class="form-control" id="employeecategory"
+                name="employeecategory" matTooltip="employeecategory">
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Department</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.departmentId" class="form-control" id="department" name="department"
+                #departmentEnt="ngModel">
+                <option value="" [selected]="true">All</option>
+                <option *ngFor="let dl of departmentList" [ngValue]="dl.id">{{dl.description }} </option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right"> State</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.stateId" class="form-control" id="offerState" name="state"
+                matTooltip="State" #stateEnt="ngModel" (change)="onStateChange()" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pl of stateList" [ngValue]="pl.id">{{pl.bezei}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Location</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.locationId" class="form-control" (change)="onStateChange()"
+                id="offerLocation" name="offerLocation" matTooltip="Location" #locationEnt="ngModel" required>
+                <option value="" [selected]="true">All </option>
+                <option *ngFor="let pl of locationList" [ngValue]="pl.id">{{pl.name }} </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Date of Joining</label>
+            <div class="col-md-3">
+              <div class="col-md-6">
+                <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control"
+                  [(ngModel)]="filterModel.fromdate" #fromDate="ngModel" placeholder="From">
+                <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+              </div>
+              <div class="col-md-6">
+                <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="toDate" class="form-control"
+                  [(ngModel)]="filterModel.todate" #toDate="ngModel" placeholder="To">
+                <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+              </div>
+            </div>
+            <label class="col-md-1 control-label text-right">Status</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.status" class="form-control" id="status" name="status"
+                #statusEnt="ngModel">
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pll of statusList" [ngValue]="pll.type">{{pll.type}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Active</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.active" class="form-control" id="active" name="active"
+                #activeEnt="ngModel" required>
+                <option value="" [selected]="true">Both </option>
+                <option value="true" >Active </option>
+                <option value="false" >Inactive </option>
+              </select> </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group text-center">
+        <button class="btn btn-primary btn-sm" (click)="getEmployeeList();" matTooltip="click to filter data">
+
+          Filter</button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="row">
+      <div class="col-md-12">        
+        <div class="pull-right actionButtons">
+          <button type="button" class="btn btn-sm btn-primary" (click)="sendEmail('All')" matTooltip="Send All">
+            Send All</button>
+          <button type="button" class="btn btn-sm btn-info" (click)="sendEmail('selected')" matTooltip="Send email to selected employees">
+            Send Selected</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table class="table table-hover table-striped table-bordered" id="data">
+          <thead>
+            <tr>
+              <th><input type="checkbox" [(ngModel)]="selectAll" (change)="onSelectAllChange()"/> Select</th>
+              <th>Employee ID</th>
+              <th>Status</th>
+              <th class="personalDetails">Name</th>
+              <th class="jobDetails">Plant</th>
+              <th class="jobDetails">Pay Group</th>
+              <th class="jobDetails">Employee Category</th>
+              <th class="jobDetails">State</th>
+              <th class="jobDetails">Location</th>
+              <th class="jobDetails">Department</th>
+              <th class="jobDetails">Designation</th>
+              <th class="jobDetails">Grade</th>
+              <th class="jobDetails">Role</th>
+              <th class="jobDetails">Official Email</th>
+              <th class="jobDetails">Personal Email</th>
+              <th class="otherDetails">Joining Date</th>
+              <th class="otherDetails">Reporting Manager</th>
+              <th class="otherDetails">HOD</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filterData.list; let i = index">
+              <td>
+                <input type="checkbox" [(ngModel)]="item.selected" />
+              </td>
+              <td>{{item.employeeNo}} </td>
+              <td><span class="label label-default label-{{item.statusColor}}">{{item.status}}</span></td>
+              <td class="personalDetails">{{item.firstName}} {{item.middleName}} {{item.lastName}}</td>
+              <td class="jobDetails">{{item.plantName}} </td>
+              <td class="jobDetails">{{item.payGroupName}} </td>
+              <td class="jobDetails">{{item.employeeCategoryName}} </td>
+              <td class="jobDetails">{{item.state}}</td>
+              <td class="jobDetails">{{item.location}} </td>
+              <td class="jobDetails">{{item.department}} </td>
+              <td class="jobDetails">{{item.designation}} </td>
+              <td class="jobDetails">{{item.grade}} </td>
+              <td class="jobDetails">{{item.role}} </td>
+              <td class="jobDetails">{{item.officialEmailId}} </td>
+              <td class="jobDetails">{{item.personalEmailId}} </td>
+              <td class="otherDetails">{{item.dateOfJoining | date: "dd/MM/yyyy"}} </td>
+              <td class="otherDetails">{{item.reportingManagerName}} </td>
+              <td class="otherDetails">{{item.approvingManagerName}} </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-center">
+          <div class="overlay text-center h3" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+          <ul class="pagination" *ngIf="filterData.totalCount>0">
+            <li>
+              <a (click)="gotoPage(filterData.pageNo)">
+                Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> -
+                <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b>
+                of <b>{{filterData.totalCount}}</b> records
+              </a>
+            </li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+            <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+            <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo"
+                (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo+1"
+                (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a>
+            </li>
+            <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of
+                <b>{{filterData.totalPages}}</b></a></li>
+            <li><a>Page Size
+                <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div id="sendEmail" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-blue">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Email Details</h4>
+      </div>
+      <div class="modal-body">
+        <form #massEmailComunicationForm="ngForm">
+          <div class="row form-group">
+            <label class="col-md-4">To <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <button type="button" class="btn btn-link" (click)="countClick()">{{count}} Employees</button>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-md-4">Subject <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <textarea type="text" class="form-control" [(ngModel)]="sendEmailModel.subject" id="txtSubject"
+                ngControl="sendEmailModel.subject" name="txtSubject" #subjectEnt="ngModel" maxlength="500"
+                rows="2"></textarea>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-md-4">Body <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <angular-editor [(ngModel)]="sendEmailModel.body" [config]="editorConfig" ngControl="sendEmailModel.body"
+                name="txtBody" id="txtBody" maxlength="2000" rows="10"></angular-editor>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <label class="col-md-4">Send Email To <span style="color:red">*</span></label>
+
+            <div class="col-md-8">
+              <select [(ngModel)]="sendEmailModel.emailType" class="form-control" id="emailType" name="emailType"
+                #emailTypeEnt="ngModel">
+                <option value="Official Email">Official Email</option>
+                <option value="Personal Email">Personal Email</option>
+              </select>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label class="col-md-4"> Attachment </label>
+            <div class="col-md-8">
+              <input #attachment type="file" name="attachment" id="attachment"
+                [(ngModel)]="sendEmailModel.attachment" />
+              <span class="text-danger">Add email attachments (pdf, jpeg, png) only. Maximum file size allowed is
+                2MB.</span>
+            </div>
+          </div>
+
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="performComunication(attachment.files)">Send</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

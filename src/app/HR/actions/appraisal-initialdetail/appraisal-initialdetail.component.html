@@ -1,0 +1,380 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Recommendations
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Recommendations</li>
+  </ol>
+</section>
+<section class="content">
+  <!-- <form #hodRecommendationForm="ngForm" id="hodRecommendationForm"> -->
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+  <app-appraisal-hod-recommendations *ngIf="initiaAppraisalDetail.salaryType != null"
+    [employeeInitialAppraisalDetail]="employeeInitialAppraisalDetailId">
+  </app-appraisal-hod-recommendations>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <ul class="nav nav-tabs" *ngIf="isVisible">
+    <li [ngClass]="currentTab=='details'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Details</a></li>
+    <li [ngClass]="currentTab=='attachment'?'active':''" id="tab_attachment"><a (click)="onTabClick(2)">Attachments</a>
+    </li>
+    <li [ngClass]="currentTab=='salaryhistory'?'active':''" id="tab_salaryhistory"><a (click)="onTabClick(1)">
+        History</a></li>
+
+  </ul>
+
+  <div class="details-tab">
+    <form #hodRecommendationForm="ngForm" id="hodRecommendationForm">
+      <div *ngIf="currentTab=='details'">
+        <div class="panel panel-info" *ngIf="isVisible">
+          <div class="panel-heading">
+            <h3 class="panel-title">Proposed Appraisal Details</h3>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+
+              <div class="col-md-4">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Current Responsibilities<span style="color:red">*</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let field of oldResponsibilitiesList; let i = index">
+                      <td>
+                        <!-- <input [(ngModel)]="field.oldResponsibilities" class="form-control" type="text"
+                      /> -->
+                        <textarea [ngModelOptions]="{standalone: true}" [(ngModel)]="field.description"
+                          #existingrespCatEnt="ngModel" class="form-control" required></textarea>
+                        <!-- <span class="help-block" *ngIf="existingrespCatEnt.touched && !existingrespCatEnt.valid">Please
+                        enter current responsibilities</span> -->
+                      </td>
+
+
+                      <td>
+                        <button class="btn btn-xs btn-danger" type="button" (click)="onRemoveOldResponsibilities(i)"><i
+                            class="fas fa-times"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <!-- <td>
+                    <input class="form-control" type="text" id="oldResponsibitiesAttributeCode"
+                      [(ngModel)]="oldResponsibitiesAttributeCode" name="oldResponsibitiesAttributeCode" />
+                  </td> -->
+                      <td>
+                        <button class="btn btn-info" type="button" (click)="onAddOldResponsibilities()"><i
+                            class="fas fa-plus"></i>Add</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- <div class="form-group">
+            <label for="oldResponsibilities">Existing Responsibilities<span style="color:red">*</span></label>
+            <input type="text" class="form-control" id="oldResponsibilities" [(ngModel)]="initiaAppraisalDetail.oldResponsibilities"
+            ngControl="initiaAppraisalDetail.oldResponsibilities" name="oldResponsibilities" #oldResponsibilitiesEnt="ngModel" required />
+        
+            <span class="help-block" *ngIf="oldResponsibilitiesEnt.touched && !oldResponsibilitiesEnt.valid">
+              <span *ngIf="oldResponsibilitiesEnt.errors.required"> Please enter Old Responsibilities</span>
+            </span>
+          </div>
+          <div class="row">
+            <button type="button" class="btn btn-info" (click)="onAddLineClick()">
+              <i class="fas fa-plus"></i> Add new</button>
+          </div> -->
+              </div>
+              <div class="col-md-4">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>New Responsibilities<span style="color:red">*</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let field of newResponsibilitiesList; let i = index">
+                      <td>
+                        <!-- <input [(ngModel)]="field.newResponsibilities" class="form-control" type="text"
+                       /> -->
+                        <textarea [ngModelOptions]="{standalone: true}" [(ngModel)]="field.description"
+                          class="form-control" #proposedrespCatEnt="ngModel" required></textarea>
+                        <!-- <span class="help-block" *ngIf="proposedrespCatEnt.touched && !proposedrespCatEnt.valid">Please
+                        enter proposed responsibilities</span> -->
+                      </td>
+
+                      <td>
+                        <button class="btn btn-xs btn-danger" type="button" (click)="onRemoveNewResponsibilities(i)"><i
+                            class="fas fa-times"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <!-- <td>
+                    <input class="form-control" type="text" id="newResponsibitiesAttributeCode"
+                      [(ngModel)]="newResponsibitiesAttributeCode" name="newResponsibitiesAttributeCode" />
+                  </td> -->
+                      <td>
+                        <button class="btn btn-info" type="button" (click)="onAddNewResponsibilities()"><i
+                            class="fas fa-plus"></i>Add</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- <div class="form-group">
+              <label for="newResponsibilities">New Responsibilities<span style="color:red">*</span></label>
+
+              <input type="text" class="form-control" id="newResponsibilities"
+                [(ngModel)]="initiaAppraisalDetail.newResponsibilities"
+                ngControl="initiaAppraisalDetail.newResponsibilities" name="newResponsibilities"
+                #newResponsibilitiesEnt="ngModel" required />
+
+
+              <span class="help-block" *ngIf="newResponsibilitiesEnt.touched && !newResponsibilitiesEnt.valid">
+                <span *ngIf="newResponsibilitiesEnt.errors.required"> Please enter Responsibilities</span>
+              </span>
+            </div>
+            <div class="row">
+              <button type="button" class="btn btn-info" (click)="onAddLineClick()">
+                <i class="fas fa-plus"></i> Add new</button>
+            </div> -->
+              </div>
+              <div class="col-md-4">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Next Year KRA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let field of nextYearKraList; let i = index">
+                      <td>
+                        <!-- <input [(ngModel)]="field.nextYearKra" class="form-control" type="text"
+                      /> -->
+                        <textarea [ngModelOptions]="{standalone: true}" [(ngModel)]="field.nextYearKra"
+                          class="form-control"></textarea>
+                      </td>
+
+                      <td>
+                        <button class="btn btn-xs btn-danger" type="button" (click)="onRemoveNextYearKra(i)"><i
+                            class="fas fa-times"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <!-- <td>
+                    <input class="form-control" type="text" id="newNextYearKraAttributeCode"
+                      [(ngModel)]="newNextYearKraAttributeCode" name="newNextYearKraAttributeCode" />
+                  </td> -->
+                      <td>
+                        <button class="btn btn-info" type="button" (click)="onAddNextYearKra()"><i
+                            class="fas fa-plus"></i>Add</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- <div class="form-group">
+              <label for="nextYearKra">Next Year KRA<span style="color:red">*</span></label>
+
+              <input type="text" class="form-control" id="nextYearKra" [(ngModel)]="initiaAppraisalDetail.nextYearKra"
+                ngControl="initiaAppraisalDetail.nextYearKra" name="nextYearKra" #nextYearKraEnt="ngModel" required />
+
+              <span class="help-block" *ngIf="nextYearKraEnt.touched && !nextYearKraEnt.valid">
+                <span *ngIf="nextYearKraEnt.errors.required"> Please enter Next Year KRA</span>
+              </span>
+            </div>
+            <div class="row">
+              <button type="button" class="btn btn-info" (click)="onAddLineClick()">
+                <i class="fas fa-plus"></i> Add new</button>
+            </div> -->
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <input type="checkbox" name="isPromotionRecommended" [(ngModel)]="isPromotionRecommended" />
+                  <label for="initial"> Promotion Recommended?</label>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="isPromotionRecommended">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Justification for Promotion</label>
+                  <textarea [(ngModel)]="initiaAppraisalDetail.promotionComment" class="form-control"
+                    id="promotionComment" name="promotionComment"></textarea>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Recommended Designation</label>
+                  <select [(ngModel)]="initiaAppraisalDetail.recommendeddesignationid" class="form-control"
+                    [disabled]="!isPromotionRecommended" name="designation" matTooltip="Designation"
+                    #designationEnt="ngModel">
+                    <option [ngValue]="null" disabled [selected]="true"> Select Designation </option>
+                    <option *ngFor="let pl of designationList" [ngValue]="pl.id">{{pl.name}} </option>
+                  </select>
+
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Recommended Role</label>
+                  <select [(ngModel)]="initiaAppraisalDetail.recommendedRoleid" class="form-control" matTooltip="Role"
+                    [disabled]="!isPromotionRecommended" #roleEnt="ngModel" name="roleId">
+                    <option [ngValue]="null" disabled [selected]="true"> Select Role </option>
+                    <option *ngFor="let pl of roleList" [ngValue]="pl.id">{{pl.role_ltxt}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Rating<span style="color:red">*</span></label>
+                  <select [(ngModel)]="initiaAppraisalDetail.rating" class="form-control" id="rating" name="rating"
+                    #ratingEnt="ngModel" required>
+                    <option *ngFor="let sl of ratingList" [ngValue]="sl.type">{{sl.type}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="ratingEnt.touched && !ratingEnt.valid">Please select Rating</span>
+                </div>
+
+              </div>
+
+
+              <div class="col-md-4">
+                <label for="initial">Recommended Increment Type<span style="color:red">*</span></label>
+                <select [(ngModel)]="initiaAppraisalDetail.salaryType" class="form-control" id="salaryType"
+                  name="salaryType" #salaryTypeEnt="ngModel" required>
+                  <option *ngFor="let sl of salaryTypes" [ngValue]="sl.type">{{sl.type}}</option>
+                </select>
+                <span class="help-block" *ngIf="salaryTypeEnt.touched && !salaryTypeEnt.valid">Please select salary
+                  type</span>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Recommended Amount<span style="color:red">*</span></label>
+                  <input type="text" (keypress)="keyPressAllowOnlyNumber($event)" class="form-control"
+                    id="recommendedSalary" [(ngModel)]="initiaAppraisalDetail.recommendedSalary" required
+                    #recSalaryEnt="ngModel" ngControl="initiaAppraisalDetail.recommendedsalary"
+                    name="recommendedSalary" />
+                  <span class="help-block" *ngIf="recSalaryEnt.touched && !recSalaryEnt.valid">Please enter recommended
+                    salary</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <label for="initial">One Time Consideration Type</label>
+                <select [(ngModel)]="initiaAppraisalDetail.oneTimeSalaryType" class="form-control"
+                  id="oneTimeSalaryType" name="oneTimeSalaryType" #oneTimeSalaryTypeEnt="ngModel">
+                  <option *ngFor="let sl of oneTimeSalaryTypes" [ngValue]="sl.type">{{sl.type}}</option>
+                </select>
+                <!-- <span class="help-block" *ngIf="salaryTypeEnt.touched && !salaryTypeEnt.valid">Please select salary
+                type</span> -->
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">One Time Consideration Amount</label>
+                  <input (keypress)="keyPressAllowOnlyNumber($event)" type="text" class="form-control"
+                    id="oneTimeSalaryAmount" [(ngModel)]="initiaAppraisalDetail.oneTimeSalaryAmount"
+                    #OneTimeSalaryAmountEnt="ngModel" ngControl="initiaAppraisalDetail.oneTimeSalaryAmount"
+                    name="oneTimeSalaryAmount" />
+                  <!-- <span class="help-block" *ngIf="recSalaryEnt.touched && !recSalaryEnt.valid">Please enter recommended
+                  salary</span> -->
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Sales<span style="color:red">*</span></label>
+                  <input type="text" (keypress)="keyPressAllowOnlyNumber($event)" class="form-control" id="sales"
+                    [(ngModel)]="initiaAppraisalDetail.sales" required #salesEnt="ngModel"
+                    ngControl="initiaAppraisalDetail.sales" name="sales" />
+                  <span class="help-block" *ngIf="salesEnt.touched && !salesEnt.valid">Please enter sales figure</span>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Growth<span style="color:red">*</span></label>
+                  <input type="text" (keypress)="keyPressAllowOnlyNumber($event)" class="form-control" id="growth"
+                    [(ngModel)]="initiaAppraisalDetail.growth" required #growthEnt="ngModel"
+                    ngControl="initiaAppraisalDetail.growth" name="growth" />
+                  <span class="help-block" *ngIf="growthEnt.touched && !growthEnt.valid">Please enter growth
+                    figure</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="specialAchievement">Special Achievement</label>
+                  <textarea [(ngModel)]="initiaAppraisalDetail.specialAchievement" class="form-control"
+                    id="specialAchievement" name="specialAchievement" #specialAchievementEnt="ngModel"></textarea>
+
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="hodAdditionalNotes">Additional Notes</label>
+                  <textarea [(ngModel)]="initiaAppraisalDetail.hodAdditionalNotes" class="form-control"
+                    id="hodAdditionalNotes" name="hodAdditionalNotes" #hodAdditionalNotesEnt="ngModel"></textarea>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12 text-center actionButtons">
+                <button type="button" (click)="goBack()" class="btn btn-default" [matTooltipPosition]="'after'"
+                  matTooltip="Click to go back">
+                  <i class="fas fa-arrow-left"></i> Back
+                </button>
+
+                <button type="button" class="btn btn-success" (click)="submit()"
+                  matTooltip="Click to Submit Initial Appraisal"
+                  [disabled]="isLoading || !hodRecommendationForm.valid">Submit</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div id="tab_attachment" *ngIf="currentTab=='attachment'">
+      <app-employee-attachments [employeeId]="this.employeeId" [editAllowed]="true" [deleteAllowed]="true"
+        [objectId]="this.employeeInitialAppraisalDetailId" [objectType]="this.objectType"></app-employee-attachments>
+    </div>
+    <div *ngIf="currentTab=='salaryhistory'">
+      <app-appraisal-history [employeeId]="employeeId" *ngIf="employeeId > 0"></app-appraisal-history>
+      <!-- <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+
+          <label class="col-md-2">Salary History</label>
+          <div class="col-md-4">
+            <input #file type="file" id="file" multiple />
+          </div>
+          <div class="col-md-4">
+
+          </div>
+        </div>
+      </div>
+    </div> -->
+    </div>
+
+  </div>
+
+  <div class="form-group text-center">
+    <span class="text-red pull-left"><i class="fa fa-warning"></i>{{errMsg}}</span>
+  </div>
+  <!-- </form> -->
+</section>

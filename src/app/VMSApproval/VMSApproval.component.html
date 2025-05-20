@@ -1,0 +1,119 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Visitor Entry
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Visitor Entry</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="box shadow">
+    <div class="box-header ml-3">
+      <h3>Pending Visitor Approvals</h3>
+    </div>
+
+    <!-- /.box-header -->
+    <div id="dateFilterPanel">
+      <div class="row ml-3">
+        <div class="col-sm-3">
+          <label>From Date</label>
+          <!-- <input type="date" class="form-control" placeholder="From Date"  [(ngModel)]="from_date"/> -->
+          <div class="form-group" [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+            <div class="input-group date">
+              <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dt1"
+                [owlDateTimeTrigger]="dt1" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                #fromDate="ngModel">
+              <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+            </div>
+            <owl-date-time [pickerType]="'calendar'" #dt1 style="width: 250px;"></owl-date-time>
+            <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From Date.</span>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <label>To Date</label>
+          <div class="form-group" [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+            <div class="input-group date">
+              <!-- <input type="date" [disabled]="from_date==null||from_date==''" class="form-control" placeholder="To Date"  [(ngModel)]="to_date"> -->
+              <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+                [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" name="endDate" class="form-control" [(ngModel)]="to_date"
+                #toDate="ngModel">
+              <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+            </div>
+            <owl-date-time [pickerType]="'calendar'" #dt2 style="width: 250px;"></owl-date-time>
+            <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid To Date.</span>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <label>&nbsp;</label>
+          <div class="form-group">
+            <button class="btn btn-primary" (click)="getVisitorsList()"
+              [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)" [disabled]="isVisitorListLoading">
+              <i class="fa" [ngClass]="{'fa-spin fa-spinner': isVisitorListLoading}"></i><span *ngIf="isVisitorListLoading">&nbsp;</span>Go
+            </button>
+            &nbsp;
+            <button class="btn btn-primary" (click)="OnApprove();"
+              [disabled]="!checkedRequestList.length>0">Approve</button>&nbsp;
+            <button class="btn btn-primary" (click)="OnReject();"
+              [disabled]="!checkedRequestList.length>0">Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="box-body table-responsive mx-3">
+      <table id="userTable" class="table" cellspacing="0">
+        <thead style="background-color: #0099cc; color:white;">
+          <tr>
+            <th>Sl. No.</th>
+            <th>Visitor Name</th>
+            <th>Person to Meet<br>(Employee)</th>
+            <th>Person to Meet<br>(Others)</th>
+            <th>Company Name</th>
+            <th>Mobile</th>
+            <th>Purpose</th>
+            <th>Booked From</th>
+            <th>Booked To</th>
+            <th>Start Date</th>
+            <th>Start Time</th>
+            <th>End Date</th>
+            <th>End Time</th>
+            <th>Approval Status</th>
+            <th>Pending with</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of visitorsList; let i = index">
+            <td style="text-align: center;">{{i+1}}</td>
+            <td>{{user.name}}</td>
+            <td>{{user.fkEmployeeName}}</td>
+            <td>{{user.temp4}}</td>
+            <td>{{user.companyName}}</td>
+            <td>{{user.mobile}}</td>
+            <td>{{getPurpose(user.fkVisitorPurpose)}}</td>
+            <!-- <td>{{user.temp8 | date:'dd/MM/yyyy'}}</td> -->
+            <td>{{user.isPreShedualled ? (user.date | date:'dd/MM/yyyy HH:mm') : ''}}</td>
+            <td>{{user.isPreShedualled ? (user.endDateTime | date:'dd/MM/yyyy HH:mm'):'' }}</td>
+            <td>{{user.date | date:'dd/MM/yyyy' }}</td>
+            <td>{{user.fromTime?(getTimeFormat(user.fromTime) | date:'HH:mm'):user.fromTime }}</td>
+            <td>{{user.endDateTime | date:'dd/MM/yyyy' }}</td>
+            <td>{{user.toTime?(getTimeFormat(user.toTime) | date:'HH:mm'):user.toTime }}</td>
+            <td>{{user.temp13}}</td>
+            <td>{{user.pendingWith}}</td>
+            <td style="text-align: center;">
+              <input type="checkbox" [id]="'chkusage'+user.id" [name]="'send'+user.id" [(ngModel)]="user.isSelected"
+                (change)="isAllSelected()" #usageEnt="ngModel">
+              <!-- <p *ngIf="user.temp14 != currentUser.employeeId">-</p> -->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div> -->
+    </div>
+    <!-- /.box-body -->
+  </div>
+</section>

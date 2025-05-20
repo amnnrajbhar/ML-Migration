@@ -1,0 +1,466 @@
+<section class="content-header">
+  <h1>
+    Rules Master
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Rules Master</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-sm-8">
+        <h3 class="box-title">Rules Master</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-sm-4">
+        <button type="button" class="btn btn-warning" matTooltip="Click to export to Excel"
+          (click)="exportExcelRules()"><i class="fas fa-file-excel" aria-hidden="true"></i>&nbsp; Export to
+          Excel</button>
+        &nbsp;
+        <button type="button" class="btn btn-info pull-right" matTooltip="Click to add New Rule"
+          (click)="onAddRulesMaster(false,RulesMasterItem)"><i class="fa fa-plus" aria-hidden="true"></i> Add
+          New Rule</button>
+      </div>
+    </div>
+
+    <div class="box-body table-responsive">
+
+      <table id="location" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th>SNo</th>
+            <th>Plant</th>
+            <th>Pay Group</th>
+            <th>Employee Category</th>
+            <th>Shift Code</th>
+            <th>Attendance Count</th>
+            <th>Permission Count</th>
+            <th>Apply After Leave (in Days)</th>
+            <th>Apply After OD (in Days)</th>
+            <th>Apply After Permission (in Days)</th>
+            <th>Permission Count Type</th>
+            <th class="col-sm-1">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lm of RulesMasterList; let i = index">
+            <td>{{i+1}}</td>
+            <td><b>{{lm.plantName}}</b></td>
+            <td><b>{{lm.payGroupName}}</b></td>
+            <td><b>{{lm.catName}}</b></td>
+            <td>{{lm.shiftCode}}</td>
+            <td>{{lm.attendanceLateCount}}</td>
+            <td>{{lm.permissionCount }}</td>
+            <td>{{lm.leaveApplyAfter }}</td>
+            <td>{{lm.odApplyAfter }}</td>
+            <td>{{lm.applyPermissionAfter }}</td>
+            <td>{{lm.permissionCountType }}</td>
+            <td>
+              <table>
+                <tr>
+                  <td class="pr-2">
+                    <button type="button" class="btn btn-info btn-xs" matTooltip="Click to Edit details"
+                      (click)="onAddRulesMaster(true,lm)">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                  <td class="pr-2">
+                    <button type="button" class="btn btn-danger btn-xs" matTooltip="Click to Delete Rule"
+                      (click)="deleteShift(lm)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                  <!-- <td>
+                    <button type="button" class="btn btn-primary btn-xs" (click)="openAuditLogs(lm.id)">
+                      <i class="fa fa-history"></i>
+                    </button>
+                  </td> -->
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #00a2ff;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">{{isEdit==true?'Update Rule ':'Add New Rule'}}</h4>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+        <form #RulesMasterForm="ngForm">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="baseplant"> Plant<span style="color:red">*</span></label>
+                  <b><select [(ngModel)]="RulesMasterItem.plant" class="form-control" id="plant" name="plant"
+                      matTooltip="plant" (change)="getPaygroupsBasedOnPlant()" #plantEnt="ngModel" required>
+                      <option [ngValue]="undefined" disabled [selected]="true"> Select Plant </option>
+                      <option *ngFor="let pl of plantList" [ngValue]="pl.fkPlantId">{{pl.code}}-{{pl.name}}</option>
+                    </select></b>
+                  <span class="help-block" *ngIf="!plantEnt.valid && plantEnt.touched">Please Select
+                    Plant.</span>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="payGroup"> Pay Group<span style="color:red">*</span></label>
+                  <b><select [(ngModel)]="RulesMasterItem.paygroup" class="form-control" id="payGroup" name="payGroup"
+                      matTooltip="Pay Group" #payGroup1Ent="ngModel" required>
+                      <option [ngValue]="undefined" disabled [selected]="true"> Select Pay Group </option>
+                      <option *ngFor="let pl of payGroupList1" [ngValue]="pl.id">{{pl.short_desc}}</option>
+                    </select></b>
+                  <span class="help-block" *ngIf="!payGroup1Ent.valid && payGroup1Ent.touched">Please Select
+                    Pay Group.</span>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="empcat">Employee Category<span style="color:red">*</span></label>
+                  <b><select [(ngModel)]="RulesMasterItem.empcat" class="form-control" id="empcat" name="empcat"
+                      matTooltip="staff Cat" #empcatEnt="ngModel" required>
+                      <option [ngValue]="undefined" disabled [selected]="true"> Select Employee Category </option>
+                      <option *ngFor="let pl of empCatList" [ngValue]="pl.id">{{pl.catltxt}}</option>
+                    </select></b>
+                  <span class="help-block" *ngIf="!empcatEnt.valid && empcatEnt.touched">Please Select
+                    Employee Category.</span>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <label for="attendanceLateCount">Attendance Late Count<span style="color:red">*</span></label>
+                <input type="number" class="form-control" name="attendanceLateCount" id="attendanceLateCount"
+                  placeholder="Attendance Late Count" [(ngModel)]="RulesMasterItem.attendanceLateCount"
+                  ngControl="RulesMasterItem.attendanceLateCount" #attendanceLateCount="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block" *ngIf="!attendanceLateCount.valid && attendanceLateCount.touched">Please Enter
+                  count.</span>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="leaveApplyAfter">Days to Apply after Leave <span style="color:red">*</span></label>
+                <input type="number" class="form-control" name="leaveApplyAfter" id="leaveApplyAfter"
+                  placeholder="No of Days" [(ngModel)]="RulesMasterItem.leaveApplyAfter"
+                  ngControl="RulesMasterItem.leaveApplyAfter" #leaveApplyAfter="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block" *ngIf="!leaveApplyAfter.valid && leaveApplyAfter.touched">Please enter
+                  days.</span>
+              </div>
+              <div class="col-sm-3">
+                <label for="odApplyAfter">Days to Apply after On Duty <span style="color:red">*</span></label>
+                <input type="number" class="form-control" name="odApplyAfter" id="odApplyAfter" placeholder="No of Days"
+                  [(ngModel)]="RulesMasterItem.odApplyAfter" ngControl="RulesMasterItem.odApplyAfter"
+                  #odApplyAfter="ngModel" (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block" *ngIf="!odApplyAfter.valid && odApplyAfter.touched">Please enter days.</span>
+              </div>
+              <div class="col-sm-3">
+                <label for="applyPermissionAfter">Days to Apply after Permission <span
+                    style="color:red">*</span></label>
+                <input type="number" class="form-control" name="applyPermissionAfter" id="applyPermissionAfter"
+                  placeholder="No of Days" [(ngModel)]="RulesMasterItem.applyPermissionAfter"
+                  ngControl="RulesMasterItem.applyPermissionAfter" #applyPermissionAfter="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block" *ngIf="!applyPermissionAfter.valid && applyPermissionAfter.touched">Please
+                  enter days.</span>
+              </div>
+              <div class="col-sm-3">
+                <label for="applyForgotSwipe">Days to Apply after Forgot/Missing Swipe <span
+                    style="color:red">*</span></label>
+                <input type="number" class="form-control" name="applyForgotSwipe" id="applyForgotSwipe"
+                  placeholder="No of Days" [(ngModel)]="RulesMasterItem.applyForgotSwipe"
+                  ngControl="RulesMasterItem.applyForgotSwipe" #applyForgotSwipe="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block" *ngIf="!applyForgotSwipe.valid && applyForgotSwipe.touched">Please enter
+                  days.</span>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="applyPunchMissing">Days to Apply after Attendance StatusChange <span
+                    style="color:red">*</span></label>
+                <input type="number" class="form-control" name="applyPunchMissing" id="applyPunchMissing"
+                  placeholder="No of Days" [(ngModel)]="RulesMasterItem.applyPunchMissing"
+                  ngControl="RulesMasterItem.applyPunchMissing" #applyPunchMissing="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block" *ngIf="!applyPunchMissing.valid && applyPunchMissing.touched">Please enter
+                  days.</span>
+              </div>
+              <div class="col-sm-3">
+                <label for="missingPunchRequestCount"> Missing/Forget Punches Request Count<span
+                    style="color:red">*</span></label>
+                <input type="number" class="form-control" name="missingPunchRequestCount" id="missingPunchRequestCount"
+                  placeholder="Missing Punch Count" [(ngModel)]="RulesMasterItem.missingPunchesRequestCount"
+                  ngControl="RulesMasterItem.missingPunchRequestCount" #missingPunchRequestCount="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block"
+                  *ngIf="!missingPunchRequestCount.valid && missingPunchRequestCount.touched">Please enter
+                  count.</span>
+              </div>
+              <div class="col-sm-3">
+                <label for="attendanceStatusChangeCount"> Attendance Status Change Count<span
+                    style="color:red">*</span></label>
+                <input type="number" class="form-control" name="attendanceStatusChangeCount"
+                  id="attendanceStatusChangeCount" placeholder="Status Change Count"
+                  [(ngModel)]="RulesMasterItem.attendanceStatusChangeCount"
+                  ngControl="RulesMasterItem.attendanceStatusChangeCount" #attendanceStatusChangeCount="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block"
+                  *ngIf="!attendanceStatusChangeCount.valid && attendanceStatusChangeCount.touched">Please enter
+                  count.</span>
+              </div>
+              <div class="col-sm-3">
+                <label for="lopReimbursement"> LOP Reimbursement Validity(In Months)<span
+                    style="color:red">*</span></label>
+                <input type="number" class="form-control" name="lopReimbursement" id="lopReimbursement"
+                  placeholder="LOP Reimbursement (in months)" [(ngModel)]="RulesMasterItem.lopReimbursement"
+                  ngControl="RulesMasterItem.lopReimbursement" #lopReimbursement="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block" *ngIf="!lopReimbursement.valid && lopReimbursement.touched">Please enter
+                  count.</span>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="permissionCountType">Permission Count Type <span style="color:red">*</span></label>
+                <select [(ngModel)]="RulesMasterItem.permissionCountType" class="form-control" id="permissionCountType"
+                  name="permissionCountType" matTooltip="Blood Group" #permissionCountType="ngModel" required>
+                  <option [ngValue]="undefined" disabled [selected]="true"> Select an Option </option>
+                  <option>COUNT WISE</option>
+                  <option>MINUTE WISE</option>
+                </select>
+                <span class="help-block" *ngIf="!permissionCountType.valid && permissionCountType.touched">Please select
+                  type.</span>
+              </div>
+              <div class="col-sm-3" *ngIf="RulesMasterItem.permissionCountType=='COUNT WISE'">
+                <label for="PermissionCount"> Permission Count/Month<span style="color:red">*</span></label>
+                <input type="number" class="form-control" name="PermissionCount" id="PermissionCount"
+                  placeholder="Permission Count" [(ngModel)]="RulesMasterItem.permissionCount"
+                  ngControl="RulesMasterItem.permissionCount" #PermissionCount="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block" *ngIf="!PermissionCount.valid && PermissionCount.touched">Please enter
+                  count.</span>
+              </div>
+              <div class="col-sm-3" *ngIf="RulesMasterItem.permissionCountType=='MINUTE WISE'">
+                <label for="permissionCountPerMonth"> No of Permissions/Month<span style="color:red">*</span></label>
+                <input type="number" class="form-control" name="permissionCountPerMonth" id="permissionCountPerMonth"
+                  placeholder="Permission Count" [(ngModel)]="RulesMasterItem.permissionCountPerMonth"
+                  ngControl="RulesMasterItem.permissionCountPerMonth" #permissionCountPerMonth="ngModel"
+                  (keypress)="keyPressAllowOnlyNumber($event)" required>
+                <span class="help-block"
+                  *ngIf="!permissionCountPerMonth.valid && permissionCountPerMonth.touched">Please enter
+                  count.</span>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-12" *ngIf="RulesMasterItem.permissionCountType=='MINUTE WISE'">
+                <table class="table table-bordered table-striped">
+                  <tr>
+                    <th>Swipe Type</th>
+                    <th>Total Minutes / Month</th>
+                    <th>Maximun Permission Minutes Allowed Per Day</th>
+                  </tr>
+                  <tr>
+                    <td><b>In</b></td>
+                    <td><input type="text" class="form-control" name="perInMinMinutes" id="perInMinMinutes"
+                        placeholder="Permission Count" [(ngModel)]="RulesMasterItem.perInMinMinutes"
+                        ngControl="RulesMasterItem.perInMinMinutes" #perInMinMinutes="ngModel"
+                        (keypress)="keyPressAllowOnlyNumber($event)" required></td>
+                    <td><input type="text" class="form-control" name="perInMaxMinitues" id="perInMaxMinitues"
+                        placeholder="Permission Count" [(ngModel)]="RulesMasterItem.perInMaxMinitues"
+                        ngControl="RulesMasterItem.perInMaxMinitues" #perInMaxMinitues="ngModel"
+                        (keypress)="keyPressAllowOnlyNumber($event)" required></td>
+                  </tr>
+                  <tr>
+                    <td><b>Out</b></td>
+                    <td>
+                      <input type="text" class="form-control" name="pMinimumMin" id="pMinimumMin"
+                        placeholder="Permission Count" [(ngModel)]="RulesMasterItem.pMinimumMin"
+                        ngControl="RulesMasterItem.pMinimumMin" #pMinimumMin="ngModel"
+                        (keypress)="keyPressAllowOnlyNumber($event)" required>
+                    </td>
+                    <td>
+                      <input type="text" class="form-control" name="pMaxMin" id="pMaxMin" placeholder="Permission Count"
+                        [(ngModel)]="RulesMasterItem.pMaxMin" ngControl="RulesMasterItem.pMaxMin" #pMaxMin="ngModel"
+                        (keypress)="keyPressAllowOnlyNumber($event)" required>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <button title="Add Rows" [matTooltipPosition]="'below'" matTooltip="Click to Add more Rows"
+                (click)="onAddLineClick(i);" class="btn btn-info">
+                <i class="fa fa-plus"></i> Add New Line</button>
+              <table class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th class="col-sm-1">Sl.No</th>
+                    <th class="col-sm-3">Shift Code</th>
+                    <th class="col-sm-1">Avail Flexi Hours</th>
+                    <th class="col-sm-2">Flexi Start Time</th>
+                    <th class="col-sm-2">No. of Working Hours</th>
+                    <th class="col-sm-1">Avail Shift Allowance</th>
+                    <th class="col-sm-2">Allowance Amount</th>
+                    <th> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let dep of AllShiftList;let i=index">
+                    <td class="col-sm-1">{{i+1}}</td>
+                    <td><select [(ngModel)]="dep.shiftCode" class="form-control" [id]="'shiftCode'+dep.id"
+                        [name]="'shiftCode'+dep.id" #shiftCode="ngModel" required>
+                        <option [ngValue]="null" disabled [selected]="true">--Select Shift--</option>
+                        <option *ngFor="let shift of ShiftList" value="{{shift.shiftCode}}">{{shift.shiftCode}} -
+                          {{binddatetime(shift.shiftStartTime) | date:'hh:mm a'}} :
+                          {{binddatetime(shift.shiftEndTime) | date:'hh:mm a'}}</option>
+                      </select>
+                    </td>
+                    <td style="text-align: center;"><input type="checkbox" [id]="'flexi'+dep.id" [name]="'flexi'+dep.id"
+                        [(ngModel)]="dep.availFlexiHours">
+                    </td>
+                    <td><input type="time" matTooltip="Click to change Time" [name]="'flexiStartTime'+dep.id"
+                        class="form-control" placeholder="HH:MM" [id]="'flexiStartTime'+dep.id"
+                        [(ngModel)]="dep.flexiStartTime" #flexiStartTime="ngModel">
+                    </td>
+                    <td><input type="number" matTooltip="Click to set working hours" [name]="'workHours'+dep.id"
+                        placeholder="Enter Working hours" [id]="'workHours'+dep.id" class="form-control"
+                        [(ngModel)]="dep.workHours" #workHours="ngModel">
+                    </td>
+                    <td style="text-align: center;"><input type="checkbox" [id]="'shiftAllowance'+dep.id"
+                        [name]="'shiftAllowance'+dep.id" [(ngModel)]="dep.shiftAllowance">
+                    </td>
+                    <td><input matTooltip="Click to set allowance amount" [name]="'allowanceAmount'+dep.id"
+                        placeholder="Enter Allowance amount" class="form-control" [id]="'allowanceAmount'+dep.id"
+                        [(ngModel)]="dep.allowanceAmount" #allowanceAmount="ngModel">
+                    </td>
+                    <td>
+                      <button (click)="RemoveLine(dep);" matTooltip="Click to delete" title="Click to remove this line"
+                        class="btn btn-danger">
+                        <i class="fa fa-trash"></i>&nbsp; Delete
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-success" (click)="onSaveRulesMaster()"
+          [disabled]="isLoadingPop || !RulesMasterForm.valid"> <i class="fas fa-thumbs-up"></i>&nbsp;
+          {{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-default" (click)="getRulesMasterList()"
+          style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Delete Rule</h4>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+
+        <form #EmpShiftForm="ngForm">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-3">
+                <label for="code">Shift Code</label>
+                <input type="text" class="form-control" name="shiftCode" id="shiftCode" placeholder="Shift Code"
+                  [(ngModel)]="RulesMasterItem.shiftCode" ngControl="RulesMasterItem.shiftCode" #shiftCode="ngModel"
+                  maxlength="50" readonly>
+              </div>
+              <div class="col-sm-5">
+                <label for="code">Shift Name</label>
+                <input type="text" class="form-control" name="shiftName" id="shiftName" placeholder="Shift Name"
+                  [(ngModel)]="RulesMasterItem.shiftName" ngControl="RulesMasterItem.shiftName" #shiftName="ngModel"
+                  readonly>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-sm-12" [ngClass]="(!deletedReason.valid && deletedReason.touched)?'has-error':''">
+                <label for="deletedReason"><i class="fa fa-times-circle-o"
+                    *ngIf="!deletedReason.valid && deletedReason.touched"></i> Reason For Deletion<span
+                    style="color:red">*</span></label>
+                <textarea type="text" class="form-control" name="deletedReason" id="deletedReason"
+                  placeholder="Shift Code" [(ngModel)]="RulesMasterItem.deletedReason"
+                  ngControl="RulesMasterItem.deletedReason" placeholder="Enter Reason of Max 150 characters"
+                  (change)="RulesMasterItem.deletedReason=RulesMasterItem.deletedReason.trim()" #deletedReason="ngModel"
+                  required maxlength="150"
+                  (input)="RulesMasterItem.deletedReason=$event.target.value.toUpperCase()"></textarea>
+                <span class="help-block" *ngIf="!deletedReason.valid && deletedReason.touched">Please Enter
+                  Reason.</span>
+              </div>
+            </div>
+            <br>
+          </div>
+          <br>
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-danger" (click)="deleteRulesMaster()"
+          [disabled]="isLoadingPop || !EmpShiftForm.valid"> <i class="fa fa-trash"></i>&nbsp; Delete</button>
+        <button type="button" class="btn btn-default" (click)="getRulesMasterList()"
+          style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

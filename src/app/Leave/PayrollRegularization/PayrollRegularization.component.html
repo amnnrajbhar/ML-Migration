@@ -1,0 +1,418 @@
+<section class="content-header">
+    <h1>
+        PayRoll Regularization
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active"> PayRoll Regularization</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title"> PayRoll Regularization</h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <!-- <div class="col-xs-6">
+            <button type="button" class="btn btn-primary pull-right"
+              (click)="onAddRulesMaster(false,RulesMasterItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add
+              New Rule</button>
+          </div> -->
+        </div>
+
+        <div class="datafilter">
+            <div class="col-sm-12">
+                <div class="box">
+                    <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                        <h3 class="box-title">Regularization Type</h3>
+                    </div>
+                    <div class="box-body">
+
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <mat-radio-group aria-label="Select option?" id="filterType" name="filterType"
+                                    [(ngModel)]="filterType" [disabled]="isEdit" ngControl="filterType"
+                                    #filterTypeEnt="ngModel">
+                                    <mat-radio-button (change)="reInitDatatable()"
+                                        value="0">Individual</mat-radio-button>
+                                    <!-- &nbsp;&nbsp;&nbsp;
+                                    <mat-radio-button (change)="reInitDatatable()" value='2'>Mass
+                                        Update</mat-radio-button> -->
+                                </mat-radio-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="filterType=='2'">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="baseplant"> Plant <span style="color: red;">*</span> </label>
+                            <select [(ngModel)]="filterLocation" class="form-control" id="plant" name="plant"
+                                matTooltip="plant" #plantEnt="ngModel">
+                                <option [ngValue]="null" disabled [selected]="true"> Select Plant </option>
+                                <option *ngFor="let pl of plantList" value={{pl.id}}>{{pl.code}}-{{pl.name}}</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="payGroup"> Pay Group</label>
+                            <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup" name="payGroup"
+                                matTooltip="Pay Group" #payGroup1Ent="ngModel">
+                                <option [ngValue]="null" disabled [selected]="true"> Select Pay Group </option>
+                                <option *ngFor="let pl of payGroupList" value={{pl.id}}>{{pl.short_desc}}</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="empcat">Employee Category</label>
+                            <select [(ngModel)]="filterCategory" class="form-control" id="empcat" name="empcat"
+                                matTooltip="staff Cat" #empcatEnt="ngModel">
+                                <option [ngValue]="null" disabled [selected]="true"> Select Employee Category
+                                </option>
+                                <option *ngFor="let pl of empCatList" value={{pl.id}}>{{pl.catltxt}}</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="dept">Department</label>
+                            <select [(ngModel)]="filterDepartment" class="form-control" id="dept" name="dept"
+                                matTooltip="Department" #deptEnt="ngModel">
+                                <option [ngValue]="null" disabled [selected]="true"> Select Department </option>
+                                <option *ngFor="let pl of departmentList" value={{pl.id}}>{{pl.name}}</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="sdept">Sub Department</label>
+                            <select [(ngModel)]="filterSubDepartment" class="form-control" id="sdept" name="sdept"
+                                matTooltip="Sub Department" #sdeptEnt="ngModel">
+                                <option [ngValue]="null" disabled [selected]="true"> Select Sub Department
+                                </option>
+                                <option *ngFor="let pl of subDeptList" value={{pl.id}}>{{pl.sdptidstxt}}</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="monthName">Month <span style="color: red;">*</span></label>
+                            <select [(ngModel)]="month" class="form-control" id="monthName" name="monthName" required>
+                                <option [ngValue]="null">Select Month</option>
+                                <option *ngFor="let location of MonthsList" value="{{location.id}}">
+                                    {{location.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <label>&nbsp;</label>
+                        <div class="form-group">
+                            <button class="btn btn-primary " (click)="getFilteredList();" matTooltip="click to go"><i
+                                    class="fas fa-angle-double-right"></i>&nbsp; Go</button>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-primary " (click)="clearFilter();" matTooltip="click to reset"><i
+                                    class="fas fa-times"></i>&nbsp; Clear</button>
+                            &nbsp;&nbsp;
+                            <!-- <button class="btn btn-primary " (click)="exportExcel();"
+                                    matTooltip="click to export"><i
+                                        class="fa fa-excel">Export to Excel</i> </button> -->
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box" *ngIf="filterType=='0'">
+                    <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                        <h3 class="box-title">Employee Information</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label for="EmployeeId"> Employee Id <span style="color: red;">*</span></label>
+                                <input type="text" [(ngModel)]="filterEmployeeId" class="form-control" id="EmployeeId"
+                                    placeholder="EmployeeId" name="EmployeeId" ngControl="EmployeeId"
+                                    (input)="GetEmpDetails(filterEmployeeId)" #EmployeeIdEnt="ngModel" required>
+                            </div>
+                            <div class="col-sm-3">
+                                <label for="EmployeeId"> Employee Name</label>
+                                <input type="text" [(ngModel)]="filterEmployeeName" class="form-control"
+                                    id="Employeename" placeholder="Name" name="Employeename"
+                                    ngControl="filterEmployeeName" #EmployeenameEnt="ngModel" disabled>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="baseplant"> Plant <span style="color: red;">*</span> </label>
+                                    <select [(ngModel)]="filterLocation" class="form-control" id="plant" name="plant"
+                                        matTooltip="plant" #plantEnt="ngModel">
+                                        <option [ngValue]="undefined" disabled [selected]="true"> Select Plant </option>
+                                        <option *ngFor="let pl of locationList" value="{{pl.id}}">
+                                            {{pl.code}}-{{pl.name}}
+                                        </option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="payGroup"> Pay Group</label>
+                                    <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup"
+                                        name="payGroup" matTooltip="Pay Group" #payGroup1Ent="ngModel" disabled>
+                                        <option [ngValue]="undefined" disabled [selected]="true"> Select Pay Group
+                                        </option>
+                                        <option *ngFor="let pl of payGroupList" value="{{pl.id}}">{{pl.short_desc}}
+                                        </option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="empcat">Employee Category</label>
+                                    <select [(ngModel)]="filterCategory" class="form-control" id="empcat" name="empcat"
+                                        matTooltip="staff Cat" #empcatEnt="ngModel" disabled>
+                                        <option [ngValue]="undefined" disabled [selected]="true"> Select Employee
+                                            Category
+                                        </option>
+                                        <option *ngFor="let pl of empCatList" value="{{pl.id}}">{{pl.catltxt}}</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="startDate">
+                                        Date <span style="color:red">*</span>
+                                    </label>
+                                    <div class='input-group date'>
+                                        <input id="startDate" name="startDate" class="form-control"
+                                            [(ngModel)]="fromDate" [max]="today" [owlDateTime]="dtStart"
+                                            [owlDateTimeTrigger]="dtStart" [matTooltipPosition]="'below'"
+                                            matTooltip="Click to change startDate" #startDate1="ngModel"
+                                            [disabled]="isEdit" (change)="getAttendanceDetails()" required>
+                                        <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                    <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+                                    <span class="help-block" *ngIf="!startDate1.valid && startDate1.touched">Please
+                                        enter Date.</span>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-3">
+                                <label>&nbsp;</label>
+                                <div class="form-group">
+                                    <button class="btn btn-success " (click)="getAttendanceDetails();"
+                                        matTooltip="click to go"><i class="fa fa-search-plus"></i>&nbsp; Search</button>
+                                    &nbsp;&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+        <div class="box" *ngIf="filterType=='0'">
+            <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                <h3 class="box-title">Punch Timings</h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-striped table-bordered">
+                    <!-- <tr style="background-color: #b2d1e5;">
+                        <td colspan="7" style="width: 100%; text-align: center;">
+                            <strong><b>Attendance Details</b></strong>
+                        </td>
+                    </tr> -->
+                    <tr style="background-color: #b2d1e5;">
+                        <th style="width: 10%;">Emp Code</th>
+                        <th style="width: 15%;">Date</th>
+                        <th style="width: 10%;">Day</th>
+                        <th style="width: 10%;">In Time</th>
+                        <th style="width: 10%;">Out Time</th>
+                        <th style="width: 15%;">In Status</th>
+                        <th style="width: 15%;">Out Status</th>
+                        <th style="width: 15%;">Shift</th>
+                    </tr>
+                    <tr *ngFor="let ty of attendanceDetails; let i = index">
+                        <td>{{filterEmployeeId}}</td>
+                        <td>{{ty.date1}}</td>
+                        <td>{{ty.day}}</td>
+                        <td>{{ty.inTime}}</td>
+                        <td>{{ty.outTime}}</td>
+                        <td>{{ty.inStatus}}</td>
+                        <td>{{ty.outStatus}}</td>
+                        <td>{{ty.shift}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+        <div class="box" *ngIf="filterType =='0' || filterType =='2'">
+            <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                <h3 class="box-title" style="text-align: center;">Lost Entry</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="shift"> Swipe Type <span style="color: red;">*</span> </label>
+                            <select [(ngModel)]="SwipeType" class="form-control" id="shift" name="shift"
+                                (change)="CheckSwipeStatus(SwipeType);" matTooltip="SwipeType" #shiftEnt="ngModel"
+                                required [disabled]="DisableUpdate">
+                                <option [ngValue]="null" disabled [selected]="true"> --Select --</option>
+                                <option>In</option>
+                                <option>Out</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="Count"> Reason <span style="color: red;">*</span></label>
+                            <select [(ngModel)]="Reason" class="form-control" id="Count" name="Count"
+                                matTooltip="Reason" #CountEnt="ngModel" [disabled]="DisableUpdate">
+                                <option [ngValue]="null" disabled [selected]="true"> Select Reason </option>
+                                <option>Late</option>
+                                <option>Special Approval</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="Remarks"> Remarks </label>
+                        <input type="text" [(ngModel)]="Remarks" class="form-control" id="Remarks" placeholder="Remarks"
+                            name="Remarks" ngControl="Remarks" #RemarksEnt="ngModel" [disabled]="DisableUpdate">
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="ltCount"> Late Count </label>
+                        <input type="text" [(ngModel)]="LateCount" class="form-control" id="ltCount"
+                            placeholder="Late Count" name="ltCount" ngControl="LateCount" #ltCountEnt="ngModel" readonly
+                            [disabled]="DisableUpdate">
+                    </div>
+                </div>
+                <div class="row" style="text-align: center;">
+                    <div class="col-sm-2" *ngIf="!DisableUpdate && filterType == 0">
+                        <label>&nbsp;</label><br>
+                        <button class="btn btn-success " (click)="UpdateManualEntry();" matTooltip="click to update"><i
+                                class="fas fa-angle-double-right"></i>&nbsp; Update</button>
+                    </div>
+                    <div class="col-sm-2" *ngIf="filterType == '2'">
+                        <label>&nbsp;</label><br>
+                        <button class="btn btn-success " (click)="MassUpdate();" matTooltip="click to update"><i
+                                class="fas fa-angle-double-right"></i>&nbsp; Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box-body table-responsive" *ngIf="filterType=='0'">
+
+            <table id="location" class="table table-bordered table-striped">
+                <thead style="background-color: #68a7d2;color:white;">
+
+                    <tr>
+                        <!-- <th>
+                            <input type="checkbox" [(ngModel)]="isMasterSel" name="list_name"
+                                (change)="checkUncheckAll()">
+                            &nbsp;&nbsp;&nbsp;
+                            <label for="selectall">Select All</label>
+                        </th> -->
+                        <th>SNo</th>
+                        <th>Emp Code</th>
+                        <th>Emp Name</th>
+                        <th>Swipe Date</th>
+                        <th>Swipe Type</th>
+                        <th>Reason Type</th>
+                        <th>Swipe Time</th>
+                        <th>Previous Time</th>
+                        <th>Remarks</th>
+                        <th>Created Date</th>
+                        <!-- <th class="col-sm-1"></th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let lm of ManualEntryList; let i = index">
+                        <!-- <td> <input type="checkbox" [id]="'chkusage'+lm.id" [name]="'send'+lm.id"
+                                [(ngModel)]="lm.isSelected" (change)="isAllSelected()" #usageEnt="ngModel">
+                        </td> -->
+                        <td>{{i+1}}</td>
+                        <td>{{lm.pernr}}</td>
+                        <td>{{lm.empFullName}}</td>
+                        <td>{{lm.startDate}}</td>
+                        <td>{{lm.inOut=='I'?'In':'Out'}}</td>
+                        <td>{{lm.reasonType }}</td>
+                        <td>{{lm.time }}</td>
+                        <td>{{lm.previousTime }}</td>
+                        <td>{{lm.remarks }}</td>
+                        <td>{{lm.createdDate | date : 'dd/MM/yyyy' }}</td>
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="box-body table-responsive" *ngIf=" filterType==2">
+
+            <table id="location" class="table table-bordered table-striped">
+                <thead style="background-color: #68a7d2;color:white;">
+                    <tr>
+                        <th>
+                            <input type="checkbox" [(ngModel)]="isMasterSel" name="list_name"
+                                (change)="checkUncheckAll()">
+                            &nbsp;&nbsp;&nbsp;
+                            <label for="selectall">Select All</label>
+                        </th>
+                        <th>Month</th>
+                        <th>Emp Code</th>
+                        <th>Emp Name</th>
+                        <th>Plant</th>
+                        <th>Pay Group</th>
+                        <th>Employee Category</th>
+                        <th>Designation</th>
+                        <th>Department</th>
+                        <th>DOJ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let lm of ManualEntryEmpList; let i = index">
+                        <td> <input type="checkbox" [id]="'chkusage'+lm.id" [name]="'send'+lm.id"
+                                [(ngModel)]="lm.isSelected" (change)="isAllSelected()" #usageEnt="ngModel">
+                        </td>
+                        <td>{{lm.swipeCount}}</td>
+                        <td>{{lm.employeeId}}</td>
+                        <td>{{lm.empName}}</td>
+                        <td>{{lm.plant}}</td>
+                        <td>{{lm.payGroup}}</td>
+                        <td>{{lm.empCat }}</td>
+                        <td>{{lm.designation }}</td>
+                        <td>{{lm.department }}</td>
+                        <td>{{lm.joiningDate | date : 'dd/MM/yyyy' }}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="overlay" *ngIf="isLoading">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,273 @@
+<section class="content-header">
+  <h1 class="display-1">Security Loading Report</h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i></a>Home</li>
+    <li class="active">Reports</li>
+  </ol>
+</section>
+
+
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title"> </h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+    </div>
+
+
+    <!--Type of Reoort and Type Filter-->
+    <div class="box-body">
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <input [(ngModel)]="Invoice" class="form-control" id="invoice" placeholder="Enter Invoice No" name="Invoice"
+              ngControl="filterDCLabel">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <label> &nbsp;</label>
+            <button class="btn btn-primary btn-sm" (click)="getReport(Invoice);" matTooltip="Click to get data"
+              [disabled]="Invoice==null">Get Data</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm" (click)="downloadPDF()" matTooltip="click to print the report"
+              [disabled]="!VerifiedModel.length>0">Print Report</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="table-responsive">
+    <h3> Security Verification Report</h3>
+    <table title="Security Verification Report" class="table table-striped">
+      <thead style="background-color: #68a7d2; color:white;">
+        <tr>
+          <th style="text-align: center;">Sl No</th>
+          <th style="text-align: center;">Barcode</th>
+          <th style="text-align: center;">Sl No</th>
+          <th style="text-align: center;">Barcode</th>
+          <th style="text-align: center;">Sl No</th>
+          <th style="text-align: center;">Barcode</th>
+          <th style="text-align: center;">Sl No</th>
+          <th style="text-align: center;">Barcode</th>
+          <!-- <th>Sl No</th>
+          <th>Barcode</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of BarcodeModel; let i = index">
+          <td>{{item.slno1}}</td>
+          <td>{{item.barcode1}}</td>
+          <td>{{item.slno2}}</td>
+          <td>{{item.barcode2}}</td>
+          <td>{{item.slno3}}</td>
+          <td>{{item.barcode3}}</td>
+          <td>{{item.slno4}}</td>
+          <td>{{item.barcode4}}</td>
+          <!-- <td>{{item.slno5}}</td>
+          <td>{{item.barcode5}}</td> -->
+        </tr>
+      </tbody>       
+    </table>
+    &nbsp;&nbsp;
+      <table title="Userwise Summary" class="table table-striped">
+        <thead style="background-color: #68a7d2; color:white;">
+              <tr>
+                  <th colspan="5" style="text-align: center;">
+                      Userwise Summary</th>
+              </tr>
+              <tr>
+                  <th>Verified By </th>
+                  <th>Total Shippers Verified</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Total Verified Time</th>
+              </tr>
+          </thead>
+          <tbody class="table table-striped table-bordered1">
+              <tr *ngFor="let item of userwisesummary; let i = index">
+                  <td style="width: 13%;">{{item.doneBy}}</td>
+                  <td style="width: 19%;">{{item.shippers}}</td>
+                  <td style="width: 22%;">{{item.starttime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                  <td style="width: 22%;">{{item.endtime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                  <td style="width: 24%;">{{item.totalpickedtime}}</td>
+              </tr>
+          </tbody>
+      </table>
+      &nbsp;&nbsp;
+      <table title="Summary" class="table table-striped">
+        <thead style="background-color: #68a7d2; color:white;">
+              <tr>
+                  <th colspan="5" style="text-align: center;">
+                      Total Summary</th>
+              </tr>
+              <tr>
+                  <th>Total Verifiers</th>
+                  <th>Total Shippers Verified</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Total Verified Time</th>
+              </tr>
+          </thead>
+          <tbody class="table table-striped table-bordered1">
+              <tr *ngFor="let item of summary; let i = index">
+                  <td style="width: 13%;">{{item.totalpickers}}</td>
+                  <td style="width: 19%;">{{item.totalshippers}}</td>
+                  <td style="width: 22%;">{{item.starttime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                  <td style="width: 22%;">{{item.endtime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                  <td style="width: 24%;">{{item.totaltransfertime}}</td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+
+  <div hidden id="pdf" class="table table-bordered1" style="align-items: center;">
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <div class="text-center" style="align-items: center;">
+      <table>
+        
+        <thead>
+          <tr>
+            <th colspan="4" style="text-align: left; border-right: none;">
+                Transporter Name : {{transportername}}</th>
+                <th colspan="2" style="text-align: right; border-left: none;">
+                  Date : {{transportdate | date: 'dd-MM-yyyy'}}</th>
+        </tr>
+      
+      <tr>
+        <th colspan="6" style="text-align: left;">
+            Vehicle No : {{vehicleno}}</th>
+        
+    </tr>
+          <tr>
+            <th>Sl No</th>
+            <th>Invoice No</th>
+            <th>Invoice Date</th>
+            <th>Customer Name & City</th>
+            <th>DC No</th>
+            <th>No. Of Shippers <br>(Full/Loose)</th>
+          </tr>
+        <tbody>
+          <tr *ngFor="let item of dataTable; let i = index">
+            <td style="width: 10%;">{{i+1}}</td>
+            <td style="vertical-align: middle; align-items: center; text-align: center; width: 15%;"
+              [attr.rowspan]="item.taskColumnSpan" *ngIf="item.taskColumnSpan">{{item.invoiceNo}}</td>
+              <td style="vertical-align: middle; align-items: center; text-align: center; width: 15%;"
+              [attr.rowspan]="item.taskColumnSpan" *ngIf="item.taskColumnSpan">{{item.invoiceDate | date: 'dd-MM-yyyy'}}</td>
+              <td style="vertical-align: middle; text-align: left; width: 30%;"
+              [attr.rowspan]="item.taskColumnSpan" *ngIf="item.taskColumnSpan">{{item.customerName}} & {{item.city}}</td>
+            <td style="width: 15%;">{{item.dcNo}}</td>
+            <td style="vertical-align: middle; align-items: center; text-align: center; width: 15%;" *ngIf="(InvoiceModel[i-1]?.invoiceNo != InvoiceModel[i]?.invoiceNo) || (i == 0)" [attr.rowspan]="this.groupbyinvoiceforsum[InvoiceModel[i]?.invoiceNo].count">
+              {{this.groupbyinvoiceforsum[InvoiceModel[i]?.invoiceNo]?.aggregationf}} / {{this.groupbyinvoiceforsum[InvoiceModel[i]?.invoiceNo]?.aggregationl}}
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+              <td colspan="5" style="text-align:right;"><strong>Total Shippers</strong></td>
+              <td colspan="1" style="text-align:center;">{{this.summary[0].totalshippers}}</td>
+          </tr>
+      </tfoot>
+      </table>
+      &nbsp;&nbsp;&nbsp;
+      <table>
+        <thead>
+          <tr>
+            <th colspan="8" style="text-align: center;">
+              Verified Shipper Barcodes</th>
+          </tr>
+          <tr>
+            <th style="text-align: center;">Sl No</th>
+            <th style="text-align: center;">Barcode</th>
+            <th style="text-align: center;">Sl No</th>
+            <th style="text-align: center;">Barcode</th>
+            <th style="text-align: center;">Sl No</th>
+            <th style="text-align: center;">Barcode</th>
+            <th style="text-align: center;">Sl No</th>
+            <th style="text-align: center;">Barcode</th>
+            <!-- <th>Sl No</th>
+            <th>Barcode</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of BarcodeModel; let i = index">
+            <td style="width: 5%;">{{item.slno1}}</td>
+            <td style="width: 20%;">{{item.barcode1}}</td>
+            <td style="width: 5%;">{{item.slno2}}</td>
+            <td style="width: 20%;">{{item.barcode2}}</td>
+            <td style="width: 5%;">{{item.slno3}}</td>
+            <td style="width: 20%;">{{item.barcode3}}</td>
+            <td style="width: 5%;">{{item.slno4}}</td>
+            <td style="width: 20%;">{{item.barcode4}}</td>
+            <!-- <td>{{item.slno5}}</td>
+            <td>{{item.barcode5}}</td> -->
+          </tr>
+        </tbody>       
+      </table>
+      &nbsp;&nbsp;
+      <table title="Userwise Summary" class="table table-striped">
+          <thead>
+              <tr>
+                  <th colspan="5" style="text-align: center;">
+                      Userwise Summary</th>
+              </tr>
+              <tr>
+                  <th>Verified By </th>
+                  <th>Total Shippers Verified</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Total Verified Time</th>
+              </tr>
+          </thead>
+          <tbody class="table table-striped table-bordered1">
+              <tr *ngFor="let item of userwisesummary; let i = index">
+                  <td style="width: 13%;">{{item.doneBy}}</td>
+                  <td style="width: 19%;">{{item.shippers}}</td>
+                  <td style="width: 22%;">{{item.starttime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                  <td style="width: 22%;">{{item.endtime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                  <td style="width: 24%;">{{item.totalpickedtime}}</td>
+              </tr>
+          </tbody>
+      </table>
+      &nbsp;&nbsp;
+      <table title="Summary" class="table table-striped">
+          <thead>
+              <tr>
+                  <th colspan="5" style="text-align: center;">
+                      Total Summary</th>
+              </tr>
+              <tr>
+                  <th>Total Verifiers</th>
+                  <th>Total Shippers Verified</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Total Verified Time</th>
+              </tr>
+          </thead>
+          <tbody class="table table-striped table-bordered1">
+              <tr *ngFor="let item of summary; let i = index">
+                  <td style="width: 13%;">{{item.totalpickers}}</td>
+                  <td style="width: 19%;">{{item.totalshippers}}</td>
+                  <td style="width: 22%;">{{item.starttime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                  <td style="width: 22%;">{{item.endtime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                  <td style="width: 24%;">{{item.totaltransfertime}}</td>
+              </tr>
+          </tbody>
+      </table>
+    </div>
+  
+    &nbsp;&nbsp;&nbsp;
+    <!-- <table class="table table-bordered1">
+    <tr>
+      <td style="width: 490px;"><strong>Posted By:</strong>{{PostedBy}}</td>
+      <td style="width: 490px;"> <strong>Posted On :</strong>{{PostedOn | date:'dd/MM/yyyy'}}</td>
+    </tr>
+  </table> -->
+  </div>
+</section>

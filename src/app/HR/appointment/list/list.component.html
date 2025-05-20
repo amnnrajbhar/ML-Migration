@@ -1,0 +1,464 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Appointments List
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Appointments List</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+      <div class="row form-group">
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Plant</label>
+          <div class="col-md-8">
+            <select [(ngModel)]="filterModel.selectedPlantId" class="form-control" id="plant" name="plant"
+              (change)="getPayGroupList()">
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.code}} - {{pll.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Pay Group</label>
+          <div class="col-md-8">
+            <select [(ngModel)]="filterModel.selectedPayGroupId" class="form-control" id="paygroup" name="paygroup"
+              matTooltip="paygroup" >
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Employee Category</label>
+          <div class="col-md-8">
+            <select [(ngModel)]="filterModel.selectedEmployeeCategoryId" class="form-control" id="employeecategory"
+              name="employeecategory" matTooltip="employeecategory">
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Department</label>
+          <div class="col-md-8">
+            <select [(ngModel)]="filterModel.selectedDepartmentId" class="form-control" id="departmentId"
+            name="departmentId" matTooltip="Department Id" (change)="onDepartmentChange($event)">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of departmentList" [ngValue]="cl.id">{{cl.description}}</option>
+          </select>
+          </div>
+        </div>
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Sub Department</label>
+          <div class="col-md-8">
+            <select [(ngModel)]="filterModel.selectedSubDepartmentId" class="form-control" id="subDepartmentId"
+            name="subDepartmentId" matTooltip="Sub-Department Id">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of subDepartmentList" [ngValue]="cl.id">{{cl.sdptidLtxt}}</option>
+          </select>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Status</label>
+          <div class="col-md-8">
+            <select [(ngModel)]="filterModel.selectedStatus" class="form-control" id="status" name="status"
+              #statusEnt="ngModel">
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let sl of statusList" [ngValue]="sl.type">{{sl.type}}</option>
+            </select> </div>
+        </div>
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">From Date</label>
+          <div class="col-md-8">
+            <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control"
+              [(ngModel)]="filterModel.selectedFromdate" #fromDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+          </div>
+        </div>
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">To Date</label>
+          <div class="col-md-8">
+            <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="ToDate" class="form-control"
+              [(ngModel)]="filterModel.selectedTodate" #toDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+          </div>
+        </div>
+      </div>
+
+      <div class="row form-group">
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Emp. Name/No</label>
+          <div class="col-md-8">
+            <input name="name" class="form-control" id="name" [(ngModel)]="filterModel.name" />
+          </div>
+        </div>
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Appoitment ID</label>
+          <div class="col-md-8">
+            <input name="name" class="form-control" id="name" [(ngModel)]="filterModel.appointmentId" />
+          </div>
+        </div>
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Offer ID</label>
+          <div class="col-md-8">
+            <input name="name" class="form-control" id="name" [(ngModel)]="filterModel.offerId" />
+          </div>
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Employment Type</label>
+          <div class="col-md-8">
+            <select [(ngModel)]="filterModel.employmentType" class="form-control" id="employmentType" name="employmentType"
+              #employmentTypeEnt="ngModel">
+              <option value="" [selected]="true"> All </option>
+              <option *ngFor="let sl of employmentTypes" [ngValue]="sl.type">{{sl.type}}</option>
+            </select> </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-xs-4">
+          <label class="col-md-4 control-label text-right">Created By Name/No</label>
+          <div class="col-md-8">
+              <input name="createdbyname" class="form-control" id="createdbyname" [(ngModel)]="filterModel.createdbyname" />
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group text-center">
+        <button class="btn btn-primary btn-sm" (click)="getOfferList();" matTooltip="click to Go"
+          [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">
+          Filter</button>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <div>
+          <div class="btn-group">
+            <button class="btn btn-default active btn-sm columnGroup" data-group="all">All</button>
+            <button class="btn btn-default active btn-sm columnGroup" data-group="personalDetails">Personal</button>
+            <button class="btn btn-default active btn-sm columnGroup" data-group="jobDetails">Job</button>
+            <button class="btn btn-default active btn-sm columnGroup" data-group="salaryDetails">Salary</button>
+          </div>
+          <div class="pull-right">
+            <button type="button" class="btn btn-sm btn-primary" (click)="exportData()">Export</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table class="table table-hover table-striped table-bordered" id="data">
+          <thead>
+            <tr>
+
+              <th style="min-width: 150px;">Action</th>
+              <th>Appointment ID</th>
+              <th>Offer ID</th>
+              <th>Employee No</th>
+              <th>Status</th>
+              <th>Pending With / Updated By </th>
+              <th>Letter Status</th>
+              <th>Created Date</th>
+              <th>Created By</th>
+              <th class="jobDetails">Pay Group</th>
+              <th class="personalDetails">Title</th>
+              <th class="personalDetails">Name</th>
+              <!-- <th class="personalDetails">Initial</th> -->
+              <th class="personalDetails">Gender</th>
+              <th class="personalDetails">Email ID</th>
+              <th class="personalDetails">Mobile No</th>
+              <th class="jobDetails">Plant Code</th>
+              <th class="jobDetails">Plant Name</th>
+
+              <th class="jobDetails">Employee Category</th>
+              <th class="jobDetails">Location</th>
+              <th class="jobDetails">Designation</th>
+              <th class="jobDetails">Grade</th>
+              <th class="jobDetails">Role</th>
+              <th class="salaryDetails">Offered Salary</th>
+              <th class="salaryDetails">Package Type</th>
+              <th class="salaryDetails">Salary Type</th>
+              <th class="salaryDetails">Reference</th>
+              <th class="salaryDetails">Details</th>
+              <th class="salaryDetails">Recruitment Type</th>
+              <th class="salaryDetails">Employment Type</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let offer of filterData.list; let i = index">
+
+              <td style="min-width: 150px;">
+
+                <button type="button" class="btn btn-xs btn-info" (click)="view(offer.appointmentId)"
+                  [matTooltipPosition]="'after'" matTooltip="Click to view details">
+                  <i class="fas fa-eye"></i></button>
+
+                <ng-template [ngIf]="[offer.status] == 'Entry In Progress' && [offer.offerId] <= 0">
+                  <button type="button" class="btn btn-xs btn-primary" (click)="editFull(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to edit the details">
+                    <i class="fas fa-pen"></i></button>
+
+                </ng-template>
+
+                <ng-template [ngIf]="[offer.status] == 'Details Submitted'">
+                  <button type="button" class="btn btn-xs btn-primary" (click)="edit(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to edit this">
+                    <i class="fas fa-pen"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-warning" (click)="resendEntryEmail(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to resend the details entry email">
+                    <i class="fas fa-arrow-right"></i></button>
+
+                </ng-template>
+                <ng-template [ngIf]="[offer.status] == 'Joining Confirmed'">
+
+                  <button type="button" class="btn btn-xs btn-info" (click)="joiningReport(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to print joining report">
+                    <i class="fas fa-file-alt"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-primary"
+                    (click)="submitForVerification(offer.appointmentId)" [matTooltipPosition]="'after'"
+                    matTooltip="Click to submit for verification">
+                    <i class="fas fa-search"></i></button>
+                </ng-template>
+                <ng-template [ngIf]="[offer.status] == 'Pending Verification'">
+
+                  <button type="button" class="btn btn-xs btn-info" (click)="joiningReport(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to print joining report">
+                    <i class="fas fa-file-alt"></i></button>
+
+                </ng-template>
+
+                <ng-template [ngIf]="[offer.status] == 'Verified'">
+                  <a [routerLink]="['/HR/appointment/view-full', offer.appointmentId]" class="btn btn-info btn-xs"
+                    [matTooltipPosition]="'after'" matTooltip="Click to view full details">
+                    <i class="fas fa-list"></i></a>
+
+                  <button type="button" class="btn btn-xs btn-info" (click)="joiningReport(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to print joining report">
+                    <i class="fas fa-file-alt"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-success" [matTooltipPosition]="'after'"
+                    matTooltip="Click to add Official and Salary details" (click)="hrEntry(offer.appointmentId, false)">
+                    <i class="fas fa-plus"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-primary" [matTooltipPosition]="'after'"
+                    matTooltip="Click to generate Emp Code" (click)="pushDataToSAP(offer.appointmentId)">
+                    <i class="fas fa-arrow-right"></i></button>
+
+
+                </ng-template>
+                <ng-template [ngIf]="[offer.status] == 'Emp Code Generated'">
+
+                  <a [routerLink]="['/HR/appointment/view-full', offer.appointmentId]" class="btn btn-info btn-xs"
+                    [matTooltipPosition]="'after'" matTooltip="Click to view full details">
+                    <i class="fas fa-list"></i></a>
+
+                  <button type="button" class="btn btn-xs btn-info" (click)="joiningReport(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to print joining report">
+                    <i class="fas fa-file-alt"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-success" [matTooltipPosition]="'after'"
+                    matTooltip="Click to edit details" (click)="hrEntry(offer.appointmentId, false)">
+                    <i class="fas fa-pen"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-info" [matTooltipPosition]="'after'"
+                    matTooltip="Click to change in SAP" (click)="updateToSAP(offer.appointmentId)">
+                    <i class="fas fa-arrow-right"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-primary" [matTooltipPosition]="'after'"
+                    matTooltip="Click to submit for approval" (click)="submitForApproval(offer.appointmentId)">
+                    <i class="fas fa-check"></i></button>
+
+                </ng-template>
+                <ng-template [ngIf]="[offer.status] == 'Pending for Approval'">
+
+                  <a [routerLink]="['/HR/appointment/view-full', offer.appointmentId]" class="btn btn-info btn-xs"
+                    [matTooltipPosition]="'after'" matTooltip="Click to view full details">
+                    <i class="fas fa-list"></i></a>
+
+                  <button type="button" class="btn btn-xs btn-info" (click)="joiningReport(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to print joining report">
+                    <i class="fas fa-file-alt"></i></button>
+
+                </ng-template>
+                <ng-template
+                  [ngIf]="[offer.status] == 'Approved' || [offer.status] == 'Letter Sent' || [offer.status] == 'Accepted' || [offer.status] == 'Not Accepted'">
+
+                  <a [routerLink]="['/HR/appointment/view-full', offer.appointmentId]" class="btn btn-info btn-xs"
+                    [matTooltipPosition]="'after'" matTooltip="Click to view full details">
+                    <i class="fas fa-list"></i></a>
+
+                  <button type="button" class="btn btn-xs btn-info" (click)="joiningReport(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to print joining report">
+                    <i class="fas fa-file-alt"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-success" [matTooltipPosition]="'after'"
+                    matTooltip="Click to edit details" (click)="hrEntry(offer.appointmentId, true)">
+                    <i class="fas fa-pen"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-info" [matTooltipPosition]="'after'"
+                    matTooltip="Click to change in SAP" (click)="updateToSAP(offer.appointmentId)">
+                    <i class="fas fa-arrow-right"></i></button>
+
+                  <a [routerLink]="['/HR/appointment/print', offer.appointmentId]" class="btn btn-warning btn-xs"
+                    [matTooltipPosition]="'after'" matTooltip="Click to print the letter">
+                    <i class="fas fa-print"></i></a>
+
+                </ng-template>
+                <ng-template [ngIf]="[offer.status] == 'Rejected' || [offer.status] == 'Updated'">
+
+                  <a [routerLink]="['/HR/appointment/view-full', offer.appointmentId]" class="btn btn-info btn-xs"
+                    [matTooltipPosition]="'after'" matTooltip="Click to view full details">
+                    <i class="fas fa-list"></i></a>
+
+                  <button type="button" class="btn btn-xs btn-info" (click)="joiningReport(offer.appointmentId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to print joining report">
+                    <i class="fas fa-file-alt"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-success" [matTooltipPosition]="'after'"
+                    matTooltip="Click to edit details" (click)="hrEntry(offer.appointmentId, false)">
+                    <i class="fas fa-pen"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-info" [matTooltipPosition]="'after'"
+                    matTooltip="Click to change in SAP" (click)="updateToSAP(offer.appointmentId)">
+                    <i class="fas fa-arrow-right"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-primary" [matTooltipPosition]="'after'"
+                    matTooltip="Click to submit for approval" (click)="submitForApproval(offer.appointmentId)">
+                    <i class="fas fa-check"></i></button>
+
+                </ng-template>
+
+              </td>
+              <td>{{offer.appointmentId}}</td>
+              <td>{{offer.offerId}}</td>
+              <td>{{offer.employeeNo}}</td>
+              <td><span class="label label-default label-{{offer.statusColor}}">{{offer.status}}</span></td>             
+              <td>
+                <span *ngIf="offer.pendingWith">
+                  {{offer.pendingWith}}
+                </span>
+                <span *ngIf="!offer.pendingWith && offer.status != 'Accepted' && offer.status != 'Pre-joining Completed'"> 
+                  {{offer.modifiedByName}}  ({{offer.modifiedByNo}})</span>
+                <span *ngIf="offer.status == 'Accepted' || offer.status == 'Pre-joining Completed'">Candidate</span>
+              </td> 
+              <td class="letterStatus">
+                <i class="fas fa-print icon round green" *ngIf="offer.printed" [title]="'Printed: '+ (offer.printedDate | date:'dd/MM/yyyy hh:mm a') + ' by '+offer.printedByName"></i>
+                <i class="far fa-envelope icon round orange" *ngIf="offer.emailed" [title]="'Emailed: '+ (offer.emailedDate | date:'dd/MM/yyyy hh:mm a') + ' by '+offer.emailedByName"></i>
+                <i class="fas fa-download icon round blue" *ngIf="offer.downloaded" [title]="'Downloaded: '+ (offer.downloadedDate | date:'dd/MM/yyyy hh:mm a') + ' by '+offer.downloadedByName"></i>
+              </td>
+              <td>{{offer.createdDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+              <td> {{offer.createdByName}}</td>
+              <td class="jobDetails"> {{offer.payGroupName}} </td>
+              <td class="personalDetails">{{offer.title}} </td>
+              <td class="personalDetails">{{offer.firstName}} {{offer.middleName}} {{offer.lastName}}</td>
+              <!-- <td class="personalDetails">{{offer.initial}}</td> -->
+              <td class="personalDetails"> {{offer.gender}} </td>
+              <td class="personalDetails"> {{offer.personalEmailId}} </td>
+              <td class="personalDetails"> {{offer.mobileNo}}</td>
+              <td class="jobDetails">{{offer.plantCode}}</td>
+              <td class="jobDetails">{{offer.plantName}} </td>
+
+              <td class="jobDetails"> {{offer.employeeCategoryName}} </td>
+              <td class="jobDetails">{{offer.location}} </td>
+              <td class="jobDetails">{{offer.designation}} </td>
+              <td class="jobDetails">{{offer.grade}}</td>
+              <td class="jobDetails">{{offer.role}} </td>
+              <td class="salaryDetails"><b>{{offer.offeredSalary | number: '1.0-2'}} </b></td>
+              <td class="salaryDetails">{{offer.packageType}} </td>
+              <td class="salaryDetails">{{offer.salaryType}}</td>
+              <td class="salaryDetails">{{offer.referenceThru}} </td>
+              <td class="salaryDetails">{{offer.refEmployeeNo}} {{offer.refDetails}} </td>
+              <td class="salaryDetails">{{offer.recruitmentType}}</td>
+              <td class="salaryDetails">{{offer.employmentType}}</td>
+            </tr>
+
+          </tbody>
+        </table>
+
+        <div class="text-center">
+          <div class="overlay text-center h3" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+          <ul class="pagination" *ngIf="filterData.totalCount>0">
+            <li>
+              <a (click)="gotoPage(filterData.pageNo)">
+                Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> -
+                <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b>
+                of <b>{{filterData.totalCount}}</b> records
+              </a>
+            </li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+            <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+            <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo"
+                (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo+1"
+                (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a>
+            </li>
+            <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of
+                <b>{{filterData.totalPages}}</b></a></li>
+            <li><a>Page Size
+                <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select></a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Comments Modal -->
+<div id="CommentsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Comments</h4>
+      </div>
+      <div class="modal-body">
+        <label>Comments</label>
+        <textarea rows="3" class="form-control"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

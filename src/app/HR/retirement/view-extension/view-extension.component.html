@@ -1,0 +1,156 @@
+<section class="content-header">
+  <h1 class="display-1">
+    View Retirement Extension
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">View Retirement Extension</li>
+  </ol>
+</section>
+<section class="content">
+  <form #resgForm="ngForm">
+    <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+    <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+
+    <ul class="nav nav-tabs">
+      <li [ngClass]="currentTab=='details'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Details</a></li>
+      <li [ngClass]="currentTab=='history'?'active':''" id="tab_history"><a (click)="onTabClick(1)">History</a>
+      </li>
+    </ul>
+
+    <div class="datails-tab">
+      <div class="panel panel-info form-horizontal" *ngIf="currentTab=='details'">
+        <div class="panel-heading">
+          <h3 class="panel-title">Retirement Details</h3>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="dateOfBirth">Date Of Birth</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="dateOfBirth" name="dateOfBirth"
+                    [(ngModel)]="extensionDetails.dateOfBirth" [owlDateTime]="dateOfBirth"
+                    [owlDateTimeTrigger]="retirementDate" [disabled]="true">
+                  <owl-date-time [pickerType]="'calendar'" #dateOfBirth></owl-date-time>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="retirementDate">Retirement Date </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="retirementDate" name="retirementDate"
+                    [(ngModel)]="retirementDetails.dateOfRetirement" [owlDateTime]="retirementDate"
+                    [owlDateTimeTrigger]="retirementDate" [disabled]="true">
+                  <owl-date-time [pickerType]="'calendar'" #retirementDate></owl-date-time>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="retirementClosureDate">Retirement Closure Date </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="retirementClosureDate" name="retirementClosureDate"
+                    [(ngModel)]="retirementDetails.retirementClosureDate" [owlDateTime]="retirementClosureDate"
+                    [owlDateTimeTrigger]="retirementClosureDate" [disabled]="true">
+                  <owl-date-time [pickerType]="'calendar'" #retirementClosureDate></owl-date-time>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="extensionStartDate">Extension Start Date</label>
+                <div class="col-md-8">
+                  <input [matTooltipPosition]="'below'" matTooltip="Click to change last working date"
+                    [owlDateTime]="dt11" id="extensionStartDate" #joiningDateEnt="ngModel"
+                    placeholder="Extension Start Date" [owlDateTimeTrigger]="dt11" name="extensionStartDate"
+                    class="form-control" [(ngModel)]="retirementDetails.extensionStartDate" [disabled]="true">
+                  <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="extensionMonths">Extension Months</label>
+                <div class="col-md-8">
+                  <input type="text" [matTooltipPosition]="'below'"
+                    matTooltip="Input Extension Months"
+                    [(ngModel)]="retirementDetails.months" class="form-control"
+                    id="extensionMonths" name="extensionMonths"
+                    #extensionMonths="ngModel" maxlength="500" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="extendedDate">Extension End Date</label>
+                <div class="col-md-8">
+                  <input [matTooltipPosition]="'below'" matTooltip="Click to Add Applicable Date"
+                    [owlDateTime]="dt12" id="extendedDate" #extendedDateEnt="ngModel"
+                    placeholder="Extended Date" [owlDateTimeTrigger]="dt12" name="extendedDate"
+                    class="form-control" [(ngModel)]="retirementDetails.extensionEndDate" [disabled]="true">
+                  <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+ 
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="remarks">Remarks</label>
+                <div class="col-md-8">
+                  <textarea [matTooltipPosition]="'below'"
+                    matTooltip="Input Reason For Resignation Date Change(Max 1000 Chars)"
+                    [(ngModel)]="retirementDetails.remarks" class="form-control"
+                    id="remarks" name="remarks"
+                    #reasonResignationDateChange="ngModel" maxlength="1000" [disabled]="true"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <app-history [employeeId]="employeeId" *ngIf="currentTab=='history' && employeeId > 0"></app-history>  
+    </div>
+  </form>
+  
+
+
+  <div class="form-group text-center actionButtons">
+
+    <span class="text-red pull-left" *ngIf="errMsg.length>0"><i class="fa fa-warning"></i>{{errMsg}}</span>
+    <button type="button" class="btn btn-default"   (click)="goBack()">Back</button>
+  
+ 
+  </div>
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="employeeRetirementId" [objectType]="this.objectType">
+        </app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="employeeRetirementId" [objectType]="this.objectType">
+        </app-activity-viewer>
+      </div>
+    </div>
+  </div>
+
+</section>

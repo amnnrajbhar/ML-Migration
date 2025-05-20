@@ -1,0 +1,335 @@
+<section class="content-header" *ngIf="showData">
+  <h1 class="display-1">
+    Joining Confirmation
+  </h1>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="text-success text-center h3" *ngIf="successMsg.length>0">
+    <i class="fas fa-check"></i> {{successMsg}}
+  </div>
+  <div class="text-red text-center h4" *ngIf="errMsg.length>0">
+    <i class="fas fa-warning"></i> {{errMsg}}
+  </div>
+  <div *ngIf="showData">
+    <div *ngIf="this.offerId > 0" class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#divOfferDetails">Offer Details</a></h3>
+      </div>
+      <div  id="divOfferDetails" class="panel-collapse collapse in">
+        <div class="panel-body form-horizontal">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="offerId" class="col-md-4"> Offer No </label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.offerNo"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="status" class="col-md-4"> Offer Date </label>
+                <div class="col-md-8"><input type="text" class="form-control"
+                    value="{{offerDetails.createdDate | date: 'dd/MM/yyyy'}}" disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="title" class="col-md-4"> Title </label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.title"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial" class="col-md-4">Initial</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.initial"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="offerFName" class="col-md-4"> First Name</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.firstName"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="middlename" class="col-md-4">Middle Name</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.middleName"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="lastName" class="col-md-4">Last Name</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.lastName"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="gender" class="col-md-4"> Gender </label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.gender"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="mobileNo" class="col-md-4">Mobile No</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.mobileNo"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="personalEmailId" class="col-md-4">Personal Email</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.personalEmailId"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="personalEmailId" class="col-md-4">Qualification</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.qualification"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="totalExperience" class="col-md-4">Total Experience</label>
+                <!-- <p>{{offerDetails.totalExperience | number: '1.0-2'}}</p> -->
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.totalExperience"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="plant" class="col-md-4"> Plant</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.plantName"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="plant" class="col-md-4"> Pay Group </label>
+                <div class="col-md-8"><input type="text" class="form-control"
+                    [(ngModel)]="offerDetails.payGroupPrintName" disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="employeeCategory" class="col-md-4"> Employee Category</label>
+                <div class="col-md-8"><input type="text" class="form-control"
+                    [(ngModel)]="offerDetails.employeeCategoryName" disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="location" class="col-md-4"> Location</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.location"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="department" class="col-md-4"> Department</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.department"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="designation" class="col-md-4"> Designation</label>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="offerDetails.designation"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="role" class="col-md-4">Role</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" [(ngModel)]="offerDetails.role" disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs">
+      <li [ngClass]="currentTab=='personal'?'active':''" id="tab_personal"><a (click)="onTabClick(0)">Personal</a></li>
+      <li [ngClass]="currentTab=='addresses'?'active':''" id="tab_addresses"><a (click)="onTabClick(1)">Addresses</a>
+      </li>
+      <li [ngClass]="currentTab=='family'?'active':''" id="tab_family"><a (click)="onTabClick(2)">Family</a></li>
+      <li [ngClass]="currentTab=='education'?'active':''" id="tab_education"><a (click)="onTabClick(3)">Education</a>
+      </li>
+      <li [ngClass]="currentTab=='work_experience'?'active':''" id="tab_work_experience"><a (click)="onTabClick(4)">Work
+          Experience</a></li>
+      <li [ngClass]="currentTab=='languages'?'active':''" id="tab_languages"><a (click)="onTabClick(5)">Languages</a>
+      </li>
+      <li [ngClass]="currentTab=='nomination'?'active':''" id="tab_nomination"><a (click)="onTabClick(6)">Nomination</a>
+      </li>
+      <li [ngClass]="currentTab=='bank'?'active':''" id="tab_bank"><a (click)="onTabClick(7)">Bank Details</a>
+      </li>
+      <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a
+          (click)="onTabClick(8)">Attachments</a></li>
+      <li [ngClass]="currentTab=='joining_confirmation'?'active':''" id="tab_joining_confirmation"><a
+        (click)="onTabClick(9)">Confirm Joining</a></li>
+    </ul>
+    <div class="details-tab">
+      <app-appointment-personal (dataLoaded)="onDataLoaded($event)" [editAllowed]="false"
+        [offerId]="this.offerId" [appointmentId]="this.appointmentId" [guid]="this.guid" *ngIf="currentTab=='personal'"></app-appointment-personal>
+      <app-appointment-addresses (dataLoaded)="onDataLoaded($event)" [editAllowed]="false"
+        [offerId]="this.offerId" [appointmentId]="this.appointmentId" [guid]="this.guid" *ngIf="currentTab=='addresses'"></app-appointment-addresses>
+      <app-appointment-family (dataLoaded)="onDataLoaded($event)" [editAllowed]="false"
+        [offerId]="this.offerId" [appointmentId]="this.appointmentId" [guid]="this.guid" *ngIf="currentTab=='family'"></app-appointment-family>
+      <app-appointment-education (dataLoaded)="onDataLoaded($event)"[editAllowed]="false"
+        [offerId]="this.offerId" [appointmentId]="this.appointmentId" [guid]="this.guid" *ngIf="currentTab=='education'"></app-appointment-education>
+      <app-appointment-workexperience (dataLoaded)="onDataLoaded($event)" [editAllowed]="false"
+        [offerId]="this.offerId" [appointmentId]="this.appointmentId" [guid]="this.guid" [experience]="this.offerDetails.totalExperience"
+        *ngIf="currentTab=='work_experience'"></app-appointment-workexperience>
+      <app-appointment-languages (dataLoaded)="onDataLoaded($event)" [editAllowed]="false"
+        [offerId]="this.offerId" [appointmentId]="this.appointmentId" [guid]="this.guid" *ngIf="currentTab=='languages'"></app-appointment-languages>
+        <app-appointment-nomination (dataLoaded)="onDataLoaded($event)" [editAllowed]="false"
+        [offerId]="this.offerId" [appointmentId]="this.appointmentId" [guid]="this.guid" *ngIf="currentTab=='nomination'"></app-appointment-nomination>
+        <app-appointment-bank-details (dataLoaded)="onDataLoaded($event)" [editAllowed]="false"
+        [offerId]="this.offerId" [appointmentId]="this.appointmentId" [guid]="this.guid" *ngIf="currentTab=='bank'"></app-appointment-bank-details>
+        <app-appointment-attachments (dataLoaded)="onDataLoaded($event)" [editAllowed]="false"
+        [offerId]="this.offerId"  [appointmentId]="this.appointmentId" [guid]="this.guid" *ngIf="currentTab=='attachments'"></app-appointment-attachments>
+        
+        <div id="divJoiningConfirmation" *ngIf="currentTab=='joining_confirmation'">
+          <section class="content-header">
+            <h1 class="display-1">
+              Joining Confirmation
+            </h1>        
+          </section>          
+          <section class="content form-horizontal">
+            <div class="row" >
+              <div class="col-md-offset-4 col-md-8">
+                <div class="form-group checkbox">
+                  <label >
+                    <input type="checkbox" [(ngModel)]="confirmJoining.joined" name="joined"/>
+                    I confirm that the candidate has joined on below date.</label>
+                </div>
+                <div class="form-group">
+                  <label for="joiningDate" class="col-md-2">Joining Date <span style="color:red">*</span></label>
+                  <div class="col-md-4">
+                    <input [matTooltipPosition]="'below'" matTooltip="Click to change joining date" [owlDateTime]="dt11"
+                      id="joiningDate" #joiningDateEnt="ngModel" placeholder="Joining Date" [owlDateTimeTrigger]="dt11"
+                      name="joiningDate" class="form-control" [(ngModel)]="confirmJoining.joiningDate"
+                      #joiningDate="ngModel" [disabled]="disableAction">
+                    <span class="help-block" *ngIf="joiningDateEnt.touched && !joiningDateEnt.valid">
+                      Please select a joining date</span>
+                    <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                  </div>
+                </div>
+                <div>
+                  <div class="form-group">
+                    <label class="col-md-2">Attachment</label>
+                    <div class="col-md-4">
+                      <input #file type="file" id="file" [(ngModel)]="fileItem.file"/>
+                    </div>
+                    <div class="col-md-6">
+                      <button type="button" class="btn btn-primary btn-sm" (click)="upload(file.files)">
+                        <i class="fas fa-upload"></i> Upload</button>
+                    </div>
+                  </div>
+                  
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th>Sl No</th>
+                          <th>File Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of fileList; let i = index">                         
+                          <td>{{i+1}}</td>
+                          <td><a class="btn-link" (click)="getFile(item.attachmentId, item.fileName)">{{item.fileName}}</a></td>
+                        </tr>
+                      </tbody>
+                    </table>        
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="overlay text-center h3" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+            </div>  
+          </section>                          
+        </div>
+    </div>
+    <div class="text-center actionButtons">
+      <div class="text-success h3" *ngIf="successMsg.length>0"><i class="fas fa-check"></i> {{successMsg}}</div>
+      <button type="button" class="btn btn-default" *ngIf="currentTab!='personal'" (click)="onPrevious()"
+        [disabled]="disableAction">Previous</button>
+      <button type="button" class="btn btn-primary" *ngIf="currentTab!='joining_confirmation'" (click)="onNext()"
+        [disabled]="disableAction">Next</button>
+      <button type="button" class="btn btn-success" *ngIf="currentTab=='joining_confirmation'" 
+      (click)="submit()" matTooltip="Click to confirm the joining"
+        [disabled]="disableAction || isLoading">Submit</button>
+    </div>
+    <div>
+      <ul class="nav nav-tabs">
+        <li class="active">
+          <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+        </li>
+        <li>
+          <a data-toggle="tab" href="#tabActivity">Activity</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div id="tabApprovals" class="tab-pane fade in active">
+          <app-flow-viewer [objectId]="this.appointmentId" [objectType]="this.objectType"></app-flow-viewer>
+        </div>
+        <div id="tabActivity" class="tab-pane fade">
+          <app-activity-viewer [objectId]="this.appointmentId" [objectType]="this.objectType"></app-activity-viewer>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+
+

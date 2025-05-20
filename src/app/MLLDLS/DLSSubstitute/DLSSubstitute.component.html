@@ -1,0 +1,164 @@
+<section class="content-header">
+    <h1 class="display-1">
+        MLLDLS
+        <small> Substitute</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Substitute</li>
+    </ol>
+</section>
+<!--Main Contect-->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title">Substitute </h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-primary pull-right" [disabled]="!DLSDocReport.length>0"
+                    (click)="generateExcel()"><i class="fa fa-excel" aria-hidden="true"></i>
+                    Export to Excel</button>
+            </div>
+        </div>
+        <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="card-body" style="border: black; box-shadow: grey;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="location">Location</label>
+                                <select [(ngModel)]="filterlocation" class="form-control" id="location"
+                                    name="location" ngControl="filterlocation" #locationEnt="ngModel"
+                                    matTooltip="Select location" disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                    <option *ngFor="let status of locListCon" value={{status.code}}>{{status.name1}}
+                                    </option>                              
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="type">Request Type <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filterType" class="form-control" id="type"
+                                    name="type" ngControl="filterType" #typeEnt="ngModel"
+                                    matTooltip="Select Type" required>
+                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                    <option >Create</option> 
+                                    <option >Borrow</option>                             
+                                </select>
+                            </div>
+                        </div>
+                       
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="docno"> Document No</label>
+                                <input [(ngModel)]="filterdocno" class="form-control" id="docno"
+                                    placeholder="Document No" name="docno" ngControl="filterdocno"
+                                    #docnoEnt="ngModel">
+                            </div>
+                        </div>
+                       
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="Barcode"> Barcode No</label>
+                                <input [(ngModel)]="filterBarcode" class="form-control" id="Barcode" placeholder="Barcode"
+                                    name="Barcode" ngControl="filterBarcode" #BarcodeEnt="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="Substitute"> Substitute From <span style="color: red;">*</span></label>
+                                <input [(ngModel)]="substituteFrom" class="form-control" id="Substitute" placeholder="Substitute From"
+                                    name="Substitute" ngControl="substituteFrom" #SubstituteEnt="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group form-group-sm">
+                                <button class="btn btn-primary btn-sm" (click)="getAllEntries();" 
+                                [disabled]="filterType==null || substituteFrom==null "                                  
+                                    matTooltip="click to go">Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+                                    matTooltip="click to reset">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                   
+                </div>
+            </div>
+        </div>
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group form-group-sm">
+                        <label for="Substitute"> Substitute To <span style="color: red;">*</span> </label>
+                        <input [(ngModel)]="substituteTo" class="form-control" id="Substitute" placeholder="Substitute To"                       
+                            name="Substitute" ngControl="substituteTo" #SubstituteToEnt="ngModel">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <label>&nbsp;</label>
+                    <div class="form-group form-group-sm">
+                        <button class="btn btn-primary btn-sm" (click)="substitute();"
+                        [disabled]="substituteTo==null "
+                            matTooltip="click to substitute">substitute</button>
+                        &nbsp;&nbsp;
+                        <!-- <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+                            matTooltip="click to reset">Clear</button> -->
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="box-body table-representative">
+            <h4 style="text-align:center ;">List of Documents Pending With {{substituteFromName}}</h4>
+            <table id="userTable" class="table table-bordered table-striped">
+                <thead style="background-color: #68a7d2;color: white;">
+                    <tr>
+                        <th> <input type="checkbox"   [(ngModel)]="isMasterSel" name="list_name" (change)="checkUncheckAll()"></th>
+                        <th>Sl No</th>
+                        <th>Type</th>
+                        <th>Request No</th>
+                        <th>Request Date</th>
+                        <th>Doc No</th>
+                        <th>Barcode</th>
+                        <th>Doc Desc</th>
+                        <th>Requester</th>
+                        <th>Department</th>
+                        <th>Pending Approver</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of DLSDocReport; let i = index">
+                        <td> <input  type="checkbox" [id]="'chkusage'+item.id"
+                            [name]="'send'+item.id" [(ngModel)]="item.isSelected" (change)="isAllSelected()" #usageEnt="ngModel">
+                        </td>
+                        <td> {{i+1}}</td>
+                        <td>{{item.type}}</td>
+                        <td>{{item.initialDocNo}}</td>
+                        <td>{{item.initialDocDate | date:'dd/MM/yyy HH:mm a'}}</td>
+                        <td>{{item.docNo}}</td>
+                        <td>{{item.barcode}}</td>
+                        <td>{{item.docShtDesc}}</td>
+                        <td>{{item.empCode}}</td>
+                        <td>{{item.fromDept}}</td>
+                        <td>{{item.pendingApprover}}</td>                       
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+       
+    </div>
+</section>

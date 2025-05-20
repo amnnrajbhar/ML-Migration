@@ -1,0 +1,576 @@
+<section class="content-header">
+    <h1 class="display-1">
+        User Acknowledgement
+        <small> AMS </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    </ol>
+</section>
+
+
+
+<!--Main Content-->
+<section class="content">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                <b>Asset Details</b>
+            </h2>
+        </div>
+        <div class="panel-body form-horizontal">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="background-color: #0099cc; color:white;"> </th>
+                                <th style="background-color: #0099cc; color:white;">Location</th>
+                                <th style="background-color: #0099cc; color:white;">Asset No</th>
+                                <th style="background-color: #0099cc; color:white;">Employee Number</th>
+                                <th style="background-color: #0099cc; color:white;">Model</th>
+                                <th style="background-color: #0099cc; color:white;">Manufacturer</th>
+                                <th style="background-color: #0099cc; color:white;">Processor</th>
+                                <th style="background-color: #0099cc; color:white;">RAM</th>
+                                <th style="background-color: #0099cc; color:white;">HDD</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let item of assetList; let i = index">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            &nbsp;
+                                            <td>
+                                                <button type="button" matTooltip="Click to view details"
+                                                    class="btn btn-primary btn-xs"
+                                                    (click)="onUserActions(true,item,false,'View')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                            &nbsp;
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-xs"
+                                                    *ngIf="item.acknowledgement != true"
+                                                    (click)="onUserActions(true,item,false,'')"
+                                                    matTooltip="Click to edit details">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td><b>{{item.location}}</b></td>
+                                <td>{{item.asset_No}}</td>
+                                <td>{{item.empNo}}</td>
+                                <td>{{item.model}}</td>
+                                <td>{{item.manufacturer}}</td>
+                                <td>{{item.processor}}</td>
+                                <td>{{item.ram}}</td>
+                                <td>{{item.hdd}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2; color:white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title"> <i>Asset Details</i>
+                </h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;">
+                <form #dataForm="ngForm" (keydown.enter)="$event.preventDefault()">
+
+                    <!--Asset Details-->
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="assetNo"> Asset No. <span style="color:red">*</span></label>
+                                <input [(ngModel)]="UserAcknowledgement.asset_No" class="form-control" id="assetNoo"
+                                    placeholder="Max of 35 chars." name="assetNo"
+                                    ngControl="UserAcknowledgement.assetNo" #assetNoEnt="ngModel" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="location"> Location </label>
+                                <input class="form-control" type="text" name="location"
+                                    [(ngModel)]="UserAcknowledgement.location" placeholder="Location" [value]="location"
+                                    id="location" matTooltip="Enter Location" ngControl="UserAcknowledgement.location"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <input class="form-control" type="text" name="category"
+                                    [(ngModel)]="UserAcknowledgement.category" placeholder="Category" [value]="category"
+                                    id="category" matTooltip="Enter Category" ngControl="UserAcknowledgement.category"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="model"> Model </label>
+                                <input class="form-control" type="text" name="model"
+                                    [(ngModel)]="UserAcknowledgement.model" placeholder="Model" [value]="model"
+                                    id="model" matTooltip="Enter Model" ngControl="UserAcknowledgement.model"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="manufacturer"> Manufacturer </label>
+                                <input class="form-control" type="text" name="manufacturer"
+                                    [(ngModel)]="UserAcknowledgement.manufacturer" placeholder="Manufacturer"
+                                    ngControl="UserAcknowledgement.manufacturer" [value]="manufacturer"
+                                    id="manufacturer" matTooltip="Enter Manufacturer" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="partNo"> Part No.</label>
+                                <input class="form-control" type="text" name="partNo"
+                                    [(ngModel)]="UserAcknowledgement.part_No" placeholder="Part No" [value]="partNo"
+                                    id="partNo" matTooltip="Enter Part No" ngControl="UserAcknowledgement.part_No"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="serialNo"> Serial No. </label>
+                                <input class="form-control" type="text" name="serialNo"
+                                    [(ngModel)]="UserAcknowledgement.serial_No" placeholder="Serial No"
+                                    [value]="serialNo" ngControl="UserAcknowledgement.serial_No" id="serialNo"
+                                    matTooltip="Enter Serial No" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="processor"> Processor </label>
+                                <input class="form-control" type="text" name="processor"
+                                    [(ngModel)]="UserAcknowledgement.processor" placeholder="Processor"
+                                    [value]="processor" ngControl="UserAcknowledgement.processor" id="processor"
+                                    matTooltip="Enter Processor" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="ram"> RAM</label>
+                                <input class="form-control" type="text" name="ram" [(ngModel)]="UserAcknowledgement.ram"
+                                    placeholder="Ram" [value]="ram" ngControl="UserAcknowledgement.ram" id="ram"
+                                    matTooltip="Enter Ram" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="ramSize"> RAM Size</label>
+                                <input class="form-control" type="text" name="ramSize"
+                                    [(ngModel)]="UserAcknowledgement.ramSize" value="ramSize" placeholder="Ram Size"
+                                    id="ramSize" matTooltip="Enter Ram Size" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="hdd"> HDD</label>
+                                <input class="form-control" type="text" name="hdd" [(ngModel)]="UserAcknowledgement.hdd"
+                                    placeholder="HDD" [value]="hdd" ngControl="UserAcknowledgement.hdd" id="hdd"
+                                    matTooltip="Enter Hdd" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="hddSize"> HDD Size</label>
+                                <input class="form-control" type="text" name="hddSize"
+                                    [(ngModel)]="UserAcknowledgement.hddSize" value="hddSize" placeholder="HDD Size"
+                                    id="hddSize" matTooltip="Enter Hdd Size" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="ipNo"> IP Address</label>
+                                <input class="form-control" type="text" name="ipNo"
+                                    [(ngModel)]="UserAcknowledgement.iP_Address" placeholder="Ip No" [value]="ipNo"
+                                    ngControl="UserAcknowledgement.iP_Address" id="ipNo" matTooltip="Enter IpNo"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="gxp"> GxP Applicable </label>
+                                <input class="form-control" type="text" name="gxp"
+                                    [(ngModel)]="UserAcknowledgement.gxP_Applicable" placeholder="GxP" [value]="gxp"
+                                    ngControl="UserAcknowledgement.gxP_Applicable" id="gxp" matTooltip="Enter GxP"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="config"> Configurations. </label>
+                                <input class="form-control" type="text" name="config"
+                                    [(ngModel)]="UserAcknowledgement.config" placeholder="Config" [value]="config"
+                                    ngControl="UserAcknowledgement.config" id="config" matTooltip="Enter Config"
+                                    disabled />
+                            </div>
+                        </div>
+                    </div>
+                    ............................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+                    <!--Accessories-->
+                    <div class="row">
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="monitorType"> Monitor Type </label>
+                                <select [(ngModel)]="UserAcknowledgement.monitorType" class="form-control"
+                                    id="monitorType" name="monitorType" ngControl="UserAcknowledgement.monitorType"
+                                    matTooltip="Select Monitor Type" disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let type of monType" value={{type.type}}>
+                                        {{type.type}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="make"> Make </label>
+                                <input class="form-control" type="text" name="make"
+                                    [(ngModel)]="UserAcknowledgement.make" placeholder="make" [value]="make" id="make"
+                                    matTooltip="Enter make" ngControl="UserAcknowledgement.make" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="size"> Size </label>
+                                <input class="form-control" type="text" name="size"
+                                    [(ngModel)]="UserAcknowledgement.size" placeholder="size" [value]="size" id="size"
+                                    matTooltip="Enter size" ngControl="UserAcknowledgement.size" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="keyboard"> Keyboard </label>
+                                <input class="form-control" type="text" name="keyboard"
+                                    [(ngModel)]="UserAcknowledgement.keyboard" placeholder="keyboard" [value]="keyboard"
+                                    id="keyboard" matTooltip="Enter keyboard" ngControl="UserAcknowledgement.keyboard"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="mouse"> Mouse </label>
+                                <input class="form-control" type="text" name="mouse"
+                                    [(ngModel)]="UserAcknowledgement.mouse" placeholder="mouse" [value]="mouse"
+                                    id="mouse" matTooltip="Enter mouse" ngControl="UserAcknowledgement.mouse"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.asset_Type == 'Printer'">
+                            <div class="form-group">
+                                <label for="ppm"> Pages Per Minute (ppm) </label>
+                                <input class="form-control" type="text" name="ppm" [(ngModel)]="UserAcknowledgement.ppm"
+                                    placeholder="size" [value]="ppm" id="ppm" matTooltip="Enter ppm"
+                                    ngControl="UserAcknowledgement.ppm" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.asset_Type == 'Printer'">
+                            <div class="form-group">
+                                <label for="machineLife"> Machine Life </label>
+                                <input class="form-control" type="text" name="machineLife"
+                                    [(ngModel)]="UserAcknowledgement.machine_Life" placeholder="machineLife"
+                                    [value]="machineLife" id="machineLife" matTooltip="Enter machineLife"
+                                    ngControl="UserAcknowledgement.machine_Life" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.asset_Type == 'Printer'">
+                            <div class="form-group">
+                                <label for="cpp"> Cost Per Page </label>
+                                <input class="form-control" type="text" name="cpp" [(ngModel)]="UserAcknowledgement.cpp"
+                                    placeholder="cpp" [value]="cpp" id="cpp" matTooltip="Enter cpp"
+                                    ngControl="UserAcknowledgement.cpp" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    ............................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+                    <!--Software Details-->
+                    <div class="row" class="tab-pane">
+                        <div class="panel-body" style="padding:0px;padding-top:8px;">
+                            <div class="col-xs-12">
+                                <div class="box">
+                                    <table class="table  table-striped" cellspacing="0">
+                                        <thead style="background-color: #0099cc; color:white;">
+                                            <tr>
+                                                <th>Sl. No</th>
+                                                <th>Software Type</th>
+                                                <th>Software Name</th>
+                                                <th>License Type</th>
+                                                <th>Product Key</th>
+                                                <th>Version</th>
+                                                <th>Expires on</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let per of softwaresList1; let rec=index">
+                                                <td>
+                                                    <label>{{rec+1}}.</label>
+                                                </td>
+                                                <td>
+                                                    <div class="col-sm-10">
+                                                        <div class="form-group">
+                                                            <input [(ngModel)]="per.softSTXT" class="form-control"
+                                                                [id]="'softSTXT'+rec" [name]="'softSTXT'+rec"
+                                                                ngCOntrol="per.softSTXT" #softSTXTEnt="ngModel"
+                                                                disabled>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-sm-10">
+                                                        <input [(ngModel)]="per.softwareName" class="form-control"
+                                                            [id]="'softName'+rec" placeholder="Max of 50 chars."
+                                                            [name]="'softName'+rec" ngControl="softwareName" disabled
+                                                            #softNameEnt="ngModel">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-sm-10">
+                                                        <div class="form-group">
+                                                            <input [(ngModel)]="per.licSTXT" class="form-control"
+                                                                [id]="'licSTXT'+rec" [name]="'licSTXT'+rec" disabled
+                                                                ngCOntrol="per.licSTXT" #licSTXTEnt="ngModel">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-sm-10">
+                                                        <input [(ngModel)]="per.softProductKey" class="form-control"
+                                                            [id]="'softProductKey'+rec" [name]="'softProductKey'+rec"
+                                                            disabled ngCOntrol="per.softProductKey"
+                                                            #softProductKeyEnt="ngModel">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-sm-10">
+                                                        <input [(ngModel)]="per.softVersion" class="form-control"
+                                                            [id]="'softVersion'+rec" placeholder="Max of 50 chars."
+                                                            disabled [name]="'vesoftVersionrsion'+rec"
+                                                            ngControl="softVersion" #softVersionEnt="ngModel">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-sm-10">
+                                                        <input [matTooltipPosition]="'below'"
+                                                            matTooltip="Click to change expiry date"
+                                                            [owlDateTime]="dt23" [id]="'expiryDate'+rec"
+                                                            [owlDateTimeTrigger]="dt23" [name]="'expiryDate'+rec"
+                                                            class="form-control" [(ngModel)]="per.expiryDate" disabled
+                                                            #expiryDateEnt="ngModel" placeholder="DD-MM-YYYY">
+                                                        <owl-date-time [pickerType]="'calendar'" #dt23
+                                                            style="width: 250px;">
+                                                        </owl-date-time>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ............................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+                    <!--Usage-->
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="usageType"> Usage Type </label>
+                                <select [(ngModel)]="UserAcknowledgement.usage_Type" class="form-control" id="usageType"
+                                    name="usageType" ngControl="UserAcknowledgement.usage_Type"
+                                    matTooltip="Select Usage Type " disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option>User</option>
+                                    <option>Instrument</option>
+                                    <option>Common</option>
+                                    <option>Field Staff</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="UserAcknowledgement.usage_Type == 'User' || UserAcknowledgement.usage_Type == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="empNo"> Employee No </label>
+                                <input class="form-control" type="text" name="empNo"
+                                    [(ngModel)]="UserAcknowledgement.empNo" placeholder="empNo" [value]="empNo"
+                                    id="empNo" matTooltip="Enter empNo" ngControl="UserAcknowledgement.empNo"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="UserAcknowledgement.usage_Type == 'User' || UserAcknowledgement.usage_Type == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="empName"> Employee Name </label>
+                                <input class="form-control" type="text" name="empName"
+                                    [(ngModel)]="UserAcknowledgement.empName" placeholder="empName" [value]="empName"
+                                    id="empName" matTooltip="Enter empName" ngControl="UserAcknowledgement.empName"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="UserAcknowledgement.usage_Type == 'User' || UserAcknowledgement.usage_Type == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="department"> Department </label>
+                                <input class="form-control" type="text" name="department"
+                                    [(ngModel)]="UserAcknowledgement.department" placeholder="department"
+                                    [value]="department" id="department" matTooltip="Enter department"
+                                    ngControl="UserAcknowledgement.department" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="UserAcknowledgement.usage_Type == 'User' || UserAcknowledgement.usage_Type == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="designation"> Designation </label>
+                                <input class="form-control" type="text" name="designation"
+                                    [(ngModel)]="UserAcknowledgement.designation" placeholder="designation"
+                                    [value]="designation" id="designation" matTooltip="Enter designation"
+                                    ngControl="UserAcknowledgement.designation" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.usage_Type == 'Common'">
+                            <div class="form-group">
+                                <label for="comDept"> Department </label>
+                                <input class="form-control" type="text" name="comDept"
+                                    [(ngModel)]="UserAcknowledgement.com_dept" placeholder="comDept" [value]="comDept"
+                                    id="comDept" matTooltip="Enter Common Dept" ngControl="UserAcknowledgement.com_dept"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.usage_Type == 'Common'">
+                            <div class="form-group">
+                                <label for="comFloor"> Floor </label>
+                                <input class="form-control" type="text" name="comFloor"
+                                    [(ngModel)]="UserAcknowledgement.com_floor" placeholder="comFloor"
+                                    [value]="comFloor" id="comFloor" matTooltip="Enter Common Floor"
+                                    ngControl="UserAcknowledgement.com_floor" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.usage_Type == 'Instrument'">
+                            <div class="form-group">
+                                <label for="instName"> Instrument Name </label>
+                                <input class="form-control" type="text" name="instName"
+                                    [(ngModel)]="UserAcknowledgement.instName" placeholder="instName" [value]="instName"
+                                    id="instName" matTooltip="Enter instName" ngControl="UserAcknowledgement.instName"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.usage_Type == 'Instrument'">
+                            <div class="form-group">
+                                <label for="instType"> Instrument Type </label>
+                                <input class="form-control" type="text" name="instType"
+                                    [(ngModel)]="UserAcknowledgement.instType" placeholder="instType" [value]="instType"
+                                    id="instType" matTooltip="Enter instType" ngControl="UserAcknowledgement.instType"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.usage_Type == 'Instrument'">
+                            <div class="form-group">
+                                <label for="version"> Version </label>
+                                <input class="form-control" type="text" name="version"
+                                    [(ngModel)]="UserAcknowledgement.version" placeholder="version" [value]="version"
+                                    id="version" matTooltip="Enter version" ngControl="UserAcknowledgement.version"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="UserAcknowledgement.usage_Type == 'Instrument'">
+                            <div class="form-group">
+                                <label for="software"> Software </label>
+                                <input class="form-control" type="text" name="software"
+                                    [(ngModel)]="UserAcknowledgement.software" placeholder="software" [value]="software"
+                                    id="software" matTooltip="Enter software" ngControl="UserAcknowledgement.software"
+                                    disabled />
+                            </div>
+                        </div>
+                    </div>
+                    ............................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+                    <!--Asset Status-->
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="assetState"> Asset State </label>
+                                <input class="form-control" type="text" name="assetStates"
+                                    [(ngModel)]="UserAcknowledgement.assetStates" placeholder="Enter Asset State"
+                                    [value]="assetStates" id="assetStates" matTooltip="Enter Asset State"
+                                    ngControl="UserAcknowledgement.assetStates" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="natureofActivities"> Nature of Activities performed/functioned </label>
+                                <input class="form-control" type="text" name="natureofActivities"
+                                    [(ngModel)]="UserAcknowledgement.natureofActivities"
+                                    placeholder="natureofActivities" [value]="natureofActivities"
+                                    id="natureofActivities" matTooltip="Enter natureofActivities"
+                                    ngControl="UserAcknowledgement.natureofActivities" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    ............................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+                    <!--Created By-->
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="createdBy"> Created By </label>
+                                <input class="form-control" type="text" name="createdBy"
+                                    [(ngModel)]="UserAcknowledgement.created_by" placeholder="createdBy"
+                                    [value]="natureofActivities" id="createdBy" matTooltip="Asset Created By"
+                                    ngControl="UserAcknowledgement.created_by" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="createdDate"> Created Date </label>
+                                <input class="form-control" type="text" name="createdDate"
+                                    [(ngModel)]="UserAcknowledgement.created_date" placeholder="Created Date"
+                                    [value]="created_date" id="createdDate" matTooltip="Asset Created On"
+                                    ngControl="UserAcknowledgement.created_date " disabled />
+                            </div>
+                        </div>
+                    </div>
+                    ............................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+                    <!-- Comments for acknowledging the asset-->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="comments">Acknowledgement Note: </label>
+                                <textarea name="comments" id="comments" cols="50" rows="4" maxlength="300"
+                                    matTooltip="Comments" [(ngModel)]="UserAcknowledgement.comments" [disabled]="view"
+                                    class="form-control" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button *ngIf="!view" type="button" class="btn btn-primary" (click)="AcknowledgeAsset();"
+                    [disabled]="isLoading || (!dataForm.valid)"><i class="fa fa-thumbs-up"></i> &nbsp;
+                    Acknowledge</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" matTooltip="Click to close modal"><i
+                        class="fas fa-times"></i> &nbsp;
+                    Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,748 @@
+﻿<section class="content-header">
+  <h1 class="display-1">
+    Contract Employee Creation
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Contract Employee</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Contract Employee</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <form #userForm="ngForm" #native>
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="form-group">
+              <label for="employeeId">Contract Number</label>
+              <input type="text" class="form-control" id="employeeId" placeholder="Contract Number"
+                [(ngModel)]="userMasterItem.employeeId" ngControl="userMasterItem.employeeId" name="employeeId" readonly
+                disabled />
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="baseLocation"> Plant<span style="color:red">*</span></label>
+              <select [(ngModel)]="userMasterItem.location" class="form-control" id="location" name="location"
+                matTooltip="location" #locationEnt="ngModel" (change)="getApproversList(userMasterItem.location)"
+                required>
+                <option [ngValue]="undefined" disabled [selected]="true"> Select location </option>
+                <option *ngFor="let pl of plantList" [ngValue]="pl.code">{{pl.code}}-{{pl.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="payGroup"> Pay Group<span style="color:red">*</span></label>
+              <select [(ngModel)]="userMasterItem.payGroup" class="form-control" id="payGroup" name="payGroup"
+                matTooltip="Pay Group" #payGroup1Ent="ngModel" required>
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Pay Group </option>
+                <option *ngFor="let pl of payGroupList1" [ngValue]="pl.id">{{pl.short_desc}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="staffCat">Employee Category<span style="color:red">*</span></label>
+              <select [(ngModel)]="userMasterItem.staffCat" class="form-control" id="staffCat" name="staffCat"
+                matTooltip="staff Cat" #staffCatEnt="ngModel" required>
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Emp Category </option>
+                <option *ngFor="let pl of empCatList" [ngValue]="pl.id">{{pl.catltxt}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="fullName">Full Name</label>
+              <input type="text" class="form-control" id="fullName" placeholder="Full Name"
+                value="{{userMasterItem.firstName}} {{userMasterItem.middleName}} {{userMasterItem.lastName}}"
+                ngControl="userMasterItem.fullName" name="fullName" readonly />
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <label>&nbsp;</label><br>
+            <mat-radio-group aria-label="Select option?" id="isActive" name="isActive"
+              [(ngModel)]="userMasterItem.isActive" [disabled]="isEdit" ngControl="userMasterItem.isActive"
+              #isActiveEnt="ngModel">
+              <mat-radio-button *ngIf="userMasterItem.isActive==1" color="primary" [value]='1'>Active</mat-radio-button>
+              &nbsp;&nbsp;&nbsp;
+              <mat-radio-button *ngIf="userMasterItem.isActive==0" color="warn" [value]='0'>In Active</mat-radio-button>
+              &nbsp;&nbsp;&nbsp;
+              <mat-radio-button *ngIf="userMasterItem.isActive==2" color="accent" [value]='2'>To Be Approved
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+        </div>
+      </div>
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+      <ul class="nav nav-tabs" style="border:black; " id="myTab">
+        <li class="active"><a data-toggle="tab" href="#tab-sumTot">Personal</a></li>
+        <li><a data-toggle="tab" href="#tab-urbTot">Official</a></li>
+      </ul>
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+      <div class="tab-content">
+        <div id="tab-sumTot" class="tab-pane active">
+          <div class="row">
+            <div class="box">
+              <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                <h3 class="box-title">Basic Details</h3>
+              </div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="title"> Title <span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.title" class="form-control" id="title" name="title"
+                        matTooltip="title" #titleEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select title </option>
+                        <option *ngFor="let pl of titles" [ngValue]="pl.type">{{pl.type}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="genderEnt.touched && !genderEnt.valid">Please select
+                        gender</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group" [ngClass]="(!usr_f_name.valid && usr_f_name.touched)?'has-error':''">
+                      <label for="usrFName"><i class="fa fa-times-circle-o"
+                          *ngIf="!usr_f_name.valid && usr_f_name.touched"></i>
+                        First Name<span style="color:red">*</span></label>
+                      <input type="text" class="form-control" id="usrFName" placeholder="First Name"
+                        [(ngModel)]="userMasterItem.firstName" name="firstName" ngControl="userMasterItem.firstName"
+                        #usr_f_name="ngModel" required>
+                      <span class="help-block" *ngIf="!usr_f_name.valid && usr_f_name.touched">Please Enter First
+                        Name.</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="middleName">Middle Name</label>
+                      <input type="text" class="form-control" id="middleName" placeholder="Middle Name"
+                        [(ngModel)]="userMasterItem.middleName" ngControl="userMasterItem.middleName"
+                        name="middleName" />
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="usrLName">Last Name</label>
+                      <input type="text" class="form-control" id="usrLName" placeholder="Last Name"
+                        [(ngModel)]="userMasterItem.lastName" ngControl="userMasterItem.lastName" name="lastName" />
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="gender"> Gender <span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.gender" class="form-control" id="offerGender"
+                        name="offerGender" matTooltip="Gender" #genderEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select Gender </option>
+                        <option *ngFor="let pl of genders" [ngValue]="pl.id">{{pl.name}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="genderEnt.touched && !genderEnt.valid">Please select
+                        gender</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Date of Birth <span style="color: red;">*</span> </label>
+                      <div class="form-group">
+                        <input [matTooltipPosition]="'below'" [max]="today" matTooltip="Click to change date"
+                          placeholder="DD/MM/YYYY" [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate"
+                          class="form-control" [(ngModel)]="userMasterItem.dob" #fromDate="ngModel" required>
+                        <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="Marital"> Marital Status <span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.maritalStatus" class="form-control" id="Marital"
+                        name="Marital" matTooltip="Marital Status" #MaritalEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select Marital Status </option>
+                        <option *ngFor="let pl of MaritalStatusList" [ngValue]="pl.id">{{pl.name}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="MaritalEnt.touched && !MaritalEnt.valid">Please select marital
+                        status</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="bloodGroup"> Blood Group <span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.bloodGroup" class="form-control" id="bloodGroup"
+                        name="bloodGroup" matTooltip="Blood Group" #bloodGroupEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select Blood Group </option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                      </select>
+                      <span class="help-block" *ngIf="bloodGroupEnt.touched && !bloodGroupEnt.valid">Please select
+                        Blood
+                        Group</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="usrEmail">Personal Email </label>
+                      <input type="email" class="form-control" id="usrEmail" placeholder="Email"
+                        [(ngModel)]="userMasterItem.emailId" name="email" ngControl="userMasterItem.emailId"
+                        #usr_email="ngModel" maxlength="48">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="mobileNo">Mobile No<span style="color: red;">*</span> </label>
+                      <input type="mobileNo" class="form-control" id="mobileNo" placeholder="Mobile No"
+                        [(ngModel)]="userMasterItem.mobile" (keypress)="keyPressAllowOnlyNumber($event)" name="mobile"
+                        ngControl="userMasterItem.mobile" #mobile="ngModel" required maxlength="10" required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                <h3 class="box-title"> Addreess Details</h3>
+              </div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="addressLine1">Line 1 <span style="color:red;">*</span> </label>
+                      <input type="addressLine1" class="form-control" id="addressLine1" placeholder="Address"
+                        [(ngModel)]="userMasterItem.addressLine1" name="addressLine1"
+                        ngControl="userMasterItem.addressLine1" #addressLine1="ngModel" required>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="addressLine2"> Line 2</label>
+                      <input type="addressLine2" class="form-control" id="addressLine2" placeholder=" Address"
+                        [(ngModel)]="userMasterItem.addressLine2" name="addressLine2"
+                        ngControl="userMasterItem.addressLine2" #addressLine2="ngModel">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="addressLine3"> Line 3</label>
+                      <input type="addressLine3" class="form-control" id="addressLine3" placeholder="Address"
+                        [(ngModel)]="userMasterItem.addressLine3" name="addressLine3"
+                        ngControl="userMasterItem.addressLine3" #addressLine3="ngModel">
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="City"> City <span style="color:red;">*</span> </label>
+                      <input type="City" class="form-control" id="City" placeholder="City"
+                        [(ngModel)]="userMasterItem.city" name="City" ngControl="userMasterItem.city" #city="ngModel"
+                        required>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="postalCode"> Postal Code <span style="color:red;">*</span></label>
+                      <input type="postalCode" class="form-control" id="postalCode" placeholder="Postal Code"
+                        [(ngModel)]="userMasterItem.postalCode" name="postalCode" ngControl="userMasterItem.postalCode"
+                        [maxlength]="6" #postalCode="ngModel" required>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="state"> State<span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.state" class="form-control" id="offerState" name="state"
+                        matTooltip="State" #stateEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select State </option>
+                        <option *ngFor="let pl of stateList" [ngValue]="pl.id">{{pl.bezei}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="stateEnt.touched && !stateEnt.valid">Please select State</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="country"> Country<span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.country" class="form-control" id="country" name="country"
+                        matTooltip="country" #countryEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select country </option>
+                        <option *ngFor="let pl of CountryList" [ngValue]="pl.land1">{{pl.land1}}-{{pl.landx}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="countryEnt.touched && !countryEnt.valid">Please select
+                        country</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="box">
+              <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                <h3 class="box-title">Emergency Contact Details</h3>
+              </div>
+              <div class="box-body">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="emergencyContactPerson">Person Name</label>
+                    <input type="emergencyContactPerson" class="form-control" id="emergencyContactPerson"
+                      placeholder="Emergency Contact Person" [(ngModel)]="userMasterItem.emergencyContactPerson"
+                      name="emergencyContactPerson" ngControl="userMasterItem.emergencyContactPerson"
+                      #emergencyContactPerson="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="emergencyContactAddress1">Address Line 1</label>
+                    <input type="emergencyContactAddress1" class="form-control" id="emergencyContactAddress1"
+                      placeholder="Emergency Contact Address" [(ngModel)]="userMasterItem.emergencyContactAddress1"
+                      name="emergencyContactAddress1" ngControl="userMasterItem.emergencyContactAddress1"
+                      #emergencyContactAddress1="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="emergencyContactAddress2">Address Line 2</label>
+                    <input type="emergencyContactAddress2" class="form-control" id="emergencyContactAddress2"
+                      placeholder="Emergency Contact Address" [(ngModel)]="userMasterItem.emergencyContactAddress2"
+                      name="emergencyContactAddress2" ngControl="userMasterItem.emergencyContactAddress2"
+                      #emergencyContactAddress2="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="emergencyContactAddress3">Address Line 3</label>
+                    <input type="emergencyContactAddress3" class="form-control" id="emergencyContactAddress3"
+                      placeholder="Emergency Contact Address" [(ngModel)]="userMasterItem.emergencyContactAddress3"
+                      name="emergencyContactAddress3" ngControl="userMasterItem.emergencyContactAddress3"
+                      #emergencyContactAddress3="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="emergencyContactMob">Contact No.</label>
+                    <input type="text" class="form-control" id="emergencyContactMob" placeholder="Mobile No"
+                      [(ngModel)]="userMasterItem.emergencyContactMob" name="emergencyContactMob"
+                      ngControl="userMasterItem.emergencyContactMob" (keypress)="keyPressAllowOnlyNumber($event)"
+                      #emergencyContactMob="ngModel" maxlength="10">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+        <div id="tab-urbTot" class="tab-pane">
+          <div class="col-sm-12">
+            <div class="box">
+              <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                <h3 class="box-title">Official Details</h3>
+              </div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="dsgid"> Designation <span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.dsgid" class="form-control" id="dsgid" name="dsgid"
+                        matTooltip="Designation" #dsgidEnt="ngModel" (change)="onDesignationChange()" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select Designation </option>
+                        <option *ngFor="let pl of designationList" [ngValue]="pl.id">{{pl.name}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="dsgidEnt.touched && !dsgidEnt.valid">Please select
+                        designation</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="usrLName">Grade</label>
+                      <input type="text" class="form-control" id="grade" placeholder="Grade"
+                        [(ngModel)]="userMasterItem.gradeId" ngControl="userMasterItem.gradeId" name="gradeId"
+                        readonly />
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="bandid">Band</label>
+                      <input type="text" class="form-control" id="bandid" placeholder="Band"
+                        [(ngModel)]="userMasterItem.bandid" ngControl="userMasterItem.bandid" name="bandid" readonly />
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="roleId"> Role <span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.roleId" class="form-control" id="roleId" name="roleId"
+                        matTooltip="Role" #roleIdEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select Role </option>
+                        <option *ngFor="let pl of Rolelist" [ngValue]="pl.id">{{pl.role_Stxt}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="roleIdEnt.touched && !roleIdEnt.valid">Please select Role</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="dptid"> Department <span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.dptid" class="form-control" id="dptid" name="dptid"
+                        matTooltip="Department" #dptidEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select Department </option>
+                        <option *ngFor="let pl of departmentList" [ngValue]="pl.id">{{pl.name}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="dptidEnt.touched && !dptidEnt.valid">Please select
+                        Department</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="sdptid"> Sub Department <span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.sdptid" class="form-control" id="sdptid" name="sdptid"
+                        matTooltip="Sub Department" #sdptidEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select Sub Department </option>
+                        <option *ngFor="let pl of subDeptList" [ngValue]="pl.id">{{pl.sdptidStxt}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="sdptidEnt.touched && !sdptidEnt.valid">Please select sub
+                        department</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="reportingGroup"> Reporting Group <span style="color:red">*</span></label>
+                      <select [(ngModel)]="userMasterItem.reportingGroup" class="form-control" id="reportingGroup"
+                        name="reportingGroup" matTooltip="Reporting Group" #reportingGroupEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select Reporting Group </option>
+                        <option *ngFor="let pl of ReportingGroupList" [ngValue]="pl.id">{{pl.reportingGroupSt}}
+                        </option>
+                      </select>
+                      <span class="help-block" *ngIf="reportingGroupEnt.touched && !reportingGroupEnt.valid">Please
+                        select
+                        Reporting Group</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Contractor (Vendor Id) <span style="color:red">*</span></label>
+                      <input type="text" id="contractor" class="form-control" (keyup)="getContractor($event)"
+                        [(ngModel)]="userMasterItem.vendorContractorName" placeholder="Enter Contractor (Vendor) No"
+                        ngControl="userMasterItem.vendorContractorName" name="contractor" required />
+                      <input type="hidden" id="contractorId" [(ngModel)]="userMasterItem.vendorContractorId"
+                        name="contractorId" />
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Date of Joining <span style="color:red">*</span></label>
+                      <div class="form-group">
+                        <input [matTooltipPosition]="'below'" matTooltip="Click to change date" [owlDateTime]="dt12"
+                          placeholder="DD/MM/YYYY" [owlDateTimeTrigger]="dt12" name="doj" class="form-control"
+                          [(ngModel)]="userMasterItem.doj" #doj="ngModel" required>
+                        <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;"></owl-date-time>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Contract End Date </label>
+                      <div class="form-group">
+                        <input [matTooltipPosition]="'below'" matTooltip="Click to change date" [owlDateTime]="dt18"
+                          placeholder="DD/MM/YYYY" [owlDateTimeTrigger]="dt18" name="dol" class="form-control"
+                          [(ngModel)]="userMasterItem.dol" #dol="ngModel">
+                        <owl-date-time [pickerType]="'calendar'" #dt18 style="width: 250px;"></owl-date-time>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Reporting Manager <span style="color:red">*</span></label>
+                      <input type="text" id="reportingManager" class="form-control"
+                        placeholder="Enter Rpt Manager Emp Number" (keyup)="getReportingManager($event)"
+                        [(ngModel)]="userMasterItem.rptmngr" ngControl="userMasterItem.rptmngr" name="reportingManager"
+                        required />
+                      <!-- <input type="hidden" id="reportingManagerId" [(ngModel)]="userMasterItem.rptmngr"
+                          name="reportingManagerId" /> -->
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> HOD <span style="color:red">*</span></label>
+                      <input type="text" id="approvingManager" class="form-control" placeholder="Enter HOD Emp Number"
+                        (keyup)="getApprovingManager($event)" [(ngModel)]="userMasterItem.apprmngr"
+                        ngControl="userMasterItem.apprmngr" name="approvingManager" required />
+                      <!-- <input type="hidden" id="approvingManagerId" [(ngModel)]="userMasterItem.apprmngr"
+                          name="approvingManagerId" /> -->
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                <h3 class="box-title">Shift</h3>
+              </div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Calendar Type <span style="color: red;">*</span> </label>
+                      <!-- <input type="text" class="form-control" id="shiftcode" [(ngModel)]="userMasterItem.shiftCode"
+                        ngControl="userMasterItem.shiftCode" name="shiftCode" #shiftCodeEnt="ngModel" /> -->
+                      <select [(ngModel)]="userMasterItem.calendarType" class="form-control" id="calendarType"
+                        name="calendarType" matTooltip="Calendar Type" #calendarTypeEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select Type </option>
+                        <option>Regular</option>
+                        <option>Additional</option>
+                      </select>
+                      <span class="help-block" *ngIf="calendarTypeEnt.touched && !calendarTypeEnt.valid">
+                        Please select type</span>
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3" *ngIf="userMasterItem.calendarType=='Additional'">
+                    <div class="form-group">
+                      <label> Calendar Code <span style="color: red;">*</span> </label>
+                      <input type="text" class="form-control" id="shiftcode" [(ngModel)]="userMasterItem.shiftCode"
+                        ngControl="userMasterItem.shiftCode" name="shiftCode" #shiftCodeEnt="ngModel" />
+                      <select [(ngModel)]="userMasterItem.calendarCode" class="form-control" id="calendarCode"
+                        name="calendarCode" matTooltip="calendar code" #calendarCodeEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select shift code </option>
+                        <option>Regular</option>
+                        <option>Additional</option>
+                      </select>
+                      <span class="help-block" *ngIf="calendarCodeEnt.touched && !calendarCodeEnt.valid">
+                        Please select calendar</span>
+                    </div>
+                  </div> -->
+
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Shift Code </label>
+                      <select [(ngModel)]="userMasterItem.shiftCode" class="form-control" id="shiftCode"
+                        name="shiftCode" matTooltip="shift code" #shiftCodeEnt="ngModel" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select shift code </option>
+                        <option *ngFor="let shift of EmpShiftMasterList" value="{{shift.shiftCode}}">{{shift.shiftCode}}
+                          - {{shift.shiftName}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Swipe Count </label>
+                      <input type="text" class="form-control" id="swipeCount" [(ngModel)]="userMasterItem.swipeCount"
+                        ngControl="userMasterItem.swipeCount" name="swipeCount" #swipeCountEnt="ngModel" />
+                      <span class="help-block" *ngIf="swipeCountEnt.touched && !swipeCountEnt.valid">
+                        Please enter swipe Count</span>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Swipe No. </label>
+                      <input type="text" class="form-control" id="swipeNo" [(ngModel)]="userMasterItem.swipeNo"
+                        placeholder="Swipe No." ngControl="userMasterItem.swipeNo" name="swipeNo" #swipeNoEnt="ngModel"
+                        (keypress)="keyPressAllowOnlyNumber($event)" />
+                      <span class="help-block" *ngIf="swipeNoEnt.touched && !swipeNoEnt.valid">
+                        Please enter swipe No</span>
+
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-3">
+                      <div class="checkbox">
+                        <label for="undefined">&nbsp;</label>
+                        <label><input type="checkbox" id="chkpendingSec" name="chkpendingSec"
+                            [(ngModel)]="userMasterItem.eligibleforOt"><b>Eligible for OT</b></label>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="checkbox">
+                        <label for="undefined">&nbsp;</label>
+                        <label><input type="checkbox" id="chkdelete" name="delete"
+                            [(ngModel)]="userMasterItem.weeklyOff"><b>Weekly Off</b></label>
+                      </div>
+                    </div> -->
+                </div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                <h3 class="box-title">Location & Salary Details</h3>
+              </div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Floor </label>
+                      <input type="text" class="form-control" id="floor" [(ngModel)]="userMasterItem.floor"
+                        placeholder="Floor" ngControl="userMasterItem.floor" name="floor" #floorEnt="ngModel" />
+                      <span class="help-block" *ngIf="floorEnt.touched && !floorEnt.valid">
+                        Please enter floor</span>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Building </label>
+                      <input type="text" class="form-control" id="building" [(ngModel)]="userMasterItem.building"
+                        placeholder="Building" ngControl="userMasterItem.building" name="building"
+                        #buildingEnt="ngModel" />
+                      <span class="help-block" *ngIf="buildingEnt.touched && !buildingEnt.valid">
+                        Please enter building</span>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Room / Block </label>
+                      <input type="text" class="form-control" id="roomOrBlock" [(ngModel)]="userMasterItem.block"
+                        placeholder="Room / Block" ngControl="userMasterItem.block" name="roomOrBlock"
+                        #roomOrBlockEnt="ngModel" />
+                      <span class="help-block" *ngIf="roomOrBlockEnt.touched && !roomOrBlockEnt.valid">
+                        Please enter room / block</span>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Extension Number </label>
+                      <input type="text" class="form-control" id="extn" [(ngModel)]="userMasterItem.extn"
+                        ngControl="userMasterItem.block" placeholder="Extension" name="extn" #extnEnt="ngModel"
+                        maxlength="6" />
+                      <span class="help-block" *ngIf="extnEnt.touched && !extnEnt.valid">
+                        Please enter extn</span>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label> Salary Amount <span style="color: red;">*</span></label>
+                      <input type="text" class="form-control" id="salaryAmount" placeholder="Salary Amount"
+                        [(ngModel)]="userMasterItem.salaryAmount" ngControl="userMasterItem.salaryAmount"
+                        name="salaryAmount" #salaryAmountEnt="ngModel" required />
+                      <span class="help-block" *ngIf="salaryAmountEnt.touched && !salaryAmountEnt.valid">
+                        Please enter salary Amount</span>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Salary Frequency <span style="color: red;">*</span> </label>
+                      <select [(ngModel)]="userMasterItem.salaryFreq" class="form-control" id="salaryFreq"
+                        name="salaryFreq" matTooltip="salary Freq" #salaryFreqEnt="ngModel"
+                        (change)="getManPowerPlanning()" required>
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select salary Freq </option>
+                        <option value="A">Annually</option>
+                        <option value="Q">Quarterly</option>
+                        <option value="M">Monthly</option>
+                        <option value="H">Half Yearly</option>
+                        <option value="D">Daily</option>
+                      </select>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-2">
+                    <label> No of Working Days </label>
+                    <input type="number" class="form-control" id="workingDays" [(ngModel)]="userMasterItem.workingDays"
+                      (change)="evaluatedays(userMasterItem.workingDays)" ngControl="userMasterItem.workingDays"
+                      name="workingDays" #workingDaysEnt="ngModel" />
+                  </div>
+                  <div class="col-sm-2">
+                    <label> Salary Per Month </label>
+                    <input type="text" class="form-control" id="salarypermonth" placeholder="Salary Per Month"
+                      [(ngModel)]="userMasterItem.salarypermonth" ngControl="userMasterItem.salarypermonth"
+                      name="salarypermonth" #salarypermonthEnt="ngModel" readonly />
+                  </div>
+                  <div class="col-sm-2">
+                    <label>&nbsp;</label><br>
+                    <button type="button" class="btn btn-success" (click)="CalculateSalary()"><i
+                        class="fa fa-calculator"></i>&nbsp; Calculate</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="box-header" style="background-color: #5896c3;height: 35px;">
+                <h3 class="box-title">Attachments</h3>
+              </div>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label>Attachment Type </label>
+                      <select class="form-control" id="attachmentType" [(ngModel)]="item.attachmentType"
+                        ngControl="item.attachmentType" name="attachmentType">
+                        <option [ngValue]="undefined" disabled [selected]="true"> Select attachment type </option>
+                        <option *ngFor="let pl of types" [ngValue]="pl.type">{{pl.type}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <div class="col-md-12">
+                        <label>&nbsp;</label>
+                        <input #myInput type="file" id="file" name="file" (change)="uploadfiles($event.target.files)" />
+                        <span class="text-danger">Upload image files (jpeg, png) or pdf files only.</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="text-center">
+                   <button type="button" class="btn btn-primary btn-sm" (click)="upload(file.files)">
+                      <i class="fas fa-upload"></i> Upload</button>
+                    <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+                      Cancel</button>
+                  </div> -->
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th *ngIf="!isEdit">Action</th>
+                        <th>Sl No</th>
+                        <th>Type</th>
+                        <th>File Name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of fileList; let i = index">
+                        <td *ngIf="!isEdit">
+                          <button (click)="removeLine(i)" title="click to remove this" class="btn btn-xs btn-danger">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </td>
+                        <td>{{i+1}}</td>
+                        <td>{{item.attachmentType}}</td>
+                        <td><a class="btn-link"
+                            (click)="getFile(item.fkContractId, item.fileName)">{{item.fileName}}</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+      <div class="text-center">
+        <button type="button" class="btn btn-success" (click)="saveEmployee()"
+          [disabled]="!userForm.valid || isLoadingPop"><i class="fas fa-angle-double-right"></i>&nbsp; Submit</button>
+        &nbsp;
+        <button type="button" class="btn btn-danger" (click)="clear()"><i class="fas fa-times"></i>&nbsp; Clear</button>
+      </div>
+      <br>
+    </form>
+
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>

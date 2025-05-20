@@ -1,0 +1,121 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Approval Delegation
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Approval Delegation</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title">Delegation Details</div>
+    </div>
+    <div class="panel-body">
+      <form #detailsForm="ngForm" id="detailsForm">
+      <div class="row">
+        <div class="col-sm-6 form-group">
+          <label>Start Date <span style="color:red">*</span></label>
+          <input type="text" class="form-control" id="fromDate" [(ngModel)]="details.fromDate"
+                name="fromDate" #fromDateEnt="ngModel" placeholder="Start Date" [matTooltipPosition]="'below'"
+                matTooltip="Click to change start date" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1"
+                ngControl="details.fromDate" name="fromDate" required/>
+              <span class="help-block" *ngIf="fromDateEnt.touched && !fromDateEnt.valid">
+                <span> Please enter Start Date</span>
+              </span>
+              <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
+        </div>
+        <div class="col-sm-6 form-group">
+          <label>End Date <span style="color:red">*</span></label>
+          <input type="text" class="form-control" id="toDate" [(ngModel)]="details.toDate"
+                name="fromDate" #toDateEnt="ngModel" placeholder="End Date" [matTooltipPosition]="'below'"
+                matTooltip="Click to change end date" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"
+                ngControl="details.toDate" name="toDate" required/>
+              <span class="help-block" *ngIf="toDateEnt.touched && !toDateEnt.valid">
+                <span> Please enter End Date</span>
+              </span>
+              <owl-date-time [pickerType]="'calendar'" #dt2></owl-date-time>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 form-group">
+          <label>Delegate To <span style="color:red">*</span></label>
+          <input type="text" id="delegatedToName" class="form-control" (keyup)="getDelegateToEmployees($event)"
+                [(ngModel)]="details.delegatedToName" ngControl="newOffer.delegatedToName" autocomplete="off"
+                name="delegatedToName" required />
+              <input type="hidden" id="delegatedToId" [(ngModel)]="details.delegatedToId"
+                name="delegatedToId" />
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group checkbox">
+            <label for="onlyNewRequests">
+              <input type="checkbox" [(ngModel)]="details.onlyNewRequests" name="onlyNewRequests" /> Only New Requests
+            </label>
+          </div>
+        </div>
+      </div>
+    </form>
+      <div class="row">
+        <div class="col-sm-12 text-center actionButtons form-group">
+          <button type="button" class="btn btn-primary" *ngIf="action == 'add'" (click)="submit()"
+          matTooltip="Click to add details"
+          [disabled]="isLoading || !detailsForm.valid">Add</button>
+
+          <button type="button" class="btn btn-primary" *ngIf="action == 'edit'" (click)="submit()"
+          matTooltip="Click to update details"
+          [disabled]="isLoading || !detailsForm.valid">Update</button>
+    
+        <button type="button" class="btn btn-default" *ngIf="action == 'edit'" (click)="cancel()" matTooltip="Click to cancel this"
+          [disabled]="isLoading">
+          Cancel
+        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Delegated From</th>          
+          <th>Delegated To</th>
+          <th>Created On</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Only New Requests</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of delegationsList; let i = index">
+          <td>
+            <ng-template [ngIf]="[item.employeeId] == employeeId">
+            <button type="button" (click)="edit(item.approvalDelegationId)" class="btn btn-xs btn-primary"
+            [matTooltipPosition]="'after'" matTooltip="Click to edit this">
+            <i class="fas fa-pen"></i>
+          </button>
+          <button type="button" (click)="delete(item.approvalDelegationId)" class="btn btn-xs btn-danger"
+          [matTooltipPosition]="'after'" matTooltip="Click to delete this">
+          <i class="fas fa-times"></i>
+        </button>
+      </ng-template>
+          </td>
+          <td>{{item.employeeName}}</td>
+          <td>{{item.delegatedToName}}</td>
+          <td>{{item.createdDate | date: "dd/MM/yyyy"}}</td>
+          <td>{{item.fromDate | date: "dd/MM/yyyy"}}</td>
+          <td>{{item.toDate | date: "dd/MM/yyyy"}}</td>
+          <td>{{item.onlyNewRequests == true ? "Yes": "No"}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>

@@ -1,0 +1,249 @@
+<section class="content-header">
+    <h1>
+        Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title">Reports</h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+
+            </div>
+        </div>
+
+        <div id="filterPanel">
+
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Daily Biometric Punch Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="startDate">
+                                    From Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                        [min]="min" [owlDateTime]="dtStartEs" [owlDateTimeTrigger]="dtStartEs"
+                                        placeholder="DD/MM/YYYY" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change startDate" #startDate1="ngModel" [disabled]="isEdit"
+                                        required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStartEs">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStartEs></owl-date-time>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="endDate">
+                                    To Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate"
+                                        [min]="min" [owlDateTime]="dtStartts" [owlDateTimeTrigger]="dtStartts"
+                                        placeholder="DD/MM/YYYY" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change endDate" #endDate1="ngModel" [disabled]="isEdit"
+                                        required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStartEs">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStartts></owl-date-time>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="paygroup">Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                    <option [ngValue]="null">select Pay Group</option>
+                                    <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                        {{location.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat"
+                                    (change)="getUsersList();">
+                                    <option [ngValue]="null">select Category</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                                    name="locationName">
+                                    <option [ngValue]="null">select Department</option>
+                                    <option *ngFor="let location of departmentList" value="{{location.dptid}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Reporting Group </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                                    name="locationName" (change)="getUsersList();" required>
+                                    <option [ngValue]="null">select Reporting Group</option>
+                                    <option *ngFor="let location of ReportingGroupList"
+                                        value="{{location.reportingGroup}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="emp">Employee No.</label>
+                            <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode"
+                                #fltrdelrymodeEnt="ngModel" matTooltip="select delivery Mode"
+                                [placeholder]="'Select Employee No. (multiple)'" [data]="empListCon"
+                                [(ngModel)]="selectedEmployeeList" [settings]="deliveryModeSettings"
+                                (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                                (onSelectAll)="onSelectAll($event)">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-sm-8">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-success" (click)="GetDailyEsslPunchReport();"
+                                    [disabled]="isLoading" matTooltip="click to get data"><i
+                                        class="fas fa-arrow-right"></i>&nbsp;Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-info" (click)="generateEsslReportToExcelExcel()"
+                                    *ngIf="filterPlant != 'ML00'" [disabled]="!EsslPunchReport.length>0"
+                                    matTooltip="click to export"><i class="fas fa-file-excel"></i>&nbsp;Export to
+                                    Excel</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-info" (click)="generateEsslReportToExcelExcel1()"
+                                    *ngIf="filterPlant == 'ML00'" [disabled]="!EsslPunchReport.length>0"
+                                    matTooltip="click to export"><i class="fas fa-file-excel"></i>&nbsp;Export to
+                                    Excel</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-danger" (click)="ClearData();" matTooltip="Clear Data"><i
+                                        class="fas fa-times"></i>&nbsp;Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay" *ngIf="isLoading" style="text-align: center;">
+                <i class="fa fa-spinner fa-pulse" style="font-size:70px; text-align: center;"></i>
+            </div>
+
+        </div>
+
+        <div *ngIf="filterPlant != 'ML00'" id="essl">
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Sl.No.</th>
+                    <th>Employee No.</th>
+                    <th>Employee Name</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Log Date&time</th>
+                    <th>Device Name</th>
+                    <th>Direction</th>
+                    <th>Shift</th>
+                    <th>IP Address</th>
+                    <th>Device Location</th>
+                </tr>
+                <tr *ngFor="let lp of EsslPunchReport;let i=index">
+                    <td>{{i+1}}</td>
+                    <td>{{lp.pernr}}</td>
+                    <td>{{lp.empName}}</td>
+                    <td>{{lp.designation}}</td>
+                    <td>{{lp.department}}</td>
+                    <td>{{lp.logDateTime | date:'dd/MM/yyyy hh:mm a'}}</td>
+                    <td>{{lp.deviceFName}}</td>
+                    <td>{{lp.deviceDirection}}</td>
+                    <td>{{lp.shift}}</td>
+                    <td>{{lp.ipAddress}}</td>
+                    <td>{{lp.deviceLocation}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div *ngIf="filterPlant == 'ML00'" id="essl1">
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Sl.No.</th>
+                    <th>Employee No.</th>
+                    <th>Employee Name</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Log Date</th>
+                    <th>Log Date&time</th>
+                    <th>Shift</th>
+                    <th>IP Address</th>
+                </tr>
+                <tr *ngFor="let lp of EsslPunchReport;let i=index">
+                    <td>{{i+1}}</td>
+                    <td>{{lp.pernr}}</td>
+                    <td>{{lp.empName}}</td>
+                    <td>{{lp.designation}}</td>
+                    <td>{{lp.department}}</td>
+                    <td>{{lp.eventDate | date:'dd/MM/yyyy'}}</td>
+                    <td>{{lp.eventTime | date:'dd/MM/yyyy hh:mm:ss a'}}</td>
+                    <td>{{lp.shift}}</td>
+                    <td>{{lp.ipAddress}}</td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</section>
+
+<div hidden id="pdf110">
+    <div class="table table-responsive">
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th style="text-align: center; width: 10%;">SNo</th>
+                <th style="text-align: center; width: 10%;">Device Id</th>
+                <th style="text-align: center; width: 20%;">Device Name</th>
+                <th style="text-align: center; width: 15%;">Serial Number</th>
+                <th style="text-align: center; width: 10%;">Ip Address</th>
+                <th style="text-align: center; width: 15%;">Device Location</th>
+                <th style="text-align: center; width: 10%;">Device Type</th>
+                <th style="text-align: center; width: 10%;">Last Ping (Date & Time)</th>
+            </tr>
+            <tr *ngFor="let categ of DevBioReport;  let i = index">
+                <td>{{i+1}}</td>
+                <td>{{categ.deviceId}}</td>
+                <td>{{categ.deviceFname}}</td>
+                <td>{{categ.serialNumber}}</td>
+                <td>{{categ.ipAddress}}</td>
+                <td>{{categ.deviceLocation}}</td>
+                <td>{{categ.deviceType}}</td>
+                <td>{{categ.lastPing | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,256 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Initiate Exit Process
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Initiate Exit Process</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId" *ngIf="employeeId > 0"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='details'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Details</a></li>
+    <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a
+        (click)="onTabClick(1)">Attachments</a></li>
+  </ul>
+
+  <div class="details-tab">
+
+    <div *ngIf="currentTab=='details'">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">Resignation Details</h3>
+        </div>
+        <div class="panel-body form-horizontal">
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="resignationDate">Resignation Status</label>
+                <div class="col-md-8">
+                  <span class="label label-lg label-success">{{resignationStatus}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Date Of Resignation</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="resignationDate" name="ResignationDate"
+                    [ngModel]="ResignationDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Notice Period</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" name="noticePeriod" [(ngModel)]="noticePeriod"
+                    [disabled]="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Last Working Day</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="lastWorkingDate" name="LastWorkingDate"
+                    [ngModel]="DateLastWorkingDay | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Reason</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="reason" name="Reason"
+                    [(ngModel)]="resignationDetails.reason" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Detailed Reason</label>
+                <div class="col-md-8">
+                  <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Reason For Resignation"
+                    [(ngModel)]="resignationDetails.reasonDetail" class="form-control" id="detailsReasonResignation"
+                    name="detailsReasonResignation" readonly></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="lastDcr">Last DCR</label>
+                <div class="col-md-8">
+                  <input [owlDateTime]="dt12" id="lastDcrDate" #joiningDateEnt="ngModel"
+                    placeholder="Last DCR Date" [owlDateTimeTrigger]="dt12" name="lastDcrDate" [disabled]="true"
+                    class="form-control" [(ngModel)]="resignationDetails.lastDcrDate">
+                  <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="expectedLastDate">Requested Relieving Date</label>
+                <div class="col-md-8">
+                  <input [matTooltipPosition]="'below'" matTooltip="Click to change last working date"
+                    [owlDateTime]="dt11" id="expectedLastWorkingDate" #joiningDateEnt="ngModel" [disabled]="true"
+                    placeholder="Expected Last Date" [owlDateTimeTrigger]="dt11" name="expectedLastWorkingDate"
+                    class="form-control" [(ngModel)]="resignationDetails.expectedLastWorkingDate">
+                  <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="reasonResignationDateChange">Reason For Change In Relieving Date</label>
+                <div class="col-md-8">
+                  <textarea [matTooltipPosition]="'below'" matTooltip="Input Reason For Resignation Date Change"
+                    [(ngModel)]="resignationDetails.reasonExpectedDateChange" class="form-control" [disabled]="true"
+                    id="reasonResignationDateChange" name="reasonResignationDateChange"
+                    #reasonResignationDateChange="ngModel"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="actualLastWorkingDate">Actual Relieving Date</label>
+                <div class="col-md-8">
+                  <input [matTooltipPosition]="'below'" matTooltip="Click to change last working date"
+                    [owlDateTime]="dt13" id="actualLastWorkingDate" #actualLastWorkingDateEnt="ngModel" [disabled]="true"
+                    placeholder="Actual Last Date" [owlDateTimeTrigger]="dt13" name="actualLastWorkingDate"
+                    class="form-control" [(ngModel)]="resignationDetails.actualLastWorkingDate">
+                  <owl-date-time [pickerType]="'calendar'" #dt13></owl-date-time>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+
+        </div>
+      </div>
+      
+ <app-resignation-shortfall-details *ngIf="resignationDetails" [resignationDetails]="resignationDetails"></app-resignation-shortfall-details>
+
+    </div>
+
+    <app-employee-attachments [objectId]="this.resignationDetails.resignationId" [objectType]="this.objectType"
+      [employeeId]="this.employeeId" [editAllowed]="true" [deleteAllowed]="false" *ngIf="currentTab=='attachments'">
+    </app-employee-attachments>
+
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Clearance Checklist</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+      <app-resignation-checklist [resignationId]="this.resignationDetails.resignationId" *ngIf="this.resignationDetails.resignationId > 0" [editAllowed]="true">
+      </app-resignation-checklist>
+    </div>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Exit Interview</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Exit Interview Required</label>
+            <div class="col-md-8">
+              <select class="form-control" id="exitInterviewRequired" [(ngModel)]="exitInterviewRequired"
+                ngControl="exitInterviewRequired" name="exitInterviewRequired" #exitInteviewRequiredEnt="ngModel"
+                required>
+                <option [ngValue]="null" [selected]="true" default> Select </option>
+                <option [ngValue]="true">Yes </option>
+                <option [ngValue]="false">No </option>
+              </select>
+              <span class="help-block" *ngIf="exitInteviewRequiredEnt.touched && !exitInteviewRequiredEnt.valid">
+                Please select a value</span>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" *ngIf="exitInterviewRequired == false">
+          <div class="form-group">
+            <label class="col-md-4">Reason for No Exit Interview</label>
+            <div class="col-md-8">
+              <textarea type="text" class="form-control" [(ngModel)]="reason" ngControl="reason" name="reason"
+                rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" *ngIf="exitInterviewRequired == true">
+          <div class="form-group">
+            <label class="col-md-4">Select Template</label>
+            <div class="col-md-8">
+              <select class="form-control" id="exitInterviewTemplateId" [(ngModel)]="selectedTemplateId"
+                ngControl="selectedTemplateId" name="exitInterviewTemplateId" #printTemplateEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true" default> Select template </option>
+                <option *ngFor="let pl of templatesList" [ngValue]="pl.printTemplateId">{{pl.templateName}}</option>
+              </select>
+              <span class="help-block" *ngIf="printTemplateEnt.touched && !printTemplateEnt.valid">
+                Please select a value</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <span class="text-danger">Update the Checklist items and select the Exit Inteview template to initiate the Exit
+        Process.</span>
+    </div>
+  </div>
+
+  <div class="row text-center actionButtons">
+    <div class="col-md-12">
+      <button type="button" (click)="Back()" class="btn btn-default" [matTooltipPosition]="'after'"
+        matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+      <button type="button" class="btn btn-primary" (click)="initiate()" matTooltip="Click to initiate the exit process"
+        [disabled]="isLoading">Initiate Exit</button>
+
+    </div>
+  </div>
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="this.resignationId" [objectType]="this.objectType"></app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="this.resignationId" [objectType]="this.objectType"></app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>

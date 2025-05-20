@@ -1,0 +1,19 @@
+.box-title{
+    font-weight: bold;
+    color:#3c8dbc;
+}
+
+.socialLink{
+font-size: 16px;
+}
+
+.socialLink  i{
+    margin-right: 10px;
+    border: 1pt;
+    border-style: solid;
+    padding: 7px;
+    box-shadow: 2px 2px 5px grey;
+    border-color: lightgrey;
+    color: grey;
+    border-radius: 5px;
+}

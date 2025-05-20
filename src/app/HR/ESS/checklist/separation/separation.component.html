@@ -1,0 +1,179 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Separation Checklist
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Separation Checklist</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xs-12">          
+          <div class="form-group row">           
+            <label class="col-md-1 control-label text-right">Status</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.status" class="form-control" id="status" name="status" #statusEnt="ngModel">
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let sl of statusList" [ngValue]="sl.type">{{sl.type}}</option>
+              </select> 
+            </div> 
+            <label class="col-md-1 control-label text-right">Type</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.objectType" class="form-control" id="Type" name="Type" #typeEnt="ngModel">
+                <option value="" [selected]="true"> All </option>
+                <option value="Resignation">Resignation</option>
+                <option value="Termination">Termination</option>
+              </select> 
+            </div>  
+          </div>          
+          <div class="form-group text-center">
+            <button class="btn btn-primary btn-sm" (click)="getChecklistData();" matTooltip="click to Go"
+              [disabled]="isLoading">
+              Filter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="row">
+      <div class="col-md-12 form-group">
+        <div class="btn-group">
+          <button class="btn btn-default active btn-sm columnGroup" data-group="all">All</button>
+          <button class="btn btn-default active btn-sm columnGroup" data-group="jobDetails">Job Details</button>
+          <button class="btn btn-default active btn-sm columnGroup" data-group="otherDetails">Other</button>
+        </div>
+        <div class="pull-right">
+          <button type="button" class="btn btn-sm btn-primary" >Export</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table class="table table-hover table-striped table-bordered" id="data">
+          <thead>
+            <tr>
+              <th >Action</th>
+              <th>Checklist ID</th>
+              <th>Type</th>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Detail</th>
+              <th class="otherDetails">Completed Date</th>
+              <th class="otherDetails">Completed By</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filterData.list; let i = index">
+              <td >     
+                <ng-template [ngIf]="[item.objectType]=='Resignation'">
+
+                  <a [routerLink]="['/HR/ess/checklist/separation-update', item.objectId]" class="btn btn-info btn-xs"
+                  [matTooltipPosition]="'after'" matTooltip="Click to view full details">
+                  <i class="fas fa-eye"></i></a>
+  
+                </ng-template>  
+                <ng-template [ngIf]="[item.objectType]=='Termination'">
+
+                  <a [routerLink]="['/HR/ess/checklist/termination-update', item.objectId]" class="btn btn-info btn-xs"
+                  [matTooltipPosition]="'after'" matTooltip="Click to view full details">
+                  <i class="fas fa-eye"></i></a>
+  
+                </ng-template>         
+                <ng-template [ngIf]="[item.status] == 'Pending'">
+  
+                  <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#CommentsModal"
+                    [matTooltipPosition]="'after'" (click)="complete(item.checklistItemId)"
+                    matTooltip="Click to update as completed">
+                    <i class="fas fa-check"></i></button>
+
+                    <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#CommentsModal"
+                    [matTooltipPosition]="'after'" (click)="cancel(item.checklistItemId)"
+                    matTooltip="Click to mark Not Applicable">
+                    <i class="fas fa-times"></i></button>
+
+                </ng-template>
+              </td>
+              <td>{{item.checklistItemId}}</td>
+              <td>{{item.objectType}}</td>
+              <td>{{item.objectId}}</td>
+              <td ><span class="label label-default label-{{item.statusColor}}">{{item.status}}</span></td>
+              <td>{{item.title}}</td>
+              <td class="otherDetails">{{item.completedDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+              <td class="otherDetails">{{item.completedByName}}</td>
+            </tr>
+
+          </tbody>
+        </table>
+        <div class="text-center">
+          <div class="overlay text-center h3" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+          <ul class="pagination" *ngIf="filterData.totalCount>0">
+            <li>
+              <a (click)="gotoPage(filterData.pageNo)">
+              Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> - <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b> of <b>{{filterData.totalCount}}</b> records
+              </a>
+            </li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+            <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+            <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo+1" (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+            <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of <b>{{filterData.totalPages}}</b></a></li>
+            <li><a>Page Size 
+              <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Comments Modal -->
+<div id="CommentsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Comments</h4>
+      </div>
+      <div class="modal-body">
+        <label>Comments</label>
+        <textarea rows="3" class="form-control" [(ngModel)]="comments"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="UpdateChecklist()">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,401 @@
+<section class="content">
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-4">
+
+      <div class="box box-solid box-shadow">
+        <div class="box-header">
+          <h3 class="box-title"><i class="fa fa-calendar"></i> Calendar</h3>
+          <!-- <div class="pull-right box-tools">
+
+            <div class="btn-group">
+              <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-bars"></i></button>
+              <ul class="dropdown-menu pull-right" role="menu">
+                <li><a href="#">Add new event</a></li>
+                <li><a href="#">Clear events</a></li>
+                <li class="divider"></li>
+                <li><a href="#">View calendar</a></li>
+              </ul>
+            </div>
+            <button type="button" class="btn btn-success btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-success btn-sm" data-widget="remove"><i class="fa fa-times"></i>
+            </button>
+          </div> -->
+
+        </div>
+        <div class="box-body no-padding" style="height: 250px;">
+          <div id="calendar" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+
+      <div class="box box-solid box-shadow">
+        <div class="box-header">
+          <h3 class="box-title"><i class="fas fa-bullhorn"></i> Announcements</h3>
+          <!-- <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+          </div> -->
+        </div>
+
+        <div class="box-body" style="height: 250px; overflow: auto">
+          <ul class="products-list product-list-in-box">
+            <li class="item" *ngFor="let item of announcements; let i = index">
+              <div class="product-img">
+                <!-- <img alt="Product Image"> -->
+              </div>
+              <div class="">
+                <span class="product-title">{{item.title}}</span>
+                <button type="button" class="btn btn-xs btn-default pull-right"
+                  (click)="viewAnnouncementDetails(item)">Read More</button>
+                <span class="product-description">
+                  {{item.shortDescription}}
+                </span>
+              </div>
+            </li>
+          </ul>
+          <div *ngIf="announcements.length == 0" class="text-muted">
+            <i class="fas fa-exclamation-circle"></i> No announcements done yet
+          </div>
+        </div>
+
+        <div class="box-footer text-center" *ngIf="announcements.length > 5">
+          <a class="uppercase">View All Announcements</a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="box box-solid box-shadow">
+        <div class="box-header">
+          <h3 class="box-title"><i class="fas fa-birthday-cake"></i> Birthdays & Anniversaries</h3>
+        </div>
+        <div class="box-body" style="height: 250px;">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs nav-justified">
+              <li><a href="#yesterdayBirthdays" data-toggle="tab">Yesterday</a></li>
+              <li class="active"><a href="#todayBirthdays" data-toggle="tab">Today</a></li>
+              <li><a href="#tomorrowBirthdays" data-toggle="tab">Tomorrow</a></li>
+            </ul>
+            <div class="tab-content" style="max-height: 200px; overflow:auto">
+              <div id="yesterdayBirthdays" class="tab-pane fade">
+                <ul class="products-list product-list-in-box">
+                  <li class="item" *ngFor="let item of yesterdayBirthdays; let i = index">
+                    <div class="">
+                      <span class="product-title">{{item.title}} {{item.firstName}} {{item.middleName}}
+                        {{item.lastName}} <small>(<i>{{item.designation}}</i>)</small></span>
+                      <button type="button" class="btn btn-xs btn-default pull-right"
+                        (click)="viewEmployeeDetails(item)">View</button>
+                      <span class="product-description">
+                        <i class="fas fa-crown" *ngIf="item.birthday"></i>
+                        <i class="fas fa-medal" *ngIf="item.anniversary"></i>
+                        {{item.birthday ? "Birthday" : "Anniversary"}} <i *ngIf="item.anniversary">({{item.years}}
+                          years)</i>
+                      </span>
+                    </div>
+                  </li>
+                  <li *ngIf="yesterdayBirthdays.length == 0">
+                    <div class="text-muted">
+                      <i class="fas fa-exclamation-circle"></i> No birthdays/anniversaries here
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div id="todayBirthdays" class="tab-pane fade in active">
+                <ul class="products-list product-list-in-box">
+                  <li class="item" *ngFor="let item of todayBirthdays; let i = index">
+                    <div class="">
+                      <span class="product-title">{{item.title}} {{item.firstName}} {{item.middleName}}
+                        {{item.lastName}} <small>(<i>{{item.designation}}</i>)</small></span>
+                      <button type="button" class="btn btn-xs btn-default pull-right"
+                        (click)="viewEmployeeDetails(item)">View</button>
+                      <span class="product-description">
+                        <i class="fas fa-crown" *ngIf="item.birthday"></i>
+                        <i class="fas fa-medal" *ngIf="item.anniversary"></i>
+                        {{item.birthday ? "Birthday" : "Anniversary"}} <i *ngIf="item.anniversary">({{item.years}}
+                          years)</i>
+                      </span>
+                    </div>
+                  </li>
+                  <li *ngIf="todayBirthdays.length == 0">
+                    <div class="text-muted">
+                      <i class="fas fa-exclamation-circle"></i> No birthdays/anniversaries today
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div id="tomorrowBirthdays" class="tab-pane fade">
+                <ul class="products-list product-list-in-box">
+                  <li class="item" *ngFor="let item of tomorrowBirthdays; let i = index">
+                    <div class="">
+                      <span class="product-title">{{item.title}} {{item.firstName}} {{item.middleName}}
+                        {{item.lastName}} <small>(<i>{{item.designation}}</i>)</small></span>
+                      <button type="button" class="btn btn-xs btn-default pull-right"
+                        (click)="viewEmployeeDetails(item)">View</button>
+                      <span class="product-description">
+                        <i class="fas fa-crown" *ngIf="item.birthday"></i>
+                        <i class="fas fa-medal" *ngIf="item.anniversary"></i>
+                        {{item.birthday ? "Birthday" : "Anniversary"}} <i *ngIf="item.anniversary">({{item.years}}
+                          years)</i>
+                      </span>
+                    </div>
+                  </li>
+                  <li *ngIf="tomorrowBirthdays.length == 0">
+                    <div class="text-muted">
+                      <i class="fas fa-exclamation-circle"></i> No birthdays/anniversaries here
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+
+      <div class="box box-solid box-shadow ">
+        <div class="box-header">
+          <h3 class="box-title">Social Feeds</h3>
+        </div>
+        <div class="box-body" style="height: 250px; overflow: auto">
+          <ul class="list-group">
+            <li class="list-group-item socialLink" *ngFor="let item of socialLinks; let i = index">
+              <a href="{{item.linkUrl}}" target="{{item.openInNewWindow?'_blank':''}}" title="{{item.description}}">
+                <i class="fab fa-lg fa-{{item.icon}}"></i> <span>{{item.linkText}}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+
+      <div class="box box-solid box-shadow ">
+        <div class="box-header">
+          <h3 class="box-title">More Links</h3>
+        </div>
+        <div class="box-body" style="height: 250px; overflow: auto">
+          <!-- <div class="col-xs-4 text-center" *ngFor="let item of moreLinks; let i = index"> -->
+            <ul class="list-group">
+            <li class="list-group-item moreLinks" *ngFor="let item of moreLinks; let i = index">
+              <a href="{{item.linkUrl}}" target="{{item.openInNewWindow?'_blank':''}}" title="{{item.description}}">
+                <i class="fas fa-x fa-{{item.icon}}"></i><span>{{item.linkText}}</span>
+              </a>
+            </li>
+          </ul>
+          <!-- <br>
+          <div class="col-xs-8">  
+            <a routerLink="/userIdRequest" title="Pending User Id  Requests">
+              <i class="fas fa-2x fa-id-card"></i> <br />
+              <label>Pending UserId Requests</label><br>
+              <label>Count = {{PendingCount}}</label>
+            </a>
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+
+      <div class="box box-solid box-shadow ">
+        <div class="box-header">
+          <h3 class="box-title"><i class="fas fa-handshake"></i> Welcome New Employees</h3>
+        </div>
+        <div class="box-body" style="height: 250px; overflow: auto">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs nav-justified">
+              <li><a href="#lastMonthJoiners" data-toggle="tab">Previous Month</a></li>
+              <li class="active"><a href="#thisMonthJoiners" data-toggle="tab">Current Month</a></li>
+            </ul>
+            <div class="tab-content" style="max-height: 200px; overflow:auto">
+              <div id="lastMonthJoiners" class="tab-pane fade">
+                <ul class="products-list product-list-in-box">
+                  <li class="item" *ngFor="let item of lastMonthJoiners; let i = index">
+                    <div class="">
+                      <span class="product-title">{{item.title}} {{item.firstName}} {{item.middleName}}
+                        {{item.lastName}} <small>(<i>{{item.designation}}</i>)</small></span>
+                      <button type="button" class="btn btn-xs btn-default pull-right"
+                        (click)="viewEmployeeDetails(item)">View</button>
+                      <span class="product-description">
+                        Joined on: {{item.joiningDate | date: "dd/MM/yyyy"}}
+                      </span>
+                    </div>
+                  </li>
+                  <li *ngIf="lastMonthJoiners.length == 0">
+                    <div class="text-muted">
+                      <i class="fas fa-exclamation-circle"></i> No new employees joined last month
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div id="thisMonthJoiners" class="tab-pane fade in active">
+                <ul class="products-list product-list-in-box">
+                  <li class="item" *ngFor="let item of thisMonthJoiners; let i = index">
+                    <div class="">
+                      <span class="product-title">{{item.title}} {{item.firstName}} {{item.middleName}}
+                        {{item.lastName}} <small>(<i>{{item.designation}}</i>)</small></span>
+                      <button type="button" class="btn btn-xs btn-default pull-right"
+                        (click)="viewEmployeeDetails(item)">View</button>
+                      <span class="product-description">
+                        Joined on: {{item.joiningDate | date: "dd/MM/yyyy"}}
+                      </span>
+                    </div>
+                  </li>
+                  <li *ngIf="thisMonthJoiners.length == 0">
+                    <div class="text-muted">
+                      <i class="fas fa-exclamation-circle"></i> No new employees joined this month
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="employeeDetailsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Employee Details</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <label class="col-md-4">Name</label>
+          <div class="col-md-8">
+            <span>{{employee.firstName}} {{employee.middleName}} {{employee.lastName}}</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4">Designation</label>
+          <div class="col-md-8">
+            <span>{{employee.designation}}</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4">Department</label>
+          <div class="col-md-8">
+            <span>{{employee.department}}</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4">Location</label>
+          <div class="col-md-8">
+            <span>{{employee.location}}</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4">Reporting Manager</label>
+          <div class="col-md-8">
+            <span>{{employee.reportingManagerName}}</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4">Email ID</label>
+          <div class="col-md-8">
+            <span>{{employee.email}}</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4">Extension No</label>
+          <div class="col-md-8">
+            <span>{{employee.extension}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="announcementModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="modal-title">
+          <span>{{announcement.title}}</span>
+        </h3>
+      </div>
+      <div class="modal-body" style="max-height: 500px; overflow: auto">
+        <i>{{announcement.shortDescription}}</i>
+        <hr />
+        <div>
+          <div [innerHTML]="announcement.description | safeHtml"></div>
+        </div>
+      </div>
+      <div class="modal-footer text-left">
+        <label>Published on: </label> {{announcement.effectiveFromDate | date: "dd/MM/yyyy"}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="loginannouncementModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <!-- <h3 class="modal-title">
+          <span>{{announcement.title}}</span></h3> -->
+      </div>
+      <div class="modal-body" style="max-height: 500px; overflow: auto;text-align: center;align-items: center;">
+        <h3>{{announcement.shortDescription}}</h3>
+       
+      </div>
+      <div class="modal-body" style="max-height: 500px; overflow: auto">
+        <div [innerHTML]="announcement.description | safeHtml"></div>
+      </div>
+      
+        <div class=" text-center" style="align-items: center;text-align: center;">
+          <img [src]="imageToShow" height="250" width="500" style="max-width:100%;cursor:pointer" *ngIf="!isLoading">
+        </div>
+      <div class="modal-footer text-left">
+        <label>Published on: </label> {{announcement.effectiveFromDate | date: "dd/MM/yyyy"}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ImageModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        
+        <div class="row">
+          <div class="form-group">
+            <img [src]="imageToShow" class="img-responsive" *ngIf="!isLoading">
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">        
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

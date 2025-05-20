@@ -1,0 +1,761 @@
+<section class="content-header">
+    <h1>
+        Account Submission
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Account Submission</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+
+        </div>
+        <div class="box-body">
+
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="TypeOfGuest">HR Id</label>
+                            <select [(ngModel)]="filterTypeOfGuest" class="form-control" id="TypeOfGuest"
+                                name="TypeOfGuest" matTooltip="Type Of Guest" #TypeOfGuest1Ent="ngModel" required>
+                                <option [ngValue]="undefined" disabled [selected]="true"> Select Type of Guest </option>
+                                <option *ngFor="let pl of TypeOfGuestList" value={{pl.typeOfGuest1}}>{{pl.typeOfGuest1}}
+                                </option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group form-group-sm">
+                            <label for="PayGroup">Division</label>
+                            <ng-multiselect-dropdown id="filterPayGroup" name="filterPayGroup"
+                                #filterPayGroupE="ngModel" [data]="payGroupList" [(ngModel)]="filterPayGroup"
+                                [settings]="dropdownSettings" (onDeSelect)="onItemDeSelect($event)"
+                                (onDeSelectAll)="onDeSelectAll($event)" (onSelectAll)="onSelectAll($event)"
+                                matTooltip="Select Division">
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="typeOfEvent">Type Of Event </label>
+                            <select [(ngModel)]="filtertypeOfEvent" class="form-control" id="typeOfEvent"
+                                name="typeOfEvent" matTooltip="Type Of Event" #typeOfEventEnt="ngModel">
+                                <option [ngValue]="undefined" disabled [selected]="true"> Select Type Of Event </option>
+                                <option *ngFor="let pl of TypeOfEventList" value={{pl.typeOfEvent}}>{{pl.typeOfEvent}}
+                                </option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="InvoiceDate">Invoice Date</label>
+                            <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="InvoiceDate1"
+                                class="form-control" [(ngModel)]="filterInvoiceDate" #InvoiceDat1eEnt="ngModel">
+                            <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;">
+                            </owl-date-time>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="invoiceNo">Invoice No</label>
+                            <input type="text" name="invoiceNo" id="invoiceNo" [(ngModel)]="filterInvoiceNo"
+                                class="form-control" matTooltip="Invoice No" #InvoiceNoEnt="ngModel" required>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="ExpenseCategory">Expense Category</label>
+                            <select [(ngModel)]="filterExpenseCategory" class="form-control" id="ExpenseCategory"
+                                name="ExpenseCategory" matTooltip="Pay Group" #ExpenseCategoryEnt="ngModel" required>
+                                <option [ngValue]="undefined" disabled [selected]="true"> Select expense Category
+                                </option>
+                                <option *ngFor="let pl of ExpenseCategoryList" value={{pl.expenseCategory1}}>
+                                    {{pl.expenseCategory1}}</option>
+                            </select>
+
+                        </div>
+                    </div> -->
+                    <!-- <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="Purpose">Purpose</label>
+                            <select [(ngModel)]="filterPurpose" class="form-control" id="Purpose" name="Purpose"
+                                matTooltip="Purpose" #PurposeEnt="ngModel" required>
+                                <option [ngValue]="undefined" disabled [selected]="true"> Select Purpose </option>
+                                <option *ngFor="let pl of PurposeList" value={{pl.purpose}}>{{pl.purpose}}</option>
+                            </select>
+
+                        </div>
+                    </div> -->
+
+                    <div class="col-sm-3">
+                        <div class="form-group form-group-sm">
+                            <label for="filterVendorName">Vendor Name</label>
+                            <ng-multiselect-dropdown id="filterVendorName" name="filterVendorName"
+                                #filterVendorNameE="ngModel" [data]="VendorMasterList" [(ngModel)]="filterVendorName"
+                                [settings]="dropdownSettings2" (onDeSelect)="onItemDeSelect($event)"
+                                (onDeSelectAll)="onDeSelectAll($event)" (onSelectAll)="onSelectAll($event)"
+                                matTooltip="Select Vendor Name">
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group" [ngClass]="(fromDateEnt.touched && !fromDateEnt.valid)?'has-error':''">
+                            <label>From Date</label>
+                            <input #fromDateEnt="ngModel" [owlDateTime]="dt13" [owlDateTimeTrigger]="dt13"
+                                name="fromDate" class="form-control" [(ngModel)]="fromDate" #fromDateEnt="ngModel"
+                                placeholder="DD-MM-YYYY">
+                            <owl-date-time [pickerType]="'calendar'" #dt13 style="width: 250px;"></owl-date-time>
+                            <span class="help-block" *ngIf="!fromDateEnt.valid && fromDateEnt.touched">Please enter
+                                valid From
+                                Date</span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group" [ngClass]="(toDateEnt.touched && !toDateEnt.valid)?'has-error':''">
+                            <label>To Date</label>
+                            <input #toDateEnt="ngModel" [min]="fromdate" [max]="today" [owlDateTime]="dt14"
+                                [owlDateTimeTrigger]="dt14" name="toDate" class="form-control" [(ngModel)]="toDate"
+                                #toDateEnt="ngModel" placeholder="DD-MM-YYYY">
+                            <owl-date-time [pickerType]="'calendar'" #dt14 style="width: 250px;"></owl-date-time>
+                            <span class="help-block" *ngIf="!toDateEnt.valid && toDateEnt.touched">Please enter valid To
+                                Date</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="status">Account Status</label><br>
+                            <mat-radio-group id="status" name="status"           [(ngModel)]="status" ngControl="status"
+                                                      (change)="ClearTable()" #statusEnt="ngModel">
+                                <mat-radio-button value='Pending'>Pending</mat-radio-button>
+                                &nbsp;
+                                <mat-radio-button value='Submitted'>Submitted</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <label>&nbsp;</label>
+                        <div class="form-group form-group-sm">
+                            <button class="btn btn-primary btn-sm" (click)="getFilteredList();"
+                                matTooltip="click to go">Go</button>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+                                matTooltip="click to reset">Clear</button>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-primary btn-sm" (click)="exportAsXLSX();" [disabled]="">
+                                <i class="fa fa-download fa-sm text-white-50"></i> Export to excel</button>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12" *ngIf="status=='Submitted'">
+                        <div class="box-body table-responsive">
+                            <table  id="AccountSubmissionTable" class="table table-bordered table-striped">
+                                <thead style="background-color: #68a7d2;color:white;">
+                                    <tr>
+                                        <th> <input *ngIf="status == 'Pending'" type="checkbox"
+                                                [(ngModel)]="isMasterSel" name="selectall" (change)="checkUncheckAll()">
+                                            &nbsp;&nbsp;&nbsp;
+                                            <label *ngIf="status == 'Pending'" for="selectall">Select All</label>
+                                        </th>
+                                        <th class="col-sm-1">SLNo</th>
+                                        <th>Accouont Reference Id</th>
+                                        <th>Name</th>
+                                        <th>Division</th>
+                                        <th>HR Id</th>
+                                        <th>Type Of Event</th>
+                                        <th>Vendor</th>
+                                        <th>Invoice No</th>
+                                        <th>Invoice Date</th>
+                                        <th>Advance Amount Paid</th>                                      
+                                        <th>Amount</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let acc of AccountSubmissionList;  let i = index">
+                                        <td *ngIf="status == 'Pending'"> <input type="checkbox" [id]="'chkusage'+acc.id"
+                                                [name]="'chkusage'+acc.id" [(ngModel)]="acc.isSelected"
+                                                (change)="isAllSelected()" #usageEnt="ngModel">
+                                        </td>
+                                        <td *ngIf="status != 'Pending'"> <input type="checkbox" [id]="'chkusage'+acc.id"
+                                                [name]="'chkusage'+acc.id" [(ngModel)]="acc.isSelected"
+                                                (change)="checkUncheckAllSubmitted(acc)" #usageEnt="ngModel">
+                                        </td>
+                                        <td>{{i+1}}</td>
+                                        <td>{{acc.accSubmittedReferenceNo}}</td>
+                                        <td>{{acc.name}}</td>
+                                        <td>{{acc.division}}</td>
+                                        <td>{{acc.typeOfGuest}}</td>
+                                        <td>{{acc.typeOfEvent}}</td>
+                                        <td>{{acc.vendorName}}</td>
+                                        <td>{{acc.invoiceNo}}</td>
+                                        <td>{{acc.invoiceDate | date:'dd/MM/yyyy'}}</td>
+                                        <td>{{acc.advanceAmountPaid}}</td>
+                                        <td>{{acc.amount}}</td>
+                                        <td>{{acc.remarks}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <table mat-table *ngIf="rowSpans" [dataSource]="AccountSubmissionList" class="mat-elevation-z8">
+                        <ng-container *ngFor="let columnName of allButLastColumnNames; let iCol = index" [matColumnDef]="columnName">
+                          <th mat-header-cell *matHeaderCellDef>{{ columnName }}</th>
+                          <td mat-cell *matCellDef="let row; let iRow = index" [attr.rowspan]="rowSpans[iCol][iRow].span"
+                             [style.display]="rowSpans[iCol][iRow].span === 0 ? 'none'  : ''">{{ row[columnName] }}</td>
+                        </ng-container>
+                        <ng-container [matColumnDef]="lastColumnName">
+                          <th mat-header-cell *matHeaderCellDef>{{ lastColumnName }}</th>
+                          <td mat-cell *matCellDef="let row; let iRow = index">{{ row[lastColumnName] }}</td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="columnNames"></tr>
+                        <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
+                      </table> -->
+                    <div class="col-sm-12" *ngIf="status=='Pending'">
+                        <div class="box-body table-responsive">
+                            <table  id="AccountSubmissionTable" class="table table-bordered table-striped">
+                                <thead style="background-color: #68a7d2;color:white;">
+                                    <tr>
+                                        <th> <input *ngIf="status == 'Pending'" type="checkbox"
+                                                [(ngModel)]="isMasterSel" name="selectall" (change)="checkUncheckAll()">
+                                            &nbsp;&nbsp;&nbsp;
+                                            <label *ngIf="status == 'Pending'" for="selectall">Select All</label>
+                                        </th>
+                                        <th class="col-sm-1">SLNo</th>
+                                        <th>Name</th>
+                                        <th>Division</th>
+                                        <th>HR Id</th>
+                                        <th>Type Of Event</th>
+                                        <th>Vendor</th>
+                                        <th>Invoice No</th>
+                                        <th>Invoice Date</th>                                                                              
+                                        <th>Amount</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let acc of AccountSubmissionList;  let i = index">
+                                        <td *ngIf="status == 'Pending'"> <input type="checkbox" [id]="'chkusage'+acc.id"
+                                                [name]="'chkusage'+acc.id" [(ngModel)]="acc.isSelected"
+                                                (change)="isAllSelected()" #usageEnt="ngModel">
+                                        </td>
+                                        <td *ngIf="status != 'Pending'"> <input type="checkbox" [id]="'chkusage'+acc.id"
+                                                [name]="'chkusage'+acc.id" [(ngModel)]="acc.isSelected"
+                                                (change)="checkUncheckAllSubmitted(acc)" #usageEnt="ngModel">
+                                        </td>
+                                        <td>{{i+1}}</td>
+                                        <td>{{acc.name}}</td>
+                                        <td>{{acc.division}}</td>
+                                        <td>{{acc.typeOfGuest}}</td>
+                                        <td>{{acc.typeOfEvent}}</td>
+                                        <td>{{acc.vendorName}}</td>
+                                        <td>{{acc.invoiceNo}}</td>
+                                        <td>{{acc.invoiceDate | date:'dd/MM/yyyy'}}</td>
+                                        <td>{{acc.amount}}</td>
+                                        <td>{{acc.remarks}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                   
+                    <div class="col-sm-12">
+                        <label>&nbsp;</label>
+                        <div class="form-group form-group-sm pull-right" *ngIf="status == 'Pending'">
+                            <button class="btn btn-primary btn-sm" (click)="onNext(true,accsubItem )"
+                                matTooltip="click to Next">Next</button>
+                            &nbsp;&nbsp;
+                        </div>
+                        <div class="form-group form-group-sm pull-right" *ngIf="status == 'Submitted'">
+                            <button class="btn btn-primary btn-sm" (click)="onEdit(true,AccountSubmissionEdit )"
+                                matTooltip="click to Next">Edit</button>
+                            &nbsp;&nbsp;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabe" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    {{isEdit==true?'Update Account Submission Details':'New Account Submission Details'}}
+                </h4>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                    [ngClass]="(!supportingsEnt.valid && supportingsEnt.touched)?'has-error':''">
+                                    <label for="">Supportings</label>
+                                    <input type="text" class="form-control" id="supportings" [(ngModel)]="supportings"
+                                        name="supportings" ngControl="supportings == '' ? '' : supportings"
+                                        #supportingsEnt="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                    [ngClass]="(!advanceAmountPaidEnt.valid && advanceAmountPaidEnt.touched)?'has-error':''">
+                                    <label for="advanceAmountPaid">Advance Amount Paid</label>
+                                    <input type="text" class="form-control" id="advanceAmountPaid" (keyup)="totamount()"
+                                        [(ngModel)]="advanceAmountPaid" name="advanceAmountPaid"
+                                        ngControl="advanceAmountPaid == '' ? '' : advanceAmountPaid"
+                                        #advanceAmountPaidEnt="ngModel">
+                                    <span class="help-block"
+                                        *ngIf="!advanceAmountPaidEnt.valid && advanceAmountPaidEnt.touched">Please
+                                        enter Advanced Amount Paid
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                    [ngClass]="(!advanceChequeNoEnt.valid && advanceChequeNoEnt.touched)?'has-error':''">
+                                    <label for="advanceChequeNo">Advance Cheque No</label>
+                                    <input type="text" class="form-control" id="advanceChequeNo"
+                                        [(ngModel)]="advanceChequeNo" name="advanceChequeNo"
+                                        ngControl="advanceChequeNo == '' ? '' : advanceChequeNo"
+                                        #advanceChequeNoEnt="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                    [ngClass]="(!remarksEnt.valid && remarksEnt.touched)?'has-error':''">
+                                    <label for="remarks">Remarks</label>
+                                    <input type="text" class="form-control" id="remarks" [(ngModel)]="remarks"
+                                        name="remarks" ngControl="remarks == '' ? '' : remarks" #remarksEnt="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="box-body">
+                                    <table id="ExpenseEditTable" class="table table-bordered table-striped">
+                                        <thead style="background-color: #68a7d2;color:white;">
+                                            <tr>
+                                                <th style="background-color: #68a7d2;color:white;">SLNo</th>
+                                                <th style="background-color: #68a7d2;color:white;">Name</th>
+                                                <th style="background-color: #68a7d2;color:white;">Vendor Name</th>
+                                                <th style="background-color: #68a7d2;color:white;">HR Id</th>
+                                                <th style="background-color: #68a7d2;color:white;">Employee</th>
+                                                <th style="background-color: #68a7d2;color:white;">Invoice Date</th>
+                                                <th style="background-color: #68a7d2;color:white;">Invoice No</th>
+                                                <th style="background-color: #68a7d2;color:white;">Division</th>
+                                                <th style="background-color: #68a7d2;color:white;">Type Of Event</th>
+                                                <th style="background-color: #68a7d2;color:white;">Amount</th>
+                                                <th style="background-color: #68a7d2;color:white;">No Of PAX</th>
+                                                <th style="background-color: #68a7d2;color:white;">Remarks</th>
+                                                <!-- <th>Supportings</th>
+                                                <th>Remarks</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let acc of checkedRequestList;  let i = index">
+                                                <td>{{i+1}}</td>
+                                                <td>{{acc.name}}</td>
+                                                <td>{{acc.vendorName}}</td>
+                                                <td>{{acc.typeOfGuest}}</td>
+                                                <td>{{acc.employeeId}}</td>
+                                                <td>{{acc.invoiceDate | date:'dd/MM/yyyy'}}</td>
+                                                <td>{{acc.invoiceNo}}</td>
+                                                <td>{{acc.division}}</td>
+                                                <td>{{acc.typeOfEvent}}</td>
+                                                <td>{{acc.amount}}</td>
+                                                <td>{{acc.noOfPax}}</td>
+                                                <!-- <td>{{acc.purpose}}</td> -->
+                                                <!-- <td>{{acc.supportings}}</td>-->
+                                                <td>{{acc.remarks}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="row">
+                                    <table id="balanceTable" class="table table-striped table-bordered">
+                                        <tr style="background-color: #b2d1e5;">
+                                            <td colspan="5" style="width: 100%; text-align: center; ">
+                                                <strong><b> Amount Details</b></strong>
+                                            </td>
+                                        </tr>
+                                        <tr style="background-color: #b2d1e5;">
+                                            <th><b>Total Expense</b></th>
+                                            <th><b>Advance Paid</b></th>
+                                            <th><b>Total Amount Payable</b></th>
+                                        </tr>
+                                        <tr>
+                                            <td>{{amount}}</td>
+                                            <td>{{advanceAmountPaid}}</td>
+                                            <td>{{totalAmountPayable}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button type="button" class="btn btn-primary" (click)="Submit()"
+                    [disabled]="isLoadingPop || !desigForm.valid || checkedRequestList.length==0">{{isEdit==false?'Update':'Submit
+                    & Print'}}</button>
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabe" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    {{isEdit==true?'Edit Account Submission Details':'New Account Submission Details'}}
+                </h4>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #SubmittedDetailsEditForm="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                    [ngClass]="(!supportingsE.valid && supportingsE.touched)?'has-error':''">
+                                    <label for="">Supportings</label>
+                                    <input type="text" class="form-control" id="supportings" [(ngModel)]="supportings"
+                                        name="supportings" ngControl="supportings == '' ? '' : supportings"
+                                        #supportingsE="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                    [ngClass]="(!advanceAmountPaidE.valid && advanceAmountPaidE.touched)?'has-error':''">
+                                    <label for="advanceAmountPaid">Advance Amount Paid</label>
+                                    <input type="text" class="form-control" id="advanceAmountPaid" (keyup)="totamount()"
+                                        [(ngModel)]="advanceAmountPaid" name="advanceAmountPaid"
+                                        ngControl="advanceAmountPaid == '' ? '' : advanceAmountPaid"
+                                        #advanceAmountPaidE="ngModel">
+                                    <span class="help-block"
+                                        *ngIf="!advanceAmountPaidE.valid && advanceAmountPaidE.touched">Please
+                                        enter Advanced Amount Paid
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                    [ngClass]="(!advanceChequeNoE.valid && advanceChequeNoE.touched)?'has-error':''">
+                                    <label for="advanceChequeNo">Advance Cheque No</label>
+                                    <input type="text" class="form-control" id="advanceChequeNo"
+                                        [(ngModel)]="advanceChequeNo" name="advanceChequeNo"
+                                        ngControl="advanceChequeNo == '' ? '' : advanceChequeNo"
+                                        #advanceChequeNoE="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                    [ngClass]="(!remarksE.valid && remarksE.touched)?'has-error':''">
+                                    <label for="remarks">Remarks</label>
+                                    <input type="text" class="form-control" id="remarks" [(ngModel)]="remarks"
+                                        name="remarks" ngControl="remarks == '' ? '' : remarks" #remarksE="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="box-body">
+                                    <table id="ExpenseUpdateTable" class="table table-bordered table-striped">
+                                        <thead style="background-color: #68a7d2;color:white;">
+                                            <tr>
+                                                <th style="background-color: #68a7d2;color:white;">SLNo</th>
+                                                <th style="background-color: #68a7d2;color:white;">Name</th>
+                                                <th style="background-color: #68a7d2;color:white;">Vendor Name</th>
+                                                <th style="background-color: #68a7d2;color:white;">HR Id</th>
+                                                <th style="background-color: #68a7d2;color:white;">Employee</th>
+                                                <th style="background-color: #68a7d2;color:white;">Invoice Date</th>
+                                                <th style="background-color: #68a7d2;color:white;">Invoice No</th>
+                                                <th style="background-color: #68a7d2;color:white;">Division</th>
+                                                <th style="background-color: #68a7d2;color:white;">Type Of Event</th>
+                                                <th style="background-color: #68a7d2;color:white;">Amount</th>
+                                                <th style="background-color: #68a7d2;color:white;">No Of PAX</th>
+                                                <th style="background-color: #68a7d2;color:white;">Remarks</th>
+                                                <th style="background-color: #68a7d2;color:white;">Action</th>
+                                                <!-- <th>Supportings</th>
+                                                <th>Remarks</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let acc of checkedRequestList1;  let i = index">
+                                                <td>{{i+1}}</td>
+                                                <td>{{acc.name}}</td>
+                                                <td>{{acc.vendorName}}</td>
+                                                <td>{{acc.typeOfGuest}}</td>
+                                                <td>{{acc.employeeId}}</td>
+                                                <td>{{acc.invoiceDate | date:'dd/MM/yyyy'}}</td>
+                                                <td>{{acc.invoiceNo}}</td>
+                                                <td>{{acc.division}}</td>
+                                                <td>{{acc.typeOfEvent}}</td>
+                                                <td>{{acc.amount}}</td>
+                                                <td>{{acc.noOfPax}}</td>
+                                                <td>{{acc.remarks}}</td>
+                                                <td class="pr-2">
+                                                    <button type="button" class="btn btn-primary btn-xs"
+                                                        (click)="deleteEdited(acc)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                                <!-- <td>{{acc.purpose}}</td> -->
+                                                <!-- <td>{{acc.supportings}}</td>-->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="row">
+                                    <table id="balanceTable1" class="table table-striped table-bordered">
+                                        <tr style="background-color: #b2d1e5;">
+                                            <td colspan="5" style="width: 100%; text-align: center; ">
+                                                <strong><b> Amount Details</b></strong>
+                                            </td>
+                                        </tr>
+                                        <tr style="background-color: #b2d1e5;">
+                                            <th><b>Total Expense</b></th>
+                                            <th><b>Advance Paid</b></th>
+                                            <th><b>Total Amount Payable</b></th>
+                                        </tr>
+                                        <tr>
+                                            <td>{{amount}}</td>
+                                            <td>{{advanceAmountPaid}}</td>
+                                            <td>{{totalAmountPayable}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button type="button" class="btn btn-primary" (click)="onUpdateEdited()"
+                    [disabled]="isLoadingPop || !SubmittedDetailsEditForm.valid || checkedRequestList1.length == 0 ">{{isEdit==false?'Update':'Submit
+                    & Print'}}</button>
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div hidden id="pdf1">
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="11" style="text-align: center;">
+                <strong><b>Travel Expense Details</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center; vertical-align: bottom; ">Sl.No</th>
+            <th style="text-align: center; vertical-align: bottom; ">Name</th>
+            <th style="text-align: center; vertical-align: bottom; ">Division</th>
+            <th style="text-align: center; vertical-align: bottom; ">HR Id</th>
+            <th style="text-align: center; vertical-align: bottom; ">typeOfEvent</th>
+            <!-- <th style="text-align: center; vertical-align: bottom; ">Purpose</th> -->
+            <th width="15%" style="text-align: center; vertical-align: bottom; ">vendor Name</th>
+            <th width="15%" style="text-align: center; vertical-align: bottom; ">invoice No</th>
+            <th style="text-align: center; vertical-align: bottom; ">Invoice Date </th>
+            <th style="text-align: center; vertical-align: bottom; ">Amount</th>
+            <th style="text-align: center; vertical-align: bottom; ">No Of Pax</th>
+            <!-- <th style="text-align: center; vertical-align: bottom; ">Supportings</th>-->
+            <th width="10%" style="text-align: center; vertical-align: bottom; ">Remarks</th>
+        </tr>
+        <tr *ngFor="let acc of checkedRequestList1;  let i = index">
+            <td><b>{{i+1}}</b></td>
+            <td style="color: blue;">{{acc.name}}</td>
+            <td style="color: blue;">{{acc.division}}</td>
+            <td style="color: blue;">{{acc.typeOfGuest=='Employee'?acc.employeeId:acc.typeOfGuest}}</td>
+            <td style="color: blue;">{{acc.typeOfEvent}}</td>
+            <!-- <td style="color: blue;">{{acc.purpose}}</td> -->
+            <td style="color: blue;">{{acc.vendorName}}</td>
+            <td style="color: blue;">{{acc.invoiceNo}}</td>
+            <td style="color: blue;">{{acc.invoiceDate | date:'dd/MM/yyyy'}}</td>
+            <td style="color: blue;">{{acc.amount}}</td>
+            <!-- <td style="color: blue;">{{acc.supportings}}</td>-->
+            <td style="color: blue;">{{acc.noOfPax}}</td>
+            <td style="color: blue;">{{acc.remarks}}</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: right; border-right: none;"><b> Advance Cheque No - {{advanceChequeNo}}
+                </b>
+            </td>
+            <td colspan="4" style="text-align: right;"><b> Advance Amount </b>
+            </td>
+            <td>-{{advanceAmountPaid}}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="8" style="text-align: right;"><b>Total Amount Payable</b></td>
+            <td>{{amount - advanceAmountPaid}}</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <div>
+
+    </div>
+    &nbsp;&nbsp;&nbsp;
+    <div>
+        <label><b>Supportings : {{supportings}}</b></label><br>
+        <label></label><br>
+        &nbsp;&nbsp;&nbsp;
+        <label><b>Remarks : {{remarks}}</b></label>
+    </div>
+</div>
+
+
+<div hidden id="pdf">
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="11" style="text-align: center;">
+                <strong><b>Travel Expense Details</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center; vertical-align: bottom; ">Sl.No</th>
+            <th style="text-align: center; vertical-align: bottom; ">Name</th>
+            <th style="text-align: center; vertical-align: bottom; ">Division</th>
+            <th style="text-align: center; vertical-align: bottom; ">HR Id</th>
+            <th style="text-align: center; vertical-align: bottom; ">typeOfEvent</th>
+            <!-- <th style="text-align: center; vertical-align: bottom; ">Purpose</th> -->
+            <th width="15%" style="text-align: center; vertical-align: bottom; ">vendor Name</th>
+            <th width="15%" style="text-align: center; vertical-align: bottom; ">invoice No</th>
+            <th style="text-align: center; vertical-align: bottom; ">Invoice Date </th>
+            <th style="text-align: center; vertical-align: bottom; ">Amount</th>
+            <th style="text-align: center; vertical-align: bottom; ">No Of Pax</th>
+            <!-- <th style="text-align: center; vertical-align: bottom; ">Supportings</th>-->
+            <th width="10%" style="text-align: center; vertical-align: bottom; ">Remarks</th>
+        </tr>
+        <tr *ngFor="let acc of checkedRequestList1;  let i = index">
+            <td><b>{{i+1}}</b></td>
+            <td style="color: blue;">{{acc.name}}</td>
+            <td style="color: blue;">{{acc.division}}</td>
+            <td style="color: blue;">{{acc.typeOfGuest=='Employee'?acc.employeeId:acc.typeOfGuest}}</td>
+            <td style="color: blue;">{{acc.typeOfEvent}}</td>
+            <!-- <td style="color: blue;">{{acc.purpose}}</td> -->
+            <td style="color: blue;">{{acc.vendorName}}</td>
+            <td style="color: blue;">{{acc.invoiceNo}}</td>
+            <td style="color: blue;">{{acc.invoiceDate | date:'dd/MM/yyyy'}}</td>
+            <td style="color: blue;">{{acc.amount}}</td>
+            <!-- <td style="color: blue;">{{acc.supportings}}</td>-->
+            <td style="color: blue;">{{acc.noOfPax}}</td>
+            <td style="color: blue;">{{acc.remarks}}</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: right; border-right: none;"><b> Advance Cheque No - {{advanceChequeNo}}
+                </b>
+            </td>
+            <td colspan="4" style="text-align: right;"><b> Advance Amount </b>
+            </td>
+            <td>-{{advanceAmountPaid}}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="8" style="text-align: right;"><b>Total Amount Payable</b></td>
+            <td>{{totalAmountPayable}}</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <div>
+
+    </div>
+    &nbsp;&nbsp;&nbsp;
+    <div>
+        <label><b>Supportings : {{supportings}}</b></label><br>
+        <label></label><br>
+        &nbsp;&nbsp;&nbsp;
+        <label><b>Remarks : {{remarks}}</b></label>
+    </div>
+</div>
+
+<div hidden id="Excel">
+    <table id="AccountSubmissionTable" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <td colspan="11" style="text-align: center;">
+                    <strong><b>Account submitted details</b></strong>
+                </td>
+            </tr>
+            <tr>
+                <th class="col-sm-1">SLNo</th>
+                <th>Name</th>
+                <th>Division</th>
+                <th>HR Id</th>
+                <th>Type Of Event</th>
+                <th>Vendor</th>
+                <th>Invoice No</th>
+                <th>Invoice Date</th>
+                <th>Advance Amouont Paid</th>
+                <th>Amount</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let acc of dataTable;  let i = index">
+
+                <td>{{i+1}}</td>
+                <td>{{acc.name}}</td>
+                <td>{{acc.division}}</td>
+                <td>{{acc.typeOfGuest}}</td>
+                <td>{{acc.typeOfEvent}}</td>
+                <td>{{acc.vendorName}}</td>
+                <td>{{acc.invoiceNo}}</td>
+                <td>{{acc.invoiceDate | date:'dd/MM/yyyy'}}</td>
+                <td style="vertical-align: middle; align-items: center; text-align: center;" [attr.rowspan]="acc.taskColumnSpan" *ngIf="acc.taskColumnSpan" >{{acc.advanceAmountPaid}}</td>
+                <td>{{acc.amount}}</td>
+                <td>{{acc.remarks}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+ 

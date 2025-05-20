@@ -1,0 +1,172 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Employee Profile Update
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Employee Profile Update</li>
+  </ol>
+</section>
+
+
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title"></h3>
+    </div>
+    <div class="panel-body">
+      <div class="form-horizontal">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Employee No</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.employeeNo" [disabled]="true" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Status</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.status" [disabled]="true" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Employment Type</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.employmentType" [disabled]="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Title <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.title" [disabled]="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> First Name <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.firstName" [disabled]="true" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Middle Name</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.middleName" [disabled]="true" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Last Name</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.lastName" [disabled]="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='official'?'active':''" id="tab_official"><a (click)="onTabClick(0)">Official</a></li>
+    <li [ngClass]="currentTab=='assets'?'active':''" id="tab_assets"><a (click)="onTabClick(1)">Assets</a></li>    
+    <li [ngClass]="currentTab=='address'?'active':''" id="tab_address"><a (click)="onTabClick(2)">Address</a></li>
+    <li [ngClass]="currentTab=='education'?'active':''" id="tab_education"><a (click)="onTabClick(3)">Education</a></li>
+    <li [ngClass]="currentTab=='experience'?'active':''" id="tab_experience"><a (click)="onTabClick(4)">Experience</a>
+    </li>
+    <li [ngClass]="currentTab=='family'?'active':''" id="tab_family"><a (click)="onTabClick(5)">Family</a></li>
+    <li [ngClass]="currentTab=='languages'?'active':''" id="tab_languages"><a (click)="onTabClick(6)">Languages</a></li>
+    <!-- <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a (click)="onTabClick(7)">Attachments</a></li> -->
+    <li [ngClass]="currentTab=='history'?'active':''" id="tab_history"><a (click)="onTabClick(7)">History</a></li>
+
+  </ul>
+  <div class="details-tab">
+    <app-profile-official (dataLoaded)="onDataLoaded($event)" [employeeId]="this.employeeId" [editAllowed]="true"
+      [profileDetails]="this.profileDetails" [profileId]="profileId" *ngIf="currentTab=='official'">
+    </app-profile-official>
+    
+    <app-profile-assets (dataLoaded)="onDataLoaded($event)" [employeeId]="this.employeeId" [editAllowed]="true" 
+    [profileDetails]="this.profileDetails" [profileId]="this.profileId" *ngIf="currentTab=='assets'">
+    </app-profile-assets>
+
+    <app-profile-address (dataLoaded)="onDataLoaded($event)" [employeeId]="this.employeeId" [editAllowed]="true"
+      [profileDetails]="this.profileDetails" [profileId]="this.profileId" *ngIf="currentTab=='address'">
+    </app-profile-address>
+
+    <app-profile-education (dataLoaded)="onDataLoaded($event)" [employeeId]="this.employeeId" [editAllowed]="true"
+      [profileDetails]="this.profileDetails" [profileId]="this.profileId" *ngIf="currentTab=='education'">
+    </app-profile-education>
+
+    <app-profile-experience [employeeId]="this.employeeId" [profileDetails]="this.profileDetails" [editAllowed]="true"
+      [profileId]="this.profileId" *ngIf="currentTab=='experience'"></app-profile-experience>
+
+    <app-profile-family [employeeId]="this.employeeId" [profileDetails]="this.profileDetails" [editAllowed]="true"
+      [profileId]="this.profileId" *ngIf="currentTab=='family'"></app-profile-family>
+
+    <app-profile-languages [employeeId]="this.employeeId" [profileDetails]="this.profileDetails" [editAllowed]="true"
+      [profileId]="this.profileId" *ngIf="currentTab=='languages'"></app-profile-languages>
+
+      <app-employee-attachments [objectId]="this.profileId" [objectType]="this.objectTypeProfile" [employeeId]="this.employeeId" 
+      [editAllowed]="true" [deleteAllowed]="false" *ngIf="currentTab=='attachments'"></app-employee-attachments>    
+
+    <app-update-history [employeeId]="this.employeeId" *ngIf="currentTab=='history'"></app-update-history>
+
+  </div>
+  <div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Attachment<span style="color:red">*</span></label>
+          <div class="col-md-6">
+            <input #attachment type="file" name="attachment" id="attachment"
+              accept="application/pdf, image/jpeg, image/jpg, image/png" multiple max-file-size="2000"
+              (change)="selectFiles($event)" />
+            <span class="text-danger">Only pdf/jpeg/png files are allowed. Maximum file size allowed is 2MB.</span>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4" for="ReasonUploadFiles">Reason for Update<span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Reason For Update(Max 1000 Chars)"
+              [(ngModel)]="profileDetails.reasonForUpload" class="form-control" id="ReasonUploadFiles"
+              name="ReasonUploadFiles" #detailsReasonEnt="ngModel" minlength="1" maxlength="1000" required></textarea>
+            <span class="help-block" *ngIf="detailsReasonEnt.touched && !detailsReasonEnt.valid">
+              <span *ngIf="detailsReasonEnt.errors.required"> Please enter detailed reason (Max 1000 Chars)</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center actionButtons">
+
+    <button type="button" class="btn btn-default" (click)="onBack()"><i class="fas fa-arrow-left"></i> Back</button>
+    <button type="button" class="btn btn-warning" *ngIf="currentTab!='official'"
+      (click)="onPrevious()">Previous</button>
+    <button type="button" class="btn btn-primary" *ngIf="currentTab!='history'" (click)="onNext()">Next</button>
+    <button type="button" class="btn btn-success" (click)="submit()">Submit For Approval</button>
+  </div>
+
+</section>

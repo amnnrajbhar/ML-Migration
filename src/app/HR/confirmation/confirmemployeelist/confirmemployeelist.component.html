@@ -1,0 +1,406 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Initiate Confirmation
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Initiate Confirmation</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Plant</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.plantId" class="form-control" id="plant" name="plant" #plant="ngModel"
+                (change)="getPayGroupList()" required>
+                <option value="" [selected]="true">All</option>
+                <option *ngFor="let plt of plantlist" [ngValue]="plt.id">{{plt.code}} - {{plt.name}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Pay Group</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.payGroupId" class="form-control" id="paygroup" name="paygroup"
+                matTooltip="paygroup" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Employee Category</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.employeeCategoryId" class="form-control" id="employeecategory"
+                name="employeecategory" matTooltip="employeecategory">
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Department</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.departmentId" class="form-control" id="department" name="department"
+                #departmentEnt="ngModel">
+                <option value="" [selected]="true">All</option>
+                <option *ngFor="let dl of departmentList" [ngValue]="dl.id">{{dl.description }} </option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right"> State</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.stateId" class="form-control" id="offerState" name="state"
+                matTooltip="State" #stateEnt="ngModel" (change)="onStateChange()" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pl of stateList" [ngValue]="pl.id">{{pl.bezei}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Location</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.locationId" class="form-control" id="offerLocation" name="offerLocation"
+                matTooltip="Location" #locationEnt="ngModel" required>
+                <option value="" [selected]="true">All </option>
+                <option *ngFor="let pl of locationList" [ngValue]="pl.id">{{pl.name }} </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Employee Name / No</label>
+            <div class="col-md-3">
+              <input name="name" class="form-control" id="name" [(ngModel)]="filterModel.name" />
+            </div>           
+            <label class="col-md-1 control-label text-right">Confirmation Due Date</label>
+            <div class="col-md-3">
+              <div class="col-md-6"> 
+                <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="fromDate" class="form-control"
+                [(ngModel)]="filterModel.fromdate" #fromDate="ngModel" placeholder="From">
+              <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+            </div>
+              <div class="col-md-6"> 
+                <input [owlDateTime]="dt13" [owlDateTimeTrigger]="dt13" name="toDate" class="form-control"
+                [(ngModel)]="filterModel.todate" #toDate="ngModel"  placeholder="To">
+              <owl-date-time [pickerType]="'calendar'" #dt13></owl-date-time>
+            </div>
+             
+            </div>
+            <label class="col-md-1 control-label text-right">Confirmation Status</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.status" class="form-control" id="status" name="status"
+                #statusEnt="ngModel">
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pll of statusList" [ngValue]="pll.type">{{pll.type}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Employee Status</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.employeeStatus" class="form-control" id="employeeStatus" name="employeeStatus"
+                #statusEnt="ngModel">
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pll of empStatusList" [ngValue]="pll.type">{{pll.type}}</option>
+              </select>
+            </div>
+          </div>
+      
+          <div class="form-group text-center">
+            <button class="btn btn-primary btn-sm" (click)="getEmployeeList();" matTooltip="click to filter data">
+              Filter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <div class="btn-group">
+            <button class="btn btn-default active btn-sm columnGroup" data-group="all">All</button>
+            <button class="btn btn-default active btn-sm columnGroup" data-group="personalDetails">Personal</button>
+            <button class="btn btn-default active btn-sm columnGroup" data-group="jobDetails">Job</button>
+            <button class="btn btn-default active btn-sm columnGroup" data-group="otherDetails">Other</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6  form-horizontal">
+        <div class="form-group">
+          <label class="col-md-3 text-right">Initiate Thru</label>
+          <div class="col-md-4">
+            <select [(ngModel)]="selectedInitiatorType" class="form-control" id="selectedInitiatorType"
+              name="selectedInitiatorType">
+              <option value="HOD">HOD</option>
+              <option value="HR">HR</option>
+              <option value="Reporting Manager and HOD">Reporting Manager and HOD</option>
+              <option value="Predefined Initiators">Predefined Initiators</option>
+            </select>
+          </div>
+          <div class="col-md-5 actionButtons">
+
+            <button *ngIf="selectedInitiatorType =='HOD'" type="button" class="btn btn-sm btn-primary"
+              data-toggle="modal" data-target="#ConfirmationModalWithoutHod" (click)="initiateselectedviahod()"
+              matTooltip="Initiate selected via Hod">
+              Initiate</button>
+
+            <button *ngIf="selectedInitiatorType =='HR'" type="button" class="btn btn-sm btn-primary"
+              data-toggle="modal" data-target="#ConfirmationModalWithoutHod" (click)="initiateselected()"
+              matTooltip="Initiate selected via">
+              Initiate</button>
+
+            <button *ngIf="selectedInitiatorType =='Reporting Manager and HOD'" type="button" class="btn btn-sm btn-primary"
+              data-toggle="modal" data-target="#ConfirmationModalWithoutHod" (click)="initiateselectedviarmandhod()"
+              matTooltip="Initiate selected via Reporting Manager and HOD">
+              Initiate</button>
+
+            <button *ngIf="selectedInitiatorType =='Predefined Initiators'" type="button" class="btn btn-sm btn-primary"
+              data-toggle="modal" data-target="#ConfirmationModalWithoutHod" (click)="initiateselectedviaconfigapprovers()"
+              matTooltip="Initiate selected via Predefined Initiators">
+              Initiate</button>
+
+            <button type="button" class="btn btn-sm btn-primary" (click)="exportData()">Export</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table class="table table-hover table-striped table-bordered" id="data">
+          <thead>
+            <tr>
+              <th>Select <input type="checkbox" [(ngModel)]="selectAll" (change)="selectAllChange()"/></th>
+              <th style="min-width: 50px;">Action</th>
+              <th>Confirmation Status</th>
+              <th class="personalDetails">Employee Status</th>
+              <th>Employee No</th>
+              <th class="personalDetails">Name</th>
+              <th class="otherDetails">Joining Date</th>
+              <th class="otherDetails">Probation Period</th>
+              <th class="otherDetails">Confirmation Due</th>
+              <th class="otherDetails">Extension End Date</th>
+              <th class="jobDetails">Plant Code</th>
+              <th class="jobDetails">Plant Name</th>
+
+              <th class="jobDetails">Pay Group</th>
+              <th class="jobDetails">Employee Category</th>
+              <th class="jobDetails">State</th>
+              <th class="jobDetails">Location</th>
+              <th class="jobDetails">Department</th>
+              <th class="jobDetails">Designation</th>
+              <th class="jobDetails">Grade</th>
+              <th class="jobDetails">Role</th>
+              <th class="jobDetails">HOD</th>
+              <th class="jobDetails">Reporting Manager</th>           
+              <th class="otherDetails">Employment Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filterData.list; let i = index">
+
+              <td>
+                <ng-template [ngIf]="[item.status] != 'Confirmation Approved' && [item.status] != 'Email Sent'">
+                  <input type="checkbox" [(ngModel)]="item.selected" />
+                </ng-template>
+              </td>
+              <td style="min-width: 100px;">
+
+                <a [routerLink]="['/HR/Employee/profile', item.employeeId]" class="btn btn-primary btn-xs"
+                  [matTooltipPosition]="'after'" matTooltip="Click to view full profile">
+                  <i class="fas fa-id-badge"></i></a>
+
+                <ng-template [ngIf]="[item.status] == '' || [item.status] == 'Extension Approved'">
+
+                  <button type="button" data-toggle="modal" data-target="#ConfirmationModalWithoutHod"
+                    class="btn btn-xs btn-primary" (click)="initiatconfirmation(item.employeeId)"
+                    matTooltip="Click to initiate via HR ">
+                    <i class="fas fa-user-tie"></i></button>
+
+                  <button type="button" data-toggle="modal" data-target="#ConfirmationModal" class="btn btn-xs btn-info"
+                    (click)="initiateconfirmationviaapprovers(item.employeeId)" [matTooltipPosition]="'after'"
+                    matTooltip="Click to initiate via Approvers">
+                    <i class="fas fa-users"></i></button>
+
+                  <!-- <button type="button" data-toggle="modal" data-target="#ConfirmationModal" class="btn btn-xs btn-info"
+                    (click)="initiateConfirmationviahod(item.employeeId)" matTooltip="Click to Confirmation via HOD">
+                    <i class="fas fa-user-tie"></i></button>
+
+                  <button type="button" data-toggle="modal" data-target="#ConfirmationModal"
+                    class="btn btn-xs btn-info" (click)="initiateconfirmationviarmandhod(item.employeeId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to initiate Confirmation via Reporting Manager and HOD">
+                    <i class="fas fa-users"></i></button>
+
+                  <button type="button" data-toggle="modal" data-target="#ConfirmationModal"
+                    class="btn btn-xs btn-primary" (click)="initiateconfirmationviaconfigapprovers(item.employeeId)"
+                    [matTooltipPosition]="'after'" matTooltip="Click to initiate Confirmation via Predefined Initiators">
+                    <i class="fas fa-users"></i></button> -->
+
+                </ng-template>
+
+                <ng-template [ngIf]="[item.status] != ''">
+
+                  <button type="button" class="btn btn-xs btn-info" (click)="view(item.employeeConfirmationId)"
+                    matTooltip="Click to view details  ">
+                    <i class="fas fa-eye"></i></button>
+
+                </ng-template>
+
+                <ng-template [ngIf]="[item.status] == 'Confirmation Approved' || [item.status] == 'Email Sent'  && [item.status] != 'Extension Approved'">
+
+                  <button type="button" (click)="viewConfirmationLetters(item.employeeConfirmationId)"
+                    class="btn btn-xs btn-warning" matTooltip="Click to print letter">
+                    <i class="fas fa-print"></i></button>
+
+                </ng-template>
+
+                <ng-template [ngIf]="[item.status] == 'Confirmation Rejected' || [item.status] == 'Extension Rejected'">
+
+                  <button type="button" class="btn btn-xs btn-primary"
+                    (click)="editConfirmation(item.employeeId, item.employeeConfirmationId)" matTooltip="Click to edit and submit">
+                    <i class="fas fa-pen"></i></button>
+
+                </ng-template>
+
+              </td>
+              
+              <td><span class="label label-default label-{{item.statusColor}}">{{item.status}}</span></td>
+              <td class="personalDetails"><span class="label label-default label-{{item.employeeStatusColor}}">{{item.employeeStatus}}</span></td>
+              <td>{{item.employeeNo}} </td>
+              <td class="personalDetails">{{item.firstName}} {{item.middleName}} {{item.lastName}}</td>
+              <td class="otherDetails">{{item.dateOfJoining | date: "dd/MM/yyyy"}} </td>
+              <td class="otherDetails">{{item.probationPeriod}} month(s)</td>
+              <td class="otherDetails">{{item.dateOfConfirmation | date: "dd/MM/yyyy"}} </td>
+              <td class="otherDetails">{{item.extensionEndDate | date: "dd/MM/yyyy"}} </td>
+              <th class="jobDetails">{{item.plantCode}}</th>
+              <td class="jobDetails">{{item.plantName}} </td>
+
+              <td class="jobDetails">{{item.payGroupName}} </td>
+              <td class="jobDetails">{{item.employeeCategoryName}} </td>
+              <td class="jobDetails">{{item.state}}</td>
+              <td class="jobDetails">{{item.location}} </td>
+              <td class="jobDetails">{{item.department}} </td>
+              <td class="jobDetails">{{item.designation}} </td>
+              <td class="jobDetails">{{item.grade}} </td>
+              <td class="jobDetails">{{item.role}} </td>
+              <td class="jobDetails">{{item.approvingManagerName}} </td>
+              <td class="jobDetails">{{item.reportingManagerName}} </td>
+            
+              <td class="otherDetails">{{item.employmentType}} </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-center">
+          <div class="overlay text-center h3" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+          <ul class="pagination" *ngIf="filterData.totalCount>0">
+            <li>
+              <a (click)="gotoPage(filterData.pageNo)">
+                Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> -
+                <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b>
+                of <b>{{filterData.totalCount}}</b> records
+              </a>
+            </li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+            <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+            <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+            <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo"
+                (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo+1"
+                (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+            <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a>
+            </li>
+            <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of
+                <b>{{filterData.totalPages}}</b></a></li>
+            <li><a>Page Size
+                <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- Confirmation  via HOD Modal -->
+<div id="ConfirmationModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Initiate Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 form-group">
+            <label for="initial">Initial Approver Type</label>
+            <select [(ngModel)]="initialApproverType" class="form-control" id="initialApproverType"
+              name="initialApproverType" #statusEnt="ngModel" required>
+              <option *ngFor="let sl of approvalInitiatorTypes" [ngValue]="sl.type">{{sl.type}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 form-group">
+            <label>Comments</label>
+            <textarea rows="3" class="form-control" id="approverComments"></textarea>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="performTask()">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="ConfirmationModalWithoutHod" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Initiate Confirmation</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-md-12 form-group">
+            <label>Comments</label>
+            <textarea rows="3" class="form-control" id="hrComments"></textarea>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="performTask()">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

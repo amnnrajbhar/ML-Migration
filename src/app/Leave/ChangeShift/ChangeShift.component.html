@@ -1,0 +1,241 @@
+<section class="content-header">
+  <h1>
+    Change Shift
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Shift Master</li>
+  </ol>
+</section>
+
+
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-sm-12">
+        <div class="col-sm-6 pull-left">
+          &nbsp;
+        </div>
+        <div class="col-sm-6">
+          <button type="button" class="btn btn-success pull-right" (click)="SubmitShiftRequest()"><i
+              class="fas fa-caret-square-right"></i>&nbsp;
+            Submit Request
+          </button>
+        </div>
+      </div>
+      &nbsp;
+      &nbsp;
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="col-sm-2" *ngIf="router.url =='/ChangeShift'">
+            <label for="emp">Employee No</label>
+            <input type="text" [(ngModel)]="EmployeeNo" class="form-control" id="empNo" placeholder="Employee No"
+              name="empNo" ngControl="EmployeeNo" #empNoEnt="ngModel" (keyup)="getEmployee($event)">
+          </div>
+          <div class="col-sm-2" *ngIf="router.url =='/ChangeShiftEss'">
+            <div class="form-group">
+              <label for="EmployeeNo">Employee No.</label>
+              <br>
+              <ng-multiselect-dropdown style="width:100%; background-color: white;" id="EmployeeNo" name="EmployeeNo"
+                ngControl="selectedEmployee" required #EmployeeNoEnt="ngModel" [placeholder]="'Select Employee No.'"
+                [data]="empListCon" [(ngModel)]="selectedEmployee" [settings]="dropdownSettings"
+                (onSelect)="onItemSelectM($event)" (onSelectAll)="onSelectAll()" (focusout)="checkStatus();">
+              </ng-multiselect-dropdown>
+
+            </div>
+          </div>
+          <div class="col-sm-2">
+            <div class="form-group">
+              <label for="Location">Month <span style="color: red;">*</span></label>
+              <select [(ngModel)]="filterMonth" class="form-control" id="locationName" name="locationName" required>
+                <option [ngValue]=null [disabled] selected="true">--Select Month--</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-2">
+            <div class="form-group">
+              <label>Year <span style="color: red;">*</span> </label>
+              <input type="number" matTooltip="Enter Year" name="year" class="form-control" [(ngModel)]="CalenderYear"
+                placeholder="Year">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <label>&nbsp;</label>
+            <div class="form-group">
+              <button *ngIf="!view" type="button" class="btn btn-success"
+                (click)="getEmpShiftRequests()"><i class="fas fa-angle-double-right"></i>&nbsp; Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <label>&nbsp;</label>
+          <div class="form-group">
+            <button type="button" class="btn btn-info pull-left" matTooltip="Requests generated for Shifts Changes"
+              (click)="SeeShiftRequests(false,'','');"><i class="fas fa-eye"></i>&nbsp;View Requests</button>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm-6">
+          &nbsp;
+        </div>
+        <div class="col-sm-6">
+          <button type="button" class="btn btn-warning pull-right" matTooltip="Excel format" (click)="PrintCS();"><i
+              class="fas fa-file-excel"></i>&nbsp; Print Shift
+            Report</button>
+        </div>
+      </div>
+      &nbsp;
+      <br>
+      &nbsp;
+      &nbsp;
+      <p style="color: rgb(0, 26, 255);"><b>&nbsp; &nbsp; NOTE: W: WORKING, WO: WEEKOFF, SS: SECOND
+          SATURDAY, TS: THIRD SATURDAY, PH: PUBLIC HOLIDAY, SH: SPECIAL HOLIDAY</b></p>
+      <br>
+
+      <div class="box-body">
+        <table class="table table-bordered  table-striped">
+          <tr style="background-color: #0099cc; color:white;">
+            <th>Sl. No</th>
+            <th>Emp Code</th>
+            <th>Emp Name</th>
+            <th>Date</th>
+            <th>Day</th>
+            <th>Status</th>
+            <th>Current Shift</th>
+            <th>New Shift</th>
+            <th>Note</th>
+          </tr>
+          <tr *ngFor=" let sh of ChangeShiftList;let i= index">
+            <td>{{i+1}}</td>
+            <td>{{sh.employeeId}}</td>
+            <td>{{sh.empName}}</td>
+            <td>{{sh.joiningDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{sh.day}}</td>
+            <td>{{sh.status}}</td>
+            <td>{{sh.shiftCode}}</td>
+            <td>
+              <select [(ngModel)]="sh.newShift" class="form-control" [id]="i+'shiftCode'" [name]="i+'newShift'">
+                <option [ngValue]=null disabled [selected]="true">--Select Shift--</option>
+                <option *ngFor="let shift of ShiftList" value="{{shift.shiftCode}}">{{shift.shiftCode}} - 
+                  {{binddatetime(shift.shiftStartTime) | date:'hh:mm a'}} :
+                  {{binddatetime(shift.shiftEndTime) | date:'hh:mm a'}}</option>
+              </select>
+            </td>
+            <td>
+              <textarea type="text" maxlength="80" [name]="i+'note'" cols="40" [id]="i+'note'"
+              placeholder="Enter Reason for Shift Change"
+                [(ngModel)]="sh.note"></textarea>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #479cd5;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Change Shift Requests</h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+        <form #desigForm="ngForm">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="FromDate">From Date <span style="color: red;">*</span> </label>
+                  <input [matTooltipPosition]="'below'" matTooltip="Click to change date" [owlDateTime]="dt12"
+                    [owlDateTimeTrigger]="dt12" name="FromDate" class="form-control" [(ngModel)]="FromDate"
+                    #FromDateent="ngModel" placeholder="DD/MM/YYYY">
+                  <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 400px;">
+                  </owl-date-time>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="todate">To Date <span style="color: red;">*</span> </label>
+                  <input [matTooltipPosition]="'below'" [min]="FromDate" matTooltip="Click to change date"
+                    [owlDateTime]="dt14" [owlDateTimeTrigger]="dt14" name="todate" class="form-control"
+                    [(ngModel)]="ToDate" #todateent="ngModel" placeholder="DD/MM/YYYY">
+                  <owl-date-time [pickerType]="'calendar'" #dt14 style="width: 400px;">
+                  </owl-date-time>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <label>&nbsp;</label>
+                <div class="form-group">
+                  <button type="button" class="btn btn-success" (click)="getEmpChangeShiftRequests()">Search</button>
+                  &nbsp;
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="box-body">
+            <table class="table table-bordered  table-striped">
+              <tr style="background-color: #0099cc; color:white;">
+                <th>Req No</th>
+                <th>Request Date</th>
+                <th>From Date</th>
+                <th>To Date</th>
+                <th>Previous Shift</th>
+                <th>Updated Shift</th>
+                <th>Last Approver</th>
+                <th>Pending Approver</th>
+                <th>Status</th>
+                <th>Approved Date</th>
+                <th>Rejected Date</th>
+              </tr>
+              <tr *ngFor=" let sh of ChangeRequestsList">
+                <td>{{sh.req_No}}</td>
+                <td>{{sh.requested_Date | date:'yyyy/MM/dd hh:mm'}}</td>
+                <td>{{sh.fromDate | date:'yyyy/MM/dd'}}</td>
+                <td>{{sh.toDate | date:'yyyy/MM/dd'}}</td>
+                <td>{{sh.previous_Shift}}</td>
+                <td>{{sh.updated_Shift}}</td>
+                <td>{{sh.approver_Id}}</td>
+                <td>{{sh.pending_Approver}}</td>
+                <td>{{sh.approval_Status}}</td>
+                <td>{{sh.approved_Date | date:'yyyy/MM/dd hh:mm'}}</td>
+                <td>{{sh.rejected_Date | date:'yyyy/MM/dd hh:mm'}}</td>
+              </tr>
+            </table>
+          </div>
+
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      &nbsp; &nbsp; &nbsp;
+      &nbsp; &nbsp; &nbsp;
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" matTooltip="Click to close the form"
+          style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

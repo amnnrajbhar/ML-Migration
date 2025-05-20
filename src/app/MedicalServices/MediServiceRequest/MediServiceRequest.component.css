@@ -1,0 +1,97 @@
+table.table-bordered1 {
+    border: 1px solid black;
+    margin-top: 20px;
+}
+
+table.table-bordered1>thead>tr>th {
+    border: 1px solid black;
+}
+
+table.table-bordered1>tbody>tr>td {
+    border: 1px solid black;
+}
+
+.center-contents {
+    display: flex;
+    justify-content: center;
+}
+
+input,
+select,
+textarea {
+    border: 1px solid #aaa !important;
+}
+
+th,
+tr>td {
+    /* text-align: center !important; */
+    vertical-align: middle !important;
+}
+
+tr {
+    transition: 0.2s;
+}
+
+#userTable tbody>tr:hover,
+#approversTable tbody>tr:hover {
+    background-color: #aaa;
+    cursor: default;
+}
+
+#userTable th {
+    text-align: center;
+}
+
+td>p {
+    margin: 0px;
+}
+
+/* File Upload Button */
+input[type=file] {
+    width: 350px;
+    max-width: 100%;
+    color: #444;
+    padding: 5px;
+    background: #fff;
+    border-radius: 3px;
+    border: 1px solid #555;
+}
+
+input[type=file]::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: #0099cc;
+    padding: 10px 20px;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+}
+
+input[type=file]::file-selector-button:hover {
+    background: #027ca5;
+}
+
+/* Remove File Button */
+.removeFileButton {
+    border: none;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.removeFileButton:hover {
+    background-color: #f4511e;
+    color: white;
+}
+
+.rejected {
+    background-color: rgb(255, 124, 124);
+}
+
+.pending {
+    background-color: #71b5cc;
+}
+
+.completed {
+    background-color: #33d32e;
+}

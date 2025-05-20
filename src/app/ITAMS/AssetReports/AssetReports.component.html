@@ -1,0 +1,2326 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Asset Reports
+        <small> ITAMS </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    </ol>
+</section>
+
+
+
+<!--Main Content-->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div id="dateFilterPanel">
+                <div class="col-sm-12">
+                    <div class="card-body" style="border: black; box-shadow: grey;">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="reporttype">Asset Report Type <span style="color:red">*</span></label>
+                                    <select [(ngModel)]="filterreporttype" class="form-control" id="reporttype"
+                                        name="reporttype" ngControl="filterreporttype" #reporttypeEnt="ngModel"
+                                        [disabled]="isEdit" matTooltip="Select Report Type" (change)="onChange()"
+                                        required>
+                                        <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                        <option>Hardware Summary</option>
+                                        <option>Hardware Detailed</option>
+                                        <option>Software Summary</option>
+                                        <option>Software Detailed</option>
+                                        <option>Asset Log</option>
+                                        <option>Installation Report</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="dateFilterPanel" *ngIf="filterreporttype == 'Hardware Summary' ">
+                            <div class="col-sm-12">
+                                <div class="card-body" style="border: black; box-shadow: grey;">
+                                    <form #filterForm1="ngForm">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="location"> Location <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="dashboardlocation" class="form-control"
+                                                        id="location" name="location" ngControl="dashboardlocation"
+                                                        #locationEnt="ngModel" matTooltip="Select location">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of plantList"
+                                                            value={{status.code}}>
+                                                            {{status.code}}-{{status.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="catName">Category<span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="dashboardcatName" class="form-control"
+                                                        id="catName" name="catName" ngControl="dashboardcatName"
+                                                        #catNameEnt="ngModel" matTooltip="Select Category">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of catList" value={{mat.catName}}>
+                                                            {{mat.catName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="usagetype">Usage Type</label>
+                                                    <select [(ngModel)]="dashboardusage" class="form-control" id="usage"
+                                                        name="usage" ngControl="dashboardusage" #usageEnt="ngModel"
+                                                        matTooltip="Select UsageType">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option>User</option>
+                                                        <option>Instrument</option>
+                                                        <option>Common</option>
+                                                        <option>Field Staff</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="assetstate">Asset State</label>
+                                                    <select [(ngModel)]="dashboardassetstate" class="form-control"
+                                                        id="assetstate" name="assetstate"
+                                                        ngControl="dashboardassetstate" #assetstateEnt="ngModel"
+                                                        matTooltip="Select Asset State">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of assStateList" value={{mat.id}}>
+                                                            {{mat.status}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label>&nbsp;</label>
+                                                <div class="form-group">
+                                                    <button class="btn btn-primary"
+                                                        [disabled]="!filterForm1.touched"
+                                                        (click)="getHardwareSummary();"
+                                                        matTooltip="click to go">Go</button>
+                                                    &nbsp;&nbsp;
+                                                    <button class="btn btn-primary" (click)="clearFilter();"
+                                                        matTooltip="click to reset">Clear</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="box-body table-responsive" *ngIf="filterreporttype == 'Hardware Summary' ">
+                                <table id="userTable" class="table table-striped" cellspacing="0">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Location</th>
+                                            <th>Asset Id</th>
+                                            <th>Asset No</th>
+                                            <th>Employee Number</th>
+                                            <th>Model</th>
+                                            <th>Manufacturer</th>
+                                            <th>Processor</th>
+                                            <th>RAM</th>
+                                            <th>HDD</th>
+                                            <th> </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of assetList; let i = index">
+                                            <td>{{i+1}}</td>
+                                            <td><b>{{item.location}}</b></td>
+                                            <td>{{item.assetId}}</td>
+                                            <td>{{item.assetNo}}</td>
+                                            <td>{{item.empNo}}</td>
+                                            <td>{{item.model}}</td>
+                                            <td>{{item.manufacturer}}</td>
+                                            <td>{{item.processor}}</td>
+                                            <td>{{item.ram}}</td>
+                                            <td>{{item.hdd}}</td>
+                                            <td>
+                                                <table>
+                                                    <tr>
+                                                        &nbsp;
+                                                        <td>
+                                                            <button type="button" matTooltip="Click to view details"
+                                                                class="btn btn-primary btn-xs"
+                                                                (click)="onUserActions(true,item,false,'View')">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="overlay" *ngIf="isLoading">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                        </div>
+
+                        <div id="dateFilterPanel" *ngIf="filterreporttype == 'Hardware Detailed' ">
+                            <div class="col-sm-12">
+                                <div class="card-body" style="border: black; box-shadow: grey;">
+                                    <form #filterForm2="ngForm">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="location"> Location <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="dashboardlocation" class="form-control"
+                                                        id="location" name="location" ngControl="dashboardlocation"
+                                                        #locationEnt="ngModel" matTooltip="Select location">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of plantList"
+                                                            value={{status.code}}>
+                                                            {{status.code}}-{{status.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="catCode">Category<span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="dashboardcatCode" class="form-control"
+                                                        id="catCode" name="catCode" ngControl="dashboardcatCode"
+                                                        (change)=GetSubCategory(dashboardcatCode) #catCodeEnt="ngModel"
+                                                        matTooltip="Select Category">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of catList1" value={{mat.catCode}}>
+                                                            {{mat.catCode}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="catName"> Sub-Category</label>
+                                                    <select [(ngModel)]="dashboardcatName" class="form-control"
+                                                        id="catName" name="catName" ngControl="dashboardcatName"
+                                                        #catNameEnt="ngModel" [disabled]="isEdit"
+                                                        matTooltip="Select Sub-Category">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of subCategorylist"
+                                                            value={{mat.catName}}>
+                                                            {{mat.catName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="department"> Department </label>
+                                                    <select [(ngModel)]="filterdepartment" class="form-control"
+                                                        id="department" name="department" ngControl="filterdepartment"
+                                                        #departmentEnt="ngModel" matTooltip="Select Department">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let Dept of departmentList" value={{Dept.name}}>
+                                                            {{Dept.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="assetstate">Asset State</label>
+                                                    <select [(ngModel)]="dashboardassetstate" class="form-control"
+                                                        id="assetstate" name="assetstate"
+                                                        ngControl="dashboardassetstate" #assetstateEnt="ngModel"
+                                                        matTooltip="Select Asset State">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of assStateList" value={{mat.id}}>
+                                                            {{mat.status}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label>From Date</label>
+                                                <div class="form-group">
+                                                    <input [matTooltipPosition]="'below'"
+                                                        matTooltip="Click to change from date" [owlDateTime]="dt11"
+                                                        [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control"
+                                                        [(ngModel)]="from_date" #fromDate="ngModel">
+                                                    <owl-date-time [pickerType]="'calendar'" #dt11
+                                                        style="width: 250px;"></owl-date-time>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label>To Date</label>
+                                                <div class="form-group">
+                                                    <input [min]="from_date" [max]="today"
+                                                        [matTooltipPosition]="'below'"
+                                                        matTooltip="Click to change to date" [owlDateTime]="dt12"
+                                                        [owlDateTimeTrigger]="dt12" name="endDate" class="form-control"
+                                                        [(ngModel)]="to_date" #toDate="ngModel">
+                                                    <owl-date-time [pickerType]="'calendar'" #dt12
+                                                        style="width: 250px;"></owl-date-time>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>&nbsp;</label>
+                                            <div class="form-group">
+                                                <button class="btn btn-primary" 
+                                                    (click)="getHardwareDetailed();"
+                                                    matTooltip="click to go">Search</button>
+                                                &nbsp;&nbsp;
+                                                <button class="btn btn-primary" (click)="clearFilter();"
+                                                    matTooltip="click to reset">Clear</button>
+                                                &nbsp;&nbsp;
+                                                <button class="btn btn-primary"
+                                                    *ngIf="dashboardassetstate == 6; else noButton"
+                                                    (click)="exportAssetDisposed()">Download</button>
+                                                <ng-template #noButton>
+                                                    <button class="btn btn-primary"
+                                                        (click)="exportHardwareDetailed()">Download</button>
+                                                </ng-template>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="box-body table-responsive" *ngIf="filterreporttype =='Hardware Detailed'">
+                                <table id="userTable" class="table table-bordered table-hover">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Asset Id</th>
+                                            <th>Asset No</th>
+                                            <th>Model</th>
+                                            <th>Manufacturer</th>
+                                            <th>Part No.</th>
+                                            <th>Serial No.</th>
+                                            <th>Processor</th>
+                                            <th>RAM</th>
+                                            <th>HDD</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of assetList; let i = index">
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.assetId}}</td>
+                                            <td>{{item.assetNo}}</td>
+                                            <td>{{item.model}}</td>
+                                            <td>{{item.manufacturer}}</td>
+                                            <td>{{item.partNo}}</td>
+                                            <td>{{item.serialNo}}</td>
+                                            <td>{{item.processor}}</td>
+                                            <td>{{item.ram}}</td>
+                                            <td>{{item.hdd}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="overlay" *ngIf="isLoading">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                        </div>
+
+                        <div id="dateFilterPanel" *ngIf="filterreporttype == 'Software Summary'">
+                            <div class="col-sm-12">
+                                <div class="card-body" style="border: black; box-shadow: grey;">
+                                    <form #filterForm6="ngForm">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="location"> Location <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="dashboardlocation" class="form-control"
+                                                        id="location" name="location" ngControl="dashboardlocation"
+                                                        #locationEnt="ngModel" matTooltip="Select location">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of plantList"
+                                                            value={{status.code}}>
+                                                            {{status.code}}-{{status.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="softType"> Software Type</label>
+                                                    <select [(ngModel)]="filtersoftType" class="form-control"
+                                                        [id]="softType" [name]="softType" ngControl="filtersoftType"
+                                                        #filtersoftTypeEnt="ngModel" matTooltip="Select Software Type">
+                                                        <option [ngValue]="null" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of softType" value={{status.softId}}>
+                                                            {{status.softStxt}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="licType"> License Type</label>
+                                                    <select [(ngModel)]="filterlicType" class="form-control"
+                                                        [id]="licType" [name]="licType" ngControl="filterlicType"
+                                                        #filterlicTypeEnt="ngModel" matTooltip="Select License Type">
+                                                        <option [ngValue]="null" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of licType" value={{status.licId}}>
+                                                            {{status.licStxt}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6" style="align-self: center;">
+                                                <label>&nbsp;</label>
+                                                <div class="form-group">
+                                                    <button class="btn btn-primary"
+                                                        [disabled]="!filterForm6.valid" (click)="getSoftwareSummary();"
+                                                        matTooltip="click to go">Search</button>
+                                                    &nbsp;&nbsp;
+                                                    <button class="btn btn-primary" (click)="clearFilter();"
+                                                        matTooltip="click to reset">Clear</button>
+                                                    &nbsp;&nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="box-body table-responsive" *ngIf="filterreporttype =='Software Summary'">
+                                <table id="userTable" class="table table-bordered table-hover">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Asset No</th>
+                                            <th>Software Type</th>
+                                            <th>License Type</th>
+                                            <th>Software Name</th>
+                                            <th>Software Version</th>
+                                            <th>Product Key</th>
+                                            <th>Expires On</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of assetList; let i = index">
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.assetNo}}</td>
+                                            <td>{{item.softwareType}}</td>
+                                            <td>{{item.licenseType}}</td>
+                                            <td>{{item.otherSoftwareName}}</td>
+                                            <td>{{item.otherVersion}}</td>
+                                            <td>{{item.otherProductKey}}</td>
+                                            <td>{{item.otherExpiryOn}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="overlay" *ngIf="isLoading">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                        </div>
+
+                        <div id="dateFilterPanel" *ngIf="filterreporttype == 'Software Detailed'">
+                            <div class="col-sm-12">
+                                <div class="card-body" style="border: black; box-shadow: grey;">
+                                    <form #filterForm3="ngForm">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="location"> Location <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="dashboardlocation" class="form-control"
+                                                        id="location" name="location" ngControl="dashboardlocation"
+                                                        #locationEnt="ngModel" matTooltip="Select location">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of plantList"
+                                                            value={{status.code}}>
+                                                            {{status.code}}-{{status.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="softType"> Software Type <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="filtersoftType" class="form-control"
+                                                        [id]="softType" [name]="softType" ngControl="filtersoftType"
+                                                        #filtersoftTypeEnt="ngModel" matTooltip="Select Software Type">
+                                                        <option [ngValue]="null" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of softType" value={{status.softId}}>
+                                                            {{status.softStxt}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="licType"> License Type <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="filterlicType" class="form-control"
+                                                        [id]="licType" [name]="licType" ngControl="filterlicType"
+                                                        #filterlicTypeEnt="ngModel" matTooltip="Select License Type">
+                                                        <option [ngValue]="null" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of licType" value={{status.licId}}>
+                                                            {{status.licStxt}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="assetstate">Asset State<span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="dashboardassetstate" class="form-control"
+                                                        id="assetstate" name="assetstate"
+                                                        ngControl="dashboardassetstate" #assetstateEnt="ngModel"
+                                                        matTooltip="Select Asset State">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of assStateList" value={{mat.id}}>
+                                                            {{mat.status}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6" style="align-self: center;">
+                                            <label>&nbsp;</label>
+                                            <div class="form-group">
+                                                <button class="btn btn-primary" [disabled]="!filterForm3.valid"
+                                                    (click)="getSoftwareDetailed();"
+                                                    matTooltip="click to go">Search</button>
+                                                &nbsp;&nbsp;
+                                                <button class="btn btn-primary" (click)="clearFilter();"
+                                                    matTooltip="click to reset">Clear</button>
+                                                &nbsp;&nbsp;
+                                                <button class="btn btn-primary" [disabled]="!filterForm3.valid"
+                                                    (click)="exportSoftwareDetailed();" matTooltip="Click to Export">
+                                                    Download</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="box-body table-responsive" *ngIf="filterreporttype =='Software Detailed'">
+                                <table id="userTable" class="table table-bordered table-hover">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Asset No</th>
+                                            <th>Software Type</th>
+                                            <th>License Type</th>
+                                            <th>Software Name</th>
+                                            <th>Software Version</th>
+                                            <th>Product Key</th>
+                                            <th>Expires On</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of assetList; let i = index">
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.assetNo}}</td>
+                                            <td>{{item.softwareType}}</td>
+                                            <td>{{item.licenseType}}</td>
+                                            <td>{{item.otherSoftwareName}}</td>
+                                            <td>{{item.otherVersion}}</td>
+                                            <td>{{item.otherProductKey}}</td>
+                                            <td>{{item.otherExpiryOn}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="overlay" *ngIf="isLoading">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                        </div>
+
+                        <div id="dateFilterPanel" *ngIf="filterreporttype == 'Asset Log'">
+                            <div class="col-sm-12">
+                                <div class="card-body" style="border: black; box-shadow: grey;">
+                                    <form #filterForm4="ngForm">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="location"> Location <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="dashboardlocation" class="form-control"
+                                                        id="location" name="location" ngControl="dashboardlocation"
+                                                        #locationEnt="ngModel" matTooltip="Select location">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of plantList"
+                                                            value={{status.code}}>
+                                                            {{status.code}}-{{status.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="assettype">Asset Type <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="filterassettype" class="form-control"
+                                                        id="assettype" name="assettype" ngControl="filterassettype"
+                                                        #assettypeEnt="ngModel" [disabled]="isEdit"
+                                                        matTooltip="Select Asset Type" required>
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option>Hardware </option>
+                                                        <option>Software </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>&nbsp;</label>
+                                            <div class="form-group">
+                                                <button class="btn btn-primary"
+                                                    *ngIf="filterassettype == 'Hardware'" (click)="getHardware();"
+                                                    matTooltip="click to go">Go</button>
+                                                &nbsp;&nbsp;
+                                                <button class="btn btn-primary"
+                                                    *ngIf="filterassettype == 'Software'" (click)="getSoftware();"
+                                                    matTooltip="click to go">Go</button>
+                                                &nbsp;&nbsp;
+                                                <button class="btn btn-primary"
+                                                    *ngIf="filterassettype == 'Hardware'"
+                                                    (click)="exportAssetHardwareReport();" matTooltip="Click to Export">
+                                                    DOWNLOAD</button>
+                                                <button class="btn btn-primary"
+                                                    *ngIf="filterassettype == 'Software'"
+                                                    (click)="exportAssetSoftwareReport();" matTooltip="Click to Export">
+                                                    DOWNLOAD</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="box-body table-responsive" *ngIf="filterassettype =='Hardware'">
+                                <table id="userTable" class="table table-bordered table-hover">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Asset Id</th>
+                                            <th>Asset No</th>
+                                            <th>Model</th>
+                                            <th>Manufacturer</th>
+                                            <th>Part No.</th>
+                                            <th>Serial No.</th>
+                                            <th>Processor</th>
+                                            <th>RAM</th>
+                                            <th>HDD</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of assetList; let i = index">
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.assetId}}</td>
+                                            <td>{{item.assetNo}}</td>
+                                            <td>{{item.model}}</td>
+                                            <td>{{item.manufacturer}}</td>
+                                            <td>{{item.partNo}}</td>
+                                            <td>{{item.serialNo}}</td>
+                                            <td>{{item.processor}}</td>
+                                            <td>{{item.ram}}</td>
+                                            <td>{{item.hdd}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="box-body table-responsive" *ngIf="filterassettype =='Software'">
+                                <table id="userTable" class="table table-bordered table-hover">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Asset No</th>
+                                            <th>Software Type</th>
+                                            <th>License Type</th>
+                                            <th>Software Name</th>
+                                            <th>Software Version</th>
+                                            <th>Product Key</th>
+                                            <th>Expires On</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of assetList; let i = index">
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.assetNo}}</td>
+                                            <td>{{item.softwareType}}</td>
+                                            <td>{{item.licenseType}}</td>
+                                            <td>{{item.otherSoftwareName}}</td>
+                                            <td>{{item.otherVersion}}</td>
+                                            <td>{{item.otherProductKey}}</td>
+                                            <td>{{item.otherExpiryOn}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="overlay" *ngIf="isLoading">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                        </div>
+
+                        <div id="dateFilterPanel" *ngIf="filterreporttype == 'Installation Report'">
+                            <div class="col-sm-12">
+                                <div class="card-body" style="border: black; box-shadow: grey;">
+                                    <form #filterForm5="ngForm">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="location"> Location </label>
+                                                    <select [(ngModel)]="dashboardlocation" class="form-control"
+                                                        id="location" name="location" ngControl="dashboardlocation"
+                                                        #locationEnt="ngModel" matTooltip="Select location">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of plantList"
+                                                            value={{status.code}}>
+                                                            {{status.code}}-{{status.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="catCode">Category</label>
+                                                    <select [(ngModel)]="dashboardcatCode" class="form-control"
+                                                        id="catCode" name="catCode" ngControl="dashboardcatCode"
+                                                        (change)=GetSubCategory(dashboardcatCode) #catCodeEnt="ngModel"
+                                                        matTooltip="Select Category" required>
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of catList1" value={{mat.catCode}}>
+                                                            {{mat.catCode}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="catName"> Sub-Category </label>
+                                                    <select [(ngModel)]="dashboardcatName" class="form-control"
+                                                        id="catName" name="catName" ngControl="dashboardcatName"
+                                                        #catNameEnt="ngModel" [disabled]="isEdit"
+                                                        matTooltip="Select Sub-Category">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of subCategorylist"
+                                                            value={{mat.catName}}>
+                                                            {{mat.catName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="type"> Filter </label>
+                                                    <select [(ngModel)]="filtertype" class="form-control" id="type"
+                                                        name="type" ngControl="filtertype" #typeEnt="ngModel"
+                                                        [disabled]="isEdit" matTooltip="Select Filter" required>
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option>Asset No</option>
+                                                        <option>Asset State</option>
+                                                        <option>Host Name</option>
+                                                        <option>Model</option>
+                                                        <option>Manufacturer</option>
+                                                        <option>Serial Number</option>
+                                                        <option>User</option>
+                                                        <option>User Name</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="input"> Search Text <span style="color:red">*</span> </label>
+                                                    <input [(ngModel)]="filterinput" class="form-control" id="input"
+                                                        name="input" ngControl="filterinput" #inputEnt="ngModel"
+                                                        [disabled]="isEdit" placeholder="Search Text" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label>&nbsp;</label>
+                                                <div class="form-group">
+                                                    <button class="btn btn-primary"                                                       
+                                                        (click)="getInstallationReport();"
+                                                        matTooltip="click to go">Search</button>
+                                                    &nbsp;&nbsp;
+                                                    <button class="btn btn-primary" (click)="clearFilter();"
+                                                        matTooltip="click to reset">Clear</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="box-body table-responsive" *ngIf="filterreporttype == 'Installation Report' ">
+                                <table id="userTable" class="table table-striped" cellspacing="0">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Asset No</th>
+                                            <th>Host Name</th>
+                                            <th>Model</th>
+                                            <th>Manufacturer</th>
+                                            <th>Serial No</th>
+                                            <th>Employee Name</th>
+                                            <th>Location</th>
+                                            <th> </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of assetList; let i = index">
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.assetNo}}</td>
+                                            <td>{{item.hostName}}</td>
+                                            <td>{{item.model}}</td>
+                                            <td>{{item.manufacturer}}</td>
+                                            <td>{{item.serialNo}}</td>
+                                            <td>{{item.empName}}</td>
+                                            <td>{{item.location}}</td>
+                                            <td>
+                                                <table>
+                                                    <tr>
+                                                        &nbsp;
+                                                        <td>
+                                                            <button type="button" matTooltip="Click to view details"
+                                                                class="btn btn-primary btn-xs"
+                                                                (click)="printReport(item)">
+                                                                <i class="fas fa-print"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="overlay" *ngIf="isLoading">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                        </div>
+
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2; color:white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title"> <i>Asset Details</i>
+                </h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;">
+                <form #dataForm="ngForm" (keydown.enter)="$event.preventDefault()">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="assetId"> Asset Id <span style="color:red">*</span></label>
+                                <input [(ngModel)]="AssetReports.assetId" class="form-control" placeholder="Asset Id"
+                                    name="assetIdd" id="assetIdd" ngControl="AssetReports.assetId" #assetIdEnt="ngModel"
+                                    readonly="true" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="assetNo"> Asset No. <span style="color:red">*</span></label>
+                                <input [(ngModel)]="AssetReports.assetNo" class="form-control" id="assetNoo"
+                                    placeholder="Max of 35 chars." name="assetNoo" ngControl="AssetReports.assetNo"
+                                    #assetNoEnt="ngModel" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="location"> Location </label>
+                                <input class="form-control input-sm" type="text" name="location"
+                                    [(ngModel)]="AssetReports.location" placeholder="Location" [value]="location"
+                                    maxlength="80" [disabled]="isDisabled" id="location" matTooltip="Enter Location"
+                                    ngControl="AssetReports.location" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <input class="form-control input-sm" type="text" name="category"
+                                    [(ngModel)]="AssetReports.category" placeholder="Category" [value]="category"
+                                    maxlength="80" [disabled]="isDisabled" id="category" matTooltip="Enter Category"
+                                    ngControl="AssetReports.category" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="barcode"> Barcode </label>
+                                <input class="form-control input-sm" type="text" name="barcode"
+                                    [(ngModel)]="AssetReports.barCode" placeholder="Barcode" [value]="barcode"
+                                    maxlength="80" [disabled]="isDisabled" id="barcode" matTooltip="Enter Barcode"
+                                    ngControl="AssetReports.barCode" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="model"> Model </label>
+                                <input class="form-control input-sm" type="text" name="model"
+                                    [(ngModel)]="AssetReports.model" placeholder="Model" [value]="model" maxlength="80"
+                                    [disabled]="isDisabled" id="model" matTooltip="Enter Model"
+                                    ngControl="AssetReports.model" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="manufacturer"> Manufacturer </label>
+                                <input class="form-control input-sm" type="text" name="manufacturer"
+                                    [(ngModel)]="AssetReports.manufacturer" placeholder="Manufacturer"
+                                    ngControl="AssetReports.manufacturer" [value]="manufacturer" maxlength="80"
+                                    [disabled]="isDisabled" id="manufacturer" matTooltip="Enter Manufacturer"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="partNo"> Part No.</label>
+                                <input class="form-control input-sm" type="text" name="partNo"
+                                    [(ngModel)]="AssetReports.partNo" placeholder="Part No" [value]="partNo"
+                                    maxlength="80" [disabled]="isDisabled" id="partNo" matTooltip="Enter Part No"
+                                    ngControl="AssetReports.partNo" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="serialNo"> Serial No. </label>
+                                <input class="form-control input-sm" type="text" name="serialNo"
+                                    [(ngModel)]="AssetReports.serialNo" placeholder="Serial No" [value]="serialNo"
+                                    ngControl="AssetReports.serialNo" maxlength="80" [disabled]="isDisabled"
+                                    id="serialNo" matTooltip="Enter Serial No" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.assetType == 'Computers'">
+                            <div class="form-group">
+                                <label for="processor"> Processor </label>
+                                <input class="form-control input-sm" type="text" name="processor"
+                                    [(ngModel)]="AssetReports.processor" placeholder="Processor" [value]="processor"
+                                    ngControl="AssetReports.processor" maxlength="80" [disabled]="isDisabled"
+                                    id="processor" matTooltip="Enter Processor" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="AssetReports.assetType == 'Computers'">
+                            <div class="form-group">
+                                <label for="ram"> RAM</label>
+                                <input class="form-control input-sm" type="text" name="ram"
+                                    [(ngModel)]="AssetReports.ram" placeholder="Ram" [value]="ram" maxlength="80"
+                                    ngControl="AssetReports.ram" [disabled]="isDisabled" id="ram" matTooltip="Enter Ram"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="AssetReports.assetType == 'Computers'">
+                            <div class="form-group">
+                                <label for="hdd"> HDD.</label>
+                                <input class="form-control input-sm" type="text" name="hdd"
+                                    [(ngModel)]="AssetReports.hdd" placeholder="HDD" [value]="hdd" maxlength="80"
+                                    ngControl="AssetReports.hdd" [disabled]="isDisabled" id="hdd" matTooltip="Enter Hdd"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="ipNo"> IP Address</label>
+                                <input class="form-control input-sm" type="text" name="ipNo"
+                                    [(ngModel)]="AssetReports.ipAddress" placeholder="Ip No" [value]="ipNo"
+                                    ngControl="AssetReports.ipAddress" maxlength="80" [disabled]="isDisabled" id="ipNo"
+                                    matTooltip="Enter IpNo" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="gxp"> GxP Applicable </label>
+                                <input class="form-control input-sm" type="text" name="gxp"
+                                    [(ngModel)]="AssetReports.gxPApplicable" placeholder="GxP" [value]="gxp"
+                                    maxlength="80" ngControl="AssetReports.gxPApplicable" [disabled]="isDisabled"
+                                    id="gxp" matTooltip="Enter GxP" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="config"> Configurations. </label>
+                                <input class="form-control input-sm" type="text" name="config"
+                                    [(ngModel)]="AssetReports.config" placeholder="Config" [value]="config"
+                                    ngControl="AssetReports.config" maxlength="80" [disabled]="isDisabled" id="config"
+                                    matTooltip="Enter Config" readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2" *ngIf="AssetReports.assetType == 'Computers'">
+                            <div class="form-group">
+                                <label for="monitorType"> Monitor Type </label>
+                                <select [(ngModel)]="AssetReports.monitorType" class="form-control" id="monitorType"
+                                    name="monitorType" ngControl="AssetReports.monitorType"
+                                    matTooltip="Select Monitor Type" disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let type of monType" value={{type.type}}>
+                                        {{type.type}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.assetType == 'Computers'">
+                            <div class="form-group">
+                                <label for="make"> Make </label>
+                                <input class="form-control input-sm" type="text" name="make"
+                                    [(ngModel)]="AssetReports.make" placeholder="make" [value]="make" maxlength="80"
+                                    [disabled]="isDisabled" id="make" matTooltip="Enter make"
+                                    ngControl="AssetReports.make" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.assetType == 'Computers'">
+                            <div class="form-group">
+                                <label for="size"> Size </label>
+                                <input class="form-control input-sm" type="text" name="size"
+                                    [(ngModel)]="AssetReports.size" placeholder="size" [value]="size" maxlength="80"
+                                    [disabled]="isDisabled" id="size" matTooltip="Enter size"
+                                    ngControl="AssetReports.size" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.assetType == 'Computers'">
+                            <div class="form-group">
+                                <label for="keyboard"> Keyboard </label>
+                                <input class="form-control input-sm" type="text" name="keyboard"
+                                    [(ngModel)]="AssetReports.keyboard" placeholder="keyboard" [value]="keyboard"
+                                    maxlength="80" [disabled]="isDisabled" id="keyboard" matTooltip="Enter keyboard"
+                                    ngControl="AssetReports.keyboard" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.assetType == 'Computers'">
+                            <div class="form-group">
+                                <label for="mouse"> Mouse </label>
+                                <input class="form-control input-sm" type="text" name="mouse"
+                                    [(ngModel)]="AssetReports.mouse" placeholder="mouse" [value]="mouse" maxlength="80"
+                                    [disabled]="isDisabled" id="mouse" matTooltip="Enter mouse"
+                                    ngControl="AssetReports.mouse" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.assetType == 'Printer'">
+                            <div class="form-group">
+                                <label for="ppm"> Pages Per Minute (ppm) </label>
+                                <input class="form-control input-sm" type="text" name="ppm"
+                                    [(ngModel)]="AssetReports.ppm" placeholder="size" [value]="ppm" maxlength="80"
+                                    [disabled]="isDisabled" id="ppm" matTooltip="Enter ppm" ngControl="AssetReports.ppm"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.assetType == 'Printer'">
+                            <div class="form-group">
+                                <label for="machineLife"> Machine Life </label>
+                                <input class="form-control input-sm" type="text" name="machineLife"
+                                    [(ngModel)]="AssetReports.machineLife" placeholder="machineLife"
+                                    [value]="machineLife" maxlength="80" [disabled]="isDisabled" id="machineLife"
+                                    matTooltip="Enter machineLife" ngControl="AssetReports.machineLife" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.assetType == 'Printer'">
+                            <div class="form-group">
+                                <label for="cpp"> Cost Per Page </label>
+                                <input class="form-control input-sm" type="text" name="cpp"
+                                    [(ngModel)]="AssetReports.cpp" placeholder="cpp" [value]="cpp" maxlength="80"
+                                    [disabled]="isDisabled" id="cpp" matTooltip="Enter cpp" ngControl="AssetReports.cpp"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="usageType"> Usage Type </label>
+                                <select [(ngModel)]="AssetReports.usageType" class="form-control" id="usageType"
+                                    name="usageType" ngControl="AssetReports.usageType" matTooltip="Select Usage Type "
+                                    disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                    </option>
+                                    <option>User</option>
+                                    <option>Instrument</option>
+                                    <option>Common</option>
+                                    <option>Field Staff</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="AssetReports.usageType == 'User' || AssetReports.usageType == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="empNo"> Employee No </label>
+                                <input class="form-control input-sm" type="text" name="empNo"
+                                    [(ngModel)]="AssetReports.empNo" placeholder="empNo" [value]="empNo" maxlength="80"
+                                    [disabled]="isDisabled" id="empNo" matTooltip="Enter empNo"
+                                    ngControl="AssetReports.empNo" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="AssetReports.usageType == 'User' || AssetReports.usageType == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="empName"> Employee Name </label>
+                                <input class="form-control input-sm" type="text" name="empName"
+                                    [(ngModel)]="AssetReports.empName" placeholder="empName" [value]="empName"
+                                    maxlength="80" [disabled]="isDisabled" id="empName" matTooltip="Enter empName"
+                                    ngControl="AssetReports.empName" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="AssetReports.usageType == 'User' || AssetReports.usageType == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="department"> Department </label>
+                                <input class="form-control input-sm" type="text" name="department"
+                                    [(ngModel)]="AssetReports.department" placeholder="department" [value]="department"
+                                    maxlength="80" [disabled]="isDisabled" id="department" matTooltip="Enter department"
+                                    ngControl="AssetReports.department" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="AssetReports.usageType == 'User' || AssetReports.usageType == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="designation"> Designation </label>
+                                <input class="form-control input-sm" type="text" name="designation"
+                                    [(ngModel)]="AssetReports.designation" placeholder="designation"
+                                    [value]="designation" maxlength="80" [disabled]="isDisabled" id="designation"
+                                    matTooltip="Enter designation" ngControl="AssetReports.designation" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.usageType == 'Common'">
+                            <div class="form-group">
+                                <label for="comDept"> Department </label>
+                                <input class="form-control input-sm" type="text" name="comDept"
+                                    [(ngModel)]="AssetReports.comDept" placeholder="comDept" [value]="comDept"
+                                    maxlength="80" [disabled]="isDisabled" id="comDept" matTooltip="Enter comDept"
+                                    ngControl="AssetReports.comDept" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.usageType == 'Common'">
+                            <div class="form-group">
+                                <label for="comFloor"> Floor </label>
+                                <input class="form-control input-sm" type="text" name="comFloor"
+                                    [(ngModel)]="AssetReports.comFloor" placeholder="comFloor" [value]="comFloor"
+                                    maxlength="80" [disabled]="isDisabled" id="comFloor" matTooltip="Enter comFloor"
+                                    ngControl="AssetReports.comFloor" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.usageType == 'Instrument'">
+                            <div class="form-group">
+                                <label for="instName"> Instrument Name </label>
+                                <input class="form-control input-sm" type="text" name="instName"
+                                    [(ngModel)]="AssetReports.instName" placeholder="instName" [value]="instName"
+                                    maxlength="80" [disabled]="isDisabled" id="instName" matTooltip="Enter instName"
+                                    ngControl="AssetReports.instName" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.usageType == 'Instrument'">
+                            <div class="form-group">
+                                <label for="instType"> Instrument Type </label>
+                                <input class="form-control input-sm" type="text" name="instType"
+                                    [(ngModel)]="AssetReports.instType" placeholder="instType" [value]="instType"
+                                    maxlength="80" [disabled]="isDisabled" id="instType" matTooltip="Enter instType"
+                                    ngControl="AssetReports.instType" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.usageType == 'Instrument'">
+                            <div class="form-group">
+                                <label for="version"> Version </label>
+                                <input class="form-control input-sm" type="text" name="version"
+                                    [(ngModel)]="AssetReports.version" placeholder="version" [value]="version"
+                                    maxlength="80" [disabled]="isDisabled" id="version" matTooltip="Enter version"
+                                    ngControl="AssetReports.version" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AssetReports.usageType == 'Instrument'">
+                            <div class="form-group">
+                                <label for="software"> Software </label>
+                                <input class="form-control input-sm" type="text" name="software"
+                                    [(ngModel)]="AssetReports.software" placeholder="software" [value]="software"
+                                    maxlength="80" [disabled]="isDisabled" id="software" matTooltip="Enter software"
+                                    ngControl="AssetReports.software" readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="assetState"> Asset State </label>
+                                <select [(ngModel)]="AssetReports.assetState" class="form-control" id="assetState"
+                                    name="assetState" ngControl="AssetReports.assetState"
+                                    matTooltip="Select Asset State" disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let status of assStateList" value={{status.status}}>
+                                        {{status.status}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="natureofActivities"> Nature of Activities performed/functioned </label>
+                                <input class="form-control input-sm" type="text" name="natureofActivities"
+                                    [(ngModel)]="AssetReports.natureofActivities" placeholder="natureofActivities"
+                                    [value]="natureofActivities" maxlength="80" [disabled]="isDisabled"
+                                    id="natureofActivities" matTooltip="Enter natureofActivities"
+                                    ngControl="AssetReports.natureofActivities" readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="createdBy"> Created By </label>
+                                <input class="form-control input-sm" type="text" name="createdBy"
+                                    [(ngModel)]="AssetReports.createdBy" placeholder="createdBy"
+                                    [value]="natureofActivities" maxlength="80" [disabled]="isDisabled" id="createdBy"
+                                    matTooltip="Asset Created By" ngControl="AssetReports.createdBy" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="createdDate"> Created Date </label>
+                                <input class="form-control input-sm" type="text"
+                                    name="createdDate | date:'dd/MM/yyyy hh:mm:ss'"
+                                    [(ngModel)]="AssetReports.createdDate"
+                                    placeholder="createdDate"
+                                    value="{{createdDate | date:'dd/MM/yyyy hh:mm:ss'}}" maxlength="80"
+                                    [disabled]="isDisabled" id="createdDate | date:'dd/MM/yyyy hh:mm:ss'"
+                                    matTooltip="Asset Created On" ngControl="AssetReports.createdDate " readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <div *ngIf="view" class="row pull-right">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" [disabled]="isLoadingPop"
+                        matTooltip="Click to close modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--FOR COMPUTER-->
+<div hidden id="pdf">
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ASSET DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetNo}}</td>
+            <td style="width: 25%;"><b>Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetType}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+            <td style="width: 25%;"><b>Sub Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.category}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Barcode</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.barCode}}</td>
+            <td style="width: 25%;"><b>Host Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.hostName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Model</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.model}}</td>
+            <td style="width: 25%;"><b>Manufacturer</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.manufacturer}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Part No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.partNo}}</td>
+            <td style="width: 25%;"><b>Serial No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.serialNo}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Processor</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.processor}}</td>
+            <td style="width: 25%;"><b>RAM</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ram}} {{AssetReports.ramSize}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>HDD</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.hdd}} {{AssetReports.sizeType}}</td>
+            <td style="width: 25%;"><b>IP Address</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ipAddress}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Config</b></td>
+            <td colspan="3" style="width: 75%; color: blue;">{{AssetReports.config}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ACCESSORIES</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Monitor Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.monitorType}}</td>
+            <td style="width: 25%;"><b>Make</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.make}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Size (in inches)</b></td>
+            <td colspan="3" style="width: 75%; color: blue;">{{AssetReports.size}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Keyboard</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.keyboard}}</td>
+            <td style="width: 25%;"><b>Mouse</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.mouse}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>GxP Applicable</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.gxPApplicable}}</td>
+            <td style="width: 25%;"><b>System Revalidation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.systemRevalidationDate | date:'dd/MM/yyyy'}}
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Usage Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.usageType}}</td>
+            <td style="width: 25%;"><b>Installation Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.replacementType}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;;">
+        <tr>
+            <td colspan="7" style="text-align: center;"><strong>SOFTWARES INSTALLED</strong>
+            </td>
+        </tr>
+        <tr>
+            <th style="width: 5%;"><b>#</b></th>
+            <th style="width: 20%;"><b>Name</b></th>
+            <th style="width: 10%;"><b>Version</b></th>
+            <th style="width: 10%;"><b>Product Key</b></th>
+            <th style="width: 20%;"><b>Software Type</b></th>
+            <th style="width: 20%;"><b>License Type</b></th>
+            <th style="width: 15%;"><b>Expires On</b></th>
+        </tr>
+        <tr *ngFor="let list of AssetReports.softwares; let i = index">
+            <td style="color: blue;">{{i+1}}</td>
+            <td style="color: blue;">{{list.otherSoftwareName}}</td>
+            <td style="color: blue;">{{list.otherVersion}}</td>
+            <td style="color: blue;">{{list.otherProductKey}}</td>
+            <td style="color: blue;">{{getSoftTypename(list.softwareType)}}</td>
+            <td style="color: blue;">{{getLicTypename(list.licenseType)}}</td>
+            <td style="color: blue;">{{list.otherExpiryOn | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='User' || AssetReports.usageType == 'Field Staff'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>USER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Employee No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empNo}}</td>
+            <td style="width: 25%;"><b>Employee Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.department}}</td>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.designation}}</td>
+            <td style="width: 25%;"><b>AD Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empAd}}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='Common'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>COMMON DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comDept}}</td>
+            <td style="width: 25%;"><b>Floor</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comFloor}}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='Instrument'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>INSTRUMENT DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Instrument Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.instName}}</td>
+            <td style="width: 25%;"><b>Instrument Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.instType}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Version</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.version}}</td>
+            <td style="width: 25%;"><b>Software</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.software}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <strong>STATUS DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset State</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.assetState}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Nature of Activities performed/functioned</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.natureofActivities}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>PURCHASE INFORMATION</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>PO Number</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ponumber}}</td>
+            <td style="width: 25%;"><b>PO Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.podate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Invoice No</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceNumber}}</td>
+            <td style="width: 25%;"><b>Invoice Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceDate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Supplier Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.supplierName}}</td>
+            <td style="width: 25%;"><b>Value</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.value}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Warranty Expiration Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.warrantyExpiration | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Preventive Maintenance Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.preventiveMaintenace | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Installation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.installationDate | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Date of Issue</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.dateOfIssue | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Remarks</b></td>
+            <td colspan="3" style="width: 75%; color: blue;">{{AssetReports.remarks}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.viewStatusApprover!= null || AssetReports.viewStatusApprover!= '' ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>APPROVER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverName}}</td>
+            <td style="width: 25%;"><b>Approver Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDept}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDesg}}</td>
+            <td style="width: 25%;"><b>Approved Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.statusApprovedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+        </tr>
+    </table>
+</div>
+
+
+<!--FOR PRINTER-->
+<div hidden id="pdf1">
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ASSET DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetNo}}</td>
+            <td style="width: 25%;"><b>Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetType}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+            <td style="width: 25%;"><b>Sub Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.category}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Barcode</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.barCode}}</td>
+            <td style="width: 25%;"><b>Host Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.hostName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Model</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.model}}</td>
+            <td style="width: 25%;"><b>Manufacturer</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.manufacturer}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Part No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.partNo}}</td>
+            <td style="width: 25%;"><b>Serial No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.serialNo}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>IP Address</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ipAddress}}</td>
+            <td style="width: 25%;"><b>Config</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.config}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ACCESSORIES</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>PPM (Pages per minute)</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ppm}}</td>
+            <td style="width: 25%;"><b>Machine Life</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.machineLife}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Cost per page</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.cpp}}</td>
+            <td style="width: 25%;"><b>GxP Applicable</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.gxPApplicable}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>System Revalidation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.systemRevalidationDate | date:'dd/MM/yyyy'}}
+            </td>
+            <td style="width: 25%;"><b>Usage Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.usageType}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Installation Type</b></td>
+            <td colspan="3" style="width: 75%; color: blue;">{{AssetReports.replacementType}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='User' || AssetReports.usageType == 'Field Staff'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>USER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Employee No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empNo}}</td>
+            <td style="width: 25%;"><b>Employee Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.department}}</td>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.designation}}</td>
+            <td style="width: 25%;"><b>AD Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empAd}}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='Common'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>COMMON DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comDept}}</td>
+            <td style="width: 25%;"><b>Floor</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comFloor}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <strong>STATUS DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset State</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.assetState}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Nature of Activities performed/functioned</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.natureofActivities}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>PURCHASE INFORMATION</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>PO Number</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ponumber}}</td>
+            <td style="width: 25%;"><b>PO Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.podate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Invoice No</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceNumber}}</td>
+            <td style="width: 25%;"><b>Invoice Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceDate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Supplier Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.supplierName}}</td>
+            <td style="width: 25%;"><b>Value</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.value}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Warranty Expiration Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.warrantyExpiration | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Preventive Maintenance Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.preventiveMaintenace | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Installation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.installationDate | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Date of Issue</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.dateOfIssue | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Remarks</b></td>
+            <td colspan="3" style="width: 75%; color: blue;">{{AssetReports.remarks}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.viewStatusApprover!= null || AssetReports.viewStatusApprover!= '' ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>APPROVER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverName}}</td>
+            <td style="width: 25%;"><b>Approver Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDept}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDesg}}</td>
+            <td style="width: 25%;"><b>Approved Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.statusApprovedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+        </tr>
+    </table>
+</div>
+
+
+<!--FOR NETWORK-->
+<div hidden id="pdf2">
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ASSET DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetNo}}</td>
+            <td style="width: 25%;"><b>Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetType}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+            <td style="width: 25%;"><b>Sub Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.category}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Barcode</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.barCode}}</td>
+            <td style="width: 25%;"><b>Host Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.hostName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Model</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.model}}</td>
+            <td style="width: 25%;"><b>Manufacturer</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.manufacturer}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Part No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.partNo}}</td>
+            <td style="width: 25%;"><b>Serial No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.serialNo}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>IP Address</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ipAddress}}</td>
+            <td style="width: 25%;"><b>Config</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.config}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ACCESSORIES</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>GxP Applicable</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.gxPApplicable}}</td>
+            <td style="width: 25%;"><b>System Revalidation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.systemRevalidationDate | date:'dd/MM/yyyy'}}
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Usage Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.usageType}}</td>
+            <td style="width: 25%;"><b>Installation Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.replacementType}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='User' || AssetReports.usageType == 'Field Staff'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>USER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Employee No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empNo}}</td>
+            <td style="width: 25%;"><b>Employee Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.department}}</td>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.designation}}</td>
+            <td style="width: 25%;"><b>AD Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empAd}}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='Common'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>COMMON DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comDept}}</td>
+            <td style="width: 25%;"><b>Floor</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comFloor}}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='Instrument'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>INSTRUMENT DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Instrument Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.instName}}</td>
+            <td style="width: 25%;"><b>Instrument Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.instType}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Version</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.version}}</td>
+            <td style="width: 25%;"><b>Software</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.software}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <strong>STATUS DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset State</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.assetState}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Nature of Activities performed/functioned</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.natureofActivities}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>PURCHASE INFORMATION</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>PO Number</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ponumber}}</td>
+            <td style="width: 25%;"><b>PO Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.podate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Invoice No</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceNumber}}</td>
+            <td style="width: 25%;"><b>Invoice Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceDate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Supplier Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.supplierName}}</td>
+            <td style="width: 25%;"><b>Value</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.value}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Warranty Expiration Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.warrantyExpiration | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Preventive Maintenance Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.preventiveMaintenace | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Installation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.installationDate | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Date of Issue</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.dateOfIssue | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Remarks</b></td>
+            <td colspan="3" style="width: 75%; color: blue;">{{AssetReports.remarks}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.viewStatusApprover!= null || AssetReports.viewStatusApprover!= '' ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>APPROVER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverName}}</td>
+            <td style="width: 25%;"><b>Approver Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDept}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDesg}}</td>
+            <td style="width: 25%;"><b>Approved Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.statusApprovedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+        </tr>
+    </table>
+</div>
+
+
+<!--FOR OTHERS-->
+<div hidden id="pdf3">
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ASSET DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetNo}}</td>
+            <td style="width: 25%;"><b>Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetType}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+            <td style="width: 25%;"><b>Sub Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.category}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Barcode</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.barCode}}</td>
+            <td style="width: 25%;"><b>Host Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.hostName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Model</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.model}}</td>
+            <td style="width: 25%;"><b>Manufacturer</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.manufacturer}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Part No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.partNo}}</td>
+            <td style="width: 25%;"><b>Serial No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.serialNo}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>IP Address</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ipAddress}}</td>
+            <td style="width: 25%;"><b>Config</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.config}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ACCESSORIES</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>GxP Applicable</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.gxPApplicable}}</td>
+            <td style="width: 25%;"><b>System Revalidation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.systemRevalidationDate | date:'dd/MM/yyyy'}}
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Usage Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.usageType}}</td>
+            <td style="width: 25%;"><b>Installation Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.replacementType}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='User'  || AssetReports.usageType == 'Field Staff'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>USER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Employee No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empNo}}</td>
+            <td style="width: 25%;"><b>Employee Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.department}}</td>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.designation}}</td>
+            <td style="width: 25%;"><b>AD Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empAd}}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='Common'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>COMMON DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comDept}}</td>
+            <td style="width: 25%;"><b>Floor</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comFloor}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <strong>STATUS DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset State</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.assetState}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Nature of Activities performed/functioned</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.natureofActivities}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>PURCHASE INFORMATION</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>PO Number</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ponumber}}</td>
+            <td style="width: 25%;"><b>PO Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.podate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Invoice No</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceNumber}}</td>
+            <td style="width: 25%;"><b>Invoice Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceDate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Supplier Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.supplierName}}</td>
+            <td style="width: 25%;"><b>Value</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.value}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Warranty Expiration Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.warrantyExpiration | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Preventive Maintenance Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.preventiveMaintenace | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Installation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.installationDate | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Date of Issue</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.dateOfIssue | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Remarks</b></td>
+            <td colspan="3" style="width: 75%; color: blue;">{{AssetReports.remarks}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.viewStatusApprover!= null || AssetReports.viewStatusApprover!= '' ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>APPROVER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverName}}</td>
+            <td style="width: 25%;"><b>Approver Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDept}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDesg}}</td>
+            <td style="width: 25%;"><b>Approved Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.statusApprovedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+        </tr>
+    </table>
+</div>
+
+
+<!--FOR STORAGE-->
+<div hidden id="pdf4">
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ASSET DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetNo}}</td>
+            <td style="width: 25%;"><b>Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.assetType}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+            <td style="width: 25%;"><b>Sub Category</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.category}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Barcode</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.barCode}}</td>
+            <td style="width: 25%;"><b>Host Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.hostName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Model</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.model}}</td>
+            <td style="width: 25%;"><b>Manufacturer</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.manufacturer}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Part No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.partNo}}</td>
+            <td style="width: 25%;"><b>Serial No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.serialNo}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>IP Address</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ipAddress}}</td>
+            <td style="width: 25%;"><b>Config</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.config}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>ACCESSORIES</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>GxP Applicable</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.gxPApplicable}}</td>
+            <td style="width: 25%;"><b>System Revalidation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.systemRevalidationDate | date:'dd/MM/yyyy'}}
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Usage Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.usageType}}</td>
+            <td style="width: 25%;"><b>Installation Type</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.replacementType}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType == 'User' || AssetReports.usageType == 'Field Staff'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>USER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Employee No.</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empNo}}</td>
+            <td style="width: 25%;"><b>Employee Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.department}}</td>
+            <td style="width: 25%;"><b>Location</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.location}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.designation}}</td>
+            <td style="width: 25%;"><b>AD Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.empAd}}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.usageType =='Common'">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>COMMON DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comDept}}</td>
+            <td style="width: 25%;"><b>Floor</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.comFloor}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <strong>STATUS DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Asset State</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.assetState}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Nature of Activities performed/functioned</b></td>
+            <td style="width: 75%; color: blue;">{{AssetReports.natureofActivities}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>PURCHASE INFORMATION</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>PO Number</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.ponumber}}</td>
+            <td style="width: 25%;"><b>PO Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.podate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Invoice No</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceNumber}}</td>
+            <td style="width: 25%;"><b>Invoice Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.invoiceDate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Supplier Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.supplierName}}</td>
+            <td style="width: 25%;"><b>Value</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.value}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Warranty Expiration Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.warrantyExpiration | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Preventive Maintenance Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.preventiveMaintenace | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Installation Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.installationDate | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Date of Issue</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.dateOfIssue | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Remarks</b></td>
+            <td colspan="3" style="width: 75%; color: blue;">{{AssetReports.remarks}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; "
+        *ngIf="AssetReports.viewStatusApprover!= null || AssetReports.viewStatusApprover!= '' ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong>APPROVER DETAILS</strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Name</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverName}}</td>
+            <td style="width: 25%;"><b>Approver Department</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDept}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Approver Designation</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.approverDesg}}</td>
+            <td style="width: 25%;"><b>Approved Date</b></td>
+            <td style="width: 25%; color: blue;">{{AssetReports.statusApprovedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+        </tr>
+    </table>
+</div>

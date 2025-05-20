@@ -1,0 +1,440 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Employee Master
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Employee Master</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box shadow">
+        <div class="box-header">
+            <div class="col-sm-6">
+                <h4>Filters:</h4>
+            </div>
+            <div class="col-sm-6 pt-3">
+                <button class="btn btn-primary pull-right" (click)="openEmployeeModal(null, false)"><i class="fa fa-plus"></i>
+                    Create New Employee
+                </button>
+            </div>
+        </div>
+        <div class="row mx-3 my-3" *ngIf="true">
+            <div class="col-sm-3">
+                <label>Location:</label>
+                <div class="form-group">
+                    <select name="selectedLocation" id="selectedLocation" class="form-control" [(ngModel)]="employeeMasterService.selectedLocation" #selectedLocationEnt="ngModel" matTooltip="Select Location" placeholder="Location">
+                        <option [ngValue]="null" disabled>--Select a Location--</option>
+                        <option *ngFor="let item of locationMasterService.assignedLocations" [value]="item.id">
+                            {{item.code}} - {{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label>Department:</label>
+                <div class="form-group">
+                    <select name="selectedDepartment" id="selectedDepartment" class="form-control" [(ngModel)]="employeeMasterService.selectedDepartment" #selectedDepartmentEnt="ngModel" matTooltip="Select Department" 
+                        placeholder="Department">
+                        <option [ngValue]="null" disabled>--Select a Department--</option>
+                        <option *ngFor="let item of departmentMasterService.departments" [value]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label>Staff Category:</label>
+                <div class="form-group">
+                    <select name="selectedStaffCategory" id="selectedStaffCategory" class="form-control" [(ngModel)]="employeeMasterService.selectedStaffCategory" #selectedStaffCategoryEnt="ngModel" matTooltip="Staff Category" 
+                        placeholder="Staff Category">
+                        <option [ngValue]="null" disabled>--Select a Staff Category--</option>
+                        <option *ngFor="let item of employeeMasterService.competencies" [value]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Employee ID</label>
+                    <input [(ngModel)]="employeeMasterService.selectedEmployeeID" class="form-control" id="selectedEmployeeID" placeholder="Employee ID" name="selectedEmployeeID" ngControl="selectedEmployeeID" 
+                        #selectedEmployeeIDEnt="ngModel" (keydown.enter)="getEmployees()">
+                </div>
+            </div>
+        </div>
+        <div class="row my-3 mx-3 center-contents">
+            <button class="btn btn-primary btn mr-3" style="min-width: 100px;" (click)="getEmployees()" [disabled]="isGOLoading || locationMasterService.isServiceLoading || departmentMasterService.isServiceLoading">
+                <i class="fa" [ngClass]="{'fa-spin fa-spinner': isGOLoading || locationMasterService.isServiceLoading || departmentMasterService.isServiceLoading}"></i>
+                <span *ngIf="isGOLoading || locationMasterService.isServiceLoading || departmentMasterService.isServiceLoading">&nbsp;</span>Go
+            </button>
+            <button class="btn btn-info btn" style="min-width: 100px;" (click)="clearFilter()"
+                matTooltip="click to reset">Clear
+            </button>
+        </div>
+        <div class="row mx-3 my-5">
+            <div class="col-md-12 table-responsive">
+                <div class="overlay" *ngIf="isGOLoading">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+                <table class="table table-hover table-bordered shadow" id="data">
+                    <thead style="background-color: #0099cc;color:white;">
+                        <tr>
+                            <th>Sl. No.</th>
+                            <th>Employee ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Designation</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of employees; let i = index">
+                            <td style="text-align: center;">{{((this.employeeMasterService.pageNumber - 1) * this.employeeMasterService.pageSize) + i + 1}}</td>
+                            <td>{{item.employeeId}}</td>
+                            <td>{{item.firstName}} {{item.middleName}} {{item.lastName}}</td>
+                            <td>{{item.email ? item.email : 'NA'}}</td>
+                            <td>{{item.designation}}</td>
+                            <td>{{locationMasterService.findLocationByID(item.baseLocation).code}}</td>
+                            <td style="text-align: center;">
+                                <span class="label" [ngClass]="item.isActive == true ? 'label-success' : 'label-danger'">
+                                    {{item.isActive == true ? "ACTIVE" : "INACTIVE"}}
+                                </span>
+                            </td>
+                            <td class="center-contents">
+                                <button type="button" class="btn btn-primary btn-xs mr-2" (click)="openEmployeeModal(item, true)" [disabled]="isUserMasterLoading">
+                                    <i class="fa" [ngClass]="{'fa-spin fa-spinner': isUserMasterLoading, 'fa-pencil-alt': !isUserMasterLoading}"></i>
+                                </button>
+                                <button type="button" class="btn btn-info btn-xs" (click)="viewAuditLogs(item.id)">
+                                    <i class="fa fa-history"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center" style="cursor: default;">
+                    <ul class="pagination" *ngIf="employees.length > 0">
+                        <li>
+                            <a (click)="gotoPage(this.employeeMasterService.pageNumber)">
+                                Showing <b>{{((this.employeeMasterService.pageNumber - 1) * this.employeeMasterService.pageSize) + 1}}</b> -
+                                <b>{{(this.employeeMasterService.pageNumber * this.employeeMasterService.pageSize) > this.employeeMasterService.totalCount ? this.employeeMasterService.totalCount : 
+                                    this.employeeMasterService.pageNumber * this.employeeMasterService.pageSize}}</b> of
+                                <b>{{this.employeeMasterService.totalCount}}</b> records
+                            </a>
+                        </li>
+                        <li><a *ngIf="this.employeeMasterService.pageNumber > 1" (click)="gotoPage(1)">First</a></li>
+                        <li><a *ngIf="this.employeeMasterService.pageNumber > 1" (click)="gotoPage(this.employeeMasterService.pageNumber - 1)">Previous</a></li>
+                        <li><a *ngIf="this.employeeMasterService.pageNumber > 2" (click)="gotoPage(this.employeeMasterService.pageNumber - 2)">{{this.employeeMasterService.pageNumber - 2 }}</a></li>
+                        <li><a *ngIf="this.employeeMasterService.pageNumber > 1" (click)="gotoPage(this.employeeMasterService.pageNumber - 1)">{{this.employeeMasterService.pageNumber - 1 }}</a></li>
+                        <li class="active"><a (click)="gotoPage(this.employeeMasterService.pageNumber)">{{this.employeeMasterService.pageNumber}}</a></li>
+                        <li><a *ngIf="this.employeeMasterService.totalPages > this.employeeMasterService.pageNumber" (click)="gotoPage(this.employeeMasterService.pageNumber + 1)">{{this.employeeMasterService.pageNumber + 1}}</a></li>
+                        <li><a *ngIf="this.employeeMasterService.totalPages > this.employeeMasterService.pageNumber + 1" (click)="gotoPage(this.employeeMasterService.pageNumber + 2)">{{this.employeeMasterService.pageNumber + 2}}</a></li>
+                        <li><a *ngIf="this.employeeMasterService.totalPages > this.employeeMasterService.pageNumber" (click)="gotoPage(this.employeeMasterService.pageNumber + 1)">Next</a></li>
+                        <li><a *ngIf="this.employeeMasterService.totalPages > this.employeeMasterService.pageNumber" (click)="gotoPage(this.employeeMasterService.totalPages)">Last</a></li>
+                        <li><a (click)="gotoPage(this.employeeMasterService.pageNumber)">Page <b>{{this.employeeMasterService.pageNumber}}</b> of <b>{{this.employeeMasterService.totalPages}}</b></a></li>
+                        <li>
+                            <a>Page Size
+                                <select id="ddlPageSize" [(ngModel)]="this.employeeMasterService.pageSize" (change)="pageSizeChange()">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Edit Employee Modal -->
+<div class="modal fade" id="editEmployeeModal" role="dialog" aria-labelledby="editEmployeeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" *ngIf="currentEmployeeMaster && currentUserMaster && currentEmployeeAddress">
+            <div class="modal-header" style="background-color: #0080a7;color:white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title mb-0">Edit Employee</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;">
+                <div class="row shadow">
+                    <div class="tab">
+                        <button class="tabLinks" (click)="openTab($event, 'Main')" id="MainTab">Main</button>
+                        <button class="tabLinks" (click)="openTab($event, 'Address')" id="AddressTab">Address</button>
+                    </div>
+                    <div id="Main" class="tabContent pb-5">
+                        <div class="row">
+                            <div class="col-sm-12" *ngIf="managerWarning">
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    There is no manager assign to this employee.Please select the manager for further modification<br />Note: Last manager assigned was {{lastManager}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Employee ID<span style="color:red">*</span></label>
+                                    <input [(ngModel)]="currentEmployeeMaster.employeeId" class="form-control" id="employeeID" placeholder="Employee ID" name="employeeID" ngControl="employeeID" #employeeIDEnt="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>First Name<span style="color:red">*</span></label>
+                                    <input [(ngModel)]="currentEmployeeMaster.firstName" class="form-control" id="firstName" placeholder="First Name" name="firstName" ngControl="firstName" #firstNameEnt="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Middle Name</label>
+                                    <input [(ngModel)]="currentEmployeeMaster.middleName" class="form-control" id="middleName" placeholder="Middle Name" name="middleName" ngControl="middleName" #middleNameEnt="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input [(ngModel)]="currentEmployeeMaster.lastName" class="form-control" id="lastName" placeholder="Last Name" name="lastName" ngControl="lastName" #lastNameEnt="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Email<span style="color:red">*</span></label>
+                                    <input [(ngModel)]="currentEmployeeMaster.email" class="form-control" id="email" placeholder="Email ID" name="email" ngControl="email" #emailEnt="ngModel" maxlength="50">
+                                </div>
+                            </div>
+                            <div class="col-sm-3" *ngIf="isEdit">
+                                <div class="form-group">
+                                    <label>Password<span style="color:red">*</span></label>
+                                    <input [(ngModel)]="currentUserMaster.password" class="form-control" id="password" placeholder="Password" name="password" ngControl="password" #passwordEnt="ngModel" type="password" maxlength="50">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Base Location<span style="color:red">*</span></label>
+                                    <select name="location" id="location" class="form-control" [(ngModel)]="currentEmployeeMaster.baseLocation" #locationEnt="ngModel" matTooltip="Select Location" placeholder="Location">
+                                        <option [ngValue]="null" disabled>--Select a Location--</option>
+                                        <option *ngFor="let item of locationMasterService.locations" [value]="item.id">
+                                            {{item.displayName}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Department:<span style="color:red">*</span></label>
+                                    <select name="department" id="department" class="form-control" [(ngModel)]="currentEmployeeMaster.fkDepartment" #departmentEnt="ngModel" matTooltip="Select Department" placeholder="Department">
+                                        <option [ngValue]="null" disabled>--Select a Department--</option>
+                                        <option *ngFor="let item of departmentMasterService.departments" [value]="item.id">
+                                            {{item.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Profile:<span style="color:red">*</span></label>
+                                    <select name="profile" id="profile" class="form-control" [(ngModel)]="currentEmployeeMaster.fkProfileId" #profileEnt="ngModel" matTooltip="Select Profile" placeholder="Profile">
+                                        <option [ngValue]="null" disabled>--Select a Profile--</option>
+                                        <option *ngFor="let item of employeeMasterService.profiles" [value]="item.id">
+                                            {{item.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div> -->
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Designation:<span style="color:red">*</span></label>
+                                    <select name="designation" id="designation" class="form-control" [(ngModel)]="currentEmployeeMaster.fkDesignation" #designationEnt="ngModel" matTooltip="Select Designation" placeholder="Designation">
+                                        <option [ngValue]="null" disabled>--Select a Designation--</option>
+                                        <option *ngFor="let item of employeeMasterService.designations" [value]="item.id">
+                                            {{item.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Employee Type:<span style="color:red">*</span></label>
+                                    <select name="competency" id="competency" class="form-control" [(ngModel)]="currentEmployeeMaster.fkCompetency" #competencyEnt="ngModel" matTooltip="Select Employee Type" placeholder="Employee Type">
+                                        <option [ngValue]="null" disabled>--Select an Employee Type--</option>
+                                        <option *ngFor="let item of employeeMasterService.competencies" [value]="item.id">
+                                            {{item.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Role:<span style="color:red">*</span></label>
+                                    <select name="role" id="role" class="form-control" [(ngModel)]="currentEmployeeMaster.fkRoleId" #roleEnt="ngModel" matTooltip="Select Role" placeholder="Role">
+                                        <option [ngValue]="null" disabled>--Select a Role--</option>
+                                        <option *ngFor="let item of employeeMasterService.roles" [value]="item.id">
+                                            {{item.role}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Status:<span style="color:red">*</span></label>
+                                    <select name="status" id="status" class="form-control" [(ngModel)]="currentEmployeeMaster.isActive" #statusEnt="ngModel" matTooltip="Select Status" placeholder="Status">
+                                        <option [ngValue]="null" disabled>--Select a Status--</option>
+                                        <option [ngValue]="true">Active</option>
+                                        <option [ngValue]="false">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Manager Employee ID: <span style="color:red">*</span></label>
+                                    <input type="text" name="managerEmployeeID" id="managerEmployeeID" style="min-width: 100px;" autocomplete="off" [autocomplete]="off" [(ngModel)]="managerEmployeeID" class="form-control"
+                                        placeholder="Manager Employee ID" (keyup)="getManager($event)" #managerEmployeeIDEnt="ngModel">
+                                    <input type="hidden" id="'managerEmployeeIDDropdown'" class="form-control" (keyup)="getManager($event)" ngControl="managerEmployeeIDDropdown" name="managerEmployeeIDDropdown" />
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Manager Name</label>
+                                    <input [(ngModel)]="managerName" class="form-control" id="managerName" placeholder="Manager Name" name="managerName" ngControl="managerName" #managerNameEnt="ngModel" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Profile(s): <span style="color: red;">*</span></label>
+                                    <ng-multiselect-dropdown name="selectedProfiles" id="selectedProfiles" [(ngModel)]="selectedProfiles" style="min-width: 100px;" #selectedProfilesEnt="ngModel"
+                                        [data]="employeeMasterService.profiles" [settings]="profilesSettings" (onDeSelectAll)="onProfilesDeselectAll($event)" (onSelectAll)="onProfilesSelectAll($event)"
+                                        (onSelect)="onProfilesSelect($event)" (onDeSelect)="onProfilesDeselect($event)" [placeholder]="'Select Profile(s)'">
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Address" class="tabContent pb-5">
+                        <div class="row mt-5">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Joining Date<span style="color: red;">*</span></label>
+                                    <div class="input-group date">
+                                        <input [owlDateTime]="dtJoiningDate" [owlDateTimeTrigger]="dtJoiningDate" [max]="today" name="joiningDate" class="form-control" [(ngModel)]="selectedJoiningDate" #joiningDateEnt="ngModel">
+                                        <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+                                    </div>
+                                    <owl-date-time [pickerType]="'calendar'" #dtJoiningDate style="width: 250px;"></owl-date-time>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Permanent Address</label>
+                                    <input [(ngModel)]="currentEmployeeAddress.permanentAddress" class="form-control" id="permanentAddress" placeholder="Permanent Address" name="permanentAddress" ngControl="permanentAddress" 
+                                        #permanentAddressEnt="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Current Address</label>
+                                    <input [(ngModel)]="currentEmployeeAddress.currentAddress" class="form-control" id="currentAddress" placeholder="Current Address" name="currentAddress" ngControl="currentAddress" 
+                                        #currentAddressEnt="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input [(ngModel)]="currentEmployeeAddress.phoneNumber" class="form-control" id="phoneNumber" placeholder="Phone Number" name="phoneNumber" ngControl="phoneNumber" #phoneNumberEnt="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Emergency Contact Name</label>
+                                    <input [(ngModel)]="currentEmployeeAddress.emgContactName" class="form-control" id="emgContactName" placeholder="Emergency Contact Name" name="emgContactName" ngControl="emgContactName" 
+                                        #emgContactNameEnt="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Emergency Contact Number</label>
+                                    <input [(ngModel)]="currentEmployeeAddress.emgContactNumber" class="form-control" id="emgContactNumber" placeholder="Emergency Contact Number" name="emgContactNumber" ngControl="emgContactNumber" 
+                                        #emgContactNumberEnt="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Audit Reason<span style="color:red">*</span></label>
+                                    <textarea type="text" class="form-control" name="auditReason" id="auditReason" placeholder="Audit Reason" [(ngModel)]="auditReason" ngControl="auditReason" rows="5"
+                                        (change)="auditReason = auditReason.trim()" #auditReasonEnt="ngModel">
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="onSaveUserClick()" [disabled]="isSaveLoading">
+                    <i class="fa" [ngClass]="{'fa-spin fa-spinner': isSaveLoading}"></i><span *ngIf="isSaveLoading">&nbsp;</span>{{isEdit == true ? 'Update User' : 'Save User'}}
+                </button>
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoading">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Audit Modal -->
+<div id="auditModal" class="modal fade">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;</button>
+                <h4 class="modal-title">Audit History</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered" id="auditTable">
+                    <thead>
+                        <tr>
+                            <th>Sl.no</th>
+                            <th>Action</th>
+                            <th>ActionBy</th>
+                            <th>DateTime</th>
+                            <th>KeyField</th>
+                            <th>Changes</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <!-- <ng-container > -->
+                    <tbody>
+                        <tr *ngFor="let item of auditLogList;let i = index">
+                            <td>{{auditLogList.length - i + '.0'}}</td>
+                            <td class="col-sm-1">{{item.auditType}}</td>
+                            <td class="col-sm-1">{{item.aduitUser}}</td>
+                            <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy hh:mm a"}}</td>
+                            <td class="col-sm-1">{{item.keyValue}}</td>
+                            <td class="col-sm-4">
+                                <table class="table table-bordered" style="margin-bottom: 0;">
+                                    <tr>
+                                        <th>Field Name</th>
+                                        <th>Old Value</th>
+                                        <th>New Value</th>
+                                    </tr>
+                                    <tr *ngFor="let ch of objParser(item.changes)">
+                                        <td>{{ch.fieldname}}</td>
+                                        <td>{{ch.oldvalue}}</td>
+                                        <td>{{ch.newvalue}}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="col-sm-4">{{item.purpose}}</td>
+                        </tr>
+                    </tbody>
+                    <!-- </ng-container> -->
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

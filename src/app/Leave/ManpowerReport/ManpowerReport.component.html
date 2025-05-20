@@ -1,0 +1,249 @@
+<section class="content-header">
+    <h1>
+        Manpower Planning Report
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Manpower Report</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title">Manpower Report</h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-info pull-right"
+                    (click)="OnAddNewPlanning(false,manPowerReport)"><i class="fa fa-plus" aria-hidden="true"></i> Add
+                    New Planning</button>
+            </div>
+            <br>
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="Location">Plant <span style="color:red">*</span> </label>
+                            <select [(ngModel)]="filterPlant" class="form-control" id="locationName" (change)="getPaygroupsBasedOnPlant();"
+                                name="locationName">
+                                <option [ngValue]="null">select plant</option>
+                                <option *ngFor="let location of locationList" value="{{location.code}}">
+                                    {{location.code + '-' + location.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="paygroup">Pay Group</label>
+                            <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                <option [ngValue]="null">select Pay Group</option>
+                                <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                    {{location.short_desc}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="staffcat">Staff Category</label>
+                            <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                <option [ngValue]="null">select Category</option>
+                                <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                    {{cat.catltxt}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="Location">Department</label>
+                            <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                                name="locationName">
+                                <option [ngValue]="null">select Department</option>
+                                <option *ngFor="let location of departmentList" value="{{location.paygroup}}">
+                                    {{location.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="SubDepartment">Sub Department</label>
+                            <select [(ngModel)]="filterSubDepartment" class="form-control"
+                                id="filteSubDepartmentrSubDepartment" name="SubDepartment">
+                                <option [ngValue]="null">select Sub Department</option>
+                                <option *ngFor="let SubDepartment of subDepartmentList" value="{{SubDepartment.id}}">
+                                    {{SubDepartment.sdptidStxt}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label>&nbsp;</label>
+                        <div class="form-group">
+                            <button class="btn btn-success" (click)="getManpowerReport();"
+                                matTooltip="click to get date"><i class="fas fa-angle-double-right"></i>&nbsp; Get Data</button>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-danger" (click)="ClearData();"
+                                matTooltip="click to Clear"><i class="fas fa-times"></i>&nbsp; Clear</button>
+                        </div>
+                    </div>
+                </div>
+                &nbsp;&nbsp;
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Manpower Planning Report</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered table-striped">
+                                <tr style="background-color: #b2d1e5;">
+                                    <th colspan="12" style="text-align: center;">Manpower Planning Report</th>
+                                </tr>
+                                <tr style="background-color: #b2d1e5;">
+                                    <th rowspan="2" style="vertical-align: bottom;">Plant</th>
+                                    <th rowspan="2" style="vertical-align: bottom;">PayGroup</th>
+                                    <th rowspan="2" style="vertical-align: bottom;">Staff Category</th>
+                                    <th rowspan="2" style="vertical-align: bottom;">Department</th>
+                                    <th rowspan="2" style="vertical-align: bottom;">Sub Department</th>
+                                    <th rowspan="2" style="vertical-align: bottom;">Contractor Code</th>
+                                    <th colspan="3" style="text-align: center;">Budget</th>
+                                    <th colspan="3" style="text-align: center;"> Count </th>
+                                </tr>
+                                <tr style="background-color: #b2d1e5;">
+                                    <th>Approved</th>
+                                    <th>Pending for Approval</th>
+                                    <th>Available</th>
+                                    <th>Approved</th>
+                                    <th>Pending for Approval</th>
+                                    <th>Available</th>
+                                </tr>
+                                <tr *ngFor="let item of Contractorwiselist;let i= index">
+                                    <td>{{item.plant}}</td>
+                                    <td>{{item.payGroup}}</td>
+                                    <td>Contractor</td>
+                                    <td>{{item.departmentName}}</td>
+                                    <td>{{item.subDeptName}}</td>
+                                    <td>{{item.contractor}}</td>
+                                    <td>{{item.approvedBudget}}</td>
+                                    <td>{{item.pendingforApprovalBudget}}</td>
+                                    <td>{{item.availableBudget}}</td>
+                                    <td>{{item.approved}}</td>
+                                    <td>{{item.pendingforApproval}}</td>
+                                    <td>{{item.available}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-sm-2"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- /.box-body -->
+        <div class="overlay" *ngIf="isLoading">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Contract Manpower Planning</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #leaveForm="ngForm">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="plant"> Plant <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="manPowerReport.plant" class="form-control" id="plant" name="plant" (change)="getPaygroupsBasedOnPlant1();"
+                                    matTooltip="Select Plant" #plantEnt="ngModel" ngControl="plant">
+                                    <option [ngValue]="undefined" disabled [selected]="true">--Select Plant--</option>
+                                    <option *ngFor="let pl of locationList" value={{pl.code}}>
+                                        {{pl.code}}-{{pl.name}}
+                                    </option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="paygroup"> PayGroup <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="manPowerReport.paygroup" class="form-control" id="paygroup" name="paygroupplant"
+                                    matTooltip="Select PayGroup" #paygroupEnt="ngModel" ngControl="paygroup">
+                                    <option [ngValue]="undefined" disabled [selected]="true">--Select PayGroup--</option>
+                                    <option *ngFor="let pl of payGroupList1" value={{pl.payGroup}}>
+                                        {{pl.plant}}-{{pl.short_desc}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="department"> Department <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="manPowerReport.department" class="form-control" id="department" name="department"
+                                    matTooltip="Select Department" #departmentEnt="ngModel" ngControl="department">
+                                    <option [ngValue]="undefined" disabled [selected]="true">--Select Department--</option>
+                                    <option *ngFor="let pl of departmentList" value={{pl.id}}>
+                                        {{pl.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="subDepartment">Sub Department </label>
+                                <select [(ngModel)]="manPowerReport.subDepartment" class="form-control" id="subDepartment" name="subDepartment"
+                                    matTooltip="Select Sub Department" #subDepartmentEnt="ngModel" ngControl="subDepartment">
+                                    <option [ngValue]="undefined" disabled [selected]="true">--Select Sub Department--</option>
+                                    <option *ngFor="let pl of subDepartmentList" value={{pl.id}}>
+                                        {{pl.sdptidStxt}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                              <label for="count"> Contractor Count </label>
+                              <input type="count" [(ngModel)]="manPowerReport.count" class="form-control" id="count" placeholder="Enter Contractor Count" name="count"
+                                     ngControl="count" #countEnt="ngModel">
+                            </div>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="form-group">
+                              <label for="Year"> Contractor Budget (Total)</label>
+                              <input type="number" [(ngModel)]="manPowerReport.budget" class="form-control" id="year" placeholder="Enter Contractor Budget (Total)" name="year"
+                                     ngControl="calYear" #calYearEnt="ngModel">
+                            </div>
+                          </div>
+                          <div class="col-sm-12">
+                            <div class="form-group">
+                              <label> Contractor (Vendor Id) </label>
+                              <input type="text" id="contractor" class="form-control" (keyup)="getContractor($event)"
+                                [(ngModel)]="manPowerReport.contractor" placeholder="Enter Contractor (Vendor) No"
+                                ngControl="manPowerReport.contractor" name="contractor" />
+                              <input type="hidden" id="contractorId" [(ngModel)]="manPowerReport.contractor"
+                                name="contractorId" />
+                            </div>
+                          </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button type="button" class="btn btn-success" (click)="onSaveManpowerPlanning();">Save Planning</button>
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

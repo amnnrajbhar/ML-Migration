@@ -1,0 +1,804 @@
+<section class="content-header">
+    <h1>
+        Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+            <h3 class="box-title">Daily Attendance Report</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Plant <span style="color: red;">*</span></label>
+                        <select [(ngModel)]="filterPlant" class="form-control" id="locationName" name="locationName"
+                            (change)="getPaygroupsBasedOnPlant()">
+                            <option [ngValue]="null">select plant</option>
+                            <option *ngFor="let location of locationList" value="{{location.code}}">
+                                {{location.code + '-' + location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="paygroup">Pay Group</label>
+                        <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                            <option [ngValue]="null">select Pay Group</option>
+                            <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                {{location.short_desc}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="staffcat">Staff Category</label>
+                        <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                            <option [ngValue]="null">select Category</option>
+                            <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                {{cat.catltxt}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Department</label>
+                        <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                            name="locationName">
+                            <option [ngValue]="null">select Department</option>
+                            <option *ngFor="let location of departmentList" value="{{location.id}}">
+                                {{location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Reporting Group </label>
+                        <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                            name="locationName" required>
+                            <option [ngValue]="null">select Reporting Group</option>
+                            <option *ngFor="let location of ReportingGroupList" value="{{location.reportingGroup}}">
+                                {{location.reportingGroupLt}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="startDate">
+                            Date <span style="color:red">*</span>
+                        </label>
+                        <div class='input-group date'>
+                            <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                [min]="min" [owlDateTime]="dtStart" [owlDateTimeTrigger]="dtStart"
+                                placeholder="DD/MM/YYYY" [matTooltipPosition]="'below'"
+                                matTooltip="Click to change startDate" #startDate1="ngModel" [disabled]="isEdit"
+                                required>
+                            <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                        <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+                        <span class="help-block" *ngIf="!startDate1.valid && startDate1.touched">Please
+                            enter Date.</span>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label>&nbsp;</label>
+                    <div class="form-group">
+                        <button class="btn btn-success" (click)="GetDailyReport('pdf');" [disabled]="isLoading"
+                            matTooltip="click to get the data"><i class="fas fa-arrow-right"></i>&nbsp; Get</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-info" (click)="printreport()" [disabled]="!Present>0"
+                            matTooltip="click to export"><i class="fas fa-file-pdf"></i>&nbsp; Export to PDF</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-info" (click)="DailyReportexportToExcel('');" [disabled]="!Present>0"
+                            matTooltip="click to export"><i class="fas fa-file-excel"></i>&nbsp; Export to EXCEL
+                        </button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-danger" (click)="ClearData();" matTooltip="Clear Data"><i
+                                class="fas fa-times"></i>&nbsp; Clear</button>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label>&nbsp;</label>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <input type="text" matTooltip="Enter Email" name="email" class="form-control"
+                                [(ngModel)]="email" placeholder="Email">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-info" [disabled]="!Present>0" (click)="sendMail('Mail');"
+                                matTooltip="click to send mail"><i class="fas fa-share-square"></i>&nbsp; Send
+                                Mail</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay" *ngIf="isLoading" style="text-align: center;">
+            <i class="fa fa-spinner fa-pulse fa-fw" style="font-size:30px; text-align: center;"></i>
+        </div>
+    </div>
+</section>
+
+<div #dailyreport id="DailyReport" class="text-center">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 style="text-align: center;"><strong>MICRO LABS LIMITED</strong></h3>
+            <h4 style="text-align: center;">Daily Attendance Report - Date: {{fromDate
+                | date:'dd/MM/yyyy'}}</h4>
+        </div>
+    </div>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="2" style="text-align: center;"> <strong>Summary Of Attendance</strong> </th>
+        </tr>
+
+        <tr>
+            <th>Present</th>
+            <td>{{Present}}</td>
+        </tr>
+        <tr>
+            <th>Absent</th>
+            <td>{{Absent}}</td>
+        </tr>
+        <tr>
+            <th>On Duty</th>
+            <td>{{Onduty}}</td>
+        </tr>
+        <tr>
+            <th>On Duty(Pending for Approval)</th>
+            <td>{{PendingOnduty}}</td>
+        </tr>
+        <tr>
+            <th>Late Punch</th>
+            <td>{{LatepunchCount}}</td>
+        </tr>
+        <tr>
+            <th>Leave</th>
+            <td>{{Leave}}</td>
+        </tr>
+        <tr>
+            <th>Leave(Pending for Approval)</th>
+            <td>{{PendingLeave}}</td>
+        </tr>
+        <tr>
+            <th>Loss Of Pay</th>
+            <td>{{Lop}}</td>
+        </tr>
+        <tr>
+            <th>Leave Intimation</th>
+            <td>{{LeaveIntimation}}</td>
+        </tr>
+        <tr>
+            <th>OnDuty Intimation</th>
+            <td>{{ODIntimation}}</td>
+        </tr>
+        <tr>
+            <th>Total</th>
+            <td>{{Present+Absent+Onduty+PendingOnduty+Leave+PendingLeave+Lop+LatepunchCount+LeaveIntimation+ODIntimation}}
+            </td>
+        </tr>
+    </table>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <thead class="bordered striped">
+            <tr>
+                <th colspan="9" style="text-align: center;background-color: #73aaec;">Employees On Late Punch</th>
+            </tr>
+
+            <tr style="border: black;">
+                <th style="width: 5%;">Sl.No.</th>
+                <th style="width: 10%;">Employee No.</th>
+                <th style="width:20%;">Employee Name</th>
+                <th style="width: 15%;">Reporting Group</th>
+                <th style="width: 12%;">Department</th>
+                <th style="width: 10%;">In time</th>
+                <th style="width: 10%;">Shift</th>
+                <th style="width: 8%;">Late</th>
+                <th style="width: 10%;">Late Count</th>
+            </tr>
+        </thead>
+        <tbody class="bordered striped">
+            <tr *ngFor="let lp of LatePunch;let i=index">
+                <td>{{i+1}}</td>
+                <td>{{lp.userId}}</td>
+                <td>{{lp.empName}}</td>
+                <td>{{lp.reportingGroup}}</td>
+                <td>{{lp.department}}</td>
+                <td>{{lp.intime}}</td>
+                <td>{{lp.shift}}</td>
+                <td>{{lp.late}}</td>
+                <td>{{lp.lateCount}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">Employees On Leave</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 20%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 6%;">No of Days</th>
+        </tr>
+        <tr *ngFor="let lp of ApprovedLeaves;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="10" style="text-align: center;background-color: #73aaec;">Employees On Leave - Approval pending
+                from HOD</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 5%;">No of Days</th>
+            <th style="width: 15%;">Pending Approver</th>
+        </tr>
+        <tr *ngFor="let lp of LeavesPendingForApproval;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+            <td>{{lp.pendingApprover}}</td>
+        </tr>
+    </table>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">Employees On LOP</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 10%;">NO of Days</th>
+        </tr>
+        <tr *ngFor="let lp of lossofPay;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">Employees On OnDuty</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">From Time</th>
+            <th style="width: 10%;">To Time</th>
+        </tr>
+        <tr *ngFor="let lp of ApprovedOnduty;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.stTime}}</td>
+            <td>{{lp.edTime}}</td>
+        </tr>
+    </table>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="10" style="text-align: center;background-color: #73aaec;">Employees On OnDuty - Approval
+                pending from HOD</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 20%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 5%;">From Time</th>
+            <th style="width: 5%;">To Time</th>
+            <th style="width: 15%;">Pending Approver</th>
+        </tr>
+        <tr *ngFor="let lp of OndutyPendingforApproval;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.stTime}}</td>
+            <td>{{lp.edTime}}</td>
+            <td>{{lp.pendingApprover}}</td>
+        </tr>
+    </table>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">Absent Employees</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Designation</th>
+            <th style="width: 12%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 8%;">Absent Count</th>
+        </tr>
+        <tr *ngFor="let lp of absentEmployees;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="11" style="text-align: center;background-color: #73aaec;">Leave Intimation</th>
+        </tr>
+        <td>
+            <tr>
+                <th style="width: 6%;">Sl.No.</th>
+                <th style="width: 10%;">Employee No.</th>
+                <th style="width: 10%;">Employee Name</th>
+                <th style="width: 10%;">Department</th>
+                <th style="width: 10%;">Designation</th>
+                <th style="width: 10%;">Division</th>
+                <th style="width: 10%;">From Date</th>
+                <th style="width: 10%;">To Date</th>
+                <th style="width: 10%;">No. of Days</th>
+                <th style="width: 7%;">Intimation Over</th>
+                <th style="width: 7%;">Done By</th>
+            </tr>
+            <tr *ngFor="let lp of leaveIntimationemployees;let i=index">
+                <td>{{i+1}}</td>
+                <td>{{lp.userId}}</td>
+                <td>{{lp.empName}}</td>
+                <td>{{lp.department}}</td>
+                <td>{{lp.designation}}</td>
+                <td>{{lp.division}}</td>
+                <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+                <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+                <td>{{lp.noOfDays}}</td>
+                <td>{{lp.intimationOver}}</td>
+                <td>{{lp.updatedBy}}</td>
+            </tr>
+        </td>
+    </table>
+    <br>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="11" style="text-align: center;background-color: #73aaec;">OnDuty Intimation</th>
+        </tr>
+        <td>
+            <tr>
+                <th style="width: 6%;">Sl.No.</th>
+                <th style="width: 10%;">Employee No.</th>
+                <th style="width: 10%;">Employee Name</th>
+                <th style="width: 10%;">Department</th>
+                <th style="width: 10%;">Designation</th>
+                <th style="width: 10%;">Division</th>
+                <th style="width: 10%;">From Date</th>
+                <th style="width: 10%;">To Date</th>
+                <th style="width: 10%;">No. of Days</th>
+                <th style="width: 7%;">Intimation Over</th>
+                <th style="width: 7%;">Done By</th>
+            </tr>
+            <tr *ngFor="let lp of ODIntimationemployees;let i=index">
+                <td>{{i+1}}</td>
+                <td>{{lp.userId}}</td>
+                <td>{{lp.empName}}</td>
+                <td>{{lp.department}}</td>
+                <td>{{lp.designation}}</td>
+                <td>{{lp.division}}</td>
+                <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+                <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+                <td>{{lp.noOfDays}}</td>
+                <td>{{lp.intimationOver}}</td>
+                <td>{{lp.updatedBy}}</td>
+            </tr>
+        </td>
+    </table>
+</div>
+
+
+<div hidden id="pdf">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="2" style="text-align: center;"> <strong>Summary Of Attendance</strong> </td>
+        </tr>
+
+        <tr>
+            <th>Present</th>
+            <td>{{Present}}</td>
+        </tr>
+        <tr>
+            <th>Absent</th>
+            <td>{{Absent}}</td>
+        </tr>
+        <tr>
+            <th>On Duty</th>
+            <td>{{Onduty}}</td>
+        </tr>
+        <tr>
+            <th>On Duty(Pending for Approval)</th>
+            <td>{{PendingOnduty}}</td>
+        </tr>
+        <tr>
+            <th>Late Punch</th>
+            <td>{{LatepunchCount}}</td>
+        </tr>
+        <tr>
+            <th>Leave</th>
+            <td>{{Leave}}</td>
+        </tr>
+        <tr>
+            <th>Leave(Pending for Approval)</th>
+            <td>{{PendingLeave}}</td>
+        </tr>
+        <tr>
+            <th>Loss Of Pay</th>
+            <td>{{Lop}}</td>
+        </tr>
+        <tr>
+            <th>Leave Intimation</th>
+            <td>{{LeaveIntimation}}</td>
+        </tr>
+        <tr>
+            <th>OnDuty Intimation</th>
+            <td>{{ODIntimation}}</td>
+        </tr>
+        <tr>
+            <th>Total</th>
+            <td>{{Present+Absent+Onduty+PendingOnduty+Leave+PendingLeave+Lop+LeaveIntimation+ODIntimation+LatepunchCount}}
+            </td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width:20%;">Employee Name</th>
+            <th style="width: 15%;">Reporting Group</th>
+            <th style="width: 12%;">Department</th>
+            <th style="width: 10%;">In time</th>
+            <th style="width: 10%;">Shift</th>
+            <th style="width: 8%;">Late</th>
+            <th style="width: 10%;">Late Count</th>
+        </tr>
+        <tr *ngFor="let lp of LatePunch;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.reportingGroup}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.intime}}</td>
+            <td>{{lp.shift}}</td>
+            <td>{{lp.late}}</td>
+            <td>{{lp.lateCount}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Employees On Leave</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 20%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 6%;">No of Days</th>
+        </tr>
+        <tr *ngFor="let lp of ApprovedLeaves;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="10" style="text-align: center;">Employees On Leave - Approval pending from HOD</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 5%;">No of Days</th>
+            <th style="width: 15%;">Pending Approver</th>
+        </tr>
+        <tr *ngFor="let lp of LeavesPendingForApproval;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+            <td>{{lp.pendingApprover}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Employees On LOP</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 10%;">NO of Days</th>
+        </tr>
+        <tr *ngFor="let lp of lossofPay;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Employees On OnDuty</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">From Time</th>
+            <th style="width: 10%;">To Time</th>
+        </tr>
+        <tr *ngFor="let lp of ApprovedOnduty;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.stTime}}</td>
+            <td>{{lp.edTime}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="10" style="text-align: center;">Employees On OnDuty - Approval pending from HOD</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 20%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 5%;">From Time</th>
+            <th style="width: 5%;">To Time</th>
+            <th style="width: 15%;">Pending Approver</th>
+        </tr>
+        <tr *ngFor="let lp of OndutyPendingforApproval;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.stTime}}</td>
+            <td>{{lp.edTime}}</td>
+            <td>{{lp.pendingApprover}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Absent Employees</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Designation</th>
+            <th style="width: 12%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 8%;">Absent Count</th>
+        </tr>
+        <tr *ngFor="let lp of absentEmployees;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="11" style="text-align: center;">Leave Intimation</th>
+        </tr>
+        <tr>
+            <th style="width: 6%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 10%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Designation</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 10%;">No. of Days</th>
+            <th style="width: 7%;">Intimation Over</th>
+            <th style="width: 7%;">Done By</th>
+        </tr>
+        <tr *ngFor="let lp of leaveIntimationemployees;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.noOfDays}}</td>
+            <td>{{lp.intimationOver}}</td>
+            <td>{{lp.updatedBy}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="11" style="text-align: center;">OnDuty Intimation</th>
+        </tr>
+        <tr>
+            <th style="width: 6%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 10%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Designation</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 10%;">No. of Days</th>
+            <th style="width: 7%;">Intimation Over</th>
+            <th style="width: 7%;">Done By</th>
+        </tr>
+        <tr *ngFor="let lp of ODIntimationemployees;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.noOfDays}}</td>
+            <td>{{lp.intimationOver}}</td>
+            <td>{{lp.updatedBy}}</td>
+        </tr>
+    </table>
+</div>

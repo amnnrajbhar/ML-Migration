@@ -1,0 +1,117 @@
+<div>
+    <div class="form-horizontal"  *ngIf="editAllowed">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="col-md-3">Attachment Type <span style="color:red">*</span></label>
+          <div class="col-md-9">
+            <select class="form-control" id="attachmentType" [(ngModel)]="selectedType" ngControl="selectedType" 
+            name="attachmentType">
+              <option [ngValue]="null" disabled [selected]="true"> Select attachment type </option>
+              <option *ngFor="let pl of attachmentTypes" [ngValue]="pl">{{pl.type}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <div class="col-md-12">
+            <input #file type="file" id="file" accept=".png, .jpg, .jpeg, .pdf"/>
+            <span class="text-danger">Upload image files (jpeg, png) or pdf files only. Maximum file size allowed is 5MB.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center">
+      <button type="button" class="btn btn-primary btn-sm" (click)="addAttachments(file.files)">
+        <i class="fas fa-upload"></i> Upload</button>          
+    </div>
+    <div>
+      <span class="text-danger">
+        Below attachments are mandatory, please upload them. 
+        <ul>
+          <li>Resume (mandatory for Field Staff)</li>
+          <li>Salary Slip (if experienced)</li>
+          <li>Experience Letter (if experienced)</li>
+        </ul>
+      </span>
+    </div>
+    </div>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th *ngIf="deleteAllowed">Action</th>
+          <th>Sl No</th>
+          <th>Type</th>
+          <th>File Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of fileList; let i = index">
+          <td *ngIf="deleteAllowed"><a class="btn btn-xs btn-danger mx-1" (click)="deleteFile(item.offerAttachmentId, item.fileName)" title="click to delete the file"><i class="fas fa-times"></i></a></td>
+          <td>{{i+1}}</td>
+          <td>{{item.attachmentType}}</td>
+          <td>{{item.fileName}}</td>
+            <td>
+            <!-- <a class="btn-link" (click)="getFile(item.offerAttachmentId, item.fileName)">{{item.fileName}}</a> -->
+            <a class="btn btn-xs btn-info mx-1" (click)="viewFile(item.offerAttachmentId, item.fileName)" title="click to view the file"><i class="fas fa-eye"></i></a>
+            <a class="btn btn-xs btn-info mx-1" (click)="getFile(item.offerAttachmentId, item.fileName)" title="click to download the file"><i class="fas fa-download"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Image Viewer -->
+<div id="ImageModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        
+        <div class="row">
+          <div class="form-group">
+            <img [src]="imageToShow" class="img-responsive" *ngIf="!isLoading">
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">        
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- PDF Viewer -->
+<div id="PdfModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">        
+        <div class="row">
+          <div class="col-xs-12">
+              <iframe [src]="pdfToShow" type="application/pdf" height="100%" width="100%" style="overflow:auto; min-width: 800px; min-height: 700px;"></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">        
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

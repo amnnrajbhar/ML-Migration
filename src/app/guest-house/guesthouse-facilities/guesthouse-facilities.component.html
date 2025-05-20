@@ -1,0 +1,211 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Guest House Booking
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Guest House Facility Master</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box shadow">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Guest House Facility Master</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" matTooltip="Click for add new facility" [matTooltipPosition]="'after'"
+          class="btn btn-primary pull-right btn-sm" (click)="onaddnewFacility(false,roomFacilityModel)"><i
+            class="fa fa-plus" aria-hidden="true"></i> Add New Facility</button>
+      </div>
+    </div>
+    <div class="box-body table-responsive">
+      <table id="roomsTable" class="table  table-striped" cellspacing="0">
+        <thead style="background-color: #0099cc; color:white;">
+          <tr>
+            <th class="col-sm-1">SNo</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th class="col-sm-1">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rmflty of roomsFacilityList; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{rmflty.name}}</td>
+            <td>{{rmflty.description}}</td>
+            <td>
+              <table>
+                <tr>
+                  <td class="pr-2">
+                    <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to Edit Entry"
+                      class="btn btn-primary btn-xs" (click)="onaddnewFacility(true,rmflty)">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                  <td class="pr-2">
+                    <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to delete Entry"
+                      class="btn btn-primary btn-xs" (click)="deleteRoomFacility(rmflty)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-primary btn-xs" (click)="openAuditLogs(rmflty.id)">
+                      <i class="fa fa-history"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">{{isEdit==true?'Update Facility':'Add New Facility'}}
+        </h3>
+      </div>
+      <div class="modal-body" style="box-shadow: none;">
+        <div class="row">
+          <div class="overlay" *ngIf="isLoadingPop">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+          <div class="col-sm-12">
+            <form #meetingroomForm="ngForm">
+              <div class="col-sm-12">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group"
+                      [ngClass]="(roomFacilityEnt.touched && !roomFacilityEnt.valid)?'has-error':''">
+                      <label for="roomFacility">
+                        Facility<span style="color:red">*</span>
+                      </label>
+                      <input [(ngModel)]="roomFacilityModel.name" ngControl="roomFacilityModel.name"
+                        class="form-control" id="roomFacility" placeholder="Facility" name="roomFacility"
+                        #roomFacilityEnt="ngModel" required matTooltip="enter facility"
+                        (change)="roomFacilityModel.name=roomFacilityModel.name.trim()">
+                      <span class="help-block" *ngIf="roomFacilityEnt.touched && !roomFacilityEnt.valid">Please
+                        enter Facility</span>
+                    </div>
+                    <div class="form-group"
+                      [ngClass]="(descriptionEnt.touched && !descriptionEnt.valid)?'has-error':''">
+                      <label for="description">
+                        Description<span style="color:red">*</span>
+                      </label>
+                      <textarea [(ngModel)]="roomFacilityModel.description" ngControl="roomFacilityModel.description"
+                        class="form-control" placeholder="Description" id="description" name="description"
+                        matTooltip="enter description" #descriptionEnt="ngModel" required
+                        (change)="roomFacilityModel.description=roomFacilityModel.description.trim()"></textarea>
+                      <span class="help-block" *ngIf="descriptionEnt.touched && !descriptionEnt.valid">Please enter
+                        Description</span>
+                    </div>
+                    <div class="form-group" [ngClass]="(!reason.valid && reason.touched)?'has-error':''">
+                      <label for="reason"> Audit Reason<span style="color:red">*</span></label>
+                      <textarea type="text" class="form-control" name="reason" id="reason" placeholder="Audit Reason"
+                        [(ngModel)]="aduitpurpose" ngControl="aduitpurpose" (change)="aduitpurpose=aduitpurpose.trim()" #reason="ngModel"
+                        required></textarea>
+                      <span class="help-block" *ngIf="!reason.valid && reason.touched">Please Enter audit Reason.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" [matTooltipPosition]="'below'" matTooltip="Click to Save/Update"
+          [disabled]="isLoadingPop ||!meetingroomForm.valid"
+          (click)="onSaveRoomFacility()">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-default btn-outlined" [matTooltipPosition]="'below'"
+          matTooltip="Click to Close" style="background-color:darkgray;color:white;" data-dismiss="modal"
+          [disabled]="isLoadingPop" (click)="getRoomFacilities()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgModalPop.length>0"><i class="fa fa-check"></i>{{errMsgModalPop}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<!-- Audit Modal -->
+<div id="auditModal" class="modal fade">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;</button>
+        <h4 class="modal-title">Audit history</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="auditTable">
+          <thead>
+            <tr>
+              <th>Sl.no</th>
+              <th>Action</th>
+              <th>ActionBy</th>
+              <th>DateTime</th>
+              <th>KeyField</th>
+              <th>Changes</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <!-- <ng-container > -->
+          <tbody>
+            <tr *ngFor="let item of auditLogList;let i = index">
+              <td>{{auditLogList.length - i + '.0'}}</td>
+              <td class="col-sm-1">{{item.auditType}}</td>
+              <td class="col-sm-1">{{item.aduitUser}}</td>
+              <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy HH:mm"}}</td>
+              <td class="col-sm-1">{{item.keyValue}}</td>
+              <td class="col-sm-4">
+                <table class="table table-bordered" style="margin-bottom: 0;">
+                  <tr>
+                    <th>Field name</th>
+                    <th>Old value</th>
+                    <th>New value</th>
+                  </tr>
+                  <tr *ngFor="let ch of objParser(item.changes)">
+                    <td>{{ch.fieldname}}</td>
+                    <td>{{ch.oldvalue}}</td>
+                    <td>{{ch.newvalue}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td class="col-sm-4">{{item.purpose}}</td>
+            </tr>
+          </tbody>
+          <!-- </ng-container> -->
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

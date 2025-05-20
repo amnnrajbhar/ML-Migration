@@ -1,0 +1,188 @@
+<section class="content-header">
+  <h1 class="display-1">
+    FNF Print
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">FNF Print</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div>
+
+    <div class="row">
+      <div class="col-sm-12 ">
+        <div class="col-xs-3 text-right">
+          <button type="button" (click)="goBack()" class="btn btn-sm btn-default" [matTooltipPosition]="'after'"
+            matTooltip="Click to go back to list">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+        </div>
+        <div class="col-xs-6" *ngIf="fnfDetails.fnfId > 0">
+          <div class="col-sm-3">
+
+            <input type="text" class="form-control" id="personalEmailId" placeholder="Email Id to send email"
+              [(ngModel)]="employeeDetails.personalEmailId" ngControl="employeeDetails.personalEmailId"
+              name="personalEmailId" #emailEnt="ngModel" required email="true" *ngIf="canEmail" />
+            
+          </div>
+          <div class="col-sm-9 actionButtons">
+            <button type="button" (click)="sendEmail()" class="btn btn-sm btn-success" [matTooltipPosition]="'after'"
+              matTooltip="Click to send the letter" [disabled]="isLoading" *ngIf="canEmail">
+              <i class="fas fa-arrow-right"></i> Send</button>
+
+            <button type="button" (click)="print1()" class="btn btn-sm btn-info" [matTooltipPosition]="'after'"
+              matTooltip="Click to print the letter" [disabled]="isLoading" *ngIf="canPrint">
+              <i class="fas fa-print"></i> Print
+            </button>
+
+            <button type="button" (click)="download()" class="btn btn-sm btn-warning" [matTooltipPosition]="'after'"
+              matTooltip="Click to download the letter" [disabled]="isLoading" *ngIf="canDownload">
+              <i class="fas fa-download"></i> Download
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="printable"  id="printcontent">
+    
+    <div class="panel panel-default" id="pdfcontent">
+      <div class="panel-body">
+
+        <!-- start body -->
+         
+          <h4 style="margin: auto;width:50%; text-align: center"><strong>STATEMENT OF FULL &amp; FINAL SETTLEMENT</strong></h4>
+        <br/>
+
+          <!-- end logo -->
+
+          
+          <!-- start copy block -->
+
+          <table data-pdfmake="{&quot;layout&quot;:&quot;noBorders&quot;}" width="100%" style="border: 1px solid white">
+               <tr>
+                 <td width="50%">
+                  Name : <b>{{employeeDetails.firstName}}</b>
+                 </td>
+                 <td width="50%"> 
+                  Date Of Joining : <b>{{joiningDate | date:'dd/MM/yyyy'}}</b>
+                </td>
+               </tr>
+               <tr>
+                <td width="50%"> 
+                  Designation : <b>{{employeeDetails.designation}} {{employeeDetails.role}}</b>
+                </td>
+                <td width="50%"> 
+                  Date Of Resignation : <b>{{resignationDate | date:'dd/MM/yyyy'}}</b>
+               </td>
+              </tr>
+              <tr>
+                <td width="50%"> 
+                  Location : <b>{{employeeDetails.payGroupName}} {{employeeDetails.location}}</b>
+                </td>
+                <td width="50%"> 
+                  Date Of Leaving : <b>{{lastWorkingDate | date:'dd/MM/yyyy'}}</b>
+               </td>
+              </tr>
+              <tr>
+                <td width="50%"> 
+                  Employee Code : <b>{{employeeDetails.employeeNo}}</b>
+                </td>
+                <td width="50%"> 
+                  Payable Days : <b>{{fnfDetails.payableDays}}</b>
+               </td>
+              </tr>
+          </table>
+          <br/>
+
+          <table  border="1" cellpadding="3" cellspacing="0" width="100%">
+            <tr>
+              <td  width="35%">
+                <strong>Earnings</strong></td>
+              <td  width="10%" >
+                <strong>Eligible Earnings Rs.</strong></td>
+              <td  width="10%">
+                <strong>Payable Amount Rs.</strong></td>
+              <td  width="35%">
+                <strong>Deductions</strong></td>
+              <td  width="10%">
+                <strong>Amount Rs.</strong></td>
+            </tr>
+            <tr *ngFor="let item of migratedDetails; let i = index">
+              <td>
+                <span>{{item.earningHead}} {{item.earningDetails}}</span>
+              </td>
+              <td class="text-right">
+                <span >{{item.earningEligibleAmount | number: "1.0-2"}}</span></td>
+              <td  class="text-right">
+              <span >{{item.earningPayableAmount | number: "1.0-2"}}</span></td>
+              <td>
+              <span >{{item.deductionHead}} {{item.deductionDetails}}</span></td>
+              <td  class="text-right">
+              <span>{{item.deductionPayableAmount | number: "1.0-2"}}</span></td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>              
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>              
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td class="text-right">
+                <strong>Total</strong></td>
+              <td>
+                <strong>&nbsp;</strong></td>
+              <td  class="text-right">
+                <strong>{{details.totalEarningsPayable | number: "1.0-2"}}</strong></td>
+              <td>
+                <strong>&nbsp;</strong></td>
+              <td  class="text-right">
+                <strong>{{details.totalDeductionsPayable | number: "1.0-2"}}</strong></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Net Payable/Receivable</strong></td>
+              <td>
+                <strong>&nbsp;</strong></td>
+              <td  class="text-right">
+                <strong>{{details.totalPayable | number: "1.0-2"}}</strong></td>
+              <td>
+                <strong>&nbsp;</strong></td>
+              <td>
+                <strong>&nbsp;</strong></td>
+            </tr>
+          </table>
+          <!-- end copy block -->
+          <br/>
+
+          <!-- start footer -->
+          <table data-pdfmake="{&quot;layout&quot;:&quot;noBorders&quot;}" cellpadding="0" cellspacing="0" width="100%">
+          <tr>
+            <td align="center" valign="top" width="33.33%">
+              <p><strong>Prepared By</strong><br />{{DateToday | date:'dd/MM/yyyy'}}</p>
+            </td>
+            <td align="center" valign="top" width="33.33%">
+              <p><strong>Checked By</strong><br /></p>
+            </td>
+
+            <td align="center" valign="top" width="33.33%">
+              <p><strong>Approved By</strong><br /></p>
+            </td>
+          </tr>
+        </table>
+          <!-- end footer -->
+
+        <!-- end body -->
+
+
+      </div>
+    </div>
+
+  </div>
+</section>

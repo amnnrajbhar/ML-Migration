@@ -1,0 +1,63 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Bulk Confirmation </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Bulk Confirmation</li>
+  </ol>
+</section>
+
+  <section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Bulk Confirmation</h3>
+    </div>
+    <div class="panel-body">
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+ <!-- (change)="getFiles($event)"  -->
+            <label class="col-md-2">Select File</label>
+            <div class="col-md-4">
+              <input #file type="file" id="file" multiple 
+               
+              (change)="getFiles($event)" />
+              <span class="text-danger">Upload excel files only. Maximum file size
+                allowed is 2MB.</span>
+            </div>
+            <div class="col-md-4">
+              <button type="button" class="btn btn-info" (click)="uploadFile()">
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+     
+    </div>
+  </div>
+  <br>
+  <div>
+    <h4>Instructions:</h4>
+    <!-- <span class="text-danger">Download the below sample upload sheet.</span> -->
+    <ul>
+      <li>Please down the attached sample Upload sheet with instructions</li>
+      <li>The sample sheet contains sample data and upload instructions for reference</li>
+      <li>Please populate the sheet with employees data and upload</li>   
+      <li>Bulk Confirmation Upload is for all Confirmations other than Extensions</li>
+      <li>The column names must not be changed and must be present at all times even if the value is optional, the optional values can be blank though</li>
+      <li>If the upload file contains invalid data the whole file gets rejected and an error file is generated for reference</li>
+  </ul>
+  </div>
+<hr>
+  <div>
+    <h4>Sample Bulk Confirmation Upload File for reference:</h4>
+    <span class="text-danger">Download the below sample upload sheet.</span>
+    <ul>
+      <li><a href="assets/forms/Confirmation_Bulk_Upload.xlsx" download="Confirmation_Bulk_Upload.xlsx">Confirmation_Bulk_Upload.xlsx</a></li>
+  </ul>
+  </div>
+</section>

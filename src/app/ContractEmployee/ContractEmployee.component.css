@@ -1,0 +1,16 @@
+.modal-header{
+    border-bottom: 0px;
+}
+
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle{
+    border-color:rgb(39, 211, 56); 
+  }
+  
+  .mat-radio-button.mat-accent .mat-radio-inner-circle{
+    color:rgb(66, 134, 244);
+    background-color:rgb(36, 233, 56) ;
+  }
+  
+  .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+      background-color:rgba(255, 1, 1, 0.26);
+  }

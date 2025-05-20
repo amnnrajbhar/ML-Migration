@@ -1,0 +1,228 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Approve Transfer Request
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Approve Transfer</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId" *ngIf="this.employeeId > 0"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <form #tranferForm="ngForm" class="form-horizontal">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Transfer Details</h3>
+      </div>
+
+      <div class="panel-body">
+        <div class="row">
+
+          <div class="col-md-4">
+
+            <label for="effectiveDate">Transfer Date <span style="color:red">*</span></label>
+
+            <input [matTooltipPosition]="'below'" matTooltip="Click to change transfer date" [owlDateTime]="dt11"
+              id="effectiveDate" #joiningDateEnt="ngModel" placeholder="Transfer Date" [owlDateTimeTrigger]="dt11"
+              name="terminationDate" class="form-control" required [(ngModel)]="transferDetails.effectiveDate"
+              [disabled]="true">
+            <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+
+
+          </div>
+          <div class="col-md-4">
+
+            <label for="transferReason">Reason for Transfer</label>
+            <input [disabled]="true" type="text" id="transferReason" class="form-control" [disabled]="true"
+              [(ngModel)]="transferDetails.transferReason" ngControl="transferDetails.transferReason"
+              name="transferReason" autocomplete="off" />
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="col-md-8">
+                <input [disabled]="true" type="checkbox" name="isDestinationHodApprovalRequired"
+                  [(ngModel)]="transferDetails.isDestinationHodApprovalRequired" />Is Destination Hod Approval Required?
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="approvalType">Approval Type <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <select [(ngModel)]="transferDetails.approvalType" class="form-control" id="approvalType"
+                  [disabled]="true" name="approvalType" matTooltip="Approval Type" #empCatEnt="ngModel" required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Approval Type </option>
+                  <option *ngFor="let pl of approvalTypes" [ngValue]="pl.type">{{pl.type}} </option>
+                </select>
+              </div>
+            </div>
+          </div> -->
+        </div>
+
+        <div class="row">
+
+          <div class="col-md-4" *ngIf="transferDetails.approvalType == 'HR'">
+            <label for="requestedByName">Requested By (Reporting Manager / HOD)<span style="color:red">*</span></label>
+            <input type="text" id="requestedByName" class="form-control" #requestedByNameEnt="ngModel" [disabled]="true"
+              [(ngModel)]="transferDetails.requestedByName" ngControl="filterModel.requestedByName"
+              name="requestedByName" required autocomplete="off" />
+
+          </div>
+          <div class="col-md-4">
+            <label for="approvedByName">Approved By<span style="color:red">*</span></label>
+            <input type="text" id="approvedByName" class="form-control" #approvedByNameEnt="ngModel" [disabled]="true"
+              [(ngModel)]="transferDetails.approvedByName" ngControl="filterModel.approvedByName" name="approvedByName"
+              required autocomplete="off" />
+
+          </div>
+          <div class="col-md-4">
+            <label for="destinationSpocName">Destination Spoc</label>
+            <input [disabled]="true" type="text" id="destinationSpocName" class="form-control"
+              [(ngModel)]="transferDetails.destinationSpocName" ngControl="transferDetails.destinationSpocName"
+              name="destinationSpocName" required autocomplete="off" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+
+            <label for="reportingDate">Reporting Date</label>
+
+            <input [disabled]="true" [matTooltipPosition]="'below'" matTooltip="Click to change reporting date"
+              [owlDateTime]="dt12" id="reportingDate" #joiningDateEnt="ngModel" placeholder="Reporting Date"
+              [owlDateTimeTrigger]="dt12" name="reportingDate" class="form-control" required
+              [(ngModel)]="transferDetails.reportingDate" [disabled]="!editAllowed">
+            <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+
+
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="col-md-8">
+                <input [disabled]="true" type="checkbox" name="vacancyAvailable"
+                  [(ngModel)]="transferDetails.isVacancyAvailable" />Is Vacancy available in requested Area?
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="transferDetails.isVacancyAvailable == true">
+            <label for="destinationVacantPositionEmployeeName">Employee Vacating in Destination</label>
+            <input [disabled]="true" type="text" id="destinationVacantPositionEmployeeName" class="form-control"
+              [(ngModel)]="transferDetails.destinationVacantPositionEmployeeName"
+              ngControl="transferDetails.destinationVacantPositionEmployeeName"
+              name="destinationVacantPositionEmployeeName" required autocomplete="off" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Job Change Details</h3>
+      </div>
+      <div class="panel-body">
+        <span class="text-danger" *ngIf="jobChangeDetails == null || jobChangeDetails.length <= 0">No change in Job
+          Details </span>
+        <div class="row">
+          <div class="col-md-4">
+            <h2>Current</h2>
+          </div>
+          <div class="col-md-4">
+            <h2>Transferring</h2>
+          </div>
+        </div>
+        <div class="row" *ngFor="let item of jobChangeDetails; let i = index">
+
+          <div *ngIf="item.oldValueText != item.newValueText" class="col-md-12">
+            <div class="col-md-4">
+              <label for="initial">{{item.type}}</label>
+              <input type="text" class="form-control" [value]="item.oldValueText" disabled name="oldDesignation" />
+            </div>
+            <div class="col-md-4">
+              <label for="initial">{{item.type}}</label>
+              <input type="text" class="form-control" id="newDesignation" [value]="item.newValueText" disabled
+                name="newDesignation" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Additional Notes</h3>
+      </div>
+      <div class="panel-body">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="additionalNotes">Additional Notes</label>
+            <textarea [(ngModel)]="transferDetails.additionalNote" class="form-control" id="additionalNotes"
+              name="additionalNotes" #additionalNotesEnt="ngModel" [disabled]="true"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Comments</label>
+          <textarea rows="3" class="form-control" name="reason" [(ngModel)]="reason"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center actionButtons">
+      <div class="col-md-12">
+
+        <button type="button" (click)="goBack()" class="btn btn-default" [matTooltipPosition]="'after'"
+          matTooltip="Click to go back to list">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+
+        <button type="button" class="btn btn-primary" (click)="approve()"
+          matTooltip="Click to Approve Transfer request">Approve</button>
+
+        <button type="button" class="btn btn-danger" (click)="reject()"
+          matTooltip="Click to Reject Transfer request">Reject</button>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf="this.transferId > 0">
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabAttachments">Attachments</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabHistory">History</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content details-tab">
+      <div id="tabAttachments" class="tab-pane fade in active">
+        <app-employee-attachments [employeeId]="this.employeeId" [editAllowed]="true" [deleteAllowed]="false"
+          [objectId]="this.transferId" [objectType]="this.objectType"></app-employee-attachments>
+      </div>
+      <div id="tabHistory" class="tab-pane fade">
+        <app-transfer-history [employeeId]="this.employeeId"></app-transfer-history>
+      </div>
+      <div id="tabApprovals" class="tab-pane fade">
+        <app-flow-viewer [objectId]="this.transferId" [objectType]="this.objectType">
+        </app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="this.transferId" [objectType]="this.objectType">
+        </app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>

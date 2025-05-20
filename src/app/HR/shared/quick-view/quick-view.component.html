@@ -1,0 +1,215 @@
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">Employee Details</h3>
+  </div>
+  <div class="panel-body form-horizontal">
+    <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Employee No</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.employeeNo" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Name</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [value]="employeeDetails.firstName ||'' +' '+ employeeDetails.middleName ||'' +' '+ employeeDetails.lastName || ''" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Status</label>
+          <div class="col-md-8">
+            <label class="fa-lg label label-default label-{{employeeDetails.statusColor}}">{{employeeDetails.status}}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Plant</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.plantName" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Pay Group</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.payGroupName" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Category</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.employeeCategoryName"
+              [disabled]="true" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Designation</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.designation" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Role</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.role" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Grade</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.grade" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Department</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.department" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Sub-Department</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.subDepartmentName" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Tenure</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.tenure" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">State</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.state" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Location</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.location" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Total Experience</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.totalExperience" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Reporting Manager</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.reportingManagerName"
+              [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">HOD</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.approvingManagerName"
+              [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Highest Qualification</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.highestQualification" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Date of Joining</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" id="joiningDate" name="joiningDate"
+              [ngModel]="employeeDetails.dateOfJoining | date:'dd/MM/yyyy'" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Date of Confirmation</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" id="dateOfConfirmation" name="dateOfConfirmation"
+              [ngModel]="employeeDetails.dateOfConfirmation | date:'dd/MM/yyyy'" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Current CTC</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [ngModel]="employeeDetails.currentCTC | number:'1.0-2'" [disabled]="true" />
+          </div>
+        </div>
+      </div>      
+    </div>
+    <div class="row">      
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Notice Period (months)</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.noticePeriod" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4">Employment Type</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" [(ngModel)]="employeeDetails.employmentType" [disabled]="true" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

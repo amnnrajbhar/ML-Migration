@@ -1,0 +1,227 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Permission Report
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Permission Report</li>
+    </ol>
+</section>
+
+<section class="content">
+
+    <div class="box">
+        <div class="box-header">
+            <div class="col-sm-12">
+                <form #perForm="ngForm">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="baseplant"> Plant <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="Plant" class="form-control" id="plant" name="plant"
+                                    matTooltip="plant" (change)="getPaygroupsBasedOnPlant()" #plantEnt="ngModel"
+                                    >
+                                    <option [ngValue]=null disabled [selected]="true">--Select plant--</option>
+                                    <option *ngFor="let pl of locationList" value={{pl.fkPlantId}}>
+                                        {{pl.code}}-{{pl.name}}
+                                    </option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="payGroup"> Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup" name="payGroup"
+                                    matTooltip="Pay Group" #payGroup1Ent="ngModel" required>
+                                    <option [ngValue]=null disabled [selected]="true">--Select Pay Group--</option>
+                                    <option *ngFor="let loc of payGroupList1;let i=index" value={{loc.id}}>
+                                        {{loc.short_desc}}</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="empcat">Employee Category</label>
+                                <select [(ngModel)]="filterCategory" class="form-control" id="empcat" name="empcat"
+                                    matTooltip="staff Cat" #empcatEnt="ngModel">
+                                    <option [ngValue]=null disabled [selected]="true">--Select Employee Category--
+                                    </option>
+                                    <option *ngFor="let pl of empCatList" value={{pl.id}}>{{pl.catltxt}}</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="dept">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="dept" name="dept"
+                                    matTooltip="Department" #deptEnt="ngModel">
+                                    <option [ngValue]=null disabled [selected]="true">--Select Department--
+                                    </option>
+                                    <option *ngFor="let pl of departmentList" value={{pl.id}}>{{pl.name}}</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="appStatus">Approval Status</label>
+                                <select [(ngModel)]="filterappStatus" class="form-control" id="appStatus"
+                                    name="appStatus" ngControl="filterappStatus" #appStatusEnt="ngModel"
+                                    [disabled]="isEdit" matTooltip="Select Approval Status">
+                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                    <option *ngFor="let status of statuslist" value="{{status.name}}">
+                                        {{status.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="router.url =='/PermissionReport'">
+                            <label for="emp">Employee No</label>
+                            <br>
+                            <input type="text" [(ngModel)]="EmployeeNo" class="form-control" id="empNo"
+                                placeholder="Employee No" name="empNo" ngControl="EmployeeNo" #empNoEnt="ngModel"
+                                (keyup)="getEmployee($event)">
+                        </div>
+                        <div class="col-sm-3" *ngIf="router.url =='/PermissionReportEss'">
+                            <div class="form-group">
+                                <label for="EmployeeNo">Employee No.</label>
+                                <br>
+                                <ng-multiselect-dropdown style="width:100%; background-color: white;" id="EmployeeNo"
+                                    name="EmployeeNo" ngControl="EmployeeNo1" #EmployeeNoEnt="ngModel"
+                                    [placeholder]="'Select Employee No.'" [data]="empListCon" [(ngModel)]="EmployeeNo1"
+                                    [settings]="dropdownSettings" (onSelect)="onItemSelectM($event)"
+                                    (onSelectAll)="onSelectAll()" (focusout)="checkStatus();">
+                                </ng-multiselect-dropdown>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="startDate">
+                                    From Date
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                        [min]="min" [owlDateTime]="dtStart" [owlDateTimeTrigger]="dtStart"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change From Date"
+                                        #startDate1="ngModel" [disabled]="isEdit">
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="endDate">
+                                    To Date
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate"
+                                        [min]="min" [owlDateTime]="dtEnd" [owlDateTimeTrigger]="dtEnd"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change To Date"
+                                        #endDate1="ngModel" [disabled]="isEdit">
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtEnd">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    <owl-date-time [pickerType]="'calendar'" #dtEnd></owl-date-time>
+                                    <span class="help-block" *ngIf="!dtEnd.valid && dtEnd.touched">Please select
+                                        To Date.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-8">
+                            &nbsp;
+                            <br>
+                            <button type="button" class="btn btn-success" (click)="GetPermissionList()"><i
+                                class="fas fa-angle-double-right"></i>&nbsp; Search</button>
+                            &nbsp;
+                            <button type="button" class="btn btn-danger" (click)="clearAll()"><i
+                                class="fas fa-times"></i>&nbsp; Clear</button>
+                            &nbsp;
+                            <button type="button" class="btn btn-warning" (click)="PrintPermission()"><i
+                                    class="fas fa-file-excel"></i>&nbsp; Export to Excel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            &nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;
+            <div class="col-sm-12">
+                <div class="box-body table-responsive ">
+                    <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr>
+                                <th class="col-sm-1">Sl.No</th>
+                                <th>Request No</th>
+                                <th>Requester Name</th>
+                                <th>Applied On</th>
+                                <th>Applied For</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let categ of PermissionRequestList;  let i = index">
+                                <td>{{i+1}}</td>
+                                <td>{{categ.requestNo}}</td>
+                                <td>{{categ.empName}}</td>
+                                <td>{{categ.submitDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+                                <td>{{categ.date | date:'dd/MM/yyyy'}}</td>
+                                <td>{{binddatetime1(categ.startTime) | date:'hh:mm a'}}</td>
+                                <td>{{binddatetime1(categ.endTime) | date:'hh:mm a'}}</td>
+                                <td>{{categ.type}}</td>
+                                <td>{{categ.approverStatus}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<div hidden id="pdf1">
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="10" style="text-align: center;">
+                <strong><b>Permission Report</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center; vertical-align: bottom; ">Sl.No</th>
+            <th style="text-align: center; vertical-align: bottom; ">Req No.</th>
+            <th style="text-align: center; vertical-align: bottom; ">Requester Name</th>
+            <th style="text-align: center; vertical-align: bottom; ">Applied On</th>
+            <th style="text-align: center; vertical-align: bottom; ">Applied For</th>
+            <th style="text-align: center; vertical-align: bottom; ">Start Time</th>
+            <th style="text-align: center; vertical-align: bottom; ">End Time</th>
+            <th style="text-align: center; vertical-align: bottom; ">Type</th>
+            <th style="text-align: center; vertical-align: bottom; ">Status</th>
+            <th style="text-align: center; vertical-align: bottom; ">Reason</th>
+        </tr>
+        <tr *ngFor="let categ of PermissionRequestList;  let i = index">
+            <td><b>{{i+1}}</b></td>
+            <td style="color: blue;">{{categ.requestNo}}</td>
+            <td style="color: blue;">{{categ.empName}}</td>
+            <td style="color: blue;">{{categ.submitDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+            <td style="color: blue;">{{categ.date | date:'dd/MM/yyyy'}}</td>
+            <td style="color: blue;">{{binddatetime1(categ.startTime) | date:'hh:mm a'}}</td>
+            <td style="color: blue;">{{binddatetime1(categ.endTime) | date:'hh:mm a'}}</td>
+            <td style="color: blue;">{{categ.type}}</td>
+            <td style="color: blue;">{{categ.approverStatus}}</td>
+            <td style="color: blue;">{{categ.reason}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+</div>

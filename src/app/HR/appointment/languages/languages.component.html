@@ -1,0 +1,65 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Known Language Details
+  </h1>
+  
+</section>
+
+<section class="content">
+  
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th *ngIf="editAllowed">Remove</th>
+          <th>Sl No</th>
+          <th>Language <span style="color:red">*</span></th>
+          <th>Mother Tongue <span style="color:red">*</span></th>
+          <th>Speaking <span style="color:red">*</span></th>
+          <th>Reading <span style="color:red">*</span></th>
+          <th>Writing <span style="color:red">*</span></th>         
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of languageList; let i = index">
+          <td *ngIf="editAllowed">
+            <button (click)="RemoveLine(i)" title="click to remove this line" class="btn btn-xs btn-danger">
+            <i class="fas fa-times"></i>
+          </button></td>
+          <td>{{i+1}}</td>
+          <td><select [(ngModel)]="item.languageId" class="form-control" required name="languageId"
+            [disabled]="!editAllowed">
+            <option [ngValue]="null" disabled [selected]="true"> Select language </option>
+            <option *ngFor="let pl of languageTypes" [ngValue]="pl.id">{{pl.language}}</option>
+          </select></td>
+          <td><select [(ngModel)]="item.motherTongue" class="form-control" required
+            name="motherTongue" [disabled]="!editAllowed">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select></td>
+          <td><select [(ngModel)]="item.speaking" class="form-control" required
+            name="speaking" [disabled]="!editAllowed">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select></td>
+          <td><select [(ngModel)]="item.reading" class="form-control" required
+            name="reading" [disabled]="!editAllowed">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select></td>
+          <td><select [(ngModel)]="item.writing" class="form-control" required
+            name="writing" [disabled]="!editAllowed">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select></td>          
+        </tr>
+      </tbody>
+    </table>    
+  </div>
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div *ngIf="editAllowed">
+    <button type="button" class="btn btn-info" (click)="onAddLineClick()"><i class="fas fa-plus"></i> Add new line</button>
+  </div>
+</section>

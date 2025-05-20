@@ -1,0 +1,1090 @@
+<section class="content-header">
+  <h1 class="display-1" *ngIf="router.url !='/EmployeeDataEss'">
+    <b>Employee Data</b>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Employee Data</li>
+  </ol>
+</section>
+
+<br>
+<section class="content">
+  <div *ngIf="router.url !='/EmployeeDataEss'">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <div class="panel-title"><b>Employee Data</b></div>
+      </div>
+
+      <div class="panel-body form-horizontal">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="form-group row">
+              <label for="Plant" class="col-md-1 control-label text-right">Plant <span style="color:red">*</span>
+              </label>
+              <div class="col-md-3">
+                <select [(ngModel)]="EmployeeData.baseLocation" (change)="getPaygroupsBasedOnPlant()"
+                  class="form-control" id="plant" name="plant" matTooltip="Select Plant" required>
+                  <option [ngValue]=undefined disabled [selected]="true">--Select Plant--</option>
+                  <option *ngFor="let location of locationList" value="{{location.fkPlantId}}">
+                    {{location.code + ' -- ' + location.name}}</option>
+                </select>
+              </div>
+              <label for="paygroup" class="col-md-1 control-label text-right">Pay Group <span
+                  style="color:red">*</span></label>
+              <div class="col-md-3">
+                <select class="form-control" name="paygroup" [(ngModel)]="EmployeeData.paygroup" value="paygroup"
+                  id="paygroup" matTooltip="Select PayGroup" required>
+                  <option [ngValue]=undefined disabled [selected]="true">--Select Pay Group--</option>
+                  <option *ngFor="let location of payGroupList1;let i=index" value="{{location.id}}">
+                    {{location.short_desc}}</option>
+                </select>
+              </div>
+              <label for="staffcat" class="col-md-1 control-label text-right">Staff Category</label>
+              <div class="col-md-3">
+                <select class="form-control" name="staffcat" [(ngModel)]="EmployeeData.Category" value="staffcat"
+                  id="staffcat" matTooltip="Select Staff Category">
+                  <option [ngValue]=undefined disabled [selected]="true">--Select Staff Category--</option>
+                  <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                    {{cat.catltxt}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dept" class="col-md-1 control-label text-right">Department</label>
+              <div class="col-md-3">
+                <select [(ngModel)]="EmployeeData.department" class="form-control" id="dept" name="dept"
+                  matTooltip="Select Department">
+                  <option [ngValue]=undefined disabled [selected]="true">--Select Department--</option>
+                  <option *ngFor="let location of departmentList" value="{{location.id}}">
+                    {{location.name}}</option>
+                </select>
+              </div>
+              <label for="subDept" class="col-md-1 control-label text-right">Sub Department </label>
+              <div class="col-md-3">
+                <select [(ngModel)]="EmployeeData.subDepartment" class="form-control" id="subDept" name="subDept"
+                  matTooltip="Select Sub Department">
+                  <option [ngValue]=undefined disabled [selected]="true">--Select Sub Department--</option>
+                  <option *ngFor="let location of subdepartmentList" value="{{location.id}}">
+                    {{location.sdptidStxt}}</option>
+                </select>
+              </div>
+              <label for="rptGrp" class="col-md-1 control-label text-right">Reporting Group</label>
+              <div class="col-md-3">
+                <select [(ngModel)]="EmployeeData.reportingGroup" class="form-control" id="rptGrp" name="rptGrp"
+                  matTooltip="Enter Reporting Grp">
+                  <option [ngValue]=undefined disabled [selected]="true">--Select Reporting Group--</option>
+                  <option *ngFor="let location of ReportingGroupList" value="{{location.id}}">
+                    {{location.reportingGroupLt}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="employeeSearchType" class="col-md-1 control-label text-right">Search By </label>
+              <div class="col-md-3">
+                <select class="form-control" name="employeeSearchType" id="employeeSearchType"
+                  [(ngModel)]="EmployeeData.employeeSearchType" matTooltip="Select Search By"
+                  #employeeSearchTypeEnt="ngModel">
+                  <option [ngValue]=undefined disabled [selected]="true">--Select Search By--</option>
+                  <option value="1">Employee Name</option>
+                  <option value="2">Employee Number</option>
+                </select>
+              </div>
+              <label for="noName" class="col-md-1 control-label text-right"
+                *ngIf="EmployeeData.employeeSearchType == 1">Employee Name </label>
+              <label for="noName" class="col-md-1 control-label text-right"
+                *ngIf="EmployeeData.employeeSearchType == 2">Employee Number </label>
+              <div class="col-md-3"
+                *ngIf="EmployeeData.employeeSearchType == '1' || EmployeeData.employeeSearchType == '2'">
+                <input [(ngModel)]="EmployeeData.empNoName" class="form-control" id="noName" name="noName"
+                  placeholder="Enter Emp Number/Name" matTooltip="Employee Number/Name" #empNoNameEnt="ngModel">
+              </div>
+              &nbsp;
+              <button class="btn btn-success" (click)="getEmployeeList();" matTooltip="click to filter data"><i
+                  class="fas fa-filter"></i>&nbsp;
+                Filter</button>
+              &nbsp;
+              <button class="btn btn-secondary gradient-custom" style="border-color: black;"
+                (click)="exportEmployeeList();" matTooltip="click to export data"><i
+                  class="fas fa-file-excel"></i>&nbsp;
+                <b> Export to Excel</b></button>
+              &nbsp;
+              <button class="btn btn-danger" (click)="ClearFilter();" matTooltip="click to clear filter data"><i
+                  class="fas fa-times"></i>&nbsp;
+                Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    &nbsp;
+    &nbsp;
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <a>Bulk Updation</a>
+        </h3>
+      </div>
+      <div class="panel-body form-horizontal">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="col-sm-4">
+              <label for="label">Click to download template for bulk update</label>
+              <a class="button" title="Excel" href='../../../assets/dist/img/Employee_Data_Updation_Template.xlsx'
+                download="Employee_Data_Updation_Template.xlsx"><br>
+                <button class="btn btn-success"><i class="fa fa-download"></i>&nbsp; Download</button><br>
+              </a>
+            </div>
+            <div class="col-sm-6">
+              <label for="label">Upload excel file with multiple records</label>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-6">
+                    <input #myInput type="file" class="form-control" (change)="uploadedFile($event.target.files)"
+                      id="file" name="file" placeholder="Upload file" accept=".xlsx">
+                  </div>
+                  <div class="col-md-2">
+                    <button type="button" class="btn btn-success pull-right" (click)="uploadExcel()"><i
+                        class="fa fa-upload"></i>&nbsp; Upload</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="row">
+        <div class="col-md-12 table-responsive">
+
+          <table class="table table-hover table-striped table-bordered" id="data">
+            <thead>
+              <tr>
+                <th style="width: 100px;">Action</th>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Plant</th>
+                <th>Pay Group</th>
+                <th>Employee Category</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th>Role</th>
+                <th>Joining Date</th>
+                <th>Reporting Manager</th>
+                <th>Approving Manager</th>
+              </tr>
+
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of list; let i = index">
+                <td>
+                  <button type="button" class="btn btn-info btn-xs" [matTooltipPosition]="'after'"
+                    matTooltip="Click to view full profile" (click)="getEmpDetails(true,item,'View')">
+                    <i class="fas fa-address-card"></i> View</button>
+                  <br>
+                  <br>
+                  <button type="button" class="btn btn-info btn-xs" [matTooltipPosition]="'after'"
+                    matTooltip="Click to edit user profile" (click)="getEmpDetails(true,item,'')">
+                    <i class="fas fa-marker"></i> Update</button>
+                </td>
+                <td>{{item.employee_Id}}</td>
+                <td>{{item.firstName}} {{item.middleName}} {{item.lastName}}</td>
+                <td>{{item.plant}} - {{item.plantName}}</td>
+                <td>{{item.payGroup}}</td>
+                <td>{{item.employeeCategory}}</td>
+                <td>{{item.department}}</td>
+                <td>{{item.designation}}</td>
+                <td>{{item.roleId}}</td>
+                <td>{{item.dateOfJoining | date: "dd/MM/yyyy"}}</td>
+                <td>{{item.firstNameR}} {{item.middleNameR}} {{item.lastNameR}}</td>
+                <td>{{item.firstNameApp}} {{item.middleNameApp}} {{item.lastNameApp}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center">
+            <ul class="pagination" *ngIf="this.EmployeeData.totalCount>0">
+              <li>
+                <a (click)="gotoPage(pageNo)">
+                  Showing <b>{{((pageNo-1)*pageSize)+1}}</b> -
+                  <b>{{(pageNo*pageSize)>this.EmployeeData.totalCount?this.EmployeeData.totalCount:pageNo*pageSize}}</b>
+                  of <b>{{this.EmployeeData.totalCount}}</b> records
+                </a>
+              </li>
+              <li><a *ngIf="pageNo>1" (click)="gotoPage(1)">First</a></li>
+              <li><a *ngIf="pageNo>1" (click)="gotoPage(pageNo-1)">Previous</a></li>
+              <li><a *ngIf="pageNo>2" (click)="gotoPage(pageNo-1)">{{pageNo-2}}</a>
+              </li>
+              <li><a *ngIf="pageNo>1" (click)="gotoPage(pageNo-1)">{{pageNo-1}}</a>
+              </li>
+              <li class="active"><a (click)="gotoPage(pageNo)">{{pageNo}}</a></li>
+              <li><a *ngIf="this.EmployeeData.totalPages>pageNo" (click)="gotoPage(pageNo+1)">{{pageNo+1}}</a></li>
+              <li><a *ngIf="this.EmployeeData.totalPages>pageNo+1" (click)="gotoPage(pageNo+2)">{{pageNo+2}}</a>
+              </li>
+              <li><a *ngIf="this.EmployeeData.totalPages>pageNo" (click)="gotoPage(pageNo+1)">Next</a>
+              </li>
+              <li><a *ngIf="this.EmployeeData.totalPages>pageNo"
+                  (click)="gotoPage(this.EmployeeData.totalPages)">Last</a>
+              </li>
+              <li><a (click)="gotoPage(pageNo)">Page <b>{{pageNo}}</b> of
+                  <b>{{this.EmployeeData.totalPages}}</b></a></li>
+              <li><a>Page Size
+                  <select id="ddlPageSize" [(ngModel)]="pageSize" (change)="pageSizeChange()">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+      data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: #0099ff;color:white;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h2 class="modal-title"><img width="30" src="{{imgUrl}}">&nbsp;&nbsp;{{FirstName}} {{MiddleName}}
+              {{LastName}}
+            </h2>
+            <h4 class="modal-title" style="text-align: right;"><i class="fas fa-calendar-day"></i>&nbsp;&nbsp; Joining
+              Date:
+              {{JoiningDate | date:'yyyy/MM/dd'}} </h4>
+          </div>
+          <div class="modal-body box-primary" style="box-shadow: none;background-size:cover; color: black;">
+            <form #desigForm="ngForm">
+
+              <div class="panel panel-info">
+                <!-- <div class="panel-heading">
+              <h3 class="panel-title"></h3>
+            </div> -->
+                <div class="panel-body">
+                  <div class="form-horizontal">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div class="center" style="text-align: center;">
+                          <img width="200" src="{{imgUrl}}">
+                          <br>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="empNo" class="col-md-4"> Employee No.</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="empNo" id="empNo" [(ngModel)]="EmployeeId"
+                              placeholder="Employee No" matTooltip="Employee Number" #EmployeeIdEnt="ngModel" readonly>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="fName" class="col-md-4">First Name</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="fName" id="fName" [(ngModel)]="FirstName"
+                              matTooltip="First Name" placeholder="First Name" #fNameEnt="ngModel" [disabled]="view"
+                              readonly>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="mName" class="col-md-4">Middle Name</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="mName" id="mName" [(ngModel)]="MiddleName"
+                              matTooltip="Middle Name" placeholder="Middle Name" #mNameEnt="ngModel" [disabled]="view"
+                              readonly>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="lName" class="col-md-4">Last Name</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="lName" id="lName" [(ngModel)]="LastName"
+                              matTooltip="Last Name" placeholder="Last Name" #lNameEnt="ngModel" [disabled]="view"
+                              readonly>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="loc" class="col-md-4">Plant</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="loc" id="loc" [(ngModel)]="Location" matTooltip="Plant"
+                              placeholder="Plant" #locEnt="ngModel" [disabled]="view" readonly>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="payGrp" class="col-md-4">PayGroup</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="payGrp" id="payGrp" [(ngModel)]="PayGroup"
+                              matTooltip="PayGroup" placeholder="PayGroup" #payGrpEnt="ngModel" [disabled]="view"
+                              readonly>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="empCat" class="col-md-4">Employee
+                            Category</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="empCat" id="empCat" [(ngModel)]="EmpCategory"
+                              matTooltip="EmpCategory" placeholder="EmpCategory" #empCatEnt="ngModel" [disabled]="view"
+                              readonly>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="desg" class="col-md-4">Designation</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="desg" id="desg" [(ngModel)]="Designation"
+                              matTooltip="Designation" placeholder="Designation" #desgEnt="ngModel" [disabled]="view"
+                              readonly>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="role" class="col-md-4">Role</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="role" id="role" [(ngModel)]="Role" matTooltip="Role"
+                              placeholder="Role" #roleEnt="ngModel" [disabled]="view" readonly>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="dept" class="col-md-4">Department</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="dept" id="dept" [(ngModel)]="Department"
+                              matTooltip="Department" placeholder="Department" #deptEnt="ngModel" [disabled]="view"
+                              readonly>
+                              <option [ngValue]=null disabled [selected]="true">--Select Department--</option>
+                              <option *ngFor="let location of departmentList" value="{{location.id}}">
+                                {{location.name}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="subDept" class="col-md-4">Sub
+                            Department</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="subDept" id="subDept" [(ngModel)]="SubDepartment"
+                              placeholder="Sub Department" matTooltip="SubDepartment" #subDeptEnt="ngModel"
+                              [disabled]="view" readonly>
+                              <option [ngValue]=null disabled [selected]="true">--Select Sub Department--</option>
+                              <option *ngFor="let location of subdepartmentList" value="{{location.id}}">
+                                {{location.sdptidStxt}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="rptGrp" class="col-md-4">Reporting
+                            Group</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="rptGrp" id="rptGrp" [(ngModel)]="ReportingGrp"
+                              placeholder="Reporting Group" matTooltip="Reporting Group" #rptGrpEnt="ngModel"
+                              [disabled]="view" readonly>
+                              <option [ngValue]=null disabled [selected]="true">--Select Reporting Group--</option>
+                              <option *ngFor="let location of ReportingGroupList" value="{{location.id}}">
+                                {{location.reportingGroupLt}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="rptMgr" class="col-md-4">Reporting Manager</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="rptMgr" id="rptMgr" [(ngModel)]="ReportingManagerName"
+                              placeholder="Reporting Manager" matTooltip="Reporting Manager" #rptMgrEnt="ngModel"
+                              [disabled]="view" (keyup)="getEmployeeR($event)" [disabled]="view">
+                            <input type="hidden" class="form-control" name="rptMgr1" id="rptMgr1"
+                              [(ngModel)]="ReportingManager" placeholder="Reporting Manager"
+                              matTooltip="Reporting Manager" #rptMgrEnt1="ngModel" [disabled]="view"
+                              (keyup)="getEmployeeR($event)">
+
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="appMgr" class="col-md-4">HOD</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="appMgr" id="appMgr" [(ngModel)]="ApprovingManagerName"
+                              matTooltip="Approving Manager" #appMgrEnt="ngModel" (keyup)="getEmployeeApp($event)"
+                              [disabled]="view">
+                            <input type="hidden" class="form-control" name="appMgr1" id="appMgr1"
+                              [(ngModel)]="ApprovingManager" matTooltip="Approving Manager" #appMgrEnt1="ngModel"
+                              [disabled]="view" (keyup)="getEmployeeApp($event)">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="doj" class="col-md-4">Date Of
+                            Joining</label>
+                          <div class="col-md-8">
+                            <input [matTooltipPosition]="'below'" matTooltip="Click to change date" [owlDateTime]="dt14"
+                              [owlDateTimeTrigger]="dt14" name="doj" class="form-control" [(ngModel)]="JoiningDate"
+                              id="doj" #dojent="ngModel" [disabled]="view" [disabled]="view" readonly>
+                            <owl-date-time [pickerType]="'calendar'" #dt14 style="width: 250px;">
+                            </owl-date-time>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="holTyp" class="col-md-4">Holiday
+                            Type</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="holTyp" id="holTyp" [(ngModel)]="HolidayType"
+                              matTooltip="Holiday Type" #holTypEnt="ngModel" [disabled]="view"
+                              (ngModelChange)="getAdditonalHolidayTypes();">
+                              <option [ngValue]=null disabled [selected]="true">--Select Holiday Type--</option>
+                              <option>Regular</option>
+                              <option>Additional</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4" *ngIf="HolidayType=='Additional'">
+                        <div class="form-group">
+                          <label for="typCodeH" class="col-md-4">Holiday Type Code</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="typCodeH" id="typCodeH" [(ngModel)]="TypeCodeH"
+                              matTooltip="Enter Type Code" #typCodeHEnt="ngModel" [disabled]="view"
+                              placeholder="Type Code">
+                              <option [ngValue]=null disabled [selected]="true">--Select Type Code--</option>
+                              <option *ngFor="let location of holidayList" value="{{location.typeCode}}">
+                                {{location.typeCode}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4" *ngIf="HolidayType=='Additional'">
+                        <div class="form-group">
+                          <label for="typNameH" class="col-md-4">Holiday Type Name</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="typNameH" id="typNameH" [(ngModel)]="TypeNameH"
+                              matTooltip="Enter Type Name" #typNameHEnt="ngModel" [disabled]="view"
+                              placeholder="Type Name">
+                              <option [ngValue]="null" disabled [selected]="true">--Select Type Name--</option>
+                              <option *ngFor="let location of holidayList" value="{{location.typeName}}">
+                                {{location.typeName}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="worCal" class="col-md-4">Working
+                            Calendar</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="worCal" id="worCal" [(ngModel)]="WorkingCalendar"
+                              matTooltip="Working Calendar" #worCalEnt="ngModel" [disabled]="view"
+                              (change)="getAdditonalCalendarTypes()">
+                              <option [ngValue]="null" disabled [selected]="true">--Select Working Calendar Type--
+                              </option>
+                              <option>Regular</option>
+                              <option>Additional</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4" *ngIf="WorkingCalendar=='Additional'">
+                        <div class="form-group">
+                          <label for="typCodeC" class="col-md-4">Calendar Type Code</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="typCodeC" id="typCodeC" [(ngModel)]="TypeCodeC"
+                              matTooltip="Enter Type Code" #typCodeCEnt="ngModel" [disabled]="view"
+                              placeholder="Type Code">
+                              <option [ngValue]="null" disabled [selected]="true">--Select Type Code--</option>
+                              <option *ngFor="let location of calendarList" value="{{location.typeCode}}">
+                                {{location.typeCode}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4" *ngIf="WorkingCalendar=='Additional'">
+                        <div class="form-group">
+                          <label for="typNameC" class="col-md-4">Calendar Type Name</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="typNameC" id="typNameC" [(ngModel)]="TypeNameC"
+                              matTooltip="Enter Type Name" #typNameCEnt="ngModel" [disabled]="view"
+                              placeholder="Type Name">
+                              <option [ngValue]="null" disabled [selected]="true">--Select Type Name--</option>
+                              <option *ngFor="let location of calendarList" value="{{location.typeName}}">
+                                {{location.typeName}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="workType" class="col-md-4">Work Type</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="workType" id="workType" [(ngModel)]="WorkType"
+                              matTooltip="Work Type" #workTypeEnt="ngModel" [disabled]="view">
+                              <option [ngValue]=null disabled [selected]="true">--Select Work Type--</option>
+                              <option *ngFor="let workType of workTypeList" value="{{workType.id}}">
+                                {{workType.workTypeShortDesc}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="swiCnt" class="col-md-4">Swipe Count</label>
+                          <div class="col-md-8">
+                            <select class="form-control" name="swiCnt" id="swiCnt" [(ngModel)]="SwipeCount"
+                              matTooltip="Swipe Count" #swiCntEnt="ngModel" [disabled]="view">
+                              <option value=null disabled [selected]="true">--Select Swipe Count--</option>
+                              <option>0</option>
+                              <option>2</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="bioPunch" class="col-md-4">Biometric Punching Device: </label>
+                          <div class="col-md-6">
+                            <ng-multiselect-dropdown id="PunchingDevicesSelected" name="PunchingDevicesSelected"
+                              #bioPunchEnt="ngModel" matTooltip="Select Punching Device (multiple)" [disabled]="view"
+                              [placeholder]="'Select Punching Device (multiple)'" [data]="DevBioReport"
+                              [(ngModel)]="PunchingDevices" [settings]="dropdownSettings"
+                              (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                              (onSelectAll)="onSelectAll($event)">
+                            </ng-multiselect-dropdown>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="shCode" class="col-md-4">Shift Code</label>
+                          <div class="col-md-8">
+                            <select [(ngModel)]="ShiftCode" class="form-control" id="shCode" name="shCode"
+                              matTooltip="Select Shift" [disabled]="view">
+                              <option [ngValue]=null disabled [selected]="true">--Select Shift--</option>
+                              <option *ngFor="let location of ShiftList" value="{{location.shiftCode}}">
+                                {{location.shiftCode}} - {{location.shiftName}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="elgType" class="col-md-4">Eligibility Type</label>
+                          <div class="col-md-8">
+                            <mat-radio-group aria-label="Select option?" id="filterType" name="filterType"
+                              [(ngModel)]="EligibilityType" [disabled]="view" ngControl="filterType"
+                              #filterTypeEnt="ngModel">
+                              &nbsp;
+                              <mat-radio-button value='M'>Eligible for Mediclaim</mat-radio-button>
+                              &nbsp;
+                              <mat-radio-button value='E'>Eligible for ESIC</mat-radio-button>
+                            </mat-radio-group>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4" *ngIf="EligibilityType == 'M'">
+                        <div class="form-group">
+                          <label for="mdmNo" class="col-md-4">Mediclaim
+                            Number</label>
+                          <div class="col-md-8">
+                            <input class="form-control" name="mdmNo" id="mdmNo" [(ngModel)]="Mediclaim"
+                              matTooltip="Enter Mediclaim Number" #mdmNoEnt="ngModel" [disabled]="view"
+                              placeholder="Mediclaim Number">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4" *ngIf="EligibilityType == 'M'">
+                        <div class="form-group">
+                          <label for="doe" class="col-md-4">Date of Expiry</label>
+                          <div class="col-md-8">
+                            <input [matTooltipPosition]="'below'" matTooltip="Click to change date" [owlDateTime]="dt4"
+                              placeholder="Date of Expiry" [owlDateTimeTrigger]="dt4" name="doe" class="form-control"
+                              [(ngModel)]="Mediclaimexpirydate" id="doe" #doeent="ngModel" [disabled]="view">
+                            <owl-date-time [pickerType]="'calendar'" #dt4 style="width: 250px;">
+                            </owl-date-time>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="email" class="col-md-4">Official Mail
+                            Id</label>
+                          <div class="col-md-5">
+                            <input class="form-control" name="email" id="email" [(ngModel)]="Email"
+                              matTooltip="Enter Email Id" emailEnt="ngModel" [disabled]="view" placeholder="Email Id"
+                              readonly>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="overlay" *ngIf="isLoadingPop">
+              <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+          </div>
+          &nbsp; &nbsp; &nbsp;
+          &nbsp; &nbsp; &nbsp;
+          <div class="modal-footer">
+            <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                class="fa fa-warning"></i>{{errMsgPop}}</span>
+
+            <button *ngIf="!view" type="button" class="btn btn-success" (click)="UpdateData();"
+              [disabled]="isLoadingPop || (!desigForm.valid) || isLoadPop"><i class="fas fa-angle-double-right"></i>&nbsp; Update</button>
+            <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+              data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="filterPanel" *ngIf="router.url =='/EmployeeDataEss'">
+    &nbsp;
+    &nbsp;
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h2 class="panel-title">
+          <b>Employee Data</b>
+        </h2>
+      </div>
+      <div class="panel-body form-horizontal">
+        <div class="row">
+          <div class="col-md-2">
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="input-group">
+              <img src="{{ this.profileItem.imgUrl }}" alt="" class="img card-img-top float-left" height="200px"
+                style="border: 1px solid#000000;" />
+            </div>
+          </div>
+          <div class="col-md-10">
+            <div class="row">
+              <div class="col-md-12">
+                <table class="table" cellspacing="0" cellpadding="0" style="margin-left:15px;">
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="empId">
+                          <h4><strong>Employee Id:</strong></h4>
+                        </label>
+                        {{ this.profileItem.employeeId }}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="plant">
+                          <h4><strong>Plant:</strong></h4>
+                        </label>
+                        {{ this.profileItem.baseLocation}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="paygroup">
+                          <h4><strong>PayGroup:</strong></h4>
+                        </label>
+                        {{ this.profileItem.payGroup }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="category">
+                          <h4><strong>Staff Category:</strong></h4>
+                        </label>
+                        {{ this.profileItem.category }}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="emp_name">
+                          <h4><strong>Name:</strong></h4>
+                        </label>
+                        {{ this.profileItem.fullName }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="empdesignation">
+                          <h4><strong>Designation:</strong></h4>
+                        </label>
+                        {{ this.profileItem.designation }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="role">
+                          <h4><strong>Role:</strong></h4>
+                        </label>
+                        {{ this.profileItem.role }}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="dept">
+                          <h4><strong>Department:</strong></h4>
+                        </label>
+                        {{ this.profileItem.department }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="sdept">
+                          <h4><strong>Sub Department:</strong></h4>
+                        </label>
+                        {{ this.profileItem.subDepartment }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="repGroup">
+                          <h4><strong>Reporting Group:</strong></h4>
+                        </label>
+                        {{ this.profileItem.reportingGroup }}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="reportingManger">
+                          <h4><strong>Reporting Manager:</strong></h4>
+                        </label>
+                        {{ this.profileItem.reportingManager}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="hod">
+                          <h4><strong>HOD:</strong></h4>
+                        </label>
+                        {{ this.profileItem.manager }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="workType">
+                          <h4><strong>Work Type: </strong></h4>
+                        </label>
+                        {{this.profileItem.workType}}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="holiday">
+                          <h4><strong>Holiday:</strong></h4>
+                        </label>
+                        {{ this.profileItem.holiday}}
+                      </div>
+                    </td>
+                    <td *ngIf="this.profileItem.holiday == 'Additional'">
+                      <div class="input-group">
+                        <label for="holiday">
+                          <h4><strong>Holiday Type Code:</strong></h4>
+                        </label>
+                        {{ this.profileItem.holidayTypeCode}}
+                      </div>
+                    </td>
+                    <td *ngIf="this.profileItem.holiday == 'Additional'">
+                      <div class="input-group">
+                        <label for="holiday">
+                          <h4><strong>Holiday Type Name:</strong></h4>
+                        </label>
+                        {{ this.profileItem.holidayTypeName}}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="calendar">
+                          <h4><strong>Working Calendar:</strong></h4>
+                        </label>
+                        {{this.profileItem.calendar}}
+                      </div>
+                    </td>
+                    <td *ngIf="this.profileItem.calendar == 'Additional'">
+                      <div class="input-group">
+                        <label for="calendar">
+                          <h4><strong>Working Calendar Type Code:</strong></h4>
+                        </label>
+                        {{this.profileItem.calendarTypeCode}}
+                      </div>
+                    </td>
+                    <td *ngIf="this.profileItem.calendar == 'Additional'">
+                      <div class="input-group">
+                        <label for="calendar">
+                          <h4><strong>Working Calendar Type Name:</strong></h4>
+                        </label>
+                        {{this.profileItem.calendarTypeName}}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="swipe">
+                          <h4><strong>Swipe Count:</strong></h4>
+                        </label>
+                        {{this.profileItem.swipeCount}}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="shift">
+                          <h4><strong>Shift Code:</strong></h4>
+                        </label>
+                        {{this.profileItem.shift}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="doj">
+                          <h4><strong>Date of Joining:</strong></h4>
+                        </label>
+                        {{this.profileItem.dateOfJoining | date: "dd/MM/yyyy"}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="med">
+                          <h4><strong>Eligible for Mediclaim/ESI:</strong></h4>
+                        </label>
+                        {{ this.profileItem.mediclaimorESI =='M'?'Mediclaim':'ESI'}}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="input-group">
+                        <label for="shift">
+                          <h4><strong>Email Id: </strong></h4>
+                        </label>
+                        {{this.profileItem.email}}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <label for="doj">
+                          <h4><strong>Active/InActive: &nbsp;</strong></h4>
+                        </label>
+                        <span class="label"
+                          [ngClass]="(this.profileItem.isActive==true)?'label-success':'label-danger'">
+                          {{( this.profileItem.isActive ==true)?'ACTIVE':'IN ACTIVE'}}</span>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    &nbsp;
+    &nbsp;
+    <div class="panel panel-info" *ngIf=" this.profileItem.mediclaimorESI == 'M'">
+      <div class="panel-heading">
+        <h2 class="panel-title">
+          <b>Mediclaim and Dependant Details</b>
+        </h2>
+      </div>
+      <div class="panel-body form-horizontal">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="offerId" class="col-md-4"> Mediclaim Number </label>
+              <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="profileItem.mediclaimNo"
+                  disabled="true" />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="status" class="col-md-4"> Policy Expiry Date </label>
+              <div class="col-md-8"><input type="text" class="form-control"
+                  value="{{profileItem.mediclaimExpiry | date: 'dd/MM/yyyy'}}" disabled="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h2 class="panel-title">
+              <b>Dependent Details</b>
+            </h2>
+          </div>
+          <div class="panel-body form-horizontal">
+            <div class="row">
+              <table class="table table-bordered table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th style="width: 5px;">Remove</th>
+                    <th style="width: 20%;">Sl.No</th>
+                    <th style="width: 25%;">Dependent Name</th>
+                    <th style="width: 25%;">Relationship</th>
+                    <th style="width: 25%;">Age</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let dep of DependentList;let i=index">
+                    <td style="max-width: 50px;">
+                      <button *ngIf="dep.id ==0 || dep.id == undefined" (click)="RemoveLine(i)"
+                        title="click to remove this line" class="btn btn-xs btn-danger">
+                        <i class="fas fa-times"></i>
+                      </button>
+                      <button *ngIf="dep.id != undefined && dep.id != 0" (click)="deleteDependentDetails(dep.id)"
+                        title="click to remove this line" class="btn btn-xs btn-danger">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </td>
+                    <td>{{i+1}}</td>
+                    <td><input type="text" class="form-control" [(ngModel)]="dep.dependantName"
+                        ngControl="dep.dependantName" name="name" placeholder="Name"
+                        [ngModelOptions]="{standalone:true}" /></td>
+                    <td><select [(ngModel)]="dep.relationship" class="form-control" required name="relationship"
+                        [ngModelOptions]="{standalone:true}">
+                        <option [ngValue]=undefined disabled [selected]="true"> Select Relationship </option>
+                        <option *ngFor="let pl of Relationshiplist" [ngValue]="pl.relation">{{pl.relation}}</option>
+                      </select></td>
+                    <td><input type="number" class="form-control" [(ngModel)]="dep.dependantAge"
+                        ngControl="dep.dependantAge" (change)="validateAge(dep)" name="age" placeholder="Age"
+                        [ngModelOptions]="{standalone:true}" /></td>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <button type="button" class="btn btn-info" (click)="onAddLineClick()">
+                <i class="fas fa-plus"></i> Add New Line</button>
+            </div>
+            <div class="text-center">
+              <button type="button" class="btn btn-success" [disabled]="isLoading " (click)="updateData()">
+                <i class="fas fa-check"></i> Update</button>
+              &nbsp;
+              <button type="button" class="btn btn-primary" (click)="clear()">Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    &nbsp;
+    &nbsp;
+    <div class="panel panel-info" *ngIf=" this.profileItem.mediclaimorESI == 'M'">
+      <div class="panel-heading">
+        <h2 class="panel-title">
+          <b>Mediclaim Contact Information</b>
+        </h2>
+      </div>
+      <div class="panel-body form-horizontal">
+        <div class="row">
+          <table class="table table-bordered table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Sl.No</th>
+                <th>Level</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Mobile No</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let dep of ContactDetails;let i=index">
+                <td>{{i+1}}</td>
+                <td>{{dep.level}}</td>
+                <td>{{dep.name}}</td>
+                <td>{{dep.designation}}</td>
+                <td>{{dep.mobileNo}}</td>
+                <td>{{dep.email}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

@@ -1,0 +1,1997 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Asset Explorer
+        <small>ITAMS </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    </ol>
+</section>
+
+<!--Main Content-->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div id="dateFilterPanel">
+                <div class="col-sm-12">
+                    <div class="card-body" style="border: black; box-shadow: grey;">
+                        <form #filterForm="ngForm">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="assettype">ASSET TYPE <span style="color:red">*</span></label>
+                                        <select [(ngModel)]="AddAssetmodel.replacementType" class="form-control"
+                                            id="assettype" name="assettype" ngControl="AddAssetmodel.replacementType"
+                                            #assettypeEnt="ngModel" [disabled]="isEdit" matTooltip="Select AssetType"
+                                            required>
+                                            <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                            <option>New Installation</option>
+                                            <option>Replacement</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Tabs for Adding New Asset-->
+    <div class="tabs-container">
+        <form #detailsForm="ngForm">
+            <ul class="nav nav-tabs" style="border:black;" id="myTab"
+                *ngIf="AddAssetmodel.replacementType == 'New Installation'">
+                <li class="active"><a data-toggle="tab" href="#tab-newdet">New Asset Details</a></li>
+                <li *ngIf="AddAssetmodel.assetType =='Computers' || AddAssetmodel.assetType == 'Printer'"><a
+                        data-toggle="tab" href="#tab-accdet">Accessories</a></li>
+                <li><a data-toggle="tab" href="#tab-assdet">Asset Status</a></li>
+                <li *ngIf="AddAssetmodel.assetType=='Computers'"><a data-toggle="tab" href="#tab-softdet">Software
+                        Details</a></li>
+                <li><a data-toggle="tab" href="#tab-purdet">Purchase Order Details</a></li>
+                <li><a data-toggle="tab" href="#tab-usatyp">Usage Type</a></li>
+            </ul>
+            <div class="tab-content" *ngIf="AddAssetmodel.replacementType == 'New Installation'">
+
+                <!-- New Asset Details -->
+                <div id="tab-newdet" class="tab-pane active">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="assetNo"> Asset No. <span style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.assetNo" class="form-control"
+                                                    id="assetNo" placeholder="Max of 35 chars." name="assetNo"
+                                                    ngControl="AddAssetmodel.assetNo" #assetNoEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="hostName"> Host Name <span
+                                                        style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.hostName" class="form-control"
+                                                    id="hostName" placeholder="Max of 35 chars." name="hostName"
+                                                    ngControl="AddAssetmodel.hostName" #hostNameEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="location"> Location <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.location" class="form-control"
+                                                    id="location" name="location" ngControl="AddAssetmodel.location"
+                                                    #locationEnt="ngModel" matTooltip="Select location">
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option *ngFor="let status of plantList" value={{status.code}}>
+                                                        {{status.code}}-{{status.name}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!categoryEnt.valid && categoryEnt.touched)?'has-error':''">
+                                                <label for="category">Category<span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.assetType" class="form-control"
+                                                    id="category" name="category" ngControl="AddAssetmodel.assetType"
+                                                    #categoryEnt="ngModel"
+                                                    (change)=GetSubCategory(AddAssetmodel.assetType) [disabled]="isEdit"
+                                                    matTooltip="Select category" required>
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option *ngFor="let mat of catList1" value={{mat.catCode}}>
+                                                        {{mat.catCode}}</option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!categoryEnt.valid && categoryEnt.touched">Please
+                                                    Select Category</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!subCategoryEnt.valid && subCategoryEnt.touched)?'has-error':''">
+                                                <label for="subCategory"> Sub-Category <span
+                                                        style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.category" class="form-control"
+                                                    id="subCategory" name="subCategory"
+                                                    ngControl="AddAssetmodel.category" #subCategoryEnt="ngModel"
+                                                    [disabled]="isEdit" matTooltip="Select Sub-Category" required>
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option *ngFor="let mat of subCategorylist" value={{mat.catName}}>
+                                                        {{mat.catName}}</option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!subCategoryEnt.valid && subCategoryEnt.touched">Please
+                                                    Select Sub-Category</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="barcode"> Barcode </label>
+                                                <input [(ngModel)]="AddAssetmodel.barCode" class="form-control"
+                                                    id="barcode" placeholder="Max of 35 chars." name="barcode"
+                                                    ngControl="AddAssetmodel.barCode" #barcodeEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="model"> Model <span style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.model" class="form-control" id="model"
+                                                    placeholder="Max of 100 chars." name="model"
+                                                    ngControl="AddAssetmodel.model" #modelEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="manufacturer"> Manufacturer <span
+                                                        style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.manufacturer" class="form-control"
+                                                    id="manufacturer" placeholder="Max of 100 chars."
+                                                    name="assemanufacturertNo" ngControl="AddAssetmodel.manufacturer"
+                                                    #manufacturerEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="partNo"> Part No. </label>
+                                                <input [(ngModel)]="AddAssetmodel.partNo" class="form-control"
+                                                    id="parttNo" placeholder="Max of 50 chars." name="partNo"
+                                                    ngControl="AddAssetmodel.partNo" #partNoEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!serialNoEnt.valid && serialNoEnt.touched)?'has-error':''">
+                                                <label for="serialNo"> Serial No.<span style="color:red">*</span>
+                                                </label>
+                                                <input [(ngModel)]="AddAssetmodel.serialNo" class="form-control"
+                                                    id="serialNo" placeholder="Max of 50 chars." name="serialNo"
+                                                    ngControl="AddAssetmodel.serialNo" #serialNoEnt="ngModel" required>
+                                                <span class="help-block"
+                                                    *ngIf="!serialNoEnt.valid && serialNoEnt.touched">Please
+                                                    Enter Serial No</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group"
+                                                [ngClass]="(!processorEnt.valid && processorEnt.touched)?'has-error':''">
+                                                <label for="processor"> Processor <span style="color:red">*</span>
+                                                </label>
+                                                <input [(ngModel)]="AddAssetmodel.processor" class="form-control"
+                                                    id="processor" placeholder="Max of 100 chars." name="processor"
+                                                    ngControl="AddAssetmodel.processor" #processorEnt="ngModel"
+                                                    required>
+                                                <span class="help-block"
+                                                    *ngIf="!processorEnt.valid && processorEnt.touched">Please
+                                                    Enter Processor</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-1" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group">
+                                                <label for="ram"> RAM <span style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.ram" class="form-control" id="ram"
+                                                    placeholder="No." name="ram" ngControl="AddAssetmodel.ram"
+                                                    #ramEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-2" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group">
+                                                <label for="size"> Size <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.ramSize" class="form-control"
+                                                    id="size" name="size" ngControl="AddAssetmodel.ramSize"
+                                                    #ramsizeEnt="ngModel" [disabled]="isEdit" matTooltip="Select Size">
+                                                    <option [ngValue]="undefined" disabled>--Select--
+                                                    </option>
+                                                    <option *ngFor="let mat of sizeList" value={{mat.storId}}>
+                                                        {{mat.storTxt}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-1" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group">
+                                                <label for="hdd"> HDD. <span style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.hdd" class="form-control" id="hdd"
+                                                    placeholder="No." name="hdd" ngControl="AddAssetmodel.hdd"
+                                                    #hddEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-2" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group">
+                                                <label for="size1"> Size <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.sizeType" class="form-control"
+                                                    id="size1" name="size1" ngControl="AddAssetmodel.sizeType"
+                                                    #size1Ent="ngModel" [disabled]="isEdit" matTooltip="Select Size">
+                                                    <option [ngValue]="undefined" disabled>--Select--
+                                                    </option>
+                                                    <option *ngFor="let mat of sizeList" value={{mat.storId}}>
+                                                        {{mat.storTxt}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="ipNo"> IP Address</label>
+                                                <input [(ngModel)]="AddAssetmodel.ipAddress" class="form-control"
+                                                    id="ipNo" placeholder="Max of 15 chars." name="ipNo"
+                                                    ngControl="AddAssetmodel.ipAddress" #ipNoEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!gxpEnt.valid && gxpEnt.touched)?'has-error':''">
+                                                <label for="gxp"> GxP Applicable <span
+                                                        style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.gxPApplicable" class="form-control"
+                                                    id="gxp" name="gxp" ngControl="AddAssetmodel.gxPApplicable"
+                                                    #gxpEnt="ngModel" [disabled]="isEdit"
+                                                    matTooltip="Select Gxp applicable or not" required>
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option>Yes</option>
+                                                    <option>No</option>
+                                                </select>
+                                                <span class="help-block" *ngIf="!gxpEnt.valid && gxpEnt.touched">Please
+                                                    Select GxP</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="config"> Configurations. <span
+                                                        style="color:red">*</span></label>
+                                                <textarea maxlength="200" [(ngModel)]="AddAssetmodel.config"
+                                                    placeholder="Max of 200 chars." class="form-control" id="config"
+                                                    name="config" ngControl="AddAssetmodel.config" #configEnt="ngModel"
+                                                    onkeyup="this.value = this.value.replace(/'/g,'`')"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accessories -->
+                <div id="tab-accdet" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                        <div class="col-sm-4">
+                                            <div class="form-group"
+                                                [ngClass]="(!monitorTypeEnt.valid && monitorTypeEnt.touched)?'has-error':''">
+                                                <label for="monitorType"> Monitor Type <span
+                                                        style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.monitorType" class="form-control"
+                                                    id="monitorType" name="assetmonitorType"
+                                                    ngControl="AddAssetmodel.monitorType" #monitorTypeEnt="ngModel"
+                                                    [disabled]="isEdit" matTooltip="Select Monitor Type" required>
+                                                    <option [ngValue]="null" disabled>--Select an Option--
+                                                    </option>
+                                                    <option *ngFor="let status of monType" value={{status.id}}>
+                                                        {{status.type}}
+                                                    </option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!monitorTypeEnt.valid && monitorTypeEnt.touched">Please
+                                                    Select Monitor Type</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="make"> Make <span style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.make" class="form-control" id="make"
+                                                    placeholder="Max of 50 chars." name="make"
+                                                    ngControl="AddAssetmodel.make" #makeEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="size"> Size <span style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.size" class="form-control" id="size"
+                                                    placeholder="Max of 50 chars." name="size"
+                                                    ngControl="AddAssetmodel.size" #sizeEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!keyboardEnt.valid && keyboardEnt.touched)?'has-error':''">
+                                                <label for="keyboard"> Keyboard <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.keyboard" class="form-control"
+                                                    id="keyboard" name="keyboard" ngControl="AddAssetmodel.keyboard"
+                                                    #keyboardEnt="ngModel" [disabled]="isEdit" matTooltip="Select"
+                                                    required>
+                                                    <option [ngValue]="undefined" disabled>--Select--
+                                                    </option>
+                                                    <option>Yes</option>
+                                                    <option>No</option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!keyboardEnt.valid && keyboardEnt.touched">Please
+                                                    Select</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!mouseEnt.valid && mouseEnt.touched)?'has-error':''">
+                                                <label for="mouse"> Mouse <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.mouse" class="form-control"
+                                                    id="mouse" name="mouse" ngControl="AddAssetmodel.mouse"
+                                                    #mouseEnt="ngModel" [disabled]="isEdit" matTooltip="Select"
+                                                    required>
+                                                    <option [ngValue]="undefined" disabled>--Select-
+                                                    </option>
+                                                    <option>Yes</option>
+                                                    <option>No</option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!mouseEnt.valid && mouseEnt.touched">Please
+                                                    Select</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" *ngIf="AddAssetmodel.assetType=='Printer'">
+                                        <div class="col-sm-4">
+                                            <div class="form-group"
+                                                [ngClass]="(!ppmEnt.valid && ppmEnt.touched)?'has-error':''">
+                                                <label for="ppm"> PPM (Pages per minute) <span
+                                                        style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.ppm" class="form-control" id="ppm"
+                                                    placeholder="Max of 50 chars." name="ppm"
+                                                    ngControl="AddAssetmodel.ppm" #ppmEnt="ngModel">
+                                                <span class="help-block" *ngIf="!ppmEnt.valid && ppmEnt.touched">Please
+                                                    enter</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="machineLife"> Machine Life <span
+                                                        style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.machineLife" class="form-control"
+                                                    id="machineLife" placeholder="Max of 50 chars." name="machineLife"
+                                                    ngControl="AddAssetmodel.machineLife" #machineLifeEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group"
+                                                [ngClass]="(!cppEnt.valid && cppEnt.touched)?'has-error':''">
+                                                <label for="cpp"> CPP (Cost per page) <span
+                                                        style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.size" class="form-control" id="cpp"
+                                                    placeholder="Max of 50 chars." name="cpp"
+                                                    ngControl="AddAssetmodel.cpp" #cppEnt="ngModel">
+                                                <span class="help-block" *ngIf="!cppEnt.valid && cppEnt.touched">Please
+                                                    enter</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asset Status -->
+                <div id="tab-assdet" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!filterstatusEnt.valid && filterstatusEnt.touched)?'has-error':''">
+                                                <label for="filterstatus">Asset State<span
+                                                        style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.assetState" class="form-control"
+                                                    id="filterstatus" name="filterstatus"
+                                                    ngControl="AddAssetmodel.assetState" #filterstatusEnt="ngModel"
+                                                    matTooltip="Select type" required>
+                                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                                    <option *ngFor="let status of statuslist" value={{status.id}}>
+                                                        {{status.name}}
+                                                    </option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!filterstatusEnt.valid && filterstatusEnt.touched">Please
+                                                    Select Asset Status</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            <div class="form-group">
+                                                <label for="nature"> Nature of Activities Performed /
+                                                    Function<span style="color:red">*</span></label>
+                                                <textarea maxlength="200" placeholder="Max of 200 chars."
+                                                    [(ngModel)]="AddAssetmodel.natureofActivities" class="form-control"
+                                                    id="filternature" name="filternature"
+                                                    ngControl="AddAssetmodel.natureofActivities"
+                                                    #filternatureEnt="ngModel"
+                                                    onkeyup="this.value = this.value.replace(/'/g,'`')"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Software Details-->
+                <div id="tab-softdet" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <button title="Add Rows" [matTooltipPosition]="'below'"
+                                    matTooltip="Click to Add more Rows" (click)="addRows(rec);"
+                                    class="btn btn-primary btn-xs pull-right" *ngIf="!isEdit" [disabled]="isEdit">
+                                    <i class="fa fa-plus"></i></button>
+                                <table class="table  table-striped" cellspacing="0">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th>Sl. No</th>
+                                            <th>Software Type</th>
+                                            <th>Software Name</th>
+                                            <th>License Type</th>
+                                            <th>Product Key</th>
+                                            <th>Version</th>
+                                            <th>Expires on</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let per of dynamicArray; let rec=index">
+                                            <td>
+                                                <label>{{rec+1}}.</label>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group"
+                                                        [ngClass]="(!filtersoftTypeEnt.valid && filtersoftTypeEnt.touched)?'has-error':''">
+                                                        <select [(ngModel)]="per.filtersoftType" class="form-control"
+                                                            [id]="'softType'+per.id" [name]="'softType'+per.id"
+                                                            ngControl="per.filtersoftType" #filtersoftTypeEnt="ngModel"
+                                                            matTooltip="Select Software Type" required>
+                                                            <option [ngValue]="null" disabled>--Select an Option--
+                                                            </option>
+                                                            <option *ngFor="let status of softType"
+                                                                value={{status.softId}}>
+                                                                {{status.softStxt}}
+                                                            </option>
+                                                        </select>
+                                                        <span class="help-block"
+                                                            *ngIf="!filtersoftTypeEnt.valid && filtersoftTypeEnt.touched">Please
+                                                            Select Software Type</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <input [(ngModel)]="per.filtersoftName" class="form-control"
+                                                        [id]="'softName'+per.id" placeholder="Max of 50 chars."
+                                                        [name]="'softName'+per.id" ngControl="filtersoftName"
+                                                        #softNameEnt="ngModel">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group"
+                                                        [ngClass]="(!filterlicTypeEnt.valid && filterlicTypeEnt.touched)?'has-error':''">
+                                                        <select [(ngModel)]="per.filterlicType" class="form-control"
+                                                            [id]="'licType'+per.id" [name]="'licType'+per.id"
+                                                            ngControl="filterlicType" #filterlicTypeEnt="ngModel"
+                                                            matTooltip="Select License Type" required>
+                                                            <option [ngValue]="null" disabled>--Select an Option--
+                                                            </option>
+                                                            <option *ngFor="let status of licType"
+                                                                value={{status.licId}}>
+                                                                {{status.licStxt}}
+                                                            </option>
+                                                        </select>
+                                                        <span class="help-block"
+                                                            *ngIf="!filterlicTypeEnt.valid && filterlicTypeEnt.touched">Please
+                                                            Select License Type</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <input [(ngModel)]="per.filterprodKey" class="form-control"
+                                                        [id]="'prodKey'+per.id" placeholder="Max of 50 chars."
+                                                        [name]="'prodKey'+per.id" ngControl="filterprodKey"
+                                                        #prodKeyEnt="ngModel">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <input [(ngModel)]="per.filterversion" class="form-control"
+                                                        [id]="'version'+per.id" placeholder="Max of 50 chars."
+                                                        [name]="'version'+per.id" ngControl="filterversion"
+                                                        #versionEnt="ngModel">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <input [matTooltipPosition]="'below'"
+                                                        matTooltip="Click to change expiry date" [owlDateTime]="dt23"
+                                                        [id]="'expDate'+per.id" [owlDateTimeTrigger]="dt23"
+                                                        [name]="'expDate'+per.id" class="form-control"
+                                                        [(ngModel)]="per.filterexpDate" [disabled]="isEdit"
+                                                        #filterexpDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                        readonly="true">
+                                                    <owl-date-time [pickerType]="'calendar'" #dt23
+                                                        style="width: 250px;">
+                                                    </owl-date-time>
+                                                </div>
+                                            </td>
+                                            <td *ngIf="!isEdit">
+                                                <button title="Remove Details" (click)="removeRows(per);"
+                                                    matTooltip="Click to delete" class="btn btn-secondary btn-sm"
+                                                    [disabled]="isEdit">
+                                                    <i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="overlay" *ngIf="isLoading">
+                            <i class="fa fa-spinner fa-pulse"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Purchase Order Details-->
+                <div id="tab-purdet" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!poNoEnt.valid && poNoEnt.touched)?'has-error':''">
+                                                <label for="poNo"> PO No. <span style="color:red">*</span> </label>
+                                                <input class="form-control input-sm" type="text" name="poNo"
+                                                    #poNoEnt="ngModel" [(ngModel)]="AddAssetmodel.ponumber"
+                                                    placeholder="Po No" value="poNo" ngControl="AddAssetmodel.ponumber"
+                                                    maxlength="80" [disabled]="isEdit" [id]="poNo"
+                                                    matTooltip="Enter Po No." required />
+                                                <span class="help-block"
+                                                    *ngIf="!poNoEnt.valid && poNoEnt.touched">Please
+                                                    Enter PO No.</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="poDate">PO Date</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change PO date" [owlDateTime]="dt16"
+                                                    [owlDateTimeTrigger]="dt16" name="poDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.poDate" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.poDate" #poDateEnt="ngModel"
+                                                    placeholder="DD-MM-YYYY" readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt16 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!suppNameEnt.valid && suppNameEnt.touched)?'has-error':''">
+                                                <label for="suppName"> Supplier Name <span
+                                                        style="color:red">*</span></label>
+                                                <input class="form-control input-sm" type="text" name="suppName"
+                                                    #suppNameEnt="ngModel" [(ngModel)]="AddAssetmodel.supplierName"
+                                                    placeholder="Supplier Name" ngControl="AddAssetmodel.supplierName"
+                                                    value="suppName" maxlength="80" [disabled]="isEdit" [id]="suppName"
+                                                    matTooltip="Enter SuppName" required />
+                                                <span class="help-block"
+                                                    *ngIf="!suppNameEnt.valid && suppNameEnt.touched">Please
+                                                    Enter Supplier Name</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!invNoEnt.valid && invNoEnt.touched)?'has-error':''">
+                                                <label for="invNo"> Invoice No. <span style="color:red">*</span></label>
+                                                <input class="form-control input-sm" type="text" name="invNo"
+                                                    #invNoEnt="ngModel" [(ngModel)]="AddAssetmodel.invoiceNumber"
+                                                    placeholder="Invoice No" value="invNo" maxlength="80"
+                                                    [disabled]="isEdit" [id]="invNo"
+                                                    ngControl="AddAssetmodel.invoiceNumber"
+                                                    matTooltip="Enter Invoice No" required />
+                                                <span class="help-block"
+                                                    *ngIf="!invNoEnt.valid && invNoEnt.touched">Please
+                                                    Enter Inv No.</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="invDate">Invoice Date</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change invoice date" [owlDateTime]="dt17"
+                                                    [owlDateTimeTrigger]="dt17" name="invDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.invoiceDate" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.invoiceDate" #invDateEnt="ngModel"
+                                                    placeholder="DD-MM-YYYY" readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt17 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!valEnt.valid && valEnt.touched)?'has-error':''">
+                                                <label for="val"> Value <span style="color:red">*</span></label>
+                                                <input class="form-control input-sm" type="text" name="val"
+                                                    #valEnt="ngModel" ngControl="AddAssetmodel.value"
+                                                    [(ngModel)]="AddAssetmodel.value" placeholder="Value" value="val"
+                                                    maxlength="80" [disabled]="isEdit" [id]="val" matTooltip="Enter val"
+                                                    required />
+                                                <span class="help-block" *ngIf="!valEnt.valid && valEnt.touched">Please
+                                                    Enter Value</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="insDate">Insallation Date</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change install date" [owlDateTime]="dt19"
+                                                    [owlDateTimeTrigger]="dt19" name="insDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.installationDate" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.installationDate"
+                                                    #filterinsDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                    readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt19 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="issDate"> Date of Issue</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change issue date" [owlDateTime]="dt20"
+                                                    [owlDateTimeTrigger]="dt20" name="issDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.dateOfIssue" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.dateOfIssue" #filterissDateEnt="ngModel"
+                                                    placeholder="DD-MM-YYYY" readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt20 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="srevDate">System Revalidation Date</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change sys. revalidation date"
+                                                    [owlDateTime]="dt21" [owlDateTimeTrigger]="dt21" name="srevDate"
+                                                    class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.systemRevalidationDate"
+                                                    [disabled]="isEdit" ngControl="AddAssetmodel.systemRevalidationDate"
+                                                    #filtersrevDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                    readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt21 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="prevDate">Preventive Maintenance Date
+                                                </label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change prev. maintenance date"
+                                                    [owlDateTime]="dt22" [owlDateTimeTrigger]="dt22" name="prevDate"
+                                                    class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.preventiveMaintenace" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.preventiveMaintenace"
+                                                    #filterprevDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                    readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt22 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="warDate">Warranty Expiration Date <span
+                                                        style="color:red">*</span></label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change invoice date" [owlDateTime]="dt18"
+                                                    [owlDateTimeTrigger]="dt18" name="warDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.warrantyExpiration" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.warrantyExpiration"
+                                                    #filterwarDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                    readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt18 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="remarks"> Remarks <span style="color:red">*</span></label>
+                                                <textarea maxlength="200" [(ngModel)]="AddAssetmodel.remarks"
+                                                    placeholder="Max of 200 chars." class="form-control" id="remarks"
+                                                    name="remarks" ngControl="AddAssetmodel.remarks" #remEnt="ngModel"
+                                                    onkeyup="this.value = this.value.replace(/'/g,'`')"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Details-->
+                <div id="tab-usatyp" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!usageTypeEnt.valid && usageTypeEnt.touched)?'has-error':''">
+                                                <label for="usageType">Usage Type <span
+                                                        style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.usageType" class="form-control"
+                                                    id="usageType" name="usageType" ngControl="AddAssetmodel.usageType"
+                                                    #usageTypeEnt="ngModel" [disabled]="isEdit"
+                                                    matTooltip="Select Usage Type" required>
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option>User</option>
+                                                    <option>Common</option>
+                                                    <option>Instrument</option>
+                                                    <option>Field Staff</option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!usageTypeEnt.valid && usageTypeEnt.touched">Please
+                                                    Select Usage Type</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="dateFilterPanel"
+                                        *ngIf="AddAssetmodel.usageType == 'User' || AddAssetmodel.usageType == 'Field Staff'">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group"
+                                                    [ngClass]="(!empNoEnt.valid && empNoEnt.touched)?'has-error':''">
+                                                    <label for="empNo"> Employee No. <span style="color:red">*</span>
+                                                    </label>
+                                                    <input class="form-control input-sm suggestion" type="text"
+                                                        name="empNo" [(ngModel)]="AddAssetmodel.empNo"
+                                                        #empNoEnt="ngModel" placeholder="Emp No"
+                                                        ngControl="AddAssetmodel.empNo" value="empNo" maxlength="10"
+                                                        (keyup)="setDet(AddAssetmodel.empNo)" id="empNo"
+                                                        [disabled]="isEdit" matTooltip="Enter Employee No." required />
+                                                    <span class="help-block"
+                                                        *ngIf="!empNoEnt.valid && empNoEnt.touched">Please Enter Emp
+                                                        No.</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="empName"> Employee Name </label>
+                                                    <input class="form-control input-sm" type="text" name="empName"
+                                                        [(ngModel)]="AddAssetmodel.empAd " placeholder="Emp Name"
+                                                        #empNameEnt="ngModel" value="empName"
+                                                        ngControl="AddAssetmodel.empAd " maxlength="80"
+                                                        [disabled]="isEdit" [id]="empName"
+                                                        matTooltip="Enter Employee Name" readonly="true" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="desg"> Designation </label>
+                                                    <input class="form-control input-sm" type="text" name="desg"
+                                                        [(ngModel)]="filterdesg" placeholder="Designation" value="desg"
+                                                        maxlength="80" [disabled]="isEdit" [id]="desg"
+                                                        #desgEnt="ngModel" matTooltip="Enter Employee Designation"
+                                                        readonly="true" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="dept"> Department <span
+                                                            style="color:red">*</span></label>
+                                                    <input class="form-control input-sm" type="text" name="dept"
+                                                        [(ngModel)]="filterdept" placeholder="Department" value="dept"
+                                                        maxlength="80" [disabled]="isEdit" [id]="dept"
+                                                        #deptEnt="ngModel" matTooltip="Enter Employee Department"
+                                                        readonly="true" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="dateFilterPanel" *ngIf="AddAssetmodel.usageType == 'Common'">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="department"> Department <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="AddAssetmodel.comDept" class="form-control"
+                                                        id="department" name="department"
+                                                        ngControl="AddAssetmodel.comDept" #departmentEnt="ngModel"
+                                                        matTooltip="Select Department">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let Dept of departmentList" value={{Dept.id}}>
+                                                            {{Dept.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="floor"> Floor <span style="color:red">*</span></label>
+                                                    <input [(ngModel)]="AddAssetmodel.comFloor" class="form-control"
+                                                        id="floor" placeholder="Max of 20 chars." name="floor"
+                                                        ngControl="AddAssetmodel.comFloor" #floorEnt="ngModel">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="dateFilterPanel" *ngIf="AddAssetmodel.usageType == 'Instrument'">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="instName"> Inst. Name <span
+                                                            style="color:red">*</span></label>
+                                                    <input [(ngModel)]="AddAssetmodel.instName" class="form-control"
+                                                        id="instName" placeholder="Max of 30 chars." name="floor"
+                                                        ngControl="AddAssetmodel.instName" #instNameEnt="ngModel">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="instType"> Inst. Type <span
+                                                            style="color:red">*</span></label>
+                                                    <input [(ngModel)]="AddAssetmodel.instType" class="form-control"
+                                                        id="instType" placeholder="Max of 20 chars." name="instType"
+                                                        ngControl="AddAssetmodel.instType" #instTypeEnt="ngModel">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="version"> Version </label>
+                                                    <input [(ngModel)]="AddAssetmodel.version" class="form-control"
+                                                        id="version" placeholder="Max of 20 chars." name="version"
+                                                        ngControl="AddAssetmodel.version" #versionEnt="ngModel">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="software"> Software </label>
+                                                    <input [(ngModel)]="AddAssetmodel.software" class="form-control"
+                                                        id="software" placeholder="Max of 20 chars." name="software"
+                                                        ngControl="AddAssetmodel.software" #softwareEnt="ngModel">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" (click)="onSubmit()"
+                        *ngIf="AddAssetmodel.replacementType == 'New Installation'"
+                        [disabled]="!detailsForm.valid || isLoading">Submit</button>
+                    &nbsp;&nbsp;
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-primary" (click)="clearAllEntries()">Clear</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <!--Tabs for Replacement of Asset-->
+    <div class="tabs-container">
+        <form #detailsForm1="ngForm">
+            <ul class="nav nav-tabs" style="border:black;" id="myTab"
+                *ngIf="AddAssetmodel.replacementType == 'Replacement'">
+                <li class="active"><a data-toggle="tab" href="#tab-currdet">Current Asset Details</a></li>
+                <li><a data-toggle="tab" href="#tab-newdet1">New Asset Details</a></li>
+                <li *ngIf="AddAssetmodel.assetType =='Computers' || AddAssetmodel.assetType == 'Printer'"><a
+                        data-toggle="tab" href="#tab-accdet1">Accessories</a></li>
+                <li><a data-toggle="tab" href="#tab-assdet1">Asset Status</a></li>
+                <li *ngIf="AddAssetmodel.assetType=='Computers'"><a data-toggle="tab" href="#tab-softdet1">Software
+                        Details</a></li>
+                <li><a data-toggle="tab" href="#tab-purdet1">Purchase Order Details</a></li>
+                <li><a data-toggle="tab" href="#tab-usatyp1">Usage Type</a></li>
+            </ul>
+            <div class="tab-content" *ngIf="AddAssetmodel.replacementType == 'Replacement'">
+
+                <!-- Current Asset Details -->
+                <div id="tab-currdet" class="tab-pane active">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: rgb(0, 0, 0); box-shadow: rgb(255, 0, 0);">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="assetId1"> Asset Id </label>
+                                                <input class="form-control input-sm" type="text" name="assetId1"
+                                                    [(ngModel)]="filterassetId1" placeholder="Asset Id" value="assetId1"
+                                                    maxlength="80" [disabled]="isEdit" [id]="assetId1"
+                                                    #assetId1Ent="ngModel" matTooltip="Enter Asset Id" required
+                                                    readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="assetNo1"> Asset No <span style="color:red">*</span></label>
+                                                <input class="form-control input-sm suggestion" type="text"
+                                                    name="assetNo1" [(ngModel)]="filterassetNo1" #assetNo1Ent="ngModel"
+                                                    placeholder="Asset No" value="assetNo1" maxlength="10"
+                                                    (keyup)="setList(filterassetNo1)" id="assetNo1" [disabled]="isEdit"
+                                                    matTooltip="Enter Asset No." required />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="location1"> Location </label>
+                                                <input class="form-control input-sm" type="text" name="location1"
+                                                    [(ngModel)]="filterlocation1" placeholder="Location"
+                                                    value="location1" maxlength="80" [disabled]="isEdit"
+                                                    [id]="location1" #location1Ent="ngModel" matTooltip="Enter Location"
+                                                    required readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="category1">Category</label>
+                                                <input class="form-control input-sm" type="text" name="category1"
+                                                    [(ngModel)]="filtercategory1" placeholder="Category"
+                                                    value="category1" maxlength="80" [disabled]="isEdit"
+                                                    [id]="category1" #category1Ent="ngModel" matTooltip="Enter Category"
+                                                    required readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="barcode1"> Barcode </label>
+                                                <input class="form-control input-sm" type="text" name="barcode1"
+                                                    [(ngModel)]="filterbarcode1" placeholder="Barcode" value="barcode1"
+                                                    maxlength="80" [disabled]="isEdit" [id]="barcode1"
+                                                    #barcode1Ent="ngModel" matTooltip="Enter Barcode" readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="model1"> Model </label>
+                                                <input class="form-control input-sm" type="text" name="model1"
+                                                    [(ngModel)]="filtermodel1" placeholder="Model" value="model1"
+                                                    maxlength="80" [disabled]="isEdit" [id]="model1"
+                                                    #model1Ent="ngModel" matTooltip="Enter Model" readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="manufacturer1"> Manufacturer </label>
+                                                <input class="form-control input-sm" type="text" name="manufacturer1"
+                                                    [(ngModel)]="filtermanufacturer1" placeholder="Manufacturer"
+                                                    value="manufacturer1" maxlength="80" [disabled]="isEdit"
+                                                    #manufacturer1Ent="ngModel" [id]="manufacturer1"
+                                                    matTooltip="Enter Manufacturer" readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="partNo1"> Part No.</label>
+                                                <input class="form-control input-sm" type="text" name="partNo1"
+                                                    [(ngModel)]="filterpartNo1" placeholder="Part No" value="partNo1"
+                                                    maxlength="80" [disabled]="isEdit" [id]="partNo1"
+                                                    #partNo1Ent="ngModel" matTooltip="Enter Part No" readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="serialNo1"> Serial No. </label>
+                                                <input class="form-control input-sm" type="text" name="serialNo1"
+                                                    [(ngModel)]="filterserialNo1" placeholder="Serial No"
+                                                    value="serialNo1" maxlength="80" [disabled]="isEdit"
+                                                    [id]="serialNo1" #serialNo1Ent="ngModel"
+                                                    matTooltip="Enter Serial No" readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="processor1"> Processor </label>
+                                                <input class="form-control input-sm" type="text" name="processor1"
+                                                    [(ngModel)]="filterprocessor1" placeholder="Processor"
+                                                    #processor1Ent="ngModel" value="processor1" maxlength="80"
+                                                    [disabled]="isEdit" [id]="processor1" matTooltip="Enter Processor"
+                                                    readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <div class="form-group">
+                                                <label for="ram1"> RAM</label>
+                                                <input class="form-control input-sm" type="text" name="ram1"
+                                                    #ram1Ent="ngModel" [(ngModel)]="filterram1" placeholder="Ram"
+                                                    value="ram1" maxlength="80" [disabled]="isEdit" [id]="ram1"
+                                                    matTooltip="Enter Ram" required readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <div class="form-group">
+                                                <label for="hdd1"> HDD.</label>
+                                                <input class="form-control input-sm" type="text" name="hdd1"
+                                                    #hdd1Ent="ngModel" [(ngModel)]="filterhdd1" placeholder="HDD"
+                                                    value="hdd1" maxlength="80" [disabled]="isEdit" [id]="hdd1"
+                                                    matTooltip="Enter Hdd" required readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <label for="ipNo1"> IP Address</label>
+                                                <input class="form-control input-sm" type="text" name="ipNo1"
+                                                    [(ngModel)]="filteripNo1" placeholder="Ip No" value="ipNo1"
+                                                    #ipNo1Ent="ngModel" maxlength="80" [disabled]="isEdit" [id]="ipNo1"
+                                                    matTooltip="Enter IpNo" readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <label for="gxp1"> GxP Applicable </label>
+                                                <input class="form-control input-sm" type="text" name="gxp1"
+                                                    [(ngModel)]="filtergxp1" placeholder="GxP" value="gxp1"
+                                                    maxlength="80" [disabled]="isEdit" [id]="gxp1"
+                                                    matTooltip="Enter GxP" #gxp1Ent="ngModel" readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="config1"> Configurations. </label>
+                                                <input class="form-control input-sm" type="text" name="config1"
+                                                    [(ngModel)]="filterconfig1" placeholder="Config" value="config1"
+                                                    maxlength="200" [disabled]="isEdit" [id]="config1"
+                                                    #config1Ent="ngModel" matTooltip="Enter Config" readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="empNo1">Employee No</label>
+                                                <input class="form-control input-sm" type="text" name="empNo1"
+                                                    [(ngModel)]="filterempNo1" placeholder="Emp No" value="empNo1"
+                                                    maxlength="80" [disabled]="isEdit" [id]="empNo1"
+                                                    #empNo1Ent="ngModel" matTooltip="Enter Employee No" required
+                                                    readonly="true" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <label for="empName1"> Employee Name </label>
+                                                <input class="form-control input-sm" type="text" name="empName1"
+                                                    [(ngModel)]="filterempName1" placeholder="empName" value="empName1"
+                                                    maxlength="80" [disabled]="isEdit" [id]="empName1"
+                                                    matTooltip="Enter empName" #empName1Ent="ngModel" readonly="true" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="condition">What should be done with the replaced
+                                                    asset?<span style="color:red">*</span></label>
+                                                <select [(ngModel)]="filtercondition" class="form-control"
+                                                    id="condition" name="condition" ngControl="filtercondition"
+                                                    #conditionEnt="ngModel" [disabled]="isEdit"
+                                                    matTooltip="Select Condition" required>
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option>In Stock</option>
+                                                    <option>De-Commission</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Asset Details -->
+                <div id="tab-newdet1" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="assetNo"> Asset No. <span style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.assetNo" class="form-control"
+                                                    id="assetNo" placeholder="Max of 35 chars." name="assetNo"
+                                                    ngControl="AddAssetmodel.assetNo" #assetNoEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="hostName"> Host Name <span
+                                                        style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.hostName" class="form-control"
+                                                    id="hostName" placeholder="Max of 35 chars." name="hostName"
+                                                    ngControl="AddAssetmodel.hostName" #hostNameEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="location"> Location <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.location" class="form-control"
+                                                    id="location" name="location" ngControl="AddAssetmodel.location"
+                                                    #locationEnt="ngModel" matTooltip="Select location">
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option *ngFor="let status of plantList" value={{status.code}}>
+                                                        {{status.code}}-{{status.name}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!categoryEnt.valid && categoryEnt.touched)?'has-error':''">
+                                                <label for="category">Category<span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.assetType" class="form-control"
+                                                    id="category" name="category" ngControl="AddAssetmodel.assetType"
+                                                    #categoryEnt="ngModel"
+                                                    (change)=GetSubCategory(AddAssetmodel.assetType) [disabled]="isEdit"
+                                                    matTooltip="Select category" required>
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option *ngFor="let mat of catList1" value={{mat.catCode}}>
+                                                        {{mat.catCode}}</option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!categoryEnt.valid && categoryEnt.touched">Please
+                                                    Select Category</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!subCategoryEnt.valid && subCategoryEnt.touched)?'has-error':''">
+                                                <label for="subCategory"> Sub-Category <span
+                                                        style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.category" class="form-control"
+                                                    id="subCategory" name="subCategory"
+                                                    ngControl="AddAssetmodel.category" #subCategoryEnt="ngModel"
+                                                    [disabled]="isEdit" matTooltip="Select Sub-Category" required>
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option *ngFor="let mat of subCategorylist" value={{mat.catName}}>
+                                                        {{mat.catName}}</option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!subCategoryEnt.valid && subCategoryEnt.touched">Please
+                                                    Select Sub-Category</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="barcode"> Barcode </label>
+                                                <input [(ngModel)]="AddAssetmodel.barCode" class="form-control"
+                                                    id="barcode" placeholder="Max of 35 chars." name="barcode"
+                                                    ngControl="AddAssetmodel.barCode" #barcodeEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="model"> Model </label>
+                                                <input [(ngModel)]="AddAssetmodel.model" class="form-control" id="model"
+                                                    placeholder="Max of 100 chars." name="model"
+                                                    ngControl="AddAssetmodel.model" #modelEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="manufacturer"> Manufacturer </label>
+                                                <input [(ngModel)]="AddAssetmodel.manufacturer" class="form-control"
+                                                    id="manufacturer" placeholder="Max of 100 chars."
+                                                    name="assemanufacturertNo" ngControl="AddAssetmodel.manufacturer"
+                                                    #manufacturerEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="partNo"> Part No. </label>
+                                                <input [(ngModel)]="AddAssetmodel.partNo" class="form-control"
+                                                    id="parttNo" placeholder="Max of 50 chars." name="partNo"
+                                                    ngControl="AddAssetmodel.partNo" #partNoEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!serialNoEnt.valid && serialNoEnt.touched)?'has-error':''">
+                                                <label for="serialNo"> Serial No.<span style="color:red">*</span>
+                                                </label>
+                                                <input [(ngModel)]="AddAssetmodel.serialNo" class="form-control"
+                                                    id="serialNo" placeholder="Max of 50 chars." name="serialNo"
+                                                    ngControl="AddAssetmodel.serialNo" #serialNoEnt="ngModel" required>
+                                                <span class="help-block"
+                                                    *ngIf="!serialNoEnt.valid && serialNoEnt.touched">Please
+                                                    Enter Serial No</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group"
+                                                [ngClass]="(!processorEnt.valid && processorEnt.touched)?'has-error':''">
+                                                <label for="processor"> Processor <span style="color:red">*</span>
+                                                </label>
+                                                <input [(ngModel)]="AddAssetmodel.processor" class="form-control"
+                                                    id="processor" placeholder="Max of 100 chars." name="processor"
+                                                    ngControl="AddAssetmodel.processor" #processorEnt="ngModel"
+                                                    required>
+                                                <span class="help-block"
+                                                    *ngIf="!processorEnt.valid && processorEnt.touched">Please
+                                                    Enter Processor</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-1" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group">
+                                                <label for="ram"> RAM <span style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.ram" class="form-control" id="ram"
+                                                    placeholder="No." name="ram" ngControl="AddAssetmodel.ram"
+                                                    #ramEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-2" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group">
+                                                <label for="size"> Size <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.ramSize" class="form-control"
+                                                    id="size" name="size" ngControl="AddAssetmodel.ramSize"
+                                                    #ramsizeEnt="ngModel" [disabled]="isEdit" matTooltip="Select Size">
+                                                    <option [ngValue]="undefined" disabled>--Select--
+                                                    </option>
+                                                    <option *ngFor="let mat of sizeList" value={{mat.storId}}>
+                                                        {{mat.storTxt}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-1" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group">
+                                                <label for="hdd"> HDD. <span style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.hdd" class="form-control" id="hdd"
+                                                    placeholder="No." name="hdd" ngControl="AddAssetmodel.hdd"
+                                                    #hddEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-2" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                            <div class="form-group">
+                                                <label for="size1"> Size <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.sizeType" class="form-control"
+                                                    id="size1" name="size1" ngControl="AddAssetmodel.sizeType"
+                                                    #size1Ent="ngModel" [disabled]="isEdit" matTooltip="Select Size">
+                                                    <option [ngValue]="undefined" disabled>--Select--
+                                                    </option>
+                                                    <option *ngFor="let mat of sizeList" value={{mat.storId}}>
+                                                        {{mat.storTxt}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="ipNo"> IP Address</label>
+                                                <input [(ngModel)]="AddAssetmodel.ipAddress" class="form-control"
+                                                    id="ipNo" placeholder="Max of 15 chars." name="ipNo"
+                                                    ngControl="AddAssetmodel.ipAddress" #ipNoEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!gxpEnt.valid && gxpEnt.touched)?'has-error':''">
+                                                <label for="gxp"> GxP Applicable <span
+                                                        style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.gxPApplicable" class="form-control"
+                                                    id="gxp" name="gxp" ngControl="AddAssetmodel.gxPApplicable"
+                                                    #gxpEnt="ngModel" [disabled]="isEdit"
+                                                    matTooltip="Select Gxp applicable or not" required>
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option>Yes</option>
+                                                    <option>No</option>
+                                                </select>
+                                                <span class="help-block" *ngIf="!gxpEnt.valid && gxpEnt.touched">Please
+                                                    Select GxP</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="config"> Configurations. <span
+                                                        style="color:red">*</span></label>
+                                                <textarea maxlength="200" [(ngModel)]="AddAssetmodel.config"
+                                                    placeholder="Max of 200 chars." class="form-control" id="config"
+                                                    name="config" ngControl="AddAssetmodel.config" #configEnt="ngModel"
+                                                    onkeyup="this.value = this.value.replace(/'/g,'`')"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accessories -->
+                <div id="tab-accdet1" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row" *ngIf="AddAssetmodel.assetType=='Computers'">
+                                        <div class="col-sm-4">
+                                            <div class="form-group"
+                                                [ngClass]="(!monitorTypeEnt.valid && monitorTypeEnt.touched)?'has-error':''">
+                                                <label for="monitorType"> Monitor Type <span
+                                                        style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.monitorType" class="form-control"
+                                                    id="monitorType" name="assetmonitorType"
+                                                    ngControl="AddAssetmodel.monitorType" #monitorTypeEnt="ngModel"
+                                                    [disabled]="isEdit" matTooltip="Select Monitor Type" required>
+                                                    <option [ngValue]="null" disabled>--Select an Option--
+                                                    </option>
+                                                    <option *ngFor="let status of monType" value={{status.id}}>
+                                                        {{status.type}}
+                                                    </option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!monitorTypeEnt.valid && monitorTypeEnt.touched">Please
+                                                    Select Monitor Type</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="make"> Make </label>
+                                                <input [(ngModel)]="AddAssetmodel.make" class="form-control" id="make"
+                                                    placeholder="Max of 50 chars." name="make"
+                                                    ngControl="AddAssetmodel.make" #makeEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="size"> Size </label>
+                                                <input [(ngModel)]="AddAssetmodel.size" class="form-control" id="size"
+                                                    placeholder="Max of 50 chars." name="size"
+                                                    ngControl="AddAssetmodel.size" #sizeEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!keyboardEnt.valid && keyboardEnt.touched)?'has-error':''">
+                                                <label for="keyboard"> Keyboard <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.keyboard" class="form-control"
+                                                    id="keyboard" name="keyboard" ngControl="AddAssetmodel.keyboard"
+                                                    #keyboardEnt="ngModel" [disabled]="isEdit" matTooltip="Select"
+                                                    required>
+                                                    <option [ngValue]="undefined" disabled>--Select--
+                                                    </option>
+                                                    <option>Yes</option>
+                                                    <option>No</option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!keyboardEnt.valid && keyboardEnt.touched">Please
+                                                    Select</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!mouseEnt.valid && mouseEnt.touched)?'has-error':''">
+                                                <label for="mouse"> Mouse <span style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.mouse" class="form-control"
+                                                    id="mouse" name="mouse" ngControl="AddAssetmodel.mouse"
+                                                    #mouseEnt="ngModel" [disabled]="isEdit" matTooltip="Select"
+                                                    required>
+                                                    <option [ngValue]="undefined" disabled>--Select-
+                                                    </option>
+                                                    <option>Yes</option>
+                                                    <option>No</option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!mouseEnt.valid && mouseEnt.touched">Please
+                                                    Select</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" *ngIf="AddAssetmodel.assetType=='Printer'">
+                                        <div class="col-sm-4">
+                                            <div class="form-group"
+                                                [ngClass]="(!ppmEnt.valid && ppmEnt.touched)?'has-error':''">
+                                                <label for="ppm"> PPM (Pages per minute) <span
+                                                        style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.ppm" class="form-control" id="ppm"
+                                                    placeholder="Max of 50 chars." name="ppm"
+                                                    ngControl="AddAssetmodel.ppm" #ppmEnt="ngModel">
+                                                <span class="help-block" *ngIf="!ppmEnt.valid && ppmEnt.touched">Please
+                                                    enter</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="machineLife"> Machine Life <span
+                                                        style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.machineLife" class="form-control"
+                                                    id="machineLife" placeholder="Max of 50 chars." name="machineLife"
+                                                    ngControl="AddAssetmodel.machineLife" #machineLifeEnt="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group"
+                                                [ngClass]="(!cppEnt.valid && cppEnt.touched)?'has-error':''">
+                                                <label for="cpp"> CPP (Cost per page) <span
+                                                        style="color:red">*</span></label>
+                                                <input [(ngModel)]="AddAssetmodel.size" class="form-control" id="cpp"
+                                                    placeholder="Max of 50 chars." name="cpp"
+                                                    ngControl="AddAssetmodel.cpp" #cppEnt="ngModel">
+                                                <span class="help-block" *ngIf="!cppEnt.valid && cppEnt.touched">Please
+                                                    enter</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asset Status -->
+                <div id="tab-assdet1" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!filterstatusEnt.valid && filterstatusEnt.touched)?'has-error':''">
+                                                <label for="filterstatus">Asset State<span
+                                                        style="color:red">*</span></label>
+                                                <select [(ngModel)]="AddAssetmodel.assetState" class="form-control"
+                                                    id="filterstatus" name="filterstatus"
+                                                    ngControl="AddAssetmodel.assetState" #filterstatusEnt="ngModel"
+                                                    matTooltip="Select type" required>
+                                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                                    <option *ngFor="let status of statuslist" value={{status.id}}>
+                                                        {{status.name}}
+                                                    </option>
+                                                </select>
+                                                <span class="help-block"
+                                                    *ngIf="!filterstatusEnt.valid && filterstatusEnt.touched">Please
+                                                    Select Asset Status</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            <div class="form-group">
+                                                <label for="nature"> Nature of Activities Performed /
+                                                    Function<span style="color:red">*</span></label>
+                                                <textarea maxlength="200" placeholder="Max of 200 chars."
+                                                    [(ngModel)]="AddAssetmodel.natureofActivities" class="form-control"
+                                                    id="filternature" name="filternature"
+                                                    ngControl="AddAssetmodel.natureofActivities"
+                                                    #filternatureEnt="ngModel"
+                                                    onkeyup="this.value = this.value.replace(/'/g,'`')"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Software Details-->
+                <div id="tab-softdet1" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <button title="Add Rows" [matTooltipPosition]="'below'"
+                                    matTooltip="Click to Add more Rows" (click)="addRows(rec);"
+                                    class="btn btn-primary btn-xs pull-right" *ngIf="!isEdit" [disabled]="isEdit">
+                                    <i class="fa fa-plus"></i></button>
+                                <table class="table  table-striped" cellspacing="0">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th>Sl. No</th>
+                                            <th>Software Type</th>
+                                            <th>Software Name</th>
+                                            <th>License Type</th>
+                                            <th>Product Key</th>
+                                            <th>Version</th>
+                                            <th>Expires on</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let per of dynamicArray; let rec=index">
+                                            <td>
+                                                <label>{{rec+1}}.</label>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        <select [(ngModel)]="per.filtersoftType" class="form-control"
+                                                            [id]="'softType'+per.id" [name]="'softType'+per.id"
+                                                            ngControl="per.filtersoftType" #filtersoftTypeEnt="ngModel"
+                                                            matTooltip="Select Software Type">
+                                                            <option [ngValue]="null" disabled>--Select an Option--
+                                                            </option>
+                                                            <option *ngFor="let status of softType"
+                                                                value={{status.softId}}>
+                                                                {{status.softStxt}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <input [(ngModel)]="per.filtersoftName" class="form-control"
+                                                        [id]="'softName'+per.id" placeholder="Max of 50 chars."
+                                                        [name]="'softName'+per.id" ngControl="filtersoftName"
+                                                        #softNameEnt="ngModel">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <div class="form-group">
+                                                        <select [(ngModel)]="per.filterlicType" class="form-control"
+                                                            [id]="'licType'+per.id" [name]="'licType'+per.id"
+                                                            ngControl="filterlicType" #filterlicTypeEnt="ngModel"
+                                                            matTooltip="Select License Type">
+                                                            <option [ngValue]="null" disabled>--Select an Option--
+                                                            </option>
+                                                            <option *ngFor="let status of licType"
+                                                                value={{status.licId}}>
+                                                                {{status.licStxt}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <input [(ngModel)]="per.filterprodKey" class="form-control"
+                                                        [id]="'prodKey'+per.id" placeholder="Max of 50 chars."
+                                                        [name]="'prodKey'+per.id" ngControl="filterprodKey"
+                                                        #prodKeyEnt="ngModel">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <input [(ngModel)]="per.filterversion" class="form-control"
+                                                        [id]="'version'+per.id" placeholder="Max of 50 chars."
+                                                        [name]="'version'+per.id" ngControl="filterversion"
+                                                        #versionEnt="ngModel">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <input [matTooltipPosition]="'below'"
+                                                        matTooltip="Click to change expiry date" [owlDateTime]="dt23"
+                                                        [id]="'expDate'+per.id" [owlDateTimeTrigger]="dt23"
+                                                        [name]="'expDate'+per.id" class="form-control"
+                                                        [(ngModel)]="per.filterexpDate" [disabled]="isEdit"
+                                                        #filterexpDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                        readonly="true">
+                                                    <owl-date-time [pickerType]="'calendar'" #dt23
+                                                        style="width: 250px;">
+                                                    </owl-date-time>
+                                                </div>
+                                            </td>
+                                            <td *ngIf="!isEdit">
+                                                <button title="Remove Details" (click)="removeRows(per);"
+                                                    matTooltip="Click to delete" class="btn btn-secondary btn-sm"
+                                                    [disabled]="isEdit">
+                                                    <i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="overlay" *ngIf="isLoading">
+                            <i class="fa fa-spinner fa-pulse"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Purchase Order Details-->
+                <div id="tab-purdet1" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!poNoEnt.valid && poNoEnt.touched)?'has-error':''">
+                                                <label for="poNo"> PO No. <span style="color:red">*</span> </label>
+                                                <input class="form-control input-sm" type="text" name="poNo"
+                                                    #poNoEnt="ngModel" [(ngModel)]="AddAssetmodel.ponumber"
+                                                    placeholder="Po No" value="poNo" ngControl="AddAssetmodel.ponumber"
+                                                    maxlength="80" [disabled]="isEdit" [id]="poNo"
+                                                    matTooltip="Enter Po No." required />
+                                                <span class="help-block"
+                                                    *ngIf="!poNoEnt.valid && poNoEnt.touched">Please
+                                                    Enter PO No.</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="poDate">PO Date</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change PO date" [owlDateTime]="dt16"
+                                                    [owlDateTimeTrigger]="dt16" name="poDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.poDate" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.poDate" #poDateEnt="ngModel"
+                                                    placeholder="DD-MM-YYYY" readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt16 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="suppName"> Supplier Name </label>
+                                                <input class="form-control input-sm" type="text" name="suppName"
+                                                    #suppNameEnt="ngModel" [(ngModel)]="AddAssetmodel.supplierName"
+                                                    placeholder="Supplier Name" ngControl="AddAssetmodel.supplierName"
+                                                    value="suppName" maxlength="80" [disabled]="isEdit" [id]="suppName"
+                                                    matTooltip="Enter SuppName" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group"
+                                                [ngClass]="(!invNoEnt.valid && invNoEnt.touched)?'has-error':''">
+                                                <label for="invNo"> Invoice No. <span style="color:red">*</span></label>
+                                                <input class="form-control input-sm" type="text" name="invNo"
+                                                    #invNoEnt="ngModel" [(ngModel)]="AddAssetmodel.invoiceNumber"
+                                                    placeholder="Invoice No" value="invNo" maxlength="80"
+                                                    [disabled]="isEdit" [id]="invNo"
+                                                    ngControl="AddAssetmodel.invoiceNumber"
+                                                    matTooltip="Enter Invoice No" required />
+                                                <span class="help-block"
+                                                    *ngIf="!invNoEnt.valid && invNoEnt.touched">Please
+                                                    Enter Inv No.</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="invoiceDate">Invoice Date</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change invoice date" [owlDateTime]="dt17"
+                                                    [owlDateTimeTrigger]="dt17" name="invoiceDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.invoiceDate" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.invoiceDate" #invoiceDateEnt="ngModel"
+                                                    placeholder="DD-MM-YYYY" readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt17 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="val"> Value </label>
+                                                <input class="form-control input-sm" type="text" name="val"
+                                                    #valEnt="ngModel" ngControl="AddAssetmodel.value"
+                                                    [(ngModel)]="AddAssetmodel.value" placeholder="Value" value="val"
+                                                    maxlength="80" [disabled]="isEdit" [id]="val"
+                                                    matTooltip="Enter val" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="insDate">Insallation Date</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change install date" [owlDateTime]="dt19"
+                                                    [owlDateTimeTrigger]="dt19" name="insDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.installationDate" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.installationDate"
+                                                    #filterinsDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                    readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt19 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="issDate"> Date of Issue</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change issue date" [owlDateTime]="dt20"
+                                                    [owlDateTimeTrigger]="dt20" name="issDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.dateOfIssue" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.dateOfIssue" #filterissDateEnt="ngModel"
+                                                    placeholder="DD-MM-YYYY" readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt20 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="srevDate">System Revalidation Date</label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change sys. revalidation date"
+                                                    [owlDateTime]="dt21" [owlDateTimeTrigger]="dt21" name="srevDate"
+                                                    class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.systemRevalidationDate"
+                                                    [disabled]="isEdit" ngControl="AddAssetmodel.systemRevalidationDate"
+                                                    #filtersrevDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                    readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt21 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="prevDate">Preventive Maintenance Date
+                                                </label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change prev. maintenance date"
+                                                    [owlDateTime]="dt22" [owlDateTimeTrigger]="dt22" name="prevDate"
+                                                    class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.preventiveMaintenace" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.preventiveMaintenace"
+                                                    #filterprevDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                    readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt22 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="warDate">Warranty Expiration Date <span
+                                                        style="color:red">*</span></label>
+                                                <input [matTooltipPosition]="'below'"
+                                                    matTooltip="Click to change invoice date" [owlDateTime]="dt18"
+                                                    [owlDateTimeTrigger]="dt18" name="warDate" class="form-control"
+                                                    [(ngModel)]="AddAssetmodel.warrantyExpiration" [disabled]="isEdit"
+                                                    ngControl="AddAssetmodel.warrantyExpiration"
+                                                    #filterwarDateEnt="ngModel" placeholder="DD-MM-YYYY"
+                                                    readonly="true">
+                                                <owl-date-time [pickerType]="'calendar'" #dt18 style="width: 250px;">
+                                                </owl-date-time>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="remarks"> Remarks <span style="color:red">*</span></label>
+                                                <textarea maxlength="200" [(ngModel)]="AddAssetmodel.remarks"
+                                                    placeholder="Max of 200 chars." class="form-control" id="remarks"
+                                                    name="remarks" ngControl="AddAssetmodel.remarks" #remEnt="ngModel"
+                                                    onkeyup="this.value = this.value.replace(/'/g,'`')"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Details-->
+                <div id="tab-usatyp1" class="tab-pane">
+                    <div class="panel-body" style="padding:0px;padding-top:8px;">
+                        <div class="col-sm-12">
+                            <div class="box">
+                                <div class="card-body" style="border: black; box-shadow: gray;">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="usageType">Usage Type </label>
+                                                <select [(ngModel)]="AddAssetmodel.usageType" class="form-control"
+                                                    id="usageType" name="usageType" ngControl="AddAssetmodel.usageType"
+                                                    #usageTypeEnt="ngModel" [disabled]="isEdit"
+                                                    matTooltip="Select Usage Type" required>
+                                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                                    </option>
+                                                    <option>User</option>
+                                                    <option>Common</option>
+                                                    <option>Instrument</option>
+                                                    <option>Field Staff</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="dateFilterPanel"
+                                        *ngIf="AddAssetmodel.usageType == 'User' || AddAssetmodel.usageType == 'Field Staff'">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="empNo"> Employee No. </label>
+                                                    <input class="form-control input-sm suggestion" type="text"
+                                                        name="empNo" [(ngModel)]="AddAssetmodel.empNo"
+                                                        #empNoEnt="ngModel" placeholder="Emp No"
+                                                        ngControl="AddAssetmodel.empNo" value="empNo" maxlength="10"
+                                                        (keyup)="setDet(AddAssetmodel.empNo)" id="empNo"
+                                                        [disabled]="isEdit" matTooltip="Enter Employee No." />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="empName"> Employee Name </label>
+                                                    <input class="form-control input-sm" type="text" name="empName"
+                                                        [(ngModel)]="AddAssetmodel.empAd " placeholder="Emp Name"
+                                                        #empNameEnt="ngModel" value="empName"
+                                                        ngControl="AddAssetmodel.empAd " maxlength="80"
+                                                        [disabled]="isEdit" [id]="empName"
+                                                        matTooltip="Enter Employee Name" readonly="true" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="desg"> Designation </label>
+                                                    <input class="form-control input-sm" type="text" name="desg"
+                                                        [(ngModel)]="filterdesg" placeholder="Designation" value="desg"
+                                                        maxlength="200" [disabled]="isEdit" [id]="desg"
+                                                        #desgEnt="ngModel" matTooltip="Enter Employee Designation"
+                                                        readonly="true" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label for="dept"> Department <span
+                                                            style="color:red">*</span></label>
+                                                    <input class="form-control input-sm" type="text" name="dept"
+                                                        [(ngModel)]="filterdept" placeholder="Department" value="dept"
+                                                        maxlength="200" [disabled]="isEdit" [id]="dept"
+                                                        #deptEnt="ngModel" matTooltip="Enter Employee Department"
+                                                        readonly="true" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="dateFilterPanel" *ngIf="AddAssetmodel.usageType == 'Common'">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="department"> Department <span
+                                                            style="color:red">*</span></label>
+                                                    <select [(ngModel)]="AddAssetmodel.comDept" class="form-control"
+                                                        id="department" name="department"
+                                                        ngControl="AddAssetmodel.comDept" #departmentEnt="ngModel"
+                                                        matTooltip="Select Department">
+                                                        <option [ngValue]="undefined" disabled>--Select an Option--
+                                                        </option>
+                                                        <option *ngFor="let Dept of departmentList" value={{Dept.name}}>
+                                                            {{Dept.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="floor"> Floor <span style="color:red">*</span></label>
+                                                    <input [(ngModel)]="AddAssetmodel.comFloor" class="form-control"
+                                                        id="floor" placeholder="Max of 20 chars." name="floor"
+                                                        ngControl="AddAssetmodel.comFloor" #floorEnt="ngModel">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="dateFilterPanel" *ngIf="AddAssetmodel.usageType == 'Instrument'">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="instName"> Inst. Name <span
+                                                            style="color:red">*</span></label>
+                                                    <input [(ngModel)]="AddAssetmodel.instName" class="form-control"
+                                                        id="instName" placeholder="Max of 30 chars." name="floor"
+                                                        ngControl="AddAssetmodel.instName" #instNameEnt="ngModel">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="instType"> Inst. Type <span
+                                                            style="color:red">*</span></label>
+                                                    <input [(ngModel)]="AddAssetmodel.instType" class="form-control"
+                                                        id="instType" placeholder="Max of 20 chars." name="instType"
+                                                        ngControl="AddAssetmodel.instType" #instTypeEnt="ngModel">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="version"> Version </label>
+                                                    <input [(ngModel)]="AddAssetmodel.version" class="form-control"
+                                                        id="version" placeholder="Max of 20 chars." name="version"
+                                                        ngControl="AddAssetmodel.version" #versionEnt="ngModel">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label for="software"> Software </label>
+                                                    <input [(ngModel)]="AddAssetmodel.software" class="form-control"
+                                                        id="software" placeholder="Max of 20 chars." name="software"
+                                                        ngControl="AddAssetmodel.software" #softwareEnt="ngModel">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" (click)="onSubmit1()"
+                        *ngIf="AddAssetmodel.replacementType == 'Replacement'"
+                        [disabled]="!detailsForm1.valid || isLoading">Submit
+                        Details</button>
+                    &nbsp;&nbsp;
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-primary" (click)="clearAllEntries()">Clear</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>

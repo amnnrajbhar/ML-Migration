@@ -1,0 +1,671 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Gate Entry
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Gate Outward - Other Material</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Gate Outward - Other Material</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" matTooltip="click to gate Outward"
+          (click)="onGateEntryActions(false,gateOutwardMModel,false)"><i class="fa fa-plus" aria-hidden="true"></i> Gate
+          Outward</button>
+      </div>
+    </div>
+    <div id="dateFilterPanel">
+      <div class="row ml-3">
+        <div class="col-sm-3">
+          <label>GO No</label>
+          <div class="form-group form-group-sm">
+            <input matTooltip="Enter GO No" name="GONUM" class="form-control" [(ngModel)]="fltrGONO"
+              placeholder="GO NO">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <label>Document No</label>
+          <div class="form-group form-group-sm">
+            <input matTooltip="Enter Document No" name="INVNUM" class="form-control" [(ngModel)]="fltrInvoiceNo"
+              placeholder="Document No">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <label for="DeliveryMode">Delivery Mode</label>
+            <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode" #fltrdelrymodeEnt="ngModel"
+              matTooltip="select delivery mode" [placeholder]="'select Delivery Mode(multiple)'"
+              [data]="deliveryModeList" [(ngModel)]="selectedModes" [settings]="dropdownSettings"
+              (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+              (onSelectAll)="onSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <label for="plant">Plant</label>
+          <select [(ngModel)]="plant" class="form-control" id="plant" name="plant" matTooltip="Select Plant"
+            ngControl="plant">
+            <option [ngValue]="undefined" disabled>--Select an Option--</option>
+            <option *ngFor="let gate of plantList" [ngValue]="gate.code">
+              {{gate.code}}-{{gate.name}}</option>
+          </select>
+
+        </div>
+      </div>
+      <div class="row ml-3">
+        <div class="col-sm-3">
+          <label>From Date</label>
+          <div class="form-group form-group-sm" [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+            <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dt11"
+              [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control" [(ngModel)]="from_date"
+              #fromDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+            <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From Date.</span>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <label>To Date</label>
+          <div class="form-group form-group-sm" [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+            <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+              [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="endDate" class="form-control" [(ngModel)]="to_date"
+              #toDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;"></owl-date-time>
+            <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid To Date.</span>
+          </div>
+        </div>
+        <!-- <div class="col-sm-2">
+          <div class="checkbox">
+            <label><input type="checkbox" id="chkdelete" name="delete" [(ngModel)]="delete" matTooltip="select delete Go"><b>Deleted GO</b></label>
+          </div>
+        </div> -->
+        <div class="col-sm-2">
+          <label>&nbsp;</label>
+          <div class="form-group form-group-sm">
+            <button class="btn btn-primary btn-sm" (click)="loadGateOutwardList('load');" matTooltip="click to Go"
+              [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">Go</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+              matTooltip="click to clear Filter">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="userTable" class="table  table-striped" cellspacing="0">
+        <thead style="background-color: #0099cc; color:white;">
+          <tr>
+            <th>SNo</th>
+            <th>FN Year</th>
+            <th>GO No</th>
+            <th>Basic Type</th>
+            <th>Doc No</th>
+            <th>Doc Date</th>
+            <th>Delivery Mode</th>
+            <th>Expt Out Time</th>
+            <th>Out Time</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ge of gateOutwardMList; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{ge.fiN_YEAR}}</td>
+            <td>{{ge.gO_NO}}</td>
+            <td>{{ge.gO_TYPE=='2'?"Returnable":"Non-Returnable"}}</td>
+            <td>{{ge.doC_NO}}</td>
+            <td>{{ge.doC_DATE| date:'dd/MM/yyyy'}}</td>
+            <td>{{ge.deliverymode}}</td>
+            <td>{{ge.exP_OUT_TIME | date:'dd/MM/yyyy HH:mm'}}</td>
+            <td>{{ge.ouT_DATE | date:'dd/MM/yyyy'}} {{ge.ouT_TIME | date:'HH:mm'}}</td>
+            <td>
+              <table>
+                <tr>
+                  <td class="pr-2"> <button type="button" [matTooltipPosition]="'after'"
+                      matTooltip="Click to edit entry" class="btn btn-primary btn-xs"
+                      (click)="onGateEntryActions(true,ge,false)" *ngIf="ge.ouT_TIME==null && ge.status=='Approved'"
+                      [disabled]="!ge.isActive ">
+                      <i class="fa fa-edit"></i>
+                    </button></td>
+                  <td><button type="button" class="btn btn-primary btn-xs" [matTooltipPosition]="'after'"
+                      matTooltip="Click to Print" (click)="onGateEntryActions(true,ge,true)"><i class="fa fa-print"
+                        aria-hidden="true"></i></button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="loadGateOutwardList('load')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgModalPop.length>0"><i class="fa fa-check"></i>{{errMsgModalPop}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Outward - Other Material @{{gateOutwardMModel.planT_ID}}
+          <div class="float-right">
+            Entry Date and Time - {{entryDateTime | date:'dd/MM/yyyy HH:mm'}}
+          </div>
+        </h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="row">
+          <div class="col-sm-12">
+            <form #userForm="ngForm" (keydown.enter)="$event.preventDefault()">
+              <div class="row">
+                <div class="col-sm-2">
+                  <div class="form-group form-group-sm"
+                    [ngClass]="(!gatenumber.valid && gatenumber.touched)?'has-error':''">
+                    <label for="gatenumber"><i class="fa fa-times-circle-o"
+                        *ngIf="!gatenumber.valid && gatenumber.touched"></i>Gate No<span
+                        style="color:red">*</span></label>
+                    <select [(ngModel)]="selGateLocation" class="form-control" id="locationGate" name="locationGate"
+                      ngControl="selGateLocation" #gatenumber="ngModel" matTooltip="select Gate No" required>
+                      <option [ngValue]="null" disabled [selected]="true">--Select an Option--</option>
+                      <option *ngFor="let gate of locationGateList" [ngValue]="gate">{{gate.gateNo}}</option>
+                    </select>
+                    <span class="help-block" *ngIf="!gatenumber.valid && gatenumber.touched">Please Enter Gate
+                      Number.</span>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="OUT_TIME">Out Time</label>
+                    <input name="oUTTIME" id="oUTTIME" placeholder="Out Time" class="form-control"
+                      value="{{OUT_TIME | date:'dd/MM/yyyy, HH:mm'}}" type="text" readonly>
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="isEdit">
+                  <div class="form-group form-group-sm">
+                    <label for="gO_No">GO#</label>
+                    <input type="text" class="form-control" id="editGono" placeholder="GO #"
+                      [ngModel]="gateOutwardMModel.gO_NO" name="editGono" #editGonoEnt="ngModel" matTooltip="GO Number"
+                      readonly>
+                  </div>
+                </div>
+                <div class="col-sm-2" *ngIf="!isEdit">
+                  <div class="form-group form-group-sm"
+                    [ngClass]="(!plantEnt.valid && plantEnt.touched)?'has-error':''">
+                    <label for="plant">Plant<span style="color:red">*</span></label>
+                    <select [(ngModel)]="plant" class="form-control" id="plant" name="plant" matTooltip="Select Plant"
+                      ngControl="plant" #plantEnt="ngModel" [disabled]="isEdit" required>
+                      <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                      <option *ngFor="let gate of plantList" [ngValue]="gate.code">
+                        {{gate.code}}-{{gate.name}}</option>
+                    </select>
+                    <span class="help-block" *ngIf="!plantEnt.valid && plantEnt.touched">Please select delivery
+                      mode</span>
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="!isEdit">
+                  <div class="form-group form-group-sm">
+                    <label for="InvNO">GO # <span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="gono" placeholder="GO #" [(ngModel)]="gONo" name="gono"
+                      (change)="gONo=gONo.trim()" ngControl="gONo" #gONoEnt="ngModel" matTooltip="enter GO Number"
+                      (keydown.enter)="getGONumInfo(gONo)">
+                  </div>
+                </div>
+                <div class="col-1" style="margin-top: 2.3rem;" *ngIf="!isEdit">
+                  <button class="btn btn-primary btn-sm" (click)="getGONumInfo(gONo);"
+                    matTooltip="click to Go">Go</button>
+                </div>
+                <div class="col-1 mt-5">
+                  <div class="overlay" *ngIf="isLoadingBAPI">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                  </div>
+                </div>
+              </div>
+              <hr class="m-3">
+              <div class="row">
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="visitorName">
+                      Basis type
+                    </label>
+                    <input type="text" class="form-control" id="basisType" placeholder="Basis Type"
+                      value="{{gateOutwardMModel.gO_TYPE=='2'?'Returnable':'Non-Returnable'}}" name="basisType" readonly
+                      required />
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="fiscalyr">Financial Year</label>
+                    <input type="text" class="form-control" id="fiscalyr" placeholder="Financial Year"
+                      [(ngModel)]="fiscalYear" ngControl="fiscalYear" name="fiscalyr" readonly required />
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="doC_NO">
+                      Document No
+                    </label>
+                    <input [(ngModel)]="gateOutwardMModel.doC_NO" required class="form-control" id="doC_NO"
+                      placeholder="Document No" name="doC_NO" ngControl="gateOutwardMModel.doC_NO" #invoiceEnt="ngModel"
+                      readonly>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="invoiceDate">
+                      Document Date
+                    </label>
+                    <input name="invoiceDate" class="form-control"
+                      value="{{gateOutwardMModel.doC_DATE | date:'dd/MM/yyyy'}}" placeholder="Document Date" readonly
+                      required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="sendinG_REASON">Sending Person</label>
+                    <input [(ngModel)]="sendingPersonName" class="form-control" id="sendinG_REASON"
+                      placeholder="Sending Person" name="sendinG_REASON" ngControl="sendingPersonName"
+                      #sendinG_PERSONEnt="ngModel" required readonly>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="sendinG_DEPT_NM">Department</label>
+                    <input type="text" class="form-control" id="usrid" placeholder="Department"
+                      [(ngModel)]="gateOutwardMModel.sendinG_DEPT_NM" name="sendinG_DEPT_NM"
+                      ngControl="gateOutwardMModel.sendinG_DEPT_NM" #sendinG_DEPT_NMEnt="ngModel" required readonly>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="destinatioN_NM">Destination</label>
+                    <input name="destinatioN_NM" class="form-control" readonly required placeholder="Destination"
+                      [(ngModel)]="gateOutwardMModel.destinatioN_NM" #selDestinationEnt="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="exP_OUT_TIME"> Expected Out Time
+                    </label>
+                    <input name="exP_OUT_TIME" class="form-control" readonly required placeholder="Expected Out Time"
+                      value="{{gateOutwardMModel.exP_OUT_TIME | date:'dd/MM/yyyy, HH:mm'}}">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3" *ngIf="gateOutwardMModel.gO_TYPE=='2'">
+                  <div class="form-group form-group-sm">
+                    <label for="expReturnDate"> Expected Return Date
+                    </label>
+                    <input name="expReturnDate" class="form-control" required placeholder="Expected Return Date"
+                      value="{{gateOutwardMModel.exP_RETURN_DATE | date:'dd/MM/yyyy'}}" readonly>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="sendinG_REASON">Reason/Purpose</label>
+                    <input [(ngModel)]="gateOutwardMModel.sendinG_REASON" class="form-control" id="supCountry"
+                      placeholder="Reason/Purpose" name="supCountry" ngControl="gateOutwardMModel.sendinG_REASON"
+                      #sendinG_ReasonEnt="ngModel" required readonly>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm"
+                    [ngClass]="(!deliverymode.valid && deliverymode.touched)?'has-error':''">
+                    <label for="DeliveryMode">Delivery Mode<span style="color:red">*</span></label>
+                    <select ng-init="gateOutwardMModel.deliverymode = gateOutwardMModel.deliverymode || 'none'"
+                      [(ngModel)]="gateOutwardMModel.deliverymode" class="form-control" id="deliverymode"
+                      matTooltip="select delivery mode" name="deliverymode" ngControl="gateOutwardMModel.deliverymode"
+                      #deliverymode="ngModel" required>
+                      <option [ngValue]="null" disabled>--Select an Option--</option>
+                      <option>In Person</option>
+                      <option>Courier</option>
+                      <option>Vehicle</option>
+                    </select>
+                    <span class="help-block" *ngIf="!deliverymode.valid && deliverymode.touched">Please select delivery
+                      mode</span>
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="gateOutwardMModel.deliverymode=='In Person'">
+                  <div class="form-group form-group-sm">
+                    <label for="deliveryperson">Delivery Person Name<span style="color:red">*</span>
+                    </label>
+                    <input [(ngModel)]="gateOutwardMModel.deliveryperson" class="form-control" id="deliveryperson"
+                      placeholder="Delivery Person" name="deliveryperson" ngControl="gateOutwardMModel.deliveryperson"
+                      #deliveryperson="ngModel" required>
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="gateOutwardMModel.deliverymode=='Vehicle'">
+                  <div class="form-group form-group-sm">
+                    <label for="vehicleNoEnt">Vehicle No<span style="color:red">*</span>
+                    </label>
+                    <input [(ngModel)]="gateOutwardMModel.vehicleno" class="form-control" id="vehicleNo"
+                      placeholder="Vehicle #" name="vehicleNo" ngControl="gateOutwardMModel.vehicleno"
+                      #vehicleNoEnt="ngModel" required>
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="gateOutwardMModel.deliverymode=='Vehicle'">
+                  <div class="form-group form-group-sm">
+                    <label for="transporterNameEnt">Transporter Name</label>
+                    <input [(ngModel)]="gateOutwardMModel.transporterName" class="form-control" id="transporterName"
+                      placeholder="Transporter Name" name="transporterName"
+                      ngControl="gateOutwardMModel.transporterName" #transporterNameEnt="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="gateOutwardMModel.deliverymode=='Vehicle'">
+                  <div class="form-group form-group-sm">
+                    <label for="lrNoEnt">LR No </label>
+                    <input [(ngModel)]="gateOutwardMModel.lrNo" class="form-control" id="lrNo" placeholder="LR No"
+                      name="lrNo" ngControl="gateOutwardMModel.lrNo" #lrNoEnt="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="gateOutwardMModel.deliverymode=='Vehicle'">
+                  <div class="form-group form-group-sm">
+                    <label for="driverNameEnt">Driver Name</label>
+                    <input [(ngModel)]="gateOutwardMModel.driverName" class="form-control" id="driverName"
+                      placeholder="Driver Name" name="driverName" ngControl="gateOutwardMModel.driverName"
+                      #driverNameEnt="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="gateOutwardMModel.deliverymode=='Courier'">
+                  <div class="form-group form-group-sm">
+                    <label for="courierName">Courier Name<span style="color:red">*</span>
+                    </label>
+                    <input [(ngModel)]="gateOutwardMModel.courier_Name" class="form-control" placeholder="Courier Name"
+                      id="courierName" name="courierName" ngControl="gateOutwardMModel.courier_Name"
+                      #courierName="ngModel" type="text" required>
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="gateOutwardMModel.deliverymode=='Courier'">
+                  <div class="form-group form-group-sm">
+                    <label for="courierNum">Docket Number<span style="color:red">*</span>
+                    </label>
+                    <input [(ngModel)]="gateOutwardMModel.courier_Num" class="form-control" placeholder="Docket Number"
+                      id="courierNum" (change)="gateOutwardMModel.courier_Num=gateOutwardMModel.courier_Num.trim()"
+                      name="courierNum" ngControl="gateOutwardMModel.courier_Num" #courierNum="ngModel" type="text"
+                      required>
+                  </div>
+                </div>
+                <div class="col-sm-3" *ngIf="gateOutwardMModel.deliverymode=='Courier'">
+                  <div class="form-group form-group-sm">
+                    <label for="courierDate">Docket Date<span style="color:red">*</span>
+                    </label>
+                    <input required name="courierDate" class="form-control"
+                      value="{{gateOutwardMModel.courier_Date | date:'dd/MM/yyyy'}}" placeholder="Docket Date">
+                  </div>
+                </div>
+                <!-- <div class="row"> -->
+                <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                    <label for="remarks">Remarks</label>
+                    <textarea class="form-control" id="remarks" placeholder="Remarks" name="remarks"
+                      readonly>{{gateOutwardMModel.remarks}}</textarea>
+                  </div>
+                  <!-- </div> -->
+                </div>
+              </div>
+              <!-- <div class="row" >
+              
+              </div> -->
+
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="table-responsive">
+                    <table id="personTable" class="table table-bordered" cellspacing="0" style="margin-bottom: 0px;">
+                      <thead>
+                        <tr>
+                          <th>Sl. No</th>
+                          <th>Material Type</th>
+                          <th>Material Code</th>
+                          <th>Material Description</th>
+                          <th>UOM</th>
+                          <th class="col-sm-2">Qty</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let per of dynamicArray; let rec=index">
+                          <td>
+                            <label>{{rec+1}}.</label>
+                          </td>
+                          <td>
+                            {{per.material_Type}}
+                          </td>
+                          <td>
+                            {{per.iteM_CODE}}
+                          </td>
+                          <td>
+                            {{per.iteM_DESC}}
+                          </td>
+                          <td>
+                            {{per.uom}}
+                          </td>
+                          <td>
+                            {{per.qty}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="overlay" *ngIf="isLoadingPop">
+              <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+          <button type="button" class="btn btn-primary" (click)="onSaveEntry()" matTooltip="click to submit"
+            [disabled]="!userForm.valid" *ngIf="gateOutwardMModel.ouT_TIME==null">Save</button>
+          <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+            data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="click to close modal">Close</button>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+  </div>
+</div>
+
+<!--Print Modal-->
+<div class="modal fade" id="printModal" role="dialog" aria-labelledby="printModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Outward - Other Material @{{gateOutwardMModel.planT_ID}}
+        </h3>
+      </div>
+      <!-- <div class="tabs-container"> -->
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="container" id="print-section">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="pull-left"><img src="../../assets/dist/img/micrologo.png"></div>
+                  <div class="col-sm-7">
+                    <h3 class="print-h1">Outward - Other Material</h3>
+                  </div>
+                  <div class="pull-right">
+                    <ngx-barcode bc-value="{{gateOutwardMModel.gO_NO}}" [bc-display-value]="true"
+                      [bc-element-type]="elementtype" [bc-height]="80">
+                    </ngx-barcode>
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <strong>Financial Year: </strong> {{gateOutwardMModel.fiN_YEAR}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Document No: </strong> {{gateOutwardMModel.doC_NO}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Document Date: </strong> {{gateOutwardMModel.doC_DATE | date:'dd/MM/yyyy'}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Plant: </strong> {{gateOutwardMModel.planT_ID}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <strong>Sending Person: </strong> {{sendingPersonName}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Department: </strong> {{gateOutwardMModel.sendinG_DEPT_NM}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Destination: </strong> {{gateOutwardMModel.destinatioN_NM}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <strong>Basis type: </strong> {{gateOutwardMModel.gO_TYPE=='2'?"Returnable":"Non-Returnable"}}
+                    </div>
+                    <div class="col-sm-4" *ngIf="gateOutwardMModel.gO_TYPE=='2'">
+                      <strong>Expected Return Date: </strong> {{gateOutwardMModel.exP_RETURN_DATE | date:'dd/MM/yyyy'}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Expected Out Date&Time: </strong>
+                      {{gateOutwardMModel.exP_OUT_TIME | date:'dd/MM/yyyy, HH:mm'}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <strong>Reason/Purpose: </strong> {{gateOutwardMModel.sendinG_REASON}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Delivery Mode: </strong> {{gateOutwardMModel.deliverymode}}
+                    </div>
+                    <div class="col-sm-4" *ngIf="gateOutwardMModel.deliverymode=='Vehicle'">
+                      <strong>Vehicle No: </strong> {{gateOutwardMModel.vehicleno}}
+                    </div>
+                    <div class="col-sm-4" *ngIf="gateOutwardMModel.deliverymode=='In Person'">
+                      <strong>Delivery Person Name: </strong> {{gateOutwardMModel.deliveryperson}}
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="gateOutwardMModel.deliverymode=='Courier'">
+                    <div class="col-sm-4">
+                      <strong>Courier Name: </strong> {{gateOutwardMModel.courier_Name}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Docket Number: </strong> {{gateOutwardMModel.courier_Num}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Docket Date: </strong> {{gateOutwardMModel.courier_Date | date:'dd/MM/yyyy'}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <strong>Gate No: </strong> {{gateOutwardMModel.gO_GATENO}}
+                    </div>
+                    <div class="col-sm-4">
+                      <strong>Out Date&Time: </strong> {{gateOutwardMModel.ouT_TIME | date:'dd/MM/yyyy, HH:mm'}}
+                    </div>
+                  </div>
+                  <div class="row mt-4">
+                    <div class="col-sm-12">
+                      <div class="table-responsive">
+                        <table class="table table-bordered printtable" cellspacing="0">
+                          <thead>
+                            <tr>
+                              <th>Sl.No</th>
+                              <th>Material Type</th>
+                              <th>Material Code</th>
+                              <th>Material Description</th>
+                              <th>UOM</th>
+                              <th>Qty</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let per of dynamicArray; let rec=index">
+                              <td>
+                                <label>{{rec+1}}.</label>
+                              </td>
+                              <td>
+                                {{per.material_Type}}
+                              </td>
+                              <td>
+                                {{per.iteM_CODE}}
+                              </td>
+                              <td>
+                                {{per.iteM_DESC}}
+                              </td>
+                              <td>
+                                {{per.uom}}
+                              </td>
+                              <td style="text-align: end;">
+                                {{per.qty}}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-8 pull-left">
+                      <strong>Authorized By: </strong>
+                    </div>
+                    <div class="col-sm-4 pull-right">
+                      <strong>Security: </strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="print()">Print</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

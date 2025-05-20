@@ -1,0 +1,615 @@
+<section class="content-header">
+  <h1>
+    Meetings
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Meetings</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+
+    <!--The content below is only a placeholder and can be replaced.-->
+    <!-- <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Meetings</h1>
+      </div> -->
+    <!-- <div class="text-center">
+  <div class="display-4">
+   {{title}}
+  </div>
+</div> -->
+
+    <!-- <mat-progress-spinner
+    *ngIf="!events"
+    color="primary"
+    mode="indeterminate"
+    class="mx-auto mt-5">
+</mat-progress-spinner> -->
+
+    <div class="calendar-container" *ngIf="events">
+      <div class="cal-scheduler-view">
+        <div class="row mt-4">
+          <div class="col-md-4 text-left">
+
+            <div>
+              <button type="button" class="btn btn-primary" (click)="changeView(CalendarView.Month)"
+                [class.active]="view === 'month'">
+                Month
+              </button>
+              <button type="button" class="btn btn-primary" (click)="changeView('week')"
+                [class.active]="view === 'week'">
+                Week
+              </button>
+              <button type="button" class="btn btn-primary" (click)="changeView(CalendarView.Day)"
+                [class.active]="view === 'day'">
+                Day
+              </button>
+            </div>
+          </div>
+          <div class="col-md-4 text-center">
+            <h3 class="mt-0">{{ viewDate | calendarDate:(view + 'ViewTitle'):locale }}</h3>
+          </div>
+          <div class="col-md-4 text-right">
+            <div class="btn-group m-1" role="group">
+              <button type="button" class="btn btn-primary" mwlCalendarPreviousView [view]="view"
+                [(viewDate)]="viewDate" [disabled]="prevBtnDisabled" (viewDateChange)="dateOrViewChanged()">
+                <span class="valign-center">
+                  <i title="Precedente" class="material-icons md-18">
+                    </i>
+                </span>
+              </button>
+              <button type="button" class="btn btn-light" mwlCalendarToday [(viewDate)]="viewDate"
+                (viewDateChange)="dateOrViewChanged()">
+                <span class="valign-center">
+                  <i title="Oggi" class="material-icons md-18">today</i>
+                </span>
+              </button>
+              <button type="button" class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+                [disabled]="nextBtnDisabled" (viewDateChange)="dateOrViewChanged()">
+                <span class="valign-center">
+                  <i title="Successivo" class="material-icons md-18"> > </i>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+
+      <div [ngSwitch]="view">
+        <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [locale]="locale"
+          [weekStartsOn]="1" [refresh]="refresh" [events]="events" (dayClicked)="dayClicked($event.day)"
+          (eventClicked)="eventClicked('Clicked', $event.event)">
+        </mwl-calendar-month-view>
+        <div class="cal-week-view">
+          <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events"
+            [refresh]="refresh" [locale]="locale" precision="minutes" [weekStartsOn]="1" [hourSegments]="2"
+            [dayStartHour]="6" [dayEndHour]="22" (hourSegmentClicked)="hourSegmentClicked($event.date)"
+            (eventClicked)="eventClicked('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+          </mwl-calendar-week-view>
+        </div>
+        <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events"
+          [locale]="locale" [refresh]="refresh" precision="minutes" [hourSegments]="2" [dayStartHour]="7"
+          [dayEndHour]="19" (hourSegmentClicked)="hourSegmentClicked($event.date)"
+          (eventClicked)="eventClicked('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+        </mwl-calendar-day-view>
+      </div>
+
+    </div>
+
+    <!-- </div> -->
+    <div class="overlay" *ngIf="!events">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <div class="modal-title" style="color: #68a7d2; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="color:white; background:#68a7d2;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">{{isEdit==true?'Update Appointment ':'Add New Appointment'}} on
+          {{appDate | date:'dd/MM/yyyy'}} at
+          {{appDate | date:'HH:mm:SS'}} @{{getLocationName(selLoc)}}
+        </h4>
+      </div>
+      <div class="modal-body" style="border-top:none;background-size:cover;">
+        <form #calendarForm="ngForm">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="startDate"> Date</label>
+                <input [matTooltipPosition]="'below'" matTooltip="Click to change  date" [owlDateTime]="dt1"
+                  [owlDateTimeTrigger]="dt1" name="fromDate" class="form-control" [(ngModel)]="appDate"
+                  #appDateEnt="ngModel">
+                <owl-date-time [pickerType]="'calendar'" #dt1 style="width: 250px;"></owl-date-time>
+                <span class="help-block" *ngIf="!appDateEnt.valid && appDateEnt.touched">Please enter valid
+                  Date.</span>
+
+                <!-- <input id="startDate" name="startDate" class="form-control" value="{{appDate | date:'dd/MM/yyyy'}}" readonly> -->
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group" [ngClass]="(!startTime.valid && startTime.touched)?'has-error':''">
+                <label for="startTime">
+                  From Time <span style="color:red">*</span>
+                </label>
+                <input #startTime="ngModel" [matTooltipPosition]="'below'" matTooltip="Click to change Start Time"
+                  [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" id="startTime" name="startTime" class="form-control"
+                  onkeydown="return false;" [(ngModel)]="fromTime" required>
+                <owl-date-time [pickerType]="'timer'" hour24Timer="true" #dt2></owl-date-time>
+                <span class="help-block" *ngIf="!startTime.valid && startTime.touched">Please enter valid Start
+                  Time.</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group" [ngClass]="(!endTime.valid && endTime.touched)?'has-error':''">
+                <label for="endTime">
+                  To Time <span style="color:red">*</span>
+                </label>
+                <input #endTime="ngModel" [matTooltipPosition]="'below'" matTooltip="Click to change End Time"
+                  [owlDateTime]="dt4" [owlDateTimeTrigger]="dt4" id="endTime" name="endTime" class="form-control"
+                  onkeydown="return false;" [(ngModel)]="toTime" required>
+                <owl-date-time [pickerType]="'timer'" hour24Timer="true" #dt4></owl-date-time>
+                <span class="help-block" *ngIf="!endTime.valid && endTime.touched">Please
+                  enter valid End Time.</span>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group" [ngClass]="(!AllowbyEnt.valid && AllowbyEnt.touched)?'has-error':''">
+                <label for="startTime">
+                  Allow Entry By <span style="color:red">*</span>
+                </label>
+                <input #AllowbyEnt="ngModel" [matTooltipPosition]="'below'" matTooltip="Click to change Start Time"
+                  [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" id="allow" name="allow" class="form-control"
+                  onkeydown="return false;" [(ngModel)]="Allowby" required>
+                <owl-date-time [pickerType]="'timer'" hour24Timer="true" #dt12></owl-date-time>
+                <span class="help-block" *ngIf="!AllowbyEnt.valid && AllowbyEnt.touched">Please enter valid
+                  Time.</span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group" [ngClass]="(!visitorTypeEnt.valid && visitorTypeEnt.touched)?'has-error':''">
+                <label for="visitortype">
+                  <h3>Visitor Type <span style="color:red">*</span></h3>
+                </label>
+                <select [(ngModel)]="selectedVisitorType" class="form-control" id="visitorType" name="visitorType"
+                  ngControl="selectedVisitorType" #visitorTypeEnt="ngModel" required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Visitor Type </option>
+                  <option *ngFor="let vt of visitorTypeList" [ngValue]="vt">{{vt.visitor_Type}}</option>
+                </select>
+                <span class="help-block" *ngIf="!visitorTypeEnt.valid && visitorTypeEnt.touched">Please select Visitor
+                  Type.</span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group" [ngClass]="(!purposeEnt.valid && purposeEnt.touched)?'has-error':''">
+                <label for="SelempSBUList">
+                  <h3>Purpose <span style="color:red">*</span></h3>
+                </label>
+                <select [(ngModel)]="selectedPurpose" class="form-control" id="purpose" name="purpose"
+                  ngControl="selectedPurpose" #purposeEnt="ngModel" required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Purpose </option>
+                  <option *ngFor="let pl of purposeList" [ngValue]="pl">{{pl.purpose}}</option>
+                </select>
+                <span class="help-block" *ngIf="!purposeEnt.valid && purposeEnt.touched">Please select purpose.</span>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row">
+            <div class="col-sm-6 col-lg-6 col-md-6">
+              <div class="form-group"
+                [ngClass]="(!entityvisitorName.valid && entityvisitorName.touched)?'has-error':''">
+                <label for="entityvisitorName">Visitor's Name<span style="color:red">*</span></label>
+                <input type="text" class="form-control" id="visitorName" placeholder="Visitor Name"
+                  [(ngModel)]="visitorName" name="entityvisitorName" ngControl="visitorName"
+                  #entityvisitorName="ngModel" (change)="visitorName=visitorName.trim()" required>
+                <span class="help-block" *ngIf="!entityvisitorName.valid && entityvisitorName.touched">Please enter
+                  Visitors Name.</span>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-6 col-md-6">
+              <label for="entitymobile">Mobile<span style="color:red">*</span></label>
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group"
+                    [ngClass]="(!ccodeEnt.valid && ccodeEnt.touched && ccodeEnt.value<=0)?'has-error':''">
+
+                    <input [(ngModel)]="code" class="form-control" placeholder="Code" type="text" id="ccode"
+                      name="ccode" ngControl="code" #ccodeEnt="ngModel" required (keypress)="keyPressNumber($event)">
+                    <span class="help-block" *ngIf="!ccodeEnt.valid && ccodeEnt.touched && ccodeEnt.value<=0">Please
+                      enter Code.</span>
+                  </div>
+                </div>
+                <div class="col-sm-8">
+                  <div class="form-group" [ngClass]="(!entitymobile.valid && entitymobile.touched )?'has-error':''">
+
+                    <input type="text" class="form-control" id="mobile" placeholder="Mobile" [(ngModel)]="mobile"
+                      name="entitymobile" ngControl="mobile" #entitymobile="ngModel" required maxlength="10"
+                      minlength="10" (keypress)="keyPressNumber($event)">
+                    <span class="help-block" *ngIf="!entitymobile.valid && entitymobile.touched">Please enter mobile
+                      number.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+
+                <label>Change Location</label>
+                <ng-multiselect-dropdown style="width:100%; background-color: white;" id="filLocation"
+                  name="filLocation" ngControl="selLocationId" #filterLocationEnt="ngModel"
+                  class="custom-asset-dropdown" [placeholder]="'Location'" [data]="LocationMasterList"
+                  [(ngModel)]="selLocationId" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)"
+                  (onSelectAll)="onSelectAll()">
+                </ng-multiselect-dropdown>
+
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-6 col-md-6">
+              <div class="form-group">
+                <label for="calEnId">No of Persons</label>
+                <input type="number" class="form-control" id="otherinf" placeholder="No Of Persons"
+                  [(ngModel)]="NoOfPersons" name="entityotherinfo" ngControl="NoOfPersons" (change)="checklength()"
+                  #entityotherinfo="ngModel">
+              </div>
+            </div>
+            <!-- <div class="col-sm-6">
+              <div class="form-group">
+                <label for="calEnId">Email
+                </label>
+                <input type="email" class="form-control" id="ema" placeholder="Email" [(ngModel)]="email"
+                  name="entityemail" ngControl="email == '' ? '' : email" #entityemail="ngModel"
+                  (change)="email=email.trim()">
+
+              </div>
+            </div> -->
+
+
+          </div>
+          <!-- <div class="row">
+            <div class="col-sm-6 col-lg-6 col-md-6">
+
+              <div class="form-group">
+                <label for="calEnId">Company Name
+                </label>
+                <input type="text" class="form-control" id="cname" placeholder="Company Name" [(ngModel)]="companyName"
+                  (change)="companyName=companyName.trim()" name="entityCompanyname"
+                  ngControl="companyName == '' ? '' : companyName" #entityCompanyname="ngModel">
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-6 col-md-6">
+              <div class="form-group">
+                <label for="calEnId">Other Information</label>
+                <input class="form-control" id="otherinf" placeholder="Other Information" [(ngModel)]="otherinformation"
+                  name="entityotherinfo" ngControl="otherinformation == '' ? '' : otherinformation"
+                  #entityotherinfo="ngModel" (change)="otherinformation=otherinformation.trim()">
+              </div>
+            </div>
+          </div> -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <a>Visitor Details</a>
+                  </h3>
+                </div>
+                <div class="panel-body form-horizontal">
+                  <div class="row">
+                    <table class="table table-bordered table-striped table-hover">
+                      <thead>
+                        <tr>
+                          <th>Action</th>
+                          <th>Sl.No</th>
+                          <th>Name<span style="color:red">*</span></th>
+                          <th>Mobile No<span style="color:red">*</span></th>
+                          <th>Email ID<span style="color:red">*</span></th>
+                          <th>Company Name<span style="color:red">*</span></th>
+
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let dep of VisitorDetails;let i=index">
+                          <td style="max-width: 50px;">
+                            <button (click)="RemoveLine(i)" title="click to remove this line"
+                              class="btn btn-xs btn-danger">
+                              <i class="fas fa-times"></i>
+                            </button>
+                          </td>
+                          <td>
+                            {{i+1}}
+                          </td>
+                          <td>
+
+                            <input type="text" [id]="'visitor_'+i" [(ngModel)]="dep.name" maxlength="100"
+                              placeholder="Name" class="f0" required [name]="'visitor_'+i"
+                              (keyup)="GetVisitorDetails(dep, i)" autocomplete="off" 
+                              ngControl="dep.name" />
+
+                          </td>
+                          <td>
+                            <input type="text" class="form-control" [id]="'mobile_'+i" [(ngModel)]="dep.mobile"
+                              ngControl="dep.mobile" maxlength="10" [name]="'mobile_'+i" placeholder="Mobile"
+                              required />
+                          </td>
+                          <td>
+                            <input type="text" class="form-control" [id]="'email_'+i" [(ngModel)]="dep.email"
+                              ngControl="dep.email" [name]="'email_'+i" placeholder="Email" required />
+                          </td>
+                          <td>
+                            <input type="text" class="form-control" [id]="'companyName_'+i"
+                              [(ngModel)]="dep.companyName" ngControl="dep.companyName" [name]="'companyName_'+i"
+                              placeholder="Company Name" required />
+                          </td>
+
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="row" *ngIf="VisitorDetails.length<NoOfPersons">
+                    <button type="button" class="btn btn-info" (click)="onAddLineClick()">
+                      <i class="fas fa-plus"></i> Add New Line</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <div class="form-group">
+                <label for="calEnId">Remarks
+                  <!-- <span style="color:red">*</span> -->
+                </label>
+                <textarea type="text" class="form-control" id="rema" placeholder="Remarks" [(ngModel)]="purpose"
+                  name="entitypurpose" ngControl="purpose == '' ? '' : purpose" #entitypurpose="ngModel"
+                  (change)="purpose =purpose .trim()"></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="box" *ngIf="selectedVisitorType !='Employee'">
+          <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+            <div class="col-xs-6">
+              <h3 class="box-title">Approvers List</h3>
+            </div>
+          </div>
+          &nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="table">
+                <table id="approversTable" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>Approver Id</th>
+                      <th>ApproverName</th>
+                      <th>Department</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of Approverslist; let i = index">
+                      <td>{{user.approverId}}</td>
+                      <td>{{user.approverName}}</td>
+                      <td>{{user.department}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveCalendar()"
+          [disabled]="isLoadingPop || !calendarForm.valid || pastEvent">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-primary" (click)="deleteCalendarEntry()"
+          [disabled]="!isEdit  || pastEvent">Delete Entry</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- </div> -->
+<div class="modal fade" id="BelongingsModal" tabindex="-1" role="dialog" aria-labelledby="BelongingsModalLabel"
+  aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Add/Update Belongings
+        </h4>
+      </div>
+      <div class="modal-body box" style="box-shadow: none; border-top:none;margin-top: 0;">
+        <div class="form-horizontal">
+          <!-- <div class="col-sm-12" style="width: 4in;  height: 4in; ">
+            <form #printForm="ngForm"> -->
+          <div id="print-section" class="align-center">
+            <div class="col-md-12">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <a>Belonging Details</a>
+                  </h3>
+                </div>
+                <div class="panel panel-info">
+                  <div class="panel-body form-horizontal">
+                    <form #educationForm="ngForm">
+                      <div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="col-md-4"> Belonging Type <span style="color:red">*</span></label>
+                              <div class="col-md-8">
+                                <select [(ngModel)]="Type" class="form-control" required name="educationLevelId"
+                                  #educationLevelEnt="ngModel">
+                                  <option [ngValue]="null" disabled [selected]="true"> Select Education </option>
+                                  <option>Returnable</option>
+                                  <option>Non Returnable</option>
+                                </select>
+                                <span class="help-block" *ngIf="educationLevelEnt.touched && !educationLevelEnt.valid">
+                                  Please select type</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="col-md-4"> Belonging <span style="color:red">*</span></label>
+                              <div class="col-md-8">
+                                <input type="text" class="form-control" id="specialisation" [(ngModel)]="Belonging"
+                                  ngControl="Belonging" name="specialisation" #specialisationEnt="ngModel" required
+                                  maxlength="30" />
+                                <span class="help-block" *ngIf="specialisationEnt.touched && !specialisationEnt.valid">
+                                  Please enter belongings</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="col-md-4"> Make/Model No. <span style="color:red">*</span></label>
+                              <div class="col-md-8">
+                                <input type="text" class="form-control" id="university" [(ngModel)]="modelNo"
+                                  ngControl="modelNo" name="university" #universityEnt="ngModel" required
+                                  maxlength="50" />
+                                <span class="help-block" *ngIf="universityEnt.touched && !universityEnt.valid">
+                                  Please enter model no</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="col-md-4"> Serial No. </label>
+                              <div class="col-md-8">
+                                <input type="text" class="form-control" id="Serial" [(ngModel)]="SerialNo"
+                                  ngControl="modelNo" name="Serial" #SerialEnt="ngModel" />
+
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="col-md-4"> Details <span style="color:red">*</span></label>
+                              <div class="col-md-8">
+                                <input type="text" class="form-control" id="city" [(ngModel)]="Details"
+                                  ngControl="Details" name="city" #cityEnt="ngModel" required maxlength="100" />
+                                <span class="help-block" *ngIf="cityEnt.touched && !cityEnt.valid">
+                                  Please enter details</span>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="text-center">
+                          <button type="button" class="btn btn-primary btn-sm"
+                            [disabled]="isLoading || !educationForm.valid" *ngIf="!isEdit" (click)="addData()">
+                            <i class="fas fa-plus"></i> Add</button>
+                          <button type="button" class="btn btn-success btn-sm"
+                            [disabled]="isLoading || !educationForm.valid" *ngIf="isEdit"
+                            (click)="updateData(attachment.files)">
+                            <i class="fas fa-check"></i> Update</button>
+                          <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+                            Cancel</button>
+                        </div>
+
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th>Action</th>
+                        <th>Sl No</th>
+                        <th>Type</th>
+                        <th>Belonging</th>
+                        <th>Make/Model No</th>
+                        <th>Serial No</th>
+                        <th>Details</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of BelongingsList; let i = index">
+
+                        <td>
+                          <button (click)="EditLine(item, i)" title="click to edit this "
+                            class="btn btn-xs btn-primary">
+                            <i class="fas fa-pen"></i>
+                          </button>
+                          <button (click)="deleteData(item.appointmentEducationId, i)" title="click to remove this "
+                            class="btn btn-xs btn-danger">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </td>
+                        <td>{{i+1}}</td>
+                        <td>{{item.Type}}</td>
+                        <td>{{item.Belonging}}</td>
+                        <td>{{item.modelNo}}</td>
+                        <td>{{item.serialNo}}</td>
+                        <td>{{item.Details}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+          <!-- </form>
+          </div> -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+
+        <button type="button" class="btn btn-default" [matTooltipPosition]="'below'" matTooltip="Click to Close"
+          style="background-color:darkgray;color:white;" (click)="closeBelongingModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

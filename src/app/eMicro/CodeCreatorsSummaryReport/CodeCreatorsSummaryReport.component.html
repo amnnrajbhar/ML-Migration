@@ -1,0 +1,133 @@
+<section class="content-header">
+    <h1 class="display-1">
+      SAP Masters Summary
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+      <li class="active">SAP Masters Summary</li>
+    </ol>
+  </section>
+
+  <section class="content">
+      <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+              <h3 class="box-title">Summary</h3>
+              <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            
+          </div>
+          <div class="col-sm-12">
+              <div class="row">
+                <!-- <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                      <label for="fltrtype">Request Type<span style="color:red">*</span></label>
+                      <select [(ngModel)]="filtertype" class="form-control" id="fltrtype" name="fltrtype" ngControl="filtertype"
+                        #fltrtypeEnt="ngModel" matTooltip="Select type" required>
+                        <option [ngValue]="null" disabled>--Select an Option--</option>
+                        <option *ngFor="let type of typelist" value={{type.name}}>{{type.name}}</option>
+                      </select>
+                    </div>
+                  </div>  -->
+                  <div class="col-sm-4">
+                    <label>Created Date</label>
+                    <div class="row">
+                      <div class="form-group form-group-sm" [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+                        <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dt11"
+                          [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                          #fromDate="ngModel">
+                        <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+                        <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From
+                          Date.</span>
+                      </div>
+                    </div>
+                  </div> 
+
+                  <div class="col-sm-2">
+                    <label>&nbsp;</label>
+                    <div class="form-group form-group-sm">
+                      <button class="btn btn-primary btn-sm" (click)="GetMasterCount();"
+                        [disabled]="!fromDate.valid && fromDate.touched"
+                        matTooltip="click to go">Go</button>
+                      &nbsp;&nbsp;
+                      <button class="btn btn-primary btn-sm" (click)="clearFilter();" matTooltip="click to reset">Clear</button>
+                    </div>
+                  </div>
+              </div>
+          </div>
+
+          &nbsp;&nbsp;&nbsp;
+         &nbsp;&nbsp;&nbsp;
+          <div class="col-sm-12" >
+         <table class="table table-bordered table-striped">
+            <tr><td colspan="2" style="text-align: center;color: black;"><strong>Requests Pending with IT Team As On {{to_date | date:'dd/MM/yyyy HH:mm'}}</strong> </td></tr>
+            <tr style="text-align: center;color: black;">
+                <th><strong>Type</strong></th>
+                <th><strong>Count</strong></th>
+                <th><strong>Due(Pending from Last 2 days)</strong></th>
+                <th><strong>OverDue(Pending from more than 2 days)</strong></th>
+            </tr>
+            <tr *ngFor="let pen of PendingList">
+                <td>{{pen.type}}</td>
+                <td>{{pen.count?pen.count:0}}</td>
+                <td>{{pen.due}}</td>
+                <td>{{pen.overDue}}</td>
+            </tr>
+         </table>    
+         &nbsp;&nbsp;&nbsp;
+         &nbsp;&nbsp;&nbsp;
+         <table class="table table-bordered table-striped">
+            <tr><td colspan="12" style="text-align: center;color: black;"><strong>No of Codes Created On {{from_date | date:'dd/MM/yyyy'}} By Masters Team</strong> </td></tr>
+            <tr>
+                <th><strong>Creator</strong></th>
+                <th><strong>RM</strong></th>
+                <th><strong>PM</strong></th>
+                <th><strong>BULK</strong></th>
+                <th><strong>FG</strong></th>
+                <th><strong>OSE</strong></th>
+                <th><strong>LC</strong></th>
+                <th><strong>PPC</strong></th>
+                <th><strong>Code Extension</strong></th>
+                <th><strong>Vendor</strong></th>
+                <th><strong>Customer</strong></th>
+                <th><strong>Service</strong></th>
+                <th><strong>Total</strong></th>
+            </tr>
+            <tr *ngFor="let dat of CreatorWiseCompletedList">
+                <td>{{dat.Creator}}</td>
+                <td>{{dat.RM}}</td>
+                <td>{{dat.PM}}</td>
+                <td>{{dat.BULK}}</td>
+                <td>{{dat.FG}}</td>
+                <td>{{dat.OSE}}</td>
+                <td>{{dat.LC}}</td>
+                <td>{{dat.PPC}}</td>
+                <td>{{dat.CodeExtension}}</td>
+                <td>{{dat.Vendor}}</td>
+                <td>{{dat.Customer}}</td>
+                <td>{{dat.Service}}</td>
+                <td>{{dat.Total}}</td>
+            </tr>
+            <tr>
+                <th><strong>Total</strong></th>
+                <th>{{TotalRM}}</th>
+                <th>{{TotalPM}}</th>
+                <th>{{TotalBULK}}</th>
+                <th>{{TotalFG}}</th>
+                <th>{{TotalOSE}}</th>
+                <th>{{TotalLC}}</th>
+                <th>{{TotalPPC}}</th>
+                <th>{{TotalCodeExtension}}</th>
+                <th>{{TotalVendor}}</th>
+                <th>{{TotalCustomer}}</th>
+                <th>{{TotalService}}</th>
+                <th>{{Total}}</th>
+            </tr>
+         </table> 
+          
+        
+        </div>
+
+        
+      </div>
+  </section>

@@ -1,0 +1,35 @@
+export class AccountSubmission{
+   accSubmittedReferenceNo:number;
+   totalAmount:number;
+   advanceAmountPaid:number; 
+   balanceAmount:number;
+   advanceChequeNo:number;
+   remarks :string;
+   accSubmittedBy:string;
+   accSubmittedDate:Date;
+   supportings:string;
+   division:string;
+   department:string;
+   typeOfEvent:string;
+   typeOfGuest:string;
+   vendorName:string;
+   invoiceNo:number;
+   invoiceDate:string;
+   createdDate:string;
+   createdBy: number;
+   modifiedBy: number;
+   id: any;
+  isSelected: boolean;
+  isActive: boolean;
+  name: string;
+  employeeNo: string;
+  employeeName: string;
+  eventDate: Date;
+  noOfPax: number;
+  amount: number;
+  hotelName: string;
+  vendorCity: string;
+  createdOn: Date;
+  accSubmittedReferenceNoId: any;
+  accountStatus: number;
+}

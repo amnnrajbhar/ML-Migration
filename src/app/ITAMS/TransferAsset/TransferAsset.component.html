@@ -1,0 +1,288 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Asset Status Change
+        <small> ITAMS </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    </ol>
+</section>
+
+<!--Main Content-->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <h1 class="display-1">
+                <small><i><b>Transfer Asset </b></i></small>
+            </h1>
+            <div id="dateFilterPanel">
+                <div class="col-sm-12">
+                    <div class="card-body" style="border: black; box-shadow: grey;">
+                        <form #filterForm="ngForm">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="transfer"> Asset Transfer type <span
+                                                style="color:red">*</span></label>
+                                        <select [(ngModel)]="filtertransfer" class="form-control" id="transfer"
+                                            name="transfer" ngControl="filtertransfer" #transferEnt="ngModel"
+                                            matTooltip="Select Transfer type">
+                                            <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                            <option>User transfer</option>
+                                            <option>Location transfer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            &nbsp;&nbsp;&nbsp;
+                            <div id="dateFilterPanel" *ngIf="filtertransfer == 'User transfer'">
+                                <div class="col-sm-12">
+                                    <h2><b>Asset Details</b></h2>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card-body" style="border: black; box-shadow: gray;">
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="assetNo"> Asset No <span
+                                                                    style="color:red">*</span></label>
+                                                            <input class="form-control input-sm suggestion" type="text"
+                                                                [(ngModel)]="filterassetNo" name="assetNo"
+                                                                #assetNoEnt="ngModel" autocomplete="Off"
+                                                                placeholder="Asset No" [value]="assetNo" 
+                                                                (keyup)="setList(filterassetNo)" id="assetNo"
+                                                                ngControl="filterassetNo" [disabled]="isEdit"
+                                                                matTooltip="Enter Asset No." required />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="assetId"> Asset Id </label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filterassetId" name="assetId"
+                                                                placeholder="Asset Id" [value]="assetId" 
+                                                                [disabled]="isEdit" ngControl="filterassetId"
+                                                                id="assetId" matTooltip="Enter Asset Id" disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="location"> Location </label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filterlocation" name="location"
+                                                                placeholder="Location" [value]="location" 
+                                                                [disabled]="isEdit" ngControl="filterlocation"
+                                                                id="location" matTooltip="Enter Location" disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="category">Category</label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filtercategory" name="category"
+                                                                placeholder="Category" [value]="category" 
+                                                                [disabled]="isEdit" ngControl="filtercategory"
+                                                                id="category" matTooltip="Enter Category" disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="empNo"> Employee Number </label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filterempNo" name="empNo"
+                                                                placeholder="empNo" [value]="empNo" 
+                                                                [disabled]="isEdit" id="empNo" ngControl="filterempNo"
+                                                                matTooltip="Enter Emp No" disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="model"> Model </label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filtermodel" name="model"
+                                                                placeholder="Model" [value]="model" 
+                                                                [disabled]="isEdit" id="model" ngControl="filtermodel"
+                                                                matTooltip="Enter Model" disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="manufacturer"> Manufacturer </label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filtermanufacturer" name="manufacturer"
+                                                                placeholder="Manufacturer" [value]="manufacturer"
+                                                                 [disabled]="isEdit" id="manufacturer"
+                                                                ngControl="filtermanufacturer"
+                                                                matTooltip="Enter Manufacturer" disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="processor"> Processor </label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filterprocessor" name="processor"
+                                                                placeholder="Processor" [value]="processor"
+                                                                 [disabled]="isEdit"
+                                                                ngControl="filterprocessor" id="processor"
+                                                                matTooltip="Enter Processor" disabled />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-1">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="ram"> RAM</label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filterram" name="ram" placeholder="RAM"
+                                                                [value]="ram"  [disabled]="isEdit"
+                                                                id="ram" ngControl="filterram" matTooltip="Enter RAM"
+                                                                disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-1">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="hdd"> HDD.</label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filterhdd" name="hdd" placeholder="HDD"
+                                                                [value]="hdd"  [disabled]="isEdit"
+                                                                id="hdd" ngControl="filterhdd" matTooltip="Enter HDD"
+                                                                disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group form-group-sm">
+                                                            <label for="config"> Configurations. </label>
+                                                            <input class="form-control input-sm" type="text"
+                                                                [(ngModel)]="filterconfig" name="config"
+                                                                placeholder="Config" [value]="config"
+                                                                [disabled]="isEdit" id="config" ngControl="filterconfig"
+                                                                matTooltip="Enter Config" disabled />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                &nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;
+                                <div class="col-sm-12">
+                                    <h2><b>Current User Details</b></h2>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="empNo"> Employee Number </label>
+                                                <input class="form-control input-sm" type="text"
+                                                    [(ngModel)]="filterempNo" name="empNo" placeholder="empNo"
+                                                    [value]="empNo"  [disabled]="isEdit" id="empNo"
+                                                    ngControl="filterempNo" matTooltip="Enter Emp No" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="empName"> Employee Name </label>
+                                                <input class="form-control input-sm" type="text"
+                                                    [(ngModel)]="filterempName" name="empName" placeholder="empName"
+                                                    [value]="empName"  [disabled]="isEdit" id="empName"
+                                                    ngControl="filterempName" matTooltip="Enter Emp Name" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="empDesg"> Employee Designation </label>
+                                                <input class="form-control input-sm" type="text"
+                                                    [(ngModel)]="filterempDesg" name="empDesg" placeholder="empDesg"
+                                                    [value]="empDesg"  [disabled]="isEdit" id="empDesg"
+                                                    ngControl="filterempDesg" matTooltip="Enter Emp Designation"
+                                                    disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="empDept"> Employee Department </label>
+                                                <input class="form-control input-sm" type="text"
+                                                    [(ngModel)]="filterempDept" name="empDept" placeholder="empDept"
+                                                    [value]="empDept"  [disabled]="isEdit" id="empDept"
+                                                    ngControl="filterempDept" matTooltip="Enter Emp Department"
+                                                    disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+                                </div>
+                                &nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;
+                                <div class="col-sm-12">
+                                    <h2><b>New User Details</b></h2>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="empNo1"> Employee No. <span style="color:red">*</span>
+                                                </label>
+                                                <input class="form-control input-sm suggestion" type="text"
+                                                    name="empNo1" [(ngModel)]="filterempNo1" #empNo1Ent="ngModel"
+                                                    placeholder="Emp No" ngControl="filterempNo1" value="empNo1"
+                                                    maxlength="10" (keyup)="setDet(filterempNo1)" id="empNo1"
+                                                    [disabled]="isEdit" matTooltip="Enter Employee No." required />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="empName1"> Employee Name </label>
+                                                <input class="form-control input-sm" type="text" name="empName1"
+                                                    [(ngModel)]="filterempName1" placeholder="Emp Name" value="empName1"
+                                                    ngControl="filterempName1 "  [disabled]="isEdit"
+                                                    [id]="empName1" matTooltip="Enter Employee Name" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="empDesg1"> Designation </label>
+                                                <input class="form-control input-sm" type="text" name="empDesg1"
+                                                    [(ngModel)]="filterempDesg1" placeholder="Designation"
+                                                    value="empDesg1"  [disabled]="isEdit" [id]="empDesg1"
+                                                    ngControl="filterempDesg1" matTooltip="Enter Employee Designation"
+                                                    required />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label for="empDept1"> Department <span
+                                                        style="color:red">*</span></label>
+                                                <input class="form-control input-sm" type="text" name="empDept1"
+                                                    [(ngModel)]="filterempDept1" placeholder="Department"
+                                                    value="empDept1"  [disabled]="isEdit" [id]="empDept1"
+                                                    ngControl="filterempDept1" matTooltip="Enter Employee Department"
+                                                    required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+                                </div>
+
+                                &nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-primary" (click)="onTransfer()"
+                                        [disabled]="!filterForm.valid || (filterempNo == filterempNo1)">Transfer</button>
+                                    &nbsp;&nbsp;
+                                    <button type="button" class="btn btn-primary" (click)="clearFilter();"
+                                        data-dismiss="modal" [disabled]="isLoading"
+                                        matTooltip="click to reset">Clear</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

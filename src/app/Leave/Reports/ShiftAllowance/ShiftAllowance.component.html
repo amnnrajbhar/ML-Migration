@@ -1,0 +1,276 @@
+<section class="content-header">
+    <h1>
+        Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+            <h3 class="box-title">Employee Shift Allowance Report</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Plant <span style="color: red;">*</span></label>
+                        <select [(ngModel)]="filterPlant" class="form-control" id="locationName" name="locationName"
+                            (change)="getPaygroupsBasedOnPlant1()">
+                            <option [ngValue]="null">--Select Plant--</option>
+                            <option *ngFor="let location of locationList" value="{{location.fkPlantId}}">
+                                {{location.code + '-' + location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="paygroup">Pay Group</label>
+                        <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                            <option [ngValue]="null">--Select Pay Group--</option>
+                            <option *ngFor="let location of payGroupList11" value="{{location.id}}">
+                                {{location.short_desc}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="staffcat">Staff Category</label>
+                        <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                            <option [ngValue]="null">--Select Emp Category--</option>
+                            <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                {{cat.catltxt}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select [(ngModel)]="filterDepartment" class="form-control" id="department" name="department">
+                            <option [ngValue]="null">--Select Department--</option>
+                            <option *ngFor="let location of departmentList" value="{{location.id}}">
+                                {{location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="reportingGroup">Reporting Group </label>
+                        <select [(ngModel)]="filterReportingGroup" class="form-control" id="reportingGroup"
+                            name="locatireportingGrouponName">
+                            <option [ngValue]="null">--Select Reporting Group--</option>
+                            <option *ngFor="let location of ReportingGroupList" value="{{location.id}}">
+                                {{location.reportingGroupLt}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="emp">Employee No<span style="color: red;"></span></label>
+                        <br>
+                        <input type="text" [(ngModel)]="EmployeeNo" class="form-control" id="empNo"
+                            placeholder="Employee No" name="empNo" ngControl="EmployeeNo" #empNoEnt="ngModel"
+                            (keyup)="getEmployee($event)">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="startDate">
+                            From Date
+                        </label>
+                        <div class='input-group date'>
+                            <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                [min]="min" [owlDateTime]="dtStart11" [owlDateTimeTrigger]="dtStart11"
+                                [matTooltipPosition]="'below'" matTooltip="Click to change From Date"
+                                placeholder="DD/MM/YYYY" #startDate1="ngModel" [disabled]="isEdit">
+                            <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart11">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                            <owl-date-time [pickerType]="'calendar'" #dtStart11></owl-date-time>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="endDate">
+                            To Date
+                        </label>
+                        <div class='input-group date'>
+                            <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate" [min]="min"
+                                [owlDateTime]="dtEnd11" [owlDateTimeTrigger]="dtEnd11" [matTooltipPosition]="'below'"
+                                matTooltip="Click to change To Date" placeholder="DD/MM/YYYY" #endDate1="ngModel"
+                                [disabled]="isEdit">
+                            <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtEnd11">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                            <owl-date-time [pickerType]="'calendar'" #dtEnd11></owl-date-time>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Action">Report Type</label>
+                        <div class="row">
+                            <mat-radio-group aria-label="Select option?" id="filterType" name="filterType"
+                                [(ngModel)]="ViewType" [disabled]="isEdit" ngControl="filterType"
+                                #filterTypeEnt="ngModel">
+                                <mat-radio-button value="Summary">Summary</mat-radio-button>
+                                &nbsp;&nbsp;&nbsp;
+                                <mat-radio-button value='Detailed'>Detailed</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <label>&nbsp;</label>
+                <div class="form-group">
+                    <button class="btn btn-success" (click)="GetShiftAllowanceReportPdf('View');"
+                        matTooltip="click to Search"><i class="fas fa-angle-double-right"></i>&nbsp; Search</button>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-info" (click)="GetShiftAllowanceReportPdf('PDF');"
+                        matTooltip="click to export"><i class="fas fa-file-pdf"></i>&nbsp;Export to
+                        Pdf</button>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-danger" (click)="ClearData()" matTooltip="click to Clear"><i
+                            class="fas fa-times"></i>&nbsp; Clear</button>
+                </div>
+            </div>
+        </div>
+
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+        <div class="col-sm-12">
+            <div class="box-body table-responsive" *ngIf="ViewType =='Summary'">
+                <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                    <thead style="background-color: #3ba7ff; color:white;">
+                        <tr>
+                            <th class="col-sm-1">Sl.No</th>
+                            <th>Employee No</th>
+                            <th>Employee Name</th>
+                            <th>Designation</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Shift Code</th>
+                            <th>No.Of Days</th>
+                            <th>Per Day Allowance</th>
+                            <th>Total Allowance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let categ of EmpShiftAll;  let i = index">
+                            <td>{{i+1}}</td>
+                            <td>{{categ.pernr}}</td>
+                            <td>{{categ.empName}}</td>
+                            <td>{{categ.designation}}</td>
+                            <td>{{categ.role}}</td>
+                            <td>{{categ.department}}</td>
+                            <td>{{categ.shift}}</td>
+                            <td>{{categ.noofDays}}</td>
+                            <td>{{categ.perdayallowance}}</td>
+                            <td>{{categ.total}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="box-body table-responsive" *ngIf=" ViewType =='Detailed'">
+                <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                    <thead style="background-color: #3ba7ff; color:white;">
+                        <tr>
+                            <th class="col-sm-1">Sl.No</th>
+                            <th>Employee No</th>
+                            <th>Employee Name</th>
+                            <th>Designation</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Shift Code</th>
+                            <th>Date</th>
+                            <th>Per Day Allowance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let categ of EmpShiftAll;  let i = index">
+                            <td>{{i+1}}</td>
+                            <td>{{categ.pernr}}</td>
+                            <td>{{categ.empName}}</td>
+                            <td>{{categ.designation}}</td>
+                            <td>{{categ.role}}</td>
+                            <td>{{categ.department}}</td>
+                            <td>{{categ.shift}}</td>
+                            <td>{{categ.date | date:'yyyy/MM/dd'}}</td>
+                            <td>{{categ.perdayallowance}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div hidden id="AllowanceSum">
+    <table class="table table-bordered  table-striped">
+        <thead>
+            <tr>
+                <th class="col-sm-1">Sl.No</th>
+                <th>Employee No</th>
+                <th>Employee Name</th>
+                <th>Designation</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Shift Code</th>
+                <th>No.Of Days</th>
+                <th>Per Day Allowance</th>
+                <th>Total Allowance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let categ of EmpShiftAll;  let i = index">
+                <td>{{i+1}}</td>
+                <td>{{categ.pernr}}</td>
+                <td>{{categ.empName}}</td>
+                <td>{{categ.designation}}</td>
+                <td>{{categ.role}}</td>
+                <td>{{categ.department}}</td>
+                <td>{{categ.shift}}</td>
+                <td>{{categ.noofDays}}</td>
+                <td>{{categ.perdayallowance}}</td>
+                <td>{{categ.total}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div hidden id="AllowanceDet">
+    <table class="table table-bordered  table-striped">
+        <thead>
+            <tr>
+                <th class="col-sm-1">Sl.No</th>
+                <th>Employee No</th>
+                <th>Employee Name</th>
+                <th>Designation</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Shift Code</th>
+                <th>Date</th>
+                <th>Per Day Allowance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let categ of EmpShiftAll;  let i = index">
+                <td>{{i+1}}</td>
+                <td>{{categ.pernr}}</td>
+                <td>{{categ.empName}}</td>
+                <td>{{categ.designation}}</td>
+                <td>{{categ.role}}</td>
+                <td>{{categ.department}}</td>
+                <td>{{categ.shift}}</td>
+                <td>{{categ.date | date:'yyyy/MM/dd'}}</td>
+                <td>{{categ.perdayallowance}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

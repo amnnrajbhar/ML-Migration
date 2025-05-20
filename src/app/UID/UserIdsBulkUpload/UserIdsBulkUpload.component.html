@@ -1,0 +1,235 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Bulk UserId Upload </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Bulk UserId Upload</li>
+  </ol>
+</section>
+
+<section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Bulk UserId Upload</h3>
+    </div>
+    <div class="panel-body">
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="form-group">
+              <!-- (change)="getFiles($event)"  -->
+              <label class="col-md-2">Select File</label>
+              <div class="col-md-4">
+                <input #file type="file" id="file" multiple (change)="getFiles($event)" />
+                <span class="text-danger">Upload excel files only. Maximum file size
+                  allowed is 2MB.</span>
+              </div>
+              <div class="col-md-4">
+                <button type="button" class="btn btn-info" (click)="uploadFile()">
+                  Upload
+                </button>
+                <button type="button" class="btn btn-info pull-right" (click)="getlist()">
+                  <i class="fa fa-history">View History</i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <br>
+  <div>
+    <h4>Instructions:</h4>
+    <!-- <span class="text-danger">Download the below sample upload sheet.</span> -->
+    <ul>
+      <li>Please download the attached sample upload sheet</li>
+      <li>Please populate the sheet with user ids of employees data and upload</li>
+      <li>The column names must not be changed and must be present at all times even if the value is optional, the
+        optional values can be blank though</li>
+      <li>If the uploaded file contains invalid data the whole file gets rejected and an error file is generated for
+        reference</li>
+    </ul>
+  </div>
+  <hr>
+  <div>
+    <h4>Sample Bulk UserId Upload File for reference:</h4>
+    <span class="text-danger">Download the below sample upload sheet.</span>
+    <ul>
+      <li><a href="assets/forms/UserID_Bulk_Upload.xlsx" download="UserID_Bulk_Upload.xlsx">UserID_Bulk_Upload.xlsx</a>
+      </li>
+    </ul>
+  </div>
+
+  <br>
+  &nbsp;
+  <div class="row">
+    <h2>Upload History</h2>
+    <div class="col-md-12 table-responsive">
+      <table class="table table-hover table-striped table-bordered" id="data">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr style="background-color: #68a7d2;color:white;">
+            <th style="background-color: #68a7d2;color:white;">Sl No</th>
+            <th style="background-color: #68a7d2;color:white;">Plant</th>
+            <th style="background-color: #68a7d2;color:white;">Uploaded Date</th>
+            <th style="background-color: #68a7d2;color:white;">Uploaded By</th>
+            <th style="background-color: #68a7d2;color:white;">Department</th>
+            <th style="background-color: #68a7d2;color:white;">Designation</th>
+            <th style="background-color: #68a7d2;color:white;">No of Records</th>
+            <th style="background-color: #68a7d2;color:white;">Status</th>
+            <th style="background-color: #68a7d2;color:white;">Pending Approver</th>
+            <th style="background-color: #68a7d2;color:white;">Last Approver</th>
+            <th style="background-color: #68a7d2;color:white;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of HistoryList; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{item.locationName}}</td>
+            <td>{{item.updatedOn | date:'dd/MM/yyyy'}}</td>
+            <td>{{item.updatedByName}}</td>
+            <td>{{item.department}}</td>
+            <td>{{item.designation}}</td>
+            <td  (click)="getRecords(item)"> <a
+              style="cursor: pointer;text-decoration: underline; color: #68a7d2;"
+              [matTooltipPosition]="'below'"
+              matTooltip="Click to View the Details">{{item.count}}</a></td>
+            <td>{{item.status}}</td>
+            <td>{{item.pendingApprover}}</td>
+            <td>{{item.lastApprover}}</td>
+            <td><button *ngIf="item.pendingApprover == currentUser.employeeId" class="btn btn-primary" 
+              matTooltip="Click to Approve" (click)="Approve(item)"><i class="fa fa-check"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <ul class="pagination" *ngIf="HistoryList.length>0">
+          <li>
+            <a (click)="gotoPage(pageNo)">
+              Showing <b>{{((pageNo-1)*pageSize)+1}}</b> -
+              <b>{{(pageNo*pageSize)>totalCount?totalCount:pageNo*pageSize}}</b> of <b>{{totalCount}}</b> records
+            </a>
+          </li>
+          <li><a *ngIf="pageNo>1" (click)="gotoPage(1)">First</a></li>
+          <li><a *ngIf="pageNo>1" (click)="gotoPage(pageNo-1)">Previous</a></li>
+          <li><a *ngIf="pageNo>2" (click)="gotoPage(pageNo-1)">{{pageNo-2}}</a></li>
+          <li><a *ngIf="pageNo>1" (click)="gotoPage(pageNo-1)">{{pageNo-1}}</a></li>
+          <li class="active"><a (click)="gotoPage(pageNo)">{{pageNo}}</a></li>
+          <li><a *ngIf="totalPages>pageNo" (click)="gotoPage(pageNo+1)">{{pageNo+1}}</a></li>
+          <li><a *ngIf="totalPages>pageNo+1" (click)="gotoPage(pageNo+2)">{{pageNo+2}}</a></li>
+          <li><a *ngIf="totalPages>pageNo" (click)="gotoPage(pageNo+1)">Next</a></li>
+          <li><a *ngIf="totalPages>pageNo" (click)="gotoPage(totalPages)">Last</a></li>
+          <li><a (click)="gotoPage(pageNo)">Page <b>{{pageNo}}</b> of <b>{{totalPages}}</b></a></li>
+          <li><a>Page Size
+              <select id="ddlPageSize" [(ngModel)]="pageSize" (change)="pageSizeChange()">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="HistoryModal" role="dialog" aria-labelledby="HistoryModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">User Id Uploaded Data
+        </h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="col-md-12 table-responsive">
+          <table class="table table-hover table-striped table-bordered" id="data">
+            <thead style="background-color: #68a7d2;color:white;">
+              <tr style="background-color: #68a7d2;color:white;">
+                <th style="background-color: #68a7d2;color:white;">Sl No</th>
+                <th style="background-color: #68a7d2;color:white;">Plant</th>
+                <th style="background-color: #68a7d2;color:white;">Uploaded Date</th>
+                <th style="background-color: #68a7d2;color:white;">Uploaded By</th>
+                <th style="background-color: #68a7d2;color:white;">Department</th>
+                <th style="background-color: #68a7d2;color:white;">Designation</th>
+                <th style="background-color: #68a7d2;color:white;">UserId</th>
+                <th style="background-color: #68a7d2;color:white;">Employee Id</th>
+                <th style="background-color: #68a7d2;color:white;">Software Name</th>
+                <th style="background-color: #68a7d2;color:white;">Sofware Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of DetailedHistoryList; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{item.locationName}}</td>
+                <td>{{item.updatedOn | date:'dd/MM/yyyy'}}</td>
+                <td>{{item.updatedBy}}</td>
+                <td>{{item.department}}</td>
+                <td>{{item.designation}}</td>
+                <td>{{item.userId}}</td>
+                <td>{{item.employeeId}}</td>
+                <td>{{item.softwareName}}</td>
+                <td>{{item.softwareRole}}</td>
+               
+                
+              </tr>
+            </tbody>
+          </table>
+          <!-- <div class="text-center">
+            <div class="overlay text-center h3" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+            <ul class="pagination" *ngIf="DetailedHistoryList.length>0">
+              <li>
+                <a (click)="gotoHPage(pageNo)">
+                  Showing <b>{{((pageNo-1)*pageSize)+1}}</b> -
+                  <b>{{(pageNo*pageSize)>totalCount?totalCount:pageNo*pageSize}}</b> of <b>{{totalCount}}</b> records
+                </a>
+              </li>
+              <li><a *ngIf="pageNo>1" (click)="gotoHPage(1)">First</a></li>
+              <li><a *ngIf="pageNo>1" (click)="gotoHPage(pageNo-1)">Previous</a></li>
+              <li><a *ngIf="pageNo>2" (click)="gotoHPage(pageNo-1)">{{pageNo-2}}</a></li>
+              <li><a *ngIf="pageNo>1" (click)="gotoPage(pageNo-1)">{{pageNo-1}}</a></li>
+              <li class="active"><a (click)="gotoHPage(pageNo)">{{pageNo}}</a></li>
+              <li><a *ngIf="totalPages>pageNo" (click)="gotoHPage(pageNo+1)">{{pageNo+1}}</a></li>
+              <li><a *ngIf="totalPages>pageNo+1" (click)="gotoHPage(pageNo+2)">{{pageNo+2}}</a></li>
+              <li><a *ngIf="totalPages>pageNo" (click)="gotoHPage(pageNo+1)">Next</a></li>
+              <li><a *ngIf="totalPages>pageNo" (click)="gotoHPage(totalPages)">Last</a></li>
+              <li><a (click)="gotoHPage(pageNo)">Page <b>{{pageNo}}</b> of <b>{{totalPages}}</b></a></li>
+              <li><a>Page Size
+                  <select id="ddlPageSize" [(ngModel)]="pageSize" (change)="pageHSizeChange()">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select></a>
+              </li>
+            </ul>
+          </div> -->
+        </div>
+      </div>
+      <div class="modal-footer">
+
+        
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>

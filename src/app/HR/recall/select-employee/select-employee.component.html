@@ -1,0 +1,50 @@
+<section class="content-header">
+  <h1 class="display-1">
+     Recall <small>(for Resigned and Exited Employees)</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Recall</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xs-12">
+
+          <div class="form-group row">
+
+            <label class="col-md-2 control-label text-right">Select Employee</label>
+            <div class="col-md-4">
+              <input type="text" id="employeeName" class="form-control" (keyup)="getEmployeeName($event)"
+                  [(ngModel)]="recall.employeeName" autocomplete="off"  ngControl="recall.employeeName" 
+                  name="employeeName" />    
+                  <input type="hidden" id="employeeId" 
+                  [(ngModel)]="recall.id" 
+                  name="employeeId"/> </div>
+          </div>
+          
+          
+          <div class="form-group text-center actionButtons">
+            <div class="col-md-12">
+            <button type="button" (click)="goBack()" class="btn btn-default" [matTooltipPosition]="'after'"
+            matTooltip="Click to go back to list">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+            <button class="btn btn-primary btn-sm" (click)="viewEmployeeDetails(recall.employeeId)" matTooltip="Search Employee Deatils">
+              Search</button>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>

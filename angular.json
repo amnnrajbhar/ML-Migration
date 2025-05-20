@@ -1,0 +1,207 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ges.web": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "polyfills": "src/polyfills.ts",
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ],
+            "styles": [
+              "src/assets/bootstrap/css/bootstrap.min.css",
+              "src/assets/dist/css/AdminLTE.min.css",
+              "src/assets/dist/css/animate.css",              
+              "src/assets/dist/css/skins/skin-blue-light.min.css",
+              "src/assets/plugins/iCheck/square/blue.css",             
+              "src/assets/plugins/datatables/dataTables.bootstrap.css",
+              "src/assets/plugins/datatables/extensions/TableTools/css/dataTables.tableTools.css",
+              "src/assets/plugins/iCheck/all.css",
+              "src/assets/plugins/select2/select2.min.css",
+              "node_modules/ngx-lightbox/lightbox.css",
+              "node_modules/ionicons-npm/css/ionicons.min.css",
+              "node_modules/angular-calendar/css/angular-calendar.css",
+              "node_modules/timepicker/jquery.timepicker.min.css",
+              "node_modules/toastr/build/toastr.min.css",
+              "src/assets/plugins/datepicker/bootstrap-datepicker.min.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "src/styles.css"
+            ],
+            "scripts": [
+              "src/assets/plugins/jQuery/jquery-2.2.3.min.js",
+              "src/assets/plugins/jQueryUI/jquery-ui.min.js",
+              "node_modules/angular/angular.min.js",
+              "node_modules/chart.js/dist/Chart.min.js",
+              "node_modules/angular-chart.js/dist/angular-chart.min.js",
+              "src/assets/bootstrap/js/bootstrap.min.js",
+              "src/assets/dist/js/adminlte.min.js",
+              "src/assets/plugins/iCheck/icheck.min.js",
+              "src/assets/custom/pluginscript.js",
+              "src/assets/plugins/datatables/jquery.dataTables.min.js",
+              "src/assets/plugins/datatables/extensions/TableTools/js/dataTables.tableTools.js",
+              "src/assets/plugins/datatables/dataTables.bootstrap.min.js",
+              "src/assets/plugins/slimScroll/jquery.slimscroll.min.js",
+              "src/assets/plugins/fastclick/fastclick.js",
+              "src/assets/plugins/select2/select2.full.min.js",
+              "node_modules/alasql/dist/alasql.min.js",
+              "node_modules/xlsx/dist/xlsx.core.min.js",
+              "node_modules/timepicker/jquery.timepicker.min.js",
+              "node_modules/toastr/build/toastr.min.js",
+              "src/assets/plugins/datepicker/bootstrap-datepicker.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "qa": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.qa.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "port": 5000,
+            "browserTarget": "ges.web:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ges.web:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ges.web:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.spec.json",
+            "scripts": [
+              "src/assets/plugins/jQuery/jquery-2.2.3.min.js",
+              "src/assets/bootstrap/js/bootstrap.min.js",
+              "src/assets/dist/js/app.min.js",
+              "src/assets/plugins/iCheck/icheck.min.js",
+              "src/assets/custom/pluginscript.js",
+              "src/assets/plugins/datatables/jquery.dataTables.min.js",
+              "src/assets/plugins/datatables/dataTables.bootstrap.min.js",
+              "src/assets/plugins/slimScroll/jquery.slimscroll.min.js",
+              "src/assets/plugins/fastclick/fastclick.js",
+              "src/assets/plugins/select2/select2.full.min.js",
+              "node_modules/alasql/dist/alasql.min.js",
+              "node_modules/xlsx/dist/xlsx.core.min.js",
+              "src/assets/plugins/datepicker/bootstrap-datepicker.js"
+            ],
+            "styles": [
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "src/assets/bootstrap/css/bootstrap.min.css",
+              "src/assets/dist/css/AdminLTE.min.css",
+              "src/assets/dist/css/animate.css",
+              "src/assets/dist/css/skins/skin-blue-light.min.css",
+              "src/assets/plugins/iCheck/square/blue.css",
+              "src/assets/plugins/datatables/dataTables.bootstrap.css",
+              "src/assets/plugins/iCheck/all.css",
+              "src/assets/plugins/select2/select2.min.css",
+              "src/assets/plugins/datepicker/bootstrap-datepicker.min.css",
+              "src/styles.css"
+            ],
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": []
+          }
+        }
+      }
+    },
+    "ges.web-e2e": {
+      "root": "e2e",
+      "sourceRoot": "e2e",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "./protractor.conf.js",
+            "devServerTarget": "ges.web:serve"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "e2e/tsconfig.e2e.json"
+            ],
+            "exclude": []
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "ges.web",
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "styleext": "css"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
+}

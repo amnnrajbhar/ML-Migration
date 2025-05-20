@@ -1,0 +1,275 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Work Experience details
+  </h1>
+
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info" *ngIf="editAllowed">
+    <div class="panel-body form-horizontal">
+      <form #workExperienceForm="ngForm">
+        <div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Industry Type <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <select [(ngModel)]="selectedIndustry" class="form-control" #industryEnt="ngModel" required name="industryId">
+                    <option [ngValue]="null" disabled [selected]="true"> Select Industry Type </option>
+                    <option *ngFor="let pl of industryTypes" [ngValue]="pl">{{pl.indDesc}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="industryEnt.touched && !industryEnt.valid">
+                    Please select industry</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Company Name <span style="color:red">*</span></label>
+                <div class="col-md-8"><input type="text" class="form-control" id="employer" [(ngModel)]="item.employer"
+                    ngControl="item.employer" name="employer" required #employerEnt="ngModel" maxlength="50"/>
+                    <span class="help-block" *ngIf="employerEnt.touched && !employerEnt.valid">
+                      Please enter company name</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> City <span style="color:red">*</span></label>
+                <div class="col-md-8"><input type="text" class="form-control" id="city" [(ngModel)]="item.city"
+                    ngControl="item.city" name="city" required #cityEnt="ngModel" maxlength="30"/>
+                    <span class="help-block" *ngIf="cityEnt.touched && !cityEnt.valid">
+                      Please enter city name</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Country <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <select [(ngModel)]="selectedCountry" class="form-control" #countryEnt="ngModel" required name="countryId">
+                    <option [ngValue]="null" disabled [selected]="true"> Select Country </option>
+                    <option *ngFor="let pl of countryTypes" [ngValue]="pl">{{pl.landx}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="countryEnt.touched && !countryEnt.valid">
+                    Please select country</span>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Designation <span style="color:red">*</span></label>
+                <div class="col-md-8"><input type="text" class="form-control" id="designation"
+                    [(ngModel)]="item.designation" ngControl="item.designation" name="designation" #designationEnt="ngModel" required maxlength="30"/>
+                    <span class="help-block" *ngIf="designationEnt.touched && !designationEnt.valid">
+                      Please enter designation</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Job Role <span style="color:red">*</span></label>
+                <div class="col-md-8"><input type="text" class="form-control" id="jobRole" [(ngModel)]="item.jobRole"
+                    ngControl="item.jobRole" name="jobRole" #jobRoleEnt="ngModel" required maxlength="30"/>
+                    <span class="help-block" *ngIf="jobRoleEnt.touched && !jobRoleEnt.valid">
+                      Please enter the job role</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> From Date <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" [(ngModel)]="item.fromDate" ngControl="item.fromDate"
+                    name="fromDate" [owlDateTime]="fromDate" [owlDateTimeTrigger]="fromDate" #fromDateEnt="ngModel" required/>
+                  <owl-date-time [pickerType]="'calendar'" #fromDate></owl-date-time>
+                  <span class="help-block" *ngIf="fromDateEnt.touched && !fromDateEnt.valid">
+                    Please enter from date</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group checkbox">
+                <label for="currentCompany">
+                  <input type="checkbox" [(ngModel)]="item.currentCompany" name="currentCompany" /> Current Working Company
+                </label>
+              </div>              
+            </div>
+            <div class="col-md-4" *ngIf="!item.currentCompany">
+              <div class="form-group">
+                <label class="col-md-4"> To Date <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" [(ngModel)]="item.toDate" ngControl="item.toDate"
+                    name="fromDate" [owlDateTime]="toDate" [owlDateTimeTrigger]="toDate" #toDateEnt="ngModel" required/>
+                  <owl-date-time [pickerType]="'calendar'" #toDate></owl-date-time>
+                  <span class="help-block" *ngIf="toDateEnt.touched && !toDateEnt.valid">
+                    Please enter to date</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-6"> Worked for Micro <span style="color:red">*</span></label>
+                <div class="col-md-6">
+                  <select [(ngModel)]="item.isMicroLab" class="form-control" #workForMLEnt="ngModel" required name="isMicroLab">
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                  <span class="help-block" *ngIf="workForMLEnt.touched && !workForMLEnt.valid">
+                    Please select the answer</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group" *ngIf="item.isMicroLab=='Yes'">
+                <label class="col-md-6"> Old Employee Number <span style="color:red">*</span></label>
+                <div class="col-md-6"><input type="text" class="form-control" [(ngModel)]="item.oldEmployeeNumber"
+                    ngControl="item.oldEmployeeNumber" name="oldEmployeeNumber" maxlength="10"/>
+                </div>
+              </div>
+            </div>            
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4"> Attachment <span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <input #attachment type="file" name="attachment" id="attachment" accept=".png, .jpg, .jpeg, .pdf" [(ngModel)]="item.attachment" (change)="selectFiles($event)"/>
+                  <span class="text-danger">Upload image files (jpeg, png) or pdf files only. Maximum file size allowed is 2MB.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading" 
+            *ngIf="!isEdit" (click)="onAddLine(attachment.files)">
+              <i class="fas fa-plus"></i> Add</button>
+            <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading" 
+            *ngIf="isEdit" (click)="onUpdateLine()">
+              <i class="fas fa-check"></i> Update</button>
+            <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+              Cancel</button>
+          </div>
+          <div>
+            <span class="text-danger">Note: Please enter details in the order of current company to first company.</span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div *ngIf="!editAllowed && profileUpdate">
+    <h5>Old Values</h5>
+    </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th *ngIf="editAllowed">Action</th>
+          <th>Sl No</th>
+          <th>Industry</th>
+          <th>Employer</th>
+          <th>City</th>
+          <th>Country</th>
+          <th>Designation</th>
+          <th>Job Role</th>
+          <th>From Date</th>
+          <th>Current Company</th>
+          <th>To Date</th>
+          <th>Is Micro Lab</th>
+          <th>Old Employee No</th>
+          <th>Attachment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of experienceList; let i = index">
+
+          <td *ngIf="editAllowed">
+            <button (click)="EditLine(item, i)" title="click to edit this " class="btn btn-xs btn-primary">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button (click)="RemoveLine(i)" title="click to remove this " class="btn btn-xs btn-danger">
+              <i class="fas fa-times"></i>
+            </button>            
+          </td>
+          <td>{{i+1}}</td>
+          <td>{{item.industryName}}</td>
+          <td>{{item.employer}}</td>
+          <td>{{item.city}}</td>
+          <td>{{item.countryName}}</td>
+          <td>{{item.designation}}</td>
+          <td>{{item.jobRole}}</td>
+          <td>{{item.fromDate | date: "dd/MM/yyyy"}}</td>
+          <td>{{item.currentCompany ? "Yes" : "No"}}</td>
+          <td>{{item.toDate | date: "dd/MM/yyyy"}}</td>
+          <td>{{item.isMicroLab}}</td>
+          <td>{{item.oldEmployeeNumber}}</td>
+          <td><a class="btn-link">{{item.attachmentFileName}}</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!editAllowed && profileUpdate">
+    <h5>New Values</h5>
+    </div>
+
+  <div class="table-responsive" *ngIf="!editAllowed && profileUpdate">
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Sl No</th>
+          <th>Action</th>          
+          <th>Industry</th>
+          <th>Employer</th>
+          <th>City</th>
+          <th>Country</th>
+          <th>Designation</th>
+          <th>Job Role</th>
+          <th>From Date</th>
+          <th>Current Company</th>
+          <th>To Date</th>
+          <th>Is Micro Lab</th>
+          <th>Old Employee No</th>
+          <th>Attachment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of profileDetailsList.experienceDetails; let i = index">
+          <td>{{i+1}}</td>
+          <td><span class="label label-default label-{{item.statusColor}}">{{item.action}}</span></td>
+          <td>{{item.industryName}}</td>
+          <td>{{item.employer}}</td>
+          <td>{{item.city}}</td>
+          <td>{{item.countryName}}</td>
+          <td>{{item.designation}}</td>
+          <td>{{item.jobRole}}</td>
+          <td>{{item.fromDate | date: "dd/MM/yyyy"}}</td>
+          <td>{{item.currentCompany ? "Yes" : "No"}}</td>
+          <td>{{item.toDate | date: "dd/MM/yyyy"}}</td>
+          <td>{{item.isMicroLab}}</td>
+          <td>{{item.oldEmployeeNumber}}</td>
+          <td><a class="btn-link">{{item.attachmentFileName}}</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+</section>

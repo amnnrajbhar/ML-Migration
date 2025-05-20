@@ -1,0 +1,394 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Confirmation Recommendation
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Confirmation Recommendation</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+  <app-confirmation-hod-recommendations *ngIf="employeeConfirmationId > 0"
+    [employeeConfirmationId]="employeeConfirmationId"> </app-confirmation-hod-recommendations>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <ul class="nav nav-tabs" *ngIf="isVisible">
+    <li [ngClass]="currentTab=='details'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Details</a></li>
+    <li [ngClass]="currentTab=='attachment'?'active':''" id="tab_attachment"><a (click)="onTabClick(1)">Attachments</a></li>
+    <li [ngClass]="currentTab=='history'?'active':''" id="tab_history"><a (click)="onTabClick(2)">History</a></li>
+
+  </ul>
+  <div class="details-tab">
+    <form #hodRecommendationForm="ngForm" id="hodRecommendationForm">
+      <div *ngIf="currentTab=='details'">
+        <div class="panel panel-info" *ngIf="isVisible">
+          <div class="panel-heading">
+            <h3 class="panel-title">Confirmation Recommendations</h3>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Date of Joining</label>
+                  <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="dateOfJoining" class="form-control"
+                    [(ngModel)]="employeeDetails.dateOfJoining" #fromDate="ngModel" disabled="true">
+                  <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Probation Period (months)</label>
+                  <input name="probationPeriod" class="form-control" [(ngModel)]="employeeDetails.probationPeriod"
+                    disabled="true">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Confirmation Due Date</label>
+
+                  <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="dateOfConfirmation" class="form-control"
+                    [(ngModel)]="employeeDetails.dateOfConfirmation" #fromDate="ngModel" disabled="true">
+                  <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Current Responsibilities<span style="color:red">*</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let field of currentResponsibilities; let i = index">
+                      <td>
+                        <textarea [ngModelOptions]="{standalone: true}" [(ngModel)]="field.description"
+                          #existingrespCatEnt="ngModel" class="form-control" required></textarea>
+                      </td>
+                      <td>
+                        <button class="btn btn-xs btn-danger" type="button"
+                          (click)="onRemoveCurrentResponsibilities(i)"><i class="fas fa-times"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button class="btn btn-info" type="button" (click)="onAddCurrentResponsibilities()"><i
+                            class="fas fa-plus"></i>Add</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-4">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>New Responsibilities / Additional Responsibilities<span style="color:red">*</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let field of newResponsibilitiesList; let i = index">
+                      <td>
+                        <textarea [ngModelOptions]="{standalone: true}" [(ngModel)]="field.description"
+                          class="form-control" #proposedrespCatEnt="ngModel" required></textarea>
+                      </td>
+
+                      <td>
+                        <button class="btn btn-xs btn-danger" type="button" (click)="onRemoveNewResponsibilities(i)"><i
+                            class="fas fa-times"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button class="btn btn-info" type="button" (click)="onAddNewResponsibilities()"><i
+                            class="fas fa-plus"></i>Add</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Current Year KRA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let field of currentYearKraList; let i = index">
+                      <td>
+                        <textarea [ngModelOptions]="{standalone: true}" [(ngModel)]="field.description"
+                          class="form-control"></textarea>
+                      </td>
+
+                      <td>
+                        <button class="btn btn-xs btn-danger" type="button" (click)="onRemoveCurrentYearKra(i)"><i
+                            class="fas fa-times"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button class="btn btn-info" type="button" (click)="onAddCurrentYearKra()"><i
+                            class="fas fa-plus"></i>Add</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-4">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Next Year KRA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let field of nextYearKraList; let i = index">
+                      <td>
+                        <textarea [ngModelOptions]="{standalone: true}" [(ngModel)]="field.description"
+                          class="form-control"></textarea>
+                      </td>
+
+                      <td>
+                        <button class="btn btn-xs btn-danger" type="button" (click)="onRemoveNextYearKra(i)"><i
+                            class="fas fa-times"></i></button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button class="btn btn-info" type="button" (click)="onAddNextYearKra()"><i
+                            class="fas fa-plus"></i>Add</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-md-4">
+                <label>Confirmation Type <span style="color:red">*</span></label>
+
+                <select [(ngModel)]="hodConfirmationDetail.hodConfirmationType" class="form-control"
+                  id="hodConfirmationType" name="hodConfirmationType" #typeEnt="ngModel" required
+                  (change)="onConfimationTypeChange()">
+                  <option *ngFor="let sl of confirmationTypes" [ngValue]="sl.type">{{sl.type}}</option>
+                </select>
+                <span class="help-block" *ngIf="typeEnt.touched && !typeEnt.valid">Please select Type</span>
+              </div>
+            </div>
+
+            <div class="form-group row" *ngIf="isExtension">
+
+              <div class="col-md-4">
+                <label>Next Confirmation Date <span style="color:red">*</span></label>
+                <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control"
+                  [(ngModel)]="hodConfirmationDetail.hodNewConfirmationDate" #fromDate="ngModel">
+                <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+
+              </div>
+              <div class="col-md-4">
+                <label>Reason Type <span style="color:red">*</span></label>
+                <select [(ngModel)]="hodConfirmationDetail.hodExtensionReason" class="form-control"
+                  id="hodExtensionReason" name="hodExtensionReason" #extensionReasonEnt="ngModel" required>
+                  <option *ngFor="let sl of reasonList" [ngValue]="sl.type">{{sl.type}}</option>
+                </select>
+                <span class="help-block" *ngIf="extensionReasonEnt.touched && !extensionReasonEnt.valid">Please select
+                  Reason Type</span>
+              </div>
+              <div class="col-md-4">
+                <label>Reason Detail <span style="color:red">*</span></label>
+                <textarea [(ngModel)]="hodConfirmationDetail.hodExtensionReasonText" class="form-control"
+                  id="hodExtensionReasonText" name="hodExtensionReasonText" #reasonTextEnt="ngModel" required
+                  maxlength="1000"></textarea>
+                <span class="help-block" *ngIf="reasonTextEnt.touched && !reasonTextEnt.valid">Please enter detailed
+                  reason (max. 1000 characters allowed)</span>
+              </div>
+            </div>
+
+            <div *ngIf="!isExtension">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group checkbox">
+                    <label for="hodIsDesignationRoleChange">
+                      <input type="checkbox" [(ngModel)]="hodConfirmationDetail.hodIsDesignationRoleChange"
+                        name="isDesignationRoleChange" />
+                      Designation/Role Change ?
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="hodConfirmationDetail.hodIsDesignationRoleChange">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Justification for Change</label>
+                    <textarea [(ngModel)]="hodConfirmationDetail.hodChangeComment" class="form-control"
+                      id="hodChangeComment" name="hodChangeComment"></textarea>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Recommended Designation</label>
+                    <select [(ngModel)]="hodConfirmationDetail.hodRecommendedDesignationid" class="form-control"
+                      [disabled]="!hodConfirmationDetail.hodIsDesignationRoleChange" name="designation"
+                      matTooltip="Designation" #designationEnt="ngModel">
+                      <option [ngValue]="null" disabled [selected]="true"> Select Designation </option>
+                      <option *ngFor="let pl of designationList" [ngValue]="pl.id">{{pl.name}} </option>
+                    </select>
+
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Recommended Role</label>
+                    <select [(ngModel)]="hodConfirmationDetail.hodRecommendedRoleid" class="form-control"
+                      matTooltip="Role" [disabled]="!hodConfirmationDetail.hodIsDesignationRoleChange"
+                      #roleEnt="ngModel" name="roleId">
+                      <option [ngValue]="null" disabled [selected]="true"> Select Role </option>
+                      <option *ngFor="let pl of roleList" [ngValue]="pl.id">{{pl.role_ltxt}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Rating <span style="color:red">*</span></label>
+                    <select [(ngModel)]="hodConfirmationDetail.hodRating" class="form-control" id="hodRating"
+                      name="hodRating" #hodRatingEnt="ngModel" required>
+                      <option *ngFor="let sl of ratingList" [ngValue]="sl.type">{{sl.type}}</option>
+                    </select>
+                    <span class="help-block" *ngIf="hodRatingEnt.touched && !hodRatingEnt.valid">Please select
+                      Rating</span>
+                  </div>
+
+                </div>
+
+                <div class="col-md-4">
+                  <label>Recommended Salary Type </label>
+                  <select [(ngModel)]="hodConfirmationDetail.hodRecommendedSalaryType" class="form-control"
+                    id="hodRecommendedSalaryType" name="hodRecommendedSalaryType" #recommendedSalaryTypeEnt="ngModel">
+                    <option *ngFor="let sl of salaryTypes" [ngValue]="sl.type">{{sl.type}}</option>
+                  </select>
+                  <span class="help-block"
+                    *ngIf="recommendedSalaryTypeEnt.touched && !recommendedSalaryTypeEnt.valid">Please select salary
+                    type</span>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Recommended Salary </label>
+                    <input type="text" (keypress)="keyPressAllowOnlyNumber($event)" class="form-control"
+                      id="hodRecommendedSalaryAmount" [(ngModel)]="hodConfirmationDetail.hodRecommendedSalaryAmount"
+                      #recommendedSalaryAmountEnt="ngModel" maxlength="8"
+                      ngControl="hodConfirmationDetail.hodRecommendedSalaryAmount" name="hodRecommendedSalaryAmount" />
+                    <span class="help-block"
+                      *ngIf="recommendedSalaryAmountEnt.touched && !recommendedSalaryAmountEnt.valid">Please enter
+                      recommended
+                      salary</span>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Sales<span style="color:red">*</span></label>
+                    <input type="text" (keypress)="keyPressAllowOnlyNumber($event)" class="form-control" id="sales"
+                      [(ngModel)]="hodConfirmationDetail.sales" required #salesEnt="ngModel"
+                      ngControl="hodConfirmationDetail.sales" name="sales" />
+                    <span class="help-block" *ngIf="salesEnt.touched && !salesEnt.valid">Please enter sales
+                      figure</span>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="initial">Growth<span style="color:red">*</span></label>
+                    <input type="text" (keypress)="keyPressAllowOnlyNumber($event)" class="form-control" id="growth"
+                      [(ngModel)]="hodConfirmationDetail.growth" required #growthEnt="ngModel"
+                      ngControl="hodConfirmationDetail.growth" name="growth" />
+                    <span class="help-block" *ngIf="growthEnt.touched && !growthEnt.valid">Please enter growth
+                      figure</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div class="col-md-4">
+              <label >One Time Consideration Salary Type</label>
+              <select [(ngModel)]="hodConfirmationDetail.oneTimeSalaryType" class="form-control" id="oneTimeSalaryType"
+                name="oneTimeSalaryType" #oneTimeSalaryTypeEnt="ngModel">
+                <option *ngFor="let sl of oneTimeSalaryTypes" [ngValue]="sl.type">{{sl.type}}</option>
+              </select>
+
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label >One Time Consideration Salary</label>
+                <input (keypress)="keyPressAllowOnlyNumber($event)" type="text" class="form-control"
+                  id="oneTimeSalaryAmount" [(ngModel)]="hodConfirmationDetail.oneTimeSalaryAmount"
+                  #OneTimeSalaryAmountEnt="ngModel" ngControl="hodConfirmationDetail.oneTimeSalaryAmount"
+                  name="oneTimeSalaryAmount" />
+
+              </div>
+            </div> -->
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="specialAchievement">Special Achievement</label>
+                  <textarea [(ngModel)]="hodConfirmationDetail.hodSpecialAchievement" class="form-control"
+                    id="hodSpecialAchievement" name="hodSpecialAchievement" #specialAchievementEnt="ngModel"></textarea>
+
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="hodAdditionalNotes">Additional Notes</label>
+                  <textarea [(ngModel)]="hodConfirmationDetail.hodAdditionalNotes" class="form-control"
+                    id="hodAdditionalNotes" name="hodAdditionalNotes" #hodAdditionalNotesEnt="ngModel"></textarea>
+
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 text-center actionButtons">
+                <button type="button" (click)="goBack()" class="btn btn-default" [matTooltipPosition]="'after'"
+                  matTooltip="Click to go back">
+                  <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button type="button" class="btn btn-primary" (click)="submit()" matTooltip="Click to Submit details"
+                  [disabled]="isLoading || !hodRecommendationForm.valid">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+    <div id="tabAttachment" *ngIf="currentTab=='attachment'">
+      <app-employee-attachments [employeeId]="this.employeeId" [editAllowed]="true" [deleteAllowed]="true"
+        [objectId]="this.employeeConfirmationId" [objectType]="this.objectType"></app-employee-attachments>
+    </div>
+    <div *ngIf="currentTab=='history'">
+
+      <app-confirmation-history [employeeId]="employeeId" *ngIf="employeeId > 0"></app-confirmation-history>
+    </div>
+
+  </div>
+  <div>
+
+  </div>
+  <div class="form-group text-center">
+    <span class="text-red pull-left"><i class="fa fa-warning"></i>{{errMsg}}</span>
+  </div>
+
+</section>

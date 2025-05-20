@@ -1,0 +1,355 @@
+<section class="content-header">
+    <h1 class="display-1">Picking Summary</h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i></a>Home</li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+        </div>
+
+
+        <!--Type of Reoort and Type Filter-->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                        <input [(ngModel)]="DCLabel" class="form-control" id="dclabel" placeholder="Enter DC No"
+                            matTooltip="Enter single or multiple DC No's with comma seperated" name="DCLabel"
+                            ngControl="filterDCLabel">
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+
+                        <select [(ngModel)]="Type" (change)="TypeofReport()" class="form-control" name="Type" id="Type">
+                            <option>Summary</option>
+                            <option>Detailed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group form-group-sm">
+                        <label> &nbsp;</label>
+                        <button class="btn btn-primary btn-sm" (click)="getPickedReport(DCLabel,Type);"
+                            matTooltip="Click to get data" [disabled]="DCLabel==null">Get Data</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-primary btn-sm" (click)="downloadPDF()"
+                            matTooltip="click to print the report" [disabled]="!filteredModel.table.length>0">Print
+                            Report</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    <div class="table-responsive">
+        <table title="Picked Data" class="table table-striped" *ngIf="Type == 'Summary'">
+            <thead style="background-color: #68a7d2; color:white;">
+                <tr>
+                    <th colspan="8" style="text-align: center;background-color: #68a7d2;color:white;">
+                        Picked Data</th>
+                </tr>
+                <tr>
+                    <th>Sl No</th>
+                    <th>Item Description</th>
+                    <th>Item Code</th>
+                    <th>Batch No</th>
+                    <th>Total Bins</th>
+                    <th>Total Shippers</th>
+                    <th>Qty</th>
+                    <th>Picked By</th>
+                </tr>
+            </thead>
+            <tbody class="table table-striped table-bordered1">
+                <tr *ngFor="let item of pickedmodel; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{item.itemDec}}</td>
+                    <td>{{item.itemCode}}</td>
+                    <td>{{item.batchNo}}</td>
+                    <td>{{item.bin}}</td>
+                    <td>{{item.shippers}}</td>
+                    <td>{{item.qty}}</td>
+                    <td>{{item.doneBy}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" style="text-align:right;"><strong>Total Picked Quantity</strong></td>
+                    <td colspan="1" style="text-align:left;">{{Total}}</td>
+                    <td colspan="1" style="text-align:center;"></td>
+                </tr>
+            </tfoot>
+        </table>
+        &nbsp;&nbsp;
+        <table title="Picked Data" class="table table-striped" *ngIf="Type =='Detailed'">
+            <thead style="background-color: #68a7d2; color:white;">
+                <tr>
+                    <th colspan="11" style="text-align: center;background-color: #68a7d2;color:white;">
+                        Picked Data</th>
+                </tr>
+                <tr>
+                    <th>Sl No</th>
+                    <th>DC No</th>
+                    <th>Item Description</th>
+                    <th>Item Code</th>
+                    <th>Batch No</th>
+                    <th>Bin</th>
+                    <th>Pallet</th>
+                    <th>Shipper</th>
+                    <th>Qty</th>
+                    <th>Picked By</th>
+                    <th>Picked On</th>
+                </tr>
+            </thead>
+            <tbody class="table table-striped table-bordered1">
+                <tr *ngFor="let item of pickedmodel; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{item.dcNo}}</td>
+                    <td>{{item.itemDec}}</td>
+                    <td>{{item.itemCode}}</td>
+                    <td>{{item.batchNo}}</td>
+                    <td>{{item.bin}}</td>
+                    <td>{{item.pallet}}</td>
+                    <td>{{item.barcode}}</td>
+                    <td>{{item.qty}}</td>
+                    <td>{{item.doneBy}}</td>
+                    <td>{{item.doneOn | date: 'dd-MM-yyyy HH:mm'}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="8" style="text-align:right;"><strong>Total Picked Quantity</strong></td>
+                    <td colspan="1" style="text-align:left;">{{Total}}</td>
+                    <td colspan="1" style="text-align:center;"></td>
+                    <td colspan="1" style="text-align:center;"></td>
+                </tr>
+            </tfoot>
+        </table>
+        &nbsp;&nbsp;
+        <table title="Userwise Summary" class="table table-striped">
+            <thead style="background-color: #68a7d2; color:white;">
+                <tr>
+                    <th colspan="6" style="text-align: center;background-color: #68a7d2;color:white;">
+                        Userwise Summary</th>
+                </tr>
+                <tr>
+                    <th>Picked By</th>
+                    <th>Total Shippers Scanned</th>
+                    <th>Total Picked Qty</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Total Picking Time</th>
+                </tr>
+            </thead>
+            <tbody class="table table-striped table-bordered1">
+                <tr *ngFor="let item of userwisesummary; let i = index">
+                    <td>{{item.doneBy}}</td>
+                    <td>{{item.shippers}}</td>
+                    <td>{{item.qty}}</td>
+                    <td>{{item.starttime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                    <td>{{item.endtime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                    <td>{{item.totalpickedtime}}</td>
+                </tr>
+            </tbody>
+        </table>
+        &nbsp;&nbsp;
+        <table title="Summary" class="table table-striped">
+            <thead style="background-color: #68a7d2; color:white;">
+                <tr>
+                    <th colspan="6" style="text-align: center;background-color: #68a7d2;color:white;">
+                        Total Summary</th>
+                </tr>
+                <tr>
+                    <th>Total Pickers</th>
+                    <th>Total Shippers Scanned</th>
+                    <th>Total Picked Qty</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Total Picking Time</th>
+                </tr>
+            </thead>
+            <tbody class="table table-striped table-bordered1">
+                <tr *ngFor="let item of summary; let i = index">
+                    <td>{{item.totalpickers}}</td>
+                    <td>{{item.totalshippers}}</td>
+                    <td>{{item.totalqty}}</td>
+                    <td>{{item.starttime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                    <td>{{item.endtime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                    <td>{{item.totalpickingtime}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+<div hidden id="pdf" style="align-items: center;">
+    <table>
+        <tr>
+            <td colspan="3" style="width: 102%;"><strong>Customer Name & City : {{CustomerName}} & {{City}}</strong></td>
+        </tr>
+        <thead>
+            <tr>
+                <th>Sl No</th>
+                <th>DC No.</th>
+                <th>DC Date</th>
+            </tr>
+        </thead>
+        <tbody class="table table-striped table-bordered1">
+            <tr *ngFor="let item of dcwithdates; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{item.dcNo}}</td>
+                <td>{{item.dcDate | date: 'dd-MM-yyyy'}}</td>
+            </tr>
+        </tbody>
+    </table>
+    &nbsp;&nbsp;
+    <table title="Picked Data" class="table table-striped" *ngIf="Type == 'Summary'">
+        <thead>
+            <tr>
+                <th colspan="8" style="text-align: center;">
+                    Picked Data</th>
+            </tr>
+            <tr>
+                <th>Sl No</th>
+                <th>Item Description</th>
+                <th>Item Code</th>
+                <th>Batch No</th>
+                <th>Total Bins</th>
+                <th>Total Shippers</th>
+                <th>Qty</th>
+                <th>Picked By</th>
+            </tr>
+        </thead>
+        <tbody class="table table-striped table-bordered1">
+            <tr *ngFor="let item of pickedmodel; let i = index">
+                <td>{{i+1}}</td>
+                <td style="width: 37%;">{{item.itemDec}}</td>
+                <td style="width: 13%;">{{item.itemCode}}</td>
+                <td style="width: 10%;">{{item.batchNo}}</td>
+                <td style="width: 10%;">{{item.bin}}</td>
+                <td style="width: 10%;">{{item.shippers}}</td>
+                <td style="width: 10%;">{{item.qty}}</td>
+                <td style="width: 10.1%;">{{item.doneBy}}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6" style="text-align:right;"><strong>Total Picked Quantity</strong></td>
+                <td colspan="1" style="text-align:left;">{{Total}}</td>
+                <td colspan="1" style="text-align:center;"></td>
+            </tr>
+        </tfoot>
+    </table>
+    &nbsp;&nbsp;
+    <table title="Picked Data" class="table table-striped" *ngIf="Type =='Detailed'">
+        <thead>
+            <tr>
+                <th colspan="11" style="text-align: center;">
+                    Picked Data</th>
+            </tr>
+            <tr>
+                <th>Sl No</th>
+                <th>DC No</th>
+                <th>Item Description</th>
+                <th>Item Code</th>
+                <th>Batch No</th>
+                <th>Bin</th>
+                <th>Pallet</th>
+                <th>Shipper</th>
+                <th>Qty</th>
+                <th>Picked By</th>
+                <th>Picked On</th>
+            </tr>
+        </thead>
+        <tbody class="table table-striped table-bordered1">
+            <tr *ngFor="let item of pickedmodel; let i = index">
+                <td>{{i+1}}</td>
+                <td style="width: 8%;">{{item.dcNo}}</td>
+                <td style="width: 20%;">{{item.itemDec}}</td>
+                <td style="width: 10%;">{{item.itemCode}}</td>
+                <td style="width: 10%;">{{item.batchNo}}</td>
+                <td style="width: 7%;">{{item.bin}}</td>
+                <td style="width: 10%;">{{item.pallet}}</td>
+                <td style="width: 10%;">{{item.barcode}}</td>
+                <td style="width: 8%;">{{item.qty}}</td>
+                <td style="width: 7%;">{{item.doneBy}}</td>
+                <td style="width: 10%;">{{item.doneOn | date: 'dd-MM-yyyy HH:mm'}}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="8" style="text-align:right;"><strong>Total Picked Quantity</strong></td>
+                <td colspan="1" style="text-align:left;">{{Total}}</td>
+                <td colspan="1" style="text-align:center;"></td>
+                <td colspan="1" style="text-align:center;"></td>
+            </tr>
+        </tfoot>
+    </table>
+    &nbsp;&nbsp;
+    <table title="Userwise Summary" class="table table-striped">
+        <thead>
+            <tr>
+                <th colspan="6" style="text-align: center;">
+                    Userwise Summary</th>
+            </tr>
+            <tr>
+                <th>Picked By </th>
+                <th>Total Shippers Scanned</th>
+                <th>Total Picked Qty</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Total Picking Time</th>
+            </tr>
+        </thead>
+        <tbody class="table table-striped table-bordered1">
+            <tr *ngFor="let item of userwisesummary; let i = index">
+                <td style="width: 10%;">{{item.doneBy}}</td>
+                <td style="width: 15%;">{{item.shippers}}</td>
+                <td style="width: 15%;">{{item.qty}}</td>
+                <td style="width: 20%;">{{item.starttime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                <td style="width: 20%;">{{item.endtime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                <td style="width: 22%;">{{item.totalpickedtime}}</td>
+            </tr>
+        </tbody>
+    </table>
+    &nbsp;&nbsp;
+    <table title="Summary" class="table table-striped">
+        <thead>
+            <tr>
+                <th colspan="6" style="text-align: center;">
+                    Total Summary</th>
+            </tr>
+            <tr>
+                <th>Total Pickers</th>
+                <th>Total Shippers Scanned</th>
+                <th>Total Picked Qty</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Total Picking Time</th>
+            </tr>
+        </thead>
+        <tbody class="table table-striped table-bordered1">
+            <tr *ngFor="let item of summary; let i = index">
+                <td style="width: 10%;">{{item.totalpickers}}</td>
+                <td style="width: 15%;">{{item.totalshippers}}</td>
+                <td style="width: 15%;">{{item.totalqty}}</td>
+                <td style="width: 20%;">{{item.starttime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                <td style="width: 20%;">{{item.endtime | date: 'dd-MM-yyyy HH:mm'}}</td>
+                <td style="width: 22%;">{{item.totalpickingtime}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

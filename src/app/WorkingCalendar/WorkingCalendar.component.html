@@ -1,0 +1,437 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Calendar
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Calendar</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title"> Calendar </h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+        </div>
+        <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="card-body" #native style="border: black; box-shadow: gray;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label #native for="Year"> Year</label>
+                                <input type="number" [(ngModel)]="calYear" class="form-control" id="year"
+                                    placeholder="Year" name="year" ngControl="calYear" #calYearEnt="ngModel"
+                                    [disabled]="showCalendar">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="baseplant"> Plant <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filterLocation" class="form-control" id="plant" name="plant"
+                                    matTooltip="plant" (change)="getPaygroupsBasedOnPlant()" #plantEnt="ngModel">
+                                    <option [ngValue]=null disabled [selected]="true">--Select plant--</option>
+                                    <option *ngFor="let pl of locationList" value={{pl.fkPlantId}}>
+                                        {{pl.code}}-{{pl.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="payGroup"> Pay Group<span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup" name="payGroup"
+                                    matTooltip="Pay Group" #payGroup1Ent="ngModel" required>
+                                    <option [ngValue]=null disabled [selected]="true">--Select Pay Group--</option>
+                                    <option *ngFor="let loc of payGroupList1;let i=index" value={{loc.id}}>
+                                        {{loc.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="empcat">Employee Category <span style="color: red;">*</span></label>
+                                <select #native name="empcat" id="empcat" class="form-control"
+                                    [(ngModel)]="filterCategory" ngControl="filterCategory" required>
+                                    <option [ngValue]=null disabled [selected]="true">--Select Category--</option>
+                                    <option *ngFor="let loc of employeeCategoryList;let i=index" value={{loc.id}}>
+                                        {{loc.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="filterType1">Calender Type <span style="color:red">*</span> </label>
+                                <div class="row">
+                                    <mat-radio-group #native aria-label="Select option?" id="filterType1"
+                                        name="filterType1" [(ngModel)]="filterType" ngControl="filterType"
+                                        #filterTypeEnt="ngModel" required>
+                                        <mat-radio-button value="Regular">Regular</mat-radio-button>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <mat-radio-button value="Additional"
+                                            (change)="getAdditionalHoliday();">Additional</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="filterType == 'Additional'">
+                            <div class="form-group">
+                                <label for="holityp">Holiday Types <span style="color: red;">*</span></label>
+                                <select #native name="holityp" id="holityp" class="form-control"
+                                    [(ngModel)]="filterHolidayTypeCode" ngControl="filterHolidayTypeCode"
+                                    (change)="CheckAdditionalCalendar();" required>
+                                    <option [ngValue]=null>--Select Holiday Type--</option>
+                                    <option *ngFor="let holi of holidayTypesList;let i=index" value={{holi.typeCode}}>
+                                        {{holi.typeCode}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3"
+                            *ngIf="filterType=='Additional' && filterHolidayTypeCode && typeCodeEditCreateFlag == 'Create'">
+                            <div class="form-group">
+                                <label for="filterTypeCode">Type Code<span style="color:red">*</span></label>
+                                <input #native [(ngModel)]="filterTypeCode" class="form-control" id="TypeCode1"
+                                    placeholder="Type Code" name="TypeCode1" ngControl="filterTypeCode"
+                                    matTooltip="Enter Type Code Maximun of 80 Characters Allowed"
+                                    #TypeCodeEnt="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3"
+                            *ngIf="filterType=='Additional' && filterHolidayTypeCode && typeCodeEditCreateFlag == 'Edit'">
+                            <div class="form-group">
+                                <label for="filterTypeCode">Type Code<span style="color:red">*</span></label>
+                                <select #native [(ngModel)]="filterTypeCode" class="form-control" id="TypeCode1"
+                                    placeholder="Type Code" name="TypeCode1" ngControl="filterTypeCode"
+                                    #TypeCodeEnt="ngModel">
+                                    <option [ngValue]=null disabled selected="true">--Select Type Code--</option>
+                                    <option *ngFor="let typ of AddTypeCodeNameList;let i=index" value={{typ.typeCode}}>
+                                        {{typ.typeCode}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3"
+                            *ngIf="filterType=='Additional'&& filterHolidayTypeCode && typeCodeEditCreateFlag == 'Create'">
+                            <div class="form-group">
+                                <label #native for="filterTypeName">Type Name<span style="color:red">*</span></label>
+                                <input [(ngModel)]="filterTypeName" class="form-control" id="TypeName1"
+                                    matTooltip="Enter Type Name Maximun of 80 Characters Allowed"
+                                    placeholder="Type Name" maxlength="80" name="TypeName1" ngControl="filterTypeName"
+                                    #TypeNameEnt="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3"
+                            *ngIf="filterType=='Additional' && filterHolidayTypeCode && typeCodeEditCreateFlag == 'Edit'">
+                            <div class="form-group">
+                                <label for="filterTypeName">Type Name<span style="color:red">*</span></label>
+                                <select #native [(ngModel)]="filterTypeName" class="form-control" id="TypeName1"
+                                    placeholder="Type Name" name="TypeName1" ngControl="filterTypeName"
+                                    #TypeNameEnt="ngModel">
+                                    <option [ngValue]=null disabled selected="true">--Select Type Name--</option>
+                                    <option *ngFor="let typ of AddTypeCodeNameList;let i=index" value={{typ.typeName}}>
+                                        {{typ.typeName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <!-- <button *ngIf="filterType=='P'" class="btn btn-primary"
+                                    (click)="getWorkingCalendarList();" matTooltip="click to go">Go</button> -->
+                                <button class="btn btn-success" (click)="OnClickGo();" matTooltip="click to go"><i
+                                        class="fa fa-arrow-right"></i>&nbsp; Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-danger" (click)="clearFilter();" matTooltip="click to reset"><i
+                                        class="fas fa-times"></i>&nbsp; Clear</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-warning" (click)="getExportData();"
+                                    matTooltip="click to export"><i class="fas fa-file-excel"></i>&nbsp; Export To
+                                    Excel</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div class="calendar-container" *ngIf="showCalendar">
+                    <div class="cal-scheduler-view">
+                        <div class="row mt-4">
+                            <div class="col-md-4 text-left ">
+
+                                <!-- <div>
+                            <button type="button" class="btn btn-primary" (click)="changeView(CalendarView.Month)"
+                              [class.active]="view === 'month'">
+                              Month
+                            </button>
+                            <button type="button" class="btn btn-primary" (click)="changeView('week')"
+                              [class.active]="view === 'week'">
+                              Week
+                            </button>
+                            <button type="button" class="btn btn-primary" (click)="changeView(CalendarView.Day)"
+                              [class.active]="view === 'day'">
+                              Day
+                            </button>
+                          </div> -->
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <h2 class="mt-0"><strong><u> {{ viewDate |
+                                            calendarDate:(view + 'ViewTitle'):locale
+                                            }}</u></strong></h2>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <div class="btn-group m-1" role="group">
+                                    <button type="button" class="btn btn-info" mwlCalendarPreviousView [view]="view"
+                                        [(viewDate)]="viewDate" [disabled]="prevBtnDisabled"
+                                        (viewDateChange)="PrevdateOrViewChanged($event)">
+                                        <span class="valign-center">
+                                            <i title="Precedente" class="fa fa-step-backward"></i>
+                                        </span>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-light" mwlCalendarToday
+                                        [(viewDate)]="viewDate" (viewDateChange)="OnClickGo()">
+                                        <span class="valign-center">
+                                            <i title="Today" class="fa fa-calendar"></i>&nbsp; Today
+                                        </span>
+                                    </button>
+                                    <button type="button" class="btn btn-info" mwlCalendarNextView [view]="view"
+                                        [(viewDate)]="viewDate" [disabled]="nextBtnDisabled"
+                                        (viewDateChange)="dateOrViewChanged($event)">
+                                        <span class="valign-center">
+                                            <i title="Successivo" class="fa fa-step-forward"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4 text-center">
+
+                            <div class="col-md-12">
+                                <label class="mt-0" for="WO" style="font:bold; font-size: medium;"><i
+                                        class="fa fa-square" style="color: rgb(199, 82, 82);"></i>&nbsp;Weekly
+                                    Off(WO)</label>&nbsp;&nbsp;&nbsp;
+                                <label class="mt-0" for="SS" style="font:bold;font-size: medium;"><i
+                                        class="fa fa-square" style="color:rgb(0, 217, 255);"></i>&nbsp;Second
+                                    Saturday(SS)</label>&nbsp;&nbsp;&nbsp;
+                                <label class="mt-0" for="SS" style="font:bold;font-size: medium;"><i
+                                        class="fa fa-square" style="color:rgb(0, 64, 255)"></i>&nbsp;Third
+                                    Saturday(TS)</label>&nbsp;&nbsp;&nbsp;
+                                <label class="mt-0" for="PH" style="font:bold;font-size: medium;"><i
+                                        class="fa fa-square" style="color: rgb(0, 255, 0);"></i>&nbsp;Company
+                                    Holiday(PH)</label>
+                                &nbsp;&nbsp;&nbsp;
+                                <label class="mt-0" for="PH" style="font:bold;font-size: medium;"><i
+                                        class="fa fa-square" style="color: rgb(255, 125, 3);"></i>&nbsp;Special
+                                    Holiday(SH)</label>
+                                &nbsp;&nbsp;&nbsp;
+                                <label class="mt-0" style="font:bold;font-size: medium;"><i class="fa fa-square"
+                                        style="color: rgb(180, 253, 180);"></i>&nbsp;Current
+                                    Day</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <!-- <ng-template #customCellTemplate let-day="day" let-locale="locale">
+                        <div class="cal-cell-top">
+                          <span class="cal-day-badge" *ngIf="day.badgeTotal > 0"
+                            >{{ day.badgeTotal }}</span
+                          >
+                          <span class="cal-day-number"
+                            >{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span
+                          >
+                        </div>
+                        <small style="margin: 5px"
+                          >There are {{ day.events.length }} events on this day</small
+                        > [cellTemplate]="customCellTemplate">
+                      </ng-template> -->
+
+                    <div [ngSwitch]="view">
+                        <mwl-calendar-month-view [viewDate]="viewDate" [locale]="locale" [weekStartsOn]="1"
+                            [refresh]="refresh" [events]="events" (dayClicked)="dayClicked($event.day)"
+                            (eventClicked)="eventClicked('Clicked', $event.event)">
+                        </mwl-calendar-month-view>
+
+
+                        <!-- <div class="cal-week-view"> *ngSwitchCase="CalendarView.Month"
+                        <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events"
+                          [refresh]="refresh" [locale]="locale" precision="minutes" [weekStartsOn]="1" [hourSegments]="2"
+                          [dayStartHour]="6" [dayEndHour]="22" (hourSegmentClicked)="hourSegmentClicked($event.date)"
+                          (eventClicked)="eventClicked('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+                        </mwl-calendar-week-view>
+                      </div>
+                      <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events"
+                        [locale]="locale" [refresh]="refresh" precision="minutes" [hourSegments]="2" [dayStartHour]="7"
+                        [dayEndHour]="19" (hourSegmentClicked)="hourSegmentClicked($event.date)"
+                        (eventClicked)="eventClicked('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+                      </mwl-calendar-day-view> -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+        <div class="box">
+            <div class="box-header">
+                <h3>Mass Updation</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label for="freq">Frequency</label>
+                        <select name="freq" id="freq" class="form-control" [(ngModel)]="frequency"
+                            ngControl="frequency">
+                            <option [ngValue]="undefined" disabled [selected]="true">--Select Frequency--</option>
+                            <option value="0">Every</option>
+                            <option value="1">First</option>
+                            <option value="2">Second</option>
+                            <option value="3">Third</option>
+                            <option value="4">Fourth</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="day">Days</label>
+                        <select name="day" id="day" class="form-control" [(ngModel)]="days" ngControl="days">
+                            <option [ngValue]=null disabled [selected]="true">--Select day--</option>
+                            <option>Sunday</option>
+                            <option>Monday</option>
+                            <option>Tuesday</option>
+                            <option>Wednesday</option>
+                            <option>Thursday</option>
+                            <option>Friday</option>
+                            <option>Saturday</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="month">Months</label>
+                        <select name="month" id="month" class="form-control" [(ngModel)]="months" ngControl="months">
+                            <option [ngValue]=null disabled [selected]="true">--Select month--</option>
+                            <option>All</option>
+                            <option>Jan</option>
+                            <option>Feb</option>
+                            <option>Mar</option>
+                            <option>Apr</option>
+                            <option>May</option>
+                            <option>Jun</option>
+                            <option>Jul</option>
+                            <option>Aug</option>
+                            <option>Sep</option>
+                            <option>Oct</option>
+                            <option>Nov</option>
+                            <option>Dec</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="holiday">Holiday Type</label>
+                        <select name="holiday" id="holiday" class="form-control" [(ngModel)]="holidayType"
+                            ngControl="holidayType">
+                            <option [ngValue]=null disabled [selected]="true">--Select Type--</option>
+                            <option value='WO'>Week Off</option><br>
+                            <option value='SS'>Second Saturday</option><br>
+                            <option value='TS'>Third Saturday</option><br>
+                            <option value='SH'>Special Holiday</option><br>
+                            <option value='PH'>Public Holiday</option><br>
+                            <option value='W'>Working</option><br>
+                        </select>
+                    </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-info" (click)="CreateCalendar();" matTooltip="click to Create"><i
+                                class="fas fa-thumbs-up"></i>&nbsp; Update
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+                        *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>&nbsp;{{errMsgPop1}}</span></h3>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Weekly off Assignment</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="type">
+                                    <h2>Weekly off Type for date {{wodate | date:'dd/MM/yyyy'}}</h2>
+                                </label>
+                                <div class="row">
+                                    <mat-radio-group aria-label="Select option?" id="filterType1" name="filterType1"
+                                        [(ngModel)]="filterWOType" ngControl="filterWOType" #filterType1Ent="ngModel"
+                                        required>
+                                        <mat-radio-button value='WO'>Week Off</mat-radio-button><br>
+                                        <mat-radio-button value='SS'>Second Saturday</mat-radio-button><br>
+                                        <mat-radio-button value='TS'>Third Saturday</mat-radio-button><br>
+                                        <mat-radio-button value='SH'>Special Holiday</mat-radio-button><br>
+                                        <mat-radio-button value='PH'>Public Holiday</mat-radio-button><br>
+                                        <mat-radio-button value='W'>Working</mat-radio-button><br>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button type="button" class="btn btn-success" (click)="onSaveWorkingCalendar()"
+                    [disabled]="isLoadingPop || (!desigForm.valid) || isLoadPop">{{isEdit==true?'Update':'Save'}}</button>
+                <!-- <button *ngIf="filterType=='E'" type="button" class="btn btn-primary" (click)="onSaveEmpCalendar()"
+                    [disabled]="isLoadingPop || (!desigForm.valid) || isLoadPop">{{isEdit==true?'Update':'Save'}}</button> -->
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

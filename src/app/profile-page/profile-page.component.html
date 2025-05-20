@@ -1,0 +1,454 @@
+<section class="content-header">
+  <h1 style="font-family:sans-serif; font-size:1.8em">My Profile</h1>
+
+  <ol class="breadcrumb">
+    <li>
+      <a href="#"><i class="fa fa-database" aria-hidden="true"></i>Home</a>
+    </li>
+    <li class="active ">My Profile</li>
+  </ol>
+</section>
+<!-- Main content -->
+<br />
+<section class="content " style="border-top: 1px solid #135890; border-radius:8px;">
+  <div class="row">
+    <div class="col-sm-2">
+      <div class="input-group">
+        <img src="{{ this.profileItem.imgurl }}" alt="" class="img card-img-top float-left" height="200px" />
+      </div>
+    </div>
+    <div class="col-sm-10">
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-primary" style="float:right" (click)="disableAllButtons();onUpdateUser();"
+            [disabled]="disableButtons|| isLoading2">Click to Update Information</button>
+          <table class="table" cellspacing="0" cellpadding="0" style="margin-left:15px;">
+            <tr>
+              <td>
+                <div class="input-group">
+                  <label for="emp_name">
+                    <h4>Name:</h4>
+                  </label>
+                  {{ this.profileItem.name }}
+
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="input-group">
+                  <label for="empId">
+                    <h4>Employee Id:</h4>
+                  </label>
+                  {{ this.profileItem.employeeId }}
+                </div>
+              </td>
+              <td>
+                <div class="input-group">
+                  <label for="empdesignation">
+                    <h4>Designation:</h4>
+                  </label>
+                  {{ this.profileItem.designation }}
+                </div>
+              </td>
+              <td>
+                <div class="input-group">
+                  <label for="email">
+                    <h4>Email:</h4>
+                  </label>
+                  {{ this.profileItem.email }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="input-group">
+                  <label for="reportingManger">
+                    <h4>Reporting Manager:</h4>
+                  </label>
+                  {{ this.profileItem.reportingmangername}}
+                </div>
+              </td>
+              <td>
+                <div class="input-group">
+                  <label for="reportingMangeremail">
+                    <h4>Reporting Manager Email:</h4>
+                  </label>
+                  {{ this.profileItem.reportingmangeremail }}
+                </div>
+              </td>
+              <td>
+                <div class="input-group">
+                  <label for="doj">
+                    <h4>Location:</h4>
+                  </label>
+                  {{baselocation}}
+                </div>
+              </td>
+            </tr>
+            <!-- <tr>
+                  <td>
+                      <div class="input-group">
+                          <label for="manager"><h4>Manager:</h4></label>
+                          {{ this.profileItem.mangername}}
+                      </div>
+                  </td>
+                  <td>
+                      <div class="input-group">
+                          <label for="manager"><h4>Manager Email:</h4></label>
+                          {{ this.profileItem.mangeremail}}
+                      </div>
+                  </td>
+                </tr> -->
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card" style=" border-style: none;background: none;">
+        <ul class="nav nav-tabs" role="tablist">
+          <!-- <li role="presentation" class="active">
+                            <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Employee Details</a>
+                          </li> -->
+          <li role="presentation" class="active">
+            <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Employee Details</a>
+          </li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div id="profile" role="tabpanel" class="tab-pane active">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="emp_name">Permanent Address</label>
+                  <input type="text" name="permanentAddress" class="form-control"
+                    value="{{ this.profileItem.permanentaddress }}" disabled />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="emp_name">Current Address</label>
+                  <input type="text" name="currentAddress" class="form-control"
+                    value="{{ this.profileItem.currentaddress }}" disabled />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="code">Personal Email</label>
+                  <input name="personalEmail" type="text" class="form-control"
+                    value="{{ this.profileItem.personalemail }}" disabled />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="code">Contact Number</label>
+                  <input name="phoneNumber" type="text" class="form-control"
+                    value="{{ this.profileItem.personalphonenumber }}" disabled />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="code">Emergency Contact Name</label>
+                  <input name="emgContactName" type="text" class="form-control"
+                    value="{{ this.profileItem.emgcontactname}}" disabled />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="code">Emergency Contact Number</label>
+                  <input name="emgContactNumber" type="text" class="form-control"
+                    value="{{ this.profileItem.emgcontactnumber }}" disabled />
+                </div>
+              </div>
+           
+
+            <!-- code added by Ramesh -->
+           
+            <div class="col-sm-3">
+              <div class="form-group form-group-sm">
+                <label for="formdisplay">Module Enabling</label>
+                <select [(ngModel)]="addressItem.module_enableId" class="form-control" id="formdisplay" name="formdisplay"
+                (change)="onSelect($event.target.value)">
+                <option *ngFor="let form of formdisplaylist" value="{{form.id}}">
+                     {{form.name}}</option>
+                 </select>
+              </div>
+            </div>
+          </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</section>
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel"
+  aria-hidden="true" data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 0">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: red; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>&nbsp;{{errMsgPop}}</span></h3>
+        <h4 class="modal-title">Employee Information</h4>
+      </div>
+      <div class="tabs-container" style="border:none;">
+        <form #userForm="ngForm">
+          <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#tab-sumTot">Main Info</a></li>
+            <li><a data-toggle="tab" href="#tab-urbTot">Address Info</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="tab-sumTot" class="tab-pane active">
+              <div class="panel-body" style="padding:0px;padding-top:8px; border: none;">
+                <div class="col-sm-12">
+                  <div class="modal-body box box-primary" style="box-shadow: none; border-top:0;">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="usrid">Employee ID</label>
+                          <input type="text" class="form-control" id="usrid" placeholder="Employee ID"
+                            [(ngModel)]="userItem.employeeId" name="employeeId" ngControl="userItem.employeeId"
+                            #usr_id="ngModel" readonly>
+                        </div>
+                        <div class="form-group">
+                          <label for="usrFName">First Name</label>
+                          <input type="text" class="form-control" id="usrFName" placeholder="First Name"
+                            [(ngModel)]="userItem.firstName" name="firstName" ngControl="userItem.firstName"
+                            #usr_f_name="ngModel" readonly>
+                        </div>
+                        <div class="form-group">
+                          <label for="usrLName">Last Name</label>
+                          <input type="text" class="form-control" id="usrLName" readonly placeholder="Last Name"
+                            [(ngModel)]="userItem.lastName" ngControl="userItem.lastName" name="lastName" />
+                        </div>
+                        <div class="form-group">
+                          <label for="usrEmail"> Email</label>
+                          <input type="email" class="form-control" id="usrEmail" placeholder="Email" [(ngModel)]="userItem.email" name="email"
+                            ngControl="userItem.email" #usr_email="ngModel" readonly>
+                        </div>
+                        <div class="form-group" [ngClass]="(!password.valid && password.touched)?'has-error':''">
+                          <label for="u_password"><i class="fa fa-times-circle-o" *ngIf="!password.valid && password.touched"></i> Password<span
+                              style="color:red">*</span></label>
+                        
+                          <input type="password" class="form-control" id="u_password" placeholder="Password"
+                            [(ngModel)]="userMasterItem.password" name="upassword" ngControl="userMasterItem.password" #password="ngModel"
+                            readonly>
+                          <!-- <span class="help-block" *ngIf="!password.valid && password.touched">Please Enter password.</span> -->
+                          <button class="btn btn-primary" (click)="changePassword()" [disabled]="disableButtons || isLoading1">change
+                            password</button>
+                        </div>
+                       
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="SelempDesignation">Designation</label>
+                          <input type="text" class="form-control" id="usrDesig" placeholder="Designation"
+                            [(ngModel)]="SelempDesignation" name="usrDesig" ngControl="SelempDesignation"
+                            #usrDesig="ngModel" readonly>
+                        </div>
+                        <div class="form-group">
+                          <label for="departmentId"> Department</label>
+                          <input type="text" class="form-control" id="departmentId" placeholder="Designation"
+                            [(ngModel)]="selDepartment" name="departmentId" ngControl="selDepartment"
+                            #departmentId="ngModel" readonly>
+                        </div>
+                        <div class="form-group">
+                          <label for="selManager">Reporting Manager</label>
+                          <input type="text" class="form-control" id="manager" placeholder="Manager" [(ngModel)]="profileItem.reportingmangername"
+                          name="manager" #manager="ngModel" ngControl="profileItem.reportingmangername" readonly>
+                        </div>
+                        <div class="form-group">
+                          <label for="baseLocation">Base Location</label>
+                          <input type="text" class="form-control" id="baseLocation" placeholder="Base Location" [(ngModel)]="baselocation"
+                            name="baseLocation" #baseLocation="ngModel" ngControl="baselocation" readonly>
+                        </div>
+                      </div>
+                      <div class="overlay" *ngIf="isLoadingPop">
+                        <i class="fa fa-spinner fa-pulse"></i>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div id="tab-urbTot" class="tab-pane">
+              <div class="panel-body" style="padding:0px;padding-top:8px; border: none;">
+                <div class="col-sm-12">
+                  <div class="modal-body box box-primary" style="box-shadow: none; border-top: 0;">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="permanentAddress"> Permanent Address</label>
+                          <input type="text" class="form-control" id="permanentAddress" placeholder="Permanent Address"
+                            [(ngModel)]="addressItem.permanentAddress" name="permanentAddress"
+                            #permanentAddress="ngModel" maxlength="45" ngControl="addressItem.permanentAddress">
+                          <!-- <span class="help-block" *ngIf="!permanentAddress.valid && permanentAddress.touched">Permanent address required.</span> -->
+                        </div>
+                        <div class="form-group">
+                          <label for="currentAddress"> Current Address</label>
+                          <input type="text" class="form-control" id="currentAddress" placeholder="Current Address"
+                            [(ngModel)]="addressItem.currentAddress" name="currentAddress"
+                            ngControl="addressItem.currentAddress" #currentAddress="ngModel">
+                          <!-- <span class="help-block" *ngIf="!currentAddress.valid && currentAddress.touched">Current address required</span> -->
+                        </div>
+                        <div class="form-group">
+                          <label for="phoneNumber"> Phone Number</label>
+                          <!-- <input type="number" class="form-control" id="phoneNumber" placeholder="Phone Number" [(ngModel)]="addressItem.phoneNumber" ngControl="addressItem.phoneNumber" name="phoneNumber" #phoneNumber="ngModel"
+                          maxlength="10"/> -->
+                          <input type="tel" class="form-control" id="phoneNumber" placeholder="Phone Number"
+                            [(ngModel)]="addressItem.phoneNumber" ngControl="addressItem.phoneNumber" name="phoneNumber"
+                            #phoneNumber="ngModel" maxlength="10" (keypress)="keyPressNumber($event)" />
+
+
+                          <!-- <span class="help-block" *ngIf="!phoneNumber.valid && phoneNumber.touched">Phone number required.</span> -->
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="emgContactName"><i class="fa fa-times-circle-o"></i> Emergency Contact
+                            Name</label>
+                          <input type="text" class="form-control" id="emgContactName"
+                            placeholder="Emergency Contact Name" [(ngModel)]="addressItem.emgContactName"
+                            name="emgContactName" ngControl="addressItem.emgContactName" #emgContactName="ngModel"
+                            maxlength="48">
+                          <!-- <span class="help-block" *ngIf="!emgContactName.valid && emgContactName.touched">Emergency contact name required.</span> -->
+                        </div>
+                        <div class="form-group">
+                          <label for="emgContactNumber"> Emergency Contact Number</label>
+                          <input type="tel" class="form-control" id="emgContactNumber"
+                            placeholder="Emergency contact number" [(ngModel)]="addressItem.emgContactNumber"
+                            name="emgContactNumber" ngControl="addressItem.emgContactNumber" #emgContactNumber="ngModel"
+                            maxlength="10" (keypress)="keyPressNumber($event)">
+                          <!-- <span class="help-block" *ngIf="!emgContactNumber.valid && emgContactNumber.touched">Emergency contact number required.</span> -->
+                        </div>
+                        <div class="form-group">
+                          <label for="description"> Description</label>
+                          <input type="text" class="form-control" id="description" placeholder="Description"
+                            [(ngModel)]="addressItem.description" name="description" ngControl="addressItem.description"
+                            #description="ngModel">
+                          <!-- <span class="help-block" *ngIf="!description.valid && description.touched">Description required.</span> -->
+                        </div>
+
+                      </div>
+                      <!-- </form> -->
+                      <div class="overlay" *ngIf="isLoadingPop">
+                        <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!-- <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span> -->
+            <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+              data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" (click)="onSaveUser()"
+              [disabled]="!userForm.valid || disableButtons || isLoading1">Update Information</button>
+
+
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+
+    </div>
+    <!-- /.modal-dialog -->
+
+  </div>
+  <div class="overlay" *ngIf="isLoading1">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="changePassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <h4 class="modal-title">Change Password</h4>
+      </div>
+      <div class="modal-body box box-primary">
+        <div class="row">
+          <form #sbuForm="ngForm">
+            <div class="form-horizontal">
+              <div class="form-group" [ngClass]="(!dname.valid && dname.touched)?'has-error':''">
+                <label for="dname" class="col-sm-3"><i class="fa fa-times-circle-o"
+                    *ngIf="!dname.valid && dname.touched"></i> New Password<span style="color:red">*</span></label>
+                <div class="col-sm-6">
+                  <input type="password" class="form-control" id="dname" placeholder="New Password"
+                    [(ngModel)]="newPassword" name="dname" ngControl="newpassword" #dname="ngModel" required
+                    maxlength="50">
+                  <span class="help-block" *ngIf="!dname.valid && dname.touched">Please Enter password.</span>
+                </div>
+              </div>
+              <div class="form-group" [ngClass]="(!code.valid && code.touched)?'has-error':''">
+                <label for="code" class="col-sm-3">Confirm Password<span style="color:red">*</span></label>
+                <div class="col-sm-6">
+                  <input type="password" class="form-control" id="code" placeholder="Confirm Password"
+                    ngControl="confirmPassword" [(ngModel)]="confirmPassword" name="code" maxlength="200"
+                    #code="ngModel" required />
+                  <span class="help-block" *ngIf="!code.valid && code.touched" style="color:red">Please confirm
+                    password.</span>
+                  <span class="help-block" *ngIf="mismatch" style="color:red">Passwords entered do not match.</span>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="updatePassword()"
+          [disabled]="!dname.valid || !code.valid || isLoading">Update Password</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>

@@ -1,0 +1,181 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Clearance Checklist Update
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Checklist Update</li>
+  </ol>
+</section>
+<section class="content">
+
+
+  <app-employee-quick-view [employeeId]="employeeId" *ngIf="employeeId > 0"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Resignation Details</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Date Of Resignation</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="resignationDate" name="ResignationDate"
+                [ngModel]="ResignationDate | date:'dd-MM-yyyy'" [disabled]="true">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Notice Period</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" name="noticePeriod" [(ngModel)]="noticePeriod"
+                [disabled]="true" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Last Working Day</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="lastWorkingDate" name="LastWorkingDate"
+                [ngModel]="DateLastWorkingDay | date:'dd-MM-yyyy'" [disabled]="true">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Reason</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="reason" name="Reason" [(ngModel)]="resignationDetails.reason"
+                [disabled]="true">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Detailed Reason</label>
+            <div class="col-md-8">
+              <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Reason For Resignation"
+                [(ngModel)]="resignationDetails.reasonDetail" class="form-control" id="detailsReasonResignation"
+                name="detailsReasonResignation" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Expected Relieving Date</label>
+            <div class="col-md-8">
+                <input [owlDateTime]="dt11" id="expectedLastWorkingDate" [owlDateTimeTrigger]="dt11"
+                name="expectedLastWorkingDate" class="form-control" [(ngModel)]="resignationDetails.expectedLastWorkingDate" [disabled]="true">
+                <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+              </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Reason For Change In Relieving Date</label>
+            <div class="col-md-8">
+              <textarea [matTooltipPosition]="'below'" matTooltip="Input Reason For Resignation Date Change"
+                [(ngModel)]="resignationDetails.reasonExpectedDateChange" class="form-control"
+                id="reasonResignationDateChange" name="reasonResignationDateChange" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-success">
+    <div class="panel-heading">
+      <h3 class="panel-title">Checklist Details</h3>
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Checklist ID</th>
+              <th>Status</th>
+              <th>Detail</th>
+              <th>Remarks</th>
+              <th>Completed On</th>
+              <th>Completed By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of checklistItems; let i = index">
+              <td>
+                <ng-template [ngIf]="[item.status] == 'Pending'">
+
+                  <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#CommentsModal"
+                    [matTooltipPosition]="'after'" (click)="complete(item.checklistItemId)"
+                    matTooltip="Click to update as completed">
+                    <i class="fas fa-check"></i></button>
+
+                  <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#CommentsModal"
+                    [matTooltipPosition]="'after'" (click)="notApplicable(item.checklistItemId)"
+                    matTooltip="Click to mark Not Applicable">
+                    <i class="fas fa-times"></i></button>
+
+                </ng-template>
+              </td>
+              <td>{{item.checklistItemId}}</td>
+              <td><span class="label label-{{item.statusColor}}">{{item.status}}</span></td>
+              <td>{{item.title}}</td>
+              <td>{{item.remarks}}</td>
+              <td>{{item.completedDate | date: "dd/MM/yyyy hh:mm a"}}</td>
+              <td>{{item.completedByName}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="form-group text-center actionButtons">
+
+    <button type="button" class="btn btn-default" (click)="cancel()" matTooltip="Click to go back"
+      [disabled]="isLoading">
+      Back
+    </button>
+  </div>
+</section>
+
+
+<!-- Comments Modal -->
+<div id="CommentsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Comments</h4>
+      </div>
+      <div class="modal-body">
+        <label>Comments</label>
+        <textarea rows="3" class="form-control" [(ngModel)]="comments"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="UpdateChecklist()">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

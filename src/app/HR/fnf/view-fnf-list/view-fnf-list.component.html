@@ -1,0 +1,288 @@
+<section class="content-header">
+  <h1 class="display-1">
+     FNF List
+  </h1>
+  <ol class="breadcrumb">
+     <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+     <li class="active">FNF List</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="panel panel-info">
+     <div class="panel-heading">
+        <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+     </div>
+     <div class="panel-body">
+        <div class="row">
+           <div class="col-xs-12">
+              <div class="form-group row">
+                 <label class="col-md-2 control-label text-right">Plant</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="selectedPlant" class="form-control" id="plant" name="plant" 
+                    (change)="getPayGroupList()">
+                    <option value="null" [selected]="true"> All </option>
+                    <option *ngFor="let pll of plantList" [ngValue]="pll">{{pll.code}} - {{pll.name}}</option>
+                    </select>
+                 </div>
+                 <label class="col-md-2 control-label text-right">Pay Group</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="selectedPayGroup" class="form-control" id="paygroup" name="paygroup"
+                    matTooltip="paygroup" >
+                    <option value="null" [selected]="true"> All </option>
+                    <option *ngFor="let pl of payGroupList" [ngValue]="pl">{{pl.long_Desc}}</option>
+                    </select>
+                 </div>
+              </div>
+              <div class="form-group row">
+                 <label class="col-md-2 control-label text-right">Employee Category</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="selectedEmployeeCategory" class="form-control" id="employeecategory"
+                    name="employeecategory" matTooltip="employeecategory">
+                    <option value="null" [selected]="true"> All </option>
+                    <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl">{{cl.catltxt}}</option>
+                    </select>
+                 </div>
+                 <label class="col-md-2 control-label text-right">Employee Department</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="selectedDepartment" class="form-control" id="employeedepartment"
+                    name="employeedepartment" matTooltip="employeedepartment">
+                    <option value="null" [selected]="true"> All </option>
+                    <option *ngFor="let cl of departmentList" [ngValue]="cl">{{cl.description}}</option>
+                    </select>
+                 </div>
+              </div>  
+               <div class="form-group row">
+                 <label class="col-md-2 control-label text-right">Status</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="selectedStatus" class="form-control" id="status" name="status" #statusEnt="ngModel">
+                    <option value="null" [selected]="true"> All </option>
+                    <option *ngFor="let sl of statusList" [ngValue]="sl">{{sl.type}}</option>
+                    </select> 
+                 </div>
+                 <label class="col-md-2 control-label text-right">Employee Name/No</label>
+                 <div class="col-md-4">
+                    <input name="name" class="form-control" id="name" [(ngModel)]="filterModel.name" />
+                 </div>
+               </div>   
+                 <div class="form-group row">
+                    <label class="col-md-2 control-label text-right">From Date</label>
+                    <div class="col-md-4">
+                       <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control"
+                       [(ngModel)]="from_date" #fromDate="ngModel">
+                       <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                    </div>
+                    <label class="col-md-2 control-label text-right">To Date</label>
+                    <div class="col-md-4">
+                       <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="ToDate" class="form-control"
+                       [(ngModel)]="to_date" #toDate="ngModel">
+                       <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+                    </div>
+                    
+                  </div>
+                 <div class="form-group row">
+                  <label class="col-md-2 control-label text-right">FNF ID</label>
+                  <div class="col-md-4">
+                     <input name="fnfId" class="form-control" id="fnfId" [(ngModel)]="filterModel.fnfId" />
+                  </div>
+                  <label class="col-md-2 control-label text-right">Submitted By Name/ No</label>
+                  <div class="col-md-4">
+                    <input name="submittedBy" class="form-control" id="submittedBy" [(ngModel)]="filterModel.submittedBy" />
+                   </div>
+                 </div>
+                 <div class="form-group row">
+                  <label class="col-md-2 control-label text-right">Pending With / Updated By</label>
+                  <div class="col-md-4">
+                      <input name="pendingWith" class="form-control" id="pendingWith" [(ngModel)]="filterModel.pendingWith" />
+                  </div>
+                  <label class="col-md-2 control-label text-right">Employee No</label>
+                  <div class="col-md-2">
+                    <input name="fromEmployeeNo" class="form-control" id="fromEmployeeNo" [(ngModel)]="filterModel.fromEmployeeNo" placeholder="From"/>
+                  </div>
+                  <div class="col-md-2">
+                    <input name="toEmployeeNo" class="form-control" id="toEmployeeNo" [(ngModel)]="filterModel.toEmployeeNo" placeholder="To" />
+                  </div>
+                 </div>
+                 <div class="form-group text-center">
+                  <button class="btn btn-primary btn-sm" (click)="getFNFList();" matTooltip="click to Go"
+                  [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">
+                  Filter</button>
+               </div>
+              </div>
+           
+              
+          
+        </div>
+        </div>
+     </div>
+  
+  <div class="row">
+     <div class="col-md-12 form-group">
+        <div class="pull-right">
+           <button type="button" class="btn btn-sm btn-primary" (click)="exportData()">Export</button>
+        </div>
+     </div>
+  </div>
+  <div class="row">
+     <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+           <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table mat-table class="table table-hover table-striped table-bordered" id="data">
+           <thead>
+              <tr>
+                 <th style="width: 200px;">Action</th>
+                 <th class="jobDetails">FNF Id</th>
+                 <th>Status</th>
+                 <th>Pending With / Updated By</th>
+                 <th>Letter Status</th>
+                 <th class="personalDetails">Employee No</th>
+                 <th class="personalDetails">Name</th>
+                 <th>Date of Joining</th>                 
+                 <th>Tenure</th>        
+                 <th>Date of Leaving</th>
+                 <th class="jobDetails">Submitted By</th>
+                 <th>Submitted Date</th>   
+                 <th class="jobDetails">Payable Days</th>
+                 <th class="jobDetails">Net Amount</th>
+                 <th class="jobDetails">Plant Code</th>
+                 <th class="jobDetails">Plant Name</th>
+
+                 <th class="jobDetails">Pay Group</th>
+                 <th class="jobDetails">Employee Category</th>
+                 <th class="jobDetails">State</th>
+                 <th class="jobDetails">Location</th>
+                 <th class="jobDetails">Department</th>
+                 <th class="jobDetails">Designation</th>
+                 <th class="jobDetails">Grade</th>
+                 <th class="jobDetails">Role</th>
+                 <th class="otherDetails">Reporting Manager</th>
+                 <th class="otherDetails">HOD</th>
+                 
+                 </tr>
+           </thead>
+           <tbody>
+              <tr *ngFor="let fnf of filterData.list; let i = index">
+                 <td style="width: 200px;">
+
+                  <a [routerLink]="['/HR/Employee/profile', fnf.employeeId]" class="btn btn-primary btn-xs"
+                  [matTooltipPosition]="'after'" matTooltip="Click to view full profile">
+                  <i class="fas fa-user"></i></a>
+
+                  <a [routerLink]="['/HR/fnf/view-fnf', fnf.employeeId,fnf.fnfId]" class="btn btn-xs btn-info"
+                  [matTooltipPosition]="'after'" matTooltip="Click to view the details">
+                  <i class="fas fa-eye"></i></a>
+
+                  <button type="button" (click)="print(fnf.fnfId,fnf.employeeId)" class="btn btn-xs btn-info"
+                     [matTooltipPosition]="'after'" matTooltip="Click to print the letters">
+                     <i class="fas fa-print"></i>
+                     </button>
+
+                  <ng-template [ngIf]="[fnf.status] == 'Submitted' || [fnf.status] == 'Rejected'">
+                     <button type="button" (click)="editFNF(fnf.fnfId,fnf.employeeId)" class="btn btn-xs btn-primary"
+                     [matTooltipPosition]="'after'" matTooltip="Click to edit the details">
+                     <i class="fas fa-pen"></i>
+                     </button>
+                     <button type="button" class="btn btn-success btn-xs" (click)="submitForApproval(fnf.fnfId)"
+                     [matTooltipPosition]="'after'" matTooltip="Click to submit this">
+                     <i class="fas fa-check"></i></button>
+                  </ng-template>
+                  <ng-template [ngIf]="[fnf.status] != 'Submitted' && [fnf.status] != 'Pending For Approval' && [fnf.status] != 'Rejected' && [fnf.status] != 'Issued'">
+                     <button type="button" (click)="addFNF(fnf.fnfId,fnf.employeeId)" class="btn btn-xs btn-warning"
+                     [matTooltipPosition]="'after'" matTooltip="Click to add other Details">
+                     <i class="fas fa-plus"></i>
+                     </button>
+                  </ng-template>                  
+                 </td>
+                 <th class="jobDetails">{{fnf.fnfId}}</th>             
+                 <td><span class="label label-default label-{{fnf.statusColor}}">{{fnf.status}}</span></td>
+                 <td>
+                  <span *ngIf="fnf.pendingWith">{{fnf.pendingWith}}</span>
+                  <span *ngIf="!fnf.pendingWith"> 
+                    {{fnf.modifiedByFirstName}} {{fnf.modifiedByMiddleName}} {{fnf.modifiedByLastName}} ({{fnf.modifiedByNo}})</span>                  
+                </td>
+                 <td class="letterStatus">
+                  <i class="fas fa-print icon round green" *ngIf="fnf.printed" [title]="'Printed: '+ (fnf.printedDate | date:'dd/MM/yyyy hh:mm a') + ' by '+fnf.printedByName"></i>
+                  <i class="far fa-envelope icon round orange" *ngIf="fnf.emailed" [title]="'Emailed: '+ (fnf.emailedDate | date:'dd/MM/yyyy hh:mm a') + ' by '+fnf.emailedByName"></i>
+                  <i class="fas fa-download icon round blue" *ngIf="fnf.downloaded" [title]="'Downloaded: '+ (fnf.downloadedDate | date:'dd/MM/yyyy hh:mm a') + ' by '+fnf.downloadedByName"></i>
+                </td>               
+                <td class="personalDetails">{{fnf.employeeNo}}</td>
+                <td class="personalDetails">{{fnf.firstName}} {{fnf.middleName}} {{fnf.lastName}}</td>    
+                 <td>{{fnf.dateOfJoining | date:'dd/MM/yyyy'}}</td>
+                 <td>{{fnf.tenure}}</td>      
+                 <td>{{fnf.dateOfLeaving | date:'dd/MM/yyyy'}}</td>
+                 <td class="jobDetails">{{fnf.createdByName}}</td>
+                  <td>{{fnf.createdDate | date:'dd/MM/yyyy'}}</td>
+                  <td class="jobDetails">{{fnf.payableDays}}</td>
+                  <td class="jobDetails">{{fnf.netAmt}}</td>                  
+                  <td class="jobDetails">{{fnf.plantCode}} </td>
+                  <td class="jobDetails">{{fnf.plantName}} </td>
+                  <td class="jobDetails">{{fnf.payGroupName}} </td>
+                  <td class="jobDetails">{{fnf.employeeCategoryName}} </td>
+                  <td class="jobDetails">{{fnf.state}}</td>
+                  <td class="jobDetails">{{fnf.location}} </td>
+                  <td class="jobDetails">{{fnf.department}} </td>
+                  <td class="jobDetails">{{fnf.designation}} </td>
+                  <td class="jobDetails">{{fnf.grade}} </td>
+                  <td class="jobDetails">{{fnf.role}} </td>
+                  <td class="otherDetails">{{fnf.reportingManagerName}} </td>
+                  <td class="otherDetails">{{fnf.approvingManagerName}} </td>
+
+                  </tr>
+           </tbody>
+        </table>
+        <div class="text-center">
+           <div class="overlay text-center h3" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+           </div>
+           <ul class="pagination" *ngIf="filterData.totalCount>0">
+              <li>
+                 <a (click)="gotoPage(filterData.pageNo)">
+                 Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> - <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b> of <b>{{filterData.totalCount}}</b> records
+                 </a>
+              </li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+              <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+              <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo+1" (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+              <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of <b>{{filterData.totalPages}}</b></a></li>
+              <li>
+                 <a>
+                    Page Size 
+                    <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    </select>
+                 </a>
+              </li>
+           </ul>
+        </div>
+     </div>
+  </div>
+</section>
+<!-- Comments Modal -->
+<div id="CommentsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+     <!-- Modal content-->
+     <div class="modal-content">
+        <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal">&times;</button>
+           <h4 class="modal-title">Enter Comments</h4>
+        </div>
+        <div class="modal-body">
+           <label>Comments</label>
+           <textarea rows="3" class="form-control" [(ngModel)]="comments"></textarea>
+        </div>
+        <div class="modal-footer">
+           <button type="button" class="btn btn-primary" (click)="performTask()">Submit</button>
+           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+     </div>
+  </div>
+</div>

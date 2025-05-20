@@ -1,0 +1,218 @@
+<section class="content-header">
+  <h1 class="display-1">
+    No Email To Candidate Config 
+  </h1>
+  <ol class="breadcrumb">
+     <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+     <li class="active">No Email To Candidate Config </li>
+  </ol>
+</section>
+<section class="content">
+  <div class="panel panel-info">
+     <div class="panel-heading">
+        <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+     </div>
+     <div class="panel-body">
+        <div class="row">
+           <div class="col-xs-12">
+              <div class="form-group row">
+                 <label class="col-md-2 control-label text-right">Plant</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="filterModel.selectedPlantId" class="form-control" id="plant" name="plant" 
+                    (change)="onFilterPlantChange()">
+                    <option value="" [selected]="true"> All </option>
+                    <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.code}} - {{pll.name}}</option>
+                    </select>
+                 </div>
+                 <label class="col-md-2 control-label text-right">Pay Group</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="filterModel.selectedPayGroupId" class="form-control" id="paygroup" name="paygroup"
+                    matTooltip="paygroup" >
+                    <option value="" [selected]="true"> All </option>
+                    <option *ngFor="let pl of filterPayGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+                    </select>
+                 </div>
+              </div>
+              <div class="form-group row">
+                 <label class="col-md-2 control-label text-right">Employee Category</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="filterModel.selectedEmployeeCategoryId" class="form-control" id="employeecategory"
+                    name="employeecategory" matTooltip="employeecategory">
+                    <option value="" [selected]="true"> All </option>
+                    <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+                    </select>
+                 </div>
+                 <label class="col-md-2 control-label text-right">State</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="filterModel.selectedStateId" class="form-control" id="state" name="state" #stateEnt="ngModel">
+                    <option value="" [selected]="true"> All </option>
+                    <option *ngFor="let sl of stateList" [ngValue]="sl.id">{{sl.bezei}}</option>
+                    </select> 
+                 </div>
+              </div> 
+             
+                 <div class="form-group text-center">
+                  <button class="btn btn-primary btn-sm" (click)="getEmailList();" matTooltip="click to Go">
+                  Filter</button>
+               </div>
+              </div>
+          
+        </div>
+        </div>
+     </div>
+  
+  <div class="row">
+   <div class="col-md-12 form-group">
+      <div class="pull-right actionButtons">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="detailsModal"
+        (click)="onAddClick()">Add New</button>
+        <button type="button" class="btn btn-primary" (click)="exportData()">Export</button>
+      </div>      
+   </div>
+
+     <!--div class="col-md-12 form-group">
+        <div class="pull-right">
+           <button type="button" class="btn btn-sm btn-primary" (click)="exportData()">Export</button>
+        </div>
+     </div-->
+  </div>
+  <div class="row">
+     <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+           <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table mat-table class="table table-hover table-striped table-bordered" id="data">
+           <thead>
+              <tr>
+                 <th style="width: 100px;">Action</th>
+                 <th class="jobDetails">Plant Code</th>
+                 <th class="jobDetails">Plant Name</th>
+                 <th class="jobDetails">Pay Group</th>
+                 <th class="jobDetails">Employee Category</th>
+                 <th class="jobDetails">State</th>                   
+                 <th class="jobDetails">Created By</th>
+                 <th class="jobDetails">Created Date</th>
+                 <th class="jobDetails">Modified By</th>
+                 <th class="jobDetails">Modified Date</th>
+              </tr>
+           </thead>
+           <tbody>
+              <tr *ngFor="let email of filterData.list; let i = index">
+                 <td style="width: 100px;">                                 
+                  <button type="button" class="btn btn-xs btn-danger"  [matTooltipPosition]="'after'"
+                  (click)="delete(email)" matTooltip="Click to Delete this">
+                  <i class="fas fa-times"></i></button>
+                 </td>
+                 <td class="jobDetails">{{email.plantCode}}</td>
+                 <td class="jobDetails">{{email.plantName}}</td>
+                 <td class="jobDetails">{{email.payGroupName}}</td>
+                 <td class="jobDetails">{{email.employeeCategoryName}}</td>
+                 <td class="jobDetails">{{email.stateName}}</td>                 
+                 <td class="jobDetails">{{email.createdByName}}</td>
+                 <td class="jobDetails">{{email.createdDate  | date:"dd/MM/yyyy hh:mm a"}}</td>
+                 <td class="jobDetails">{{email.modifiedByName}}</td>
+                 <td class="jobDetails">{{email.modifiedDate | date:"dd/MM/yyyy hh:mm a"}}</td>
+              </tr>
+           </tbody>
+        </table>
+        <div class="text-center">
+           <div class="overlay text-center h3" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+           </div>
+           <ul class="pagination" *ngIf="filterData.totalCount>0">
+              <li>
+                 <a (click)="gotoPage(filterData.pageNo)">
+                 Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> - <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b> of <b>{{filterData.totalCount}}</b> records
+                 </a>
+              </li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+              <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+              <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo+1" (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+              <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of <b>{{filterData.totalPages}}</b></a></li>
+              <li>
+                 <a>
+                    Page Size 
+                    <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    </select>
+                 </a>
+              </li>
+           </ul>
+        </div>
+     </div>
+  </div>
+</section>
+
+<!-- Details modal -->
+
+<div id="detailsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">No Email to Candidate Config Details</h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <form #detailsForm="ngForm">
+        
+          <div class="form-group row">
+            <label class="col-md-2 control-label text-right">Plant <span style="color:red">*</span></label>
+            <div class="col-md-4">
+               <select [(ngModel)]="item.plantId" class="form-control" id="plant" name="plant" required
+               (change)="onPlantChange()">
+               <option value="" [selected]="true"> Select Plant </option>
+               <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.code}} - {{pll.name}}</option>
+               </select>
+            </div>
+            <label class="col-md-2 control-label text-right">Pay Group <span style="color:red">*</span></label>
+            <div class="col-md-4">
+               <select [(ngModel)]="item.payGroupId" class="form-control" id="paygroup" name="paygroup" required
+               matTooltip="paygroup" >
+               <option value="" [selected]="true"> Select Paygroup </option>
+               <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+               </select>
+            </div>
+         </div>
+         <div class="form-group row">
+            <label class="col-md-2 control-label text-right">Employee Category</label>
+            <div class="col-md-4">
+               <select [(ngModel)]="item.employeeCategoryId" class="form-control" id="employeecategory"
+               name="employeecategory" matTooltip="employeecategory">
+               <option value="" [selected]="true"> All </option>
+               <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+               </select>
+            </div>
+            <label class="col-md-2 control-label text-right">State</label>
+            <div class="col-md-4">
+               <select [(ngModel)]="item.stateId" class="form-control" id="state" name="state" #stateEnt="ngModel">
+               <option value="" [selected]="true"> All </option>
+               <option *ngFor="let sl of stateList" [ngValue]="sl.id">{{sl.bezei}}</option>
+               </select> 
+            </div>
+         </div> 
+        </form>
+        <div class="text-center actionButtons">
+          <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !detailsForm.valid"
+             (click)="addData()">
+            <i class="fas fa-plus"></i> Add</button>
+          <!-- <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !detailsForm.valid"
+             (click)="updateData()">
+            <i class="fas fa-check"></i> Update</button> -->
+        
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

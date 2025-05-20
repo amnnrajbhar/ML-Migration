@@ -1,0 +1,592 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Approve Assets
+        <small> ITAMS </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    </ol>
+</section>
+
+<!--Main Content-->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div id="dateFilterPanel">
+                <div class="col-sm-12">
+                    <div class="card-body" style="border: black; box-shadow: grey;">
+                        <div id="dateFilterPanel">
+                            <div class="col-sm-12">
+                                <div class="card-body" style="border: black; box-shadow: grey;">
+                                    <form #filterForm6="ngForm">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="location"> Location </label>
+                                                    <select [(ngModel)]="dashboardlocation" class="form-control"
+                                                        id="location" name="location" ngControl="dashboardlocation"
+                                                        #locationEnt="ngModel" matTooltip="Select location">
+                                                        <option [ngValue]="undefined" disabled selected="true">--Select
+                                                            an Option--
+                                                        </option>
+                                                        <option *ngFor="let status of plantList"
+                                                            value={{status.code}}>
+                                                            {{status.code}}-{{status.name}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="catCode">Category </label>
+                                                    <select [(ngModel)]="dashboardcatCode" class="form-control"
+                                                        id="catCode" name="catCode" ngControl="dashboardcatCode"
+                                                        (change)=GetSubCategory(dashboardcatCode) #catCodeEnt="ngModel"
+                                                        matTooltip="Select Category">
+                                                        <option [ngValue]="undefined" disabled selected="true">--Select
+                                                            an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of catList1" value={{mat.catCode}}>
+                                                            {{mat.catCode}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="catName"> Sub-Category </label>
+                                                    <select [(ngModel)]="dashboardcatName" class="form-control"
+                                                        id="catName" name="catName" ngControl="dashboardcatName"
+                                                        #catNameEnt="ngModel" [disabled]="isEdit"
+                                                        matTooltip="Select Sub-Category">
+                                                        <option [ngValue]="undefined" disabled selected="true">--Select
+                                                            an Option--
+                                                        </option>
+                                                        <option *ngFor="let mat of subCategorylist"
+                                                            value={{mat.catName}}>
+                                                            {{mat.catName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="type"> Filter </label>
+                                                    <select [(ngModel)]="filtertype" class="form-control" id="type"
+                                                        name="type" ngControl="filtertype" #typeEnt="ngModel"
+                                                        [disabled]="isEdit" matTooltip="Select Filter">
+                                                        <option [ngValue]="undefined" disabled selected="true">--Select
+                                                            an Option--
+                                                        </option>
+                                                        <option>Asset No</option>
+                                                        <option>Asset State</option>
+                                                        <option>Host Name</option>
+                                                        <option>Model</option>
+                                                        <option>Manufacturer</option>
+                                                        <option>User</option>
+                                                        <option>User Name</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="input"> Search Text </label>
+                                                    <input [(ngModel)]="filterinput" class="form-control" id="input"
+                                                        name="input" ngControl="filterinput" #inputEnt="ngModel"
+                                                        [disabled]="isEdit" placeholder="Search Text">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12" style="text-align: center;">
+                                                <label>&nbsp;</label>
+                                                <div class="form-group">
+                                                    <button class="btn btn-primary" (click)="getInstallationReport1();"
+                                                        matTooltip="click to go"><i class="fas fa-search"></i>
+                                                        Search</button>
+                                                    &nbsp;&nbsp;
+                                                    <button class="btn btn-primary" (click)="clearFilter();"
+                                                        matTooltip="click to reset"><i class="fas fa-backspace"></i>
+                                                        Clear</button>
+                                                    &nbsp;&nbsp;
+                                                    <button class="btn btn-primary" (click)="approveAsset();"
+                                                        [disabled]="!checkedRequestList.length > 0"
+                                                        matTooltip="click to approve"> <i class="fas fa-thumbs-up"></i>
+                                                        Approve</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="box-body table-responsive">
+                                <table id="userTable" class="table table-striped" cellspacing="0">
+                                    <thead style="background-color: #0099cc; color:white;">
+                                        <tr>
+                                            <th> <input type="checkbox" [(ngModel)]="isMasterSel" name="list_name"
+                                                    (change)="checkUncheckAll()"> Select All</th>
+                                            <th>#</th>
+                                            <th>Asset No</th>
+                                            <th>Host Name</th>
+                                            <th>Model</th>
+                                            <th>Manufacturer</th>
+                                            <th>Serial No</th>
+                                            <th>Employee Name</th>
+                                            <th>Location</th>
+                                            <th> </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let item of assetList; let i = index">
+                                            <td> <input
+                                                    *ngIf="item.viewStatusApprover== null || item.viewStatusApprover== '' "
+                                                    type="checkbox" [id]="'chkusage'+item.id" [name]="'send'+item.id"
+                                                    [(ngModel)]="item.isSelected" (change)="isAllSelected()"
+                                                    #usageEnt="ngModel">
+                                            </td>
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.assetNo}}</td>
+                                            <td>{{item.hostName}}</td>
+                                            <td>{{item.model}}</td>
+                                            <td>{{item.manufacturer}}</td>
+                                            <td>{{item.serialNo}}</td>
+                                            <td>{{item.empName}}</td>
+                                            <td>{{item.location}}</td>
+                                            <td>
+                                                <table>
+                                                    <tr>
+                                                        &nbsp;
+                                                        <td>
+                                                            <button type="button" matTooltip="Click to view details"
+                                                                class="btn btn-primary btn-xs"
+                                                                (click)="onUserActions(true,item,false,'View')">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="overlay" *ngIf="isLoading">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2; color:white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title"> <i>Asset Details</i>
+                </h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;">
+                <form #dataForm="ngForm" (keydown.enter)="$event.preventDefault()">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="assetId"> Asset Id <span style="color:red">*</span></label>
+                                <input [(ngModel)]="ApproveAsset.assetId" class="form-control" placeholder="Asset Id"
+                                    name="assetIdd" id="assetIdd" ngControl="ApproveAsset.assetId" #assetIdEnt="ngModel"
+                                    readonly="true" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="assetNo"> Asset No. <span style="color:red">*</span></label>
+                                <input [(ngModel)]="ApproveAsset.assetNo" class="form-control" id="assetNoo"
+                                    placeholder="Max of 35 chars." name="assetNoo" ngControl="ApproveAsset.assetNo"
+                                    #assetNoEnt="ngModel" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="location"> Location </label>
+                                <input class="form-control input-sm" type="text" name="location"
+                                    [(ngModel)]="ApproveAsset.location" placeholder="Location" [value]="location"
+                                    maxlength="80" [disabled]="isDisabled" id="location" matTooltip="Enter Location"
+                                    ngControl="ApproveAsset.location" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="category">Category</label>
+                                <input class="form-control input-sm" type="text" name="category"
+                                    [(ngModel)]="ApproveAsset.category" placeholder="Category" [value]="category"
+                                    maxlength="80" [disabled]="isDisabled" id="category" matTooltip="Enter Category"
+                                    ngControl="ApproveAsset.category" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="barcode"> Barcode </label>
+                                <input class="form-control input-sm" type="text" name="barcode"
+                                    [(ngModel)]="ApproveAsset.barCode" placeholder="Barcode" [value]="barcode"
+                                    maxlength="80" [disabled]="isDisabled" id="barcode" matTooltip="Enter Barcode"
+                                    ngControl="ApproveAsset.barCode" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="model"> Model </label>
+                                <input class="form-control input-sm" type="text" name="model"
+                                    [(ngModel)]="ApproveAsset.model" placeholder="Model" [value]="model" maxlength="80"
+                                    [disabled]="isDisabled" id="model" matTooltip="Enter Model"
+                                    ngControl="ApproveAsset.model" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="manufacturer"> Manufacturer </label>
+                                <input class="form-control input-sm" type="text" name="manufacturer"
+                                    [(ngModel)]="ApproveAsset.manufacturer" placeholder="Manufacturer"
+                                    ngControl="ApproveAsset.manufacturer" [value]="manufacturer" maxlength="80"
+                                    [disabled]="isDisabled" id="manufacturer" matTooltip="Enter Manufacturer"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="partNo"> Part No.</label>
+                                <input class="form-control input-sm" type="text" name="partNo"
+                                    [(ngModel)]="ApproveAsset.partNo" placeholder="Part No" [value]="partNo"
+                                    maxlength="80" [disabled]="isDisabled" id="partNo" matTooltip="Enter Part No"
+                                    ngControl="ApproveAsset.partNo" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="serialNo"> Serial No. </label>
+                                <input class="form-control input-sm" type="text" name="serialNo"
+                                    [(ngModel)]="ApproveAsset.serialNo" placeholder="Serial No" [value]="serialNo"
+                                    ngControl="ApproveAsset.serialNo" maxlength="80" [disabled]="isDisabled"
+                                    id="serialNo" matTooltip="Enter Serial No" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.assetType == 'Computers'">
+                            <div class="form-group form-group-sm">
+                                <label for="processor"> Processor </label>
+                                <input class="form-control input-sm" type="text" name="processor"
+                                    [(ngModel)]="ApproveAsset.processor" placeholder="Processor" [value]="processor"
+                                    ngControl="ApproveAsset.processor" maxlength="80" [disabled]="isDisabled"
+                                    id="processor" matTooltip="Enter Processor" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="ApproveAsset.assetType == 'Computers'">
+                            <div class="form-group form-group-sm">
+                                <label for="ram"> RAM</label>
+                                <input class="form-control input-sm" type="text" name="ram"
+                                    [(ngModel)]="ApproveAsset.ram" placeholder="Ram" [value]="ram" maxlength="80"
+                                    ngControl="ApproveAsset.ram" [disabled]="isDisabled" id="ram" matTooltip="Enter Ram"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="ApproveAsset.assetType == 'Computers'">
+                            <div class="form-group form-group-sm">
+                                <label for="hdd"> HDD.</label>
+                                <input class="form-control input-sm" type="text" name="hdd"
+                                    [(ngModel)]="ApproveAsset.hdd" placeholder="HDD" [value]="hdd" maxlength="80"
+                                    ngControl="ApproveAsset.hdd" [disabled]="isDisabled" id="hdd" matTooltip="Enter Hdd"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="ipNo"> IP Address</label>
+                                <input class="form-control input-sm" type="text" name="ipNo"
+                                    [(ngModel)]="ApproveAsset.ipAddress" placeholder="Ip No" [value]="ipNo"
+                                    ngControl="ApproveAsset.ipAddress" maxlength="80" [disabled]="isDisabled" id="ipNo"
+                                    matTooltip="Enter IpNo" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="gxp"> GxP Applicable </label>
+                                <input class="form-control input-sm" type="text" name="gxp"
+                                    [(ngModel)]="ApproveAsset.gxPApplicable" placeholder="GxP" [value]="gxp"
+                                    maxlength="80" ngControl="ApproveAsset.gxPApplicable" [disabled]="isDisabled"
+                                    id="gxp" matTooltip="Enter GxP" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-group-sm">
+                                <label for="config"> Configurations. </label>
+                                <input class="form-control input-sm" type="text" name="config"
+                                    [(ngModel)]="ApproveAsset.config" placeholder="Config" [value]="config"
+                                    ngControl="ApproveAsset.config" maxlength="80" [disabled]="isDisabled" id="config"
+                                    matTooltip="Enter Config" readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2" *ngIf="ApproveAsset.assetType == 'Computers'">
+                            <div class="form-group form-group-sm">
+                                <label for="monitorType"> Monitor Type </label>
+                                <select [(ngModel)]="ApproveAsset.monitorType" class="form-control" id="monitorType"
+                                    name="monitorType" ngControl="ApproveAsset.monitorType"
+                                    matTooltip="Select Monitor Type" disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let type of monType" value={{type.type}}>
+                                        {{type.type}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.assetType == 'Computers'">
+                            <div class="form-group form-group-sm">
+                                <label for="make"> Make </label>
+                                <input class="form-control input-sm" type="text" name="make"
+                                    [(ngModel)]="ApproveAsset.make" placeholder="make" [value]="make" maxlength="80"
+                                    [disabled]="isDisabled" id="make" matTooltip="Enter make"
+                                    ngControl="ApproveAsset.make" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.assetType == 'Computers'">
+                            <div class="form-group form-group-sm">
+                                <label for="size"> Size </label>
+                                <input class="form-control input-sm" type="text" name="size"
+                                    [(ngModel)]="ApproveAsset.size" placeholder="size" [value]="size" maxlength="80"
+                                    [disabled]="isDisabled" id="size" matTooltip="Enter size"
+                                    ngControl="ApproveAsset.size" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.assetType == 'Computers'">
+                            <div class="form-group form-group-sm">
+                                <label for="keyboard"> Keyboard </label>
+                                <input class="form-control input-sm" type="text" name="keyboard"
+                                    [(ngModel)]="ApproveAsset.keyboard" placeholder="keyboard" [value]="keyboard"
+                                    maxlength="80" [disabled]="isDisabled" id="keyboard" matTooltip="Enter keyboard"
+                                    ngControl="ApproveAsset.keyboard" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.assetType == 'Computers'">
+                            <div class="form-group form-group-sm">
+                                <label for="mouse"> Mouse </label>
+                                <input class="form-control input-sm" type="text" name="mouse"
+                                    [(ngModel)]="ApproveAsset.mouse" placeholder="mouse" [value]="mouse" maxlength="80"
+                                    [disabled]="isDisabled" id="mouse" matTooltip="Enter mouse"
+                                    ngControl="ApproveAsset.mouse" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.assetType == 'Printer'">
+                            <div class="form-group form-group-sm">
+                                <label for="ppm"> Pages Per Minute (ppm) </label>
+                                <input class="form-control input-sm" type="text" name="ppm"
+                                    [(ngModel)]="ApproveAsset.ppm" placeholder="size" [value]="ppm" maxlength="80"
+                                    [disabled]="isDisabled" id="ppm" matTooltip="Enter ppm" ngControl="ApproveAsset.ppm"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.assetType == 'Printer'">
+                            <div class="form-group form-group-sm">
+                                <label for="machineLife"> Machine Life </label>
+                                <input class="form-control input-sm" type="text" name="machineLife"
+                                    [(ngModel)]="ApproveAsset.machineLife" placeholder="machineLife"
+                                    [value]="machineLife" maxlength="80" [disabled]="isDisabled" id="machineLife"
+                                    matTooltip="Enter machineLife" ngControl="ApproveAsset.machineLife" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.assetType == 'Printer'">
+                            <div class="form-group form-group-sm">
+                                <label for="cpp"> Cost Per Page </label>
+                                <input class="form-control input-sm" type="text" name="cpp"
+                                    [(ngModel)]="ApproveAsset.cpp" placeholder="cpp" [value]="cpp" maxlength="80"
+                                    [disabled]="isDisabled" id="cpp" matTooltip="Enter cpp" ngControl="ApproveAsset.cpp"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="usageType"> Usage Type </label>
+                                <select [(ngModel)]="ApproveAsset.usageType" class="form-control" id="usageType"
+                                    name="usageType" ngControl="ApproveAsset.usageType" matTooltip="Select Usage Type "
+                                    disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                    </option>
+                                    <option>User</option>
+                                    <option>Instrument</option>
+                                    <option>Common</option>
+                                    <option>Field Staff</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="ApproveAsset.usageType == 'User' || ApproveAsset.usageType == 'Field Staff'">
+                            <div class="form-group form-group-sm">
+                                <label for="empNo"> Employee No </label>
+                                <input class="form-control input-sm" type="text" name="empNo"
+                                    [(ngModel)]="ApproveAsset.empNo" placeholder="empNo" [value]="empNo" maxlength="80"
+                                    [disabled]="isDisabled" id="empNo" matTooltip="Enter empNo"
+                                    ngControl="ApproveAsset.empNo" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="ApproveAsset.usageType == 'User' || ApproveAsset.usageType == 'Field Staff'">
+                            <div class="form-group form-group-sm">
+                                <label for="empName"> Employee Name </label>
+                                <input class="form-control input-sm" type="text" name="empName"
+                                    [(ngModel)]="ApproveAsset.empName" placeholder="empName" [value]="empName"
+                                    maxlength="80" [disabled]="isDisabled" id="empName" matTooltip="Enter empName"
+                                    ngControl="ApproveAsset.empName" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="ApproveAsset.usageType == 'User' || ApproveAsset.usageType == 'Field Staff'">
+                            <div class="form-group form-group-sm">
+                                <label for="department"> Department </label>
+                                <input class="form-control input-sm" type="text" name="department"
+                                    [(ngModel)]="ApproveAsset.department" placeholder="department" [value]="department"
+                                    maxlength="80" [disabled]="isDisabled" id="department" matTooltip="Enter department"
+                                    ngControl="ApproveAsset.department" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="ApproveAsset.usageType == 'User' || ApproveAsset.usageType == 'Field Staff'">
+                            <div class="form-group form-group-sm">
+                                <label for="designation"> Designation </label>
+                                <input class="form-control input-sm" type="text" name="designation"
+                                    [(ngModel)]="ApproveAsset.designation" placeholder="designation"
+                                    [value]="designation" maxlength="80" [disabled]="isDisabled" id="designation"
+                                    matTooltip="Enter designation" ngControl="ApproveAsset.designation" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.usageType == 'Common'">
+                            <div class="form-group form-group-sm">
+                                <label for="comDept"> Department </label>
+                                <input class="form-control input-sm" type="text" name="comDept"
+                                    [(ngModel)]="ApproveAsset.comDept" placeholder="comDept" [value]="comDept"
+                                    maxlength="80" [disabled]="isDisabled" id="comDept" matTooltip="Enter comDept"
+                                    ngControl="ApproveAsset.comDept" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.usageType == 'Common'">
+                            <div class="form-group form-group-sm">
+                                <label for="comFloor"> Floor </label>
+                                <input class="form-control input-sm" type="text" name="comFloor"
+                                    [(ngModel)]="ApproveAsset.comFloor" placeholder="comFloor" [value]="comFloor"
+                                    maxlength="80" [disabled]="isDisabled" id="comFloor" matTooltip="Enter comFloor"
+                                    ngControl="ApproveAsset.comFloor" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.usageType == 'Instrument'">
+                            <div class="form-group form-group-sm">
+                                <label for="instName"> Instrument Name </label>
+                                <input class="form-control input-sm" type="text" name="instName"
+                                    [(ngModel)]="ApproveAsset.instName" placeholder="instName" [value]="instName"
+                                    maxlength="80" [disabled]="isDisabled" id="instName" matTooltip="Enter instName"
+                                    ngControl="ApproveAsset.instName" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.usageType == 'Instrument'">
+                            <div class="form-group form-group-sm">
+                                <label for="instType"> Instrument Type </label>
+                                <input class="form-control input-sm" type="text" name="instType"
+                                    [(ngModel)]="ApproveAsset.instType" placeholder="instType" [value]="instType"
+                                    maxlength="80" [disabled]="isDisabled" id="instType" matTooltip="Enter instType"
+                                    ngControl="ApproveAsset.instType" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.usageType == 'Instrument'">
+                            <div class="form-group form-group-sm">
+                                <label for="version"> Version </label>
+                                <input class="form-control input-sm" type="text" name="version"
+                                    [(ngModel)]="ApproveAsset.version" placeholder="version" [value]="version"
+                                    maxlength="80" [disabled]="isDisabled" id="version" matTooltip="Enter version"
+                                    ngControl="ApproveAsset.version" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="ApproveAsset.usageType == 'Instrument'">
+                            <div class="form-group form-group-sm">
+                                <label for="software"> Software </label>
+                                <input class="form-control input-sm" type="text" name="software"
+                                    [(ngModel)]="ApproveAsset.software" placeholder="software" [value]="software"
+                                    maxlength="80" [disabled]="isDisabled" id="software" matTooltip="Enter software"
+                                    ngControl="ApproveAsset.software" readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="assetState"> Asset State </label>
+                                <select [(ngModel)]="ApproveAsset.assetState" class="form-control" id="assetState"
+                                    name="assetState" ngControl="ApproveAsset.assetState"
+                                    matTooltip="Select Asset State" disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let status of assStateList" value={{status.status}}>
+                                        {{status.status}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="natureofActivities"> Nature of Activities performed/functioned </label>
+                                <input class="form-control input-sm" type="text" name="natureofActivities"
+                                    [(ngModel)]="ApproveAsset.natureofActivities" placeholder="natureofActivities"
+                                    [value]="natureofActivities" maxlength="80" [disabled]="isDisabled"
+                                    id="natureofActivities" matTooltip="Enter natureofActivities"
+                                    ngControl="ApproveAsset.natureofActivities" readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="createdBy"> Created By </label>
+                                <input class="form-control input-sm" type="text" name="createdBy"
+                                    [(ngModel)]="ApproveAsset.createdBy" placeholder="createdBy"
+                                    [value]="natureofActivities" maxlength="80" [disabled]="isDisabled" id="createdBy"
+                                    matTooltip="Asset Created By" ngControl="ApproveAsset.createdBy" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="createdDate"> Created Date </label>
+                                <input class="form-control input-sm" type="text"
+                                    name="createdDate | date:'dd/MM/yyyy hh:mm:ss'"
+                                    [(ngModel)]="ApproveAsset.createdDate"
+                                    placeholder="createdDate | date:'dd/MM/yyyy hh:mm:ss'"
+                                    [value]="createdDate | date:'dd/MM/yyyy hh:mm:ss'" maxlength="80"
+                                    [disabled]="isDisabled" id="createdDate | date:'dd/MM/yyyy hh:mm:ss'"
+                                    matTooltip="Asset Created On" ngControl="ApproveAsset.createdDate " readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <div *ngIf="view" class="row pull-right">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" [disabled]="isLoadingPop"
+                        matTooltip="Click to close modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

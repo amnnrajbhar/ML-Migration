@@ -1,0 +1,108 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Working Calendar Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Working Calendar Reports</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title"> Working Calendar Report </h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+        </div>
+        <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="card-body" #native style="border: black; box-shadow: gray;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label #native for="Year"> Year</label>
+                                <input type="number" [(ngModel)]="calYear" class="form-control" id="year"
+                                    placeholder="Year" name="year" ngControl="calYear" #calYearEnt="ngModel"
+                                    [disabled]="showCalendar">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="baseplant"> Plant <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filterLocation" class="form-control" id="plant" name="plant"
+                                    matTooltip="plant" (change)="getPaygroupsBasedOnPlant()" #plantEnt="ngModel">
+                                    <option [ngValue]=null disabled [selected]="true">--Select plant--</option>
+                                    <option *ngFor="let pl of locationList" value={{pl.fkPlantId}}>
+                                        {{pl.code}}-{{pl.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="payGroup"> Pay Group<span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup" name="payGroup"
+                                    matTooltip="Pay Group" #payGroup1Ent="ngModel" required>
+                                    <option [ngValue]="undefined" disabled [selected]="true">--Select Pay Group--
+                                    </option>
+                                    <option *ngFor="let loc of payGroupList1;let i=index" value={{loc.id}}>
+                                        {{loc.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="empcat">Employee Category <span style="color: red;">*</span></label>
+                                <select #native name="empcat" id="empcat" class="form-control"
+                                    [(ngModel)]="filterCategory" ngControl="filterCategory" required>
+                                    <option [ngValue]=null disabled [selected]="true">--Select Category--</option>
+                                    <option *ngFor="let loc of employeeCategoryList;let i=index" value={{loc.id}}>
+                                        {{loc.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="filterType1">Calender Type <span style="color:red">*</span> </label>
+                                <div class="row">
+                                    <mat-radio-group #native aria-label="Select option?" id="filterType1"
+                                        name="filterType1" [(ngModel)]="filterType" ngControl="filterType"
+                                        #filterTypeEnt="ngModel" required>
+                                        <mat-radio-button value="Regular">Regular</mat-radio-button>
+                                        &nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;
+                                        <mat-radio-button value="Additional">Additional</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-warning" (click)="getExportData();"
+                                    matTooltip="click to export"><i class="fas fa-file-excel"></i>&nbsp; Export To
+                                    Excel</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-danger" (click)="clearFilter();" matTooltip="click to reset"><i
+                                        class="fas fa-times"></i>
+                                    &nbsp;Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+
+
+
+    </div>
+</section>

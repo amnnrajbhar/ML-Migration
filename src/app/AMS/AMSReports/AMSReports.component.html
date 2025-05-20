@@ -1,0 +1,1317 @@
+<section class="content-header">
+    <h1 class="display-1">
+        AMS Reports
+        <small> AMS </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    </ol>
+</section>
+<br>
+<!--Main Content-->
+<div class="panel-body form-horizontal">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h3><b>Asset Reports</b></h3>
+            </div>
+        </div>
+        <div class="panel-body form-horizontal">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group row">
+                        <label for="Plant" class="col-md-2 control-label text-right">Report Type: <span
+                                style="color:red">*</span>
+                        </label>
+
+                        <div class="col-md-4">
+                            <select [(ngModel)]="filterreporttype" class="form-control" id="reporttype"
+                                name="reporttype" ngControl="filterreporttype" #reporttypeEnt="ngModel"
+                                [disabled]="isEdit" matTooltip="Select Report Type" (change)="onChange()" required>
+                                <option [ngValue]="undefined" disabled>-- Select Report Type --</option>
+                                <option value="HS">Hardware Summary</option>
+                                <option value="HD">Harware Detailed</option>
+                                <option value="SS">Software Summary</option>
+                                <option value="SD">Software Detailed</option>
+                                <option value="TA">Transferred Assets</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="hardSummModal" role="dialog" aria-labelledby="hardSummModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2; color:white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title"> <i>Asset Details</i>
+                </h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;">
+                <form #dataForm="ngForm" (keydown.enter)="$event.preventDefault()">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="assetId"> Asset Id <span style="color:red">*</span></label>
+                                <input [(ngModel)]="AMSReports.asset_ID" class="form-control" placeholder="Asset Id"
+                                    name="assetIdd" id="assetIdd" ngControl="AMSReports.asset_ID" #assetIdEnt="ngModel"
+                                    readonly="true" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="assetNo"> Asset No. <span style="color:red">*</span></label>
+                                <input [(ngModel)]="AMSReports.asset_No" class="form-control" id="assetNoo"
+                                    placeholder="Max of 35 chars." name="assetNo" ngControl="AMSReports.asset_No"
+                                    #assetNoEnt="ngModel" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="location"> Location </label>
+                                <input class="form-control" type="text" name="location"
+                                    [(ngModel)]="AMSReports.location" placeholder="Location" [value]="location"
+                                    [disabled]="isDisabled" id="location" matTooltip="Enter Location"
+                                    ngControl="AMSReports.location" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <input class="form-control" type="text" name="category"
+                                    [(ngModel)]="AMSReports.category" placeholder="Category" [value]="category"
+                                    [disabled]="isDisabled" id="category" matTooltip="Enter Category"
+                                    ngControl="AMSReports.category" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="barcode"> Barcode </label>
+                                <input class="form-control" type="text" name="barcode" [(ngModel)]="AMSReports.bar_Code"
+                                    placeholder="Barcode" [value]="barcode" [disabled]="isDisabled" id="barcode"
+                                    matTooltip="Enter Barcode" ngControl="AMSReports.bar_Code" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="model"> Model </label>
+                                <input class="form-control" type="text" name="model" [(ngModel)]="AMSReports.model"
+                                    placeholder="Model" [value]="model" [disabled]="isDisabled" id="model"
+                                    matTooltip="Enter Model" ngControl="AMSReports.model" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="manufacturer"> Manufacturer </label>
+                                <input class="form-control" type="text" name="manufacturer"
+                                    [(ngModel)]="AMSReports.manufacturer" placeholder="Manufacturer"
+                                    ngControl="AMSReports.manufacturer" [value]="manufacturer" [disabled]="isDisabled"
+                                    id="manufacturer" matTooltip="Enter Manufacturer" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="partNo"> Part No.</label>
+                                <input class="form-control" type="text" name="partNo" [(ngModel)]="AMSReports.part_No"
+                                    placeholder="Part No" [value]="partNo" [disabled]="isDisabled" id="partNo"
+                                    matTooltip="Enter Part No" ngControl="AMSReports.part_No" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="serialNo"> Serial No. </label>
+                                <input class="form-control" type="text" name="serialNo"
+                                    [(ngModel)]="AMSReports.serial_No" placeholder="Serial No" [value]="serialNo"
+                                    ngControl="AMSReports.serial_No" [disabled]="isDisabled" id="serialNo"
+                                    matTooltip="Enter Serial No" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="processor"> Processor </label>
+                                <input class="form-control" type="text" name="processor"
+                                    [(ngModel)]="AMSReports.processor" placeholder="Processor" [value]="processor"
+                                    ngControl="AMSReports.processor" [disabled]="isDisabled" id="processor"
+                                    matTooltip="Enter Processor" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="ram"> RAM</label>
+                                <input class="form-control" type="text" name="ram" [(ngModel)]="AMSReports.ram"
+                                    placeholder="Ram" [value]="ram" ngControl="AMSReports.ram" [disabled]="isDisabled"
+                                    id="ram" matTooltip="Enter Ram" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="ramSize"> RAM Size</label>
+                                <input class="form-control" type="text" name="ramSize" value="{{AMSReports.ramSize}}"
+                                    placeholder="Ram Size" [disabled]="isDisabled" id="ramSize"
+                                    matTooltip="Enter Ram Size" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="hdd"> HDD</label>
+                                <input class="form-control" type="text" name="hdd" [(ngModel)]="AMSReports.hdd"
+                                    placeholder="HDD" [value]="hdd" ngControl="AMSReports.hdd" [disabled]="isDisabled"
+                                    id="hdd" matTooltip="Enter Hdd" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="hddSize"> HDD Size</label>
+                                <input class="form-control" type="text" name="hddSize" value="{{AMSReports.hddSize}}"
+                                    placeholder="HDD Size" [disabled]="isDisabled" id="hddSize"
+                                    matTooltip="Enter Hdd Size" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="ipNo"> IP Address</label>
+                                <input class="form-control" type="text" name="ipNo" [(ngModel)]="AMSReports.iP_Address"
+                                    placeholder="Ip No" [value]="ipNo" ngControl="AMSReports.iP_Address"
+                                    [disabled]="isDisabled" id="ipNo" matTooltip="Enter IpNo" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="gxp"> GxP Applicable </label>
+                                <input class="form-control" type="text" name="gxp"
+                                    [(ngModel)]="AMSReports.gxP_Applicable" placeholder="GxP" [value]="gxp"
+                                    ngControl="AMSReports.gxP_Applicable" [disabled]="isDisabled" id="gxp"
+                                    matTooltip="Enter GxP" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="config"> Configurations. </label>
+                                <input class="form-control" type="text" name="config" [(ngModel)]="AMSReports.config"
+                                    placeholder="Config" [value]="config" ngControl="AMSReports.config"
+                                    [disabled]="isDisabled" id="config" matTooltip="Enter Config" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="monitorType"> Monitor Type </label>
+                                <select [(ngModel)]="AMSReports.type" class="form-control" id="monitorType"
+                                    name="monitorType" ngControl="AMSReports.type" matTooltip="Select Monitor Type"
+                                    disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let type of monType" value={{type.type}}>
+                                        {{type.type}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="make"> Make </label>
+                                <input class="form-control" type="text" name="make" [(ngModel)]="AMSReports.make"
+                                    placeholder="make" [value]="make" [disabled]="isDisabled" id="make"
+                                    matTooltip="Enter make" ngControl="AMSReports.make" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="size"> Size </label>
+                                <input class="form-control" type="text" name="size" [(ngModel)]="AMSReports.size"
+                                    placeholder="size" [value]="size" [disabled]="isDisabled" id="size"
+                                    matTooltip="Enter size" ngControl="AMSReports.size" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="keyboard"> Keyboard </label>
+                                <input class="form-control" type="text" name="keyboard"
+                                    [(ngModel)]="AMSReports.keyboard" placeholder="keyboard" [value]="keyboard"
+                                    [disabled]="isDisabled" id="keyboard" matTooltip="Enter keyboard"
+                                    ngControl="AMSReports.keyboard" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.asset_Type == 'Computers'">
+                            <div class="form-group">
+                                <label for="mouse"> Mouse </label>
+                                <input class="form-control" type="text" name="mouse" [(ngModel)]="AMSReports.mouse"
+                                    placeholder="mouse" [value]="mouse" [disabled]="isDisabled" id="mouse"
+                                    matTooltip="Enter mouse" ngControl="AMSReports.mouse" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.asset_Type == 'Printer'">
+                            <div class="form-group">
+                                <label for="ppm"> Pages Per Minute (ppm) </label>
+                                <input class="form-control" type="text" name="ppm" [(ngModel)]="AMSReports.ppm"
+                                    placeholder="size" [value]="ppm" [disabled]="isDisabled" id="ppm"
+                                    matTooltip="Enter ppm" ngControl="AMSReports.ppm" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.asset_Type == 'Printer'">
+                            <div class="form-group">
+                                <label for="machineLife"> Machine Life </label>
+                                <input class="form-control" type="text" name="machineLife"
+                                    [(ngModel)]="AMSReports.machine_Life" placeholder="machineLife"
+                                    [value]="machineLife" [disabled]="isDisabled" id="machineLife"
+                                    matTooltip="Enter machineLife" ngControl="AMSReports.machine_Life" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.asset_Type == 'Printer'">
+                            <div class="form-group">
+                                <label for="cpp"> Cost Per Page </label>
+                                <input class="form-control" type="text" name="cpp" [(ngModel)]="AMSReports.cpp"
+                                    placeholder="cpp" [value]="cpp" [disabled]="isDisabled" id="cpp"
+                                    matTooltip="Enter cpp" ngControl="AMSReports.cpp" readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="usageType"> Usage Type </label>
+                                <select [(ngModel)]="AMSReports.usage_Type" class="form-control" id="usageType"
+                                    name="usageType" ngControl="AMSReports.usage_Type" matTooltip="Select Usage Type "
+                                    disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option>User</option>
+                                    <option>Instrument</option>
+                                    <option>Common</option>
+                                    <option>Field Staff</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="AMSReports.usage_Type == 'User' || AMSReports.usage_Type == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="empNo"> Employee No </label>
+                                <input class="form-control" type="text" name="empNo" [(ngModel)]="AMSReports.empNo"
+                                    placeholder="empNo" [value]="empNo" [disabled]="isDisabled" id="empNo"
+                                    matTooltip="Enter empNo" ngControl="AMSReports.empNo" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="AMSReports.usage_Type == 'User' || AMSReports.usage_Type == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="empName"> Employee Name </label>
+                                <input class="form-control" type="text" name="empName" [(ngModel)]="AMSReports.empName"
+                                    placeholder="empName" [value]="empName" [disabled]="isDisabled" id="empName"
+                                    matTooltip="Enter empName" ngControl="AMSReports.empName" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="AMSReports.usage_Type == 'User' || AMSReports.usage_Type == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="department"> Department </label>
+                                <input class="form-control" type="text" name="department"
+                                    [(ngModel)]="AMSReports.department" placeholder="department" [value]="department"
+                                    [disabled]="isDisabled" id="department" matTooltip="Enter department"
+                                    ngControl="AMSReports.department" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2"
+                            *ngIf="AMSReports.usage_Type == 'User' || AMSReports.usage_Type == 'Field Staff'">
+                            <div class="form-group">
+                                <label for="designation"> Designation </label>
+                                <input class="form-control" type="text" name="designation"
+                                    [(ngModel)]="AMSReports.designation" placeholder="designation" [value]="designation"
+                                    [disabled]="isDisabled" id="designation" matTooltip="Enter designation"
+                                    ngControl="AMSReports.designation" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.usage_Type == 'Common'">
+                            <div class="form-group">
+                                <label for="comDept"> Department </label>
+                                <input class="form-control" type="text" name="comDept" [(ngModel)]="AMSReports.com_dept"
+                                    placeholder="comDept" [value]="comDept" [disabled]="isDisabled" id="comDept"
+                                    matTooltip="Enter Common Dept" ngControl="AMSReports.com_dept" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.usage_Type == 'Common'">
+                            <div class="form-group">
+                                <label for="comFloor"> Floor </label>
+                                <input class="form-control" type="text" name="comFloor"
+                                    [(ngModel)]="AMSReports.com_floor" placeholder="comFloor" [value]="comFloor"
+                                    [disabled]="isDisabled" id="com_floor" matTooltip="Enter Common Floor"
+                                    ngControl="AMSReports.comFloor" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.usage_Type == 'Instrument'">
+                            <div class="form-group">
+                                <label for="instName"> Instrument Name </label>
+                                <input class="form-control" type="text" name="instName"
+                                    [(ngModel)]="AMSReports.instName" placeholder="instName" [value]="instName"
+                                    [disabled]="isDisabled" id="instName" matTooltip="Enter instName"
+                                    ngControl="AMSReports.instName" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.usage_Type == 'Instrument'">
+                            <div class="form-group">
+                                <label for="instType"> Instrument Type </label>
+                                <input class="form-control" type="text" name="instType"
+                                    [(ngModel)]="AMSReports.instType" placeholder="instType" [value]="instType"
+                                    [disabled]="isDisabled" id="instType" matTooltip="Enter instType"
+                                    ngControl="AMSReports.instType" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.usage_Type == 'Instrument'">
+                            <div class="form-group">
+                                <label for="version"> Version </label>
+                                <input class="form-control" type="text" name="version" [(ngModel)]="AMSReports.version"
+                                    placeholder="version" [value]="version" [disabled]="isDisabled" id="version"
+                                    matTooltip="Enter version" ngControl="AMSReports.version" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2" *ngIf="AMSReports.usage_Type == 'Instrument'">
+                            <div class="form-group">
+                                <label for="software"> Software </label>
+                                <input class="form-control" type="text" name="software"
+                                    [(ngModel)]="AMSReports.software" placeholder="software" [value]="software"
+                                    [disabled]="isDisabled" id="software" matTooltip="Enter software"
+                                    ngControl="AMSReports.software" readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="assetState"> Asset State </label>
+                                <select [(ngModel)]="AMSReports.status" class="form-control" id="assetState"
+                                    name="assetState" ngControl="AMSReports.status" matTooltip="Select Asset State"
+                                    disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let status of assStateList" value={{status.status}}>
+                                        {{status.status}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="natureofActivities"> Nature of Activities performed/functioned </label>
+                                <input class="form-control" type="text" name="natureofActivities"
+                                    [(ngModel)]="AMSReports.natureofActivities" placeholder="natureofActivities"
+                                    [value]="natureofActivities" [disabled]="isDisabled" id="natureofActivities"
+                                    matTooltip="Enter natureofActivities" ngControl="AMSReports.natureofActivities"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="createdBy"> Created By </label>
+                                <input class="form-control" type="text" name="createdBy"
+                                    [(ngModel)]="AMSReports.created_by" placeholder="createdBy"
+                                    [value]="natureofActivities" [disabled]="isDisabled" id="createdBy"
+                                    matTooltip="Asset Created By" ngControl="AMSReports.created_by" readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="createdDate"> Created Date </label>
+                                <input class="form-control" type="text" name="createdDate"
+                                    [(ngModel)]="AMSReports.created_date" placeholder="Created Date"
+                                    [value]="created_date" [disabled]="isDisabled" id="createdDate"
+                                    matTooltip="Asset Created On" ngControl="AMSReports.createdDate " readonly="true"
+                                    disabled />
+                            </div>
+                        </div>
+                    </div>
+                    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <div *ngIf="view" class="row pull-right">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" [disabled]="isLoadingPop"
+                        matTooltip="Click to close modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--HARDWARE SUMMARY REPORT-->
+<div class="row" *ngIf="filterreporttype=='HS'">
+    <br>
+    &nbsp;
+    <div class="panel-body form-horizontal">
+        <div id="row">
+            <h2>Asset Hardware Summary Report</h2>
+        </div>
+        <br>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label for="location" class="col-md-1 control-label text-right"> Location
+                </label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width: 100%;background-color: white;" id="location" name="location"
+                        ngControl="filterlocation" #locationEnt="ngModel" [placeholder]="'Select Location (multiple)'"
+                        [data]="locationList" matTooltip='Select Locations' [(ngModel)]="filterlocation"
+                        [settings]="dropdownSettings1" (onSelect)="onItemSelectM1($event)"
+                        (onSelectAll)="onSelectAll1()" (focusout)="checkStatus1();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="subcategory" class="col-md-1 control-label text-right">Sub Category</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" id="subcategory"
+                        name="subcategory" ngControl="filtercategory" #subcategoryEnt="ngModel"
+                        [placeholder]="'Select Category (multiple)'" [data]="catList" matTooltip='Select Category'
+                        [(ngModel)]="filtercategory" [settings]="dropdownSettingsC" (onSelect)="onItemSelectC($event)"
+                        (onSelectAll)="onSelectAllC()" (focusout)="checkStatusC();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="usagetype" class="col-md-1 control-label text-right">Usage
+                    Type</label>
+                <div class="col-md-2">
+                    <select [(ngModel)]="filterusageType" class="form-control" id="usage" name="usage"
+                        ngControl="filterusageType" #usageEnt="ngModel" matTooltip="Select UsageType">
+                        <option [ngValue]="null" disabled [selected]="true">--Select Usage
+                            Type--</option>
+                        <option>User</option>
+                        <option>Instrument</option>
+                        <option>Common</option>
+                        <option>Field Staff</option>
+                    </select>
+                </div>
+                <label for="assetstate" class="col-md-1 control-label text-right">Asset
+                    State</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" [(ngModel)]="filterassetState"
+                        id="assetstate" [placeholder]="'Select Asset State (multiple)'" name="assetstate"
+                        ngControl="filterassetState" #assetstateEnt="ngModel" matTooltip="Select Asset State"
+                        [data]="assStateList" [settings]="dropdownSettings2" (onSelect)="onItemSelectA($event)"
+                        (onSelectAll)="onSelectAllA()" (focusout)="checkStatusA();">
+                    </ng-multiselect-dropdown>
+                </div>
+            </div>
+            <br>
+            <div class="form-group row">
+                <label for="assetstate" class="col-md-1 control-label text-right">&nbsp;</label>
+                <div class="col-md-2">
+                </div>
+                <!-- <label for="fromDate" class="col-md-2 control-label text-right"> Date Range: </label> -->
+                <!-- <div class="col-md-6">
+                    <input [matTooltipPosition]="'below'" matTooltip="Click to change date range" [owlDateTime]="dths11" [selectMode]="'range'"
+                        [owlDateTimeTrigger]="dths11" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                        #fromDate="ngModel">
+                    <owl-date-time #dths11></owl-date-time>
+                </div> -->
+                <label for="fromDate" class="col-md-1 control-label text-right">From Date</label>
+                <div class="col-md-2">
+                    <input [matTooltipPosition]="'below'" matTooltip="click to change from date" [owlDateTime]="dths11"
+                        [owlDateTimeTrigger]="dths11" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                        #fromDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dths11 style="width: 500px;"></owl-date-time>
+                </div>
+                <label for="toDate" class="col-md-1 control-label text-right">To Date</label>
+                <div class="col-md-2">
+                    <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'"
+                        matTooltip="click to change to date" [owlDateTime]="dths12" [owlDateTimeTrigger]="dths12"
+                        name="enddate" class="form-control" [(ngModel)]="to_date" #todate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dths12 style="width: 500px;"></owl-date-time>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="form-group text-center">
+            <button class="btn btn-primary" (click)="getHardwareSummary();" matTooltip="click to filter data"><i
+                    class="fas fa-filter"></i>
+                &nbsp;
+                Filter</button>
+            &nbsp;
+            <button class="btn btn-primary" (click)="clearFilter();" matTooltip="click to clear filter data"><i
+                    class="fas fa-times"></i>
+                &nbsp;
+                Clear</button>
+            &nbsp;
+            <button class="btn btn-secondary gradient-custom" (click)="exportToExcelHSReports();"
+                matTooltip="click to export to excel"><i class="fas fa-file-excel"></i>
+                &nbsp;
+                Export to Excel</button>
+        </div>
+    </div>
+
+    <div class="panel-body form-horizontal">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #0099cc; color:white;"> </th>
+                            <th style="background-color: #0099cc; color:white;">Location</th>
+                            <th style="background-color: #0099cc; color:white;">Asset No</th>
+                            <th style="background-color: #0099cc; color:white;">Usage Type</th>
+                            <th style="background-color: #0099cc; color:white;">Employee Number</th>
+                            <th style="background-color: #0099cc; color:white;">Employee Name</th>
+                            <th style="background-color: #0099cc; color:white;">Employee Department</th>
+                            <th style="background-color: #0099cc; color:white;">Common Department</th>
+                            <th style="background-color: #0099cc; color:white;">Common Floor</th>
+                            <th style="background-color: #0099cc; color:white;">Model</th>
+                            <th style="background-color: #0099cc; color:white;">Manufacturer</th>
+                            <th style="background-color: #0099cc; color:white;">Processor</th>
+                            <th style="background-color: #0099cc; color:white;">RAM</th>
+                            <th style="background-color: #0099cc; color:white;">HDD</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item of assetList; let i = index">
+                            <td>
+                                <table>
+                                    <tr>
+                                        &nbsp;
+                                        <td>
+                                            <button type="button" matTooltip="Click to view details"
+                                                class="btn btn-primary btn-xs"
+                                                (click)="onUserActions(true,item,false,'View')">
+                                                <i class="fas fa-eye"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td><b>{{item.location}}</b></td>
+                            <td>{{item.asset_No}}</td>
+                            <td>{{item.usage_Type}}</td>
+                            <td>{{item.empNo}}</td>
+                            <td>{{item.empName}}</td>
+                            <td>{{item.department}}</td>
+                            <td>{{item.common_Department}}</td>
+                            <td>{{item.com_floor}}</td>
+                            <td>{{item.model}}</td>
+                            <td>{{item.manufacturer}}</td>
+                            <td>{{item.processor}}</td>
+                            <td>{{item.ram}} {{item.ramSize}}</td>
+                            <td>{{item.hdd}} {{item.hddSize}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <ul class="pagination" *ngIf="AMSReports.totalCount>0">
+                        <li>
+                            <a (click)="gotoPage(pageNo)">
+                                Showing <b>{{((pageNo-1)*pageSize)+1}}</b> -
+                                <b>{{(pageNo*pageSize)>AMSReports.totalCount?AMSReports.totalCount:pageNo*pageSize}}</b>
+                                of <b>{{AMSReports.totalCount}}</b> records
+                            </a>
+                        </li>
+                        <li><a *ngIf="pageNo>1" (click)="gotoPage(1)">First</a></li>
+                        <li><a *ngIf="pageNo>1" (click)="gotoPage(pageNo-1)">Previous</a>
+                        </li>
+                        <li><a *ngIf="pageNo>2" (click)="gotoPage(pageNo-1)">{{pageNo-2}}</a>
+                        </li>
+                        <li><a *ngIf="pageNo>1" (click)="gotoPage(pageNo-1)">{{pageNo-1}}</a>
+                        </li>
+                        <li class="active"><a (click)="gotoPage(pageNo)">{{pageNo}}</a>
+                        </li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage(pageNo+1)">{{pageNo+1}}</a></li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo+1" (click)="gotoPage(pageNo+2)">{{pageNo+2}}</a></li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage(pageNo+1)">Next</a>
+                        </li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage(AMSReports.totalPages)">Last</a>
+                        </li>
+                        <li><a (click)="gotoPage(pageNo)">Page <b>{{pageNo}}</b> of
+                                <b>{{AMSReports.totalPages}}</b></a></li>
+                        <li><a>Page Size
+                                <select id="ddlPageSize" [(ngModel)]="pageSize" (change)="pageSizeChange()">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--HARDWARE DETAILED REPORT-->
+<div class="row" *ngIf="filterreporttype=='HD'">
+    <br>
+    &nbsp;
+    <div class="panel-body form-horizontal">
+        <div id="row">
+            <h2>Asset Hardware Detailed Report</h2>
+        </div>
+        <br>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label for="location" class="col-md-1 control-label text-right"> Location </label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width: 100%;background-color: white;" id="location" name="location"
+                        ngControl="filterlocation" #locationEnt="ngModel" [placeholder]="'Select Location (multiple)'"
+                        [data]="locationList" matTooltip='Select Locations' [(ngModel)]="filterlocation"
+                        [settings]="dropdownSettings1" (onSelect)="onItemSelectM1($event)"
+                        (onSelectAll)="onSelectAll1()" (focusout)="checkStatus1();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="category" class="col-md-1 control-label text-right">Category</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" id="category" name="category"
+                        ngControl="filterassetType" #categoryEnt="ngModel" (change)=GetSubCategory(filterassetType)
+                        [placeholder]="'Select Asset Type (multiple)'" [data]="catList1" matTooltip='Select Asset Type'
+                        [(ngModel)]="filterassetType" [settings]="dropdownSettings" (onSelect)="onItemSelectM($event)"
+                        (onSelectAll)="onSelectAll()" (focusout)="checkStatus();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="subcategory" class="col-md-1 control-label text-right">Sub Category</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" id="subcategory"
+                        name="subcategory" ngControl="filtercategory" #subcategoryEnt="ngModel"
+                        [placeholder]="'Select Category (multiple)'" [data]="catList" matTooltip='Select Category'
+                        [(ngModel)]="filtercategory" [settings]="dropdownSettingsC" (onSelect)="onItemSelectC($event)"
+                        (onSelectAll)="onSelectAllC()" (focusout)="checkStatusC();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="searchText" class="col-md-1 control-label text-right">Search Text</label>
+                <div class="col-md-2">
+                    <input [(ngModel)]="filtersearchText" class="form-control" id="searchText" name="searchText"
+                        ngControl="filtersearchText" #searchTextEnt="ngModel" matTooltip="Enter Search Text">
+                </div>
+            </div>
+            <br>
+            <div class="form-group row">
+                <label for="assetstate" class="col-md-1 control-label text-right">Asset State</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" [(ngModel)]="filterassetState"
+                        id="assetstate" [placeholder]="'Select Asset State (multiple)'" name="assetstate"
+                        ngControl="filterassetState" #assetstateEnt="ngModel" matTooltip="Select Asset State"
+                        [data]="assStateList" [settings]="dropdownSettings2" (onSelect)="onItemSelectA($event)"
+                        (onSelectAll)="onSelectAllA()" (focusout)="checkStatusA();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="fromDate" class="col-md-1 control-label text-right">From Date</label>
+                <div class="col-md-2">
+                    <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dthd11"
+                        [owlDateTimeTrigger]="dthd11" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                        #fromDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dthd11 style="width: 250px;"></owl-date-time>
+                </div>
+                <label for="toDate" class="col-md-1 control-label text-right">To Date</label>
+                <div class="col-md-2">
+                    <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'"
+                        matTooltip="Click to change to date" [owlDateTime]="dthd12" [owlDateTimeTrigger]="dthd12"
+                        name="endDate" class="form-control" [(ngModel)]="to_date" #toDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dthd12 style="width: 250px;"></owl-date-time>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="form-group text-center">
+            <button class="btn btn-primary" (click)="getHardwareDetailed();" matTooltip="click to filter data"><i
+                    class="fas fa-filter"></i>
+                &nbsp;
+                Filter</button>
+            &nbsp;
+            <button class="btn btn-primary" (click)="clearFilter();" matTooltip="click to clear filter data"><i
+                    class="fas fa-times"></i>
+                &nbsp;
+                Clear</button>
+            &nbsp;
+            <button class="btn btn-secondary gradient-custom" (click)="exportToExcelHDReports();"
+                matTooltip="click to export data"><i class="fas fa-file-excel"></i>
+                &nbsp;
+                Export to Excel</button>
+            &nbsp;
+            <!-- <button class="btn btn-primary" (click)="exportToExcelDispose();" matTooltip="click to export dispose data"
+                [disabled]="!buttonDisabled"><i class="fas fa-file-excel"></i>
+                &nbsp;
+                Export To Excel Dispose Data</button> -->
+        </div>
+    </div>
+
+    <div class="panel-body form-horizontal">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #0099cc; color:white;">Location</th>
+                            <th style="background-color: #0099cc; color:white;">Asset No</th>
+                            <th style="background-color: #0099cc; color:white;">Usage Type</th>
+                            <th style="background-color: #0099cc; color:white;">Category</th>
+                            <th style="background-color: #0099cc; color:white;">Employee Number</th>
+                            <th style="background-color: #0099cc; color:white;">Employee Name</th>
+                            <th style="background-color: #0099cc; color:white;">Employee Department</th>
+                            <th style="background-color: #0099cc; color:white;">Common Department</th>
+                            <th style="background-color: #0099cc; color:white;">Common Floor</th>
+                            <th style="background-color: #0099cc; color:white;">Model</th>
+                            <th style="background-color: #0099cc; color:white;">Processor</th>
+                            <th style="background-color: #0099cc; color:white;">RAM</th>
+                            <th style="background-color: #0099cc; color:white;">HDD</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item of assetList;">
+                            <td><b>{{item.location}}</b></td>
+                            <td>{{item.asset_No}}</td>
+                            <td>{{item.usage_Type}}</td>
+                            <td>{{item.category}}</td>
+                            <td>{{item.empNo}}</td>
+                            <td>{{item.empName}}</td>
+                            <td>{{item.department}}</td>
+                            <td>{{item.common_Department}}</td>
+                            <td>{{item.com_floor}}</td>
+                            <td>{{item.model}}</td>
+                            <td>{{item.processor}}</td>
+                            <td>{{item.ram}} {{item.ramSize}}</td>
+                            <td>{{item.hdd}} {{item.hddSize}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <ul class="pagination" *ngIf="AMSReports.totalCount>0">
+                        <li>
+                            <a (click)="gotoPage1(pageNo)">
+                                Showing <b>{{((pageNo-1)*pageSize)+1}}</b> -
+                                <b>{{(pageNo*pageSize)>AMSReports.totalCount?AMSReports.totalCount:pageNo*pageSize}}</b>
+                                of <b>{{AMSReports.totalCount}}</b> records
+                            </a>
+                        </li>
+                        <li><a *ngIf="pageNo>1" (click)="gotoPage1(1)">First</a></li>
+                        <li><a *ngIf="pageNo>1" (click)="gotoPage1(pageNo-1)">Previous</a></li>
+                        <li><a *ngIf="pageNo>2" (click)="gotoPage1(pageNo-1)">{{pageNo-2}}</a>
+                        </li>
+                        <li><a *ngIf="pageNo>1" (click)="gotoPage1(pageNo-1)">{{pageNo-1}}</a>
+                        </li>
+                        <li class="active"><a (click)="gotoPage1(pageNo)">{{pageNo}}</a></li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage1(pageNo+1)">{{pageNo+1}}</a></li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo+1" (click)="gotoPage1(pageNo+2)">{{pageNo+2}}</a>
+                        </li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage1(pageNo+1)">Next</a>
+                        </li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage1(AMSReports.totalPages)">Last</a>
+                        </li>
+                        <li><a (click)="gotoPage1(pageNo)">Page <b>{{pageNo}}</b> of
+                                <b>{{AMSReports.totalPages}}</b></a></li>
+                        <li><a>Page Size
+                                <select id="ddlPageSize" [(ngModel)]="pageSize" (change)="pageSizeChange1()">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--SOFTWARE SUMMARY REPORT-->
+<div class="row" *ngIf="filterreporttype=='SS'">
+    <br>
+    &nbsp;
+    <div class="panel-body form-horizontal">
+        <div id="row">
+            <h2>Asset Software Summary Report</h2>
+        </div>
+        <br>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label for="location" class="col-md-1 control-label text-right"> Location </label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width: 100%;background-color: white;" id="location" name="location"
+                        ngControl="filterlocation" #locationEnt="ngModel" [placeholder]="'Select Location (multiple)'"
+                        [data]="locationList" matTooltip='Select Locations' [(ngModel)]="filterlocation"
+                        [settings]="dropdownSettings1" (onSelect)="onItemSelectM1($event)"
+                        (onSelectAll)="onSelectAll1()" (focusout)="checkStatus1();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="softwareType" class="col-md-1 control-label text-right">Software Type</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" id="softwareType"
+                        name="softwareType" ngControl="filtersoftwareType" #softwareTypeEnt="ngModel"
+                        [placeholder]="'Select Software Type (multiple)'" [data]="softwareList"
+                        matTooltip='Select Software Type' [(ngModel)]="filtersoftwareType"
+                        [settings]="dropdownSettingsS" (onSelect)="onItemSelectS($event)" (onSelectAll)="onSelectAllS()"
+                        (focusout)="checkStatusS();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="licenseType" class="col-md-1 control-label text-right">License Type</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" id="licenseType"
+                        name="licenseType" ngControl="filterlicenseType" #licenseTypeEnt="ngModel"
+                        [placeholder]="'Select License Type (multiple)'" [data]="licenseList"
+                        matTooltip="Select License Type" [(ngModel)]="filterlicenseType" [settings]="dropdownSettingsL"
+                        (onSelect)="onItemSelectL($event)" (onSelectAll)="onSelectAllL()" (focusout)="checkStatusL();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="assetstate" class="col-md-1 control-label text-right">Asset State</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" [(ngModel)]="filterassetState"
+                        id="assetstate" [placeholder]="'Select Asset State (multiple)'" name="assetstate"
+                        ngControl="filterassetState" #assetstateEnt="ngModel" matTooltip="Select Asset State"
+                        [data]="assStateList" [settings]="dropdownSettings2" (onSelect)="onItemSelectA($event)"
+                        (onSelectAll)="onSelectAllA()" (focusout)="checkStatusA();">
+                    </ng-multiselect-dropdown>
+                </div>
+            </div>
+            <br>
+            <div class="form-group row">
+                <label for="assetstate" class="col-md-1 control-label text-right">&nbsp;</label>
+                <div class="col-md-2">
+                </div>
+                <label for="fromDate" class="col-md-1 control-label text-right">From Date</label>
+                <div class="col-md-2">
+                    <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dtss11"
+                        [owlDateTimeTrigger]="dtss11" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                        #fromDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dtss11 style="width: 250px;"></owl-date-time>
+                </div>
+                <label for="toDate" class="col-md-1 control-label text-right">To Date</label>
+                <div class="col-md-2">
+                    <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'"
+                        matTooltip="Click to change to date" [owlDateTime]="dtss12" [owlDateTimeTrigger]="dtss12"
+                        name="endDate" class="form-control" [(ngModel)]="to_date" #toDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dtss12 style="width: 250px;"></owl-date-time>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="form-group text-center">
+            <button class="btn btn-primary" (click)="getSoftwareSummary();" matTooltip="click to filter data"><i
+                    class="fas fa-filter"></i>
+                &nbsp;
+                Filter</button>
+            &nbsp;
+            <button class="btn btn-primary" (click)="clearFilter();" matTooltip="click to clear filter data"><i
+                    class="fas fa-times"></i>
+                &nbsp;
+                Clear</button>
+            &nbsp;
+            <button class="btn btn-secondary gradient-custom" (click)="exportToExcelSSReports();"
+                matTooltip="click to export to excel"><i class="fas fa-file-excel"></i>
+                &nbsp;
+                Export to Excel</button>
+        </div>
+    </div>
+    <br>
+    <div class="row" style="text-align: center;">
+        <div class="col-md-12" style="text-align: center;">
+            <table class="table table-hover table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th style="background-color: #0099cc; color:white;">Location</th>
+                        <th style="background-color: #0099cc; color:white;">Asset Id</th>
+                        <th style="background-color: #0099cc; color:white;">Asset No</th>
+                        <th style="background-color: #0099cc; color:white;">Software Type</th>
+                        <th style="background-color: #0099cc; color:white;">Software Name</th>
+                        <th style="background-color: #0099cc; color:white;">License Type</th>
+                        <th style="background-color: #0099cc; color:white;">Asset Status</th>
+                        <th style="background-color: #0099cc; color:white;">Version</th>
+                        <th style="background-color: #0099cc; color:white;">Product Key</th>
+                        <th style="background-color: #0099cc; color:white;">Expiry Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of assetList;">
+                        <td>{{item.location}}</td>
+                        <td>{{item.assetId}}</td>
+                        <td>{{item.assetNo}}</td>
+                        <td>{{item.softwareType}}</td>
+                        <td>{{item.softwareName}}</td>
+                        <td>{{item.licenseType}}</td>
+                        <td>{{item.status}}</td>
+                        <td>{{item.softwareVersion}}</td>
+                        <td>{{item.productKey}}</td>
+                        <td>{{item.ExpiresOn}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center">
+                <ul class="pagination" *ngIf="AMSReports.totalCount>0">
+                    <li>
+                        <a (click)="gotoPage2(pageNo)">
+                            Showing <b>{{((pageNo-1)*pageSize)+1}}</b> -
+                            <b>{{(pageNo*pageSize)>AMSReports.totalCount?AMSReports.totalCount:pageNo*pageSize}}</b>
+                            of <b>{{AMSReports.totalCount}}</b> records
+                        </a>
+                    </li>
+                    <li><a *ngIf="pageNo>1" (click)="gotoPage2(1)">First</a></li>
+                    <li><a *ngIf="pageNo>1" (click)="gotoPage2(pageNo-1)">Previous</a></li>
+                    <li><a *ngIf="pageNo>2" (click)="gotoPage2(pageNo-1)">{{pageNo-2}}</a>
+                    </li>
+                    <li><a *ngIf="pageNo>1" (click)="gotoPage2(pageNo-1)">{{pageNo-1}}</a>
+                    </li>
+                    <li class="active"><a (click)="gotoPage2(pageNo)">{{pageNo}}</a></li>
+                    <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage2(pageNo+1)">{{pageNo+1}}</a></li>
+                    <li><a *ngIf="AMSReports.totalPages>pageNo+1" (click)="gotoPage2(pageNo+2)">{{pageNo+2}}</a></li>
+                    <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage2(pageNo+1)">Next</a>
+                    </li>
+                    <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage2(AMSReports.totalPages)">Last</a>
+                    </li>
+                    <li><a (click)="gotoPage2(pageNo)">Page <b>{{pageNo}}</b> of
+                            <b>{{AMSReports.totalPages}}</b></a></li>
+                    <li><a>Page Size
+                            <select id="ddlPageSize" [(ngModel)]="pageSize" (change)="pageSizeChange2()">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--SOFTWARE DETAILED REPORT-->
+<div class="row" *ngIf="filterreporttype=='SD'">
+    <br>
+    &nbsp;
+    <div class="panel-body form-horizontal">
+        <div id="row">
+            <h2>Asset Software Detailed Report</h2>
+        </div>
+        <br>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label for="location" class="col-md-1 control-label text-right"> Location </label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width: 100%;background-color: white;" id="location" name="location"
+                        ngControl="filterlocation" #locationEnt="ngModel" [placeholder]="'Select Location (multiple)'"
+                        [data]="locationList" matTooltip='Select Locations' [(ngModel)]="filterlocation"
+                        [settings]="dropdownSettings1" (onSelect)="onItemSelectM1($event)"
+                        (onSelectAll)="onSelectAll1()" (focusout)="checkStatus1();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="softwareType" class="col-md-1 control-label text-right">Software Type</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" id="softwareType"
+                        name="softwareType" ngControl="filtersoftwareType" #softwareTypeEnt="ngModel"
+                        [placeholder]="'Select Software Type (multiple)'" [data]="softwareList"
+                        matTooltip='Select Software Type' [(ngModel)]="filtersoftwareType"
+                        [settings]="dropdownSettingsS" (onSelect)="onItemSelectS($event)" (onSelectAll)="onSelectAllS()"
+                        (focusout)="checkStatusS();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="licenseType" class="col-md-1 control-label text-right">License Type</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" id="licenseType"
+                        name="licenseType" ngControl="filterlicenseType" #licenseTypeEnt="ngModel"
+                        [placeholder]="'Select License Type (multiple)'" [data]="licenseList"
+                        matTooltip="Select License Type" [(ngModel)]="filterlicenseType" [settings]="dropdownSettingsL"
+                        (onSelect)="onItemSelectL($event)" (onSelectAll)="onSelectAllL()" (focusout)="checkStatusL();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="assetstate" class="col-md-1 control-label text-right">Asset State</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" [(ngModel)]="filterassetState"
+                        id="assetstate" [placeholder]="'Select Asset State (multiple)'" name="assetstate"
+                        ngControl="filterassetState" #assetstateEnt="ngModel" matTooltip="Select Asset State"
+                        [data]="assStateList" [settings]="dropdownSettings2" (onSelect)="onItemSelectA($event)"
+                        (onSelectAll)="onSelectAllA()" (focusout)="checkStatusA();">
+                    </ng-multiselect-dropdown>
+                </div>
+            </div>
+            <br>
+            <div class="form-group row">
+                <label for="assetstate" class="col-md-1 control-label text-right">&nbsp;</label>
+                <div class="col-md-2">
+                </div>
+                <label for="fromDate" class="col-md-1 control-label text-right">From Date</label>
+                <div class="col-md-2">
+                    <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dtsd11"
+                        [owlDateTimeTrigger]="dtsd11" name="fromDate" class="form-control" [(ngModel)]="from_date"
+                        #fromDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dtsd11 style="width: 250px;"></owl-date-time>
+                </div>
+                <label for="toDate" class="col-md-1 control-label text-right">To Date</label>
+                <div class="col-md-2">
+                    <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'"
+                        matTooltip="Click to change to date" [owlDateTime]="dtsd12" [owlDateTimeTrigger]="dtsd12"
+                        name="endDate" class="form-control" [(ngModel)]="to_date" #toDate="ngModel">
+                    <owl-date-time [pickerType]="'calendar'" #dtsd12 style="width: 250px;"></owl-date-time>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="form-group text-center">
+            <button class="btn btn-primary" (click)="getSoftwareSummary();" matTooltip="click to filter data"><i
+                    class="fas fa-filter"></i>
+                &nbsp;
+                Filter</button>
+            &nbsp;
+            <button class="btn btn-primary" (click)="clearFilter();" matTooltip="click to clear filter data"><i
+                    class="fas fa-times"></i>
+                &nbsp;
+                Clear</button>
+            &nbsp;
+            <button class="btn btn-secondary gradient-custom" (click)="exportToExcelSDReports();"
+                matTooltip="click to export data"><i class="fas fa-file-excel"></i>
+                &nbsp;
+                Export to Excel</button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th style="background-color: #0099cc; color:white;">Location</th>
+                        <th style="background-color: #0099cc; color:white;">Asset Id</th>
+                        <th style="background-color: #0099cc; color:white;">Asset No</th>
+                        <th style="background-color: #0099cc; color:white;">Software Type</th>
+                        <th style="background-color: #0099cc; color:white;">Software Name</th>
+                        <th style="background-color: #0099cc; color:white;">License Type</th>
+                        <th style="background-color: #0099cc; color:white;">Asset Status</th>
+                        <th style="background-color: #0099cc; color:white;">Version</th>
+                        <th style="background-color: #0099cc; color:white;">Product Key</th>
+                        <th style="background-color: #0099cc; color:white;">Expiry Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of assetList;">
+                        <td>{{item.location}}</td>
+                        <td>{{item.assetId}}</td>
+                        <td>{{item.assetNo}}</td>
+                        <td>{{item.softwareType}}</td>
+                        <td>{{item.softwareName}}</td>
+                        <td>{{item.licenseType}}</td>
+                        <td>{{item.status}}</td>
+                        <td>{{item.softwareVersion}}</td>
+                        <td>{{item.productKey}}</td>
+                        <td>{{item.ExpiresOn}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center">
+                <ul class="pagination" *ngIf="AMSReports.totalCount>0">
+                    <li>
+                        <a (click)="gotoPage3(pageNo)">
+                            Showing <b>{{((pageNo-1)*pageSize)+1}}</b> -
+                            <b>{{(pageNo*pageSize)>AMSReports.totalCount?AMSReports.totalCount:pageNo*pageSize}}</b>
+                            of <b>{{AMSReports.totalCount}}</b> records
+                        </a>
+                    </li>
+                    <li><a *ngIf="pageNo>1" (click)="gotoPage3(1)">First</a></li>
+                    <li><a *ngIf="pageNo>1" (click)="gotoPage3(pageNo-1)">Previous</a></li>
+                    <li><a *ngIf="pageNo>2" (click)="gotoPage3(pageNo-1)">{{pageNo-2}}</a>
+                    </li>
+                    <li><a *ngIf="pageNo>1" (click)="gotoPage3(pageNo-1)">{{pageNo-1}}</a>
+                    </li>
+                    <li class="active"><a (click)="gotoPage3(pageNo)">{{pageNo}}</a></li>
+                    <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage3(pageNo+1)">{{pageNo+1}}</a></li>
+                    <li><a *ngIf="AMSReports.totalPages>pageNo+1" (click)="gotoPage3(pageNo+2)">{{pageNo+2}}</a></li>
+                    <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage3(pageNo+1)">Next</a>
+                    </li>
+                    <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage3(AMSReports.totalPages)">Last</a>
+                    </li>
+                    <li><a (click)="gotoPage3(pageNo)">Page <b>{{pageNo}}</b> of
+                            <b>{{AMSReports.totalPages}}</b></a></li>
+                    <li><a>Page Size
+                            <select id="ddlPageSize" [(ngModel)]="pageSize" (change)="pageSizeChange3()">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--TRANSFERRED ASSETS REPORT-->
+<div class="row" *ngIf="filterreporttype=='TA'">
+    <br>
+    &nbsp;
+    <div class="panel-body form-horizontal">
+        <div id="row">
+            <h2>Transferred Asset Report</h2>
+        </div>
+        <br>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label for="location" class="col-md-1 control-label text-right"> Location </label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width: 100%;background-color: white;" id="location" name="location"
+                        ngControl="filterlocation" #locationEnt="ngModel" [placeholder]="'Select Location (multiple)'"
+                        [data]="locationList" matTooltip='Select Locations' [(ngModel)]="filterlocation"
+                        [settings]="dropdownSettings1" (onSelect)="onItemSelectM1($event)"
+                        (onSelectAll)="onSelectAll1()" (focusout)="checkStatus1();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="category" class="col-md-1 control-label text-right">Category</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" id="category" name="category"
+                        ngControl="filterassetType" #categoryEnt="ngModel"
+                        [placeholder]="'Select Asset Type (multiple)'" [data]="catList1" matTooltip='Select Asset Type'
+                        [(ngModel)]="filterassetType" [settings]="dropdownSettings" (onSelect)="onItemSelectM($event)"
+                        (onSelectAll)="onSelectAll()" (focusout)="checkStatus();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="assetstate" class="col-md-1 control-label text-right">Asset State</label>
+                <div class="col-md-2">
+                    <ng-multiselect-dropdown style="width:100%; background-color: white;" [(ngModel)]="filterassetState"
+                        id="assetstate" [placeholder]="'Select Asset State (multiple)'" name="assetstate"
+                        ngControl="filterassetState" #assetstateEnt="ngModel" matTooltip="Select Asset State"
+                        [data]="assStateList" [settings]="dropdownSettings2" (onSelect)="onItemSelectA($event)"
+                        (onSelectAll)="onSelectAllA()" (focusout)="checkStatusA();">
+                    </ng-multiselect-dropdown>
+                </div>
+                <label for="transferType" class="col-md-1 control-label text-right">Transfer Type</label>
+                <div class="col-md-2">
+                    <select [(ngModel)]="filtertransferType" class="form-control" id="transferType" name="transferType"
+                        ngControl="filtertransferType" #transferTypeEnt="ngModel" [disabled]="isEdit"
+                        matTooltip="Select Transfer Type">
+                        <option [ngValue]="undefined" disabled>--SELECT OPTION--</option>
+                        <option value="UTU">USER TO USER</option>
+                        <!--<option value="LTL">LOCATION TO LOCATION</option>-->
+                    </select>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="form-group text-center">
+                <button class="btn btn-primary" (click)="getTransferAssetDetails();"
+                    matTooltip="click to filter data"><i class="fas fa-filter"></i>
+                    &nbsp;
+                    Filter</button>
+                &nbsp;
+                <button class="btn btn-primary" (click)="clearFilter();" matTooltip="click to clear filter data"><i
+                        class="fas fa-times"></i>
+                    &nbsp;
+                    Clear</button>
+                &nbsp;
+                <button class="btn btn-secondary gradient-custom" (click)="exportToExcelTAReports();"
+                    matTooltip="click to export data"><i class="fas fa-file-excel"></i>
+                    &nbsp;
+                    Export to Excel</button>
+                &nbsp;
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body form-horizontal">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-hover table-striped table-bordered" *ngIf="filtertransferType == 'UTU'">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #0099cc; color:white;">Location</th>
+                            <th style="background-color: #0099cc; color:white;">Asset No</th>
+                            <th style="background-color: #0099cc; color:white;">Category</th>
+                            <th style="background-color: #0099cc; color:white;">Transfer Type</th>
+                            <th style="background-color: #0099cc; color:white;">Previous User</th>
+                            <th style="background-color: #0099cc; color:white;">New User</th>
+                            <th style="background-color: #0099cc; color:white;">Reason For Transfer</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item of assetList;">
+                            <td><b>{{item.location}}</b></td>
+                            <td>{{item.assetNo}}</td>
+                            <td>{{item.assetType}}</td>
+                            <td>User To User</td>
+                            <td>{{item.prevEmpNo + ' - ' + item.prevEmpName + ' - ' + item.prevEmpDepartment}}</td>
+                            <td>{{item.newEmpNo + ' - ' + item.newEmpName + ' - ' + item.newEmpDepartment}}</td>
+                            <td>{{item.reasonForTransfer}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- <table class="table table-hover table-striped table-bordered" *ngIf="filtertransferType == 'LTL'">
+                        <thead>
+                            <tr>
+                                <th style="background-color: #0099cc; color:white;">Asset No</th>
+                                <th style="background-color: #0099cc; color:white;">Category</th>
+                                <th style="background-color: #0099cc; color:white;">Transfer Type</th>
+                                <th style="background-color: #0099cc; color:white;">Previous Location</th>
+                                <th style="background-color: #0099cc; color:white;">New Location</th>
+                                <th style="background-color: #0099cc; color:white;">Reason For Transfer</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let item of assetList;">
+                                <td>{{item.asset_No}}</td>
+                                <td>{{item.category}}</td>
+                                <td>Location To Location</td>
+                                <td>{{item.prevLocation}}</td>
+                                <td>{{item.newLocation}}</td>
+                                <td>{{item.reasonForTransfer}}</td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+                <div class="text-center">
+                    <ul class="pagination" *ngIf="AMSReports.totalCount>0">
+                        <li>
+                            <a (click)="gotoPage1(pageNo)">
+                                Showing <b>{{((pageNo-1)*pageSize)+1}}</b> -
+                                <b>{{(pageNo*pageSize)>AMSReports.totalCount?AMSReports.totalCount:pageNo*pageSize}}</b>
+                                of <b>{{AMSReports.totalCount}}</b> records
+                            </a>
+                        </li>
+                        <li><a *ngIf="pageNo>1" (click)="gotoPage1(1)">First</a></li>
+                        <li><a *ngIf="pageNo>1" (click)="gotoPage1(pageNo-1)">Previous</a></li>
+                        <li><a *ngIf="pageNo>2" (click)="gotoPage1(pageNo-1)">{{pageNo-2}}</a>
+                        </li>
+                        <li><a *ngIf="pageNo>1" (click)="gotoPage1(pageNo-1)">{{pageNo-1}}</a>
+                        </li>
+                        <li class="active"><a (click)="gotoPage1(pageNo)">{{pageNo}}</a></li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage1(pageNo+1)">{{pageNo+1}}</a>
+                        </li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo+1" (click)="gotoPage1(pageNo+2)">{{pageNo+2}}</a>
+                        </li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage1(pageNo+1)">Next</a>
+                        </li>
+                        <li><a *ngIf="AMSReports.totalPages>pageNo" (click)="gotoPage1(AMSReports.totalPages)">Last</a>
+                        </li>
+                        <li><a (click)="gotoPage1(pageNo)">Page <b>{{pageNo}}</b> of
+                                <b>{{AMSReports.totalPages}}</b></a></li>
+                        <li><a>Page Size
+                                <select id="ddlPageSize" [(ngModel)]="pageSize" (change)="pageSizeChange1()">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

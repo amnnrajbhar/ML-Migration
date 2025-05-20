@@ -1,0 +1,49 @@
+﻿
+<section class="content-header" >
+  <h1 *ngIf="repHeaderList!=undefined">
+    {{repHeaderList.header}}
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-file" aria-hidden="true"></i> Home</a></li>
+    <li *ngIf="repHeaderList!=undefined" class="active">{{repHeaderList.breadCrumb}}</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content" >
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <div class="col-xs-6">
+            <h3 *ngIf="repHeaderList!=undefined" class="box-title">{{repHeaderList.subHeader}}</h3>
+            <span class="label label-danger" *ngIf="errMsgStrt.length>0">{{errMsgStrt}}</span>
+            <span class="label label-danger" *ngIf="errMsgEnd.length>0">{{errMsgEnd}}</span>
+          </div>
+          <div class="col-xs-6">
+            <!-- <button type="button" class="btn btn-primary pull-right" (click)="onAddCustomer(false,{})"><i class="fa fa-plus" aria-hidden="true"></i> Add Customer</button> -->
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="form-group col-lg-6">
+            <label for="strtDate">From</label>
+            <input type="date" class="form-control" id="strtDate" placeholder="Entity Reg Date" [ngModel]="startDate | date:'yyyy-MM-dd'"
+                   (ngModelChange)="setStartDate($event)" name="startDate">
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="enDate">To</label>
+            <input type="date" class="form-control" id="enDate" placeholder="Entity Reg Date" [ngModel]="endDate | date:'yyyy-MM-dd'"
+                   (ngModelChange)="setEndDate($event)" name="endDate">
+          </div>
+          <div class="col-lg-12">
+            <button *ngIf="repHeaderList!=undefined" type="button" class="btn btn-primary pull-right" (click)="getReport()"> {{repHeaderList.field1}}</button>
+          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="overlay" *ngIf="isLoading">
+          <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

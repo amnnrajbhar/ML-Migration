@@ -1,0 +1,5 @@
+.multiselect-dropdown .dropdown-btn.selected-item{
+    background-color: white;
+    border-color:white;
+    color:gray
+}

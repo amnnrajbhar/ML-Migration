@@ -1,0 +1,198 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Dashboard
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+</section>
+<section id="admin">
+    <div class="row">
+        <div class="col-sm-12 col-lg-12 col-md-12 col-xl-12">
+            <div class="card shadow">
+
+                <div class="card-body">
+                    <h3>Gate Entry Dashboard - Filter
+                    </h3>
+
+
+                    <div class="row flex-fluid">
+                        <div class="col-sm-12">
+                            <div id="slide">
+                                <div class="col-sm-3">
+                                    <label for="plant">Plant</label>
+                                    <select [(ngModel)]="plant" class="form-control" id="plant" name="plant"
+                                        matTooltip="Select Plant" ngControl="plant">
+                                        <option value="" [selected]="true"> All </option>
+                                        <option *ngFor="let gate of plantAssignedList" [ngValue]="gate.code">
+                                            {{gate.code}}-{{gate.name}}</option>
+                                    </select>
+
+                                </div>
+                                <div class="col-sm-3">
+                                    <label for="plant">Paygroup</label>
+                                    <select [(ngModel)]="Paygroup" class="form-control" id="plant" name="plant"
+                                        matTooltip="Select Paygroup" ngControl="plant">
+                                        <option value="" [selected]="true"> All </option>
+                                        <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.short_desc}}</option>
+                                    </select>
+
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group form-group-sm">
+                                        <label for="gatenumber">Gate</label>
+                                        <select [(ngModel)]="selGateLocation" class="form-control" id="locationGate"
+                                            name="locationGate" ngControl="selGateLocation" #gatenumber="ngModel"
+                                            [disabled]="isEdit"  matTooltip="Select Gate No" required>
+                                            <option [ngValue]="null" disabled [selected]="true">--Select an Option--
+                                            </option>
+                                            <option *ngFor="let gate of locationGateList" [ngValue]="gate">
+                                                {{gate.gateNo}}</option>
+                                        </select>                                        
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group"
+                                        [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+                                        <label>From Date</label>
+                                        <input #fromDate="ngModel" [matTooltipPosition]="'below'"
+                                            matTooltip="Click to change from date" [owlDateTime]="dt1"
+                                            [owlDateTimeTrigger]="dt1" name="fromDate" class="form-control"
+                                            [(ngModel)]="from_date" #fromDate="ngModel">
+                                        <owl-date-time [pickerType]="'calendar'" #dt1
+                                            style="width: 250px;"></owl-date-time>
+                                        <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please
+                                            enter valid From
+                                            Date.</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group"
+                                        [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+                                        <label>To Date</label>
+                                        <input #toDate="ngModel" [min]="from_date" [max]="today"
+                                            [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+                                            [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" name="endDate"
+                                            class="form-control" [(ngModel)]="to_date" #toDate="ngModel">
+                                        <owl-date-time [pickerType]="'calendar'" #dt2
+                                            style="width: 250px;"></owl-date-time>
+                                        <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter
+                                            valid To
+                                            Date.</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4"><button class="btn btn-primary c-mt-2" (click)="filterReport();"
+                                        [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">Go</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3">
+                <div class="card-counter primary">
+                    <i class="fa fa-list-alt"></i>
+                    <span class="count-numbers">
+                        {{inwardcount}}
+                    </span>
+                    <span class="count-name">No of Inwards</span>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card-counter primary">
+                    <i class="fa fa-list-alt"></i>
+                    <span class="count-numbers">
+                        {{outwardcount}}
+                    </span>
+                    <span class="count-name">No of Outwards</span>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card-counter success">
+                    <i class="fa fa-user-check"></i>
+                    <span class="count-numbers">
+                        {{totRetCount}}
+                    </span>
+                    <span class="count-name">Returnable</span>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card-counter info">
+                    <i class="fa fa-user-clock"></i>
+                    <span class="count-numbers">
+                        {{totNonRetCount}}
+                    </span>
+                    <span class="count-name">NonReturnable</span>
+                </div>
+            </div>
+
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="overlay" *ngIf="isLoading">
+                            <i class="fa fa-spinner fa-pulse"></i>
+                        </div>
+                        <canvas id="inwardPieChart">
+
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="overlay" *ngIf="isLoading">
+                            <i class="fa fa-spinner fa-pulse"></i>
+                        </div>
+                        <canvas id="outwardPieChart">
+
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <!-- Area Chart -->
+            <!-- <div class="col-sm-8 col-sm-5"> -->
+            <div class="col-sm-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="overlay" *ngIf="isLoading">
+                            <div class="justify-content-center align-items-center">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                        </div>
+                        <canvas id="mixed-out-chart">
+
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="overlay" *ngIf="isLoading">
+                            <i class="fa fa-spinner fa-pulse"></i>
+                        </div>
+                        <canvas id="mixed-chart">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

@@ -1,0 +1,78 @@
+<section class="content-header">
+  <h1 class="display-1">
+     Self Initiate Retirement
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Self Initiate Retirement</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i></div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4" for="retirementDate">Retirement Date </label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="retirementDate" name="retirementDate"
+                [(ngModel)]="retirementDetails.dateOfRetirement" [owlDateTime]="retirementDate"
+                [owlDateTimeTrigger]="retirementDate" [disabled]="true">
+              <owl-date-time [pickerType]="'calendar'" #retirementDate></owl-date-time>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4" for="retirementClosureDate">Retirement Closure Date </label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="retirementClosureDate" name="retirementClosureDate"
+                [(ngModel)]="retirementDetails.retirementClosureDate" [owlDateTime]="retirementClosureDate"
+                [owlDateTimeTrigger]="retirementClosureDate" [disabled]="true">
+              <owl-date-time [pickerType]="'calendar'" #retirementClosureDate></owl-date-time>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4" for="extensionEndDate">Extension End Date </label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="extensionEndDate" name="extensionEndDate"
+                [(ngModel)]="retirementDetails.extensionEndDate" [owlDateTime]="extensionEndDate"
+                [owlDateTimeTrigger]="extensionEndDate" [disabled]="true">
+              <owl-date-time [pickerType]="'calendar'" #extensionEndDate></owl-date-time>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="remarks">Remarks<span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <textarea [matTooltipPosition]="'below'" required
+                  matTooltip="Input Reason For Retirement (Max 500 Chars)"
+                  [(ngModel)]="retirementDetails.remarks" class="form-control"
+                  id="remarks" name="remarks"
+                  #reasonRetirementDateChange="ngModel" maxlength="500"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row text-center">
+          <div class="col-md-12">
+            <button type="button" class="btn btn-success" (click)="selfRetirement()"
+              matTooltip="Click to Submit Retirement" [disabled]="isLoading || !retirementDetails.isEligibleForSelfTransfer">Initiate Retirement</button>
+          </div>
+        </div>
+   
+  </div>
+</div>
+<app-history [employeeId]="employeeId"></app-history>  
+</section>

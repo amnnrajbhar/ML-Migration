@@ -1,0 +1,210 @@
+<section class="content-header">
+  <h1>
+    Temparature Condition
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">TempCondition</li>
+
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <div class="col-xs-6">
+            <h3 class="box-title">TempCondition</h3>
+            <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+          </div>
+          <div class="col-xs-6">
+            <button type="button" class="btn btn-primary pull-right" (click)="onAddTempCond(false,TempCondition)"><i
+                class="fa fa-plus" aria-hidden="true"></i> Add TempCondition</button>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive">
+          <table id="materialTable" class="table table-bordered table-striped">
+            <thead style="background-color: #68a7d2;color:white;">
+              <tr>
+                <th>Sl.No</th>
+                <th>Temp Condition Description</th>
+                <th>IsActive</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let temp of tempconditionlist; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{temp.tempConDesc}}</td>    
+                <td><span class="label"
+                  [ngClass]="(temp.isActive==true)?'label-success':'label-danger'">{{(temp.isActive==true)?'ACTIVE':'INACTIVE'}}</span>
+              </td>            
+                <td class="pr-2">
+                    <button type="button" class="btn btn-primary btn-xs" (click)="onAddTempCond(true,temp)">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  &nbsp;
+                    <button type="button" class="btn btn-primary btn-xs" (click)="openAuditLogs(temp.tempConId)">
+                      <i class="fa fa-history"></i>
+                    </button>
+                  </td>
+                          
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="overlay" *ngIf="isLoading">
+          <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">{{isEdit==true?'Update TempCondition':'New TempCondition'}}</h4>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <form #materialForm="ngForm">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group" [ngClass]="(!descEnt.valid && descEnt.touched)?'has-error':''">
+                  <label for="desc">TempCondition Description<span style="color:red">*</span></label>
+                  <input type="text" required class="form-control" id="desc"  
+                    (change)="TempCondition.tempConDesc=TempCondition.tempConDesc.trim()" placeholder="TempCondition Description"
+                    [(ngModel)]="TempCondition.tempConDesc" name="desc"
+                    ngControl="TempCondition.TempConditionName == '' ? '' : TempCondition.tempConDesc" #descEnt="ngModel">
+                  <span class="help-block" *ngIf="!descEnt.valid && descEnt.touched">Please enter TempCondition Description</span>
+                </div>
+              </div>
+            </div>   
+            <div class="row">
+              <div class="col-sm-12">  
+                <div  class="form-group">             
+                <div class="checkbox">
+                  &nbsp;
+                  &nbsp;
+                  &nbsp;
+                  <input type="checkbox" id="chkacknow" name="isActive" [(ngModel)]="TempCondition.isActive">
+                  <label>
+                    <b>IsActive</b></label>
+                </div>
+              </div> 
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-sm-12">
+              <div class="form-group" [ngClass]="(!reason.valid && reason.touched)?'has-error':''">
+                <label for="reason">Audit Reason<span style="color:red">*</span></label>
+                <!-- <label for="reason" class="col-sm-3"><i class="fa fa-times-circle-o"
+                    *ngIf="!reason.valid && reason.touched"></i>Audit Reason<span style="color:red">*</span></label>                -->
+                  <textarea type="text" class="form-control" name="reason" id="reason" placeholder="Audit Reason"
+                    [(ngModel)]="aduitpurpose" ngControl="aduitpurpose" (change)="aduitpurpose=aduitpurpose.trim()"
+                    #reason="ngModel" required></textarea>
+                  <span class="help-block" *ngIf="!reason.valid && reason.touched">Please Enter audit Reason.</span>
+                </div>
+              </div>
+            </div>        
+          </div>
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveTempCond()"
+          [disabled]="isLoadingPop || !materialForm.valid">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div id="auditModal" class="modal fade">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;</button>
+        <h4 class="modal-title">Audit history</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="auditTable">
+          <thead>
+            <tr>
+              <th>Sl.no</th>
+              <th>Action</th>
+              <th>ActionBy</th>
+              <th>DateTime</th>
+              <th>KeyField</th>
+              <th>Changes</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <!-- <ng-container > -->
+          <tbody>
+            <tr *ngFor="let item of auditLogList;let i = index">
+              <td>{{auditLogList.length - i + '.0'}}</td>
+              <td class="col-sm-1">{{item.auditType}}</td>
+              <td class="col-sm-1">{{item.aduitUser}}</td>
+              <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy HH:mm"}}</td>
+              <td class="col-sm-1">{{item.keyValue}}</td>
+              <td class="col-sm-4">
+                <table class="table table-bordered" style="margin-bottom: 0;">
+                  <tr>
+                    <th>Field name</th>
+                    <th>Old value</th>
+                    <th>New value</th>
+                  </tr>
+                  <tr *ngFor="let ch of objParser(item.changes)">
+                    <td>{{ch.fieldname}}</td>
+                    <td>{{ch.oldvalue}}</td>
+                    <td>{{ch.newvalue}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td class="col-sm-4">{{item.purpose}}</td>
+            </tr>
+          </tbody>
+          <!-- </ng-container> -->
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

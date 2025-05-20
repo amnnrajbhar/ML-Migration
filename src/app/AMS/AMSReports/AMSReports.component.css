@@ -1,0 +1,11 @@
+.block {
+    display: inline-block;
+    width: 20%;
+    border: none;
+    height: 10%;
+    background-color: #00a8eb;
+    padding: 20px 28px;
+    font-size: 18px;
+    cursor: pointer;
+    text-align: center;
+  }

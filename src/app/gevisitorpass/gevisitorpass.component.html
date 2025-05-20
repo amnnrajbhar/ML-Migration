@@ -1,0 +1,355 @@
+<section class="content-header">
+  <h1 class="display-1">
+    GE
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">GE Visitor Pass</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content" >
+  <div class="box shadow">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Visitor Pass </h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <!-- <button type="button" class="btn btn-primary pull-right" (click)="userForm.reset();onAddUser(false,calendarItem)"><i class="fa fa-plus" aria-hidden="true"></i> New Entry</button>&nbsp; &nbsp; &nbsp; -->
+        <button type="button" class="btn btn-primary pull-right" (click)="userForm.reset();openEntry(false, calendarItem)"><i class="fa fa-plus" aria-hidden="true"></i> New Entry</button>&nbsp; &nbsp; &nbsp;
+      </div>
+    </div>
+    <!-- /.box-header -->
+  <div class="box-body table-responsive">
+      <table id="userTable" class="table  table-striped" cellspacing="0">
+        <thead>
+          <tr>
+              <th>SNo</th>
+              <th>Employee<br> Name</th>
+              <th>Visitor Name</th>
+              <th>Mobile</th>
+              <th>Email</th>
+              <th>Purpose</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of visitorsList; let i = index">
+              <td>{{i+1}}</td>
+            <td>{{user.fkEmployeeName}}</td>
+            <td>{{user.name}}</td>
+            <td>{{user.mobile}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.purpose}}</td>
+            <!-- <td>{{user.temp8 | date:'dd/MM/yyyy'}}</td> -->
+            <td>{{user.fromTime }}</td>
+            <td>{{user.toTime }}</td>
+            <td><span class="label" [ngClass]="(user.isActive==true)?'label-success':'label-danger'">{{(user.isActive==true)?'OPEN':'CLOSED'}}</span></td>
+            <td>
+              <button *ngIf="typeOfVisitor=='newvisit'||typeOfVisitor==null" type="button" class="bg-gray-light no-border no-padding" (click)="openEntry(true,user)" [disabled]="!user.isActive">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>&nbsp;&nbsp;&nbsp;
+              <button *ngIf="typeOfVisitor=='revisit'" class="btn btn-primary btn-xs" (click)="rescheduleEntry(false,user)"><i class="fa fa-clock-o"></i></button>
+              &nbsp;&nbsp;&nbsp;
+              <button class="btn btn-primary btn-xs" (click)="completeVisit(user)" [disabled]="!user.isActive"><i class="fa fa-check"></i></button>
+              </td>
+          </tr>
+        </tbody>
+       </table>
+    </div>
+    <div class="mb-5">&nbsp;</div>
+    <div class="mb-5">&nbsp;</div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<!-- <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-md  modal-dialog-centered">
+ <div class="modal-content">
+   <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+       <span aria-hidden="true">&times;</span>
+     </button>
+     <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"  *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+   </div>
+   </div></div>
+   <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-refresh fa-spin"></i> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div> -->
+<div  class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+      data-keyboard="false">
+
+  <div class="modal-dialog modal-lg" style="border: none;" id="modelDialog1">
+    <div class="modal-content">
+      <div class="modal-header"style="border:none">
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+        <div class="modal-title"><h2>Visitor Entry Form</h2></div>
+      </div>
+      <!-- <div class="tabs-container"> -->
+        <form #userForm="ngForm">
+
+                    <!-- <div class="tab-content"> -->
+
+                              <div class="col-lg-12">
+                  <div class="modal-body box " style="border-top: none; background: transparent;">
+                      <!-- <div class="row">
+                      <div class="col-sm-4">
+                          <div style="text-align:center">
+                              <div >
+                                <p>{{seconds}}</p>
+                                <webcam [trigger]="triggerObservable" (imageCapture)="handleImage($event)" required></webcam>
+                                <br/>
+                                <button id="snapshotBtn" class="btn btn-primary" (click)="triggerSnapshot();"><i class="fa fa-camera" aria-hidden="true"></i>Take A Snapshot</button>
+
+                              </div>
+                            </div>
+
+                      </div>
+                      <div class="col-sm-4">
+                          <div style="text-align:center">
+                        <div class="snapshot" *ngIf="webcamImage">
+                          <h2>Visitors pic</h2>
+                          <img [src]="imageFile" height="200" width="250"/>
+                          <img [src]="webcamImage.imageAsDataUrl" height="200" width="250"/>
+                        </div></div>
+                      </div>
+                      </div>
+                      <p>&nbsp;</p> -->
+
+          <div class="row">
+              <div class="col-sm-6">
+            <div class="form-group">
+                <label for="visitorName"> <h3>Visitor Name<span style="color:red">*</span></h3></label>
+                <input [(ngModel)]="calendarItem.name" class="form-control" id="visitorName" placeholder="Name" name="visitorName" ngControl="calendarItem.name" #visitorNameEntity="ngModel" required>
+                <span style="color:red" [hidden]="visitorNameEntity?.length<=0 && visitorNameEntity?.length>0 && isEdit?false:true">Please Visitor Name</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+          <div class="form-group">
+            <label for="parentId"> <h3>Person to meet <span style="color:red">*</span></h3></label><br>
+            <select [(ngModel)]="selParentRole" style="width:100%;    border-color: #e5e6e7 !important;" class="form-control" id="dParentId" name="parentId" ngControl="selParentRole" #parentId="ngModel" required>
+                <option *ngFor="let pDept of empMList" [ngValue]="pDept">{{pDept.firstName}}-{{pDept.designation}}</option>
+              </select>
+              <span class="help-block" *ngIf="!parentId.valid && parentId.touched">Please Enter parent unit.</span>
+          </div>
+          </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="SelempSBUList"> <h3>Mobile <span style="color:red">*</span></h3></label>
+                    <!-- <select [(ngModel)]="calendarItem.usr_enid" class="form-control" (ngModelChange)="onEntityChange($event)" id="usrEnId" name="usr_enid" ngControl="calendarItem.usr_enid" #usr_enid="ngModel"> -->
+                    <input [(ngModel)]="calendarItem.mobile" class="form-control" placeholder="Mobile" type="tel"   id="usrEnId" name="usr_enid" ngControl="calendarItem.mobile" #mobEnt="ngModel" required maxlength="10" (keypress)="keyPressNumber($event)">
+                    <span style="color:red" [hidden]="mobEnt?.length<=0 && mobEnt?.length>0 && isEdit && entitySelectedItem==null?false:true">Please Enter Mobile</span>
+                  </div>
+                  </div>
+              <div class="col-sm-6">
+            <div class="form-group">
+                <label for="SelProject"><h3>Email Address</h3></label>
+                <input [(ngModel)]="calendarItem.email" class="form-control" id="visitorName" placeholder="Email " name="project" ngControl="calendarItem.email" #emailEnt="ngModel">
+                <!-- <span style="color:red" [hidden]="emailEnt?.length<=0 && emailEnt?.length>0 && isEdit?false:true">Please Email Address</span> -->
+            </div>
+          </div>
+
+          </div>
+          <div class="row">
+
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="SelCompetency"> <h3>Company Name</h3>
+              <!-- <span style="color:red">*</span> -->
+            </label>
+            <input [(ngModel)]="calendarItem.companyName" class="form-control" placeholder="Company Name" id="usrDivId"  name="usr_divid" ngControl="calendarItem.companyName" #compEnt="ngModel">
+            <!-- <span style="color:red" [hidden]="compEnt?.length<=0 && compEnt?.length>0 && isEdit?false:true">Please Enter Company Name</span> -->
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="SelCompetency"> <h3>Number Of Person<span style="color:red">*</span></h3>
+              <!-- <span style="color:red">*</span> -->
+            </label>
+            <input type="number" min="1" class="form-control" id="numberOfPersons" [(ngModel)]="calendarItem.numberOfPerson" placeholder="Person Count" [(ngModel)]="calendarItem.numberOfPerson" ngControl="calendarItem.numberOfPerson" name="numberOfPersons" #numberOfPersonsEnt="ngModel" required
+            />
+            <span style="color:red" [hidden]="numberOfPersonsEnt?.length<=0 && numberOfPersonsEnt?.length>0 && isEdit?false:true">Please Enter Number Of Person</span>
+          </div>
+        </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+              <label for="SelempSBUList"> <h3>Purpose</h3>
+                <!-- <span style="color:red">*</span> -->
+              </label>
+              <textarea [(ngModel)]="calendarItem.purpose" ngControl="calendarItem.purpose" name="purpose" class="form-control" id="purpose" #purposeEnt="ngModel"></textarea>
+          </div>
+        </div>
+        <!-- <div class="model-content">
+          <div class="row">
+        <table class="table table-bordered">
+          <tr>
+             <td colspan="2"><h1 class="text-center">Visitor Entry Pass for - {{calendarItem.name}} </h1></td>
+          </tr>
+          <tr>
+            <td style="width:'250'"><img *ngIf="webcamImage" [src]="webcamImage.imageAsDataUrl" height="200" width="250"/></td>
+            <td>
+               Location: {{location}}<br>
+              Gate No: {{gateNo}}<br>
+              <label for="" class="form-control">Visitor Name:{{calendarItem.name}}</label>
+              <label for="" class="form-control">Visiting:{{calendarItem.fkEmployeeName}}</label>
+              <label for="" class="form-control">Contact No: {{calendarItem.mobile}}</label>
+              <label for="" class="form-control">Email: {{calendarItem.email}}</label>
+              <label for="" class="form-control">Date: {{calendarItem.date}}</label>
+              <label for="" class="form-control">Inward Time: {{calendarItem.fromTime}}</label>
+            </td>
+          </tr>
+          <tr>
+              <td colspan="2">
+                  <div class="text-center">
+                      <ngx-barcode bc-value="{{calendarItem.name}}{{calendarItem.date}}" [bc-display-value]="true"></ngx-barcode>
+                     </div>
+              </td>
+           </tr>
+
+           </table>
+
+              </div>
+            </div> -->
+        <!-- </form> -->
+        <!-- <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-refresh fa-spin"></i> <i class="fa fa-spinner fa-pulse"></i>
+        </div> -->
+        </div>
+      </div>
+
+              <!-- </div> -->
+
+
+
+
+    <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default btn-outlined" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+        <button type="button" class="btn btn-primary" (click)="onSaveEntry()" >{{isEdit==true?'Update User':'Save'}}</button>
+        <button type="button" class="btn btn-primary" (click)="print()"[disabled]="!userForm.valid||calendarItem.temp==null||calendarItem.temp==''" ><i class="fa fa-print" aria-hidden="true"></i>Print Pass</button>
+
+
+      </div>
+    </form>
+    <!-- </div> -->
+    <!-- /.modal-content -->
+
+  </div>
+  <!-- /.modal-dialog -->
+
+  </div>
+  </div>
+  <div class="modal fade" id="sModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+  data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+   <div class="modal-content">
+
+  <!--  -->
+</div>
+</div>
+</div>
+<div  class="modal fade" id="myRescModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <!-- <h4 class="modal-title">{{isEdit==true?'Update Appointment ':'Add New Appointment'}} on {{appDate | date:'dd/MM/yyyy'}} at
+          {{appDate | date:'HH:mm a'}}
+        </h4> -->
+      </div>
+      <div class="modal-body box box-primary">
+        <div class="row">
+          <form #calendarForm="ngForm">
+            <!-- <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group" >
+                <label for="calEnId">Visitor's Name<span style="color:red">*</span></label>
+                <input type="text" class="form-control" id="visitorName" placeholder="Visitor Name" [(ngModel)]="calendarItem.name" name="entityvisitorName"
+                         ngControl="calendarItem.name == '' ? '' : calendarItem.name" #entityvisitorName="ngModel" required>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group" >
+                <label for="calEnId">Visiting<span style="color:red">*</span></label>
+                <input type="text" class="form-control" id="dName" placeholder="Visiting to" [(ngModel)]="calendarItem.fkEmployeeName" name="entityvisiting"
+                         ngControl="calendarItem.fkEmployeeName == '' ? '' : calendarItem.fkEmployeeName" #entityvisiting="ngModel" required>
+              </div>
+            </div>
+          </div>
+
+            <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group" >
+                <label for="calEnId">Mobile<span style="color:red">*</span></label>
+                <input type="text" class="form-control" id="mobile" placeholder="Number" [(ngModel)]="calendarItem.mobile" name="entitymobile"
+                         ngControl="calendarItem.mobile == '' ? '' : calendarItem.mobile" #entitymobile="ngModel" required>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group" >
+                <label for="calEnId">Email<span style="color:red">*</span></label>
+                <input type="email" class="form-control" id="dName" placeholder="Email" [(ngModel)]="calendarItem.email" name="entityemail"
+                         ngControl="calendarItem.email == '' ? '' : calendarItem.email" #entityemail="ngModel" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group" >
+                  <label for="calEnId">Company Name<span style="color:red">*</span></label>
+                  <input type="text" class="form-control" id="mobile" placeholder="Company Name" [(ngModel)]="calendarItem.companyName" name="entityCompanyname"
+                           ngControl="calendarItem.companyName == '' ? '' : calendarItem.companyName" #entityCompanyname="ngModel" required>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" >
+                  <label for="calEnId">Other Information</label>
+                  <input class="form-control" id="dName" placeholder="" [(ngModel)]="calendarItem.otherinformation" name="entityotherinfo"
+                           ngControl="calendarItem.otherinformation == '' ? '' : calendarItem.otherinformation" #entityotherinfo="ngModel">
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-sm-12">
+              <div class="form-group" >
+                <label for="calEnId">Purpose<span style="color:red">*</span></label>
+                <textarea type="text" class="form-control" id="purpose" [(ngModel)]="calendarItem.purpose" name="entitypurpose"
+                         ngControl="calendarItem.purpose == '' ? '' : calendarItem.purpose" #entitypurpose="ngModel"></textarea>
+              </div>
+            </div> -->
+
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+        <!-- <button type="button" class="btn btn-primary" (click)="onSaveCalendar($event.event)" [disabled]="isLoadingPop || !calendarForm.valid">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-primary" (click)="deleteCalendarEntry()">Delete Entry</button> -->
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

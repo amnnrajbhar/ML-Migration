@@ -1,0 +1,379 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Pending FNF Approval
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Pending FNF Approval</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='initiate'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Approval</a></li>
+    <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachment"><a (click)="onTabClick(1)">Attachments</a></li>
+  </ul>
+  <div class="details-tab">
+    <div class="panel panel-info" *ngIf="currentTab=='initiate'">
+    <div class="panel-heading">
+      <h3 class="panel-title">FNF Details</h3>
+    </div>
+
+    <div class="panel-body">
+      <form #fnfForm="ngForm" class="form-horizontal">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="dateOfResignation">Date of Resignation </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="dateOfResignation" name="dateOfResignation"
+                  [ngModel]="resignationDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="noticePeriod">Notice Period</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="noticePeriod" name="noticePeriod"
+                  [ngModel]="resignationDetails.noticePeriod" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="expectedLastDate">Exptected Last Working Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="expectedLastDate" name="expectedLastDate"
+                  [ngModel]="lastWorkingDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+         </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="actualLastDate">Actual Last Working Date</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="actualLastDate" name="actualLastDate"
+                    [ngModel]="actualLastDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="noticeShortfallDays">Notice Shortfall Days</label>
+                <div class="col-md-8">
+                  <input type="number" matTooltip="Input Extension Months" [ngModel]="diffDays" class="form-control"
+                    id="noticeShortfallDays" name="noticeShortfallDays" #noticeShortfallDays="ngModel">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="monthlyGross">Monthly Gross</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input Monthly Gross" [(ngModel)]="monthlyTotal" class="form-control"
+                  id="monthlyGross" name="monthlyGross" #monthlyGross="ngModel" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="payableDays">Payable Days</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input Extension Months" [(ngModel)]="fnfDetails.payableDays"
+                  class="form-control" id="payableDays" name="payableDays">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="cl">CL</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input CL" [(ngModel)]="fnfDetails.cl" class="form-control" id="cl"
+                  name="cl" #cl="ngModel">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="ml">SL</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input SL" [(ngModel)]="fnfDetails.ml" class="form-control" id="ml"
+                  name="ml" #payableDays="ngModel">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="el">EL</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input EL" [(ngModel)]="fnfDetails.el" class="form-control" id="el"
+                  name="el" #payableDays="ngModel">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="waivedoffdays">Waived Off Days</label>
+              <div class="col-md-8">
+              <input type="number" matTooltip="Input Waived Off Days" [(ngModel)]="fnfDetails.waivedOffDays" class="form-control" id="waivedoffdays"
+              name="waivedoffdays" #payableDays="ngModel">            
+            </div>
+          </div>
+        </div>
+      
+        <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4" for="reason">Reason</label>
+          <div class="col-md-8">
+              <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Reson(Max 100 Chars)"
+                [(ngModel)]="fnfDetails.reason" class="form-control" id="reason" name="reason" #remarks="ngModel"
+                 minlength="10" maxlength="500" required></textarea>
+            </div>
+          </div>
+          </div>
+          <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4" for="remarks">Remarks</label>
+          <div class="col-md-8">
+              <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Remarks(Max 500 Chars)"
+                [(ngModel)]="fnfDetails.remarks" class="form-control" id="remarks" name="remarks" #remarks="ngModel"
+                 minlength="10" maxlength="500" required></textarea>
+            </div>
+          </div>
+        </div>
+        </div>
+      
+                <div class="row">
+          <div class="overlay text-center h3" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+
+          <div class="col-md-12" *ngIf="!isApproved">
+            <h3>
+              Payment Details <button type="button" class="btn btn-info btn-xs" [matTooltipPosition]="'after'"
+              matTooltip="Click to View Salary Details" data-toggle="modal" data-target="#SalaryModal">
+              <i class="fas fa-eye"></i> View Salary Details
+            </button>
+            </h3>            
+          </div>
+        </div>
+
+        <div class="row" *ngIf="!isApproved">
+          <div class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="table-responsive">
+                  <table class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th style="max-width: 50px;">Remove</th>
+                        <th>Sl No</th>
+                        <th style="max-width: 100px;">Head <span style="color:red">*</span></th>
+                        <th>Details <span style="color:red">*</span></th>
+                        <th style="max-width: 100px;">Type <span style="color:red">*</span></th>
+                        <!-- <th>Description</th> -->
+                        <!-- <th>Salary Type</th> -->
+                        <th style="max-width: 100px;">Eligible Amount <span style="color:red">*</span></th>
+                        <th style="max-width: 100px;">Payable Amount <span style="color:red">*</span></th>
+                        <th>Remarks </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of headList; let i = index">
+                        <td *ngIf="editAllowed" style="max-width: 50px;">
+                          <button (click)="RemoveLine(i)" title="click to remove this line"
+                            class="btn btn-xs btn-danger">
+                            <i class="fas fa-times"></i>
+                          </button></td>
+                        <td>{{i+1}}</td>
+                        <td style="max-width: 100px;">
+                          <select [(ngModel)]="item.head" class="form-control" required name="head"
+                            [disabled]="!editAllowed" [ngModelOptions]="{standalone:true}">
+                            <option [ngValue]="null" disabled [selected]="true"> Select Head </option>
+                            <option *ngFor="let pl of heads" [ngValue]="pl.head">{{pl.head}}</option>
+                          </select></td>
+                        <td>
+                          <input type="text" class="form-control" [(ngModel)]="item.details" ngControl="item.details"
+                            name="details" [ngModelOptions]="{standalone:true}" /></td>
+                        <td style="max-width: 100px;">
+                          <select [(ngModel)]="item.type" class="form-control" required name="type"
+                            [disabled]="!editAllowed" [ngModelOptions]="{standalone:true}">
+                            <option [ngValue]="null" disabled [selected]="true"> Select Type </option>
+                            <option *ngFor="let pl of types" [ngValue]="pl.type">{{pl.type}}</option>
+                          </select></td>
+                        <td style="max-width: 100px;">
+                          <input type="number" class="form-control text-right" [(ngModel)]="item.eligibleAmount"
+                            ngControl="item.eligibleAmount" name="eligibleAmount" id="eligibleAmount" placeholder="0"
+                            [disabled]="!editAllowed" [ngModelOptions]="{standalone:true}" /></td>
+                        <td style="max-width: 100px;">
+                          <input type="number" class="form-control text-right" name="payableAmount"
+                            [(ngModel)]="item.payableAmount" (ngModelChange)="onChange($event)"
+                            ngControl="item.payableAmount" placeholder="0" [disabled]="!editAllowed"
+                            [ngModelOptions]="{standalone:true}"></td>
+                        <td>
+                          <input type="text" class="form-control" [(ngModel)]="item.remarks" ngControl="item.remarks"
+                            name="remarks" [disabled]="!editAllowed" [ngModelOptions]="{standalone:true}" /></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row" *ngIf="editAllowed">
+                  <button type="button" class="btn btn-info" (click)="onAddLineClick()">
+                    <i class="fas fa-plus"></i> Add New Line</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <div class="col-md-12">
+              <div class="col-md-offset-5 col-md-6">
+                <div class="table-responsive">
+                  <table class="table table-striped table-hover">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Eligible</th>
+                        <th>Payable</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Total Earnings</td>
+                        <td><input type="text" class="form-control text-right" id="totalEarningsEligible"
+                            name="totalEarningsEligible" [(ngModel)]="details.totalEarningsEligible"
+                            [disabled]="true">
+                        </td>
+                        <td><input type="text" class="form-control text-right" id="totalEarningsPayable"
+                            name="totalEarningsPayable" [(ngModel)]="details.totalEarningsPayable" [disabled]="true">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Total Deductions</td>
+                        <td><input type="text" class="form-control text-right" id="totalDeductionsEligible"
+                            name="totalDeductionsEligible" [(ngModel)]="details.totalDeductionsEligible"
+                            [disabled]="true"></td>
+                        <td><input type="text" class="form-control text-right" id="totalDeductionsPayable"
+                            name="totalDeductionsPayable" [(ngModel)]="details.totalDeductionsPayable"
+                            [disabled]="true">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Total Payable</td>
+                        <td><input type="text" class="form-control text-right" id="totalEligible" name="totalEligible"
+                            [(ngModel)]="details.totalEligible" [disabled]="true"></td>
+                        <td><input type="text" class="form-control text-right" id="totalPayable" name="totalPayable"
+                            [(ngModel)]="details.totalPayable" [disabled]="true"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+  <app-employee-attachments [objectId]="this.fnfId" [objectType]="this.objectType" [employeeId]="this.employeeId" 
+  [editAllowed]="true" [deleteAllowed]="false" *ngIf="currentTab=='attachments'"></app-employee-attachments>
+  </div>
+  
+
+
+  <div class="row text-center actionButtons">
+    <div class="col-md-12">
+      <button type="button" (click)="goBack()" class="btn btn-default" matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+      <button type="button" class="btn btn-primary" (click)="approve()"
+        matTooltip="Click to Approve this">Approve</button>
+
+      <button type="button" class="btn btn-danger" (click)="reject()" matTooltip="Click to Reject this"
+        data-toggle="modal" data-target="#ReasonModal">Reject</button>
+    </div>
+  </div>
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="fnfId" [objectType]="this.objectType">
+        </app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="fnfId" [objectType]="this.objectType">
+        </app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Reason Modal -->
+<div id="ReasonModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Reason for Rejection</h4>
+      </div>
+      <div class="modal-body">
+        <label>Reason</label>
+        <textarea rows="3" class="form-control"  name="comments" [(ngModel)]="comments"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="rejectTask()">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="SalaryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="color:white; background:#68a7d2;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Salary Details
+        </h4>
+      </div>
+      <div class="modal-body" style="border-top:none;background-size:cover;">
+        <app-profile-salary [employeeId]="this.employeeId"></app-profile-salary>
+
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

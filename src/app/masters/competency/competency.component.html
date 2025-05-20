@@ -1,0 +1,185 @@
+<section class="content-header">
+  <h1>
+    Employee Type
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Employee Type</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Employee Type Master</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddCompetency(false,competencyItem)"><i
+            class="fa fa-plus" aria-hidden="true"></i> Add Employee Type</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="compTable" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th>Id</th>
+            <th>Type</th>
+            <th>SBU</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let comp of competencyList; let i = index">
+            <td>{{ comp.id }}</td>
+            <td>{{ comp.name }}</td>
+            <td>{{getSBUName(comp?.fkSbuId)}}</td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddCompetency(true,comp)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Employee Type</h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+        <!-- <div class="row">   -->
+        <form #competencyForm="ngForm">
+          <div class="form-horizontal">
+            <!-- <div class="col-sm-6"> -->
+            <div class="form-group" [ngClass]="(!comp_name.valid && comp_name.touched)?'has-error':''">
+              <label for="comp_name" class="col-sm-3"><i class="fa fa-times-circle-o"
+                  *ngIf="!comp_name.valid && comp_name.touched"></i> Type<span style="color:red">*</span></label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="comp_name" placeholder="Employee Type"
+                  [(ngModel)]="competencyItem.name" name="comp_name" ngControl="competencyItem.name"
+                  #comp_name="ngModel" required (change)="competencyItem.name=competencyItem.name.trim()">
+                <span class="help-block" *ngIf="!comp_name.valid && comp_name.touched">Please Enter Type.</span>
+              </div>
+            </div>
+            <!-- <div class="form-group"
+              [ngClass]="(selParentRole==null && parentId.touched && !parentId.valid)?'has-error':''">
+              <label for="parentId" class="col-sm-3"><i class="fa fa-times-circle-o"
+                  *ngIf="selParentRole==null && parentId.touched && !parentId.valid"></i>Parent Competency<span
+                  style="color:red">*</span></label>
+              <div class="col-sm-9">
+                <select [(ngModel)]="selParentRole" class="form-control" id="parentId" name="parentId"
+                  ngControl="selParentRole" #parentId="ngModel" required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Parent Competency </option>
+                  <option *ngFor="let compParent of competencyList" [ngValue]="compParent">{{compParent.name}}</option>
+                </select>
+                <span class="help-block" *ngIf="selParentRole==null && parentId.touched && !parentId.valid">Please
+                  Select Parent Competency.</span>
+              </div>
+            </div> -->
+            <!-- <div class="form-group" [ngClass]="(!selCompetencyHead.length>0&&!notFirst)?'has-error':''">
+              <label for="compHead" class="col-sm-3"><i class="fa fa-times-circle-o"
+                  *ngIf="(!selCompetencyHead.length>0&&!notFirst)"></i> Competency Head<span
+                  style="color:red">*</span></label>
+              <div class="col-sm-9"> -->
+            <!-- <select class="form-control" id="compHead" placeholder="Competency Head" [(ngModel)]="selCompetencyHead" name="compHead"
+                       ngControl="selCompetencyHead" #compHead="ngModel" required>
+                       <option *ngFor="let emp of empList" [ngValue]="emp">{{emp.firstName}}&nbsp;{{emp.lastName}}</option>
+                </select> -->
+            <!-- <ng-multiselect-dropdown style="width:100%; background-color: white;" id="competency" name="competency"
+                  ngControl="selCompetencyHead" required #compHead="ngModel" [placeholder]="'Select head competency'"
+                  [data]="empListCon1" [(ngModel)]="selCompetencyHead" [settings]="dropdownSettings"
+                  (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (focusout)="checkStatus();">
+                </ng-multiselect-dropdown>
+                <span class="help-block" *ngIf="!selCompetencyHead.length>0&&!notFirst">Please Select Competency
+                  Head.</span>
+              </div>
+            </div> -->
+            <!-- </div> -->
+            <!-- <div class="col-sm-6"> -->
+            <div class="form-group" [ngClass]="(!fkSbuId.valid && fkSbuId.touched)?'has-error':''">
+              <label for="fkSbuId" class="col-sm-3">Sub Type</label>
+              <div class="col-sm-9">
+                <select class="form-control" id="fkSbuId" placeholder="SBU Id" [(ngModel)]="selSbu" name="fkSbuId"
+                  #fkSbuId="ngModel" required ngControl="selSbu">
+                  <option [ngValue]="null" disabled [selected]="true"> Select Sub Type </option>
+                  <option *ngFor="let sbucode of sbuList" [ngValue]="sbucode">{{sbucode.name}}</option>
+                </select>
+                <span class="help-block" *ngIf="!fkSbuId.valid && fkSbuId.touched">Please Select Sub Type.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="description" class="col-sm-3">Description</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="description"
+                  (change)="competencyItem.description=competencyItem.description.trim()" placeholder="Description"
+                  [(ngModel)]="competencyItem.description" name="description">
+              </div>
+            </div>
+
+            <!-- <div class="form-group" [ngClass]="(!compStatus.valid && compStatus.touched)?'has-error':''" >
+                <label for="compStatus" class="col-sm-3"><i class="fa fa-times-circle-o" *ngIf="!compStatus.valid && compStatus.touched"></i> Status<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                <select [(ngModel)]="competencyItem.isActive" class="form-control" id="compStatus" name="compStatus" ngControl="competencyItem.isActive"
+                        #compStatus="ngModel">
+                  <option [ngValue]="true">Active</option>
+                  <option [ngValue]="false">Inactive</option>
+                </select>
+                <span class="help-block" *ngIf="!compStatus.valid && compStatus.touched">Please Select Status.</span>
+              </div>
+              </div> -->
+            <!-- </div> -->
+
+
+          </div>
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <!-- </div> -->
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveCompetency()"
+          [disabled]="isLoadingPop || (!competencyForm.valid) || isLoadPop">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop" (click)="getCompetencyMasterList()">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

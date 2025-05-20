@@ -1,0 +1,350 @@
+<div class="form-horizontal" *ngIf="editAllowed == true || profileUpdate == false">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Plant <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.plantName" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Pay Group <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.payGroupName" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Employee Category <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.employeeCategoryName" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Designation <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.designation" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Role <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.role" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4">Grade</label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.grade" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Department <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.department" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Sub-Department </label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.subDepartmentName" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4">Band</label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.band" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Reporting Group <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.reportingGroupName" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Reporting Manager <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.reportingManagerName" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> HOD <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.approvingManagerName" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Country <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.country" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> State <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.state" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Location <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.location" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4">Is Metro City <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [value]="(details.isMetroCity ? 'Yes' : 'No')" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Correspondance Address <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.correspondingAddress" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Date of Joining <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.dateOfJoining" [owlDateTime]="dtjoiningDate"
+            [owlDateTimeTrigger]="dtjoiningDate" [disabled]="true" />
+          <owl-date-time [pickerType]="'calendar'" #dtjoiningDate></owl-date-time>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Probation Period</label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.probationPeriod" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4">Date of Confirmation</label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.dateOfConfirmation" [owlDateTime]="dtconfirmDate"
+            [owlDateTimeTrigger]="dtconfirmDate" [disabled]="true" />
+          <owl-date-time [pickerType]="'calendar'" #dtconfirmDate></owl-date-time>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Notice Period in Months<span style="color:red">*</span></label>
+        <div class="col-md-8">
+            <select [(ngModel)]="details.noticePeriod" class="form-control" required id="noticePeriod"
+            name="noticePeriod"  [disabled]="!isESS" #noticePeriodEnt="ngModel" required>
+            <option disabled> Select months </option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+          <span class="help-block" *ngIf="submitted && !noticePeriodEnt.valid">
+            Please select a value</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Personal Email ID </label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.personalEmailId" [disabled]="!editAllowed" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Official Email ID </label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.officialEmailId" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4">Is Shared</label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.isSharedEmailId" [disabled]="true" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Room / Block </label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.roomOrBlock" [disabled]="!editAllowed" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Building </label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.building" [disabled]="!editAllowed" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Floor </label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.floor" [disabled]="!editAllowed" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Telephone Number </label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.telephoneNo" [disabled]="!editAllowed" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Extension </label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.extension" [disabled]="!editAllowed" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="col-md-4"> Mobile Number <span style="color:red">*</span></label>
+        <div class="col-md-8">
+          <input type="text" class="form-control" [(ngModel)]="details.mobileNo" [disabled]="!editAllowed" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!editAllowed && profileUpdate == true">
+  <div *ngIf="!editAllowed">
+    <h5>Old Values</h5>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Notice Period</th>
+            <th>Building</th>
+            <th>Floor</th>
+            <th>Telephone Number</th>
+            <th>Extenstion</th>
+            <th>Personal Email Id</th>
+            <th>Mobile Number</th>            
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{details.noticePeriod}}</td>
+            <td>{{details.building}}</td>
+            <td>{{details.floor}}</td>
+            <td>{{details.telephoneNo}}</td>
+            <td>{{details.extension}}</td>
+            <td>{{details.personalEmailId}}</td>
+            <td>{{details.mobileNo}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="profileDetailsList.officialDetails">
+    <h5>New Values</h5>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Notice Period</th>
+            <th>Building</th>
+            <th>Floor</th>
+            <th>Telephone Number</th>
+            <th>Extenstion</th>
+            <th>Personal Email Id</th>
+            <th>Mobile Number</th>              
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of profileDetailsList.officialDetails; let i = index">
+            <td>{{item.noticePeriod}}</td>
+            <td>{{item.building}}</td>
+            <td>{{item.floor}}</td>
+            <td>{{item.telephoneNo}}</td>
+            <td>{{item.extension}}</td>
+            <td>{{item.personalEmailId}}</td>
+            <td>{{item.mobileNo}}</td>            
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

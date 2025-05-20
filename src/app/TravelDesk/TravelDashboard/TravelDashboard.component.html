@@ -1,0 +1,137 @@
+<section id="admin">
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    </div>
+    <div class="col-sm-12">
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="form-group">
+            <label for="TypeOfGuest">HR Id</label>
+            <select [(ngModel)]="filterTypeOfGuest" class="form-control" id="TypeOfGuest" name="TypeOfGuest"
+              matTooltip="Type Of Guest" #TypeOfGuest1Ent="ngModel">
+              <option [ngValue]="undefined" disabled [selected]="true"> Select Type of Guest </option>
+              <option *ngFor="let pl of TypeOfGuestList" value={{pl.typeOfGuest1}}>{{pl.typeOfGuest1}}</option>
+            </select>
+
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="form-group">
+            <label for="typeOfEvent">Type Of Event </label>
+            <select [(ngModel)]="filtertypeOfEvent" class="form-control" id="typeOfEvent"
+              name="typeOfEvent" matTooltip="Type Of Event" #typeOfEventEnt="ngModel" >
+              <option [ngValue]="undefined" disabled [selected]="true"> Select Type Of Event </option>
+              <option *ngFor="let pl of TypeOfEventList" value={{pl.typeOfEvent}}>{{pl.typeOfEvent}}
+              </option>
+            </select>
+
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="form-group">
+            <label for="filterEventDate">Event Date</label>
+            <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="filterEventDate" class="form-control"
+              [(ngModel)]="filterEventDate" [disabled]="isEdit" #filterEventDateEnt="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;">
+            </owl-date-time>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="form-group form-group-sm">
+            <label for="PayGroup">Division</label>
+            <ng-multiselect-dropdown id="filterPayGroup" name="filterPayGroup" #filterPayGroupE="ngModel"
+               [data]="payGroupList" [(ngModel)]="filterPayGroup"
+              [settings]="dropdownSettings" (onDeSelect)="onItemDeSelect($event)"
+              (onDeSelectAll)="onDeSelectAll($event)" (onSelectAll)="onSelectAll($event)" matTooltip="Select Division">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+
+        <!-- <div class="col-sm-2">
+          <div class="form-group form-group-sm">
+            <label for="Department">Department</label>
+            <ng-multiselect-dropdown id="filterDepartment" name="filterDepartment" #filterDepartmentE="ngModel"
+               [data]="departmentList" [(ngModel)]="filterDepartment"
+              [settings]="dropdownSetting" (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+              (onSelectAll)="onSelectAll($event)" matTooltip="Select Department">
+            </ng-multiselect-dropdown>
+          </div>
+        </div> -->
+       
+
+        
+        <div class="col-sm-2">
+          <div class="form-group">
+            <label for="filterInvoiceDate">Invoice Date</label>
+            <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="filterInvoiceDate" class="form-control"
+              [(ngModel)]="filterInvoiceDate" [disabled]="isEdit" #filterInvoiceDateEnt="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;">
+            </owl-date-time>
+          </div>
+        </div>
+        
+
+        <div class="col-sm-2">
+          <div class="form-group form-group-sm">
+            <label for="filterVendorName">Vendor Name</label>
+            <ng-multiselect-dropdown id="filterVendorName" name="filterVendorName" #filterVendorNameE="ngModel"
+              [data]="VendorMasterList" [(ngModel)]="filterVendorName" [settings]="dropdownSettings2"
+              (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+              (onSelectAll)="onSelectAll($event)" matTooltip="Select Vendor Name">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+       
+      
+
+        <div class="col-sm-2">
+          <div class="form-group" [ngClass]="(fromDateEnt.touched && !fromDateEnt.valid)?'has-error':''">
+            <label>From Date</label>
+            <input #fromDateEnt="ngModel" [owlDateTime]="dt13" [owlDateTimeTrigger]="dt13" name="fromDate"
+              class="form-control" [(ngModel)]="fromDate" #fromDateEnt="ngModel" placeholder="DD-MM-YYYY">
+            <owl-date-time [pickerType]="'calendar'" #dt13 style="width: 250px;"></owl-date-time>
+            <span class="help-block" *ngIf="!fromDateEnt.valid && fromDateEnt.touched">Please enter valid From
+              Date</span>
+          </div>
+        </div>
+
+        <div class="col-sm-2">
+          <div class="form-group" [ngClass]="(toDateEnt.touched && !toDateEnt.valid)?'has-error':''">
+            <label>To Date</label>
+            <input #toDateEnt="ngModel" [min]="fromdate" [max]="today" [owlDateTime]="dt14" [owlDateTimeTrigger]="dt14"
+              name="toDate" class="form-control" [(ngModel)]="toDate" #toDateEnt="ngModel" placeholder="DD-MM-YYYY">
+            <owl-date-time [pickerType]="'calendar'" #dt14 style="width: 250px;"></owl-date-time>
+            <span class="help-block" *ngIf="!toDateEnt.valid && toDateEnt.touched">Please enter valid To Date</span>
+          </div>
+        </div>
+
+        <div class="col-sm-2">
+          <div class="form-group form-group-sm">
+            <label for="dashboard">Type Of Dashboard:<span style="color: red;">*</span></label>
+            <select [(ngModel)]="filterDashboard" class="form-control" name="dashboard" id="dashboard" required>
+              <option value="Division">Division</option>
+              <!-- <option value="Department">Department</option> -->
+              <option value="TypeOfGuest">HR Id</option>
+              <option value="typeOfEvent">Type Of Event</option>
+              <option value="VendorName">Vendor</option>
+              <!-- <option value="Month">Month</option> -->
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <label>&nbsp;</label>
+        <div class="form-group form-group-sm">
+          <button class="btn btn-primary btn-sm" (click)="Submit();">Submit</button>
+          &nbsp;&nbsp;
+          <button class="btn btn-primary btn-sm" (click)="clearFilter();">Clear</button>
+          &nbsp;&nbsp;
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <canvas id="lineCharts"></canvas>
+  </div>  
+</section>

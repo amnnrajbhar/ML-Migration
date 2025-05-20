@@ -1,0 +1,310 @@
+<section class="content-header">
+  <h1>
+    Shift Assignment
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Shift Assignment</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Shift Assignment</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <!-- <div class="col-xs-6">
+          <button type="button" class="btn btn-primary pull-right"
+            (click)="onAddRulesMaster(false,RulesMasterItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add
+            New Rule</button>
+        </div> -->
+    </div>
+
+    <div class="datafilter">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="baseplant"> Plant <span style="color: red;">*</span> </label>
+              <select [(ngModel)]="filterLocation" class="form-control" id="plant" name="plant" matTooltip="plant"
+                #plantEnt="ngModel" (change)="GetShift()">
+                <option [ngValue]="null" disabled [selected]="true"> Select plant </option>
+                <option *ngFor="let pl of plantList" value={{pl.fkPlantId}}>{{pl.code}}-{{pl.name}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="payGroup"> Pay Group</label>
+              <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup" name="payGroup"
+                matTooltip="Pay Group" #payGroup1Ent="ngModel">
+                <option [ngValue]="null" disabled [selected]="true"> Select Pay Group </option>
+                <option *ngFor="let pl of payGroupList1" value={{pl.id}}>{{pl.short_desc}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="empcat">Employee Category</label>
+              <select [(ngModel)]="filterCategory" class="form-control" id="empcat" name="empcat" matTooltip="staff Cat"
+                #empcatEnt="ngModel">
+                <option [ngValue]="null" disabled [selected]="true"> Select Emp Cateogry </option>
+                <option *ngFor="let pl of empCatList" value={{pl.id}}>{{pl.catltxt}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="dept">Department</label>
+              <select [(ngModel)]="filterDepartment" class="form-control" id="dept" name="dept" matTooltip="Department"
+                #deptEnt="ngModel">
+                <option [ngValue]="null" disabled [selected]="true"> Select Department </option>
+                <option *ngFor="let pl of departmentList" value={{pl.id}}>{{pl.name}}</option>
+              </select>
+            </div>
+          </div>
+          <!-- <div class="col-sm-3">
+            <div class="form-group">
+              <label for="sdept">Sub Department</label>
+              <select [(ngModel)]="filterSubDepartment" class="form-control" id="sdept" name="sdept"
+                matTooltip="Sub Department" #sdeptEnt="ngModel">
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Sub Department </option>
+                <option *ngFor="let pl of subdepartmentList" value={{pl.id}}>{{pl.sdptidLtxt}}</option>
+              </select>
+            </div>
+          </div> -->
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label #native for="Year"> Year </label>
+              <input type="number" [(ngModel)]="calYear" class="form-control" id="year" placeholder="Year" name="year"
+                ngControl="calYear" #calYearEnt="ngModel">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="month">Month</label>
+              <select name="fltrmonth" id="fltrmonth" class="form-control" [(ngModel)]="month"
+                (change)="GetWeeksCount(calYear,month)" ngControl="filterMonth">
+                <option value="null" disabled selected>--Select month--</option>
+                <option value="1">Jan</option>
+                <option value="2">Feb</option>
+                <option value="3">Mar</option>
+                <option value="4">Apr</option>
+                <option value="5">May</option>
+                <option value="6">Jun</option>
+                <option value="7">Jul</option>
+                <option value="8">Aug</option>
+                <option value="9">Sep</option>
+                <option value="10">Oct</option>
+                <option value="11">Nov</option>
+                <option value="12">Dec</option>
+              </select>
+            </div>
+          </div>
+          <!-- <div class="col-sm-3">
+            <div class="form-group">
+              <label for="week">Week</label>
+              <select name="week" id="week" class="form-control" [(ngModel)]="filterweek" ngControl="filterweek">
+                <option value="null" disabled selected>--select week--</option>
+                <option value="1">Week 1</option>
+                <option value="2">Week 2</option>
+                <option value="3">Week 3</option>
+                <option value="4">Week 4</option>
+                <option *ngIf="weekCount>=5" value="5">Week 5</option>
+                <option *ngIf="weekCount>=6" value="6">Week 6</option>
+              </select>
+            </div>
+          </div> -->
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="Action">Status</label>
+              <div class="row">
+                <mat-radio-group aria-label="Select option?" id="filterStatus" name="filterStatus"
+                  [(ngModel)]="filterStatus" [disabled]="isEdit" ngControl="filterStatus" #filterStatusEnt="ngModel">
+                  <mat-radio-button value="1">Pending for Shift Assignment</mat-radio-button>
+                  &nbsp;&nbsp;&nbsp;
+                  <mat-radio-button value='0'>All</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="Action">Assignment Type</label>
+              <div class="row">
+                <mat-radio-group aria-label="Select option?" id="filterType" name="filterType" [(ngModel)]="filterType"
+                  (change)="ClearEmployee()" [disabled]="isEdit" ngControl="filterType" #filterTypeEnt="ngModel">
+                  <mat-radio-button value="0">Individual</mat-radio-button>
+                  &nbsp;&nbsp;&nbsp;
+                  <mat-radio-button value='1'>Excel Upload </mat-radio-button>
+                  &nbsp;&nbsp;&nbsp;
+                  <mat-radio-button value='2'>Mass Update</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3" *ngIf="filterType==0">
+            <label for="EmployeeId"> Employee Id <span style="color: red;">*</span></label>
+            <input type="text" [(ngModel)]="filterEmployeeId" class="form-control" id="EmployeeId"
+              placeholder="EmployeeId" name="EmployeeId" ngControl="EmployeeId" #EmployeeIdEnt="ngModel">
+          </div>
+          <div class="col-sm-3">
+            <label>&nbsp;</label>
+            <div class="form-group">
+              <button class="btn btn-success" (click)="getFilteredList();" *ngIf="filterType != 1"
+                matTooltip="click to get data"><i class="fa fa-arrow-right"></i>&nbsp; Go</button>
+              &nbsp;&nbsp;
+              <button class="btn btn-danger" (click)="clearFilter();" matTooltip="click to reset"
+                matTooltip="Click to clear data"><i class="fas fa-times"></i>&nbsp; Clear</button>
+              &nbsp;&nbsp;
+              <!-- <button class="btn btn-primary " (click)="exportExcel();"
+                        matTooltip="click to export"><i
+                            class="fa fa-excel">Export to Excel</i> </button> -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <div class="box" *ngIf="filterType==1">
+      <div class="box-header" style="background-color: #5896c3;height: 35px;">
+        <h3 class="box-title">Upload Excel File</h3>
+      </div>
+      <div class="box-body">
+        <div class="col-sm-12">
+          <div class="col-sm-6">
+            <label for="label">
+              <h3>Click to download template for excel update</h3>
+            </label>
+            <a class="button" title="Excel" (click)="GetData();"><br>
+              <button class="btn btn-success"><i class="fa fa-download"></i>&nbsp; Download</button><br>
+            </a>
+          </div>
+
+          <div class="col-sm-6">
+            <label for="label">
+              <h3>Upload shift template </h3>
+              <h5 style="color: red;">NOTE: Please upload the
+                downloaded excel template only.</h5>
+            </label>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-6">
+                  <input #myInput type="file" class="form-control" (change)="uploadfiles($event.target.files)" id="file"
+                    name="file" placeholder="Upload file" accept=".xlsx">
+                </div>
+                <div class="col-md-2">
+                  <button type="button" class="btn btn-success pull-right" (click)="upload();"
+                    [disabled]="isLoading"><i class="fa fa-upload"></i>&nbsp; Upload</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+
+    &nbsp;&nbsp;&nbsp;
+
+    <div class="box" *ngIf="filterType == 0 || filterType == 2">
+      <div class="box-header" style="background-color: #5896c3;height: 35px;">
+        <h3 class="box-title">Mass Updation</h3>
+      </div>
+      <div class="box-body">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="shift"> Shift</label>
+            <select [(ngModel)]="AssignedShift" class="form-control" id="shift" name="shift" matTooltip="shift"
+              #shiftEnt="ngModel">
+              <option [ngValue]="undefined" disabled [selected]="true"> Select shift </option>
+              <option *ngFor="let pl of ShiftList" [ngValue]="pl.shiftCode">{{pl.shiftCode}} -
+                {{binddatetime(pl.shiftStartTime) | date:'hh:mm a'}} :
+                {{binddatetime(pl.shiftEndTime) | date:'hh:mm a'}}</option>
+            </select>
+
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="form-group">
+            <label for="Count"> Swipe Count</label>
+            <select [(ngModel)]="AssignedCount" class="form-control" id="Count" name="Count" matTooltip="Swipe Count"
+              #CountEnt="ngModel" disabled>
+              <option [ngValue]="undefined" disabled [selected]="true"> Select Count </option>
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+            </select>
+
+          </div>
+        </div>
+
+        <div class="col-sm-2">
+          <label>&nbsp;</label><br>
+          <button class="btn btn-success " (click)="MassUpdate();" matTooltip="click to update"><i
+              class="fas fa-angle-double-right"></i>&nbsp; Update</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="box-body table-responsive" *ngIf="filterType==0 || filterType==2">
+
+      <table id="location" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th>
+              <input type="checkbox" [(ngModel)]="isMasterSel" name="list_name" (change)="checkUncheckAll()">
+              &nbsp;&nbsp;&nbsp;
+              <label for="selectall">Select All</label>
+            </th>
+            <th>SNo</th>
+            <th>Emp Code</th>
+            <th>Emp Name</th>
+            <th>Plant</th>
+            <th>Pay Group</th>
+            <th>Employee Category</th>
+            <th>Designation</th>
+            <th>Department</th>
+            <th>DOJ</th>
+            <th>Shift</th>
+            <!-- <th>Swipe Count</th> -->
+            <!-- <th class="col-sm-1"></th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lm of ShiftAssignmentList; let i = index">
+            <td> <input type="checkbox" [id]="'chkusage'+lm.id" [name]="'send'+lm.id" [(ngModel)]="lm.isSelected"
+                (change)="isAllSelected()" #usageEnt="ngModel">
+            </td>
+            <td>{{i+1}}</td>
+            <td>{{lm.employeeId}}</td>
+            <td>{{lm.empName}}</td>
+            <td>{{lm.plant}}</td>
+            <td>{{lm.payGroup}}</td>
+            <td>{{lm.empCat }}</td>
+            <td>{{lm.designation }}</td>
+            <td>{{lm.department }}</td>
+            <td>{{lm.joiningDate | date : 'dd/MM/yyyy' }}</td>
+            <td>{{lm.day1}}</td>
+            <!-- <td>{{lm.swipeCount}}</td> -->
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,365 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Cab Request
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Admin Approval</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box shadow">
+    <div class="box-header">
+      <div class="col-xs-12">
+        <h3 class="box-title">Admin Approval</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="bookedCabs('all')">
+          <div class="card-counter primary">
+            <i class="fa fa-list-alt"></i>
+            <span class="count-numbers">
+              <div class="overlay" *ngIf="isLoading">
+                <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              {{allBookings}}
+            </span>
+            <span class="count-name">All Request's</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="bookedCabs('today')">
+          <div class="card-counter danger">
+            <i class="fa fa-user-clock"></i>
+            <span class="count-numbers">
+              <div class="overlay" *ngIf="isLoading">
+                <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              {{todayBookings}}
+            </span>
+            <span class="count-name">Pending for Approval</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="bookedCabs('approve')">
+          <div class="card-counter success">
+            <i class="fa fa-user-check"></i>
+            <span class="count-numbers">
+              <div class="overlay" *ngIf="isLoading">
+                <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              {{approvedBookings}}
+            </span>
+            <span class="count-name">Approved/Rejected</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="bookedCabs('assign')">
+          <div class="card-counter info">
+            <i class="fa fa-tasks"></i>
+            <span class="count-numbers">
+              <div class="overlay" *ngIf="isLoading">
+                <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              {{assignBookings}}
+            </span>
+            <span class="count-name">Assign Cab</span>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="box-body table-responsive">
+      <table id="roomsTable" class="table  table-striped" cellspacing="0">
+        <thead style="background-color: #0099cc; color:white;">
+          <tr>
+            <th>REQ.No.</th>
+            <th>Type of Trip</th>
+            <th>Service Type</th>
+            <th>From Time</th>
+            <th>To Time</th>
+            <th>Manager</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let request of mycabRequests; let i = index">
+            <td>{{request.requestNo}}</td>
+            <td>{{request.typeofTrip}}</td>
+            <td>{{request.serviceType}}</td>
+            <td>{{request.fromDateTime | date:'dd/MM/yyyy HH:mm'}}
+            </td>
+            <td>{{request.toDateTime | date:'dd/MM/yyyy HH:mm'}}
+            </td>
+            <td>{{request.managerName?request.managerName:'NA'}}</td>
+            <td>{{request.status}}</td>
+            <td>
+              <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to Edit Entry"
+                class="btn btn-primary btn-xs" (click)="onBookings(request)">
+                <i class="fas fa-pencil-alt"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" style="color:white; background:#68a7d2;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Request Approval
+          </h4>
+        </div>
+        <div class="modal-body" style="border-top:none;background-size:cover;">
+          <form #calendarForm="ngForm">
+            <div class="row">
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="Requester">
+                    Requester
+                  </label>
+                  <input class="form-control" id="Requester" placeholder="Requester"
+                    [ngModel]="cabRequest.empName" name="Requester" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="Department">
+                    Department
+                  </label>
+                  <input class="form-control" id="Department" placeholder="Department"
+                    [ngModel]="cabRequest.empDepartment" name="Department" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="TypeofTrip">
+                    Type of Trip
+                  </label>
+                  <input id="TypeofTrip" name="TypeofTrip" class="form-control" [ngModel]="cabRequest.typeofTrip"
+                    readonly>
+                </div>
+              </div>
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="purpose">
+                    Purpose
+                  </label>
+                  <input id="purpose" name="purpose" class="form-control" [ngModel]="cabRequest.purpose" readonly>
+                </div>
+              </div>
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="contactNo">
+                    Contact No
+                  </label>
+                  <input class="form-control" id="contactNo" [ngModel]="cabRequest.empContactNo" name="contactNo"
+                    readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="serviceType">
+                    Service Type
+                  </label>
+                  <input id="serviceType" name="serviceType" class="form-control" [ngModel]="cabRequest.serviceType"
+                    readonly>
+                </div>
+              </div>
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="pickupLocation">
+                    From Location
+                  </label>
+                  <textarea class="form-control" id="pickupLocation" placeholder="Pick up Location"
+                    [ngModel]="cabRequest.fromLocation" name="pickupLocation" readonly></textarea>
+                </div>
+              </div>
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="dropLocation">
+                    To Location
+                  </label>
+                  <textarea class="form-control" id="dropLocation" placeholder="To Location"
+                    [ngModel]="cabRequest.toLocation" name="dropLocation" readonly></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="SelCompetency">
+                    Number Of Person
+                  </label>
+                  <input type="number" class="form-control" id="numberOfPersons" placeholder="Person Count"
+                    [ngModel]="cabRequest.numberOfPerson" name="numberOfPersons" readonly>
+                </div>
+              </div>
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="startDate">
+                    From Date&Time
+                  </label>
+                  <input id="startDate" name="startDate" class="form-control"
+                    [ngModel]="cabRequest.fromDateTime | date:'dd/MM/yyyy HH:mm'" readonly>
+                </div>
+              </div>
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group">
+                  <label for="endDate">
+                    To Date&Time
+                  </label>
+                  <input id="endDate" name="endDate" class="form-control"
+                    [ngModel]="cabRequest.toDateTime | date:'dd/MM/yyyy HH:mm'" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                  <label for="calEnId">Comments
+                  </label>
+                  <textarea type="text" class="form-control" id="empComments" placeholder="Comments"
+                    [ngModel]="cabRequest.comments" name="empComments" readonly></textarea>
+                </div>
+              </div>
+
+            </div>
+            <div class="row" *ngIf="cabRequest.managerName!=null">
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="lManager">
+                    Line Manager
+                  </label>
+                  <input id="lManager" name="lManager" class="form-control" [ngModel]="cabRequest.managerName" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="lMgrcomments">
+                    Manager Comments
+                  </label>
+                  <textarea type="text" class="form-control" id="lMgrcomments" name="lMgrcomments"
+                    placeholder="Manager Comments" [ngModel]="cabRequest.managerComments" readonly></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="!(cabRequest.status=='Approved' || cabRequest.status=='Cab Assigned')">
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" [(ngModel)]="checkCabDetails" id="cabDetails" name="cabDetails" #cabDetailsEnt="ngModel" (change)="toggleVisibility($event)">
+                    <b>Check to add Cab details</b>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="cabRequest.status=='Approved' || cabRequest.status=='Cab Assigned' || checkCabDetails">
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group" [ngClass]="(cabdetailsEnt.touched && !cabdetailsEnt.valid)?'has-error':''">
+                  <label for="cabdetails">
+                    Cab Details<span style="color:red">*</span>
+                  </label>
+                  <textarea class="form-control" id="cabdetails" name="cabdetails" placeholder="Cab Details" matTooltip="Cab details"
+                    [(ngModel)]="cabRequest.cabDetails" #cabdetailsEnt="ngModel" required></textarea>
+                  <span class="help-block" *ngIf="cabdetailsEnt.touched && !cabdetailsEnt.valid">Please
+                    enter cab details</span>
+                </div>
+              </div>
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group" [ngClass]="(drivernameEnt.touched && !drivernameEnt.valid)?'has-error':''">
+                  <label for="drivername">
+                    Driver Name<span style="color:red">*</span>
+                  </label>
+                  <input type="text" class="form-control" id="drivername" name="drivername" placeholder="Driver Name" matTooltip="driver name"
+                    [(ngModel)]="cabRequest.driverName" #drivernameEnt="ngModel" required>
+                  <span class="help-block" *ngIf="drivernameEnt.touched && !drivernameEnt.valid">Please
+                    enter driver name</span>
+                </div>
+              </div>
+              <div class="col-sm-4 col-lg-4 col-md-4">
+                <div class="form-group"
+                  [ngClass]="(drivercontactEnt.touched && !drivercontactEnt.valid)?'has-error':''">
+                  <label for="drivercontact">
+                    Driver Contact<span style="color:red">*</span>
+                  </label>
+                  <input type="text" class="form-control" id="drivercontact" name="drivercontact"
+                    placeholder="Driver Contact" [(ngModel)]="cabRequest.driverContact" #drivercontactEnt="ngModel" matTooltip="driver contact no"
+                    (keypress)="keyPressNumber($event)" minlength="10" maxlength="10" required>
+                  <span class="help-block" *ngIf="drivercontactEnt.touched && !drivercontactEnt.valid">
+                    <span *ngIf="drivercontactEnt.errors.required"> Please
+                      enter contact no</span>
+                    <span *ngIf="drivercontactEnt.errors.minlength">Please enter 10 digit contact no.</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="form-group" [ngClass]="(entityRemarks.touched && !entityRemarks.valid)?'has-error':''">
+                  <label for="calEnId">Comments <span style="color:red"  *ngIf="!(cabRequest.status=='Approved' || cabRequest.status=='Cab Assigned')">*</span>
+                  </label>
+                  <textarea type="text" class="form-control" id="Comments" placeholder="Comments" matTooltip="Comments"
+                    [(ngModel)]="cabRequest.adminComments" name="entityRemarks" #entityRemarks="ngModel"
+                    (change)="cabRequest.adminComments =cabRequest.adminComments.trim()" [readonly]="cabRequest.status=='Approved' || cabRequest.status=='Cab Assigned'" required></textarea>
+                  <span class="help-block" *ngIf="entityRemarks.touched && !entityRemarks.valid">Please
+                    enter comments</span>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+          <button type="button" class="btn btn-primary" (click)="onSubmit('Approved')"
+            [disabled]="cabRequest.adminApprovalDate!=null || !calendarForm.valid" matTooltip="Click to approve"
+            *ngIf="cabRequest.status!='Approved'">Approve</button>
+          <button type="button" class="btn btn-primary" (click)="onSubmit('Rejected')" matTooltip="Click to reject"
+            [disabled]="cabRequest.adminApprovalDate!=null"
+            *ngIf="cabRequest.status!='Approved'">Reject</button>
+          <button type="button" class="btn btn-primary" (click)="onSubmit('Updated')" [disabled]="!calendarForm.valid" matTooltip="Click to update"
+            *ngIf="cabRequest.status=='Approved' || cabRequest.status=='Cab Assigned'">{{cabRequest.status=='Approved'?'Assign':'Update'}}</button>
+          <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" matTooltip="Click to close modal"
+            data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+              *ngIf="errMsgModalPop.length>0"><i class="fa fa-check"></i>{{errMsgModalPop}}</span></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,288 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Recruitment Approval Form
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Print Approval Form</li>
+  </ol>
+</section>
+
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 text-center actionButtons">
+
+      <button type="button" (click)="goBack()" class="btn btn-sm btn-default" [matTooltipPosition]="'after'"
+        matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+
+      <button type="button" (click)="print1()" class="btn btn-sm btn-info" [matTooltipPosition]="'after'"
+        matTooltip="Click to print the letter" [disabled]="isLoading">
+        <i class="fas fa-print"></i> Print
+      </button>
+
+      <!-- <button type="button" (click)="download()" class="btn btn-sm btn-warning" [matTooltipPosition]="'after'"
+        matTooltip="Click to download the letter" [disabled]="isLoading">
+        <i class="fas fa-download"></i> Download
+      </button> -->
+
+    </div>
+  </div>
+
+  <div class="printable" style="font-family:'Times New Roman', Times, serif">
+    <div class="panel panel-default" id="pdfcontent">
+      <div class="panel-body">
+        <div class="text-center" style="text-align: center;">
+          <h2>MICRO LABS LIMITED</h2>
+          <span class="h3">APPROVAL FOR RECRUITMENT</span>
+        </div>
+        <div class="row">
+          <table class="table table-bordered">
+            <tbody>             
+              <tr>
+                <td style="width: 33%;">Plant: <b>{{offerDetails.plantName}} </b></td>
+                <td style="width: 33%;">Pay Group: <b>{{offerDetails.payGroupName}}</b></td>
+                <td style="width: 33%;">Employee Category: <b>{{offerDetails.employeeCategoryName}}</b></td>
+              </tr>         
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          <span class="h4">Candidate's Profile:</span> 
+          <div class="pull-right" style="text-align: right;">
+            Location: <b>{{offerDetails.location}}</b><br/>
+            Date: <b>{{offerDetails.createdDate | date:"dd/MM/yyyy"}}</b></div>
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td colspan="2" style="width: 100%;">Name of the Candidate: <b>{{offerDetails.firstName}} {{offerDetails.middleName}}
+                  {{offerDetails.lastName}}</b></td>
+              </tr>
+              <tr>
+                <td style="width: 50%;">Educational Qualification: <b>{{offerDetails.qualification}} </b></td>
+                <td style="width: 50%;">Reference / Source: <b>{{offerDetails.referenceThru}} {{offerDetails.refDetails}}
+                  {{offerDetails.refEmployeeNo}}</b></td>
+              </tr>
+              <tr>
+                <td style="width: 50%;">Post Applied For: <b>{{offerDetails.designation}} - {{offerDetails.role}} </b></td>
+                <td style="width: 50%;">Present CTC Rs. <b>{{offerDetails.presentCTC  | number: "1.0-2"}}</b></td>
+              </tr>
+              <tr>
+                <td style="width: 50%;">Department: <b>{{offerDetails.department}}</b> </td>
+                <td style="width: 50%;">Proposed CTC Rs. <b>{{offerDetails.offeredSalary  | number: "1.0-2"}}</b></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="row">
+          <h4>Previous Experience: (Total Experience: {{offerDetails.totalExperience}})</h4>
+          <div class="table-responsive">
+            <table class="table table-bordered" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th style="width: 45%;">Company </th>
+                  <th style="width: 15%;">From Date </th>
+                  <th style="width: 15%;">To Date</th>
+                  <th style="width: 25%;">Position </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of previousExpList; let i = index">
+                  <td>{{item.company}}</td>
+                  <td>{{item.fromDate | date: "dd/MM/yyyy"}}</td>
+                  <td>{{item.toDate | date: "dd/MM/yyyy"}}</td>
+                  <td>{{item.position}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <span class="h4">Justification for Recruitment: </span> <b>{{offerDetails.recruitmentType}}</b>
+          </div>
+          <table>
+            <tbody>
+              <tr>
+                <td style="width: 50%;">
+                  <table class="table table-bordered" >
+                    <thead>
+                      <tr>
+                        <th style="width: 100%;">Job Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of jdList; let i = index">
+                        <td style="width: 100%;">
+                          {{i+1}}. {{item.description}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td style="width: 50%;">
+                  <table class="table table-bordered" *ngIf="offerDetails.recruitmentType == 'Replacement'">
+                    <thead>
+                    <tr>
+                      <th>Replacing Employee Details</th>
+                    </tr>
+                  </thead>
+                    <tbody>
+                      <tr>
+                        <td style="width: 40%;">Name</td>
+                        <td style="width: 60%;">{{offerDetails.replacingEmployeeName}}</td>
+                      </tr>
+                      <tr>
+                        <td >Designation</td>
+                        <td>{{offerDetails.replacingEmployeeDesignation}}</td>
+                      </tr>
+                      <tr>
+                        <td >DOJ</td>
+                        <td>{{offerDetails.replacingEmployeeDOJ | date: "dd/MM/yyyy"}}</td>
+                      </tr>
+                      <tr>
+                        <td >DOL</td>
+                        <td>{{offerDetails.replacingEmployeeDOL | date: "dd/MM/yyyy"}}</td>
+                      </tr>
+                      <tr>
+                        <td >Last Drawn Salary</td>
+                        <td>{{offerDetails.replacingEmployeeCurrentCTC | number: '1.0-2'}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>              
+            </tbody>
+          </table>
+        </div>
+
+        <div class="row">
+          <h4>Interviewed By </h4>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">Interviewer</th>
+                  <th style="width: 25%;">Designation </th>
+                  <th style="width: 15%;">Interview Date </th>
+                  <th style="width: 35%;">Comments</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of interviewerList; let i = index">
+                  <td>
+                    {{item.name}}
+                  </td>
+                  <td >
+                    {{item.designation}}
+                  </td>
+                  <td >
+                    {{item.date | date: "dd/MM/yyyy"}}
+                  </td>
+                  <td>
+                    {{item.comments}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <h4>Final Remarks <small>(A - Excellent, B - Good, C - Average, D - Below Average)</small></h4>
+          <table style="border:0pt">
+            <tr>
+              <td style="width: 50%;">
+                <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Criteria </th>
+                      <th style="max-width: 100px;">Rating </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of interviewRemarksList; let i = index">  
+                      <td>
+                        {{item.criteria}}
+                      </td>
+                      <td style="max-width: 100px;">
+                        {{item.rating}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+              <td style="width: 50%;">
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <tbody>
+                      <tr>
+                        <td style="width: 40%;">Signature</td>
+                        <td style="width: 60%;"></td>
+                      </tr>
+                      <tr>
+                        <td>Name</td>
+                        <td>{{finalRemarks.name}}</td>
+                      </tr>
+                      <tr>
+                        <td>Designation</td>
+                        <td>{{finalRemarks.designation}}</td>
+                      </tr>
+                      <tr>
+                        <td>Date</td>
+                        <td>{{finalRemarks.remarksDate | date: "dd/MM/yyyy"}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </table>         
+        </div>
+
+        <div class="row">
+          <h4>Recommendation of Unit Head</h4>
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td style="max-width: 100px;">Proposed Designation</td>
+                <td><b>{{offerDetails.designation}} - {{offerDetails.role}}</b></td>
+                <td style="max-width: 100px;">Recommended Salary</td>
+                <td><b>{{offerDetails.offeredSalary | number: "1.0-2"}}</b></td>
+                <td style="max-width: 120px;">Signature of Unit/SBU Head</td>
+                <td style="min-width: 150px;"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="row">
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td style="width: 200px; height:60px" rowspan="2">Approval By Corporate Office</td>
+                <td style="width: 200px;"></td>
+                <td style="width: 200px;"></td>
+              </tr>
+              <tr>
+                <td style="width: 200px;">AVP - HRD</td>
+                <td style="width: 200px;">Director / CMD</td>
+              </tr>
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

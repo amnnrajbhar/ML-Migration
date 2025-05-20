@@ -1,0 +1,338 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Dashboard
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Dashboard</li>
+  </ol>
+</section>
+
+
+<section class="content">
+
+  <div id="filterPanel">
+    <div class="col-sm-12">
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="startDate">
+              Date <span style="color:red">*</span>
+            </label>
+            <div class='input-group date'>
+              <input id="startDate" name="startDate" class="form-control" [(ngModel)]="from_date" [min]="min"
+                [max]="today" [owlDateTime]="dtStart" [owlDateTimeTrigger]="dtStart" [matTooltipPosition]="'below'"
+                matTooltip="Click to change startDate" placeholder="DD/MM/YYYY" #startDate1="ngModel"
+                [disabled]="isEdit">
+              <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                <i class="fas fa-calendar-alt"></i>
+              </span>
+            </div>
+            <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="Location">Plant <span style="color:red">*</span> </label>
+            <select [(ngModel)]="filterPlant" class="form-control" id="locationName" name="locationName">
+              <option [ngValue]="null">Select plant</option>
+              <option *ngFor="let location of locationList" value="{{location.code}}">
+                {{location.code + '-' + location.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="paygroup">Pay Group</label>
+            <select [(ngModel)]="filterPaygroup" class="form-control" id="paygroup" name="paygroup">
+              <option [ngValue]="null">Select Pay Group</option>
+              <option *ngFor="let location of PayGroupList" value="{{location.id}}">
+                {{location.short_desc}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="staffcat">Staff Category</label>
+            <select [(ngModel)]="filterCategory" class="form-control" id="staffcat" name="staffcat">
+              <option [ngValue]="null">Select Category</option>
+              <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                {{cat.catltxt}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="Location">Department</label>
+            <select [(ngModel)]="filterDepartment" class="form-control" id="locationName" name="locationName">
+              <option [ngValue]="null">Select Department</option>
+              <option *ngFor="let location of departmentList" value="{{location.dptid}}">
+                {{location.name}}</option>
+            </select>
+          </div>
+        </div>
+        <!-- <div class="col-sm-3">
+          <div class="form-group">
+            <label for="Location">Sub Department</label>
+            <select [(ngModel)]="filterSubdept" class="form-control" id="locationName" name="locationName">
+              <option [ngValue]="null">select Department</option>
+              <option *ngFor="let location of subdepartmentList" value="{{location.sdptid}}">
+                {{location.sdptxt}}</option>
+            </select>
+          </div>
+        </div> -->
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="Location">Reporting Group </label>
+            <select [(ngModel)]="filterReporting" class="form-control" id="locationName" name="locationName" required>
+              <option [ngValue]="null">Select Reporting Group</option>
+              <option *ngFor="let location of ReportingGroupList" value="{{location.reportingGroup}}">
+                {{location.reportingGroupLt}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm-3">
+          <label>&nbsp;</label>
+          <div class="form-group">
+            <button class="btn btn-success" (click)="filterReport();" matTooltip="click to get"><i class="fas fa-angle-double-right"></i>&nbsp; Get Data</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-danger" (click)="ClearData();"><i class="fas fa-times"></i>&nbsp; Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+<section>
+  <div class="box">
+    <div class="box-header" class="text-center">
+      <h2 class="box-title" style="text-align: center;"><strong>Total Count of Employees</strong> </h2>
+      <h3> {{from_date | date:'EEE, MMM d, y'}}</h3>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="getEmpData('avail');">
+          <div class="card-counter primary">
+            <i class="fa fa-list-alt"></i>
+            <span class="count-numbers">
+              {{TotavailableEmpCount}}
+            </span>
+            <span class="count-name">Available Employees</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="getEmpData('pres');">
+          <div class="card-counter success">
+            <i class="fa fa-user-check"></i>
+            <span class="count-numbers">
+              {{TotpresentEmployees}}
+            </span>
+            <span class="count-name">Present Employees</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="getEmpData('od');">
+          <div class="card-counter info">
+            <i class="fa fa-user-clock"></i>
+            <span class="count-numbers">
+              {{TotemployeesOnOD}}
+            </span>
+            <span class="count-name">Employees on OnDuty</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="getEmpData('leave');">
+          <div class="card-counter info">
+            <i class="fa fa-user-clock"></i>
+            <span class="count-numbers">
+              {{TotemployeesOnLeave}}
+            </span>
+            <span class="count-name">Employees on Leave</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="getEmpData('abs');">
+          <div class="card-counter danger">
+            <i class="fa fa-users"></i>
+            <span class="count-numbers">
+              {{TotabsentEmployees}}
+            </span>
+            <span class="count-name">Absent Employees</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+  &nbsp;
+
+  <div class="col-sm-12" *ngFor="let dt of ShiftDashboardData">
+    <div class="box">
+      <div class="box-header" class="text-center">
+        <h2 class="box-title" style="text-align: center;"><strong>{{dt.shiftname}}</strong> </h2>
+        <h3 style="text-align: center;">{{binddatetime1(dt.shiftstarttime) | date:'h:mm a'}} →
+          {{binddatetime1(dt.shiftendtime) | date:'h:mm a'}} </h3>
+        <h3> {{from_date | date:'EEE, MMM d, y'}}</h3>
+
+      </div>
+      <div class="box-body">
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <div class="card-counter primary">
+              <i class="fa fa-list-alt"></i>
+              <span class="count-numbers">
+                {{dt.availableEmpCount}}
+              </span>
+              <span class="count-name">Available Employees</span>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card-counter success">
+              <i class="fa fa-user-check"></i>
+              <span class="count-numbers">
+                {{dt.presentEmployees}}
+              </span>
+              <span class="count-name">Present Employees</span>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card-counter info">
+              <i class="fa fa-user-clock"></i>
+              <span class="count-numbers">
+                {{dt.employeesOnOD}}
+              </span>
+              <span class="count-name">Employees on OnDuty</span>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card-counter info">
+              <i class="fa fa-user-clock"></i>
+              <span class="count-numbers">
+                {{dt.employeesOnLeave}}
+              </span>
+              <span class="count-name">Employees on Leave</span>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card-counter danger">
+              <i class="fa fa-users"></i>
+              <span class="count-numbers">
+                {{dt.absentEmployees}}
+              </span>
+              <span class="count-name">Absent Employees</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Employee Details</h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+        <form #desigForm="ngForm">
+          <div class="col-sm-12">
+            &nbsp; &nbsp; &nbsp;
+            <div class="row">
+              <table class="table table-striped table-bordered">
+                <tr *ngIf="ShowAvailable" style="background-color: hsl(215, 100%, 50%)">
+                  <th style="color: white;"><b>Sl.No</b></th>
+                  <th style="color: white;"><b>Employee ID</b></th>
+                  <th style="color: white;"><b>Employee Name</b></th>
+                  <th style="color: white;"><b>Department</b></th>
+                  <th style="color: white;"><b>Designation</b></th>
+                  <th style="color: white;"><b>Emp Status</b></th>
+                </tr>
+                <tr *ngIf="ShowPresent" style="background-color: hsl(132, 100%, 40%)">
+                  <th style="color: white;"><b>Sl.No</b></th>
+                  <th style="color: white;"><b>Employee ID</b></th>
+                  <th style="color: white;"><b>Employee Name</b></th>
+                  <th style="color: white;"><b>Department</b></th>
+                  <th style="color: white;"><b>Designation</b></th>
+                  <th style="color: white;"><b>Emp Status</b></th>
+                  <th style="color: white;"><b>In Punch</b></th>
+                  <th style="color: white;"><b>Out Punch</b></th>
+                </tr>
+                <tr *ngIf="ShowOD" style="background-color: hsl(190, 100%, 50%)">
+                  <th style="color: white;"><b>Sl.No</b></th>
+                  <th style="color: white;"><b>Employee ID</b></th>
+                  <th style="color: white;"><b>Employee Name</b></th>
+                  <th style="color: white;"><b>Department</b></th>
+                  <th style="color: white;"><b>Designation</b></th>
+                  <th style="color: white;"><b>EMp Status</b></th>
+                  <th style="color: white;"><b>On Duty Status</b></th>
+                </tr>
+                <tr *ngIf="ShowLeave" style="background-color: hsl(190, 100%, 50%)">
+                  <th style="color: white;"><b>Sl.No</b></th>
+                  <th style="color: white;"><b>Employee ID</b></th>
+                  <th style="color: white;"><b>Employee Name</b></th>
+                  <th style="color: white;"><b>Department</b></th>
+                  <th style="color: white;"><b>Designation</b></th>
+                  <th style="color: white;"><b>Emp Status</b></th>
+                  <th style="color: white;"><b>Leave Status</b></th>
+                </tr>
+                <tr *ngIf="ShowAbsent" style="background-color: hsl(0, 100%, 50%)">
+                  <th style="color: white;"><b>Sl.No</b></th>
+                  <th style="color: white;"><b>Employee ID</b></th>
+                  <th style="color: white;"><b>Employee Name</b></th>
+                  <th style="color: white;"><b>Department</b></th>
+                  <th style="color: white;"><b>Designation</b></th>
+                  <th style="color: white;"><b>Emp Status</b></th>
+                  <th style="color: white;"><b>In Punch</b></th>
+                  <th style="color: white;"><b>Out Punch</b></th>
+                </tr>
+                <tr *ngFor="let ty of employeeList; let i = index">
+                  <td>{{i+1}}</td>
+                  <td>{{ty.employeeNo}}</td>
+                  <td>{{ty.name}}</td>
+                  <td>{{ty.department}}</td>
+                  <td>{{ty.designation}}</td>
+                  <td><span class="label"
+                      [ngClass]="(ty.active==true)?'label-success':'label-danger'">
+                      {{(ty.active==true)?'ACTIVE':'IN ACTIVE'}}</span></td>
+                  <td *ngIf="ShowPresent || ShowAbsent">{{ty.inTime}}</td>
+                  <td *ngIf="ShowPresent || ShowAbsent">{{ty.outTime}}</td>
+                  <td *ngIf="ShowOD">{{ty.approverStatus}}</td>
+                  <td *ngIf="ShowLeave">{{ty.approverStatus}}</td>
+              </table>
+            </div>
+          </div>
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      &nbsp; &nbsp; &nbsp;
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" matTooltip="Click to close the form"
+          style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+  </div>
+</div>

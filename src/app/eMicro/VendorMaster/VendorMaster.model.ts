@@ -1,0 +1,71 @@
+import { WorkFlowApprovers } from "../Masters/WorkFlowApprovers/WorkFlowApprovers.model";
+
+export class VendorMaster {
+  id: number;
+  requestNo: string;
+  requestDate: string;
+  locationId: string;
+  accountGroupId: string;
+  viewType: string;
+  title: string;
+  name: string;
+  address1: string;
+  address2: string;
+  address3: string;
+  address4: string;
+  city: string;
+  pincode: string;
+  countryId: string;
+  state: string;
+  landlineNo: string;
+  mobileNo: string;
+  faxNo: string;
+  emailId: string;
+  currencyId: string;
+  reconcilationActId: string;
+  isEligibleForTds: boolean;
+  tdsCode: string;
+  lstNo: string;
+  tinNo: string;
+  cstNo: string;
+  panNo: string;
+  serviceTaxRegistrationNo: string;
+  isRegdExciseVendor: boolean;
+  eccNo: string;
+  exciseRegNo: string;
+  exciseRange: string;
+  exciseDivision: string;
+  paymentTermId: string;
+  accountClerkId: string;
+  isApprovedVendor: boolean;
+  createdDate: string;
+  createdBy: string;
+  modifiedDate: string;
+  modifiedBy: string;
+  commissionerate: string;
+  typeOfVendor: string;
+  type: string;
+  approveStatus: string;
+  sapCodeNo: string;
+  sapCodeExists: boolean;
+  sapCreationDate: string;
+  sapCreatedBy: string;
+  requestedBy: string;
+  approveDate: string;
+  lastApprover: string;
+  pendingApprover: string;
+  rejectedFlag: string;
+  gstinNumber: string;
+  attachments: string;
+  vendorCat: string;
+  vendorSubCat: string;
+
+  approver1: string;
+  approver2: string;
+  approver3: string;
+  approver4: string;
+
+  isSelected: boolean;
+
+  approvers: WorkFlowApprovers[];
+}

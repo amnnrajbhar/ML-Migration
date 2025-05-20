@@ -1,0 +1,148 @@
+﻿<section class="content-header" >
+  <h1>
+    Soft Skills Master
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Soft Skills</li>
+  </ol>
+</section>
+<section class="content" >
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Soft Skills</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddSoftSkill(false,softskillItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add Soft Skill</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="softskill" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:20px">Id</th>
+            <th>Skill</th>
+            <th>Description</th>
+            <th>Role</th>
+            <th>Calendar Year</th>
+            <th style="width:20px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let softskl of softskillList; let i = index">
+            <td>{{softskl.id}}</td>
+            <td>{{softskl.skills}}</td>
+            <td>{{softskl.description}}</td>
+            <td>{{softskl.fkRoleId}}</td>
+            <!-- <td>{{softskl.fkCalendarId}}</td> -->
+            <td>{{getCalName(softskl?.fkCalendarId)}}</td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddSoftSkill(true,softskl)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-md  modal-dialog-centered">
+ <div class="modal-content">
+   <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+       <span aria-hidden="true">&times;</span>
+     </button>
+     <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"  *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+   </div>
+   </div></div>
+   <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+<div  class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Soft skills</h4>
+      </div>
+      <div class="modal-body box box-primary">
+        <div class="row">
+          <form #softskillForm="ngForm">
+            <div class="col-sm-6">
+              <div class="form-group" [ngClass]="(!name.valid && name.touched)?'has-error':''">
+                <label for="name" class="col-lg-3"><i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i> Soft Skill<span style="color:red">*</span></label>
+                  <input type="text" class="form-control" id="name" placeholder="SoftSkill Name" [(ngModel)]="softskillItem.skills" name="name"
+                         ngControl="softskillItem.skills" #name="ngModel" required maxlength="50">
+                  <span class="help-block" *ngIf="!name.valid && name.touched">Please Enter Soft Skill.</span>
+                </div>
+              
+              <div class="form-group">
+                <label for="dDesc" class="col-lg-3">Description</label>
+                  <input type="text" class="form-control" id="dDesc" placeholder="Description" [(ngModel)]="softskillItem.description" name="description" maxlength="200" />
+                  </div>
+                </div>
+                <div class="col-sm-6">
+              <div class="form-group">
+                <label for="roleId" class="col-lg-3"> Role</label>
+                  <select [(ngModel)]="selParentRole" class="form-control" id="roleId" name="roleId" ngControl="selParentRole" #roleId="ngModel">
+                    <option *ngFor="let pro of profileList" [ngValue]="pro">{{pro.role}}</option>
+                  </select>
+                  </div>
+                  <!-- <div class="form-group">
+                    <label for="assessId" class="col-lg-3"> Assessment</label>
+                      <select [(ngModel)]="selAssessment" class="form-control" id="assessId" name="assessId" ngControl="selAssessment" #assessId="ngModel">
+                        <option *ngFor="let assess of assessmentList" [ngValue]="assess">{{assess.name}}</option>
+                      </select>
+                      </div> -->
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="calendarId" class="col-lg-3"> Calendar</label>
+                      <select [(ngModel)]="selCalendar" class="form-control" id="calendarId" name="calendarId" ngControl="selCalendar" #parentId="ngModel">
+                        <option *ngFor="let pDept of calendarList" [ngValue]="pDept">{{pDept.fiscalYear}}</option>
+                      </select>
+                      </div>
+
+              <div class="form-group" *ngIf="isEdit" [ngClass]="(!assess_status.valid && assess_status.touched)?'has-error':''">
+                <label for="assess_status"  class="col-lg-3"><i class="fa fa-times-circle-o" *ngIf="!assess_status.valid && assess_status.touched"></i> Status<span style="color:red">*</span></label>
+                
+                <select [(ngModel)]="assessmentItem.isActive" class="form-control" id="assess_status" name="assess_status" ngControl="assessmentItem.isActive"
+                        #assess_status="ngModel" required>
+                  <option [ngValue]="true">Active</option>
+                  <option [ngValue]="false">Inactive</option>
+                </select>
+              
+                <span class="help-block" *ngIf="!assess_status.valid && assess_status.touched">Please Select Status.</span>
+              </div></div>
+            
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+        <button type="button" class="btn btn-primary" (click)="onSaveSoftSkill()" [disabled]="isLoadingPop || !softskillForm.valid">{{isEdit==true?'Update SoftSkill':'Save SoftSkill'}}</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

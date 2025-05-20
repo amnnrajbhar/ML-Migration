@@ -1,0 +1,821 @@
+<section class="content-header">
+  <h1 class="display-1">
+      Medical Input Request
+      <small>Creation</small>
+  </h1>
+  <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+      <li class="active">Medical Input Request</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="box">
+      <div class="box-header mt-3">
+          <div class="col-xs-6">
+              <h3 class="box-title">Medical Input Request</h3>
+              <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+          </div>
+          <!-- <div class="col-xs-1">
+              <div class="form-group form-group-sm"
+                  *ngIf="currentUser.fkProfileId == 1 || currentUser.fkProfileId == 1010 || currentUser.fkProfileId == 1014">
+                  <button type="button" class="btn btn-success pull-right" (click)="exportAsXLSX()">
+                      <i class="fa fa-download fa-sm text-white-50" aria-hidden="true"></i>Export to Excel
+                  </button>
+              </div>
+          </div> -->
+          <div class="col-xs-6">
+              <div class="row pull-right">
+                  <button type="button" class="btn btn-success mr-3" (click)="exportAsXLSX()" *ngIf="currentUser.fkProfileId == 1 || currentUser.fkProfileId == 1010 || currentUser.fkProfileId == 1020">
+                      <i class="fa fa-download fa-sm text-white-50" aria-hidden="true"></i>&nbsp;Export to Excel
+                  </button>
+                  <button type="button" class="btn btn-primary" (click)="onCreateNewRequest()">
+                      <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;New Request
+                  </button>
+              </div>
+          </div>
+      </div>
+      <div id="filterPanel">
+          <div class="row mx-3">
+              <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                      <label for="requestno">Request Number</label>
+                      <input [(ngModel)]="msService.filterRequest" class="form-control" id="requestno"
+                          placeholder="Request Number" name="requestno" ngControl="msService.filterRequest"
+                          #requestnoEnt="ngModel">
+                  </div>
+              </div>
+              <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                      <label for="place">Product</label>
+                      <input [(ngModel)]="msService.filterProduct" class="form-control" id="place" placeholder="Product"
+                          name="place" ngControl="msService.filterProduct" #placeEnt="ngModel">
+                  </div>
+              </div>
+              <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                      <label for="fltrstatus">Status</label>
+                      <select [(ngModel)]="msService.filterStatus" class="form-control" id="fltrstatus" name="fltrstatus"
+                          ngControl="msService.filterStatus" #fltrstatusEnt="ngModel" matTooltip="Select Status">
+                          <option [ngValue]="null" disabled>--Select an Option--</option>
+                          <option *ngFor="let status of statuslist" value={{status.name}}>{{status.name}}</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="col-sm-3">
+                  <div class="form-group form-group-sm">
+                      <label for="fltrlocation">Brand</label>
+                      <select [(ngModel)]="msService.filterBrand" class="form-control" id="fltrlocation" name="fltrlocation"
+                          ngControl="msService.filterBrand" #fltrlocationEnt="ngModel" matTooltip="Select Location">
+                          <option [ngValue]="null" disabled>--Select an Option--</option>
+                          <option *ngFor="let loc of BrandList" value={{loc.brandDesc}}>
+                              {{loc.brandDesc}}</option>
+                      </select>
+                  </div>
+              </div>
+          </div>
+          <div class="row mx-3">
+              <div class="col-sm-3">
+                  <label>From Date</label>
+                  <div class="form-group form-group-sm"
+                      [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+                      <div class="input-group date">
+                          <input [matTooltipPosition]="'below'" matTooltip="Click to change from date"
+                              [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control"
+                              [(ngModel)]="msService.from_date" #fromDate="ngModel">
+                          <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+                      </div>
+                      <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+                      <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From
+                          Date.</span>
+                  </div>
+              </div>
+              <div class="col-sm-3">
+                  <label>To Date</label>
+                  <div class="form-group form-group-sm">
+                      <div class="input-group date">
+                          <input [min]="msService.from_date" [max]="today" [matTooltipPosition]="'below'"
+                              matTooltip="Click to change to date" [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12"
+                              name="endDate" class="form-control" [(ngModel)]="msService.to_date" #toDate="ngModel">
+                          <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+                      </div>
+                      <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;"></owl-date-time>
+                  </div>
+              </div>
+          </div>
+          <div class="row mt-3">
+              <div class="col-sm-12 center-contents">
+                  <div class="form-group form-group-sm">
+                      <button class="btn btn-primary btn mr-3" style="width: 100px;" (click)="getAllEntries()" [disabled]="isGOLoading">
+                          <i class="fa" [ngClass]="{'fa-spin fa-spinner': isGOLoading}"></i><span *ngIf="isGOLoading">&nbsp;</span>Go
+                      </button>
+                      <button class="btn btn-info btn" style="width: 100px;" (click)="clearFilter()">Clear</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="row" *ngIf="Head">
+          <div class="col-sm-12 center-contents">
+              <div class="form-group form-group-sm">
+                  <label>&nbsp;</label>
+                  <div class="row">
+                      <mat-radio-group id="approve" name="approve" [(ngModel)]="Approves" ngControl="Approve" #approveEnt="ngModel">
+                          <mat-radio-button class="mr-4" (change)="onApproveAssignChange('Approve')" value='Approve'>Approve</mat-radio-button>
+                          <mat-radio-button (change)="onApproveAssignChange('Assign')" value='Assign'>Assign</mat-radio-button>
+                      </mat-radio-group>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="row mt-3" *ngIf="Head && Approves=='Assign'">
+          <div class="col-sm-12 center-contents">
+              <div class="form-group form-group-sm">
+                  <div class="row center-contents">
+                      <label for="reviewer">Select Reviewer<span style="color:red">*</span></label>
+                  </div>
+                  <select [(ngModel)]="Reviewer" class="form-control" id="reviewer" name="reviewer" style="min-width: 300px;"
+                      ngControl="Reviewer" #reviewerEnt="ngModel" matTooltip="Select Reviewer" (change)="onReviewerChange()" required>
+                      <option [ngValue]="null" disabled>--Select a Reviewer--</option>
+                      <option *ngFor="let reviewer of ReviewerList" value={{reviewer.employeeId}}>
+                          {{reviewer.fullName}} ({{reviewer.employeeId}})
+                      </option>
+                  </select>
+              </div>
+          </div>
+      </div>
+      <div class="row mt-3" *ngIf="checkedRequestList.length > 0 && !isGOLoading">
+          <div class="col-sm-12 center-contents">
+              <div class="form-group form-group-sm">
+                  <button type="button" class="btn btn-success btn mr-3" style="width: 100px;" (click)="MassApprove('Mass Approved')"
+                      matTooltip="Click to Approve" [disabled]="!checkedRequestList.length > 0 || isLoading || isApproveLoading"
+                      *ngIf="MediServiceRequestList.length > 0 ">
+                      <i class="fa" [ngClass]="{'fa-spin fa-spinner': isApproveLoading}"></i><span *ngIf="isApproveLoading">&nbsp;</span>Approve
+                  </button>
+                  <button type="button" class="btn btn-danger  btn" style="width: 100px;" (click)="MassApprove('Rejected')"
+                      matTooltip="Click to Reject" [disabled]="!checkedRequestList.length > 0 || isLoading || isApproveLoading"
+                      *ngIf="MediServiceRequestList.length > 0 ">
+                      <i class="fa" [ngClass]="{'fa-spin fa-spinner': isApproveLoading}"></i><span *ngIf="isApproveLoading">&nbsp;</span>Reject
+                  </button>
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive mt-3 mr-4">
+          <table id="userTable" class="table table-bordered shadow">
+              <thead style="background-color: #0099cc;color:white;">
+                  <tr>
+                      <th></th>
+                      <th>Request Number</th>
+                      <th>Requested Date</th>
+                      <th>Requested By<img style="min-width: 100px !important;"></th>
+                      <th>Input Type</th>
+                      <th>Brand<img style="min-width: 150px !important;"></th>
+                      <th>Category</th>
+                      <th>Product</th>
+                      <th>Final Medical Code</th>
+                      <th>Status</th>
+                      <th>Last Approver</th>
+                      <th>Pending Approver</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let item of MediServiceRequestList; let i = index" [ngClass]="isRequestPendingWithUser(item) ? 'pending' : ''">
+                      <td style="text-align:center;">
+                          <input *ngIf="(item.pendingApprover == currentUser.employeeId || item.pendingApproverName == currentUser.fullName) && item.stage != 2 && !isGOLoading" type="checkbox"
+                              [id]="'chkusage' + item.id" [name]="'send' + item.id" [(ngModel)]="item.isSelected" (change)="isAllSelected()" #usageEnt="ngModel">
+                      </td>
+                      <td style="text-align: center;">{{item.requestNo}}</td>
+                      <td><p>{{item.requestDate | date:'dd/MM/yyyy'}}</p></td>
+                      <td><p>{{item.createdByDisplay}}</p></td>
+                      <td>{{item.inputType == 'scientific' ? 'Scientific' : item.inputType == 'nonscientific' ? 'Non-Scientific' : item.inputType == 'repeat' ? 'Repeat' : item.inputType}}</td>
+                      <td>{{item.brand}}</td>
+                      <td>{{item.category}}</td>
+                      <td>{{item.product != null ? item.product : 'NA'}}</td>
+                      <td>{{item.finalDocNo != null ? item.finalDocNo : 'NA'}}</td>
+                      <td style="text-align: center;">
+                          <span class="label" [ngClass]="item.approveType == 'In Process' ? 'label-primary' : item.approveType == 'Submitted' ? 'label-info' : item.approveType == 'Rejected' ? 'label-danger' : 'label-success'">
+                              {{item.approveType | uppercase}}
+                          </span>
+                      </td>
+                      <td>{{item.lastApprover}}</td>
+                      <td>{{item.pendingApproverName ? item.pendingApproverName : 'NA'}}</td>
+                      <td>
+                          <div class="row center-contents">
+                              <button *ngIf="item.approveType != 'Submitted' && item.approveType != 'Rejected' && item.pendingApprover == 'No' && item.stage == '0' && (item.createdByDisplay == current 
+                                  || item.createdBy == currentUser.employeeId) && !isGOLoading" type="button" [matTooltipPosition]="'after'" matTooltip="Review" class="btn btn-success btn-xs mr-2"
+                                  (click)="onUserActions(false, item, false, '')">
+                                  <i class="fas fa-edit"></i>
+                              </button>
+                              <button *ngIf="(item.pendingApprover == currentUser.employeeId || item.pendingApproverName == currentUser.fullName) && !isGOLoading" type="button"
+                                  [matTooltipPosition]="'after'" matTooltip="Review" class="btn btn-success btn-xs mr-2" (click)="onUserActions(true, item, false, '')">
+                                  <i class="fas fa-edit"></i>
+                              </button>
+                              <button type="button" [matTooltipPosition]="'after'" matTooltip="View" class="btn btn-primary btn-xs mr-2" (click)="onUserActions(true, item, false, 'View')">
+                                  <i class="fas fa-eye"></i>
+                              </button>
+                              <button type="button" [matTooltipPosition]="'after'" matTooltip="History" class="btn btn-info btn-xs" (click)="ShowHistory(item)">
+                                  <i class="fa fa-history"></i>
+                              </button>
+                          </div>
+                          <table *ngIf="false">
+                              <tr>
+                                  <td *ngIf="item.approveType != 'Rejected' && !isGOLoading">
+                                      <button *ngIf="item.approveType != 'Submitted' && item.pendingApprover == 'No' && item.stage == '0' && (item.createdByDisplay == current || item.createdBy == currentUser.employeeId)"
+                                          type="button" [matTooltipPosition]="'after'" matTooltip="Click to edit details" class="btn btn-success btn-xs mr-2"
+                                          (click)="onUserActions(false, item, false, '')">
+                                          <i class="fas fa-edit"></i>&nbsp;Review
+                                      </button>
+                                  </td>
+                                  <td *ngIf="!isGOLoading">
+                                      <button *ngIf="item.pendingApprover == currentUser.employeeId || item.pendingApproverName == currentUser.fullName" type="button"
+                                          [matTooltipPosition]="'after'" matTooltip="Click to edit details" class="btn btn-success btn-xs mr-2" (click)="onUserActions(true, item, false, '')">
+                                          <i class="fas fa-edit"></i>&nbsp;Review
+                                      </button>
+                                  </td>
+                                  <td>
+                                      <button type="button" [matTooltipPosition]="'after'"
+                                          matTooltip="Click to view details" class="btn btn-primary btn-xs mr-2"
+                                          (click)="onUserActions(true, item, false, 'View')">
+                                          <i class="fas fa-eye"></i>&nbsp;View
+                                      </button>
+                                  </td>
+                                  <td>
+                                      <button type="button" [matTooltipPosition]="'after'"
+                                          matTooltip="Click to View History" class="btn btn-info btn-xs"
+                                          (click)="ShowHistory(item)">
+                                          <i class="fa fa-history"></i>&nbsp;History
+                                      </button>
+                                  </td>
+                                  <!--  <td>
+                                      <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to print"
+                                          class="btn btn-primary btn-xs" (click)="onUserActions(true,item,true,'View')">
+                                          <i class="fas fa-print"></i>
+                                      </button>
+                                  </td>  -->
+                              </tr>
+                          </table>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+          <!-- <div class="text-center" style="cursor: default;">
+              <ul class="pagination" *ngIf="MediServiceRequestList.length > 0">
+                  <li>
+                      <a (click)="gotoPage(msService.pageNumber)">
+                          Showing <b>{{((msService.pageNumber - 1) * msService.pageSize) + 1}}</b> -
+                          <b>{{(msService.pageNumber * msService.pageSize) > msService.totalCount ? msService.totalCount : 
+                              msService.pageNumber * msService.pageSize}}</b> of
+                          <b>{{msService.totalCount}}</b> records
+                      </a>
+                  </li>
+                  <li><a *ngIf="msService.pageNumber > 1" (click)="gotoPage(1)">First</a></li>
+                  <li><a *ngIf="msService.pageNumber > 1" (click)="gotoPage(msService.pageNumber - 1)">Previous</a></li>
+                  <li><a *ngIf="msService.pageNumber > 2" (click)="gotoPage(msService.pageNumber - 2)">{{msService.pageNumber - 2 }}</a></li>
+                  <li><a *ngIf="msService.pageNumber > 1" (click)="gotoPage(msService.pageNumber - 1)">{{msService.pageNumber - 1 }}</a></li>
+                  <li class="active"><a (click)="gotoPage(msService.pageNumber)">{{msService.pageNumber}}</a></li>
+                  <li><a *ngIf="msService.totalPages > msService.pageNumber" (click)="gotoPage(msService.pageNumber + 1)">{{msService.pageNumber + 1}}</a></li>
+                  <li><a *ngIf="msService.totalPages > msService.pageNumber + 1" (click)="gotoPage(msService.pageNumber + 2)">{{msService.pageNumber + 2}}</a></li>
+                  <li><a *ngIf="msService.totalPages > msService.pageNumber" (click)="gotoPage(msService.pageNumber + 1)">Next</a></li>
+                  <li><a *ngIf="msService.totalPages > msService.pageNumber" (click)="gotoPage(msService.totalPages)">Last</a></li>
+                  <li><a (click)="gotoPage(msService.pageNumber)">Page <b>{{msService.pageNumber}}</b> of <b>{{msService.totalPages}}</b></a></li>
+                  <li>
+                      <a>Page Size
+                          <select id="ddlPageSize" [(ngModel)]="msService.pageSize" (change)="pageSizeChange()">
+                              <option value="10">10</option>
+                              <option value="25">25</option>
+                              <option value="50">50</option>
+                              <option value="100">100</option>
+                          </select>
+                      </a>
+                  </li>
+              </ul>
+          </div> -->
+      </div>
+      <!-- <div class="overlay" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div> -->
+  </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+              <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+                      *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+          </div>
+      </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header" style="background-color: #68a7d2;color:white">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+              <h3 class="modal-title">Medical Input Request Form
+              </h3>
+          </div>
+          <div class="modal-body box-primary" style="box-shadow: none;">
+              <div class="row">
+                  <div class="col-sm-12">
+                      <form #dataForm="ngForm" (keydown.enter)="$event.preventDefault()">
+                          <div class="box">
+                              <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                                  <div class="col-xs-6">
+                                      <h3 class="box-title">Requester Details</h3>
+                                  </div>
+                              </div>
+                              <div class="row mt-3">
+                                  <div class="col-sm-4">
+                                      <div class="form-group form-group-sm">
+                                          <label for="requesterId">Employee Id</label>
+                                          <input name="requesterId" id="requesterId" placeholder="Employee Id"
+                                              class="form-control" value="{{MediServiceRequestmodel.createdBy}}"
+                                              readonly>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-4">
+                                      <div class="form-group form-group-sm">
+                                          <label for="employeeName">Employee Name</label>
+                                          <input name="employeeName" id="employeeName" placeholder="Employee Name"
+                                              class="form-control" value="{{MediServiceRequestmodel.fullName}}"
+                                              readonly>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-4">
+                                      <div class="form-group form-group-sm">
+                                          <label for="plant">Plant</label>
+                                          <input name="plant" id="plant" placeholder="Location" class="form-control"
+                                              value="{{MediServiceRequestmodel.location}}" readonly>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-4">
+                                      <div class="form-group form-group-sm">
+                                          <label for="division">Division</label>
+                                          <input name="division" id="division" placeholder="Division"
+                                              class="form-control" value="{{MediServiceRequestmodel.division}}"
+                                              readonly>
+                                      </div>
+                                  </div>
+
+                                  <div class="col-sm-4">
+                                      <div class="form-group form-group-sm">
+                                          <label for="department">Department</label>
+                                          <input name="department" id="department" placeholder="Department"
+                                              class="form-control" value="{{MediServiceRequestmodel.department}}"
+                                              readonly>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-4">
+                                      <div class="form-group form-group-sm">
+                                          <label for="designation">Designation</label>
+                                          <input name="designation" id="designation" placeholder="Designation"
+                                              class="form-control" value="{{MediServiceRequestmodel.designation}}"
+                                              readonly>
+                                      </div>
+                                  </div>
+
+                              </div>
+
+
+                          </div>
+                          <div class="box mt-3">
+                              <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                                  <div class="col-xs-6">
+                                      <h3 class="box-title">Document Details</h3>
+                                  </div>
+                              </div>
+                              <div class="row mt-3">
+                                  <div class="col-sm-4" *ngIf="MediServiceRequestmodel.requestNo">
+                                      <div class="form-group form-group-sm">
+                                          <label for="requestNo">Request No</label>
+                                          <input name="requestNo" id="date" placeholder="Request No"
+                                              class="form-control" value="{{MediServiceRequestmodel.requestNo}}"
+                                              readonly>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-4" *ngIf="requestDate">
+                                      <div class="form-group form-group-sm">
+                                          <label for="date">Request Date</label>
+                                          <input name="date" id="date" placeholder="date" class="form-control"
+                                              value="{{requestDate | date:'dd/MM/yyyy'}}" readonly>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-4">
+                                      <div class="form-group form-group-sm">
+                                          <label for="inputType">Input Type<span style="color:red">*</span></label>
+                                          <select [(ngModel)]="MediServiceRequestmodel.inputType" class="form-control"
+                                              id="inputType" name="inputType"
+                                              ngControl="MediServiceRequestmodel.inputType" #inputTypeEnt="ngModel"
+                                              (change)="changeValues(MediServiceRequestmodel.inputType)"
+                                              [disabled]="isEdit" matTooltip="Select Input Type" required>
+                                              <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                              <option value='scientific'>Scientific Input</option>
+                                              <option value='nonscientific'>Non Scientific Input</option>
+                                              <option value='repeat'>Repeat Input</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-3"
+                                      *ngIf="MediServiceRequestmodel.inputType=='repeat' && !isEdit">
+                                      <div class="form-group form-group-sm">
+                                          <label for="MedCode">Medical Code<span style="color:red">*</span></label>
+                                          <input [(ngModel)]="MedCode" class="form-control" id="MedCode"
+                                              placeholder="Medical code " name="MedCode" ngControl="MedCode"
+                                              #MedCodeEnt="ngModel" [disabled]="isEdit">
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-1"
+                                      *ngIf="MediServiceRequestmodel.inputType=='repeat' && !isEdit">
+                                      <div class="form-group form-group-sm">
+                                          <label>&nbsp;</label>
+                                          <button type="button" class="btn btn-primary pull-left"
+                                              [disabled]="MedCode==null" (click)="GetData(MedCode)">
+                                              Get Data</button>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-4">
+                                      <div class="form-group form-group-sm">
+                                          <label for="category">Input Category<span style="color:red">*</span></label>
+                                          <select [(ngModel)]="MediServiceRequestmodel.category" class="form-control"
+                                              id="category" name="category"
+                                              ngControl="MediServiceRequestmodel.category" #categoryEnt="ngModel"
+                                              [disabled]="isEdit || MediServiceRequestmodel.inputType=='repeat'"
+                                              matTooltip="Select category" required>
+                                              <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                              <option *ngFor="let mat of CategoryList" value={{mat.category}}>
+                                                  {{mat.category}}</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-4">
+                                      <div class="form-group form-group-sm">
+                                          <label for="brand">Brand<span style="color:red">*</span></label>
+                                          <select [(ngModel)]="MediServiceRequestmodel.brand" class="form-control"
+                                              id="brand" name="brand" ngControl="MediServiceRequestmodel.brand"
+                                              #brandEnt="ngModel"
+                                              [disabled]="isEdit || MediServiceRequestmodel.inputType=='repeat'"
+                                              matTooltip="Select brand" required>
+                                              <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                                              <option *ngFor="let mat of BrandList" value={{mat.brandDesc}}>
+                                                  {{mat.brandDesc}}</option>
+                                          </select>
+                                      </div>
+                                  </div>
+
+                                  <div class="col-sm-6">
+                                      <div class="form-group form-group-sm">
+                                          <label for="product">Product Name </label>
+                                          <input [(ngModel)]="MediServiceRequestmodel.product" class="form-control"
+                                              id="product" placeholder="Product" name="product"
+                                              ngControl="MediServiceRequestmodel.product" #productEnt="ngModel"
+                                              [disabled]="isEdit || MediServiceRequestmodel.inputType=='repeat'">
+                                      </div>
+                                  </div>
+                                  <div class="col-sm-12">
+                                      <div class="form-group form-group-sm">
+                                          <label for="Customer">Details<span style="color:red">*</span></label>
+                                          <textarea [(ngModel)]="MediServiceRequestmodel.details" class="form-control"
+                                              placeholder="Details" id="details" name="details" [rows]="4"
+                                              ngControl="MediServiceRequestmodel.details" [readonly]="isEdit"
+                                              matTooltip="Enter details" #detailsEnt="ngModel" type="text"
+                                              required></textarea>
+
+                                      </div>
+                                  </div>
+
+                                  &nbsp;&nbsp;&nbsp;
+                                  &nbsp;&nbsp;&nbsp;
+
+                              </div>
+                              <div class="row mt-3" *ngIf="isEdit && MediServiceRequestmodel.stage=='0' && !view">
+                                  <div class="form-group form-group-sm">
+                                      <div class="col-sm-2">
+                                          <label for="medhead">Select Medical Head<span
+                                                  style="color:red">*</span></label>
+                                      </div>
+                                      <div class="col-sm-3">
+                                          <select [(ngModel)]="MedHead" class="form-control" id="medhead"
+                                              name="medhead" ngControl="MedHead" #medheadEnt="ngModel"
+                                              matTooltip="Select Medical Head" required>
+                                              <option [ngValue]="null" disabled>--Select an Option--</option>
+                                              <option *ngFor="let mat of MedHeadList" value={{mat.name}}>
+                                                  {{mat.name}}
+                                              </option>
+                                          </select>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="row mt-3"
+                                  *ngIf="MediServiceRequestmodel.stage=='1' && !view && MediServiceRequestmodel.inputType =='scientific'">
+                                  <div class="col-sm-8">
+                                      <div class="form-group form-group-sm">
+                                          <div class="col-sm-3">
+                                              <label for="reviewer">Select Reviewer<span
+                                                      style="color:red">*</span></label>
+                                          </div>
+                                          <div class="col-sm-4">
+                                              <select [(ngModel)]="Reviewer" class="form-control" id="reviewer"
+                                                  name="reviewer" ngControl="Reviewer" #reviewerEnt="ngModel"
+                                                  matTooltip="Select Reviewer" required>
+                                                  <option [ngValue]="null" disabled>--Select an Option--</option>
+                                                  <option *ngFor="let mat of ReviewerList" value={{mat.employeeId}}>
+                                                      {{mat.fullName}}
+                                                  </option>
+                                              </select>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="row mt-3">
+                                  <div class="col-sm-12" *ngIf="isEdit && !view">
+                                      <div class="form-group form-group-sm">
+                                          <label for="comments">Comments<span style="color:red">*</span></label>
+                                          <textarea [(ngModel)]="Comments" class="form-control" placeholder="Comments"
+                                              id="comments" name="comments" ngControl="Comments"
+                                              matTooltip="Enter comments" #commentsEnt="ngModel" type="text" required>
+                                          </textarea>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="box mt-3" id="Attachments">
+                              <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                                  <div class="col-xs-6">
+                                      <h3 class="box-title">Attachments</h3>
+                                  </div>
+                              </div>
+                              <div class="row mt-3" *ngIf="!isEdit">
+                                  <div class="col-sm-4">
+                                      <input #myInput type="file" id="file" (change)="handleFileInput($event.target.files)">
+                                  </div>
+                              </div>
+                              <div class="row my-4 mx-5" *ngIf="fileNamesList.length == 0 && attachments.length == 0">
+                                  <p>No attachments present.</p>
+                              </div>
+                              <div class="row my-4 mx-4" *ngIf="!isEdit && totalFileSize > 0">
+                                  <label for="totalFileSize">Total File Size (max {{msService.maxFileSizeText}}): <span style="color: green;">{{totalFileSizeInMB | number: '1.2-2'}} MB</span></label>
+                                  <mat-progress-bar mode="determinate" value={{fileSizePercentage}}></mat-progress-bar>
+                              </div>
+                              <div class="row mt-3" *ngFor="let attach of fileNamesList">
+                                  <div class="col-sm-4">
+                                      <label for="attachments">{{attach}}</label>
+                                  </div>
+                                  <div class="col-sm-4" *ngIf="!isEdit && attach!= null">
+                                      <button title="Remove Files" (click)="removefile(attach);" class="btn btn-secondary btn-sm removeFileButton">
+                                          <i class="fa fa-trash"></i>
+                                      </button>
+                                  </div>
+                              </div>
+                              <div class="row mt-3" *ngFor="let attach of attachments">
+                                  <div class="col-sm-4">
+                                      <label for="attachments"></label>
+                                      <a (click)="downloadFile(MediServiceRequestmodel.requestNo,attach);" style="cursor: pointer;text-decoration: underline; color: #68a7d2;">{{attach}}</a>
+                                  </div>
+                                  <div class="col-sm-4" *ngIf="!isEdit && attach!= null">
+                                      <button title="Remove Files" (click)="deletefile(MediServiceRequestmodel,attach);" class="btn btn-secondary btn-sm removeFileButton">
+                                          <i class="fa fa-trash"></i>
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="box mt-3" *ngIf="!isEdit">
+                              <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                                  <div class="col-xs-6">
+                                      <h3 class="box-title">Approvers List</h3>
+                                  </div>
+                              </div>
+                              <div class="row mt-3">
+                                  <div class="col-sm-12">
+                                      <div class="table">
+                                          <table id="approversTable" class="table table-striped">
+                                              <thead style="background-color: #0099cc; color:white;">
+                                                  <tr>
+                                                      <th>Type</th>
+                                                      <th>Location</th>
+                                                      <th>Employee ID</th>
+                                                      <th>ApproverName</th>
+                                                      <th>Designation</th>
+                                                      <th>Department</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <tr *ngFor="let user of Approverslist; let i = index">
+                                                      <td>{{user.type}}</td>
+                                                      <td>{{getLocation(user.baselocation)}}</td>
+                                                      <td>{{user.employeeId}}</td>
+                                                      <td>{{user.fullName}}</td>
+                                                      <td>{{user.designation}}</td>
+                                                      <td>{{user.department}}</td>
+                                                  </tr>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                      </form>
+                  </div>
+                  <div class="overlay" *ngIf="isLoadingPop">
+                      <i class="fa fa-spinner fa-pulse"></i>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <span class="text-red pull-left" *ngIf="errMsgPop.length > 0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+              <div *ngIf="!view" class="row my-3 pull-right">
+                  <button type="button" class="btn btn-success mr-3" (click)="onReview('Approved')"
+                      matTooltip="Click to Approve" [disabled]="!dataForm.valid || isApproveLoading" *ngIf="isEdit">
+                      <i class="fa" [ngClass]="{'fa-spin fa-spinner': isApproveLoading}"></i><span *ngIf="isApproveLoading">&nbsp;</span>
+                      Approve
+                  </button>
+                  <button type="button" class="btn btn-danger mr-3" (click)="onReview('Rejected')"
+                      matTooltip="Click to Reject" *ngIf="isEdit" [disabled]="Comments == ''">
+                      Reject
+                  </button>
+                  <div *ngIf="isEdit" class="dropup inline">
+                      <a data-toggle="dropdown" class="dropdown-toggle"
+                          href="#">
+                          <span>
+                              <button [disabled]="Comments==''" type="button" class="btn btn-danger mr-3" matTooltip="Click to Revert">Revert</button>
+                          </span>
+                      </a>
+                      <ul class="dropdown-menu">
+                          <li style="cursor:pointer;"><a *ngIf="MediServiceRequestmodel.stage >='1'" (click)="onRevertRequest(msService.revertedToLastApproverText)">Previous Approver</a></li>
+                          <li style="cursor:pointer;"><a (click)="onRevertRequest(msService.revertedToInitiatorText)">Initiator</a></li>
+                      </ul>
+                  </div>
+                  <!-- <button type="button" class="btn btn-primary" (click)="onSaveEntry('Save')" matTooltip="Click to Save"
+                      [disabled]="!dataForm.valid" *ngIf="!isEdit && MediServiceRequestmodel.approveType==null">Save</button> -->
+                  <button type="button" class="btn btn-success mr-3" (click)="validateUploads('onSaveEntry', MediServiceRequestmodel)"
+                      matTooltip="Click to Save & Submit" [disabled]="!dataForm.valid"
+                      *ngIf="!isEdit && MediServiceRequestmodel.approveType == null">
+                      Submit
+                  </button>
+                  <button type="button" class="btn btn-success mr-3" (click)="validateUploads('onSubmitEntry', MediServiceRequestmodel)"
+                      matTooltip="Click to Save & Submit" [disabled]="!dataForm.valid"
+                      *ngIf="MediServiceRequestmodel.approveType != 'Submitted' && MediServiceRequestmodel.stage == '0' && MediServiceRequestmodel.createdByDisplay == current">
+                      Submit
+                  </button>
+                  <!-- <button type="button" class="btn btn-primary" (click)="OnClickback()" data-dismiss="modal" *ngIf="!isEdit"
+                      [disabled]="isLoadingPop" matTooltip="Click to Go Back">Back</button> -->
+                  <button type="button" class="btn btn-info mr-3" (click)="resetForm()" *ngIf="!isEdit"
+                      matTooltip="Click to Clear">
+                      Clear
+                  </button>
+                  <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                      data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">
+                      Close
+                  </button>
+              </div>
+              <div *ngIf="view" class="row pull-right mt-3">
+                  <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                      data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">
+                      Close
+                  </button>
+              </div>
+          </div>
+          <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
+</div>
+
+<div class="modal fade" id="HistoryModal" role="dialog" aria-labelledby="HistoryModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+          <div class="modal-header" style="background-color: #68a7d2;color:white">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+              <h3 class="modal-title">Medical Input Request History
+              </h3>
+          </div>
+          <div class="modal-body box-primary" style="box-shadow: none;">
+              <div class="container">
+
+                  <hr>
+                  <div class="row">
+                      <div class="col-sm-12">
+                          <form #dataForm1="ngForm" (keydown.enter)="$event.preventDefault()">
+                              <table class="table table-bordered1 table-striped" style="align-self: auto;; ">
+                                  <tr style="align-items: center;">
+                                      <td colspan="3" style="align-items: center;">
+                                          <label style="align-items: center;"><strong>Medi Service Request History
+                                                  Details</strong></label>
+                                      </td>
+                                  </tr>
+                                  <tr style="align-items: center;">
+                                      <td colspan="3" style="align-items: center;">
+                                          <label style="align-items: center;"><strong>Initiator
+                                                  Details</strong></label>
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="3">
+                                          <div class="box-body table-bordered1 table-striped">
+                                              <table id="approversTable" class="table table-bordered1 table-striped">
+                                                  <thead style="background-color: #0099cc; color:white;">
+                                                      <tr>
+                                                          <th><b>Name</b></th>
+                                                          <th><b>Employee ID</b> </th>
+                                                          <th><b>Location</b></th>
+                                                          <th><b>Division</b></th>
+                                                          <th><b>Department</b></th>
+                                                          <th><b>Designation</b></th>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                      <tr>
+                                                          <td>{{MediServiceRequestmodel1.fullName}}</td>
+                                                          <td>{{MediServiceRequestmodel1.createdBy}}</td>
+                                                          <td>{{MediServiceRequestmodel1.location}}</td>
+                                                          <td>{{MediServiceRequestmodel1.division}}</td>
+                                                          <td>{{MediServiceRequestmodel1.department}}</td>
+                                                          <td>{{MediServiceRequestmodel1.designation}}</td>
+                                                      </tr>
+                                                  </tbody>
+                                              </table>
+                                          </div>
+                                      </td>
+                                  </tr>
+                                  <tr style="align-items: center;">
+                                      <td colspan="3" style="align-items: center;">
+                                          <label style="align-items: center;"><strong>WorkFlow
+                                                  Details</strong></label>
+                                      </td>
+                                  </tr>
+                                  <tr style="align-items: center;">
+                                      <td colspan="3" style="align-items: center;">
+                                          <label style="align-items: center;"><strong>Final Medical
+                                                  Code:</strong></label>{{MediServiceRequestmodel1.finalDocNo}}
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="3">
+                                          <div class="box-body table-bordered1 table-striped">
+                                              <table id="approversTable" class="table table-bordered1 table-striped">
+                                                  <thead style="background-color: #0099cc; color:white;">
+                                                      <tr>
+                                                          <th><b>Role</b></th>
+                                                          <!-- <th><b>Employee ID</b></th> -->
+                                                          <th><b>Name</b></th>
+                                                          <th><b>Department</b></th>
+                                                          <th><b>Designation</b></th>
+                                                          <th><b>Status</b></th>
+                                                          <th><b>Revert Version</b></th>
+                                                          <th><b>Date & Time</b></th>
+                                                          <th><b>Comments</b></th>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                      <tr *ngFor="let user of transactionslist1; let i = index">
+                                                          <td>{{user.role}}</td>
+                                                          <!-- <td>{{user.doneBy}}</td> -->
+                                                          <td>{{user.approverName}}</td>
+                                                          <td>{{user.department}}</td>
+                                                          <td>{{user.designation}}</td>
+                                                          <td>{{user.transactionType}}</td>
+                                                          <td>{{user.revertVersion}}</td>
+                                                          <td>{{user.doneOn |date:'dd/MM/yyyy h:mm a'}}</td>
+                                                          <td>{{user.comments}}</td>
+                                                      </tr>
+                                                  </tbody>
+                                              </table>
+                                          </div>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </form>
+                      </div>
+                      <div class="overlay" *ngIf="isLoadingPop">
+                          <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+
+              <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                  data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+
+          </div>
+          <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
+</div>

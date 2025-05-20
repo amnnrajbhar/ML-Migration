@@ -1,0 +1,195 @@
+<section class="content-header">
+  <h1 class="display-1">
+    SMS Templates
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">SMS Templates</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title">SMS Template Details</div>
+    </div>
+    <div class="panel-body">
+      <form #detailsForm="ngForm" id="detailsForm">
+      <div class="row">
+        <div class="col-sm-4 form-group">
+          <label>Template Name <span style="color:red">*</span></label>
+          <input type="text" class="form-control" id="templateName" [(ngModel)]="details.templateName" maxlength="50"
+          name="templateName" ngControl="details.templateName" required/>
+        </div>
+        <div class="col-sm-4 form-group">
+          <label>Template ID <span style="color:red">*</span></label>
+          <input type="text" class="form-control" id="templateId" [(ngModel)]="details.templateId" maxlength="50"
+          name="templateId" ngControl="details.templateId" required/>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group checkbox">
+            <label for="active">
+              <input type="checkbox" [(ngModel)]="details.active" name="active" /> Active
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <label>Message <span style="color:red">*</span> <button class="btn btn-info btn-xs" data-toggle="modal" data-target="#keywordsModal">Keywords</button></label>         
+          <textarea class="form-control" name="body" id="body" [(ngModel)]="details.body" maxlength="500"
+         ngControl="details.body" required></textarea>
+        </div>       
+      </div>
+    </form>
+      <div class="row">
+        <div class="col-sm-12 text-center actionButtons form-group">
+          <button type="button" class="btn btn-primary" *ngIf="action == 'add'" (click)="submit()"
+          matTooltip="Click to add details"
+          [disabled]="isLoading || !detailsForm.valid">Add</button>
+
+          <button type="button" class="btn btn-primary" *ngIf="action == 'edit'" (click)="submit()"
+          matTooltip="Click to update details"
+          [disabled]="isLoading || !detailsForm.valid">Update</button>
+    
+        <button type="button" class="btn btn-default" *ngIf="action == 'edit'" (click)="cancel()" matTooltip="Click to cancel this"
+          [disabled]="isLoading">
+          Cancel
+        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Template Name</th>
+          <th>Template ID</th>
+          <th>Message</th>
+          <th>Active</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of templatesList; let i = index">
+          <td>
+            <button type="button" (click)="edit(item.smsTemplateId)" class="btn btn-xs btn-primary"
+            [matTooltipPosition]="'after'" matTooltip="Click to edit this">
+            <i class="fas fa-pen"></i>
+          </button>
+
+          <ng-template [ngIf]="[item.status] =='Active'">
+            <button type="button" (click)="delete(item.smsTemplateId)" class="btn btn-xs btn-danger"
+            [matTooltipPosition]="'after'" matTooltip="Click to inactivate this">
+            <i class="fas fa-times"></i>
+          </button>
+          </ng-template>          
+
+          </td>
+          <td>{{item.templateName}}</td>
+          <td>{{item.templateId}}</td>
+          <td>{{item.body}}</td>
+          <td><label class='label label-default label-{{item.statusColor}}'>{{item.status}}</label></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+
+<div id="keywordsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-blue">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Keyword Details</h4>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Keyword</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>EMPLOYEE_NAME</td>
+                <td>Full Name of employee  (First Name, Middle Name and Last Name)</td>
+              </tr>
+              <tr>
+                <td>EMPLOYEE_NO</td>
+                <td>Employee Number of employee</td>
+              </tr>
+              <tr>
+                <td>MOBILE_NO</td>
+                <td>Mobile Number of employee</td>
+              </tr>
+              <tr>
+                <td>PERSONAL_EMAIL</td>
+                <td>Personal Email Address of employee</td>
+              </tr>
+              <tr>
+                <td>GENDER</td>
+                <td>Gender of employee</td>
+              </tr>
+              <tr>
+                <td>PLANT</td>
+                <td>Plant Name of employee</td>
+              </tr>
+              <tr>
+                <td>PAY_GROUP</td>
+                <td>Pay Group Name of employee</td>
+              </tr>
+              <tr>
+                <td>EMPLOYEE_CATEGORY</td>
+                <td>Staff Category of employee</td>
+              </tr> 
+              <tr>
+                <td>DEPARTMENT</td>
+                <td>Department Name of employee</td>
+              </tr>
+              <tr>
+                <td>LOCATION</td>
+                <td>Location Name of employee</td>
+              </tr>
+              <tr>
+                <td>STATE</td>
+                <td>State Name of employee</td>
+              </tr>
+              <tr>
+                <td>JOINING_DATE</td>
+                <td>Date of Joining of employee</td>
+              </tr>
+              <tr>
+                <td>DESIGNATION</td>
+                <td>Designation of employee</td>
+              </tr>
+              <tr>
+                <td>ROLE</td>
+                <td>Role of employee</td>
+              </tr>
+              <tr>
+                <td>REPORTING_GROUP</td>
+                <td>Reporting Group of employee</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

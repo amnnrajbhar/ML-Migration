@@ -1,0 +1,277 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Notice Shortfall Payment Receipt
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Payment Receipt</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+   <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Notice Shortfall Details</h3>
+    </div>
+    <div class="panel-body">
+      <form #paymentForm="ngForm" class="form-horizontal">
+       
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="dateOfResignation">Date of Resignation </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="dateOfResignation" name="dateOfResignation"
+                  [ngModel]="resignationDetails.resignationDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="noticePeriod">Notice Period</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="noticePeriod" name="noticePeriod"
+                  [ngModel]="noticePeriod" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="expectedLastDate">Last Working Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="expectedLastDate" name="expectedLastDate"
+                  [ngModel]="resignationDetails.lastWorkingDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="expectedLastWorkingDate">Requested Relieving Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="expectedLastWorkingDate" name="expectedLastWorkingDate"
+                  [ngModel]="resignationDetails.expectedLastWorkingDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="actualLastWorkingDate">Actual Relieving Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="actualLastWorkingDate" name="actualLastWorkingDate"
+                  [ngModel]="resignationDetails.actualLastWorkingDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="noticeShortfallDays">Notice Shortfall Days</label>
+              <div class="col-md-8">
+                <input type="number"  [(ngModel)]="resignationDetails.shortfallDays" class="form-control"
+                  id="noticeShortfallDays" name="noticeShortfallDays" #noticeShortfallDays="ngModel" disabled>
+              </div>
+            </div>
+          </div>         
+        </div>
+        <div class="row">        
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4">Settlement Type </label>
+              <div class="col-md-8">
+                <select [(ngModel)]="resignationDetails.settlementType" class="form-control" id="settlementType" name="settlementType"
+                  matTooltip="Type Of Settlement" #settlementEnt="ngModel" required [disabled]="settlementSelected">
+                  <option [ngValue]="null" disabled [selected]="true"> Select Settlement Type </option>
+                  <option *ngFor="let pl of settlementTypeList" [ngValue]="pl.type">{{pl.type}}</option>
+                </select>
+                <span class="help-block" *ngIf="settlementEnt.touched && !settlementEnt.valid">Please select Settlement Type</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="payAmount">Amount to be paid</label>
+              <div class="col-md-8">
+                <input type="number" [(ngModel)]="resignationDetails.payAmount" class="form-control"
+                  id="payAmount" name="payAmount" #noticeShortfallDays="ngModel" [disabled]="settlementSelected">
+              </div>
+            </div>
+          </div> 
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Payment Receipt Details</h3>
+    </div>
+    <div class="panel-body">
+      <form #paymentForm="ngForm" class="form-horizontal">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Date of Receipt </label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="receiptDate" name="receiptDate"
+                  [(ngModel)]="resignationDetails.receiptDate" [owlDateTime]="receiptDate" 
+                  [owlDateTimeTrigger]="receiptDate" [max]="DateToday" required>
+                <owl-date-time [pickerType]="'calendar'" #receiptDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="mode">Mode of Payment</label>
+              <div class="col-md-8">
+                <select [(ngModel)]="resignationDetails.paymode" class="form-control" id="paymode" name="paymode"
+                  matTooltip="Mode Of Payment" #modeEnt="ngModel"  required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Mode Of Payment </option>
+                  <option *ngFor="let pl of paymodeList" [ngValue]="pl.type">{{pl.type}}</option>
+                </select>
+                <span class="help-block" *ngIf="modeEnt.touched && !modeEnt.valid">Please Select Mode</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="receiptDate">Paid Amount</label>
+              <div class="col-md-8">
+                <input type="number" matTooltip="Input Cheque/DD/Transfer Amount" [(ngModel)]="resignationDetails.paidAmount"
+                  class="form-control" id="paidAmount" name="paidAmount" min="1" required>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="resignationDetails.paymode=='Online Payment'">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="mode">Mode of Transfer</label>
+              <div class="col-md-8">
+                <select [(ngModel)]="resignationDetails.modeOfTransfer" class="form-control" id="modeOfTranfer" name="modeOfTranfer"
+                  matTooltip="Mode Of Transfer" #modeEnt="ngModel"  required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Mode Of Transfer </option>
+                  <option *ngFor="let pl of transferModeList" [ngValue]="pl.type">{{pl.type}}</option>
+                </select>
+                <span class="help-block" *ngIf="modeEnt.touched && !modeEnt.valid">Please Select Transfer Mode</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" >
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="chequeDate">{{resignationDetails.paymode}} Date</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="chequeDate" name="chequeDate"
+                  [(ngModel)]="resignationDetails.chequeDate" [owlDateTime]="chequeDate" 
+                  [owlDateTimeTrigger]="chequeDate"  required>
+                <owl-date-time [pickerType]="'calendar'" #chequeDate></owl-date-time>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="resignationDetails.paymode!='Online Payment'">
+            <div class="form-group">
+              <label class="col-md-4" for="ChequeNo">{{resignationDetails.paymode}} No</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Cheque/DD No" [(ngModel)]="resignationDetails.chequeNo"
+                  class="form-control" id="ChequeNo" name="ChequeNo" required>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="bankName">Bank Name</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Cheque/DD No" [(ngModel)]="resignationDetails.issuingBank"
+                  class="form-control" id="bankName" name="bankName" required>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="resignationDetails.paymode=='Online Payment'">
+            <div class="form-group">
+              <label class="col-md-4" for="referenceNo">Reference No</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Transaction Reference No" [(ngModel)]="resignationDetails.referenceNo"
+                  class="form-control" id="referenceNo" name="referenceNo" required>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="resignationDetails.paymode=='Cheque'">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="AccountNo">Account No</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Account No" [(ngModel)]="resignationDetails.accountNo"
+                  class="form-control" id="AccountNo" name="AccountNo" required>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="issuingPersonName">Issuing Person Name</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Issuing Person Name" [(ngModel)]="resignationDetails.issuingPersonName"
+                  class="form-control" id="issuingPersonName" name="issuingPersonName" required>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="chequeName">Name on the Cheque</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="InputName Of The Cheque" [(ngModel)]="resignationDetails.nameOfTheCheque"
+                  class="form-control" id="chequeName" name="chequeName" required>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="resignationDetails.paymode=='Demand Draft(DD)'">         
+          <div class="col-md-4" >
+            <div class="form-group">
+              <label class="col-md-4" for="Favouring">Favouring</label>
+              <div class="col-md-8">
+                <input type="text" matTooltip="Input Favouring " [(ngModel)]="resignationDetails.favouring"
+                  class="form-control" id="Favouring" name="Favouring" required>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group"> 
+              <label class="col-md-4" >Attachment</label>
+              <div class="col-md-8">
+                <input #attachment type="file" name="attachment" id="attachment" (change)="selectFiles($event)"
+                  accept="application/pdf, image/jpeg, image/jpg, image/png" multiple max-file-size="2000" />
+                <p class="text-danger">Only pdf/jpeg/png files are allowed. Maximum file size allowed is 2MB.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="row text-center actionButtons">
+    <div class="col-md-12">
+      <button type="button" (click)="goBack()" class="btn btn-default" matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+
+      <button type="button" class="btn btn-success" (click)="submit()" matTooltip="Click to Submit Details" [disabled]="!paymentForm.valid">
+        Submit</button>
+    </div>
+  </div>
+
+</section>

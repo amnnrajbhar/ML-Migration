@@ -1,0 +1,596 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Reach HR
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reach HR</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="box">
+        <div class="box-body">
+            <div id="dateFilterPanel">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Request">Request Type <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filterRequest" class="form-control" id="Request" name="Request"
+                                    matTooltip="Please select Request Type" #RequestEnt="ngModel" (change)="onChange()"
+                                    required>
+                                    <option [ngValue]="null" disabled [selected]="true">-- Select Type--
+                                    </option>
+                                    <option>Request Payslip</option>
+                                    <option>Request Form16</option>
+                                    <option>Raise Queries</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dateFilterPanel" *ngIf="filterRequest == 'Request Payslip'">
+                <div class="col-sm-12">
+                    <div class="card-body" style="border: black; box-shadow: grey;">
+                        <form #filterForm1="ngForm">
+                            <div class="row">
+                                <div class="col-xs-6">
+
+                                    <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+                                </div>
+                                <div class="col-xs-6">
+                                    <button type="button" class="btn btn-info pull-right"
+                                        (click)="NewPayslipRequest(false,'','')"><i class="fa fa-plus"
+                                            aria-hidden="true"></i>
+                                        New Payslip Request</button>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="filterYear"> Financial Year</label>
+                                        <select [(ngModel)]="filterYear" class="form-control" id="filterYear"
+                                            name="filterYear" ngControl="filterYear" #filterYearEnt="ngModel"
+                                            matTooltip="Select Year">
+                                            <option [ngValue]="null" disabled selected="true">--Select an Option--
+                                            </option>
+                                            <option *ngFor="let yrr of YearList" value={{yrr.year}}>{{yrr.year |
+                                                date:'yyyy'}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>&nbsp;</label>
+                                    <div class="form-group">
+                                        <button class="btn btn-success" [disabled]="!filterForm1.valid"
+                                            (click)="getPayslipRequests();" matTooltip="click to go"><i
+                                                class="fas fa-arrow-right"></i>&nbsp; Go</button>
+                                        &nbsp;&nbsp;
+                                        <button class="btn btn-danger" (click)="clearFilter();"
+                                            matTooltip="click to reset"><i class="fas fa-times"></i>&nbsp;
+                                            Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="box-body table-responsive" *ngIf="filterRequest == 'Request Payslip' ">
+                    <table id="userTable" class="table table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr>
+                                <th>SL.NO</th>
+                                <th>Request No.</th>
+                                <th>Request Type</th>
+                                <th>Month</th>
+                                <th>Year</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let item of requestPSList; let i = index">
+                                <td>{{i+1}}</td>
+                                <td><b>{{item.reqId}}</b></td>
+                                <td>{{item.reqType}}</td>
+                                <td>{{item.month}}</td>
+                                <td>{{item.year}}</td>
+                                <td>{{item.reqDate | date:'dd/MM/yyyy hh:mm'}}</td>
+                                <td>{{item.status}}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="overlay" *ngIf="isLoading">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+
+            <div id="dateFilterPanel" *ngIf="filterRequest == 'Request Form16'">
+                <div class="col-sm-12">
+                    <div class="card-body" style="border: black; box-shadow: grey;">
+                        <form #filterForm2="ngForm">
+                            <div class="row">
+                                <div class="col-xs-6">
+
+                                    <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+                                </div>
+                                <div class="col-xs-6">
+                                    <button type="button" class="btn btn-info pull-right"
+                                        (click)="NewForm16Request(false,'','')"><i class="fa fa-plus"
+                                            aria-hidden="true"></i>
+                                        New Form16 Request</button>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="filterYear"> Financial Year</label>
+                                        <select [(ngModel)]="filterYear" class="form-control" id="filterYear"
+                                            name="filterYear" ngControl="filterYear" #filterYearEnt="ngModel"
+                                            matTooltip="Select Year">
+                                            <option [ngValue]="null" disabled>--Select an Option--</option>
+                                            <option *ngFor="let yrr of YearList" value={{yrr.year}}>{{yrr.year |
+                                                date:'yyyy'}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>&nbsp;</label>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" [disabled]="!filterForm2.valid"
+                                            (click)="getForm16Requests();" matTooltip="click to go"><i
+                                                class="fas fa-arrow-right"></i>&nbsp; Go</button>
+                                        &nbsp;&nbsp;
+                                        <button class="btn btn-primary" (click)="clearFilter();"
+                                            matTooltip="click to reset"><i class="fas fa-times"></i>&nbsp;
+                                            Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="box-body table-responsive" *ngIf="filterRequest == 'Request Form16' ">
+                    <table id="userTable" class="table table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr>
+                                <th>#</th>
+                                <th>Request No.</th>
+                                <th>Request Type</th>
+                                <th>Year</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let item of requestPSList; let i = index">
+                                <td>{{i+1}}</td>
+                                <td><b>{{item.reqId}}</b></td>
+                                <td>{{item.reqType}}</td>
+                                <td>{{item.year}}</td>
+                                <td>{{item.reqDate | date:'dd/MM/yyyy hh:mm'}}</td>
+                                <td>{{item.status}}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="overlay" *ngIf="isLoading">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+
+            <div id="dateFilterPanel" *ngIf="filterRequest == 'Raise Queries'">
+                <div class="col-sm-12">
+                    <div class="card-body" style="border: black; box-shadow: grey;">
+                        <form #filterForm3="ngForm">
+                            <div class="row">
+                                <div class="col-xs-6">
+
+                                    <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+                                </div>
+                                <div class="col-xs-6">
+                                    <button type="button" class="btn btn-info pull-right"
+                                        (click)="NewHRQRequests(false,'','')"><i class="fa fa-plus"
+                                            aria-hidden="true"></i>
+                                        New HR Queries Request</button>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="fromDate">From Date <span style="color: red;">*</span> </label>
+                                        <input [matTooltipPosition]="'below'" matTooltip="Click to change date"
+                                            [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="fromDate"
+                                            class="form-control" [(ngModel)]="FromDate" id="fromDate"
+                                            placeholder="DD-MM-YYYY" [disabled]="isEdit" #FromDateEnt="ngModel"
+                                            required>
+                                        <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;">
+                                        </owl-date-time>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="todate">To Date <span style="color: red;">*</span> </label>
+                                        <input [matTooltipPosition]="'below'" [min]="FromDate"
+                                            matTooltip="Click to change date" [owlDateTime]="dt14"
+                                            placeholder="DD-MM-YYYY" [owlDateTimeTrigger]="dt14" name="todate"
+                                            class="form-control" id="todate" [(ngModel)]="ToDate" #todateEnt="ngModel"
+                                            [disabled]="isEdit" required>
+                                        <owl-date-time [pickerType]="'calendar'" #dt14 style="width: 250px;">
+                                        </owl-date-time>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>&nbsp;</label>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" [disabled]="!filterForm3.valid"
+                                            (click)="getHRQueriesRequests();" matTooltip="click to go"><i
+                                                class="fas fa-arrow-right"></i>&nbsp; Go</button>
+                                        &nbsp;&nbsp;
+                                        <button class="btn btn-primary" (click)="clearFilter();"
+                                            matTooltip="click to reset"><i class="fas fa-times"></i>&nbsp;
+                                            Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="box-body table-responsive" *ngIf="filterRequest == 'Raise Queries' ">
+                    <table id="userTable" class="table table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr>
+                                <th>#</th>
+                                <th>Request No.</th>
+                                <th>Request Date</th>
+                                <th>Subject</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Pending Approver</th>
+                                <th>Last Approver</th>
+                                <th>Status</th>
+                                <th>Approved Date</th>
+                                <th>Comments from Approver</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let item of requestHRQList; let i = index">
+                                <td>{{i+1}}</td>
+                                <td><b>{{item.id}}</b></td>
+                                <td>{{item.reqDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+                                <td>{{item.subject}}</td>
+                                <td>{{item.category}}</td>
+                                <td>{{item.description}}</td>
+                                <td>{{item.pendingApprover}}</td>
+                                <td>{{item.lastApprover}}</td>
+                                <td>{{item.status}}</td>
+                                <td>{{item.approvedDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+                                <td>{{item.comments}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="overlay" *ngIf="isLoading">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">New Payslip Request</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="filtermonth"> Month <span style="color:red">*</span></label>
+                                    <select [(ngModel)]="filtermonth" class="form-control" id="filtermonth"
+                                        name="filtermonth" ngControl="filtermonth" #filtermonthEnt="ngModel"
+                                        matTooltip="Select Month" required>
+                                        <option [ngValue]="null" disabled>--Select an Option--</option>
+                                        <option *ngFor="let month of Monthlist" value={{month.id}}>
+                                            {{month.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="filterYear"> Financial Year</label>
+                                <select [(ngModel)]="filterYear" class="form-control" id="filterYear" name="filterYear"
+                                    ngControl="filterYear" #filterYearEnt="ngModel" matTooltip="Select Year" required>
+                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                    <option *ngFor="let yrr of YearList" value={{yrr.year}}>{{yrr.year |
+                                        date:'yyyy'}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <!-- <div class="captcha-container"> -->
+                                <canvas id="captcahCanvas" width="316" height="80"></canvas>
+
+                                <div class="captcha-actions">
+                                    <input type="text" id="input" name="input" [(ngModel)]="captch_input" />
+                                    <input type="button" value="Check" (click)="checkCaptcha()" />
+                                    <a href="javascript:void(0)" class="cpt-btn" (click)="playCaptcha()"> <i
+                                            class="fa fa-bullhorn"></i></a>
+                                    <a href="javascript:void(0)" class="cpt-btn reload"
+                                        (click)="createCaptcha()">&#x21bb;</a>
+                                </div>
+                            </div>
+                        </div>
+                        &nbsp; &nbsp; &nbsp;
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button *ngIf="!view" type="button" class="btn btn-success" (click)="OnSavePayslipRequest('Applied')"
+                    [disabled]="isLoadingPop || (!desigForm.valid) || isLoadPop"><i
+                        class="fas fa-angle-double-right"></i>&nbsp; Submit</button>
+                <button *ngIf="!view" type="button" class="btn btn-danger" (click)="ClearData()"><i
+                        class="fas fa-timest"></i>&nbsp; Clear</button>
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">New Form16 Request</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm1="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="filterYear"> Financial Year</label>
+                                <select [(ngModel)]="filterYear" class="form-control" id="filterYear" name="filterYear"
+                                    ngControl="filterYear" #filterYearEnt="ngModel" matTooltip="Select Year">
+                                    <option [ngValue]="null" disabled>--Select an Option--</option>
+                                    <option *ngFor="let yrr of YearList" value={{yrr.year}}>{{yrr.year |
+                                        date:'yyyy'}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <!-- <div class="captcha-container"> -->
+                                <canvas id="captcahCanvas1" width="316" height="80"></canvas>
+
+                                <div class="captcha-actions">
+                                    <input type="text" id="input" name="input" [(ngModel)]="captch_input" />
+                                    <input type="button" value="Check" (click)="checkCaptcha()" />
+                                    <a href="javascript:void(0)" class="cpt-btn" (click)="playCaptcha()"> <i
+                                            class="fa fa-bullhorn"></i>
+                                    </a>
+                                    <a href="javascript:void(0)" class="cpt-btn reload" class="cpt-btn reload"
+                                        (click)="createCaptcha()">&#x21bb;</a>
+                                </div>
+                            </div>
+                        </div>
+                        &nbsp; &nbsp; &nbsp;
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button *ngIf="!view" type="button" class="btn btn-success" (click)="OnSaveForm16Request('Applied')"
+                    [disabled]="isLoadingPop || (!desigForm1.valid) || isLoadPop"><i
+                        class="fas fa-angle-double-right"></i>&nbsp; Submit</button>
+                <button *ngIf="!view" type="button" class="btn btn-danger" (click)="ClearData()"><i
+                        class="fas fa-times"></i>&nbsp; Clear</button>
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">New HR Queries Request</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm2="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <h2 style="text-align: center; color: #000000;">
+                                <b>User Details</b>
+                            </h2>
+                            <br>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="plant">Plant</label>
+                                    <input name="plant" id="plant" placeholder="Plant" class="form-control"
+                                        value="{{userIdRequest.plant}}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="requesterId">Employee Id</label>
+                                    <input name="requesterId" id="requesterId" placeholder="Employee Id"
+                                        class="form-control" value="{{userIdRequest.employeeId}}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input name="firstName" id="firstName" placeholder="Employee Name"
+                                        class="form-control" value="{{userIdRequest.firstName}}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input name="lastName" id="lastName" placeholder="Employee Name"
+                                        class="form-control" value="{{userIdRequest.lastName}}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="department">Department</label>
+                                    <input name="department" id="department" placeholder="Department"
+                                        class="form-control" value="{{userIdRequest.department}}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="designation">Designation</label>
+                                    <input name="designation" id="designation" placeholder="Designation"
+                                        class="form-control" value="{{userIdRequest.designation}}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="role">Role</label>
+                                    <input name="role" id="role" placeholder="role" class="form-control"
+                                        value="{{getRole(userIdRequest.role)}}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        &nbsp; &nbsp; &nbsp;
+                        <div class="row">
+                            <h2 style="text-align: center; color: #000000;">
+                                <b>Other Details</b>
+                            </h2>
+                            <br>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="filterHR"> To HR: <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filterHR" class="form-control" id="filterYear" name="filterHR"
+                                    ngControl="filterHR" #filterHREnt="ngModel" matTooltip="Select HR">
+                                    <option [ngValue]="null" disabled [selected]="true">--Select an Option--</option>
+                                    <option *ngFor="let hr of HrList" value={{hr.name}}>{{hr.name}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="filtercategory"> Category: <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filtercategory" class="form-control" id="category" name="category"
+                                    ngControl="filtercategory" #filtercategoryEnt="ngModel" [disabled]="isEdit"
+                                    matTooltip="Select category" (change)="getApproverDetails()">
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let cat of catList" value={{cat.type}}>
+                                        {{cat.type}}</option>
+                                </select>
+                            </div>
+                            &nbsp;
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="subject">Subject <span style="color: red;">*</span></label>
+                                    <textarea name="subject" id="subject" placeholder="Enter Subject"
+                                        class="form-control" [(ngModel)]="filtersubject" ngControl="filtersubject"
+                                        cols="30" rows="3" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="description">Description <span style="color: red;">*</span></label>
+                                    <textarea name="description" id="description" placeholder="Enter Description"
+                                        class="form-control" [(ngModel)]="filterdescription" cols="30" rows="5"
+                                        ngControl="filterdescription" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        &nbsp; &nbsp; &nbsp;
+                        <div class="row">
+                            <table class="table table-striped table-bordered">
+                                <tr style="background-color: #b2d1e5;">
+                                    <td colspan="5" style="width: 100%;">
+                                        <strong><b>Approver Details</b></strong>
+                                    </td>
+                                </tr>
+                                <tr style="background-color: #b2d1e5;">
+                                    <th style="width: 10%;"><b>HR ID</b></th>
+                                    <th style="width: 10%;"><b>Approver Name</b></th>
+                                    <th style="width: 30%;"><b>Department</b></th>
+                                    <th style="width: 30%;"><b>Designation</b></th>
+                                    <th style="width: 30%;"><b>Role</b></th>
+                                </tr>
+                                <tr *ngFor="let ty of ApproversList; let i = index">
+                                    <td>{{ty.hrId}}</td>
+                                    <td>{{ty.approverName}}</td>
+                                    <td>{{ty.department}}</td>
+                                    <td>{{ty.designation}}</td>
+                                    <td>{{ty.role}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button *ngIf="!view" type="button" class="btn btn-success" (click)="OnSaveHRQRequest('Applied')"
+                    [disabled]="isLoadingPop || (!desigForm2.valid) || isLoadPop"><i
+                        class="fas fa-angle-double-right"></i>&nbsp; Submit</button>
+                <button *ngIf="!view" type="button" class="btn btn-danger" (click)="ClearData()"><i
+                        class="fas fa-times"></i>&nbsp; Clear</button>
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

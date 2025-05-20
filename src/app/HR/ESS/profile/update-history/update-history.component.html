@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-md-12 table-responsive">
+    <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+    <table class="table table-hover table-striped table-bordered" id="data">
+      <thead>
+        <tr>
+          <th style="width: 50px;">Action</th>
+          <th>Status</th>     
+          <th>Submitted By</th>    
+          <th>Submitted Date</th>   
+          <th>Reason </th>            
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of updateList; let i = index">
+          <td>
+            <ng-template [ngIf]="item.profileId > 0">
+              <a [routerLink]="['/HR/Employee/update-view', item.profileId]" class="btn btn-xs btn-info"
+                [matTooltipPosition]="'after'" matTooltip="Click to view the update details">
+                <i class="fas fa-eye"></i></a>
+            </ng-template>               
+          </td>
+          <td>
+            <span class="label label-default label-{{item.statusColor}}">{{item.status}}</span>
+          </td>          
+          <td>{{item.createdBy}}</td>     
+          <td>{{item.createdDate| date:'dd/MM/yyyy'}}</td>   
+          <td>{{item.reasonForUpload}}</td>   
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>
+</div>

@@ -1,0 +1,379 @@
+<section class="content-header">
+    <h1 class="display-1">MIGO Posting</h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i></a>Home</li>
+        <li class="active">MIGO Posting</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <!-- <div class="col-xs-6">
+                <button type="button" class="btn btn-primary pull-right"
+                    (click)="onUserActions(false,NPDRequestmodel,false,'')"><i class="fa fa-plus"
+                        aria-hidden="true"></i>
+                    New Request</button>
+            </div> -->
+        </div>
+        <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="card-body" style="border: black; box-shadow: black;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="pimno">PIM Number <span style="color: red;">*</span> </label>
+                            <input type="text"  id="pimno" name="pimno" class="form-control"
+                            [(ngModel)]="PIMNo" placeholder="PIM No" matTooltip="Enter PIM No"
+                            ng-control="PIMNo" required>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>&nbsp;&nbsp;</label>
+                            <div class="form-group">
+                            <button class="btn btn-primary btn-sm" (click)="GetData(PIMNo)" matTooltip="Click to get data"
+                            [disabled]="PIMNo==null">GetData</button>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="docNo">DOC No </label>
+                            <input type="text"  id="docNo" name="docNo" class="form-control"
+                            [(ngModel)]="docNo" placeholder="Pending for Posting" matTooltip="Doc no will auto binded when SAP posting is successful."
+                            ng-control="docNo" readonly>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="TONO">TO No </label>
+                            <input type="text"  id="TONO" name="TONO" class="form-control"
+                            [(ngModel)]="toNo" placeholder="Pending for Posting" matTooltip="TO no will auto binded when SAP posting is successful."
+                            ng-control="TONO" readonly>
+                        </div>
+                        <div class="col-sm-2" *ngIf="docNo != null  && toNo !=null">
+                            <label>&nbsp; </label><br>
+                            <h3 style="color: green;"> <strong>Posting Completed</strong>  </h3><br>
+                        </div>
+                        <div class="col-sm-2" *ngIf="docNo != null  && toNo !=null ">
+                          <label>&nbsp; </label><br>
+                          <button class="btn btn-primary btn-sm" (click)="downloadPdf()" 
+                          matTooltip="click to print the report" 
+                           >Print Report</button>
+                      </div>
+                        <div class="col-sm-2" *ngIf="docNo == null || docNo == '' || toNo ==null || toNo ==''">
+                            <label>&nbsp; </label><br>
+                            <button class="btn btn-primary btn-sm" (click)="Postdata()" 
+                            matTooltip="click to post the data" [disabled]="isLoading"
+                             >Post to SAP</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        &nbsp;&nbsp;&nbsp;
+      
+        
+        <h3>Header Data</h3>          
+            <div class="table-responsive">
+                <table title="Current Product/Material details" id="Producttable" class="table table-striped">
+                  <thead style="background-color: #68a7d2; color:white;">
+                    <tr>
+                      <th>Sl. No</th>
+                      <th>PIM No</th>
+                      <th>LR No</th>
+                      <th>Mode of Transport</th>
+                      <th>Supplier Code</th>
+                      <th>Transaction Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                      <td>{{1}}</td>
+                      <td>{{pimheader.slNo}}</td>
+                      <td>{{pimheader.lrNo}}</td>
+                      <td>{{pimheader.modeofTransport}}</td>
+                      <td>{{pimheader.supplierCode}}</td>
+                      <td>{{pimheader.transactionType}}</td>
+    
+                    </tr> 
+                  </tbody>
+    
+                </table>
+    
+              </div>
+            <h3>Line Item Details</h3>
+            <div class="box-body table-responsive">
+                <table id="datatable1" class="table table-bordered table-striped">
+                    <thead style="background-color: #68a7d2;color:white;">
+                        <tr>
+                            <th>Item Code</th>
+                            <th>Item Description</th>
+                            <th>Pack Details</th>
+                            <th>Batch No</th>
+                            <th>Mfg Date</th>
+                            <th>Exp Date</th>
+                            <th>MRP</th>
+                            <th>Total Quantity</th>
+                            <th>Total Shippers</th>
+                            <th>Total Pallets</th>
+                            <th>Bin Details</th>
+                            <th>Detailed View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of filteredModel;let i=index">
+                            <td>{{data.itemCode}}</td>
+                            <td>{{data.itemDesc}}</td>
+                            <td>{{data.packSize}}</td>
+                            <td>{{data.batchNo}}</td>
+                            <td>{{data.mfgDate | date:'dd/MM/yyyy'}}</td>
+                            <td>{{data.expDate | date:'dd/MM/yyyy'}}</td>
+                            <td>{{data.mrp}}</td>
+                            <td>{{data.qty}}</td>
+                            <td>{{data.totalShippers}}</td>
+                            <td>{{data.totalPallets}}</td>
+                            <td>
+                                <select [(ngModel)]="BIN" class="form-control input-sm" [name]="'uom'"
+                                matTooltip="Select UOM" #uomEnt="ngModel" [disabled]="isEdit" required>
+                                <option [ngValue]="null" disabled [selected]="true">Bin|Pallet|Shippers|Qty</option>
+                                <option *ngFor="let pUOM of data.binModel" disabled [ngValue]="pUOM.uom">
+                                  {{pUOM.bin}} | {{pUOM.pallet}} | {{pUOM.shippers}} | {{pUOM.qty}}</option>
+                              </select>
+                            </td>
+                            <td>
+                                <button type="button" [matTooltipPosition]="'after'"
+                                matTooltip="Click to view details" class="btn btn-primary btn-xs"
+                                (click)="showDetailedView(data)">View
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        <!-- /.box-body -->
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="DetailedModal" role="dialog" aria-labelledby="DetailedLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">    
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="container">
+
+          <hr>
+          <div class="row">
+            <div class="col-sm-12">
+              <form #dataForm1="ngForm" (keydown.enter)="$event.preventDefault()">             
+
+                <table class="table table-bordered1 table-striped" style="align-self: auto;; ">
+                  <tr style="align-items: center;">
+                    <td colspan="3" style="align-items: center;">
+                      <label style="align-items: center;"><strong>Detailed View</strong></label>
+                    </td>
+                  </tr>
+                 
+                  <tr>
+                    <td colspan="3">
+                      <div class="box-body table-bordered table-striped">
+                        <table id="approversTable" class="table table-bordered table-striped">
+                          <thead>
+                            <tr>
+                              <th><b>Shipper</b></th>
+                              <th><b>Item No</b></th>
+                              <th><b>Item Code</b></th>
+                              <th><b>Dscription</b></th>
+                              <th><b>Batch No</b></th>
+                              <th><b>Pallet</b></th>
+                              <th><b>Bin</b></th>
+                              <th><b>Total Qty</b></th>
+                              <th><b>Shipper Qty</b></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let user of detailedList; let i = index">
+                              <td>{{user.barcode}}</td>
+                              <td>{{user.lineItemNo}}</td>
+                              <td>{{user.itemCode}}</td>
+                              <td>{{user.itemDesc}}</td>
+                              <td>{{user.batchNo}}</td>
+                              <td>{{user.palletId}}</td>
+                              <td>{{user.bin}}</td>
+                              <td>{{user.qty}}</td>
+                              <td>{{user.qtyRcvd}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>               
+              </form>
+            </div>
+            <div class="overlay" *ngIf="isLoadingPop">
+              <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>
+
+<div hidden id="pdf">
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  <table class="table table-bordered1">
+    <tr>
+      <td style="width: 330px;"><strong>PIM No :</strong>{{pimheader.slNo}}</td>
+      <td style="width: 320px;"> <strong>MIGO No :</strong>{{docNo}}</td>
+      <td style="width: 320px;"><strong>TO No :</strong>{{toNo}}</td>
+    </tr>
+    <tr>
+      <td style="width: 330px;"><strong>PIM Date :</strong>{{pimheader.docDate | date:'dd/MM/yyyy'}}</td>
+      <td style="width: 320px;"> <strong>MIGO Date :</strong>{{docdate | date:'dd/MM/yyyy'}}</td>
+      <td style="width: 320px;"><strong>TO Date :</strong>{{todate | date:'dd/MM/yyyy'}}</td>
+    </tr>
+  </table>
+   &nbsp;&nbsp;&nbsp;
+   <th colspan="12" style="font-size: larger; text-align: center;"><strong>Bin Wise :</strong></th>
+  <table class="table table-bordered1">
+    <thead>
+      <tr>
+          <th>Sl No</th>
+          <th>Item Code</th>
+          <th >Item Description</th>
+          <th>Batch No</th>
+          <th>Quantity</th>
+          <th>Bin</th>
+          <th>Pallet</th>
+          <th>Shippers</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of ReportModel;let i=index">
+          <td style="width: 3%;">{{i+1}}</td>
+          <td style="width: 10%;">{{data.itemCode}}</td>
+          <td style="width: 33%">{{data.itemDesc}}</td>
+          <td style="width: 10%">{{data.batchNo}}</td>
+          <td style="width: 10%;">{{data.qty}}</td>
+          <td style="width: 12%;">{{data.bin}}</td>
+          <td style="width: 12%;">{{data.pallet}}</td>
+          <td style="width: 10%;">{{data.shippers}}</td>         
+      </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="4" style="text-align:right; border-right: none;"><strong>Total PIM Quantity</strong></td>
+      <td colspan="1" style="text-align:left;">{{TotalPIMQty}}</td>
+      <td colspan="3" style="text-align:right; "><strong> </strong></td>
+     
+    </tr>   
+    <tr>
+      <td colspan="3" style="text-align:right; border-right: none;"><strong>Total Loose Shippers : {{TotalLooseShippers}}</strong></td>
+      
+      <td colspan="2" style="text-align:right; border-right: none; border-left:none;" ><strong>Total Full Shippers :</strong></td>
+      <td style="border-right:none; border-left:none;">{{TotalFullShippers}}</td>
+      <td colspan="1" style="text-align:right; border-left:none; " ><strong>Total Shippers</strong></td>
+      <td>{{TotalShippers}}</td>
+    </tr>   
+  </tfoot>
+  </table>
+  &nbsp;&nbsp;&nbsp;
+  <tr>
+    <th colspan="12" style="font-size: larger; text-align: center;"><strong>Batch Wise :</strong></th>
+  </tr>
+  <table class="table table-bordered1">
+    <thead>
+      <tr>
+        <th>Sl No</th>
+        <th>Item Code</th>
+        <th>Item Description</th>
+        <th>Pack Details</th>
+        <th>Batch No</th>
+        <th>Mfg Date</th>
+        <th>Exp Date</th>
+        <th>MRP</th>
+        <th>Quantity</th>
+        <th>Shippers</th>
+        <th>Pallets</th>
+      </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of filteredModel;let i=index">
+      <td style="width: 3%;">{{i+1}}</td>
+      <td style="width: 10%;">{{data.itemCode}}</td>
+      <td style="width: 26%;">{{data.itemDesc}}</td>
+      <td style="width: 8%;">{{data.packSize}}</td>
+      <td style="width: 8%;">{{data.batchNo}}</td>
+      <td style="width: 8%;">{{data.mfgDate | date: 'MMM, yy'}}</td>
+      <td style="width: 8%;">{{data.expDate | date: 'MMM, yy'}}</td>
+      <td style="width: 7%;">{{data.mrp}}</td>
+      <td style="width: 10%;">{{data.qty}}</td>
+      <td style="width: 6%;">{{data.totalShippers}}</td>
+      <td style="width: 6%;">{{data.totalPallets}}</td>
+     
+  </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="8" style="text-align:right; border-right: none;"><strong>Total</strong></td>
+      <td colspan="1" style="text-align:left;">{{TotalPIMQty}}</td>
+      <td colspan="1" style="text-align:left;" >{{TotalShippers}}</td>
+      <td colspan="1" style="text-align:left;">{{TotalPIMPallets}}</td>
+     
+    </tr>   
+    
+  </tfoot>
+  </table>
+  &nbsp;&nbsp;&nbsp;
+
+  <tr>
+    <th colspan="12" style="font-size: larger; text-align: center;"><strong>Sample Details :</strong></th>
+  </tr>
+  <table class="table table-bordered1">
+    <thead>
+      <tr>
+        <th>Sl No</th>
+        <th>Batch No</th>
+        <th>Shipper</th>
+        <th>QC Sample</th>
+        <th>Control Sample</th>
+        <th>Total Sample</th>
+       
+      </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of samplesData;let i=index">
+      <td>{{i+1}}</td>
+      <td>{{data.batchNo}}</td>
+      <td>{{data.barcode}}</td>
+      <td >{{data.qcSample}}</td>
+      <td >{{data.controlSample}}</td>
+      <td >{{data.qcSample + data.controlSample}}</td>
+  </tr>
+  </tbody>
+  
+  </table>
+
+  &nbsp;&nbsp;&nbsp;
+  <table class="table table-bordered1">
+    <tr>
+      <td style="width: 50%;"><strong>Posted By : </strong>{{PostedBy}}</td>
+      <td style="width: 50%;"> <strong>Posted On : </strong>{{PostedOn | date:'dd/MM/yyyy'}}</td>
+    </tr>
+  </table>
+</div>

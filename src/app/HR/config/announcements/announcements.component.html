@@ -1,0 +1,311 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Announcements
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Announcements</li>
+  </ol>
+</section>
+
+<section class="content">
+  <div>
+    <div class="form-group">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="detailsModal"
+        (click)="onAddClick()">
+        Add New</button>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+  
+        <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="form-group row">
+              <label class="col-md-1 control-label text-right">Plant</label>
+              <div class="col-md-3">
+                <select [(ngModel)]="filterModel.selectedPlantId" class="form-control" id="plant" name="plant" >
+                  <option value="null" [selected]="true"> All </option>
+                  <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.code}} - {{pll.name}}</option>
+                </select>
+              </div>
+              <label class="col-md-1 control-label text-right">Pay Group</label>
+              <div class="col-md-3">
+                <select [(ngModel)]="filterModel.selectedPayGroupId" class="form-control" id="paygroup" name="paygroup"
+                  matTooltip="paygroup">
+                  <option value="null" [selected]="true"> All </option>
+                  <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+                </select>
+              </div>
+              <label class="col-md-1 control-label text-right">Employee Category</label>
+              <div class="col-md-3">
+                <select [(ngModel)]="filterModel.selectedEmployeeCategoryId" class="form-control" id="employeecategory"
+                  name="employeecategory" matTooltip="employeecategory">
+                  <option value="null" [selected]="true"> All </option>
+                  <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-1 control-label text-right">Department</label>
+              <div class="col-md-3">
+                <select [(ngModel)]="filterModel.selectedDepartmentId" class="form-control" id="department" name="department"
+                  #departmentEnt="ngModel" required>
+                  <option [ngValue]="null" [selected]="true"> All </option>
+                  <option *ngFor="let pl of departmentList" [ngValue]="pl.id">{{pl.description }} </option>
+                </select>
+               </div>
+               <label class="col-md-1 control-label text-right">State</label>
+               <div class="col-md-3">
+                <select [(ngModel)]="filterModel.selectedStateId" class="form-control" id="state" name="state"
+                #stateEnt="ngModel">
+                <option [ngValue]="null" [selected]="true"> All </option>
+                <option *ngFor="let sl of stateList" [ngValue]="sl.id">{{sl.bezei}}</option>
+              </select>
+                </div>
+            </div>
+           
+            <div class="form-group text-center">
+              <button class="btn btn-primary btn-sm" (click)="getDataList();" matTooltip="click to Go"                >
+                Filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover table-striped table-bordered" id="data">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Title</th>
+                <th>Short Description</th>
+                <th>Status</th>
+                <th>Effective From</th>
+                <th>Effective To</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of filterData.list; let i = index">
+                <td>
+                  <button (click)="EditLine(item, i)" title="click to edit this " class="btn btn-xs btn-primary">
+                    <i class="fas fa-pen"></i>
+                  </button>
+                  <button (click)="deleteData(item.announcementId,i)" title="click to remove this "
+                    class="btn btn-xs btn-danger">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </td>
+                <td>{{item.title}}</td>
+                <td>{{item.shortDescription}}</td>
+                <td><span
+                    class="label label-{{item.isActive == true?'success' : 'danger'}}">{{item.isActive == true?"Active" : "Inactive"}}</span>
+                </td>
+                <td>{{item.effectiveFromDate | date: "dd/MM/yyyy"}}</td>
+                <td>{{item.effectiveToDate | date: "dd/MM/yyyy"}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center">
+            <div class="overlay text-center h3" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+            <ul class="pagination" *ngIf="filterData.totalCount>0">
+              <li>
+                <a (click)="gotoPage(filterData.pageNo)">
+                Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> - <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b> of <b>{{filterData.totalCount}}</b> records
+                </a>
+              </li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+              <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+              <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo+1" (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+              <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of <b>{{filterData.totalPages}}</b></a></li>
+              <li><a>Page Size 
+                <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div id="detailsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Announcement Details</h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <form #announcementForm="ngForm">
+          <div class="form-group">
+            <label class="col-md-4">Title</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" [(ngModel)]="item.title" ngControl="item.title" name="title"
+                #titleEnt="ngModel" required maxlength="300" />
+              <span class="help-block" *ngIf="titleEnt.touched && !titleEnt.valid">
+                Please enter title</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Short Description</label>
+            <div class="col-md-8">
+              <textarea type="text" class="form-control" [(ngModel)]="item.shortDescription"
+                ngControl="item.shortDescription" name="shortDescription" #shortDescriptionEnt="ngModel" maxlength="500"
+                rows="2"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Description</label>
+            <div class="col-md-8">
+              <angular-editor [(ngModel)]="item.description" [config]="editorConfig" ngControl="item.description"
+                name="description"></angular-editor>
+              <!-- <textarea type="text" class="form-control" [(ngModel)]="item.description" ngControl="item.description"
+                name="description" #descriptionEnt="ngModel" maxlength="2000" rows="5"></textarea> -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Effective From</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" [(ngModel)]="item.effectiveFromDate"
+                ngControl="item.effectiveFromDate" name="effectiveFromDate" [owlDateTime]="effectiveFromDate"
+                [owlDateTimeTrigger]="effectiveFromDate" #effectiveFromDateEnt="ngModel" required />
+              <owl-date-time [pickerType]="'calendar'" #effectiveFromDate></owl-date-time>
+              <span class="help-block" *ngIf="effectiveFromDateEnt.touched && !effectiveFromDateEnt.valid">
+                Please enter effective from date</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Effective To</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" [(ngModel)]="item.effectiveToDate"
+                ngControl="item.effectiveToDate" name="effectiveToDate" [owlDateTime]="effectiveToDate"
+                [owlDateTimeTrigger]="effectiveToDate" #effectiveToDateEnt="ngModel" />
+              <owl-date-time [pickerType]="'calendar'" #effectiveToDate></owl-date-time>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4">Active</label>
+            <div class="col-md-8">
+              <div class="checkbox">
+                <label for="isActive">
+                  <input type="checkbox" [(ngModel)]="item.isActive" name="isActive" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4"> Image File <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <input #attachment type="file" name="attachment" id="attachment" accept=".png, .jpg, .jpeg"
+                [(ngModel)]="item.attachment" />
+              <span class="text-danger">Upload image files (jpeg, png) only. Maximum file size allowed is 2MB.</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Applicable List</h3>
+              <table class="table table-bordered table-hover table-striped">
+                <thead>
+                  <tr>
+                    <th>Action</th>
+                    <th>Plant</th>
+                    <th>Pay Group</th>
+                    <th>Employee Category</th>
+                    <th>Department</th>
+                    <th>State</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of applicableList; let i = index">
+                    <td>
+                      <button (click)="deleteApplicableData(i)" title="click to remove this "
+                        class="btn btn-xs btn-danger">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </td>
+                    <td>
+                      <select [(ngModel)]="item.plantId" class="form-control" name="plant" [ngModelOptions]="{standalone:true}">
+                        <option [ngValue]="null" [selected]="true"> All </option>
+                        <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.name}}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select [(ngModel)]="item.payGroupId" class="form-control" name="paygroup" [ngModelOptions]="{standalone:true}"
+                      matTooltip="paygroup">
+                      <option [ngValue]="null" [selected]="true"> All </option>
+                      <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+                    </select>
+                  </td>
+                    <td>
+                      <select [(ngModel)]="item.employeeCategoryId" class="form-control" [ngModelOptions]="{standalone:true}"
+                  name="employeecategory" matTooltip="employeecategory">
+                  <option [ngValue]="null" [selected]="true"> All </option>
+                  <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+                </select>
+                    </td>
+                    <td>
+                      <select [(ngModel)]="item.departmentId" class="form-control" name="department" [ngModelOptions]="{standalone:true}"
+                  #departmentEnt="ngModel" >
+                  <option [ngValue]="null" [selected]="true"> All </option>
+                  <option *ngFor="let pl of departmentList" [ngValue]="pl.id">{{pl.description }} </option>
+                </select>
+                    </td>
+                    <td>
+                      <select [(ngModel)]="item.stateId" class="form-control" name="state" [ngModelOptions]="{standalone:true}"
+                  #stateEnt="ngModel">
+                  <option [ngValue]="null" [selected]="true"> All </option>
+                  <option *ngFor="let sl of stateList" [ngValue]="sl.id">{{sl.bezei}}</option>
+                </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>              
+              <div class="actionButtons">
+                <button type="button" class="btn btn-info btn-sm" [disabled]="isLoading"
+                  (click)="addApplicableData()">
+                  <i class="fas fa-plus"></i> Add New Line</button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="text-center actionButtons">
+          <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !announcementForm.valid"
+            *ngIf="!isEdit" (click)="addData(attachment.files)">
+            <i class="fas fa-plus"></i> Add</button>
+          <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !announcementForm.valid"
+            *ngIf="isEdit" (click)="updateData(attachment.files)">
+            <i class="fas fa-check"></i> Update</button>
+          <button type="button" class="btn btn-default btn-sm" (click)="cancel()">
+            Cancel</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,326 @@
+﻿<section class="content-header">
+  <h1>
+    Master
+    <small>Add-Profile</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Add-Profile</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Profile Data</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+
+        <button type="button" class="btn btn-primary pull-right" style="margin-left:10px;"
+          (click)="proForm.reset();onAddProfile(false,proItem)"><i class="fa fa-plus" aria-hidden="true"></i> Add
+          Profile</button>
+
+
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+
+      <table id="addProfile" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:20px">Id</th>
+            <!--<th style="width:30px"><button (click)="checkAll=!checkAll;checkAllProfile();">
+                <i [ngClass]="(checkAll)?'fa fa-check-square-o':'fa fa-square-o'" aria-hidden="true"></i>
+              </button></th>-->
+            <th style="width:120px">Profile Name</th>
+            <th style="width:200px">Description</th>
+            <th style="width:20px">Forms Assigned</th>
+            <th style="width:120px">Status</th>
+            <th style="width:10px">Edit Form</th>
+            <th style="width:10px">View Permission</th>
+            <th style="width:10px">Edit Permission</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let profile of profileList; let i = index">
+            <!--<td>
+                <input type="checkbox" [(ngModel)]="profile.isChecked" name="checkProfile" id="checkProfile">
+              </td>-->
+            <td>{{i+1}}</td>
+            <td>{{profile.name}}</td>
+            <td>{{profile.description}}</td>
+            <td>
+              <button type="button" matTooltip="Click to view details" class="btn btn-primary btn-xs"
+                (click)="showFormsAssigned(true,profile)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+            <td><span class="label"
+                [ngClass]="(profile.isActive==true)?'label-success':'label-danger'">{{(profile.isActive==true)?'ACTIVE':'IN
+                ACTIVE'}}</span></td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddProfile(true,profile)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-xs btn-info" (click)="onAddEditPermission(false,profile)"
+                matTooltip="Click to view permissions">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-xs btn-primary" (click)="onAddEditPermission(true,profile)"
+                matTooltip="Click to edit permissions">
+                <i class="fas fa-pen"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Profile</h4>
+      </div>
+      <div class="modal-body box box-primary">
+        <div class="row">
+          <form #proForm="ngForm">
+            <div class="form-horizontal">
+              <div class="form-group" [ngClass]="(!name.valid && name.touched)?'has-error':''">
+                <label for="fName" class="col-sm-3"><i class="fa fa-times-circle-o"
+                    *ngIf="!name.valid && name.touched"></i> Profile<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="fName" placeholder="Profile Name"
+                    [(ngModel)]="proItem.name" name="name" ngControl="proItem.name" #name="ngModel" required
+                    maxlength="50">
+                  <span class="help-block" *ngIf="!name.valid && name.touched">Please Enter Profile Name.</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="fDesc" class="col-sm-3">Description</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="fDesc" placeholder="Description"
+                    [(ngModel)]="proItem.description" name="description" maxlength="200" />
+                </div>
+              </div>
+              <div class="form-group" [ngClass]="(!isActive.valid && isActive.touched)?'has-error':''">
+                <label for="fIsActive" class="col-sm-3"><i class="fa fa-times-circle-o"
+                    *ngIf="!isActive.valid && isActive.touched"></i> Status<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <select [(ngModel)]="proItem.isActive" class="form-control" id="fIsActive" name="isActive"
+                    ngControl="proItem.isActive" #isActive="ngModel" required>
+                    <option [ngValue]="true">Active</option>
+                    <option [ngValue]="false">Inactive</option>
+                  </select>
+                  <span class="help-block" *ngIf="!isActive.valid && isActive.touched">Please Select Status.</span>
+                </div>
+              </div>
+              <div *ngIf="isEdit" class="col-lg-12" style="width:100%">
+                <div class="form-group table-responsive" style="overflow-y:scroll;max-height:300px">
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th style="width:30px">
+
+                          <!-- <button (click)="checkAll=!checkAll;checkAllForm(checkAll);">
+                              <i [ngClass]="(checkAll)?'fa fa-check-square-o':'fa fa-square-o'" aria-hidden="true"></i>
+                            </button> -->
+                        </th>
+                        <th style="width:25px">Id</th>
+                        <th style="width:60px">Module</th>
+                        <th style="width:40px">Form</th>
+                        <th style="width:50px">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let form of formList; let i = index">
+                        <td>
+                          <input type="checkbox"
+                            (click)="form.isChecked=!form.isChecked;checkFormItem(form.isChecked,form);"
+                            [checked]="form.isChecked" ngControl="form.isChecked" name="isChecked" id="checkform">
+                          <!--<input type="checkbox" (click)="form.isChecked=!form.isChecked;selectForms(form.isChecked,form);" name="checkform" id="checkform">-->
+                        </td>
+                        <td>{{i+1}}</td>
+                        <td>{{form.moduleName}}</td>
+                        <td>{{form.name}}</td>
+                        <td>{{form.formDescription}}</td>
+                      </tr>
+                    </tbody>
+
+                  </table>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveProfile()"
+          [disabled]="isLoadingPop || !proForm.valid">{{isEdit==true?'Update Profile':'Save Profile'}}</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Forms Assigned</h4>
+      </div>
+      <div class="modal-body box box-primary">
+        <div class="row">
+          <form #profileForm="ngForm">
+            <div class="col-sm-12">
+              <div class="form-group table-responsive" style="overflow-y:scroll;max-height:400px">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Module</th>
+                      <th>Form</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let form of FormsAssignedList; let i = index">
+
+                      <td>{{i+1}}</td>
+                      <td>{{form.moduleName}}</td>
+                      <td>{{form.name}}</td>
+                      <td>{{form.formDescription}}</td>
+                    </tr>
+                  </tbody>
+
+                </table>
+              </div>
+            </div>
+
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="myPermissionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Permissions</h4>
+      </div>
+      <div class="modal-body box box-primary">
+        <div class="row">
+          <form #permissionsForm="ngForm">
+            <div class="form-horizontal">
+              <div class="form-group" [ngClass]="(!name.valid && name.touched)?'has-error':''">
+                <label for="fName" class="col-sm-3"><i class="fa fa-times-circle-o"
+                    *ngIf="!name.valid && name.touched"></i> Profile<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="fName" placeholder="Profile Name"
+                    [(ngModel)]="proItem.name" name="name" ngControl="proItem.name" #name="ngModel" required
+                    maxlength="50" disabled>
+                </div>
+              </div>
+              <div class="col-lg-12" style="width:100%">
+                <div class="form-group table-responsive" style="overflow-y:scroll;max-height:300px">
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th style="width:30px">Select
+                        </th>
+                        <th style="width:25px">Permission</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of permissionMasterList; let i = index">
+                        <td>
+                          <input type="checkbox" (click)="item.selected=true" [checked]="item.selected"
+                            ngControl="item.selected" name="item.selected" id="checkform">
+                        </td>
+                        <td>{{item.name}}</td>
+                      </tr>
+                    </tbody>
+
+                  </table>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!isEdit" class="btn btn-primary"
+          (click)="onSaveProfilePermissions()">Save</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

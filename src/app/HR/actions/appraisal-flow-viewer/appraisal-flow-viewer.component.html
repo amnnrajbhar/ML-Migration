@@ -1,0 +1,70 @@
+<div class="table-responsive">
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Submitted By</th>
+              <th>Submitted On</th>
+              <th>Status</th>
+              <th>Result</th>
+              <th>Completed On</th>
+              <th>Details</th>
+          </tr>
+      </thead>
+      <tbody>
+          <ng-template ngFor let-flow [ngForOf]="flows" let-i="index">
+              <tr data-expanded="true" id="row_{{i}}">
+                  <td><i class="glyphicon glyphicon-chevron-down expander" (click)="toggle(i)"></i></td>
+                  <td>{{flow.flowId}}</td>
+                  <td>{{flow.flowType}}</td>
+                  <td>{{flow.initiatedBy}}</td>
+                  <td>{{flow.startDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                  <td>{{flow.status}}</td>
+                  <td>{{flow.result}}</td>
+                  <td>{{flow.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                  <td>{{flow.activityTrace}}</td>
+              </tr>
+              <tr class="detailRow" id="detailRow_{{i}}">
+                  <td colspan="20">
+                      <div class="table-responsive">
+                          <table class="table table-bordered">
+                              <thead>
+                                  <tr>
+                                      <th>Task Name</th>
+                                      <th>Responsible</th>
+                                      <th>Role</th>
+                                      <th>Started</th>
+                                      <th>Status</th>
+                                      <th>Result</th>
+                                      <th>Completed On</th>
+                                      <th>Completed By</th>
+                                      <th>Comments</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr *ngFor="let task of flow.flowTasks">
+                                      <td>{{task.name}}</td>
+                                      <td>{{task.approvers.join('; ')}}</td>
+                                      <td>{{task.role}}</td>
+                                      <td>{{task.startDate | date: 'dd/MM/yyyy'}}</td>
+                                      <td>{{task.status}}</td>
+                                      <td>{{task.result}}</td>
+                                      <td>{{task.endDate | date: 'dd/MM/yyyy'}}</td>
+                                      <td>{{task.completedBy}}</td>
+                                      <td>{{task.activityTrace}}</td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </td>
+              </tr>
+          </ng-template>
+      </tbody>
+  </table>
+  
+  <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+</div>

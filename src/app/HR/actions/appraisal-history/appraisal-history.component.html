@@ -1,0 +1,61 @@
+
+<h3>Appraisal History</h3>
+<br>
+<button type="button" class="btn btn-sm btn-primary" (click)="exportData()">Export</button>
+<br>
+  <div class="table-responsive">
+    <table class="table table-hover table-striped table-bordered">
+      <thead>
+        <tr>
+          <th style="width: 200px;">Action</th>
+          <th>Sl No</th>
+          <th class="confirmationDetails">Employee No</th>
+          <th class="confirmationDetails">Employee Name</th>
+          <th>Status</th>
+          <th class="confirmationDetails">Period</th>
+          <th class="confirmationDetails">Appraisal Type</th>
+          <th class="confirmationDetails">Appraised By</th>
+          <th class="confirmationDetails">Approved By</th>
+          
+          <th class="confirmationDetails">Initiated By</th>
+          <th class="confirmationDetails">Initiated Date</th>
+          <th class="confirmationDetails">Rating</th>
+          <th class="confirmationDetails">Salary Type</th>
+          <th class="confirmationDetails">Salary Amount</th>
+          <th class="confirmationDetails">One Time Salary Type</th>
+          <th class="confirmationDetails">One Time Salary Amount</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of itemList; let i = index">
+          <td>
+            <button type="button" (click)="viewAppraisalDetails(item.employeeId, item.employeeInitialAppraisalDetailId)"
+             class="btn btn-xs btn-info"
+              [matTooltipPosition]="'after'" matTooltip="Click to view the details">
+              <i class="fas fa-eye"></i>
+            </button>
+          </td>
+          <td>{{i+1}}</td>
+          <td class="confirmationDetails">{{item.employeeNo}} </td>
+          <td class="confirmationDetails">{{item.employeeName}} </td>
+          <td><span class="label label-default label-{{item.statusColor}}">{{item.status}}</span></td>
+          <td class="confirmationDetails">{{item.appraisalPeriod}} </td>
+          <td class="confirmationDetails">{{item.appraisalType}} </td>
+          <td class="confirmationDetails">{{item.appraisedBy}} </td>
+          <td class="confirmationDetails">{{item.approvedBy}} </td>
+          <td class="confirmationDetails">{{item.initiatedByName}} </td>
+          <td class="confirmationDetails">{{item.initiatedDate | date: "dd/MM/yyyy hh:mm a"}} </td>
+          <td class="confirmationDetails">{{item.rating}} </td>
+          <td class="confirmationDetails">{{item.salaryType}} </td>
+          <td class="confirmationDetails">{{item.salaryAmount | number: "1.0-2"}} </td>
+          <td class="confirmationDetails">{{item.oneTimeSalaryType}} </td>
+          <td class="confirmationDetails">{{item.oneTimeSalaryAmount | number: "1.0-2"}} </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>

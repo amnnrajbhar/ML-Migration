@@ -1,0 +1,217 @@
+<section class="content-header mb-4">
+  <h1 class="display-1">
+      Medical Service Dashboard
+  </h1>
+  <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+      <li class="active">Medical Service Dashboard</li>
+  </ol>
+</section>
+<section id="admin">
+  <div class="container-fluid">
+      <!-- graphs -->
+      <!-- <div class="row mb-3"> -->
+      <!-- Area Chart -->
+      <!-- <div class="col-sm-8 col-sm-5"> -->
+      <!-- <div class="col-sm-4">
+          <div class="card shadow">
+          <div class="card-body">
+              <div class="overlay" *ngIf="isLoading">
+              <div class="justify-content-center align-items-center">
+                  <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              </div>
+              <canvas id="linechart">
+              </canvas>
+          </div>
+          </div>
+      </div>
+      <div class="col-sm-4">
+          <div class="card shadow">
+          <div class="card-body">
+              <div class="overlay" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              <canvas id="mixed-chart">
+              </canvas>
+          </div>
+          </div>
+      </div>
+      <div class="col-sm-4">
+          <div class="card shadow">
+          <div class="card-body">
+              <div class="overlay" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              <canvas id="myPieChart">
+
+              </canvas>
+          </div>
+          </div>
+      </div>
+      </div> -->
+      <div class="card shadow">
+          <div class="card-body">
+              <div class="row mb-3">
+                  <div class="col-md-3 statusCard">
+                      <div class="card-counter info shadow" style="cursor: pointer;" (click)="onClickCard('Submitted')">
+                          <i class="fa fa-list"></i>
+                          <span class="count-numbers">
+                              <div *ngIf="isGoLoading">
+                                  <i class="fa fa-spin fa-spinner" style="color: white;"></i>
+                              </div>
+                              <div *ngIf="!isGoLoading">
+                                  {{submitted}}
+                              </div>
+                          </span>
+                          <span class="count-name">Submitted</span>
+                      </div>
+                  </div>
+                  <div class="col-md-3 statusCard">
+                      <div class="card-counter primary shadow" style="cursor: pointer;" (click)="onClickCard('In Process')">
+                          <i class="fa fa-list-alt"></i>
+                          <span class="count-numbers">
+                              <div *ngIf="isGoLoading">
+                                  <i class="fa fa-spin fa-spinner" style="color: white;"></i>
+                              </div>
+                              <div *ngIf="!isGoLoading">
+                                  {{inprocess}}
+                              </div>
+                          </span>
+                          <span class="count-name">In Process</span>
+                      </div>
+                  </div>
+                  <div class="col-md-3 statusCard">
+                      <div class="card-counter danger shadow" style="cursor: pointer;" (click)="onClickCard('Rejected')">
+                          <i class="fa fa-ban"></i>
+                          <span class="count-numbers">
+                              <div *ngIf="isGoLoading">
+                                  <i class="fa fa-spin fa-spinner" style="color: white;"></i>
+                              </div>
+                              <div *ngIf="!isGoLoading">
+                                  {{rejected}}
+                              </div>
+                          </span>
+                          <span class="count-name">Rejected</span>
+                      </div>
+                  </div>
+                  <div class="col-md-3 statusCard">
+                      <div class="card-counter success shadow" style="cursor: pointer;" (click)="onClickCard('Completed')">
+                          <i class="fa fa-user-check"></i>
+                          <span class="count-numbers">
+                              <div *ngIf="isGoLoading">
+                                  <i class="fa fa-spin fa-spinner" style="color: white;"></i>
+                              </div>
+                              <div *ngIf="!isGoLoading">
+                                  {{completed}}
+                              </div>
+                          </span>
+                          <span class="count-name">Completed</span>
+                      </div>
+                  </div>
+              </div>
+              <div class="row ml-3">
+                  <h4>Medical Request Report - Filter by Dates</h4>
+              </div>
+              <div class="row mt-3">
+                  <div class="col-sm-4">
+                      <div class="form-group"
+                          [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+                          <label>From Date</label>
+                          <div class="input-group date">
+                              <input #fromDate="ngModel" [matTooltipPosition]="'below'"
+                                  matTooltip="Click to change from date" [owlDateTime]="dt1"
+                                  [owlDateTimeTrigger]="dt1" name="fromDate" class="form-control"
+                                  [(ngModel)]="from_date" #fromDate="ngModel" (ngModelChange)="onDateChange()">
+                              <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+                          </div>
+                          <owl-date-time [pickerType]="'calendar'" #dt1 style="width: 250px;"></owl-date-time>
+                          <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From Date.</span>
+                      </div>
+                  </div>
+                  <div class="col-sm-4">
+                      <div class="form-group" [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+                          <label>To Date</label>
+                          <div class="input-group date">
+                              <input #toDate="ngModel" [min]="from_date"
+                                  [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+                                  [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" name="endDate"
+                                  class="form-control" [(ngModel)]="to_date" #toDate="ngModel" (ngModelChange)="onDateChange()">
+                              <span class="input-group-addon trigger"><i class="fas fa-calendar-alt"></i></span>
+                          </div>
+                          <owl-date-time [pickerType]="'calendar'" #dt2 style="width: 250px;"></owl-date-time>
+                          <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid To Date.</span>
+                      </div>
+                  </div>
+                  <div class="col-sm-4">
+                      <label for="fltrstatus">Status</label>
+                      <select [(ngModel)]="filterstatus" class="form-control" id="fltrstatus"
+                          name="fltrstatus" ngControl="filterstatus" #fltrstatusEnt="ngModel"
+                          matTooltip="Select Status">
+                          <option [ngValue]="null" disabled>--Select an Option--</option>
+                          <option *ngFor="let status of statuslist" value={{status.name}}>{{status.name}}
+                          </option>
+                      </select>
+                  </div>
+              </div>
+              <div class="row mt-3">
+                  <div class="col-sm-12 center-contents">
+                      <button class="btn btn-primary mr-3" (click)="filterReport()" [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)" [disabled]="isGoLoading">
+                          <i class="fa" [ngClass]="{'fa-spin fa-spinner': isGoLoading}"></i><span *ngIf="isGoLoading">&nbsp;</span>Go
+                      </button>
+                      <button class="btn btn-info mr-3" (click)="ClearFilter()">
+                          Clear
+                      </button>
+                      <button class="btn btn-success mr-3" (click)="exportAsXLSX()" [disabled]="MediServiceRequestDisplayList.length <= 0">
+                          <i class="fa fa-download fa-sm text-white-50"></i> Export to Excel
+                      </button>
+                  </div>
+              </div>
+              <div class="row mt-3">
+                  <!-- <div class="card" style="border: none; width: 100%">
+                      <div class="card-body"> -->
+                          <div class="table-responsive">
+                              <table id="userTable" class="table table-bordered shadow">
+                                  <thead style="background-color: #0099cc;color:white;">
+                                      <tr>
+                                          <th>Request No</th>
+                                          <th>Requested Date</th>
+                                          <th>Requested By<img style="min-width: 100px !important;"></th>
+                                          <th>Brand<img style="min-width: 100px !important;"></th>
+                                          <th>Category</th>
+                                          <th>Product</th>
+                                          <th>Final Medical Code</th>
+                                          <th>Status</th>
+                                          <th>Last Approver</th>
+                                          <th>Pending Approver</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr *ngFor="let item of MediServiceRequestDisplayList; let i = index" [ngClass]="isRequestPendingWithUser(item) ? 'pending' : ''">
+                                          <td style="text-align: center;">{{item.requestNo}}</td>
+                                          <td>{{item.requestDate | date:'dd/MM/yyyy'}}</td>
+                                          <td>{{item.createdByDisplay}}</td>
+                                          <td>{{item.brand}}</td>
+                                          <td>{{item.category}}</td>
+                                          <td>{{item.product ? item.product : 'NA'}}</td>
+                                          <td>{{item.finalDocNo ? item.finalDocNo : 'NA'}}</td>
+                                          <td style="text-align: center;">
+                                              <span class="label" [ngClass]="item.approveType == 'In Process' ? 'label-primary' : item.approveType == 'Submitted' ? 'label-info' : item.approveType == 'Rejected' 
+                                                  ? 'label-danger' : 'label-success'">
+                                                  {{item.approveType | uppercase}}
+                                              </span>
+                                          </td>
+                                          <td>{{item.lastApprover}}</td>
+                                          <td>{{item.pendingApproverName ? item.pendingApproverName : 'NA'}}
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </div>
+                      <!-- </div>
+                  </div> -->
+              </div>
+          </div>
+      </div>
+  </div>
+</section>

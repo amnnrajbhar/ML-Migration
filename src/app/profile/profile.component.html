@@ -1,0 +1,130 @@
+﻿<section class="content-header" >
+  <h1>
+    Master
+    <small>Profile</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Profile</li>
+  </ol>
+</section>
+<section class="content" >
+  <form #userForm="ngForm">
+    <div class="box-body" style="background-color:white">
+      <div class="col-sm-6" style="background-color:white">
+        <div class="form-group" [ngClass]="(!usr_id.valid && usr_id.touched)?'has-error':''">
+          <label for="usrId"><i class="fa fa-times-circle-o" *ngIf="!usr_id.valid && usr_id.touched"></i> User ID</label>
+          <input type="text" class="form-control" id="usrId" placeholder="User ID" [(ngModel)]="userItem.usr_id" name="usr_id"
+                 ngControl="userItem.usr_id" #usr_id="ngModel" required maxlength="45" disabled>
+          <span class="help-block" *ngIf="!usr_id.valid && usr_id.touched">Please Enter User ID.</span>
+        </div>
+        <div class="form-group">
+          <label for="usrFName">First Name</label>
+          <input type="text" class="form-control" id="usrFName" placeholder="First Name" [(ngModel)]="userItem.usr_f_name" name="usr_f_name" />
+        </div>
+        <div class="form-group">
+          <label for="usrLName">Last Name</label>
+          <input type="text" class="form-control" id="usrLName" placeholder="Last Name" [(ngModel)]="userItem.usr_l_name"
+                 name="usr_l_name" />
+        </div>
+        <div class="form-group" [ngClass]="(!usr_pwd.valid && usr_pwd.touched)?'has-error':''">
+          <label for="usrPwd"><i class="fa fa-times-circle-o" *ngIf="!usr_pwd.valid && usr_pwd.touched"></i> Password</label>
+          <input type="text" class="form-control" id="usrPwd" placeholder="Password" [(ngModel)]="userItem.usr_pwd" name="usr_pwd"
+                 ngControl="userItem.usr_pwd" #usr_pwd="ngModel" required maxlength="16" disabled>
+          <span class="help-block" *ngIf="!usr_pwd.valid && usr_pwd.touched">Please Enter Password.</span>
+        </div>
+        <div class="form-group">
+          <label for="usrEmail">Email</label>
+          <input type="text" class="form-control" id="usrEmail" placeholder="Email" [(ngModel)]="userItem.usr_email" name="usr_email" maxlength="48">
+        </div>
+        <div class="form-group">
+          <label for="usrPhone">Phone No</label>
+          <input type="text" class="form-control" id="usrPhone" placeholder="Phone No" [(ngModel)]="userItem.usr_phone" name="usr_phone" maxlength="18">
+        </div>
+      </div>
+      <div class="col-sm-6" style="background-color:white">
+       
+        <!--<div class="form-group" [ngClass]="(!usr_level.valid && usr_level.touched)?'has-error':''">
+          <label for="usrLevel"><i class="fa fa-times-circle-o" *ngIf="!usr_level.valid && usr_level.touched"></i> User Level</label>
+          <select [(ngModel)]="userItem.usr_level" class="form-control" id="usrLevel" name="usr_level"
+                  ngControl="userItem.usr_level" #usr_level="ngModel" required disabled>
+            <option value="1">PMS level</option>
+            <option value="2">Company level</option>
+            <option value="3">Entity level</option>
+            <option value="4">Division level</option>
+          </select>
+          <span class="help-block" *ngIf="!usr_level.valid && usr_level.touched">Please Select User level.</span>
+        </div>-->
+
+        <div class="form-group" [ngClass]="(selParentRole==null && roleId.touched && !roleId.valid)?'has-error':''">
+          <label for="roleId"><i class="fa fa-times-circle-o" *ngIf="selParentRole==null && roleId.touched && !roleId.valid"></i>Role</label>
+          <select [(ngModel)]="selParentRole" class="form-control" id="roleId" name="roleId" ngControl="selParentRole" #roleId="ngModel" required disabled>
+            <option *ngFor="let role of roleList" [ngValue]="role">{{role.name}}</option>
+          </select>
+          <span class="help-block" *ngIf="selParentRole==null && roleId.touched && !roleId.valid">Please Select Role.</span>
+        </div>
+        <div class="form-group" [ngClass]="(selDepartment==null && departmentId.touched)?'has-error':''">
+          <label for="departmentId"><i class="fa fa-times-circle-o" *ngIf="selDepartment==null && departmentId.touched"></i> Department</label>
+          <select [(ngModel)]="selDepartment" class="form-control" id="departmentId" name="departmentId" ngControl="selDepartment" #departmentId="ngModel" required disabled>
+            <option *ngFor="let pDept of departmentList" [ngValue]="pDept">{{pDept.name}}</option>
+          </select>
+          <span class="help-block" *ngIf="selDepartment==null && departmentId.touched">Please Select Department.</span>
+        </div>
+        <div class="form-group" [ngClass]="(selProfile==null && profileId.touched)?'has-error':''">
+          <label for="profileId"><i class="fa fa-times-circle-o" *ngIf="selProfile==null && profileId.touched"></i> Profile</label>
+          <select [(ngModel)]="selProfile" class="form-control" id="profileId" name="profileId" ngControl="selProfile" #profileId="ngModel" required disabled>
+            <option *ngFor="let profile of profileList" [ngValue]="profile">{{profile.name}}</option>
+          </select>
+          <span class="help-block" *ngIf="selProfile==null && profileId.touched">Please Select Profile.</span>
+        </div>
+
+        <div class="form-group" [ngClass]="(!usr_approve_status.valid && usr_approve_status.touched)?'has-error':''">
+          <label for="usrApproveStatus"><i class="fa fa-times-circle-o" *ngIf="!usr_approve_status.valid && usr_approve_status.touched"></i> Approver?</label>
+          <select [(ngModel)]="userItem.usr_approve_status" class="form-control" id="usrApproveStatus" name="usr_approve_status"
+                  ngControl="userItem.usr_approve_status" #usr_approve_status="ngModel" required disabled>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+          <span class="help-block" *ngIf="!usr_approve_status.valid && usr_approve_status.touched">Please Select Approver Status.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="usrDesig">Designation</label>
+          <input type="text" class="form-control" id="usrDesig" placeholder="Designation" [(ngModel)]="userItem.usr_desig" name="usr_desig" disabled>
+        </div>
+       
+        <!--<div class="form-group">
+          <label>Multiple</label>
+          <select class="form-control select2 select2-hidden-accessible" multiple="" data-placeholder="Select Division"  tabindex="-1" aria-hidden="true">
+            <option *ngFor="let drop of dddivisionList" [ngValue]="drop">
+              {{drop.div_code}}
+            </option>
+          </select><span class="select2 select2-container select2-container--default select2-container--below" dir="ltr"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="Select a State"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+        </div>-->
+        <!--<div class="form-group" [ngClass]="(!usr_div.valid && usr_div.touched)?'has-error':''">
+          <label for="usrDiv"><i class="fa fa-times-circle-o" *ngIf="!usr_div.valid && usr_div.touched"></i> Division<span style="color:red">*</span></label>
+
+          <input type="text" class="form-control" #usr_div="ngModel" ngControl="SelValue" [(ngModel)]="SelValue" name="usr_div">
+          <select #usr_div="ngModel" class="form-control" ngControl="SelValue" disabled id="usrDiv" name="usr_div" multiple [(ngModel)]="SelValue" required>
+            <option *ngFor="let drop of dddivisionList" [ngValue]="drop.div_code" disabled>
+              {{drop.div_code}}
+            </option>
+          </select>
+          <span class="help-block" *ngIf="!usr_div.valid && usr_div.touched">Please Enter User Division.</span>
+        </div>-->
+      </div>
+      <!--<div class="col-xs-12">
+        <div class="pad margin no-print">
+          <div class="callout callout-info" style="margin-bottom: 0!important;">
+            <h4><i class="fa fa-info"></i> Please fill all * fields to save entity data.:</h4>
+            {{errMsgPop}}
+          </div>
+        </div>
+      </div>-->
+      <div class="modal-footer" style="background-color:white">
+        <!--<button type="button" class="btn btn-danger" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>-->
+        <button type="button" class="btn btn-primary" (click)="onSaveUser(true)" [disabled]="isLoadingPop || !userForm.valid">{{isEdit==true?'Update User':'Save User'}}</button>
+      </div>
+    </div>
+  </form>
+</section>

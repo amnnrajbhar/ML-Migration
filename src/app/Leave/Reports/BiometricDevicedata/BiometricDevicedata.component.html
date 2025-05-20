@@ -1,0 +1,156 @@
+<section class="content-header">
+    <h1>
+        Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title">Reports</h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+
+            </div>
+        </div>
+
+        <div id="filterPanel">
+
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Biometric Device Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color:red">*</span> </label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">Select Plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-success" (click)="GetDevBio();" matTooltip="click to Search"><i
+                                        class="fas fa-arrow-right"></i>&nbsp; Search</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-warning" (click)="GetDevBioReportPdf();"
+                                    matTooltip="click to export"><i class="fa fa-file-pdf"></i>&nbsp; Export to
+                                    Pdf</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-danger" (click)="ClearData()" matTooltip="click to Clear"><i
+                                        class="fas fa-times"></i>&nbsp; Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="col-sm-12">
+                    <div class="box-body table-responsive" *ngIf="filterReport == 'DevBio'">
+                        <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                            <thead style="background-color: #0099cc; color:white;">
+                                <tr>
+                                    <th class="col-sm-1">Sl.No</th>
+                                    <th>Device Id</th>
+                                    <th>Device Name</th>
+                                    <th>Serial Number</th>
+                                    <th>Ip Address</th>
+                                    <th>Device Location</th>
+                                    <th>Device Type</th>
+                                    <th>Last Ping</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let categ of DevBioReport;  let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{categ.deviceId}}</td>
+                                    <td>{{categ.deviceFname}}</td>
+                                    <td>{{categ.serialNumber}}</td>
+                                    <td>{{categ.ipAddress}}</td>
+                                    <td>{{categ.deviceLocation}}</td>
+                                    <td>{{categ.deviceType}}</td>
+                                    <td>{{categ.lastPing | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-sm-12">
+            <div class="box-body table-responsive">
+                <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                    <thead style="background-color: #0099cc; color:white;">
+                        <tr>
+                            <th class="col-sm-1">Sl.No</th>
+                            <th>Device Id</th>
+                            <th>Device Name</th>
+                            <th>Serial Number</th>
+                            <th>Ip Address</th>
+                            <th>Device Location</th>
+                            <th>Device Type</th>
+                            <th>Last Ping</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let categ of DevBioReport;  let i = index">
+                            <td>{{i+1}}</td>
+                            <td>{{categ.deviceId}}</td>
+                            <td>{{categ.deviceFname}}</td>
+                            <td>{{categ.serialNumber}}</td>
+                            <td>{{categ.ipAddress}}</td>
+                            <td>{{categ.deviceLocation}}</td>
+                            <td>{{categ.deviceType}}</td>
+                            <td>{{categ.lastPing | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div hidden id="pdf110">
+    <div class="table table-responsive">
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th style="text-align: center; width: 10%;">SNo</th>
+                <th style="text-align: center; width: 10%;">Device Id</th>
+                <th style="text-align: center; width: 20%;">Device Name</th>
+                <th style="text-align: center; width: 15%;">Serial Number</th>
+                <th style="text-align: center; width: 10%;">Ip Address</th>
+                <th style="text-align: center; width: 15%;">Device Location</th>
+                <th style="text-align: center; width: 10%;">Device Type</th>
+                <th style="text-align: center; width: 10%;">Last Ping (Date & Time)</th>
+            </tr>
+            <tr *ngFor="let categ of DevBioReport;  let i = index">
+                <td>{{i+1}}</td>
+                <td>{{categ.deviceId}}</td>
+                <td>{{categ.deviceFname}}</td>
+                <td>{{categ.serialNumber}}</td>
+                <td>{{categ.ipAddress}}</td>
+                <td>{{categ.deviceLocation}}</td>
+                <td>{{categ.deviceType}}</td>
+                <td>{{categ.lastPing | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

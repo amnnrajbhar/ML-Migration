@@ -1,0 +1,50 @@
+
+<section class="content-header">
+  <h1 class="display-1">
+Email Preferences
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Email Preferences</li>
+  </ol>
+</section>
+
+
+<section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title">Email Preferences</div>
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="row">
+        <div class="col-md-8">          
+          <table class="table table-hover table-striped table-bordered" id="tblEmailPreference">
+            <thead>
+              <tr>               
+                <th>Email Type</th>
+                <th>Enabled</th>
+              </tr>  
+            </thead>
+             <tbody>
+              <tr *ngFor="let item of emailtypes; let i = index">
+                <td >
+                  {{item.emailtype}} 
+                </td>
+                <td>               
+                  <input type="checkbox" name="chkEnabled"   [(ngModel)]="item.enabled" />                
+              </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+         </div>
+      </div>
+  </div>
+
+  <div class="form-group text-center">
+    <button class="btn btn-primary btn-sm" (click)="UpdateEmailPreferences();" matTooltip="click to update email preference">   
+      Update</button>
+  </div>
+
+</section> 

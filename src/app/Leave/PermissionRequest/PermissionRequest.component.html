@@ -1,0 +1,409 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Permission Request
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Permission</li>
+    </ol>
+</section>
+<section class="content">
+
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-info pull-right" (click)="ApplyPermission(false,'','')"><i
+                        class="fa fa-plus" aria-hidden="true"></i>
+                    New Request</button>
+            </div>
+        </div>
+    </div>
+
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+
+    <div class="box">
+        <div class="box-header">
+
+        </div>
+        <div class="box-body">
+            <div class="col-sm-12">
+                <div class="col-sm-12 pull-left">
+                    <label>
+                        <h2><strong>History</strong></h2>
+                    </label>
+                </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-3">
+                        <label for="calyear">CalenderYear</label>
+                        <input type="number" [(ngModel)]="CalYear" class="form-control" id="year" placeholder="Year"
+                            name="year" ngControl="CalYear" #calYear1Ent="ngModel" matTooltip="Year"
+                            (change)="getEmpPermissionRequests()">
+                    </div>
+                </div>
+                <div class="box-body table-responsive">
+                    <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr>
+                                <th class="col-sm-1">Sl.No</th>
+                                <th>Request No</th>
+                                <th>Applied On</th>
+                                <th>Applied For</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Attendance Status</th>
+                                <th>Pending With</th>
+                                <th>View</th>
+                                <th>Cancel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let categ of PermissionRequestList;  let i = index">
+                                <td>{{i+1}}</td>
+                                <td><b>{{categ.requestNo}}</b></td>
+                                <td>{{categ.submitDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+                                <td>{{categ.date | date:'dd/MM/yyyy'}}</td>
+                                <td>{{binddatetime1(categ.startTime) | date:'hh:mm a'}}</td>
+                                <td>{{binddatetime1(categ.endTime) | date:'hh:mm a'}}</td>
+                                <td>{{categ.type}}</td>
+                                <td>{{categ.approverStatus}}</td>
+                                <td>{{categ.attendanceStatus==0?'Pending for Approval':'Considered'}}</td>
+                                <td>{{categ.pendingApprover}}</td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td class="pr-2">
+                                                <button type="button" class="btn btn-info btn-xs"
+                                                    (click)="ApplyPermission(true,categ,'View')"
+                                                    matTooltip="Click to view details">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                            &nbsp;
+                                            <td class="pr-2">
+                                                <button type="button" class="btn btn-warning btn-xs"
+                                                    (click)="printPermission(categ)"
+                                                    matTooltip="Click to print details">
+                                                    <i class="fas fa-print"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td class="pr-2">
+                                                <button *ngIf="categ.approverStatus=='Pending'" type="button"
+                                                    class="btn btn-danger btn-xs " (click)="CancelPermission(categ)"
+                                                    matTooltip="Click to cancel Permission">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+
+</section>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">New Permission Request</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="col-sm-12">
+                        <div class="row" *ngIf="showAttendance">
+                            <table id="perTable" class="table table-striped table-bordered">
+                                <tr style="background-color: #b2d1e5;">
+                                    <td colspan="7" style="width: 100%; text-align: center;">
+                                        <strong><b>Attendance Details</b></strong>
+                                    </td>
+                                </tr>
+                                <tr style="background-color: #b2d1e5;">
+                                    <th style="width: 15%;">Date</th>
+                                    <th style="width: 10%;">Day</th>
+                                    <th style="width: 15%;">In Time</th>
+                                    <th style="width: 15%;">Out Time</th>
+                                    <th style="width: 15%;">In Status</th>
+                                    <th style="width: 15%;">Out Status</th>
+                                    <th style="width: 15%;">Note</th>
+                                </tr>
+                                <tr *ngFor="let ty of attendanceDetails; let i = index">
+                                    <td>{{ty.date1}}</td>
+                                    <td>{{ty.day}}</td>
+                                    <td>{{ty.inTime}}</td>
+                                    <td>{{ty.outTime}}</td>
+                                    <td>{{ty.inStatus}}</td>
+                                    <td>{{ty.outStatus}}</td>
+                                    <td>{{ty.remarks}}</td>
+                                </tr>
+                            </table>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-6" *ngIf="router.url !='/PermissionEss'">
+                                <div class="form-group">
+                                    <label for="ApplyFor">Apply for </label>
+                                    <select [(ngModel)]="ApplyFor" class="form-control" id="ApplyFor" name="ApplyFor"
+                                        matTooltip="Apply For" #ApplyForEnt="ngModel" [disabled]="isEdit" required>
+                                        <option [ngValue]="null" disabled [selected]="true">--Select--</option>
+                                        <option>Self</option>
+                                        <option>Others</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-4" *ngIf="ApplyFor=='Others'">
+                                <div class="form-group">
+                                    <label for="userId">Employee Id <span style="color: red;">*</span> </label>
+                                    <input type="text" name="userId" id="userId" (keyup)="getEmployee($event)"
+                                        [(ngModel)]="userId" placeholder="Enter Emp No to get Approvers"
+                                        class="form-control" matTooltip="userId" [disabled]="isEdit"
+                                        #userIdEnt="ngModel" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-2" *ngIf="ApplyFor=='Others'">
+                                <label for="">&nbsp;</label>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success btn mr-3" style="width: 100px;"
+                                        (click)="getApproversList(userId);">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="startDate">
+                                        Date <span style="color:red">*</span>
+                                    </label>
+                                    <div class='input-group date'>
+                                        <input id="startDate" name="startDate" class="form-control"
+                                            [(ngModel)]="fromDate" [max]="today" [owlDateTime]="dtStart"
+                                            [owlDateTimeTrigger]="dtStart" [matTooltipPosition]="'below'"
+                                            (change)="getAttendanceDetails()" matTooltip="Click to change startDate"
+                                            #startDate1="ngModel" placeholder="DD/MM/YYYY" [disabled]="isEdit" required>
+                                        <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                    <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="lvType">Swipe Type <span style="color: red;">*</span> </label>
+                                    <select [(ngModel)]="SwipeType" class="form-control" id="lvType" name="lvType"
+                                        matTooltip="Swipe Type" #lvTypeEnt="ngModel" (change)="getAttendanceDetails()"
+                                        [disabled]="isEdit" required>
+                                        <option [ngValue]="null" disabled [selected]="true"> Select Swipe Type
+                                        </option>
+                                        <option>Out</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- <br>
+                            <h3 style="color:red">&nbsp; &nbsp;<b><u>Note: Please Enter InTime and OutTime in 24 Hour
+                                        Format</u></b></h3> -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="startTime">
+                                        In Time <span style="color:red">*</span>
+                                    </label>
+                                    <!-- <input type="time" #startTime1="ngModel" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change Start Time" id="startTime" name="startTime"
+                                        class="form-control" placeholder="HH:MM" [(ngModel)]="fromTime"
+                                        [disabled]="isEdit" required> -->
+                                    <input #startTime1="ngModel" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change Start Time" [owlDateTime]="dt2"
+                                        [owlDateTimeTrigger]="dt2" placeholder="HH:MM AM/PM" id="startTime"
+                                        onkeydown="return false;" name="startTime" class="form-control"
+                                        [(ngModel)]="fromTime" [disabled]="isEdit" required>
+                                    <owl-date-time [pickerType]="'timer'" hour12Timer="true" #dt2></owl-date-time>
+                                    <span class="help-block" *ngIf="!startTime1.valid && startTime1.touched">Please
+                                        enter valid Start
+                                        Time.</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="endTime">
+                                        Out Time <span style="color:red">*</span>
+                                    </label>
+                                    <!-- <input type="time" #endTime1="ngModel" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change End Time" id="endTime" name="endTime"
+                                        class="form-control" placeholder="HH:MM" [(ngModel)]="toTime"
+                                        [disabled]="isEdit" required> -->
+                                    <input #endTime1="ngModel" [matTooltipPosition]="'below'"
+                                        matTooltip="Click to change End Time" [owlDateTime]="dt12"
+                                        [owlDateTimeTrigger]="dt12" placeholder="HH:MM AM/PM" id="endTime"
+                                        onkeydown="return false;" name="endTime" class="form-control"
+                                        [(ngModel)]="toTime" [disabled]="isEdit" required>
+                                    <owl-date-time [pickerType]="'timer'" hour12Timer="true" #dt12></owl-date-time>
+                                    <span class="help-block" *ngIf="!endTime1.valid && endTime1.touched">
+                                        Please enter valid End Time.
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="detailedReason">Detailed Reason (Max 300 Char) <span
+                                            style="color: red;">*</span></label>
+                                    <textarea name="detailedReason" id="detailedReason" cols="30" rows="5"
+                                        placeholder="Enter Detailed Reason" maxlength="300" matTooltip="Detailed Reason"
+                                        [(ngModel)]="DetailedReason" class="form-control" [disabled]="isEdit"
+                                        required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        &nbsp; &nbsp; &nbsp;
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label style="text-align: center;" *ngIf="pType=='COUNT WISE'">
+                                    <h3><strong style="text-align: center;">Permission {{PermissionCount}} of
+                                            {{totalCount}}.</strong></h3>
+                                </label>
+                                <label style="text-align: center;" *ngIf="pType=='MINUTE WISE'">
+                                    <h3><strong style="text-align: center;"> {{PermissionCount}} of
+                                            {{totalCount}} Minutes Permission Utilised.</strong></h3>
+                                </label>
+                            </div>
+                        </div>
+                        &nbsp; &nbsp; &nbsp;
+                        <div class="row">
+                            <table class="table table-striped table-bordered">
+                                <tr style="background-color: #b2d1e5;">
+                                    <td colspan="7" style="width: 100%;">
+                                        <strong><b>Approver Details</b></strong>
+                                    </td>
+                                </tr>
+                                <tr style="background-color: #b2d1e5;">
+                                    <th style="width: 10%;"><b>Type</b></th>
+                                    <th style="width: 10%;"><b>Employee Code</b></th>
+                                    <th style="width: 20%;"><b>Name</b></th>
+                                    <th style="width: 20%;"><b>Designation</b></th>
+                                    <th style="width: 20%;"><b>Role</b></th>
+                                    <th style="width: 10%;"><b>Approver Status</b></th>
+                                    <th style="width: 10%;"><b>Approved Date</b></th>
+                                </tr>
+                                <tr *ngFor="let ty of ApproversList; let i = index">
+                                    <td>{{ty.type}}</td>
+                                    <td>{{ty.employeeId}}</td>
+                                    <td>{{ty.name}}</td>
+                                    <td>{{ty.designation}}</td>
+                                    <td>{{ty.role}}</td>
+                                    <td>{{approverStatus}}</td>
+                                    <td>{{approvedDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">0
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <!-- <button *ngIf="!view" type="button" class="btn btn-primary" (click)="InsertPermission('Draft')"
+                    [disabled]="isLoadingPop || (!desigForm.valid) || isLoadPop">Save Draft</button> -->
+                <button *ngIf="!view" type="button" class="btn btn-success" (click)="InsertPermission()"
+                    matTooltip="Click to submit"
+                    [disabled]="isLoadingPop || (!desigForm.valid)"><i class="fas fa-angle-double-right"></i>&nbsp; Submit</button>
+                <button *ngIf="!view" type="button" matTooltip="Click to clear the details" class="btn btn-danger"
+                    (click)="ClearData()"><i class="fas fa-times"></i>&nbsp; Clear</button>
+                <button type="button" class="btn btn-default" matTooltip="Click to close the form"
+                    style="background-color:darkgray;color:white;" data-dismiss="modal"
+                    [disabled]="isLoadingPop">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div hidden id="pdf1">
+    <table class="table table-bordered table table-striped" style="align-self: auto; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong><b>Requester Details</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Employee No</b></td>
+            <td style="width: 25%; color: blue;">{{EmployeeId}}</td>
+            <td style="width: 25%;"><b>Employee Name</b></td>
+            <td style="width: 25%; color: blue;">{{FullName}}</td>
+        </tr>
+        <tr>
+            <td style="width: 20%;"><b>Designation</b></td>
+            <td style="width: 20%; color: blue;">{{Designation}}</td>
+            <td style="width: 10%;"><b>Role </b></td>
+            <td style="width: 10%; color: blue;">{{getRole(RoleId)}}</td>
+        </tr>
+        <tr>
+            <td style="width: 10%;"><b>Department</b></td>
+            <td style="width: 10%; color: blue;">{{Department}}</td>
+            <td style="width: 25%;"><b>Date Of Joining</b></td>
+            <td style="width: 25%; color: blue;">{{JoiningDate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 30%;"><b>Request No</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{reqNo}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong><b>Permission Details</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Permission Date:</b></td>
+            <td style="width: 25%; color: blue;">{{permissionDate | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Swipe Type:</b></td>
+            <td style="width: 25%; color: blue;">{{swipeType}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Start Time:</b></td>
+            <td style="width: 25%; color: blue;">{{strTime | date:'hh:mm a'}}</td>
+            <td style="width: 25%;"><b>End Time:</b></td>
+            <td style="width: 25%; color: blue;">{{endTime | date:'hh:mm a'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 30%;"><b>Reason:</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{perReason}}</td>
+        </tr>
+    </table>
+</div>

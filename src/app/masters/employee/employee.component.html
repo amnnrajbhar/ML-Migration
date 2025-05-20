@@ -1,0 +1,425 @@
+﻿<section class="content-header">
+  <h1 class="display-1">
+    Master
+    <small>Employee</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Employee</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Employee Master</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddUser(false,userItem)"><i
+            class="fa fa-plus" aria-hidden="true"></i> Add Employee</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label for="Location">Location</label>
+          <select [(ngModel)]="baseLocation" class="form-control" id="locationName" name="locationName"
+            (change)="onSelect($event.target.value)">
+            <option *ngFor="let location of locationList" value="{{location.id}}">
+              {{location.code + '-' + location.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="userTable" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th>Employee ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Designation</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of userList; let i = index">
+            <td>{{user.employeeId}}</td>
+            <td>{{user.firstName}} {{user.middleName}} {{user.lastName}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.designation}}</td>
+            <td>{{getLocation(user.baseLocation)}}</td>
+            <td><span class="label"
+                [ngClass]="(user.isActive==true)?'label-success':'label-danger'">{{(user.isActive==true)?'ACTIVE':'INACTIVE'}}</span>
+            </td>
+            <td>
+              <table>
+                <tr>
+                  <td class="pr-2">
+                    <button type="button" class="btn btn-primary btn-xs" (click)="onAddUser(true,user)">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-primary btn-xs" (click)="openAuditLogs(user.id)">
+                      <i class="fa fa-history"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Employee</h3>
+      </div>
+      <div class="tabs-container">
+        <form #userForm="ngForm">
+          <ul class="nav nav-tabs" style="border:none;" id="myTab">
+            <li class="active"><a data-toggle="tab" href="#tab-sumTot">Main</a></li>
+            <li><a data-toggle="tab" href="#tab-urbTot">Address</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="tab-sumTot" class="tab-pane active">
+              <div class="panel-body" style="padding:0px;padding-top:8px;">
+                <div class="col-lg-12">
+                  <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                    <div class="row">
+                      <div class="col-sm-12" *ngIf="managerWarning">
+                        <div class="alert alert-warning" role="alert"><i class="fas fa-exclamation-triangle"></i> There is no manager assign to this employee.Please select the manager for further
+                          modification<br />Note: Last manager assigned was {{lastManager}}</div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group" [ngClass]="(!usr_id.valid && usr_id.touched)?'has-error':''">
+                          <label for="usrid"><i class="fa fa-times-circle-o"
+                              *ngIf="!usr_id.valid && usr_id.touched"></i> Employee ID<span
+                              style="color:red">*</span></label>
+                          <input type="text" class="form-control" id="usrid" placeholder="Employee ID"
+                            [(ngModel)]="userItem.employeeId" name="employeeId" ngControl="userItem.employeeId"
+                            #usr_id="ngModel" minlength="5" maxlength="10" required>
+                          <span class="help-block" *ngIf="!usr_id.valid && usr_id.touched">Please Enter User ID.</span>
+                        </div>
+                        <div class="form-group" [ngClass]="(!usr_f_name.valid && usr_f_name.touched)?'has-error':''">
+                          <label for="usrFName"><i class="fa fa-times-circle-o"
+                              *ngIf="!usr_f_name.valid && usr_f_name.touched"></i> First Name<span
+                              style="color:red">*</span></label>
+                          <input type="text" class="form-control" id="usrFName" placeholder="First Name"
+                            [(ngModel)]="userItem.firstName" name="firstName" ngControl="userItem.firstName"
+                            #usr_f_name="ngModel" required>
+                          <span class="help-block" *ngIf="!usr_f_name.valid && usr_f_name.touched">Please Enter First
+                            Name.</span>
+                        </div>
+                        <div class="form-group">
+                          <label for="middlename">Middle Name</label>
+                          <input type="text" class="form-control" id="middleName" placeholder="Middle Name"
+                            [(ngModel)]="userItem.middleName" ngControl="userItem.middleName" name="middleName" />
+                        </div>
+                        <div class="form-group">
+                          <label for="usrLName">Last Name</label>
+                          <input type="text" class="form-control" id="usrLName" placeholder="Last Name"
+                            [(ngModel)]="userItem.lastName" ngControl="userItem.lastName" name="lastName" />
+                        </div>
+                        <div class="form-group" [ngClass]="(!usr_email.valid && usr_email.touched)?'has-error':''">
+                          <label for="usrEmail"><i class="fa fa-times-circle-o"
+                              *ngIf="!usr_email.valid && usr_email.touched"></i> Email<span
+                              style="color:red">*</span></label>
+                          <input type="email" class="form-control" id="usrEmail" placeholder="Email"
+                            [(ngModel)]="userItem.email" name="email" ngControl="userItem.email" #usr_email="ngModel"
+                            required maxlength="48">
+                          <span class="help-block" *ngIf="!usr_email.valid && usr_email.touched">Please Enter
+                            Email.</span>
+                        </div>
+                        <div class="form-group" [ngClass]="(!password.valid && password.touched)?'has-error':''">
+                          <label for="u_password"><i class="fa fa-times-circle-o"
+                              *ngIf="!password.valid && password.touched"></i> Password<span
+                              style="color:red">*</span></label>
+                          <input type="password" class="form-control" id="u_password" placeholder="Password"
+                            [(ngModel)]="userMasterItem.password" name="upassword" ngControl="userMasterItem.password"
+                            #password="ngModel" required maxlength="50">
+                          <span class="help-block" *ngIf="!password.valid && password.touched">Please Enter
+                            password.</span>
+                        </div>
+                        <div class="form-group"
+                          [ngClass]="(selectedBaseLocation.length<0 && !baseLocationnotfirst)?'has-error':''">
+                          <label for="baseLocation"> Base Location<span style="color:red">*</span></label>
+                          <ng-multiselect-dropdown style="width:100%; background-color: white;" id="baseLocation"
+                            name="baseLocation" ngControl="selectedBaseLocation" required #baseLocEnt="ngModel"
+                            [placeholder]="'Select Base Location'" [data]="locListCon1"
+                            [(ngModel)]="selectedBaseLocation" [settings]="dropdownSettings1"
+                            (onSelect)="onItemSelectB($event)" (onSelectAll)="onSelectAll()"
+                            (focusout)="checkStatusBL();">
+                          </ng-multiselect-dropdown>
+                          <span class="help-block" *ngIf="selectedBaseLocation.length<0 && !baseLocationnotfirst">Base
+                            Location required.</span>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group"
+                          [ngClass]="(selDepartment==null && departmentId.touched)?'has-error':''">
+                          <label for="departmentId"><i class="fa fa-times-circle-o"
+                              *ngIf="selDepartment==null && departmentId.touched"></i> Department<span
+                              style="color:red">*</span></label>
+                          <select [(ngModel)]="selDepartment" class="form-control" id="departmentId" name="departmentId"
+                            ngControl="selDepartment" #departmentId="ngModel" required>
+                            <option *ngFor="let pDept of departmentList" [ngValue]="pDept">{{pDept.name}}</option>
+                          </select>
+                          <span class="help-block" *ngIf="selDepartment==null && departmentId.touched">Please Select
+                            Department.</span>
+                        </div>
+                        <div class="form-group" [ngClass]="(selProfile==null && profileId.touched)?'has-error':''">
+                          <label for="profileId"><i class="fa fa-times-circle-o"
+                              *ngIf="selProfile==null && profileId.touched"></i> Profile<span
+                              style="color:red">*</span></label>
+                          <select [(ngModel)]="selProfile" class="form-control" id="profileId" name="profileId"
+                            ngControl="selProfile" #profileId="ngModel" required>
+                            <option *ngFor="let profile of profileList" [ngValue]="profile">{{profile.name}}</option>
+                          </select>
+                          <span class="help-block" *ngIf="selProfile==null && profileId.touched">Please Select
+                            Profile.</span>
+                        </div>
+                        <div class="form-group">
+                          <label for="SelempDesignation">Designation</label>
+                          <select [(ngModel)]="SelempDesignation" class="form-control" id="usrDesig" name="usrDesig"
+                            ngControl="SelempDesignation" #usrDesig="ngModel">
+                            <option *ngFor="let designation of designationList" [ngValue]="designation">
+                              {{designation.name}}</option>
+                          </select>
+                          <span style="color:red"
+                            [hidden]="designationList?.length<=0 && designationList?.length>0 && isEdit?false:true">Please
+                            Select designation.</span>
+                        </div>
+                        <div class="form-group">
+                          <label for="SelCompetency"> Employee Type<span style="color:red">*</span></label>
+                          <select [(ngModel)]="SelCompetency" class="form-control" id="usrDivId" name="usr_divid"
+                            ngControl="SelCompetency" #usr_divid="ngModel">
+                            <option *ngFor="let division of competencyList" [ngValue]="division">{{division.name}}
+                            </option>
+                          </select>
+                          <span style="color:red"
+                            [hidden]="getDivisionList?.length<=0 && getDivisionList?.length>0 && isEdit?false:true">Please
+                            Select Competency.</span>
+                        </div>
+                        <div class="form-group" [ngClass]="(!roleId.valid && roleId.touched)?'has-error':''">
+                          <label for="selParentRole"> Role Id<span style="color:red">*</span></label>
+                          <select [(ngModel)]="selParentRole" class="form-control" id="roleId" name="roleId"
+                            ngControl="selParentRole" #roleId="ngModel" required>
+                            <option *ngFor="let role of roleList" [ngValue]="role">{{role.role}}</option>
+                          </select>
+                          <span style="color:red"
+                            [hidden]="roleId.touched && roleId?.length<=0 && isEdit?false:true">Please Select
+                            Project.</span>
+                        </div>
+                        <div class="form-group" [ngClass]="(selManager.length<0&&!notFirst)?'has-error':''">
+                          <label for="selManager"><i class="fa fa-times-circle-o"
+                              *ngIf="(selManager.length<0&&!notFirst)"></i> Manager<span
+                              style="color:red">*</span></label>
+                          <br>
+                          <ng-multiselect-dropdown style="width:100%; background-color: white;" id="manager"
+                            name="manager" ngControl="selManager" required #compHead="ngModel"
+                            [placeholder]="'Select Manager'" [data]="empListCon1" [(ngModel)]="selManager"
+                            [settings]="dropdownSettings" (onSelect)="onItemSelectM($event)"
+                            (onSelectAll)="onSelectAll()" (focusout)="checkStatus();">
+                          </ng-multiselect-dropdown>
+                          <span class="help-block" *ngIf="selManager.length<0&&!notFirst">Please Select Manager.</span>
+
+                        </div>
+                        <div class="form-group" [ngClass]="(!emp_status.valid && emp_status.touched)?'has-error':''"
+                          *ngIf="isEdit">
+                          <label for="emp_status">Status<span style="color:red">*</span></label>
+                          <select [(ngModel)]="userItem.isActive" class="form-control" id="emp_status" name="emp_status"
+                            ngControl="userItem.isActive" #emp_status="ngModel" required>
+                            <option [ngValue]="true">Active</option>
+                            <option [ngValue]="false">Inactive</option>
+                          </select>
+                          <span class="help-block" *ngIf="!emp_status.valid && emp_status.touched">Please Select
+                            Status.</span>
+                        </div>
+                      </div>
+                      <div class="overlay" *ngIf="isLoadingPop">
+                        <i class="fa fa-spinner fa-pulse"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="tab-urbTot" class="tab-pane">
+              <div class="panel-body" style="padding:0px;padding-top:8px;">
+                <div class="col-lg-12">
+                  <div class="modal-body  box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group" >
+                          <label>Joining Date </label>
+                          <div class="form-group form-group-sm" [ngClass]="(joiningDate.touched && !joiningDate.valid)?'has-error':''">
+                            <input [matTooltipPosition]="'below'" [max]="today" matTooltip="Click to change date" [owlDateTime]="dt11"
+                              [owlDateTimeTrigger]="dt11" name="joiningDate" class="form-control" [(ngModel)]="from_date"
+                              #joiningDate="ngModel">
+                            <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="permanentAddress"><i class="fa fa-times-circle-o"></i> Permanent Address</label>
+                          <input type="text" class="form-control" id="permanentAddress" placeholder="Permanent Address"
+                            [(ngModel)]="addressItem.permanentAddress" name="permanentAddress"
+                            #permanentAddress="ngModel" maxlength="45" ngControl="addressItem.permanentAddress">
+                        </div>
+                        <div class="form-group">
+                          <label for="currentAddress"><i class="fa fa-times-circle-o"></i> Current Address</label>
+                          <input type="text" class="form-control" id="currentAddress" placeholder="Current Address"
+                            [(ngModel)]="addressItem.currentAddress" name="currentAddress"
+                            ngControl="addressItem.currentAddress" #currentAddress="ngModel">
+                        </div>
+                        <div class="form-group">
+                          <label for="phoneNumber"><i class="fa fa-times-circle-o"></i> Phone Number</label>
+                          <input type="number" class="form-control" id="phoneNumber" placeholder="Phone Number"
+                            [(ngModel)]="addressItem.phoneNumber" ngControl="addressItem.phoneNumber" name="phoneNumber"
+                            #phoneNumber="ngModel" />
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="emgContactName"><i class="fa fa-times-circle-o"></i> Emergency Contact
+                            Name</label>
+                          <input type="text" class="form-control" id="emgContactName"
+                            placeholder="Emergency Contact Name" [(ngModel)]="addressItem.emgContactName"
+                            name="emgContactName" ngControl="addressItem.emgContactName" #emgContactName="ngModel"
+                            maxlength="48">
+                        </div>
+                        <div class="form-group">
+                          <label for="emgContactNumber"><i class="fa fa-times-circle-o"></i> Emergency Contact
+                            Number</label>
+                          <input type="number" class="form-control" id="emgContactNumber"
+                            placeholder="Emergency contact number" [(ngModel)]="addressItem.emgContactNumber"
+                            name="emgContactNumber" ngControl="addressItem.emgContactNumber"
+                            #emgContactNumber="ngModel">
+                        </div>
+                        <div class="form-group" [ngClass]="(!reason.valid && reason.touched)?'has-error':''">
+                          <label for="reason"> Audit Reason<span style="color:red">*</span></label>
+                          <textarea type="text" class="form-control" name="reason" id="reason"
+                            placeholder="Audit Reason" [(ngModel)]="aduitpurpose" ngControl="aduitpurpose"
+                            (change)="aduitpurpose=aduitpurpose.trim()" #reason="ngModel" required></textarea>
+                          <span class="help-block" *ngIf="!reason.valid && reason.touched">Please Enter audit
+                            Reason.</span>
+                        </div>
+                      </div>
+
+                      <div class="overlay" *ngIf="isLoadingPop">
+                        <i class="fa fa-spinner fa-pulse"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                class="fa fa-warning"></i>{{errMsgPop}}</span>
+            <button type="button" class="btn btn-primary" (click)="onSaveUser(true)"
+              [disabled]="!userForm.valid">{{isEdit==true?'Update User':'Save User'}}</button>
+            <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+              data-dismiss="modal" [disabled]="isLoading">Close</button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>
+<!-- Audit Modal -->
+<div id="auditModal" class="modal fade">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;</button>
+        <h4 class="modal-title">Audit history</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="auditTable">
+          <thead>
+            <tr>
+              <th>Sl.no</th>
+              <th>Action</th>
+              <th>ActionBy</th>
+              <th>DateTime</th>
+              <th>KeyField</th>
+              <th>Changes</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <!-- <ng-container > -->
+          <tbody>
+            <tr *ngFor="let item of auditLogList;let i = index">
+              <td>{{auditLogList.length - i + '.0'}}</td>
+              <td class="col-sm-1">{{item.auditType}}</td>
+              <td class="col-sm-1">{{item.aduitUser}}</td>
+              <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy HH:mm"}}</td>
+              <td class="col-sm-1">{{item.keyValue}}</td>
+              <td class="col-sm-4">
+                <table class="table table-bordered" style="margin-bottom: 0;">
+                  <tr>
+                    <th>Field name</th>
+                    <th>Old value</th>
+                    <th>New value</th>
+                  </tr>
+                  <tr *ngFor="let ch of objParser(item.changes)">
+                    <td>{{ch.fieldname}}</td>
+                    <td>{{ch.oldvalue}}</td>
+                    <td>{{ch.newvalue}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td class="col-sm-4">{{item.purpose}}</td>
+            </tr>
+          </tbody>
+          <!-- </ng-container> -->
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

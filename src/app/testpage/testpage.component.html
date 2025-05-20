@@ -1,0 +1,63 @@
+<div class="row">
+<form class="example-form">
+    <input type="text" placeholder="Search for a street" [formControl]="control" [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let street of filteredStreets | async" [value]="street">
+        {{street}}
+      </mat-option>
+    </mat-autocomplete>
+  </form>  
+</div>  
+
+<div class="row">
+  <div class="col-sm-6">
+    <label>Multiselect with custom bindings</label>
+    <ng-select [items]="empMListCon"
+               bindLabel="name"
+               bindValue="id"
+               [multiple]="false"
+               [virtualScroll]="true"
+               placeholder="Select Emp"
+               [(ngModel)]="selParentRole">
+    </ng-select>
+    <p>
+        Selected Name: {{selParentRole}}
+    </p>
+    <hr />
+                    </div>
+</div>
+<div class="box-body table-responsive">
+
+  <table id="department" class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th style="width:20px">Id</th>
+        <th>Department</th>
+        <th>Description</th>
+        <th>Parent Department</th>
+        <th style="width:20px">.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let depart of depList; let i = index">
+        <td>{{depart.id}}</td>
+        <td>{{depart.name}}</td>
+        <td>{{depart.description}}</td>
+        <td>{{depart.parentName}}</td>
+        <td>
+          <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddDepart(true,depart)">
+            <img src="../../../assets/dist/img/Picture2.png" />
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <form [formGroup]="myForm"> <!-- Binding myForm to the form in the template -->
+    <label for="myNum">Some Val</label>
+    <!-- formControlName binds our myNum field declared in the ts code. -->
+    <input type='number' id="myNum" formControlName="myNum">
+    <div *ngIf="myForm.controls['myNum'].hasError('max')">
+          Minimum required number is 15.
+    </div> 
+</form>

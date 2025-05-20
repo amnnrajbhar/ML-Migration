@@ -1,0 +1,78 @@
+#content {
+  /* background-color: #c0c0c0; */
+  background-color: white;
+  /* border: 1px solid blue; */
+}
+
+#slide {
+  /* border: 1px solid red;
+  background-color: #000;
+  color: #fff; */
+  overflow: hidden;
+}
+
+#carousel .item{
+  height: 200px;
+  width: 100%;
+} 
+.carousel-inner .item img{
+  height: 200px;
+  width: 100%;
+}
+
+.lightbox img {
+  border: none;
+}
+
+.card-chart{
+  background-color: white;
+}
+
+
+
+.avatar-circle {
+  width: 50px;
+  height: 50px;
+  background-color:lightseagreen;
+  text-align: center;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+}
+
+.initials {
+  /* position: relative; */
+  top: 25px; /* 25% of parent */
+  font-size: 25px; /* 50% of parent */
+  line-height: 25px; /* 50% of parent */
+  color: #fff;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+}
+
+.bg-ligtseagreen{
+  background-color: rgb(113, 137, 189);
+  opacity: 0.6;
+}
+
+.card-icon{
+	position: relative;
+  float: right;
+  opacity: 0.6;
+}
+
+.box-shadow{
+  border: 1px solid;
+  padding: 10px;
+  box-shadow: 5px 10px #cccccc;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+
+thead th {
+  background-color:#68a7d2;
+  color: white;
+}

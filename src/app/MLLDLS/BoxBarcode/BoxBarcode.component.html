@@ -1,0 +1,435 @@
+<section class="content-header">
+    <h1 class="display-1">
+        MLLDLS
+        <small> Box Barcode </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Box Barcode</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title"> Box Barcode </h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-primary pull-right" (click)="onAddBoxBarcode(false,boxbarcodeItem)"><i
+                        class="fa fa-plus" aria-hidden="true"></i> Add Box</button>
+            </div>
+        </div>
+        <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="card-body" style="border: black; box-shadow: gray;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="location">Location</label>
+                                <input [(ngModel)]="filterLocation" class="form-control" id="location"
+                                    placeholder="Location" name="location" ngControl="filterLocation"
+                                    #locationEnt="ngModel" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="boxNo"> Box No</label>
+                                <input [(ngModel)]="filterBoxNo" class="form-control" id="boxNo"
+                                    placeholder="Box No" name="boxNo" ngControl="filterBoxNo"
+                                    #boxNoEnt="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="place"> Barcode</label>
+                                <input [(ngModel)]="filterBarcode" class="form-control" id="place" placeholder="Product"
+                                    name="place" ngControl="filterBarcode" #placeEnt="ngModel">
+                            </div>
+                        </div>
+                       
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group form-group-sm">
+                                <button class="btn btn-primary btn-sm" (click)="getBoxBarcodeMasterList();"
+                                    matTooltip="click to go">Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+                                    matTooltip="click to reset">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+        &nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+        <div class="box-body table-representative">
+            <table id="categTable" class="table table-bordered table-striped">
+                <thead style="background-color: #54a8e0;color:rgb(0, 0, 0);">
+                    <tr>
+                        <th class="col-sm-1">Sl.No</th>
+                        <th>Location</th>
+                        <th>Box No</th>
+                        <th>Box Description</th>
+                        <th>Box Barcode</th>
+                        <th>Documents</th>
+                        <th class="col-sm-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let categ of BoxBarcodeList;  let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{categ.location}}</td>
+                        <td>{{categ.boxNo}}</td>
+                        <td>{{categ.boxDescription}}</td>
+                        <td>{{categ.boxBarcode1}}</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td class="pr-2">
+                                        <button type="button" class="btn btn-primary btn-xs"
+                                            (click)="getBoxDetails(categ)">
+                                            ADD/REMOVE
+                                        </button>
+                                    </td>                                    
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td class="pr-2">
+                                        <button type="button" class="btn btn-primary btn-xs"
+                                            (click)="onAddBoxBarcode(true,categ)">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                    </td>
+                                    <td class="pr-2">
+                                        <button type="button" class="btn btn-primary btn-xs"
+                                            (click)="deleteBoxBarcode(categ)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+                        *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Box Details</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="form-horizontal">
+                       
+                        
+                            <div class="form-group form-group-sm">
+                                <label for="room" class="col-sm-3">Room<span style="color:red">*</span></label>
+                                <div class="col-sm-9">
+                                <select [(ngModel)]="boxbarcodeItem.room" class="form-control"
+                                    id="room" name="room" ngControl="boxbarcodeItem.room"
+                                    #roomEnt="ngModel"
+                                    (change)="GetRacMasterkList(boxbarcodeItem.room)"
+                                    matTooltip="Select Room" required>
+                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let mat of RoomList" value={{mat.room}}>
+                                        {{mat.room}}</option>
+                                </select>
+                            </div>
+                             </div>
+                      
+                            <div class="form-group form-group-sm">
+                                <label for="rack" class="col-sm-3">Rack<span style="color:red">*</span></label>
+                                <div class="col-sm-9">
+                                <select [(ngModel)]="boxbarcodeItem.rack" class="form-control"
+                                    id="rack" name="rack" ngControl="boxbarcodeItem.rack"
+                                    #rackEnt="ngModel" (change)="GetBins(boxbarcodeItem)"
+                                     matTooltip="Select Rack" required>
+                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let mat of RackList" value={{mat.rack}}>
+                                        {{mat.rack}}</option>
+                                </select>
+                            </div>
+                        </div>
+                            <div class="form-group">
+                                <label for="bin" class="col-sm-3">Bin<span style="color:red">*</span></label>
+                                <div class="col-sm-9">
+                                <select [(ngModel)]="boxbarcodeItem.bin" class="form-control"
+                                    id="bin" name="bin" ngControl="boxbarcodeItem.bin"
+                                    #binEnt="ngModel" 
+                                     matTooltip="Select bin" required>
+                                    <option [ngValue]="undefined" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let mat of BinList" value={{mat.bin}}>
+                                        {{mat.bin}}</option>
+                                </select>
+                            </div>
+                        </div>
+                            <div class="form-group" [ngClass]="(boxNo.touched && !boxNo.valid)?'has-error':''">
+                                <label for="boxNo" class="col-sm-3">Box NO<span
+                                        style="color:red">*</span></label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="boxNo" #boxNo="ngModel"
+                                        name="boxNo" placeholder="Box No" [(ngModel)]="boxbarcodeItem.boxNo"
+                                        required (change)="boxbarcodeItem.boxNo=boxbarcodeItem.boxNo.trim()" />
+                                    <span class="help-block" *ngIf="!boxNo.valid && boxNo.touched">Please enter
+                                        Box No.</span>
+                                </div>
+                            </div>
+
+                        <div class="form-group">
+                            <label for="boxDescription" class="col-sm-3">Box Description<span
+                                style="color:red">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="boxDescription"
+                                    (change)="boxbarcodeItem.boxDescription=boxbarcodeItem.boxDescription.trim()"
+                                    placeholder="Box Description" [(ngModel)]="boxbarcodeItem.boxDescription"
+                                    name="boxDescription">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="boxBarcode1" class="col-sm-3">Box Barcode<span
+                                style="color:red">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="boxBarcode1"
+                                    (change)="boxbarcodeItem.boxBarcode1=boxbarcodeItem.boxBarcode1.trim()"
+                                    placeholder="Box Barcode" [(ngModel)]="boxbarcodeItem.boxBarcode1"
+                                    name="boxBarcode1">
+                            </div>
+                        </div>
+                        <div class="form-group" [ngClass]="(!reason.valid && reason.touched)?'has-error':''">
+                            <label for="reason" class="col-sm-3"><i class="fa fa-times-circle-o"
+                                    *ngIf="!reason.valid && reason.touched"></i> Audit Reason<span
+                                    style="color:red">*</span></label>
+                            <div class="col-sm-9">
+                                <textarea type="text" class="form-control" name="reason" id="reason"
+                                    placeholder="Audit Reason" [(ngModel)]="aduitpurpose" ngControl="aduitpurpose"
+                                    (change)="aduitpurpose=aduitpurpose.trim()" #reason="ngModel" required></textarea>
+                                <span class="help-block" *ngIf="!reason.valid && reason.touched">Please Enter audit
+                                    Reason.</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button type="button" class="btn btn-primary" (click)="onSaveBoxBarcode()"
+                    [disabled]="isLoadingPop || (!desigForm.valid) || isLoadPop">{{isEdit==true?'Update':'Save'}}</button>
+                <button type="button" class="btn btn-default" 
+                    style="background-color:darkgray;color:white;" data-dismiss="modal"
+                    [disabled]="isLoadingPop">Close</button>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="BoxViewModel" tabindex="-1" role="dialog" aria-labelledby="BoxViewModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Box Details</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #boxForm="ngForm">
+                    <div class="col-sm-12">
+                       <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="plant">Plant</label>
+                                <input name="plant" id="plant" placeholder="Location"
+                                    class="form-control" value="{{boxbarcodeItem.location}}"
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="boxNo">Box No</label>
+                                <input name="boxNo" id="boxNo" placeholder="boxNo"
+                                    class="form-control" value="{{boxbarcodeItem.boxNo}}"
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="docRoom">Room No</label>
+                                <input name="docRoom" id="docRoom" placeholder="Doc Room"
+                                    class="form-control" value="{{boxbarcodeItem.room}}"
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="docRack">Rack</label>
+                                <input name="docRack" id="docRack" placeholder="Doc Rack"
+                                    class="form-control" value="{{boxbarcodeItem.rack}}"
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="docBin">Bin</label>
+                                <input name="docBin" id="docBin" placeholder="Doc Bin"
+                                    class="form-control" value="{{boxbarcodeItem.bin}}" readonly>
+                            </div>
+                        </div>
+                       </div>
+                       &nbsp;&nbsp;&nbsp;
+                       &nbsp;&nbsp;&nbsp;
+                       <div class="row">
+                        <table id="boxTable" class="table table-bordered" cellspacing="0"
+                                            style="margin-bottom: 0px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sl. No</th>
+                                                    <th>Doc No</th>
+                                                    <th>Doc Description</th>
+                                                    <th>Barcode</th>
+                                                    <th>Doc Type</th>
+                                                    <th>Category</th>
+                                                    <th>Request Status</th>
+                                                    <th>Document Status</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let per of dynamicArray; let rec=index">
+                                                   <td>{{rec+1}}</td>
+                                                   <td>{{per.docNo}}</td>
+                                                   <td>{{per.docShtDesc}}</td>
+                                                   <td>{{per.barcode}}</td>
+                                                   <td>{{per.docType}}</td>
+                                                   <td>{{per.category}}</td>
+                                                   <td>{{per.reqStatus}}</td>
+                                                   <td>{{per.borrowStatus}}</td>
+                                                    <td *ngIf="!isEdit">
+                                                        <button title="Remove Document" (click)="removeDoc(per);" matTooltip="Click to Remove"
+                                                            class="btn btn-secondary btn-sm" [disabled]="isEdit">
+                                                            <i class="fa fa-times" style="color: red;"></i></button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                       </div>
+                       &nbsp;&nbsp;&nbsp;
+                       &nbsp;&nbsp;&nbsp;
+                       <div class="row">
+                        <div class="col-sm-3">
+                         <label for="docNo">Doc No</label>
+                         <input type="text" name="docNo" id="docNo" [(ngModel)]="DOCNO" 
+                         ng-control="DOCNO" placeholder="Doc No" class="form-control">
+                        </div>
+                         <div class="col-sm-3">
+                            <label for="barcode">Barcode</label>
+                            <input type="text" name="barcode" id="barcode" [(ngModel)]="Barcode" 
+                            ng-control="Barcode" placeholder="Barcode" class="form-control">
+                           </div>
+                           <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group form-group-sm">
+                                <button class="btn btn-primary btn-sm" (click)="getDocDetails();"
+                                    matTooltip="click to go">Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary btn-sm" (click)="ClearDoc();"
+                                    matTooltip="click to reset">Clear</button>
+                            </div>
+                        </div>
+                       </div>
+                       &nbsp;&nbsp;&nbsp;
+                       &nbsp;&nbsp;&nbsp;
+                       <div class="row">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Sl. No</th>
+                                        <th>Doc No</th>
+                                        <th>Doc Description</th>
+                                        <th>Barcode</th>
+                                        <th>Doc Type</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let per of DocList; let rec=index">
+                                       <td>{{rec+1}}</td>
+                                       <td>{{per.docNo}}</td>
+                                       <td>{{per.docShtDesc}}</td>
+                                       <td>{{per.barcode}}</td>
+                                       <td>{{per.docType}}</td>
+                                       <td>{{per.category}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                       </div>
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button type="button" class="btn btn-primary" (click)="updateDoc(boxbarcodeItem)"
+                    >Add</button>
+                <button type="button" class="btn btn-default" 
+                    style="background-color:darkgray;color:white;" data-dismiss="modal"
+                    [disabled]="isLoadingPop">Close</button>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

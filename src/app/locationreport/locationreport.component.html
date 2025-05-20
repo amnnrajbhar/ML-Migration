@@ -1,0 +1,642 @@
+<section class="content-header">
+  <h3>
+    VMS Visitor Report - {{this.locationName}}
+  </h3>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> VMS</a></li>
+    <li class="active">VMS Visitor Report</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="box-primary">
+
+    <!-- <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Report - Location: {{location}}</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+    </div> -->
+    <!-- /.box-header -->
+    <!-- <div class="row mt-1">
+      <div class="col-sm-12">
+        <div class="card shadow"> -->
+          <!-- Card Header - Dropdown -->
+          <!-- <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 text-sm font-weight-bold text-primary">Overview</h6>
+            </div> -->
+          <!-- Card Body -->
+          <!-- <div class="card-body">
+            <div class="chart-area">
+              <canvas id="linechart" height="60"></canvas>
+            </div>
+
+          </div>
+          <div class="overlay" *ngIf="isLoading"> -->
+            <!-- <i class="fa fa-refresh fa-spin"></i> <i class="fa fa-spinner fa-pulse"></i> -->
+          <!-- </div>
+        </div>
+      </div>
+    </div> -->
+    <div class="row pl-2">
+      <div class="card shadow">
+        <div class="card-body">
+          <!-- <div style="color: #312d2d;background: linear-gradient(to bottom right, #13547a , #80d0c7)" class="shadow"> -->
+          <div style="background:#68a7d2; border-radius: 5px;" class="shadow mb-3 my-3">
+            <h3 class="pl-5 pt-3">Filters</h3>
+            <div class="row pl-2 flex-fluid">
+              <!-- <button class="btn btn-primary"  id="slide_button"  style="cursor: pointer;">
+                    <i class="fa fa-calendar fa-sm text-white-50"> </i> Add Filter
+                  </button> -->
+              <div class="col-sm-12 mt-2">
+
+                <!-- <div id="slide"  style="display:none;"> -->
+                <div id="slide">
+                  <div class="row">
+                    <div class="col-sm-4" *ngIf="currentUser.fkProfileId==1">
+                      <!-- <input type="date" class="form-control" placeholder="From Date"  [(ngModel)]="from_date"/> -->
+                      <!-- <div class="form-group" [ngClass]="(location.touched && !location.valid)?'has-error':''"> -->
+                      <label>Location</label>
+                      <ng-multiselect-dropdown style="width:100%; background-color: white;" id="filLocation"
+                        name="filLocation" ngControl="filterLocation" #filterLocationEnt="ngModel"
+                        class="custom-asset-dropdown" [placeholder]="'Location'" [data]="locListCon"
+                        [(ngModel)]="filterLocation" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)"
+                        (onSelectAll)="onSelectAll()">
+                      </ng-multiselect-dropdown>
+                      <!-- <span class="help-block" *ngIf="!location.valid && location.touched">Please enter valid From Date.</span> -->
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- <input type="date" class="form-control" placeholder="From Date"  [(ngModel)]="from_date"/> -->
+                      <!-- <div class="form-group" [ngClass]="(location.touched && !location.valid)?'has-error':''"> -->
+                      <label>Visitor Type</label>
+                      <ng-multiselect-dropdown style="width:100%; background-color: white;" id="filVType"
+                        name="filVType" ngControl="filterVType" #filterVTypeEnt="ngModel" [placeholder]="'Visitor Type'"
+                        [data]="visitorTypeList" [(ngModel)]="filterVType" [settings]="dropdownSettingsVT"
+                        (onSelect)="onItemSelectVT($event)" (onSelectAll)="onSelectAll()">
+                      </ng-multiselect-dropdown>
+                      <!-- <span class="help-block" *ngIf="!location.valid && location.touched">Please enter valid From Date.</span> -->
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- <input type="date" class="form-control" placeholder="From Date"  [(ngModel)]="from_date"/> -->
+                      <!-- <div class="form-group" [ngClass]="(location.touched && !location.valid)?'has-error':''"> -->
+                      <label>Visitor Purpose</label>
+                      <ng-multiselect-dropdown style="width:100%; background-color: white;" id="filVpurpose"
+                        name="filVpurpose" ngControl="filterVPurpose" #filterVPurposeEnt="ngModel" [placeholder]="'Visitor Purpose'"
+                        [data]="purposeList" [(ngModel)]="filterVPurpose" [settings]="dropdownSettingsVP"
+                        (onSelect)="onItemVPSelect($event)" (onDeSelect)="onItemVPDeselect($event)">
+                      </ng-multiselect-dropdown>
+                      <!-- <span class="help-block" *ngIf="!location.valid && location.touched">Please enter valid From Date.</span> -->
+                    </div>
+                    <div class="col-sm-4">
+                      <label>Scheduled</label>
+                      <ng-multiselect-dropdown style="width:100%; background-color: white;" id="filScheduled"
+                        name="filScheduled" ngControl="filterScheduled" #filterScheduledEnt="ngModel"
+                        [placeholder]="'Scheduled Type'" [data]="ScheduledList" [(ngModel)]="filterScheduled"
+                        [settings]="dropdownSettingsSchedule" (onSelect)="onItemSelect($event)"
+                        (onSelectAll)="onSelectAll()">
+                      </ng-multiselect-dropdown>
+                    </div>
+                    <div class="col-sm-4">
+                      <label>Visitor</label>
+                      <input #filterVisitorEnt="ngModel" [matTooltipPosition]="'below'"
+                        matTooltip="Enter visitor to search name" name="filVisitor" class="form-control"
+                        placeholder="Visitor Name" (change)="filVisitor=filVisitor.trim()" [(ngModel)]="filVisitor"
+                        ngControl="filVisitor">
+                    </div>
+                    <div class="col-sm-4">
+                      <label>Company</label>
+                      <input #filterCompanyEnt="ngModel" [matTooltipPosition]="'below'"
+                        matTooltip="Enter Company to search name" name="filCompany" class="form-control"
+                        placeholder="Company Name" (change)="filCompany=filCompany.trim()" [(ngModel)]="filCompany"
+                        ngControl="filCompany">
+                    </div>
+                    <!-- </div> -->
+                    <div class="col-sm-4">
+                      <label>Employee</label>
+                      <ng-multiselect-dropdown style="width:100%; background-color: white;" id="filEmployee"
+                        name="filEmployee" ngControl="filterEmployee" #filterEmployeeEnt="ngModel"
+                        [placeholder]="'Employee'" [data]="empMList1" [(ngModel)]="filterEmployee"
+                        [settings]="dropdownSettingsE" (onSelect)="onItemSelectEmp($event)"
+                        (onSelectAll)="onSelectAll()">
+                      </ng-multiselect-dropdown>
+
+                    </div>
+                 
+                    <div class="col-sm-4">
+                      <label>Status</label>
+                      <ng-multiselect-dropdown style="width:100%; background-color: white;" id="filStatus"
+                        name="filStatus" ngControl="filterStatus" #filterStatusEnt="ngModel"
+                        [placeholder]="'Status'" [data]="StatusList" [(ngModel)]="filterStatus"
+                        [settings]="dropdownSettingsStatus" (onSelect)="onItemSelect($event)"
+                        (onSelectAll)="onSelectAll()">
+                      </ng-multiselect-dropdown>
+                    </div>
+                    <div class="col-sm-4">
+                      <!-- <input type="date" class="form-control" placeholder="From Date"  [(ngModel)]="from_date"/> -->
+                      <div class="form-group" [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+                        <label>From Date</label>
+                        <input #fromDate="ngModel" [matTooltipPosition]="'below'" matTooltip="Click to change from date"
+                          [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" name="fromDate" class="form-control"
+                          [(ngModel)]="from_date" #fromDate="ngModel">
+                        <owl-date-time [pickerType]="'calendar'" #dt1 style="width: 250px;"></owl-date-time>
+                        <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From
+                          Date.</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="form-group" [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+                        <!-- <input type="date" [disabled]="from_date==null||from_date==''" class="form-control" placeholder="To Date"  [(ngModel)]="to_date"> -->
+                        <label>To Date</label>
+
+                        <input #toDate="ngModel" [min]="from_date" [max]="today" [matTooltipPosition]="'below'"
+                          matTooltip="Click to change to date" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"
+                          name="endDate" class="form-control" [(ngModel)]="to_date" #toDate="ngModel">
+                        <owl-date-time [pickerType]="'calendar'" #dt2 style="width: 250px;"></owl-date-time>
+                        <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid To
+                          Date.</span>
+
+                      </div>
+                    </div>
+                    <!-- <div class="col-sm-4"><button class="btn btn-primary" (click)="dashboardRefresh();" [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">Go</button></div> -->
+                    <div class="col-sm-6 mb-4 mt-3">
+                      <button class="btn btn-primary" (click)="getFilteredDbData();" [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)"
+                        [disabled]="isGoLoading">
+                        <i class="fa" [ngClass]="{'fa-spin fa-spinner': isGoLoading}"></i><span *ngIf="isGoLoading">&nbsp;</span>Go
+                      </button>
+                      <button class="btn btn-primary ml-3" (click)="clearFilter();">Clear</button>
+                      <button class="btn btn-primary ml-3" (click)="downloadPdf()" [disabled]="visitorsList.length==0">
+                        <i class="fa fa-download fa-sm text-white-50"></i> Export PDF</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row flex-fluid mt-3">
+            <div class="col">
+              <button class="btn btn-primary float-right mb-2" (click)="exportAsXLSX();"
+                [disabled]="visitorsList.length<=0">
+                <i class="fa fa-download fa-sm text-white-50"></i> Export to excel</button>
+                <button class="btn btn-primary float-right mb-2" (click)="downloadPdf()" matTooltip="click to export to PDF" 
+                  [disabled]="visitorsList.length==0"><i class="fa fa-file-pdf-a"></i> Export PDF</button>
+            </div>
+          </div> -->
+          <div class="table-responsive">
+            <table id="locationTable" class="table">
+              <thead style="background-color: #0099cc; color:white;;">
+                <tr>
+                  <th>Actions</th>
+                  <th>Sl. No.</th>
+                  <!-- <th>Visitor Image</th> -->
+                  <th>Location</th>
+                  <th>Type</th>
+                  <th>Scheduled</th>
+                  <th>Person to Meet<br>(Employee)</th>
+                  <th>Person to Meet<br>(Others)</th>
+                  <th>Visitor Name</th>
+                  <th>Company</th>
+                  <th>Mobile</th>
+                  <th>No.of persons</th>
+                  <th>Purpose</th>
+                  <th>Email</th>
+                  <th>Belongings</th>
+                  <th>Other Belongings</th>
+                  <th>Start Date</th>
+                  <th>InTime</th>
+                  <th>End Date</th>
+                  <th>OutTime</th>
+                  <th>Comments</th>
+                  <th>AMC Action Taken</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let emp of visitorsList;  let i = index">
+                  <td style="text-align: center;">
+                    <button *ngIf="getPurpose(emp.fkVisitorPurpose)=='AMC'" type="button" class="btn btn-xs btn-primary" [matTooltipPosition]="'after'"
+                      matTooltip="Click to View AMC details" (click)="AMCEntry(emp.id)">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button *ngIf="getPurpose(emp.fkVisitorPurpose)=='AMC' && emp.temp13=='Approved'" type="button" class="btn btn-xs btn-info ml-2" [matTooltipPosition]="'after'"
+                      matTooltip="Click to Complete Visit." (click)="showPrintModal(emp)" 
+                       [disabled]="emp.temp18 != null && emp.temp18 != '' " >
+                      <i class="fas fa-print"></i>
+                    </button>
+                  </td>
+                  <td style="text-align: center;">{{i+1}}</td>
+                  <!-- <td><a (click)="downloadImage(emp.id);" style="cursor: pointer;text-decoration: underline;">Download pic</a></td> -->
+                  <!-- <td>{{locationName}}</td> commeted by SyamBora-->
+                  <td>{{getLocationName(emp.temp7)}}</td>
+                  <td>{{getVisitorType(emp.fkVisitorType)}}</td>
+                  <td>{{emp.isPreShedualled?"Planned":"UnPlanned"}}</td>
+                  <td>{{emp.fkEmployeeName ? emp.fkEmployeeName : 'NA'}}</td>
+                  <td>{{emp.temp4 ? emp.temp4 : 'NA'}}</td>
+                  <td><a (click)="downloadImage(emp.id);" style="cursor: pointer;text-decoration: underline;"
+                      [matTooltipPosition]="'below'" matTooltip="Click to Download Visitor Image">{{emp.name}}</a></td>
+                  <td>{{emp.companyName}}</td>
+                  <td>{{emp.mobile}}</td>
+                  <td *ngIf="getAdditionalCount(emp.id)>=1" style="text-align: center;"><a [matTooltipPosition]="'below'"
+                      matTooltip="Click to View Additional Visitor Details" (click)="additionalVisitorsDetails(emp.id);"
+                      style="cursor: pointer; text-decoration: underline;">{{emp.numberOfPerson}}</a></td>
+                  <td *ngIf="getAdditionalCount(emp.id)<1" [matTooltipPosition]="'below'"
+                    matTooltip="No Additional Visitor Details" style="text-align: center;">{{emp.numberOfPerson}}</td>
+                  <td>{{getPurpose(emp.fkVisitorPurpose)}}</td>
+                  <td>{{emp.email}}</td>
+                  <td style="word-break: break-word;">{{emp.temp2 ? emp.temp2 : 'NA'}}</td>
+                  <td style="word-break: break-word;">{{emp.temp9 ? emp.temp9 : 'NA'}}</td>
+                  <td>{{emp.date |  date:'dd/MM/yyyy'}}</td>
+                  <td style="text-align: center;">{{emp.fromTime?(getTimeFormat(emp.fromTime) | date:'HH:mm') : 'NA'}}</td>
+                  <td>{{emp.endDateTime |  date:'dd/MM/yyyy'}}</td>
+                  <td style="text-align: center;">{{emp.toTime?(getTimeFormat(emp.toTime) | date:'HH:mm ') : 'NA'}}</td>
+                  <td>{{emp.temp18 ? emp.temp18 : 'NA'}}</td>
+                  <td style="min-width: 150px !important; text-align: center;">{{emp.amcActionTaken ? emp.amcActionTaken : 'NA'}}</td>
+                  <!-- <td>{{emp.mobile}}</td> -->
+                  <!-- <td>
+                      <button class="btn btn-primary btn-xs" (click)="review(emp.id)"><i class="fa fa-eye"></i></button>&nbsp;&nbsp;
+                      </td> -->
+                </tr>
+              </tbody>
+              
+            </table>
+
+
+          </div>
+
+          <div hidden id ="pdf">
+            <table hidden class="table-responsive" >
+            <thead>
+              <tr>
+                <th>Sl. No</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Scheduled</th>
+                <th>Person to Meet(Employee)</th>
+                <th>Person to Meet(Others)</th>
+                <th>Visitor Name</th>
+                <th>Company</th>
+                <th>Mobile</th>
+                <th>No.of persons</th>
+                <th>Purpose</th>
+                <th>Email</th>
+                <th>Belongings</th>
+                <th>Other Belongings</th>
+                <th>Start Date</th>
+                <th>InTime</th>
+                <th>End Date</th>
+                <th>OutTime</th>
+                <th>AMC Action Taken</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let emp of visitorsList;  let i = index">
+                <td>{{i+1}}</td>
+                <td>{{getLocationName(emp.temp7)}}</td>
+                <td>{{getVisitorType(emp.fkVisitorType)}}</td>
+                <td>{{emp.isPreShedualled?"Planned":"UnPlanned"}}</td>
+                <td>{{emp.fkEmployeeName}}</td>
+                <td>{{emp.temp4}}</td>
+                <td>{{emp.name}}</td>
+                <td>{{emp.companyName}}</td>
+                <td>{{emp.mobile}}</td>
+                <td>{{emp.numberOfPerson}}</td>
+                <td>{{getPurpose(emp.fkVisitorPurpose)}}</td>
+                <td>{{emp.email}}</td>
+                <td style="word-break: break-word;">{{emp.temp2}}</td>
+                <td style="word-break: break-word;">{{emp.temp9}}</td>
+                <td>{{emp.date |  date:'dd/MM/yyyy'}}</td>
+                <td>{{emp.fromTime?(getTimeFormat(emp.fromTime) | date:'HH:mm'):emp.fromTime}}</td>
+                <td>{{emp.endDateTime |  date:'dd/MM/yyyy'}}</td>
+                <td>{{emp.toTime?(getTimeFormat(emp.toTime) | date:'HH:mm'):emp.toTime}}</td>
+                <td style="min-width: 150px !important;">{{emp.amcActionTaken ? emp.amcActionTaken : 'NA'}}</td>
+              </tr>
+            </tbody>
+        </table>
+        </div>
+          <!-- <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <h4 class="modal-title">Visitors list</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body box box-primary" style="border-top:none;">
+        <div class="row p-2 flex-fluid">
+
+
+          <div class="row m-3 pt-5">
+            <div class="col-lg-12 flex-fluid">
+              <button class="btn btn-primary float-right" (click)="exportAsXLSX();" style="cursor: pointer;">
+                <i class="fa fa-download">Generate Report</i>
+              </button>
+            </div>
+            <div class="col-lg-12">
+
+              <!-- <div class="card-header">
+                            <h3>Visitors Details</h3>
+                          </div> -->
+
+              <div class="box-body table-responsive">
+                <table id="userTable" class="table" cellspacing="0">
+                  <thead style="background-color: royalblue; color: white">
+                    <tr>
+                      <th>SNo</th>
+                      <th>Employee<br> Name</th>
+                      <th>Visitor<br> Name</th>
+                      <th>Mobile</th>
+                      <th>Email</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of visitorsList; let i = index">
+                      <td>{{i+1}}</td>
+                      <td>{{user.fkEmployeeName}}</td>
+                      <td>{{user.name}}</td>
+                      <td>{{user.mobile}}</td>
+                      <td>{{user.email}}</td>
+                      <td>{{user.date | date:'dd/MM/yyyy'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<div class="modal fade" id="additionalVisitorModal" style="z-index: 2000 !important;" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="modal-title">
+          <h4>Additional Visitors Details</h4>
+        </div>
+      </div>
+      <form #visitorForm="ngForm">
+        <div class="modal-body" style="box-shadow: none;color:gray;background-size:cover;">
+          <div class="row">
+            <div class="col-sm-12">
+              <table id="personTable" class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let per of additionalVisitorItem; let rec=index">
+                    <td style="width:30%">
+                      <input class="form-control" [name]="'name'+rec" type="text" name="personName" id="personName"
+                        readonly [(ngModel)]="per.name" placeholder="Name" />
+                    </td>
+                    <td style="width:30%">
+                      <div class="col-sm-4">
+                        <input class="form-control" [name]="'code'+rec" name="personCode" id="personCode" readonly
+                          [(ngModel)]="per.temp1" placeholder="Code" />
+                      </div>
+                      <div class="col-sm-8">
+                        <input class="form-control" [name]="'mobile'+rec" name="personPhone" id="personPhone" readonly
+                          [(ngModel)]="per.mobile" placeholder="mobile" />
+                      </div>
+                    </td>
+                    <td style="width:30%">
+                      <input class="form-control" [name]="'email'+rec" type="email" name="personEmail" id="personEmail"
+                        readonly [(ngModel)]="per.email" placeholder="Email" />
+                    </td>
+
+                  </tr>
+
+
+                </tbody>
+              </table>
+
+            </div>
+            <div class="overlay" *ngIf="isLoading">
+              <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+          <button type="button" class="btn btn-default" [matTooltipPosition]="'below'" matTooltip="Click to Close"
+            style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+        </div>
+
+
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="sModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">     
+      <div class="modal-body box" style="box-shadow: none; border-top:none;margin-top: 0;">
+        <div class="form-horizontal">
+          <!-- <div class="col-sm-12"  style="width: 4in;  height: 2in; "> -->
+          <!-- <form #printForm="ngForm"> -->
+          <div id="print-section" class="align-center">
+            <div style="width: 4in;  height: 4in; ">
+              <div class="col-sm-4">
+                <div style="text-align:center">                
+                    <img [src]="image" height="420" width="520" />                
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- </form> -->
+          <!-- </div> -->
+        </div>
+      </div>
+      <div class="modal-footer">       
+        <button type="button" class="btn btn-default" [matTooltipPosition]="'below'" matTooltip="Click to Close"
+          style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="printModal" role="dialog" aria-labelledby="printModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+     
+      <!-- <div class="tabs-container"> -->
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="container" id="print-section">
+          <div class="row">
+            <div class="col-sm-4">
+              <div style="text-align:center">                
+                  <img [src]="image" height="150" width="200" />                
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">       
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--AMC Print Modal-->
+<div class="modal fade" id="AMCPrintModal" role="dialog" aria-labelledby="AMCPrintModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">AMC Visit Details</h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <div class="container" id="amc-print-section" *ngIf="printItem">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="pull-left"><img src="../../assets/dist/img/micrologo.png"></div>
+              <div class="col-sm-7">
+                <h1 class="pull-right">AMC Visit Details</h1>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <h3>Visitor Details</h3>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-4">
+              <strong>Visitor Name: </strong> {{printItem.name}}
+            </div>
+            <div class="col-sm-4">
+              <strong>Visiting Date: </strong> {{printItem.date}}
+            </div>
+            <div class="col-sm-4">
+              <strong>Company Name: </strong> {{printItem.companyName}}
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-4">
+              <strong>Mobile: </strong> {{printItem.mobile}}
+            </div>
+            <div class="col-sm-4">
+              <strong>Visitor Type: </strong> {{printItem.visitorType}}
+            </div>
+            <div class="col-sm-4">
+              <strong>Purpose: </strong> {{printItem.visitorPurpose}}
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-4">
+              <strong>Belongings: </strong> {{printItem.temp2 ? printItem.temp2 : "NA"}}
+            </div>
+            <div class="col-sm-4">
+              <strong>Person to Meet: </strong> {{printItem.fkEmployeeName}}
+            </div>
+            <div class="col-sm-4">
+              <strong>Person to Meet ID: </strong> {{printItem.fkEmployeeId}}
+            </div>
+          </div>
+          <div class="row">
+            <h3>AMC Details</h3>
+          </div>
+          <div class="row mt-2" *ngIf="printAMCItems.length == 0">
+            <p>No AMC details found.</p>
+          </div>
+          <div class="row mt-2" *ngIf="printAMCItems.length > 0">
+            <div class="col-sm-4">
+              <strong>Service Type: </strong> {{printAMCItems[0].typeOfService}}
+            </div>
+            <div class="col-sm-4">
+              <strong>Department: </strong> {{printAMCItems[0].department}}
+            </div>
+            <div class="col-sm-4">
+              <strong>Service Requested By: </strong> {{printAMCItems[0].serviceRequestedBy}}
+            </div>
+          </div>
+          <div class="row mt-2" *ngIf="printAMCItems.length > 0">
+            <div class="col-sm-4">
+              <strong>Reason for AMC: </strong> {{printAMCItems[0].reasonforAmc}}
+            </div>
+            <div class="col-sm-4">
+              <strong>Action Taken: </strong> {{printAMCItems[0].actionTaken}}
+            </div>
+          </div>
+          <div class="row">
+            <h3>Equipment Details</h3>
+          </div>
+          <div class="row mt-2" *ngIf="printAMCItems.length == 0">
+            <p>No Equipment details found</p>
+          </div>
+          <div class="row mt-2" *ngIf="printAMCItems.length > 0">
+            <div class="table-responsive">
+              <table id="userTable" class="table">
+                <thead style="background-color: #0099cc; color:white;">
+                  <tr>
+                    <th>Sl. No.</th>
+                    <th>Equipment ID</th>
+                    <th>Equipment Name</th>
+                    <th>Make/Model</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of printAMCItems; let i = index">
+                    <td style="text-align:center;">{{i + 1}}</td>
+                    <td>{{item.equipmentId}}</td>
+                    <td>{{item.equipmentName}}</td>
+                    <td>{{item.modelNo}}</td>
+                    <td>{{item.status}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="print()">Print</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

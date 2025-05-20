@@ -1,0 +1,345 @@
+<section class="content-header">
+  <h1>
+    GateEntry
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> GateEntry</a></li>
+    <li class="active">GE Outward Register</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Gate Entry Outward Register</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <!-- <button class="btn btn-primary pull-right" (click)="exportAsXLSX()" matTooltip="click to export to Excel" 
+        [disabled]="gateOutwardMList.length==0"><i class="fa fa-file-excel"></i> Export Excel</button>
+        &nbsp; -->
+        <button class="btn btn-primary pull-right" (click)="downloadPdf()" matTooltip="click to export to PDF" 
+        [disabled]="gateOutwardMList.length==0"><i class="fa fa-file-pdf-a"></i> Export PDF</button>
+      </div>
+    </div>
+    <div id="dateFilterPanel">
+      <div class="row ml-3">
+        <div class="col-sm-4">
+          <div class="form-group form-group-sm">
+            <label for="DeliveryMode">Financial Year</label>
+            <ng-multiselect-dropdown id="fltFNYear" name="fltFNYear" #fltFNYearEnt="ngModel" matTooltip="select Financial Year"
+              [placeholder]="'select Financial Year(multiple)'" [data]="finYearList" [(ngModel)]="selectedFNYears"
+              [settings]="fNYearSettings" (onDeSelect)="onYearDeSelect($event)" (onDeSelectAll)="onYearDeSelectAll($event)"
+              (onSelectAll)="onFNYearSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <label for="Location">Plant</label>
+            <ng-multiselect-dropdown id="fltLocation" name="fltLocation" #fltLocationEnt="ngModel" matTooltip="select Location"
+              [placeholder]="'select Location(multiple)'" [data]="locationList" [(ngModel)]="selectedLocations"
+              [settings]="locationSettings" (onDeSelect)="onLocationDeSelect($event)" (onDeSelectAll)="onLocationDeSelectAll($event)"
+              (onSelectAll)="onLocationSelectAll($event)">
+            </ng-multiselect-dropdown>
+            <!-- <select [(ngModel)]="fltLocation" class="form-control" id="locationName" name="locationName">
+              <option [ngValue]="null">select location</option>
+              <option *ngFor="let location of locationList" value="{{location.code}}">
+                {{location.code + '-' + location.name}}</option>
+            </select> -->
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <label for="Type">Go Type</label>
+            <ng-multiselect-dropdown id="fltType" name="fltType" #fltLocationEnt="ngModel" matTooltip="select Go type"
+              [placeholder]="'select Type(multiple)'" [data]="goTypeList" [(ngModel)]="selectedTypes"
+              [settings]="goTypeSettings" (onDeSelect)="onTypeDeSelect($event)" (onDeSelectAll)="onTypeDeSelectAll($event)"
+              (onSelectAll)="onTypeSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="row ml-3">
+        <div class="col-sm-2">
+          <label>GO No</label>
+          <div class="form-group form-group-sm">
+            <input matTooltip="Enter GO No" name="GONUM" class="form-control" [(ngModel)]="fltrGONO" placeholder="GO NO">
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <label>From GO Date</label>
+          <div class="form-group form-group-sm" [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+            <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dt11"
+              [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control" [(ngModel)]="from_date" #fromDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+            <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From Date.</span>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <label>To GO Date</label>
+          <div class="form-group form-group-sm" [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+            <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+              [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="endDate" class="form-control" [(ngModel)]="to_date"
+              #toDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;"></owl-date-time>
+            <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid To Date.</span>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group form-group-sm">
+            <label for="DeliveryMode">Delivery Mode</label>
+            <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode" #fltrdelrymodeEnt="ngModel" matTooltip="select delivery Mode"
+              [placeholder]="'select Delivery Mode(multiple)'" [data]="deliveryModeList" [(ngModel)]="selectedModes"
+              [settings]="deliveryModeSettings" (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+              (onSelectAll)="onSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="row ml-3">
+        <div class="col-sm-2">
+          <label>DC No</label>
+          <div class="form-group form-group-sm">
+            <input matTooltip="Enter DC No" name="DCNUM" class="form-control" [(ngModel)]="fltrDCNO" placeholder="DC NO">
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <label>Invoice/Material DOC No</label>
+          <div class="form-group form-group-sm">
+            <input matTooltip="Enter Document No" name="INVNUM" class="form-control" [(ngModel)]="fltrInvoiceNo"
+              placeholder="Document NO">
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="checkbox">
+            <label><input type="checkbox" id="chkpendingSec" name="chkpendingSec" [(ngModel)]="pendingbysecurity"><b>Pending By Security</b></label>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="checkbox">
+            <label><input type="checkbox" id="chkdelete" name="delete" [(ngModel)]="delete"><b>Cancelled GO</b></label>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <label>&nbsp;</label>
+          <div class="form-group form-group-sm">
+            <button class="btn btn-primary btn-sm" (click)="loadGateOutwardList();" matTooltip="click to Go"
+              [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">Go</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm" (click)="clearFilter();" matTooltip="click to clear filters">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="box-body table-responsive">
+      <table id="userTable" class="table  table-striped" cellspacing="0">
+        <thead style="background-color: #0099cc; color:white;">
+          <tr>
+            <!-- <th></th> -->
+            <th>SNo</th>
+            <th>FY</th>
+            <th>Plant</th>
+            <th>GateNO</th>
+            <th>GONo</th>
+            <th>Document Type</th>
+            <th>Actual_Out_Time</th>
+            <th>DC No</th>
+            <th>DC Date</th>
+            <th>Invoice/DOC No</th>
+            <th>Invoice/DOC Date</th>
+            <th>Sending Department</th>
+            <th>Sending Person</th>
+            <th>Sending Reason</th>
+            <th>DESTINATION/Location</th>
+            <th>Returnable closure</th>
+            <th>Closure comments</th>
+            <th>EXP RETURN DATE</th>
+            <th>DELIVERY MODE</th>
+            <th>DELIVERYPERSON</th>
+            <th>Courier Name</th>
+            <th>Courier Num</th>
+            <th>Courier Date</th>
+            <th>VEHICLENO</th>
+            <!-- <th>EXP OUT TIME</th> -->
+            <th>Security Person</th>
+            <th>Reason for Cancellation</th>
+            <th>Cancelled By</th>
+            <th>Cancelled Date</th>
+            <th>REMARKS</th>
+            <th>Material Type</th>
+            <th>Item No</th>
+            <th>Item Code</th>
+            <th>Item Description</th>
+            <th>UOM</th>
+            <th>No Of Cases</th>
+            <th>Qty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ge of gateOutwardMList; let i = index">
+            <!-- <td>
+              <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to view Material" class="btn btn-primary btn-xs"
+                (click)="onGateEntryActions(ge)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td> -->
+            <td>{{i+1}}</td>
+            <td>{{ge.fiN_YEAR == null ? 'NA' : ge.fiN_YEAR}}</td>
+            <td>{{ge.planT_ID == null ? 'NA' : ge.planT_ID}}</td>
+            <td>{{ge.gO_GATENO == null ? 'NA' : ge.gO_GATENO}}</td>
+            <td>{{ge.gO_NO == null ? 'NA' : ge.gO_NO}}</td>
+            <td>{{ge.gO_TYPE == null ? 'NA' : showGoType(ge.gO_TYPE)}}</td>
+            <td>{{ge.ouT_TIME == null ? 'NA' : (ge.ouT_TIME | date:'dd/MM/yyyy, HH:mm')}}</td>
+            <td>{{ge.dC_NO == null ? 'NA' : ge.dC_NO}}</td>
+            <td>{{ge.dC_DATE == null ? 'NA' : (ge.dC_DATE | date:'dd/MM/yyyy')}}</td>
+            <td>{{ge.doC_NO == null ? 'NA' : ge.doC_NO}}</td>
+            <td>{{ge.doC_DATE == null ? 'NA' : (ge.doC_DATE | date:'dd/MM/yyyy')}}</td>
+            <td>{{ge.sendinG_DEPT_NM == null ? 'NA' : ge.sendinG_DEPT_NM}}</td>
+            <td>{{ge.sendinG_PERSON == null ? 'NA' : showEmployeeName(ge.sendinG_PERSON)}}</td>
+            <td>{{ge.sendinG_REASON == null ? 'NA' : ge.sendinG_REASON}}</td>
+            <td>{{ge.destinatioN_NM == null ? 'NA' : ge.destinatioN_NM}}</td>
+            <td>{{ge.gO_TYPE == '2' ? (ge.gO_FLG == 'Y' ? 'Yes' : 'No') : 'NA'}}</td>
+            <td>{{ge.comments == null ? 'NA' : ge.comments}}</td>
+            <td>{{ge.exP_RETURN_DATE == null ? 'NA' : (ge.exP_RETURN_DATE | date:'dd/MM/yyyy')}}</td>
+            <td>{{ge.deliverymode == null ? 'NA' : ge.deliverymode}}</td>
+            <td>{{ge.deliveryperson == null ? 'NA' : ge.deliveryperson}}</td>
+            <td>{{ge.courier_Name == null ? 'NA' : ge.courier_Name}}</td>
+            <td>{{ge.courier_Num == null ? 'NA' : ge.courier_Num}}</td>
+            <td>{{ge.courier_Date == null ? 'NA' : (ge.courier_Date | date:'dd/MM/yyyy')}}</td>
+            <td>{{ge.vehicleno == null ? 'NA' : ge.vehicleno}}</td>
+            <!-- <td>{{ge.exP_OUT_TIME | date:'dd/MM/yyyy, HH:mm'}}</td> -->
+            <td>{{ge.persoN_NAME == null ? 'NA' : showEmployeeName(ge.persoN_NAME)}}</td>
+            <td>{{ge.deL_REASON == null ? 'NA' : ge.deL_REASON}}</td>
+            <td>{{ge.deleteD_BY == null ? 'NA' : ge.deleteD_BY}}</td>
+            <td>{{ge.deleteD_DATE == null ? 'NA' : (ge.deleteD_DATE | date:'dd/MM/yyyy')}}</td>
+            <td>{{ge.remarks == null ? 'NA' : ge.remarks}}</td>
+            <td>{{ge.materiaL_TYPE == null ? 'NA' : ge.materiaL_TYPE}}</td>
+            <td>{{ge.iteM_NO == null ? 'NA' : ge.iteM_NO}}</td>
+            <td>{{ge.iteM_CODE == null ? 'NA' : ge.iteM_CODE}} </td>
+            <td>{{ge.iteM_DESC == null ? 'NA' : ge.iteM_DESC}}</td>
+            <td>{{ge.uom == null ? 'NA' : ge.uom}}</td>
+            <td>{{ge.nO_OF_CASES == null ? 'NA' : ge.nO_OF_CASES}}</td>
+            <td>{{ge.qty == null ? 'NA' : ge.qty}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div hidden id ="pdf">
+      <table hidden class="table-responsive" >
+      <thead>
+        <tr>
+          <th>SNo</th>
+          <th>FY</th>
+          <th>Plant</th>
+          <th>GONo</th>
+          <th>Document Type</th>
+          <th>Actual_Out_Time</th>
+          <th>DC No</th>
+          <th>Invoice/DOC No</th>
+          <th>Invoice/DOC Date</th>
+          <th>Sending Department</th>
+          <th>DESTINATION/Location</th>
+          <th>Material Type</th>
+          <th>Item Code</th>
+          <th>Item Description</th>
+          <th>UOM</th>
+          <th>Qty</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ge of gateOutwardMList; let i = index">
+          
+          <td>{{i+1}}</td>
+          <td>{{ge.fiN_YEAR == null ? 'NA' : ge.fiN_YEAR}}</td>
+          <td>{{ge.planT_ID == null ? 'NA' : ge.planT_ID}}</td>
+          <td>{{ge.gO_NO == null ? 'NA' : ge.gO_NO}}</td>
+          <td>{{ge.gO_TYPE == null ? 'NA' : showGoType(ge.gO_TYPE)}}</td>
+          <td>{{ge.ouT_TIME == null ? 'NA' : (ge.ouT_TIME | date:'dd/MM/yyyy, HH:mm')}}</td>
+          <td>{{ge.dC_NO == null ? 'NA' : ge.dC_NO}}</td>
+          <td>{{ge.doC_NO == null ? 'NA' : ge.doC_NO}}</td>
+          <td>{{ge.doC_DATE == null ? 'NA' : (ge.doC_DATE | date:'dd/MM/yyyy')}}</td>
+          <td>{{ge.sendinG_DEPT_NM == null ? 'NA' : ge.sendinG_DEPT_NM}}</td>
+          <td>{{ge.destinatioN_NM == null ? 'NA' : ge.destinatioN_NM}}</td>
+          <td>{{ge.materiaL_TYPE == null ? 'NA' : ge.materiaL_TYPE}}</td>
+          <td>{{ge.iteM_CODE == null ? 'NA' : ge.iteM_CODE}} </td>
+          <td>{{ge.iteM_DESC == null ? 'NA' : ge.iteM_DESC}}</td>
+          <td>{{ge.uom == null ? 'NA' : ge.uom}}</td>
+          <td>{{ge.qty == null ? 'NA' : ge.qty}}</td>
+        </tr>
+      </tbody>
+  </table>
+  </div>
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="MaterialModal" role="dialog" aria-labelledby="printModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Material Details
+        </h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none; color:gray">
+        <div class="container" id="print-section">
+          <div class="row">
+            <div class="col-sm-12">
+              <!-- <h3>Material Details</h3> -->
+              <div class="table-responsive">
+                <table class="table table-bordered" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Sl.No</th>
+                      <th *ngIf="materialType">Material Type</th>
+                      <th>Material Code</th>
+                      <th>Material Description</th>
+                      <th>UOM</th>
+                      <th>No Of Cases</th>
+                      <th>Qty</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let per of gateOutwardDList; let rec=index">
+                      <td>
+                        <label>{{rec+1}}.</label>
+                      </td>
+                      <td *ngIf="materialType">
+                        {{per.materiaL_TYPE}}
+                      </td>
+                      <td>
+                        {{per.iteM_CODE}}
+                      </td>
+                      <td>
+                        {{per.iteM_DESC}}
+                      </td>
+                      <td>
+                        {{per.uom}}
+                      </td>
+                      <td>
+                        {{per.nO_OF_CASES}}
+                      </td>
+                      <td>
+                        {{per.qty}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

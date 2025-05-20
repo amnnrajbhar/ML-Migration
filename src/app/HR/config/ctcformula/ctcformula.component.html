@@ -1,0 +1,345 @@
+<section class="content-header">
+  <h1 class="display-1">
+    CTC Formula Config
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">CTC Formula Config</li>
+  </ol>
+</section>
+
+<section class="content">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Package Type</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.packageType" class="form-control" id="packageType" name="packageType"
+                #typeEnt="ngModel" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let sl of packageTypes" [ngValue]="sl.type">{{sl.type}}</option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Employee Category</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.employeeCategoryId" class="form-control" id="employeeCategoryIdFilter"
+                name="employeeCategoryIdFilter" matTooltip="Employee Category">
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pl of employeeCategoryList" [ngValue]="pl.id">{{pl.catltxt}} </option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Grade</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.gradeId" class="form-control" id="gradeId" name="gradeId"
+                matTooltip="Employee Grade" #gradeIdEnt="ngModel" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pl of gradeList" [ngValue]="pl.id">{{pl.grdid}} - {{pl.grdtxt}} </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-1 control-label text-right">Salary Head</label>
+            <div class="col-md-3">
+              <select [(ngModel)]="filterModel.salaryStructureId" class="form-control" id="salaryStructureIdFilter"
+                name="salaryStructureIdFilter" matTooltip="Salary Head" #salaryStructureIdEnt="ngModel" required>
+                <option value="" [selected]="true"> All </option>
+                <option *ngFor="let pl of salaryHeadList" [ngValue]="pl.id">{{pl.salaryLT}} - {{pl.salaryST}} </option>
+              </select>
+            </div>
+            <label class="col-md-1 control-label text-right">Salary Range</label>
+            <div class="col-md-3">
+              <div class="col-md-6">
+                <input class="form-control" type="number" [(ngModel)]="filterModel.salaryFrom" name="salaryFrom"
+                  maxlength="6" placeholder="From" />
+              </div>
+              <div class="col-md-6">
+                <input class="form-control" type="number" [(ngModel)]="filterModel.salaryTo" name="salaryTo" maxlength="6"
+                  placeholder="To" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group text-center">
+            <button class="btn btn-primary btn-sm" (click)="getListData();" matTooltip="click to Go">
+              Filter</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="row form-group">
+    <div class="pull-right actionButtons">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="detailsModal"
+        (click)="onAddClick()">
+        Add New</button>
+      <button type="button" class="btn btn-primary" (click)="exportData()">Export</button>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-md-12 table-responsive">
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+      <table class="table table-hover table-striped table-bordered" id="data">
+        <thead>
+          <tr>
+            <th style="min-width: 100px;">Action</th>
+            <!-- <th>Sl No</th> -->
+            <th>Package Type</th>
+            <th>Category</th>
+            <th>Grade Code</th>
+            <th>Grade</th>
+            <th>Salary Head</th>
+            <th>Salary Sequence No</th>
+            <th>Salary %</th>
+            <th>Salary Amount</th>
+            <th>Salary Slab From</th>
+            <th>Salary Slab To</th>
+            <th>Effective From</th>
+            <th>Effective To</th>
+            <th>Calculation</th>
+            <th>Ceiling</th>
+            <th>Is Variable</th>
+            <th>Created By</th>
+            <th>Created On</th>
+            <th>Modified By</th>
+            <th>Modified On</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filterData.list; let i = index">
+            <td>
+              <button (click)="EditLine(item, i)" title="click to edit this " class="btn btn-xs btn-primary">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button (click)="delete(item.id,i)" title="click to remove this "
+              class="btn btn-xs btn-danger">
+              <i class="fas fa-times"></i>
+            </button>
+            </td>
+            <!-- <td>{{i+1}}</td> -->
+            <td>{{item.packageType}}</td>
+            <td>{{item.employeeCategoryName}}</td>
+            <td>{{item.gradeCode}}</td>
+            <td>{{item.gradeName}}</td>
+            <td>{{item.salaryHeadName}}</td>
+            <td>{{item.salarySequenceNo}}</td>
+            <td>{{item.salaryPercentage}}</td>
+            <td>{{item.salaryAmount}}</td>
+            <td>{{item.fromSLABofSalary}}</td>
+            <td>{{item.toSLABofSalary}}</td>
+            <td>{{item.effectiveFrom | date: "dd/MM/yyyy"}}</td>
+            <td>{{item.effectiveTo | date: "dd/MM/yyyy"}}</td>
+            <td>{{item.calculation	}}</td>
+            <td>{{item.cieling}}</td>
+            <td><span class="label label-default label-{{item.checkboxBool == true ? 'success' : 'danger'}}"></span>{{item.checkboxBool == true ? "Yes" : "No"}}</td>
+            <td>{{item.createdByName}}</td>
+            <td>{{item.createdOn | date: "dd/MM/yyyy"}}</td>
+            <td>{{item.modifiedByName}}</td>
+            <td>{{item.modifiedOn | date: "dd/MM/yyyy"}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <ul class="pagination" *ngIf="filterData.totalCount>0">
+          <li>
+            <a (click)="gotoPage(filterData.pageNo)">
+              Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> -
+              <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b>
+              of <b>{{filterData.totalCount}}</b> records
+            </a>
+          </li>
+          <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+          <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+          <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+          <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+          <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo"
+              (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo+1"
+              (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+          <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+          <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of
+              <b>{{filterData.totalPages}}</b></a></li>
+          <li>
+            <a>
+              Page Size
+              <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="detailsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">CTC Formula Config Details</h4>
+      </div>
+      <div class="modal-body form-horizontal">
+        <form #detailsForm="ngForm">
+
+          <div class="form-group">
+            <label class="col-md-2">Package Type <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.packageType" class="form-control" id="packageType" name="packageType"
+                #packageTypeEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Package Type </option>
+                <option *ngFor="let sl of packageTypes" [ngValue]="sl.type">{{sl.type}}</option>
+              </select>
+              <span class="help-block" *ngIf="packageTypeEnt.touched && !packageTypeEnt.valid">Please select value
+              </span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Employee Category <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.employeeCategoryID" class="form-control" id="employeeCategoryId"
+                name="employeeCategoryId" matTooltip="Employee Category" #empCatEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Employee Category </option>
+                <option *ngFor="let pl of employeeCategoryList" [ngValue]="pl.id">{{pl.catltxt}} </option>
+              </select>
+              <span class="help-block" *ngIf="empCatEnt.touched && !empCatEnt.valid">Please select value
+              </span>
+            </div>
+            <label class="col-md-2">Employee Grade <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.gradeId" class="form-control" id="gradeId" name="gradeId"
+                matTooltip="Employee Grade" #gradeIdEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Grade </option>
+                <option *ngFor="let pl of gradeList" [ngValue]="pl.id">{{pl.grdid}} - {{pl.grdtxt}} </option>
+              </select>
+              <span class="help-block" *ngIf="gradeIdEnt.touched && !gradeIdEnt.valid">Please
+                select value</span>
+            </div>
+          </div>
+          <div class="form-group">            
+            <label class="col-md-2">Salary Head <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <select [(ngModel)]="item.salaryStructureId" class="form-control" id="salaryStructureId"
+                name="salaryStructureId" matTooltip="Employee Grade" #salaryStructureIdEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Salary Head </option>
+                <option *ngFor="let pl of salaryHeadList" [ngValue]="pl.id">{{pl.salaryLT}} - {{pl.salaryST}} </option>
+              </select>
+              <span class="help-block" *ngIf="salaryStructureIdEnt.touched && !salaryStructureIdEnt.valid">Please
+                select value</span>
+            </div>
+            <label class="col-md-2">Sequence Number <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input class="form-control" type="number" [(ngModel)]="item.salarySequenceNo" name="salarySequenceNo"
+                #salarySequenceNoEnt="ngModel" required maxlength="6" />
+              <span class="help-block" *ngIf="salarySequenceNoEnt.touched && !salarySequenceNoEnt.valid">
+                Please enter value</span>
+            </div>
+          </div>
+          <div class="form-group">            
+            <label class="col-md-2">Salary % <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="number" class="form-control" [(ngModel)]="item.salaryPercentage" name="salaryPercentage"
+                #salaryPercentageEnt="ngModel" required maxlength="6" />
+              <span class="help-block" *ngIf="salaryPercentageEnt.touched && !salaryPercentageEnt.valid">
+                Please enter value</span>
+            </div>
+            <label class="col-md-2">Salary Amount <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="number" class="form-control" [(ngModel)]="item.salaryAmount" name="salaryAmount"
+                #salaryAmountEnt="ngModel" required maxlength="6" />
+              <span class="help-block" *ngIf="salaryAmountEnt.touched && !salaryAmountEnt.valid">
+                Please enter value</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">Salary Slab From <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="number" class="form-control" [(ngModel)]="item.fromSLABofSalary" name="fromSlabOfSalary"
+                #fromSlabOfSalaryEnt="ngModel" required maxlength="6" />
+              <span class="help-block" *ngIf="fromSlabOfSalaryEnt.touched && !fromSlabOfSalaryEnt.valid">
+                Please enter value</span>
+            </div>
+            <label class="col-md-2">Salary Slab To <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input type="number" class="form-control" [(ngModel)]="item.toSLABofSalary" name="toSlabOfSalary"
+                #toSlabOfSalaryEnt="ngModel" required maxlength="6" />
+              <span class="help-block" *ngIf="toSlabOfSalaryEnt.touched && !toSlabOfSalaryEnt.valid">
+                Please enter value</span>
+            </div>
+          </div>         
+          <div class="form-group">
+            <label class="col-md-2">Effective From <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="effectiveFrom" class="form-control"
+                [(ngModel)]="item.effectiveFrom" #fromDate="ngModel">
+              <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+              <span class="help-block" *ngIf="fromDate.touched && !fromDate.valid">
+                Please enter value</span>
+            </div>
+            <label class="col-md-2">Effective To <span style="color:red">*</span></label>
+            <div class="col-md-4">
+              <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="effectiveTo" class="form-control"
+                [(ngModel)]="item.effectiveTo" #toDate="ngModel">
+              <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+              <span class="help-block" *ngIf="toDate.touched && !toDate.valid">
+                Please enter value</span>
+            </div>
+          </div>
+          <div class="form-group">           
+            <label class="col-md-2">Calculation </label>
+            <div class="col-md-4">
+              <input class="form-control" [(ngModel)]="item.calculation" name="calculation" #calculationEnt="ngModel"
+                required maxlength="6" />
+            </div>
+            <label class="col-md-2">Cieling </label>
+            <div class="col-md-4">
+              <input type="number" class="form-control" [(ngModel)]="item.cieling" name="cieling" #ceilingEnt="ngModel"
+                required maxlength="6" />
+              <!-- <span class="help-block" *ngIf="ceilingEnt.touched && !ceilingEnt.valid">
+                Please enter value</span> -->
+            </div>
+          </div>
+          <div class="form-group">           
+            <label class="col-md-2">Is Variable</label>
+            <div class="col-md-4">
+              <div class="checkbox">
+                <label for="checkboxBool">
+                  <input type="checkbox" [(ngModel)]="item.checkboxBool" name="statusBool" />
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="text-center actionButtons">
+          <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !detailsForm.valid"
+            *ngIf="!isEdit" (click)="addData()">
+            <i class="fas fa-plus"></i> Add</button>
+          <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !detailsForm.valid"
+            *ngIf="isEdit" (click)="updateData()">
+            <i class="fas fa-check"></i> Update</button>
+          <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+            Cancel</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

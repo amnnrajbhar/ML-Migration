@@ -1,0 +1,433 @@
+<section class="content-header">
+  <h1 class="display-1">
+    View Recall <small>(for Resigned and Exited Employees)</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">View Recall</li>
+  </ol>
+</section>
+<section class="content">
+  <form #resgForm="ngForm">
+    <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+    <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+    <ul class="nav nav-tabs">
+      <li [ngClass]="currentTab=='details'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Details</a></li>
+      <li [ngClass]="currentTab=='jobchange'?'active':''" id="tab_jobchange"><a (click)="onTabClick(1)">Job Change</a>
+      </li>
+      <li [ngClass]="currentTab=='salarychange'?'active':''" id="tab_salarychange"><a (click)="onTabClick(2)">Salary
+          Change</a></li>
+      <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_checklist"><a (click)="onTabClick(3)">Attachments</a></li>
+
+      <li [ngClass]="currentTab=='history'?'active':''" id="tab_history"><a (click)="onTabClick(4)">History</a></li>
+    </ul>
+
+    <div class="details-tab">
+
+      <!--Recall Details-->
+      <div class="panel panel-info form-horizontal" *ngIf="currentTab=='details'">
+        <div class="panel-heading">
+          <h3 class="panel-title">Recall Details</h3>
+        </div>
+        <div class="panel-body">
+
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="recallDate">Last Working Date </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="lastWorkingDate" name="lastWorkingDate"
+                    [ngModel]="lastWorkingDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="recallDate">Date Of Recall </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="recallDate" name="recallDate"
+                    [ngModel]="recallDetail.recallDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="detailsReasonRecall">Reason<span style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Reason For Recall(Max 1000 Chars)"
+                    [(ngModel)]="recallDetail.reason" class="form-control" id="detailsReasonRecall"
+                    name="detailsReasonRecall" #detailsReasonRecallEnt="ngModel" [disabled]="true" minlength="10"
+                    maxlength="1000" required></textarea>
+                  <span class="help-block" *ngIf="detailsReasonRecallEnt.touched && !detailsReasonRecallEnt.valid">
+                    <span *ngIf="detailsReasonRecallEnt.errors.required"> Please enter recall details (Max 1000
+                      Chars)</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="recruitmentType">Recruitment Type <span
+                    style="color:red">*</span></label>
+                <div class="col-md-8">
+                  <select [(ngModel)]="recallDetail.recruitmentType" class="form-control" id="recruitmentType"
+                    name="recruitmentType" matTooltip="Recruitment Type" #recruitmentTypeEnt="ngModel" required [disabled]="true" >
+                    <option [ngValue]="null" disabled> Select Recruitment Type </option>
+                    <option *ngFor="let pl of recruitmentTypes" [ngValue]="pl.type">{{pl.type}} </option>
+                  </select>
+                  <span class="help-block" *ngIf="recruitmentTypeEnt.touched && !recruitmentTypeEnt.valid">
+                    Please select Recruitment Type</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div *ngIf="recallDetail.recruitmentType == 'Replacement'">
+                <div class="form-group">
+                  <label class="col-md-4" for="replacingEmployeeNumber">Replacing Emp No <span
+                      style="color:red">*</span></label>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" [(ngModel)]="recallDetail.replacingEmployeeNumber" [disabled]="true" 
+                      ngControl="recallDetail.replacingEmployeeNumber" name="replacingEmployeeNumber" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!--Job Change Details-->
+      <div class="panel panel-info" *ngIf="currentTab=='jobchange'">
+        <div class="panel-heading">
+          <h3 class="panel-title">Job Change Details</h3>
+        </div>
+        <div class="panel-body">
+          <span class="text-danger" *ngIf="!isJobDetailsChanged">No change in Job Details </span>
+
+          <div class="row" *ngIf="newDesignation">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">Current Designation</label>
+                <input type="text" class="form-control" id="oldDesignation" [(ngModel)]="oldDesignation" disabled
+                  name="oldDesignation" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">New Designation</label>
+                <input type="text" class="form-control" id="newDesignation" [(ngModel)]="newDesignation" disabled
+                  name="newDesignation" />
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="newRole">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">Current Role</label>
+                <input type="text" class="form-control" id="oldRole" [(ngModel)]="oldRole" ngControl="oldRole" disabled
+                  name="oldRole" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">New Role</label>
+                <input type="text" class="form-control" id="newRole" [(ngModel)]="newRole" disabled name="newRole" />
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="newPlant">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">Current Plant</label>
+                <input type="text" class="form-control" id="oldPlant" [(ngModel)]="oldPlant" ngControl="oldPlant"
+                  disabled name="oldPlant" />
+
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">New Plant</label>
+                <input type="text" class="form-control" id="newPlant" [(ngModel)]="newPlant" disabled name="newPlant" />
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="newPayGroup">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">Current PayGroup</label>
+                <input type="text" class="form-control" id="oldPayGroup" [(ngModel)]="oldPayGroup"
+                  ngControl="oldPayGroup" disabled name="oldPayGroup" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">New PayGroup</label>
+                <input type="text" class="form-control" id="newPayGroup" [(ngModel)]="newPayGroup" disabled
+                  name="newPayGroup" />
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="newState">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">Current State</label>
+                <input type="text" class="form-control" id="oldState" [(ngModel)]="oldState" ngControl="oldState"
+                  disabled name="oldState" />
+
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">New State</label>
+                <input type="text" class="form-control" id="newState" [(ngModel)]="newState" disabled name="newState" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="newLocation">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">Current Location</label>
+                <input type="text" class="form-control" id="oldLocation" [(ngModel)]="oldLocation"
+                  ngControl="oldLocation" disabled name="oldLocation" />
+
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">New Location</label>
+                <input type="text" class="form-control" id="newLocation" [(ngModel)]="newLocation" disabled
+                  name="newLocation" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="newDepartment">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">Current Department</label>
+                <input type="text" class="form-control" id="oldDepartment" [(ngModel)]="oldDepartment"
+                  ngControl="oldDepartment" disabled name="oldDepartment" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">New Department</label>
+                <input type="text" class="form-control" id="newDepartment" [(ngModel)]="newDepartment" disabled
+                  name="newDepartment" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="newSubDepartment">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">Current Sub-Department</label>
+                <input type="text" class="form-control" id="oldSubDepartment" ngControl="oldSubDepartment"
+                  [(ngModel)]="oldSubDepartment" disabled name="oldSubDepartment" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">New Sub-Department</label>
+                <input type="text" class="form-control" id="newSubDepartment" [(ngModel)]="newSubDepartment" disabled
+                  name="newSubDepartment" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="newCategory">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">Current Category</label>
+                <input type="text" class="form-control" id="oldCategory" [(ngModel)]="oldCategory"
+                  ngControl="oldCategory" disabled name="oldCategory" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="initial">New Category</label>
+                <input type="text" class="form-control" id="newCategory" [(ngModel)]="newCategory" disabled
+                  name="newCategory" />
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="newHOD">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="oldHOD">Current HOD</label>
+                <input type="text" class="form-control" id="oldHOD" [(ngModel)]="oldHOD" ngControl="oldHOD" disabled
+                  name="oldHOD" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="newHOD">New HOD</label>
+                <input type="text" class="form-control" id="newHOD" [(ngModel)]="newHOD" disabled name="newHOD" />
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="newRM">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="oldRM">Current Reporting Manager</label>
+                <input type="text" class="form-control" id="oldRM" [(ngModel)]="oldRM" ngControl="oldRM" disabled
+                  name="oldRM" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="newRM">New Reporting Manager</label>
+                <input type="text" class="form-control" id="newRM" [(ngModel)]="newRM" disabled name="newRM" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!--Salary Change Details-->
+      <div class="panel panel-info" *ngIf="currentTab=='salarychange'">
+        <div class="panel-heading">
+          <h3 class="panel-title">Salary Change Details</h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-md-12">
+            <div class="col-md-6">
+              <div class="form-group">
+                <app-readonlyemployee-salary [employeeId]="employeeId">
+
+                </app-readonlyemployee-salary>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h2 class="display-1">
+                Revised Salary
+              </h2>
+              <div class="form-group">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Salary Components</th>
+                      <th style='text-align:right'>Rs. Per Month</th>
+                      <th style='text-align:right'>Rs. Per Annum</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of monthlyComponents; let i = index">
+                      <td>{{item.salaryHeadName}}</td>
+                      <td class="text-right">{{item.amount | number: "1.0-2"}}</td>
+                      <td class="text-right">{{item.annualAmount | number: "1.0-2"}}</td>
+                    </tr>
+                    <tr>
+                      <th>Monthly Salary</th>
+                      <th style='text-align:right'>{{monthlyTotal | number: "1.0-2"}}</th>
+                      <th style='text-align:right'>{{monthlyAnnualTotal | number: "1.0-2"}}</th>
+                    </tr>
+                    <tr>
+                      <th colspan='3'>Annual Perks & Other Benefits</th>
+                    </tr>
+                    <tr *ngFor="let item of annualComponents; let i = index">
+                      <td>{{item.salaryHeadName}}</td>
+                      <td class="text-right">-</td>
+                      <td class="text-right">{{item.annualAmount | number: "1.0-2"}}</td>
+                    </tr>
+                    <tr>
+                      <th>Cost to Company (CTC)</th>
+                      <th style='text-align:right'>-</th>
+                      <th style='text-align:right'>{{totalCTC | number: "1.0-2"}}</th>
+                    </tr>
+                    <tr *ngIf="variableComponents && variableComponents.length >0">
+                      <th colspan='3'>Variable Components</th>
+                    </tr>
+                    <tr *ngFor="let item of variableComponents; let i = index">
+                      <td>{{item.salaryHeadName}}</td>
+                      <td class="text-right">-</td>
+                      <td class="text-right">{{item.annualAmount | number: "1.0-2"}}</td>
+                    </tr>
+                    <tr *ngIf="variableComponents && variableComponents.length >0">
+                      <th>Total Variable Pay</th>
+                      <th style='text-align:right'>-</th>
+                      <th style='text-align:right'>{{variableTotal | number: "1.0-2"}}</th>
+                    </tr>
+                    <tr *ngIf="onetimeComponents && onetimeComponents.length >0">
+                      <th colspan='3'>One Time Payments</th>
+                    </tr>
+                    <tr *ngFor="let item of onetimeComponents; let i = index">
+                      <td>{{item.salaryHeadName}}</td>
+                      <td class="text-right">-</td>
+                      <td class="text-right">{{item.annualAmount | number: "1.0-2"}}</td>
+                    </tr>
+                    <tr *ngIf="onetimeComponents && onetimeComponents.length >0">
+                      <th>Total One Time Pay</th>
+                      <th style='text-align:right'>-</th>
+                      <th style='text-align:right'>{{variableTotal | number: "1.0-2"}}</th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="col-md-5">New Allowance </label>
+                    <div class="col-md-7">
+                      <span>{{allowanceDetails}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  <app-employee-attachments [objectId]="this.employeeRecallId" [objectType]="this.objectType" [employeeId]="this.employeeId" 
+  [editAllowed]="true" [deleteAllowed]="false" *ngIf="currentTab=='attachments'"></app-employee-attachments>
+
+      <div *ngIf="currentTab=='history'">
+      <app-history [employeeId]="employeeId" *ngIf="currentTab=='history' && employeeId > 0"></app-history>  
+    </div>
+    </div>
+  </form>
+  <div class="form-group text-center actionButtons">
+    <button type="button" (click)="goBack()" class="btn btn-default" [matTooltipPosition]="'after'"
+    matTooltip="Click to go back to list" >
+    <i class="fas fa-arrow-left"></i> Back
+  </button>
+    <span class="text-red pull-left" *ngIf="errMsg.length>0"><i class="fa fa-warning"></i>{{errMsg}}</span>
+    <button type="button" class="btn btn-warning" *ngIf="currentTab!='details'" (click)="onPrevious()">Previous</button>
+  
+    <button type="button" class="btn btn-primary" 
+      (click)="onNext()" matTooltip="Next Tab" *ngIf="currentTab!='history'" >Next</button>
+  
+  </div>
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="employeeRecallId" [objectType]="this.objectType">
+        </app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="employeeRecallId" [objectType]="this.objectType">
+        </app-activity-viewer>
+      </div>
+    </div>
+  </div>
+
+</section>

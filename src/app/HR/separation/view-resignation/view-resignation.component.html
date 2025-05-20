@@ -1,0 +1,190 @@
+<section class="content-header">
+  <h1 class="display-1">
+    View Resignation Details
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">View Resignation Details</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId" *ngIf="employeeId>0"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='details'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Details</a></li>
+    <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a
+        (click)="onTabClick(1)">Attachments</a></li>
+    <li [ngClass]="currentTab=='checklist'?'active':''" id="tab_checklist"><a (click)="onTabClick(2)">Checklist</a></li>
+    <li [ngClass]="currentTab=='exitinterview'?'active':''" id="tab_exitinterview"><a (click)="onTabClick(3)">Exit
+        Interview</a></li>
+    <li [ngClass]="currentTab=='history'?'active':''" id="tab_history"><a (click)="onTabClick(4)">History</a></li>
+  </ul>
+
+  <div class="details-tab">
+    <div *ngIf="currentTab=='details'">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">Resignation Details</h3>
+        </div>
+        <div class="panel-body form-horizontal">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="resignationDate">Resignation Status</label>
+                <div class="col-md-8">
+                  <span class="label label-lg label-{{isRejected?'danger':'warning'}}">{{resignationStatus}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Date Of Resignation</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="resignationDate" name="ResignationDate"
+                    [ngModel]="ResignationDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Notice Period</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" name="noticePeriod" [(ngModel)]="noticePeriod"
+                    [disabled]="true" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Last Working Day</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="lastWorkingDate" name="LastWorkingDate"
+                    [ngModel]="DateLastWorkingDay | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Reason</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="reason" name="Reason"
+                    [(ngModel)]="resignationDetails.reason" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Detailed Reason</label>
+                <div class="col-md-8">
+                  <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Reason For Resignation"
+                    [(ngModel)]="resignationDetails.reasonDetail" class="form-control" id="detailsReasonResignation"
+                    name="detailsReasonResignation" readonly></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="lastDcr">Last DCR</label>
+                <div class="col-md-8">
+                  <input [owlDateTime]="dt11" id="lastDcrDate" #joiningDateEnt="ngModel"
+                    placeholder="Last DCR Date" [owlDateTimeTrigger]="dt11" name="lastDcrDate" [disabled]="true"
+                    class="form-control" [(ngModel)]="resignationDetails.lastDcrDate">
+                  <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Requested Relieving Date</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="expectedLastDate" name="ExpectedLastDate"
+                    [ngModel]="resignationDetails.expectedLastWorkingDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4">Reason For Change In Relieving Date</label>
+                <div class="col-md-8">
+                  <textarea [matTooltipPosition]="'below'" matTooltip="Input Reason For Resignation Date Change"
+                    [(ngModel)]="resignationDetails.reasonExpectedDateChange" class="form-control"
+                    id="reasonResignationDateChange" name="reasonResignationDateChange" readonly></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="actualLastWorkingDate">Actual Relieving Date</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="actualLastWorkingDate" name="actualLastWorkingDate"
+                    [ngModel]="resignationDetails.actualLastWorkingDate | date:'dd/MM/yyyy'" [disabled]="true">                 
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+      <app-resignation-shortfall-details *ngIf="resignationDetails != null" [resignationDetails]="resignationDetails"></app-resignation-shortfall-details>
+
+    </div>
+
+    <app-employee-attachments [objectId]="this.resignationId" [objectType]="this.objectType"
+      [employeeId]="this.employeeId" [editAllowed]="true" [deleteAllowed]="false" *ngIf="currentTab=='attachments'">
+    </app-employee-attachments>
+
+    <app-resignation-checklist [resignationId]="resignationId" [editAllowed]="false" *ngIf="currentTab=='checklist'">
+    </app-resignation-checklist>
+
+    <app-exit-interview [resignationId]="resignationId" [editAllowed]="false" *ngIf="currentTab=='exitinterview'">
+    </app-exit-interview>
+
+    <app-separation-history [employeeId]="employeeId" *ngIf="currentTab=='history' && employeeId > 0">
+    </app-separation-history>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <button type="button" (click)="Back()" class="btn btn-default" [matTooltipPosition]="'after'"
+        matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+    </div>
+
+  </div>
+
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="this.resignationId" [objectType]="this.objectType">
+        </app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="this.resignationId" [objectType]="this.objectType">
+        </app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>

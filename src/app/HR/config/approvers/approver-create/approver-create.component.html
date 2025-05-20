@@ -1,0 +1,147 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Create Predefined Initiator
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Create Predefined Initiator</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="details-tab">
+    <form #approverForm="ngForm" id="approverForm">
+      <div>
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Create Approver</h3>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="initial">Config Type<span style="color:red">*</span></label>
+                  <select [(ngModel)]="approver.type" class="form-control" id="type" name="type"
+                    #typeEnt="ngModel" required>
+                    <option *ngFor="let sl of approverTypes" [ngValue]="sl.type">{{sl.type}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="typeEnt.touched && !typeEnt.valid">Please select Type</span>
+                </div>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="plant"> Plant<span style="color:red">*</span></label>
+                  <select [(ngModel)]="approver.plantId" class="form-control" id="plantId" name="plantId"
+                    matTooltip="Plant" #plantEnt="ngModel" (change)="getPayGroupList()" required>
+                    <option [ngValue]="null" [selected]="true"> Select Plant </option>
+                    <option *ngFor="let pl of plantList" [ngValue]="pl.id">{{pl.code}} - {{pl.name}} </option>
+                  </select>
+                  <span class="help-block" *ngIf="plantEnt.touched && !plantEnt.valid">Please select Plant</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="plant"> Pay Group <span style="color:red">*</span></label>
+                  <select [(ngModel)]="approver.payGroupId" class="form-control" id="payGroupId" name="payGroupId"
+                    matTooltip="Plant" #payGroupEnt="ngModel" (change)="getEmployeeCategoryList()" required>
+                    <option [ngValue]="null" [selected]="true"> Select Pay Group </option>
+                    <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}} - {{pl.payGroup}}
+                    </option>
+                  </select>
+                  <span class="help-block" *ngIf="payGroupEnt.touched && !payGroupEnt.valid">Please select Pay
+                    Group</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="employeeCategory"> Employee Category<span style="color:red">*</span></label>
+                  <select [(ngModel)]="approver.staffCategoryId" class="form-control" id="employeeCategoryId"
+                    name="employeeCategoryId" matTooltip="Employee Category" #empCatEnt="ngModel" required>
+                    <option [ngValue]="null" [selected]="true"> Select Employee Category </option>
+                    <option *ngFor="let pl of employeeCategoryList" [ngValue]="pl.id">{{pl.catltxt}} </option>
+                  </select>
+                  <span class="help-block" *ngIf="empCatEnt.touched && !empCatEnt.valid">Please select Employee
+                    Category</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="state"> State</label>
+                  <select [(ngModel)]="approver.stateId" class="form-control" id="locationStateId"
+                    name="locationStateId" matTooltip="State" >
+                    <option [ngValue]="null" [selected]="true"> Select State </option>
+                    <option *ngFor="let pl of stateList" [ngValue]="pl.id">{{pl.bezei}}</option>
+                  </select>
+                  <!-- <span class="help-block" *ngIf="locationStateEnt.touched && !locationStateEnt.valid">Please select
+                    State</span> -->
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="department"> Department</label>
+                  <select [(ngModel)]="approver.departmentId" class="form-control" id="department" name="department"
+                    >
+                    <option [ngValue]="null" [selected]="true"> Select Department </option>
+                    <option *ngFor="let pl of departmentList" [ngValue]="pl.id">{{pl.description }} </option>
+                  </select>
+                  <!-- <span class="help-block" *ngIf="departmentEnt.touched && !departmentEnt.valid">Please select
+                    department</span> -->
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="employeeName">Select Approver<span style="color:red">*</span></label>
+                  <input type="text" id="employeeName" class="form-control" #employeeCatEnt="ngModel"
+                    (keyup)="getEmployeesList($event)" [(ngModel)]="approver.employeeName"
+                    ngControl="approver.employeeName" name="employeeName" required
+                    autocomplete="off" />
+                  <span class="help-block" *ngIf="employeeCatEnt.touched && !employeeCatEnt.valid">Please select
+                    employee</span>
+                  <input type="hidden" id="employeeId" [(ngModel)]="approver.employeeId"
+                    name="employeeId" />
+
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="sortOrder">Enter Approver Order<span style="color:red">*</span></label>
+                  <input type="number" id="sortOrder" class="form-control" #sortOrderCatEnt="ngModel"
+                    [(ngModel)]="approver.sortOrder" maxlength="2"
+                    ngControl="approver.sortOrder" name="sortOrder" required
+                    autocomplete="off" />
+                  <span class="help-block" *ngIf="sortOrderCatEnt.touched && !sortOrderCatEnt.valid">Please enter
+                    Approver Order</span>
+
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col-md-12 text-center actionButtons">
+                <button type="button" class="btn btn-success" (click)="submit()"
+                  matTooltip="Click to Submit Initial Appraisal"
+                  [disabled]="isLoading || !approverForm.valid">Submit</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</section>

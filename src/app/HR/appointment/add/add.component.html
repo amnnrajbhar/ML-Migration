@@ -1,0 +1,82 @@
+<div>
+
+
+  <section class="content-header" *ngIf="showData">
+    <h1 class="display-1">
+      New Appointment Details
+    </h1>
+    <p></p>
+  </section>
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="text-success text-center h3" *ngIf="successMsg.length>0">
+    <i class="fas fa-check"></i> {{successMsg}}
+  </div>
+  <div class="text-red text-center h4" *ngIf="errMsg.length>0">
+    <i class="fas fa-warning"></i> {{errMsg}}
+  </div>
+
+  <section class="content" *ngIf="showData">
+
+    <ul class="nav nav-tabs">
+      <li [ngClass]="currentTab=='initial'?'active':''" id="tab_initial"><a (click)="onTabClick(0)">Official</a></li>
+      <li [ngClass]="currentTab=='statutory'?'active':''" id="tab_statutory"><a (click)="onTabClick(1)">Statutory</a>
+      </li>
+      <li [ngClass]="currentTab=='salary'?'active':''" id="tab_salary"><a (click)="onTabClick(2)">Salary</a></li>
+      <li [ngClass]="currentTab=='assets'?'active':''" id="tab_assets"><a (click)="onTabClick(3)">Assets</a></li>
+      <li [ngClass]="currentTab=='addresses'?'active':''" id="tab_addresses"><a (click)="onTabClick(5)">Addresses</a>
+      </li>
+      <li [ngClass]="currentTab=='family'?'active':''" id="tab_family"><a (click)="onTabClick(6)">Family</a></li>
+      <li [ngClass]="currentTab=='education'?'active':''" id="tab_education"><a (click)="onTabClick(7)">Education</a>
+      </li>
+      <li [ngClass]="currentTab=='work_experience'?'active':''" id="tab_work_experience"><a (click)="onTabClick(8)">Work
+          Experience</a></li>
+      <li [ngClass]="currentTab=='languages'?'active':''" id="tab_languages"><a (click)="onTabClick(9)">Languages</a>
+      </li>
+      <li [ngClass]="currentTab=='nomination'?'active':''" id="tab_nomination"><a (click)="onTabClick(10)">Nomination</a>
+      </li>
+      <li [ngClass]="currentTab=='bank'?'active':''" id="tab_bank"><a (click)="onTabClick(11)">Bank</a>
+      </li>
+      <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a
+          (click)="onTabClick(12)">Attachments</a></li>
+    </ul>
+    <div class="details-tab">
+      <app-appointment-official (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+      [appointmentId]="this.appointmentId" *ngIf="currentTab=='initial'"></app-appointment-official>
+      <app-appointment-personal (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='initial'"></app-appointment-personal>     
+      <app-appointment-statutory (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='statutory'"></app-appointment-statutory>
+      <app-appointment-salary (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='salary'"></app-appointment-salary>
+      <app-appointment-assets (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='assets'"></app-appointment-assets>
+      <app-appointment-addresses (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='addresses'"></app-appointment-addresses>
+      <app-appointment-family (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='family'"></app-appointment-family>
+      <app-appointment-education (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='education'"></app-appointment-education>
+      <app-appointment-workexperience (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='work_experience'"></app-appointment-workexperience>
+      <app-appointment-languages (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='languages'"></app-appointment-languages>
+        <app-appointment-nomination (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='nomination'"></app-appointment-nomination>
+      <app-appointment-bank-details (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='bank'" [showSalaryAccountDetails]="true">
+      </app-appointment-bank-details>
+      <app-appointment-attachments (dataLoaded)="onDataLoaded($event)" (dataSaved)="onDataSaved($event)"
+        [appointmentId]="this.appointmentId" *ngIf="currentTab=='attachments'"></app-appointment-attachments>
+    </div>
+    <div class="text-center actionButtons">
+      <button type="button" class="btn btn-warning" *ngIf="currentTab!='initial'" (click)="onPrevious()"
+        [disabled]="disableAction">Previous</button>
+      <button type="button" class="btn btn-primary" *ngIf="currentTab!='attachments'" (click)="onNext()"
+        [disabled]="disableAction">Next</button>
+      <button type="button" class="btn btn-success" *ngIf="currentTab=='attachments'" (click)="onSubmit()"
+        [disabled]="disableAction">Submit</button>
+    </div>
+  </section>
+</div>

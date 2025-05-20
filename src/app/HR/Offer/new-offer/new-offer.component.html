@@ -1,0 +1,833 @@
+<section class="content-header">
+  <h1 class="display-1">
+    New Offer
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">New Offer</li>
+  </ol>
+</section>
+<section class="content">
+  <form #newOfferForm="ngForm" id="offerForm">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Personal Details</h3>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="title"> Title <span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.title" class="form-control" id="offerTitle" name="offerTitle"
+                matTooltip="Title" #titleEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Title </option>
+                <option *ngFor="let pl of titles" [ngValue]="pl.type">{{pl.type}}</option>
+              </select>
+              <span class="help-block" *ngIf="titleEnt.touched && !titleEnt.valid">Please select title</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group checkbox">
+              <label for="isConfidential">
+                <input type="checkbox" [(ngModel)]="newOffer.isConfidential" name="isConfidential" /> Confidential
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="offerFName">
+                <i class="fa fa-times-circle-o" *ngIf="!offer_f_name.valid && offer_f_name.touched"></i> First Name<span
+                  style="color:red">*</span> <span class="text-danger">(Please enter name as per AADHAAR.)</span>
+              </label>
+              <input type="text" class="form-control" id="offerFName" placeholder="First Name" maxlength='40'
+                [(ngModel)]="newOffer.firstName" name="firstName" ngControl="newOffer.firstName" #offer_f_name="ngModel"
+                required>
+              <span class="help-block" *ngIf="!offer_f_name.valid && offer_f_name.touched">
+                Please Enter First
+                Name.
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="middlename">Middle Name</label>
+              <input type="text" class="form-control" id="offerMName" placeholder="Middle Name" maxlength='40'
+                [(ngModel)]="newOffer.middleName" ngControl="newOffer.middleName" name="middleName" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input type="text" class="form-control" id="offerLName" placeholder="Last Name" maxlength='40'
+                [(ngModel)]="newOffer.lastName" ngControl="newOffer.lastName" name="lastName" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="gender"> Gender <span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.gender" class="form-control" id="offerGender" name="offerGender"
+                matTooltip="Gender" #genderEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Gender </option>
+                <option *ngFor="let pl of genders" [ngValue]="pl.type">{{pl.type}}</option>
+              </select>
+              <span class="help-block" *ngIf="genderEnt.touched && !genderEnt.valid">Please select gender</span>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="dateOfBirth">Date of Birth </label>
+              <input type="text" class="form-control" id="dateOfBirth" [(ngModel)]="newOffer.dateOfBirth"
+                name="dateOfBirth" #dateOfBirthEnt="ngModel" placeholder="Date of Birth" [matTooltipPosition]="'below'"
+                matTooltip="Click to change date of birth" [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12"
+                ngControl="newOffer.dateOfBirth" name="dateOfBirth" (change)="onDateOfBirthChange()"
+                (blur)="onDateOfBirthChange()" />
+              <span class="help-block" *ngIf="dateOfBirthEnt.touched && !dateOfBirthEnt.valid">
+                <span> Please enter Date of Birth</span>
+              </span>
+              <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="age">Age <span style="color:red">*</span></label>
+              <input type="number" class="form-control" id="age" [(ngModel)]="newOffer.age"
+                (keypress)="keyPressAllowOnlyNumber($event)" name="age" min="18" #ageEnt="ngModel" minlength="2"
+                maxlength="2" ngControl="newOffer.age" name="age" required />
+              <span class="help-block" *ngIf="ageEnt.touched && !ageEnt.valid">
+                <span *ngIf="ageEnt.errors.required"> Please enter age</span>
+                <span *ngIf="ageEnt.errors.minlength">Age should be more than or equal to 18.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="addressLine1">Address Line 1 <span style="color:red">*</span></label>
+              <input type="text" class="form-control" id="addressLine1" [(ngModel)]="newOffer.addressLine1"
+                ngControl="newOffer.addressLine1" name="addressLine1" #addressLine1Ent="ngModel" required />
+              <span class="help-block" *ngIf="addressLine1Ent.touched && !addressLine1Ent.valid">
+                Please enter address line 1</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="addressLine2">Address Line 2</label>
+              <input type="text" class="form-control" id="addressLine2" [(ngModel)]="newOffer.addressLine2"
+                ngControl="newOffer.addressLine2" name="addressLine2" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="addressLine3">Address Line 3</label>
+              <input type="text" class="form-control" id="addressLine3" [(ngModel)]="newOffer.addressLine3"
+                ngControl="newOffer.addressLine3" name="addressLine3" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="city">City <span style="color:red">*</span></label>
+              <input type="text" class="form-control" id="city" [(ngModel)]="newOffer.city" ngControl="newOffer.city"
+                name="city" #cityEnt="ngModel" required />
+              <span class="help-block" *ngIf="cityEnt.touched && !cityEnt.valid">
+                Please enter city</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="pinCode">Pin Code <span style="color:red">*</span></label>
+              <input type="text" class="form-control" id="pinCode" [(ngModel)]="newOffer.pinCode"
+                ngControl="newOffer.pinCode" name="pinCode" maxlength="6" required #pincodeEnt="ngModel"
+                (keypress)="keyPressAllowOnlyNumber($event)" />
+              <span class="help-block" *ngIf="pincodeEnt.touched && !pincodeEnt.valid">
+                Please enter pin code</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="district">District <span style="color:red">*</span></label>
+              <input type="text" class="form-control" id="district" [(ngModel)]="newOffer.district"
+                ngControl="newOffer.district" name="district" #districtEnt="ngModel" required />
+              <span class="help-block" *ngIf="districtEnt.touched && !districtEnt.valid">
+                Please enter district name</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="state"> State<span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.stateId" class="form-control" id="offerState" name="state"
+                matTooltip="State" #stateEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select State </option>
+                <option *ngFor="let pl of addressStateList" [ngValue]="pl.id">{{pl.bezei}}</option>
+              </select>
+              <span class="help-block" *ngIf="stateEnt.touched && !stateEnt.valid">Please select State</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="mobileNo">Mobile No <span style="color:red">*</span></label>
+              <input type="text" class="form-control" id="mobileNo" placeholder="Mobile No"
+                [(ngModel)]="newOffer.mobileNo" (keypress)="keyPressAllowOnlyNumber($event)" name="mobileNo"
+                #mobileNoEnt="ngModel" minlength="10" maxlength="10" ngControl="newOffer.mobileNo" required />
+              <span class="help-block" *ngIf="mobileNoEnt.touched && !mobileNoEnt.valid">
+                <span *ngIf="mobileNoEnt.errors?.required"> Please enter mobile no</span>
+                <span *ngIf="mobileNoEnt.errors?.minlength">Please enter 10 digit mobile no.</span>
+                <span *ngIf="mobileNoEnt.errors?.maxlength">Please enter 10 digit mobile no.</span>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="personalEmailId">Personal Email <span style="color:red">*</span></label>
+              <input type="text" class="form-control" id="personalEmailId" placeholder="Personal Email Id"
+                [(ngModel)]="newOffer.personalEmailId" ngControl="newOffer.personalEmailId" name="personalEmailId"
+                #emailEnt="ngModel" required email="true" />
+              <span class="help-block" *ngIf="emailEnt.touched && !emailEnt.valid">Please enter valid email id</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="qualification"> Qualification<span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.qualificationId" class="form-control" id="qualification"
+                name="qualification" #qualificationEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select qualification </option>
+                <option *ngFor="let pl of qualificationList" [ngValue]="pl.id">{{pl.educationCourse}}</option>
+              </select>
+              <span class="help-block" *ngIf="qualificationEnt.touched && !qualificationEnt.valid">Please select
+                qualification</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="totalExperience">Total Experience <span style="color:red">*</span></label>
+              <input type="text" class="form-control" id="totalExperience" placeholder="in years" (keypress)="keyPressAllowOnlyNumberWithDecimal($event)"
+                [(ngModel)]="newOffer.totalExperience" required name="totalExperience" #totalExperienceEnt="ngModel"
+                maxlength="4" ngControl="newOffer.totalExperience" name="totalExperience" />
+              <span class="help-block" *ngIf="totalExperienceEnt.touched && !totalExperienceEnt.valid">
+                <span *ngIf="totalExperienceEnt.errors.required"> Please enter total experience</span>
+                <span *ngIf="totalExperienceEnt.errors.maxlength">Maximum 2 digits allowed.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Job Details</h3>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="plant"> Plant<span style="color:red">*</span></label>
+              <select [(ngModel)]="selectedPlant" class="form-control" id="offerPlant" name="offerPlant"
+                matTooltip="Plant" #plantEnt="ngModel" (change)="getPayGroupList()" required>
+                <option [ngValue]="null" [selected]="true"> Select Plant </option>
+                <option *ngFor="let pl of plantList" [ngValue]="pl">{{pl.code}} - {{pl.name}} </option>
+              </select>
+              <span class="help-block" *ngIf="plantEnt.touched && !plantEnt.valid">Please select Plant</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="plant"> Pay Group <span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.payGroupId" class="form-control" id="offerPayGroup" name="offerPayGroup"
+                matTooltip="Plant" #payGroupEnt="ngModel" (change)="getEmployeeCategoryList()" required>
+                <option [ngValue]="null" [selected]="true"> Select Pay Group </option>
+                <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}} - {{pl.payGroup}}</option>
+              </select>
+              <span class="help-block" *ngIf="payGroupEnt.touched && !payGroupEnt.valid">Please select Pay Group</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="employeeCategory"> Employee Category<span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.employeeCategoryId" class="form-control" id="offerEmployeeCategory"
+                name="offerEmployeeCategory" matTooltip="Employee Category" #empCatEnt="ngModel" required
+                (change)="onEmployeeCategoryChange()">
+                <option [ngValue]="null" [selected]="true"> Select Employee Category </option>
+                <option *ngFor="let pl of employeeCategoryList" [ngValue]="pl.id">{{pl.catltxt}} </option>
+              </select>
+              <span class="help-block" *ngIf="empCatEnt.touched && !empCatEnt.valid">Please select Employee
+                Category</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label> Country <span style="color:red">*</span></label>
+              <select class="form-control" id="countryId" [(ngModel)]="newOffer.countryId" (change)="onCountryChange()"
+                ngControl="details.countryId" name="countryId" #countryEnt="ngModel" required>
+                <option [ngValue]="null" disabled [selected]="true"> Select country </option>
+                <option *ngFor="let pl of countryList" [ngValue]="pl.id">{{pl.landx}}</option>
+              </select>
+              <span class="help-block" *ngIf="countryEnt.touched && !countryEnt.valid">
+                Please select a value</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="state"> State<span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.locationStateId" class="form-control" (change)="onStateChange()"
+                id="offerlocationState" name="offerlocationState" matTooltip="State" #locationStateEnt="ngModel"
+                required>
+                <option [ngValue]="null" [selected]="true"> Select State </option>
+                <option *ngFor="let pl of stateList" [ngValue]="pl.bland">{{pl.bezei}}</option>
+              </select>
+              <span class="help-block" *ngIf="locationStateEnt.touched && !locationStateEnt.valid">Please select
+                State</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="location"> Location<span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.locationId" class="form-control" id="offerLocation" name="offerLocation"
+                matTooltip="Location" #locationEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Location </option>
+                <option *ngFor="let pl of locationList" [ngValue]="pl.id">{{pl.name }} </option>
+              </select>
+              <span class="help-block" *ngIf="locationEnt.touched && !locationEnt.valid">Please select Location</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="department"> Department<span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.departmentId" class="form-control" id="department" name="department"
+                #departmentEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Department </option>
+                <option *ngFor="let pl of departmentList" [ngValue]="pl.id">{{pl.description }} </option>
+              </select>
+              <span class="help-block" *ngIf="departmentEnt.touched && !departmentEnt.valid">Please select
+                department</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="designation"> Designation<span style="color:red">*</span></label>
+              <select [(ngModel)]="selectedDesignation" class="form-control" (change)="onDesignationChange()"
+                id="designation" name="designation" matTooltip="Designation" #designationEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Designation </option>
+                <option *ngFor="let pl of designationList" [ngValue]="pl">{{pl.name}} </option>
+              </select>
+              <span class="help-block" *ngIf="designationEnt.touched && !designationEnt.valid">Please select
+                Designation</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="Role">Role <span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.roleId" class="form-control" matTooltip="Role" #roleEnt="ngModel" required
+                name="roleId">
+                <option [ngValue]="null" [selected]="true"> Select Role </option>
+                <option *ngFor="let pl of roleList" [ngValue]="pl.id">{{pl.role_ltxt}}</option>
+              </select>
+              <span class="help-block" *ngIf="roleEnt.touched && !roleEnt.valid">Please select Role</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="Grade">Grade</label>
+              <input type="text" class="form-control" placeholder="Grade" [(ngModel)]="newOffer.grade"
+                ngControl="newOffer.grade" name="grade" disabled="true" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="interviewedBy">Interviewed By <span style="color:red">*</span></label>
+              <input type="text" class="form-control" id="interviewedBy" [(ngModel)]="newOffer.interviewedBy"
+                ngControl="newOffer.interviewedBy" name="interviewedBy" #interviewedByEnt="ngModel" required />
+              <span class="help-block" *ngIf="interviewedByEnt.touched && !interviewedByEnt.valid">
+                Please enter interviewed by</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="reportingManager"> Reporting Manager <span style="color:red">*</span></label>
+              <input type="text" id="reportingManager" class="form-control" (keyup)="getReportingManager($event)"
+                [(ngModel)]="newOffer.reportingManagerName" ngControl="newOffer.reportingManagerName" autocomplete="off"
+                name="reportingManager" />
+              <input type="hidden" id="reportingManagerId" [(ngModel)]="newOffer.reportingManagerId"
+                name="reportingManagerId" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="approvingManager"> HOD <span style="color:red">*</span></label>
+              <input type="text" id="approvingManager" class="form-control" (keyup)="getApprovingManager($event)"
+                [(ngModel)]="newOffer.approvingManagerName" ngControl="newOffer.approvingManagerName" autocomplete="off"
+                name="approvingManager" required />
+              <input type="hidden" id="approvingManagerId" [(ngModel)]="newOffer.approvingManagerId"
+                name="approvingManagerId" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group checkbox">
+              <label for="assesmentReport">
+                <input type="checkbox" [(ngModel)]="newOffer.assesmentReport" name="assesmentReport" /> Assesment Report
+              </label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group checkbox">
+              <label for="matTest">
+                <input type="checkbox" [(ngModel)]="newOffer.matTest" name="matTest" /> MAT Test
+              </label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="preJoiningInitiation">Pre-Joining Initiation <span style="color:red">*</span></label>
+              <select class="form-control" id="preJoiningInitiation" [(ngModel)]="newOffer.preJoiningInitiation"
+                ngControl="newOffer.preJoiningInitiation" name="preJoiningInitiation" required
+                #preJoiningInitiationEnt="ngModel">
+                <option value="Before Offer Release">Before Offer Release</option>
+                <option value="After Offer Release">After Offer Release</option>
+              </select>
+              <span class="help-block" *ngIf="preJoiningInitiationEnt.touched && !preJoiningInitiationEnt.valid">
+                Please select a value
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group checkbox">
+              <label for="sendEmailNotification">
+                <input type="checkbox" [(ngModel)]="newOffer.sendEmailNotification" name="sendEmailNotification" /> Send
+                Email Notification</label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="otherEmails">CC Email To </label>
+              <input type="text" class="form-control" id="otherEmails" [(ngModel)]="newOffer.otherEmails"
+                ngControl="newOffer.otherEmails" name="otherEmails" #otherEmailsEnt="ngModel" />
+              <span class="help-block" *ngIf="otherEmailsEnt.touched && !otherEmailsEnt.valid">
+                Please enter other emails</span>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="referenceThru">Reference Thru <span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.referenceThru" class="form-control" id="referenceThru" name="referenceThru"
+                matTooltip="Reference Thru" #referenceThruEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Reference </option>
+                <option *ngFor="let pl of referenceTypes" [ngValue]="pl.type">{{pl.type}} </option>
+              </select>
+              <span class="help-block" *ngIf="referenceThruEnt.touched && !referenceThruEnt.valid">Please Reference
+                Type</span>
+            </div>
+            <div id="divEmpRefDetails" *ngIf="newOffer.referenceThru == 'Employee Referral'">
+              <div class="form-group">
+                <label for="refEmployeeNo">Reference Employee Number <span style="color:red">*</span></label>
+                <input type="number" class="form-control" id="refEmployeeNo" placeholder="referring Employee No"
+                  [(ngModel)]="newOffer.refEmployeeNo" ngControl="newOffer.refEmployeeNo" name="refEmployeeNo" />
+              </div>
+            </div>
+            <div id="divRefDetails" *ngIf="newOffer.referenceThru != 'Employee Referral' && newOffer.referenceThru">
+              <div class="form-group">
+                <label for="refDetails">Reference Details <span style="color:red">*</span></label>
+                <input type="text" class="form-control" placeholder="Reference Details"
+                  [(ngModel)]="newOffer.refDetails" ngControl="newOffer.refDetails" name="refDetails" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group checkbox">
+              <label> <input type="checkbox" [(ngModel)]="secondSignatoryRequired" name="secondSignatory" /> Second
+                Signatory </label>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="secondSignatoryRequired == true">
+            <div class="form-group">
+              <label> Select Signatory <span style="color:red">*</span></label>
+              <select class="form-control" id="secondSignatoryId" name="secondSignatoryId"
+                [(ngModel)]="newOffer.secondSignatoryId" ngControl="newOffer.secondSignatoryId" name="secondSignatoryId"
+                #secondSignatoryEnt="ngModel" required>
+                <option [ngValue]="null" disabled [selected]="true"> Select signatory</option>
+                <option *ngFor="let pl of signatoryList" [ngValue]="pl.employeeId">{{pl.name}}</option>
+              </select>
+              <span class="help-block" *ngIf="secondSignatoryEnt.touched && !secondSignatoryEnt.valid">
+                Please select a value</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs">
+      <li [ngClass]="currentTab=='salary'?'active':''" id="tab_salary"><a (click)="onTabClick(0)">Salary</a></li>
+      <li [ngClass]="currentTab=='additionalInfo'?'active':''" id="tab_additionalInfo"><a
+          (click)="onTabClick(1)">Additional Information</a></li>
+      <li [ngClass]="currentTab=='breakup'?'active':''" id="tab_breakup"><a (click)="onTabClick(2)">Salary Breakup</a>
+      </li>
+      <li [ngClass]="currentTab=='checklist'?'active':''" id="tab_checklist"><a (click)="onTabClick(3)">Checklist</a>
+      </li>
+      <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a
+          (click)="onTabClick(4)">Attachments</a></li>
+    </ul>
+
+    <div class="panel panel-info" *ngIf="currentTab=='salary'">
+      <div class="panel-heading">
+        <h3 class="panel-title">Salary Details</h3>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="presentEmployer">Present Employer <span style="color:red">*</span></label>
+              <input type="text" class="form-control" id="presentEmployer" placeholder="Present Employer"
+                [(ngModel)]="newOffer.presentEmployer" name="presentEmployer" #presentEmployerEnt="ngModel"
+                maxlength="50" ngControl="newOffer.presentEmployer" name="presentEmployer" required />
+              <span class="help-block" *ngIf="presentEmployerEnt.touched && !presentEmployerEnt.valid">
+                <span *ngIf="presentEmployerEnt.errors.required"> Please enter present employer</span>
+                <span *ngIf="presentEmployerEnt.errors.maxlength">Maximum length allowed is 50 characters.</span>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="presentDesignation">Present Designation </label>
+              <input type="text" class="form-control" id="presentDesignation" placeholder="Present Designation"
+                [(ngModel)]="newOffer.presentDesignation" name="presentDesignation" #presentEmployerEnt="ngModel"
+                maxlength="50" ngControl="newOffer.presentDesignation" name="presentDesignation" />
+              <span class="help-block" *ngIf="presentEmployerEnt.touched && !presentEmployerEnt.valid">
+                <span *ngIf="presentEmployerEnt.errors.required"> Please enter present designation</span>
+                <span *ngIf="presentEmployerEnt.errors.maxlength">Maximum length allowed is 50 characters.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="presentCTC">Present CTC <span style="color:red">*</span></label>
+              <input type="text" class="form-control text-right" id="presentCTC" placeholder="Present CTC"
+                [(ngModel)]="newOffer.presentCTC" (keypress)="keyPressAllowOnlyNumber($event)" name="presentCTC"
+                #presentCTCEnt="ngModel" maxlength="10" ngControl="newOffer.presentCTC" name="presentCTC" />
+              <span class="help-block" *ngIf="presentCTCEnt.touched && !presentCTCEnt.valid">
+                <span *ngIf="presentCTCEnt.errors.required"> Please enter present CTC</span>
+                <span *ngIf="presentCTCEnt.errors.maxlength">Maximum of 10 digits allowed.</span>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="salesAmount">Sales </label>
+              <input type="number" class="form-control text-right" id="salesAmount" placeholder="In Lakhs"
+                [(ngModel)]="newOffer.salesAmount" name="salesAmount" min="0" step="0.01" #salesAmountEnt="ngModel"
+                maxlength="10" ngControl="newOffer.salesAmount" name="salesAmount" />
+              <span class="help-block" *ngIf="salesAmountEnt.touched && !salesAmountEnt.valid">
+                <span *ngIf="salesAmountEnt.errors.maxlength">Maximum of 10 digits allowed.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <!-- <div class="col-md-4">
+            <div class="form-group">
+              <label for="salaryType">Salary Type <span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.salaryType" class="form-control" id="salaryType" name="salaryType"
+                matTooltip="salary type" #salaryTypeEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Salary Type </option>
+                <option *ngFor="let pl of salaryTypes" [ngValue]="pl.type">{{pl.type}} </option>
+              </select>
+              <span class="help-block" *ngIf="salaryTypeEnt.touched && !salaryTypeEnt.valid">Please salary type</span>
+
+            </div>
+          </div> -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="packageType">Package Type <span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.packageType" class="form-control" id="packageType" name="packageType"
+                matTooltip="package type" #packageTypeEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Package Type </option>
+                <option *ngFor="let pl of packageTypes" [ngValue]="pl.type">{{pl.type}} </option>
+              </select>
+              <span class="help-block" *ngIf="packageTypeEnt.touched && !packageTypeEnt.valid">Please select package
+                type</span>
+
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="offeredSalary">Offered Salary <span style="color:red">*</span></label>
+              <input type="text" class="form-control text-right" id="offeredSalary" placeholder="Offered Salary"
+                [(ngModel)]="newOffer.offeredSalary" (keypress)="keyPressAllowOnlyNumber($event)" name="offeredSalary"
+                #offeredSalaryEnt="ngModel" minlength="3" maxlength="10" ngControl="newOffer.offeredSalary"
+                name="offeredSalary" />
+              <span class="help-block" *ngIf="offeredSalaryEnt.touched && !offeredSalaryEnt.valid">
+                <span *ngIf="offeredSalaryEnt.errors.required"> Please enter offered salary</span>
+                <span *ngIf="offeredSalaryEnt.errors.maxlength">Maximum of 10 digits allowed.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="pfApplicable">PF Applicable <span style="color:red">*</span></label>
+              <select class="form-control" id="pfApplicable" [(ngModel)]="newOffer.pfApplicable"
+                ngControl="newOffer.pfApplicable" name="pfApplicable" required #pFApplicableEnt="ngModel">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <span class="help-block" *ngIf="pFApplicableEnt.touched && !pFApplicableEnt.valid">
+                Please select a value
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="esiApplicable">ESI Applicable <span style="color:red">*</span></label>
+              <select class="form-control" id="esiApplicable" [(ngModel)]="newOffer.esiApplicable"
+                ngControl="newOffer.esiApplicable" name="esiApplicable" required #esiApplicableEnt="ngModel">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <span class="help-block" *ngIf="esiApplicableEnt.touched && !esiApplicableEnt.valid">
+                Please select a value
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="epsApplicable">EPS Applicable <span style="color:red">*</span></label>
+              <select class="form-control" id="epsApplicable" [(ngModel)]="newOffer.epsApplicable"
+                ngControl="newOffer.epsApplicable" name="epsApplicable" required #ePSApplicableEnt="ngModel">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <span class="help-block" *ngIf="ePSApplicableEnt.touched && !ePSApplicableEnt.valid">
+                Please select a value
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <!-- <div class="col-md-4">
+            <div class="form-group">
+              <label for="referenceThru">Reference Thru <span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.referenceThru" class="form-control" id="referenceThru" name="referenceThru"
+                matTooltip="Reference Thru" #referenceThruEnt="ngModel" required>
+                <option [ngValue]="null" disabled [selected]="true"> Select Reference </option>
+                <option *ngFor="let pl of referenceTypes" [ngValue]="pl.type">{{pl.type}} </option>
+              </select>
+              <span class="help-block" *ngIf="referenceThruEnt.touched && !referenceThruEnt.valid">Please Reference
+                Type</span>
+            </div>
+            <div id="divEmpRefDetails" *ngIf="newOffer.referenceThru == 'Employee Referral'">
+              <div class="form-group">
+                <label for="refEmployeeNo">Reference Employee Number <span style="color:red">*</span></label>
+                <input type="text" class="form-control" id="refEmployeeNo" placeholder="referring Employee No"
+                  [(ngModel)]="newOffer.refEmployeeNo" ngControl="newOffer.refEmployeeNo" name="refEmployeeNo" />
+              </div>
+            </div>
+            <div id="divRefDetails" *ngIf="newOffer.referenceThru != 'Employee Referral' && newOffer.referenceThru">
+              <div class="form-group">
+                <label for="refDetails">Reference Details <span style="color:red">*</span></label>
+                <input type="text" class="form-control" placeholder="Reference Details"
+                  [(ngModel)]="newOffer.refDetails" ngControl="newOffer.refDetails" name="refDetails" />
+              </div>
+            </div>
+          </div>  -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="recruitmentType">Recruitment Type <span style="color:red">*</span></label>
+              <select [(ngModel)]="newOffer.recruitmentType" class="form-control" id="recruitmentType"
+                name="recruitmentType" matTooltip="Recruitment Type" #recruitmentTypeEnt="ngModel" required>
+                <option [ngValue]="null" [selected]="true"> Select Recruitment Type </option>
+                <option *ngFor="let pl of recruitmentTypes" [ngValue]="pl.type">{{pl.type}} </option>
+              </select>
+              <span class="help-block" *ngIf="recruitmentTypeEnt.touched && !recruitmentTypeEnt.valid">
+                Please select Recruitment Type</span>
+
+              <input type="hidden" id="replacingEmployeeNo" #replacingEmployeeNo />
+            </div>
+            <div id="divRecruitmentDetails" *ngIf="newOffer.recruitmentType == 'Replacement'">
+              <div class="form-group">
+                <label for="replacingEmployeeNumber">Replacing Emp No <span style="color:red">*</span></label>
+                <!-- <input type="text" class="form-control" [(ngModel)]="newOffer.replacingEmployeeNumber"
+                  ngControl="newOffer.replacingEmployeeNumber" name="replacingEmployeeNumber" /> -->
+
+                <input type="text" [id]="'replacingEmployeeName'" [(ngModel)]="newOffer.replacingEmployeeName"
+                  class="form-control" name="replacingEmployeeName" autocomplete="off"
+                  (keyup)="getReplacingEmployeeName($event)" ngControl="newOffer.replacingEmployeeName" />
+
+                <input type="hidden" [id]="'replacingEmployeeId'" [(ngModel)]="newOffer.replacingEmployeeId"
+                  class="form-control" name="replacingEmployeeId" />
+
+                <table class="table table-bordered" *ngIf="replacingEmployeeDetails">
+                  <thead>
+                    <tr>
+                      <th>Plant</th>
+                      <th>Department</th>
+                      <th>Designation</th>
+                      <th>Current CTC</th>
+                      <th>Date of Resignation</th>
+                      <th>Date of Leaving</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{replacingEmployeeDetails.plantName}}</td>
+                      <td>{{replacingEmployeeDetails.department}}</td>
+                      <td>{{replacingEmployeeDetails.designation}}</td>
+                      <td>{{replacingEmployeeDetails.currentCTC | number: '1.0-2'}}</td>
+                      <td>{{replacingEmployeeDetails.dateOfResignation | date:'dd/MM/yyyy'}}</td>
+                      <td>{{replacingEmployeeDetails.dateOfLeaving | date:'dd/MM/yyyy'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="form-group">
+                <label for="joiningDate">Tentative Joining <span style="color:red">*</span></label>
+
+                <input [matTooltipPosition]="'below'" matTooltip="Click to change joining date" [owlDateTime]="dt11"
+                  id="joiningDate" #joiningDateEnt="ngModel" placeholder="Joining Date" [owlDateTimeTrigger]="dt11"
+                  required name="joiningDate" class="form-control" [(ngModel)]="newOffer.joiningDate"
+                  #joiningDate="ngModel">
+                <span class="help-block" *ngIf="joiningDateEnt.touched && !joiningDateEnt.valid">
+                  Please select a joining date</span>
+                <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Additional Details</label>
+              <textarea type="text" class="form-control" rows="3" [(ngModel)]="newOffer.additionalDetails"
+                ngControl="newOffer.additionalDetails" name="additionalDetails"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+  <div class="details-tab" *ngIf="currentTab!='salary'">
+    <app-offer-additional-info [offerId]="this.newOffer.offerId" [employeeCategoryId]="this.newOffer.employeeCategoryId"
+      [totalExperience]="this.newOffer.totalExperience" [isMandatoryToFill]="false" (dataSaved)="onDataSaved($event)"
+      *ngIf="currentTab=='additionalInfo'">
+
+    </app-offer-additional-info>
+
+    <app-hr-offer-offersalary [packageType]="this.newOffer.packageType" [offeredSalary]="this.newOffer.offeredSalary"
+      [offerId]="this.newOffer.offerId" (dataSaved)="onDataSaved($event)" *ngIf="currentTab=='breakup'">
+
+    </app-hr-offer-offersalary>
+
+    <app-checklist [offerId]="this.newOffer.offerId" (dataSaved)="onDataSaved($event)" *ngIf="currentTab=='checklist'">
+    </app-checklist>
+
+    <app-offer-attachments [offerId]="this.newOffer.offerId" [offerDetails]="this.newOffer" [editAllowed]="true"
+      [deleteAllowed]="true" (dataSaved)="onDataSaved($event)" *ngIf="currentTab=='attachments'">
+    </app-offer-attachments>
+
+  </div>
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="form-group text-center actionButtons">
+
+    <span class="text-red pull-left" *ngIf="errMsg.length>0"><i class="fa fa-warning"></i>{{errMsg}}</span>
+
+    <button type="button" class="btn btn-default" *ngIf="currentTab!='salary'" (click)="onPrevious()">Previous</button>
+    <button type="button" class="btn btn-primary" *ngIf="currentTab!='attachments'" (click)="onNext()"
+      matTooltip="Click to save details and add other details"
+      [disabled]="isLoading || !newOfferForm.valid">Next</button>
+
+    <button type="button" class="btn btn-primary" *ngIf="currentTab=='attachments'" (click)="Done()"
+      matTooltip="Click to save details without submitting for approval" [disabled]="isLoading || !newOfferForm.valid">
+      Save Draft
+    </button>
+
+    <button type="button" class="btn btn-success" *ngIf="currentTab=='attachments'" (click)="submit()"
+      matTooltip="Click to save details and submit for approval"
+      [disabled]="isLoading || !newOfferForm.valid">Submit</button>
+
+    <button type="button" class="btn btn-default" (click)="cancel()" matTooltip="Click to cancel this"
+      [disabled]="isLoading">
+      Cancel
+    </button>
+  </div>
+</section>
+
+
+<!-- Exception Modal -->
+<div id="ExceptionModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="modal-title">Exception Approval</h3>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning">
+          <span>Salary range exceeded, submit for approval with justification and approval attachment.</span>
+        </div>
+        <div class="form-group">
+          <label>Justification</label>
+          <textarea rows="3" class="form-control" [(ngModel)]="comments"></textarea>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="col-md-2">Attachments</label>
+              <div class="col-md-10">
+                <input #file2 type="file" id="file2" multiple accept=".png, .jpg, .jpeg, .pdf" />
+                <span class="text-danger">Upload image files (jpeg, png) or pdf files only. Maximum allowed file size is
+                  2MB.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+          (click)="saveAndSubmitForExceptionApproval(file2.files)">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

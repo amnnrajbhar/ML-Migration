@@ -1,0 +1,246 @@
+<section class="content-header">
+    <h1 class="display-1">
+        View AMC details
+    </h1>
+</section>
+<section class="content">
+    <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+    <div class="text-success text-center h3" *ngIf="successMsg.length>0">
+        <i class="fas fa-check"></i> {{successMsg}}
+    </div>
+    <div class="text-red text-center h4" *ngIf="errMsg.length>0">
+        <i class="fas fa-warning"></i> {{errMsg}}
+    </div>
+    <div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" href="#divOfferDetails">Visitor Details</a>
+                </h3>
+            </div>
+            <div id="divOfferDetails" class="panel-collapse collapse in">
+                <div class="panel-body form-horizontal">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="offerId" class="col-md-4"> Visitor Name </label>
+                                <div class="col-md-8"><input type="text" class="form-control"
+                                        [(ngModel)]="VisitorDetails.name" disabled="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="status" class="col-md-4"> Visiting Date </label>
+                                <div class="col-md-8"><input type="text" class="form-control"
+                                        value="{{VisitorDetails.date | date: 'dd/MM/yyyy'}}" disabled="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="status" class="col-md-4"> Company Name </label>
+                                <div class="col-md-8"><input type="text" class="form-control"
+                                        value="{{VisitorDetails.companyName}}" disabled="true" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="title" class="col-md-4"> Mobile </label>
+                                <div class="col-md-8"><input type="text" class="form-control"
+                                        [(ngModel)]="VisitorDetails.mobile" disabled="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="initial" class="col-md-4">Visitor Type</label>
+                                <div class="col-md-8"><input type="text" class="form-control"
+                                        [(ngModel)]="VisitorDetails.visitorType" disabled="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="initial" class="col-md-4">Purpose</label>
+                                <div class="col-md-8"><input type="text" class="form-control"
+                                        [(ngModel)]="VisitorDetails.visitorPurpose" disabled="true" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="title" class="col-md-4"> Belongings </label>
+                                <div class="col-md-8"><input type="text" class="form-control"
+                                        value="{{VisitorDetails.temp2}},{{VisitorDetails.temp15}}" disabled="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="initial" class="col-md-4">Person to Meet</label>
+                                <div class="col-md-8"><input type="text" class="form-control"
+                                        [(ngModel)]="VisitorDetails.fkEmployeeName" disabled="true" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" href="#divOfferDetails">AMC Details</a>
+                </h3>
+            </div>
+            <div id="divOfferDetails" class="panel-collapse collapse in">
+                &nbsp; &nbsp;
+                <div class="col-md-12">
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="type">Service Type <span style="color: red;">*</span> </label>
+                                <select class="form-control" id="title" [(ngModel)]="amcdetailsmodel.typeOfService"
+                                    ngControl="amcdetailsmodel.typeOfService" #titleEnt="ngModel" required name="title"
+                                    disabled>
+                                    <option [ngValue]="null" disabled [selected]="true"> Select Type </option>
+                                    <option>AMC Visit</option>
+                                    <option>Breakdown</option>
+                                    <option>Call Basis Service</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="department">Department<span style="color: red;">*</span> </label>
+                                <select class="form-control" id="department" [(ngModel)]="amcdetailsmodel.department"
+                                    ngControl="amcdetailsmodel.department" #departmentEnt="ngModel" required
+                                    name="department" disabled>
+                                    <option [ngValue]="null" disabled [selected]="true"> Select Type </option>
+                                    <option>AMC Visit</option>
+                                    <option>Breakdown</option>
+                                    <option>Call Basis Service</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="equipment">Service Requested By<span style="color: red;">*</span> </label>
+                                <input type="text" class="form-control" name="serviceRequestedBy"
+                                    id="serviceRequestedBy" [(ngModel)]="amcdetailsmodel.serviceRequestedBy"
+                                    placeholder="Service Requested By" required disabled />
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">
+                                        <a>Equipment Details</a>
+                                    </h3>
+                                </div>
+                                <div class="panel-body form-horizontal">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <tr>
+
+                                                    <th style="width: 5%;">Sl.No</th>
+                                                    <th style="width: 25%;">Equipment Id</th>
+                                                    <th style="width: 25%;">Equipment Name</th>
+                                                    <th style="width: 25%;">Make/Model</th>
+                                                    <th style="width: 15%;">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let dep of EquipmentList;let i=index">
+
+                                                    <td>
+                                                        {{i+1}}
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control"
+                                                            [(ngModel)]="dep.equipmentId" ngControl="dep.equipmentId"
+                                                            name="name" placeholder="Equipment Id"
+                                                            [ngModelOptions]="{standalone:true}" disabled />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control"
+                                                            [(ngModel)]="dep.equipmentName"
+                                                            ngControl="dep.equipmentName" name="equipmentName"
+                                                            placeholder="Equipment Name"
+                                                            [ngModelOptions]="{standalone:true}" disabled />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control"
+                                                            [(ngModel)]="dep.modelNo" ngControl="dep.modelNo"
+                                                            name="modelNo" placeholder="Make/Model No"
+                                                            [ngModelOptions]="{standalone:true}" disabled />
+                                                    </td>
+                                                    <td>
+                                                        <select [(ngModel)]="dep.status" class="form-control" required
+                                                            name="status" [ngModelOptions]="{standalone:true}" disabled>
+                                                            <option [ngValue]=undefined disabled [selected]="true">
+                                                                Select status </option>
+                                                            <option>Pending</option>
+                                                            <option>In Process</option>
+                                                            <option>Completed</option>
+                                                        </select>
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Reason for AMC <span style="color: red;">*</span> </label>
+                                <textarea type="text" class="form-control" name="reason" id="reason"
+                                    [(ngModel)]="amcdetailsmodel.reasonforAmc" placeholder="Reson for AMC"
+                                    disabled></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="action">Action Taken<span style="color: red;">*</span> </label>
+                                <textarea name="action" class="form-control" id="action"
+                                    [(ngModel)]="amcdetailsmodel.actionTaken" cols="30" rows="3"
+                                    placeholder="Action Taken" disabled></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center actionButtons">
+                    <button type="button" (click)="goBack()" class="btn btn-sm btn-default"
+                        [matTooltipPosition]="'after'" matTooltip="Click to go back to list">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <!-- <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+                        Cancel</button> -->
+                </div>
+                &nbsp;
+            </div>
+        </div>
+
+    </div>
+
+</section>

@@ -1,0 +1,242 @@
+<section class="content-header">
+  <h1>
+    Expense Update
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Expense Update</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+
+    </div>
+    <div class="box-body">
+
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="name"> Name</label>
+              <input type="text" name="name" id="name" [(ngModel)]="filtername" class="form-control" matTooltip="Name"
+                [disabled]="isEdit" #filternameEnt="ngModel">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="TypeOfGuest">HR Id<span style="color: red;">*</span></label>
+              <select [(ngModel)]="filterTypeOfGuest" class="form-control" id="TypeOfGuest" name="TypeOfGuest"
+                matTooltip="Type Of Guest" #TypeOfGuest1Ent="ngModel" required>
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Type of Guest </option>
+                <option *ngFor="let pl of TypeOfGuestList" value={{pl.typeOfGuest1}}>{{pl.typeOfGuest1}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3" *ngIf="filterTypeOfGuest == 'Employee'">
+            <div class="form-group form-group-sm">
+              <label for="filterEmployeeNo"> Employee No. <span style="color:red">*</span></label>
+              <input class="form-control input-sm suggestion" type="text" name="filterEmployeeNo"
+                [(ngModel)]="filterEmployeeNo" #filterEmployeeNoEnt="ngModel" ngControl="filterEmployeeNo"
+                value="filterEmployeeNo" maxlength="10" (keyup)="setDet(filterEmployeeNo)" id="filterEmployeeNo"
+                [disabled]="isEdit" matTooltip="Enter Employee No." required />
+            </div>
+          </div>
+          <div class="col-sm-3" *ngIf="filterTypeOfGuest == 'Employee' ">
+            <div class="form-group form-group-sm">
+              <label for="filterEmployeeName"> Employee Name </label>
+              <input class="form-control input-sm suggestion" type="text" name="EmployeeName"
+                [(ngModel)]="filterEmployeeName" #filterEmployeeNameEnt="ngModel" ngControl="filterEmployeeName "
+                value="filterEmployeeName" maxlength="80" (keyup)="setDet1(filterEmployeeName)" id="EmployeeName"
+                [disabled]="isEdit" matTooltip="Enter Employee Name" />
+            </div>
+          </div>
+          <!-- <div class="col-sm-3" *ngIf="filterTypeOfGuest == 'Employee'">
+            <div class="form-group form-group-sm">
+              <label for="filterEmployeeNo"> Employee No. <span style="color:red">*</span></label>
+              <input class="form-control input-sm suggestion" type="text" name="filterEmployeeNo"
+                [(ngModel)]="filterEmployeeNo" #filterEmployeeNoEnt="ngModel" 
+                ngControl="filterEmployeeNo" value="filterEmployeeNo" maxlength="10" (keyup)="setDet(filterEmployeeNo)"
+                id="filterEmployeeNo" [disabled]="isEdit" matTooltip="Enter Employee No." required />
+            </div>
+          </div> -->
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="PayGroup">Division<span style="color: red;">*</span></label>
+              <ng-multiselect-dropdown id="filterPayGroup" name="filterPayGroup" #filterPayGroupE="ngModel"
+                [data]="payGroupList" [(ngModel)]="filterPayGroup" [settings]="dropdownSettings"
+                (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                (onSelectAll)="onSelectAll($event)" matTooltip="Select Division">
+              </ng-multiselect-dropdown>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="typeOfEvent">Type Of Event<span style="color: red;">*</span> </label>
+              <select [(ngModel)]="filtertypeOfEvent" class="form-control" id="typeOfEvent" name="typeOfEvent"
+                matTooltip="Type Of Event" #typeOfEventEnt="ngModel" required>
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Type Of Event </option>
+                <option *ngFor="let pl of TypeOfEventList" value={{pl.typeOfEvent}}>{{pl.typeOfEvent}}
+                </option>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="EventDate">Event Date <span style="color: red;">*</span> </label>
+              <input [matTooltipPosition]="'below'" matTooltip="Click to change date" [owlDateTime]="dt12"
+                [owlDateTimeTrigger]="dt12" name="EventDate" class="form-control" [(ngModel)]="filterEventDate"
+                ngControl="filterEventDate" #filterEventDateEnt="ngModel" placeholder="DD-MM-YYYY">
+              <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;">
+              </owl-date-time>
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="InvoiceDate">Invoice Date<span style="color: red;">*</span> </label>
+              <input [matTooltipPosition]="'below'" matTooltip="Click to change date" [owlDateTime]="dt11"
+                [owlDateTimeTrigger]="dt11" name="InvoiceDate1" class="form-control" [(ngModel)]="filterInvoiceDate"
+                #InvoiceDateEnt="ngModel" placeholder="DD-MM-YYYY">
+              <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;">
+              </owl-date-time>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="invoiceNo">Invoice No<span style="color: red;">*</span></label>
+              <input type="text" name="invoiceNo" id="invoiceNo" [(ngModel)]="filterInvoiceNo" class="form-control"
+                matTooltip="Invoice No" [disabled]="isEdit" #InvoiceNoEnt="ngModel" required>
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="pax">No of Pax<span style="color: red;">*</span> </label>
+              <input type="text" name="noOfPax" id="noOfPax" [(ngModel)]="filterNoOfPax" class="form-control"
+                matTooltip="No Of Pax" #noOfPaxEnt="ngModel" required>
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="amount">Amount<span style="color: red;">*</span></label>
+              <input type="text" name="amount" id="amount" [(ngModel)]="Amount" class="form-control" matTooltip="Amount"
+                #AmountEnt="ngModel" required>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="filterVendorName">Vendor Name</label>
+              <ng-multiselect-dropdown id="filterVendorName" name="filterVendorName" #filterVendorNameE="ngModel"
+                [data]="VendorMasterList" [(ngModel)]="filterVendorName" [settings]="dropdownSettings2"
+                (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                (onSelect)="onSelect($event)" matTooltip="Select Vendor Name">
+              </ng-multiselect-dropdown>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="hotel">Hotel Name</label>
+              <input type="text" name="hotel" id="hotel" [(ngModel)]="filterhotel" class="form-control"
+                matTooltip="Hotel Name" [disabled]="isEdit" #filterhotelEnt="ngModel">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="filterVendorCity">Location</label>
+              <input type="text" name="filterVendorCity" id="filterVendorCity" class="form-control"
+                [(ngModel)]="filterVendorCity" ngControl="filterVendorCity " #filterVendorCityEnt="ngModel"
+                [disabled]="isEdit" matTooltip="Enter Vendor City" />
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="Supportings">Supportings </label>
+              <input type="text" name="Supportings" id="Supportings" matTooltip="Supportings"
+                [(ngModel)]="filterSupportings" class="form-control" #Suppportings="ngModel">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="remarks">Remarks </label>
+              <textarea name="remarks" id="remarks" matTooltip="Remarks" [(ngModel)]="filterRemarks"
+                class="form-control"></textarea>
+            </div>
+          </div>
+          <!-- <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+              <label for="Department">Department</label>
+              <ng-multiselect-dropdown id="filterDepartment" name="filterDepartment" #filterDepartmentE="ngModel"
+                  [data]="departmentList" [(ngModel)]="filterDepartment" [settings]="dropdownSetting" (onDeSelect)="onItemDeSelect($event)"
+                  (onDeSelectAll)="onDeSelectAll($event)" (onSelectAll)="onSelectAll($event)" matTooltip="Select Department">
+              </ng-multiselect-dropdown>
+          </div>
+        </div> -->
+          <!-- <div class="col-sm-3">
+            <div class="form-group form-group-sm">
+              <label for="Gender">Gender</label>
+              <div class="row">
+                <mat-radio-group aria-label="Select option?" id="filterGender" name="filterGender"
+                  [(ngModel)]="filterGender" [disabled]="isEdit" ngControl="filterGender" #filterGenderEnt="ngModel">
+                  <mat-radio-button value="Male">Male</mat-radio-button>
+                  &nbsp;&nbsp;&nbsp;
+                  <mat-radio-button value="Female">Female</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div> -->
+          <!-- <div class="col-sm-3">
+            <div class="form-group">
+              <label for="Purpose">Purpose<span style="color: red;">*</span></label>
+              <select [(ngModel)]="filterPurpose" class="form-control" id="Purpose" name="Purpose" matTooltip="Purpose"
+                #PurposeEnt="ngModel" required>
+                 <option [ngValue]="undefined" disabled [selected]="true"> Select Purpose </option> 
+                <option *ngFor="let pl of PurposeList" value={{pl.purpose}}>{{pl.purpose}}</option>
+              </select>
+
+            </div>
+          </div> -->
+          <!-- <div class="col-sm-3">
+            <div class="form-group">
+              <label for="checkInFavourOf">Cheque In Favour Of</label>
+              <input type="text" name="checkInFavourOf" id="checkInFavourOf" [(ngModel)]="filterCheckInFavourOf"
+                class="form-control" matTooltip="Check In Favour Of"  #CheckInFavourOfEnt="ngModel"
+                >
+            </div>
+          </div> -->
+          
+          <div class="col-sm-3">
+            <label>&nbsp;</label>
+            <div class="form-group form-group-sm">
+              <button class="btn btn-primary btn-sm" (click)="getFilteredList();"
+                matTooltip="click to go">Submit</button>
+              &nbsp;&nbsp;
+              <button class="btn btn-primary btn-sm" (click)="clearFilter();" matTooltip="click to reset">Clear</button>
+              &nbsp;&nbsp;
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <label>&nbsp;</label><br>
+            <label> Choose the File to upload:</label><br>
+            <div class="col-sm-4">
+              <input #myInput type="file" id="file" name="file" (change)="uploadfiles($event.target.files)"/>
+
+              <!-- <input type="file" class="file-upload" onchange="console.log(event.target.files)"> -->
+              <br>
+              <input type="button" (click)="upload()" value="submit" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+  </div>
+   
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div> 
+  </div>
+</section>

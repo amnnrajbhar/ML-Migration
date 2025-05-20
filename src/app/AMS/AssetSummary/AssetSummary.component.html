@@ -1,0 +1,172 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Asset Summary
+        <small> AMS </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    </ol>
+</section>
+
+<!--Main Content-->
+<section class="content">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h3><b>Asset Summary</b></h3>
+            </div>
+        </div>
+
+        <div class="panel-body form-horizontal">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group row">
+                        <label for="location" class="col-md-1 control-label text-right"> Location </label>
+                        <div class="col-md-2">
+                            <ng-multiselect-dropdown style="width: 100%;;background-color: white;" id="location"
+                                name="location" ngControl="dashboardlocation" #locationEnt="ngModel"
+                                [placeholder]="'Select Location (multiple)'" [data]="locationList"
+                                matTooltip='Select Locations' [(ngModel)]="dashboardlocation"
+                                [settings]="dropdownSettings1" (onSelect)="onItemSelectM1($event)"
+                                (onSelectAll)="onSelectAll1()" (focusout)="checkStatus1();">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <label for="category" class="col-md-1 control-label text-right">Category</label>
+                        <div class="col-md-2">
+                            <ng-multiselect-dropdown style="width:100%; background-color: white;" id="category"
+                                name="category" ngControl="category" #categoryEnt="ngModel"
+                                [placeholder]="'Select Category (multiple)'" [data]="catList"
+                                matTooltip='Select Category' [(ngModel)]="dashboardcategory"
+                                [settings]="dropdownSettings" (onSelect)="onItemSelectM($event)"
+                                (onSelectAll)="onSelectAll()" (focusout)="checkStatus();">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <label for="usagetype" class="col-md-1 control-label text-right">Usage Type</label>
+                        <div class="col-md-2">
+                            <ng-multiselect-dropdown style="width:100%; background-color: white;"
+                                [(ngModel)]="dashboardusage" #usage1sEnt="ngModel" id="usage"
+                                [placeholder]="'Select Usage Type (multiple)'" name="usage" ngControl="dashboardusage"
+                                matTooltip="Select Usage Type" [data]="usageList" [settings]="dropdownSettings3"
+                                (onSelect)="onItemSelectU($event)" (onSelectAll)="onSelectAllU()"
+                                (focusout)="checkStatusU();">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <label for="assetstate" class="col-md-1 control-label text-right">Asset State</label>
+                        <div class="col-md-2">
+                            <ng-multiselect-dropdown style="width:100%; background-color: white;"
+                                [(ngModel)]="dashboardassetstate" id="assetstate"
+                                [placeholder]="'Select Asset State (multiple)'" name="assetstate"
+                                ngControl="dashboardassetstate" #assetstateEnt="ngModel" matTooltip="Select Asset State"
+                                [data]="assStateList" [settings]="dropdownSettings2" (onSelect)="onItemSelectA($event)"
+                                (onSelectAll)="onSelectAllA()" (focusout)="checkStatusA();">
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                    <!-- <div class="form-group row">
+                        <label for="department" class="col-md-1 control-label text-right"> Department </label>
+                        <div class="col-md-2">
+                            <ng-multiselect-dropdown style="width: 100%;;background-color: white;" id="department"
+                                name="department" ngControl="dashboarddepartment" #departmentEnt="ngModel"
+                                [placeholder]="'Select Department (multiple)'" [data]="departmentList"
+                                matTooltip='Select Departments' [(ngModel)]="dashboarddepartment"
+                                [settings]="dropdownSettingsD" (onSelect)="onItemSelectD($event)"
+                                (onSelectAll)="onSelectAllD()" (focusout)="checkStatusD();">
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <div class="form-group text-center">
+                <button class="btn btn-primary" (click)="getAllEntries();" matTooltip="click to go"><i
+                        class="fas fa-angle-double-right"></i>&nbsp;Search</button>
+                &nbsp;
+                <button class="btn btn-primary" (click)="clearFilter();" matTooltip="click to reset"><i
+                        class="fas fa-times"></i>&nbsp;Clear</button>
+                        &nbsp;
+                        <button class="btn btn-primary" (click)="exportToExcel();" matTooltip="click to export data to excel"><i
+                                class="fas fa-file-excel"></i>&nbsp;Export to Excel</button>
+            </div>
+            <br>
+            <div class="col-sm-12">
+                <div class="box-body table-responsive">
+                    <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr>
+                                <th class="col-sm-1">Location</th>
+                                <th>VDI</th>
+                                <th>Laptop</th>
+                                <th>Desktop</th>
+                                <th>Server</th>
+                                <th>Mini Laptop</th>
+                                <th>Tablets</th>
+                                <th>Projector</th>
+                                <th>Projector Screen</th>
+                                <th>VC Camera</th>
+                                <th>VC Speakers</th>
+                                <th>VC Microphone</th>
+                                <th>VC Controller</th>
+                                <th>Wireless Presenter</th>
+                                <th>Interactive Panel/ Display</th>
+                                <th>WiFi AP</th>
+                                <th>Biometric</th>
+                                <th>PBX</th>
+                                <th>Switch</th>
+                                <th>Video Camera</th>
+                                <th>Firewall</th>
+                                <th>Fire Proof Cabinet</th>
+                                <th>IP Phone</th>
+                                <th>Smart Cabinet</th>
+                                <th>Router</th>
+                                <th>Scanner</th>
+                                <th>Datamax</th>
+                                <th>Deskjet</th>
+                                <th>Dotmatrix</th>
+                                <th>Laser</th>
+                                <th>MFP</th>
+                                <th>Disk Storage</th>
+                                <th>Tape Drive</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let categ of assetList">
+                                <td>{{categ.location}}</td>
+                                <td>{{categ.vdi}}</td>
+                                <td>{{categ.laptop}}</td>
+                                <td>{{categ.desktop}}</td>
+                                <td>{{categ.server}}</td>
+                                <td>{{categ.miniLaptop}}</td>
+                                <td>{{categ.tablets}}</td>
+                                <td>{{categ.projector}}</td>
+                                <td>{{categ.projectorScreen}}</td>
+                                <td>{{categ.vcCamera}}</td>
+                                <td>{{categ.vcSpeakers}}</td>
+                                <td>{{categ.vcMicrophone}}</td>
+                                <td>{{categ.vcController}}</td>
+                                <td>{{categ.wirelessPresenter}}</td>
+                                <td>{{categ.interactivePanelDisplay}}</td>
+                                <td>{{categ.wiFiAP}}</td>
+                                <td>{{categ.biometric}}</td>
+                                <td>{{categ.pbx}}</td>
+                                <td>{{categ.switch}}</td>
+                                <td>{{categ.videoCamera}}</td>
+                                <td>{{categ.firewall}}</td>
+                                <td>{{categ.fireProofCabinet}}</td>
+                                <td>{{categ.ipPhone}}</td>
+                                <td>{{categ.smartCabinet}}</td>
+                                <td>{{categ.router}}</td>
+                                <td>{{categ.scanner}}</td>
+                                <td>{{categ.datamax}}</td>
+                                <td>{{categ.deskjet}}</td>
+                                <td>{{categ.dotmatrix}}</td>
+                                <td>{{categ.laser}}</td>
+                                <td>{{categ.mfp}}</td>
+                                <td>{{categ.diskStorage}}</td>
+                                <td>{{categ.tapeDrive}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

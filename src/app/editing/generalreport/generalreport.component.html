@@ -1,0 +1,78 @@
+<section class="content-header" >
+  <h1>
+    Manager Report
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Manager</a></li>
+    <li class="active">Report</li>
+  </ol>
+</section>
+<section class="content" >
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Manager</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <!-- <button type="button" class="btn btn-primary pull-right" (click)="onAddAssess(false,assessItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add Assesment</button> -->
+        <button class="btn btn-primary" style="float:right" (click)="exportAsXLSX()" [disabled]='isLoading'><i class="fa fa-file-excel-o"></i></button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="assessment" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:20px">S.No.</th>
+            <th>Emp Name</th>
+            <th>Emp Id</th>
+            <th>Emp 1st Level Mgr</th>
+            <th>Emp 2nd Level Mgr</th>
+            <th>Competency</th>
+            <th>Competency Head</th>
+            <th>SBU</th>
+            <th>SBU Head</th>
+            <th>Current Designation</th>
+            <th>Changed Designation</th>
+            <th>Recommendation (% hike ) (by Mgr) - on Fixed CTC</th>
+            <th>Recommendation (% hike ) (by Mgr)- on performance bonus</th>
+            <th>Variable Incentive</th>
+            <th>Total Hike (including Bonus / Variable Pay) (ZZ + AA)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let assess of assessList; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{getEmpName(assess?.fkEmpId)}}</td>
+            <td>{{getEmpId(assess?.fkEmpId)}}</td>
+            <td>{{getEmpReportingMgr(assess?.fkEmpId)}}</td>
+            <td>{{getEmpManager(assess?.fkEmpId)}}</td>
+            <td>{{getCompetency(assess?.fkEmpId)}}</td>
+            <td>{{getCompetencyHead(assess?.fkEmpId)}}</td>
+            <td>{{getSBU(assess?.fkEmpId)}}</td>
+            <td>{{getSBUHead(assess?.fkEmpId)}}</td>
+            <td>{{getCurrentDesignation(assess?.fkEmpId)}}</td>
+            <td>{{getPromotion(assess?.fkEmpId)}}</td>
+            <td>{{getFixedHike(assess?.fkEmpId)}}</td>
+            <td>{{getPerfBonus(assess?.fkEmpId)}}</td>
+            <td>{{getvarInc(assess?.fkEmpId)}}</td>
+            <td>{{getTotalHike(assess?.fkEmpId)}}</td>
+            
+ 
+            <!-- <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddAssess(true,assess)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>

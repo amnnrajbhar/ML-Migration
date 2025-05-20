@@ -1,0 +1,408 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Confirmation Approval
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Confirmation Approval</li>
+  </ol>
+</section>
+
+<section class="content">
+  <form #resgForm="ngForm">
+
+    <app-employee-quick-view [employeeId]="employeeId" *ngIf="employeeId > 0"></app-employee-quick-view>
+
+    <app-confirmation-hod-recommendations *ngIf="confirmationDetails.isRecommendationExists"
+      [employeeConfirmationId]="employeeConfirmationId"></app-confirmation-hod-recommendations>
+
+    <!-- <app-confirmation-hod-recommendations *ngIf="confirmationDetails.hodRating != null"
+      [employeeConfirmationId]="employeeConfirmationId"></app-confirmation-hod-recommendations> -->
+
+    <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+    <ul class="nav nav-tabs">
+      <li [ngClass]="currentTab=='details'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Details</a></li>
+      <li [ngClass]="currentTab=='jobchange'?'active':''" id="tab_jobchange" *ngIf="!isExtension"><a
+          (click)="onTabClick(1)">Job
+          Change</a></li>
+      <li [ngClass]="currentTab=='salarychange'?'active':''" id="tab_salarychange" *ngIf="!isExtension"><a
+          (click)="onTabClick(2)">Salary
+          Change</a></li>
+      <li [ngClass]="currentTab=='attachment'?'active':''" id="tab_attachment"><a (click)="onTabClick(3)">Attachments</a>
+      </li>
+      <li [ngClass]="currentTab=='history'?'active':''" id="tab_history"><a (click)="onTabClick(4)">History</a></li>
+
+    </ul>
+
+    <div class="details-tab">
+
+      <!--Confirmation Details-->
+      <div id="tabGeneral" *ngIf="currentTab=='details'">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Date of Joining</label>
+              <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="dateOfJoining" class="form-control"
+                [(ngModel)]="employeeDetails.dateOfJoining" #fromDate="ngModel" disabled="true">
+              <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Probation Period (months)</label>
+              <input name="probationPeriod" class="form-control" [(ngModel)]="employeeDetails.probationPeriod"
+                disabled="true">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Confirmation Due Date</label>
+
+              <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="dateOfConfirmation" class="form-control"
+                [(ngModel)]="employeeDetails.dateOfConfirmation" #fromDate="ngModel" disabled="true">
+              <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Confirmation Type <span style="color:red">*</span></label>
+              <select [(ngModel)]="confirmationDetails.confirmationType" class="form-control" id="confirmationType"
+                name="confirmationType" #appraisalTypeEnt="ngModel" required disabled="true">
+                <option *ngFor="let sl of confirmationType" [ngValue]="sl.type">{{sl.type}}</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+        <div class="row" *ngIf="isExtension">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>New Confirmation Date<span style="color:red">*</span></label>
+
+              <input required [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate" disabled="true"
+                class="form-control" [(ngModel)]="confirmationDetails.newConfirmationDate" #fromDate="ngModel">
+              <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Reason Type <span style="color:red">*</span></label>
+              <select [(ngModel)]="confirmationDetails.extensionReason" class="form-control" id="hodExtensionReason"
+                name="hodExtensionReason" #extensionReasonEnt="ngModel" disabled="true">
+                <option *ngFor="let sl of reasonList" [ngValue]="sl.type">{{sl.type}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Reason Detail <span style="color:red">*</span></label>
+              <textarea required [(ngModel)]="confirmationDetails.extensionReasonText" class="form-control"
+                disabled="true" id="hodExtensionReasonText" name="hodExtensionReasonText"
+                #reasonTextEnt="ngModel"></textarea>
+
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!isExtension">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Confirmation Date</label>
+
+                <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control"
+                  disabled="true" [(ngModel)]="confirmationDetails.confirmationDate" #fromDate="ngModel">
+                <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Performance Rating <span style="color:red">*</span></label>
+                <select [ngModel]="confirmationDetails.rating" class="form-control" disabled="true" name="rating">
+                  <option *ngFor="let sl of performanceType" [ngValue]="sl.type">{{sl.text}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="appraisedBYEmployeeName">Confirmed By (Reporting Manager / HOD) <span
+                    style="color:red">*</span></label>
+                <input type="text" class="form-control" name="confirmedByName"
+                  [ngModel]="confirmationDetails.confirmedByName" disabled="true" />
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="approvedBYEmployeeName">Approved By (Management) <span style="color:red">*</span></label>
+                <input type="text" class="form-control" name="approvedByName"
+                  [ngModel]="confirmationDetails.approvedByName" disabled="true" />
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label> <input type="checkbox" [(ngModel)]="secondSignatoryRequired" name="secondSignatory"
+                    disabled="true" /> Second Signatory </label>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="secondSignatoryRequired == true">
+              <div class="form-group">
+                <label> Selected Signatory <span style="color:red">*</span></label>
+                <input type="text" class="form-control" name="secondSignatoryName"
+                  [ngModel]="confirmationDetails.secondSignatoryName" disabled="true" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="additionalNotes">Additional Notes</label>
+                <textarea [(ngModel)]="confirmationDetails.additionalNotes" class="form-control" disabled="true"
+                  name="additionalNotes" #additionalNotesEnt="ngModel" rows="3"></textarea>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Job Change Details-->
+      <div *ngIf="currentTab=='jobchange'">
+
+        <span class="text-danger" *ngIf="jobChangeDetails == null || jobChangeDetails.length <= 0">No change in Job
+          Details </span>
+
+        <div class="row" *ngFor="let item of jobChangeDetails; let i = index">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Current {{item.type}}</label>
+              <input type="text" class="form-control" [value]="item.oldValueText" disabled name="oldDesignation" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>New {{item.type}}</label>
+              <input type="text" class="form-control" id="newDesignation" [value]="item.newValueText" disabled
+                name="newDesignation" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Salary Change Details-->
+      <div *ngIf="currentTab=='salarychange'">
+
+        <span class="text-danger" *ngIf="!confirmationDetails.isSalaryChange">No change in Salary Details</span>
+
+        <div *ngIf="confirmationDetails.isSalaryChange">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="col-md-4">
+                  <label>Salary Processing Month<span style="color:red">*</span></label>
+                  <select [(ngModel)]="confirmationDetails.salaryProcessingMonth" class="form-control" disabled="true"
+                    id="salaryProcessingMonth" name="salaryProcessingMonth" #salaryProcessingMonthEnt="ngModel"
+                    required>
+                    <option *ngFor="let sl of salaryProcessingMonths" [ngValue]="sl.type">{{sl.type}}</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label>Salary Processing Year<span style="color:red">*</span></label>
+                  <input type="number" class="form-control" [(ngModel)]="confirmationDetails.salaryProcessingYear"
+                    id="salaryProcessingYear" name="salaryProcessingYear" #salaryProcessingYearEnt="ngModel"
+                    disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="col-md-4">
+                  <label for="initial">Effective Month<span style="color:red">*</span></label>
+                  <select [(ngModel)]="confirmationDetails.effectiveDateMonth" class="form-control" disabled="true"
+                    id="effectiveDateMonth" name="effectiveDateMonth" #effectiveDateMonthEnt="ngModel" required>
+                    <option *ngFor="let sl of salaryProcessingMonths" [ngValue]="sl.type">{{sl.type}}</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="initial">Effective Year<span style="color:red">*</span></label>
+                  <input type="number" class="form-control" [(ngModel)]="confirmationDetails.effectiveDateYear"
+                    disabled="true" id="effectiveDateYear" name="effectiveDateYear" #effectiveDateYearEnt="ngModel"
+                    required minlength="4" maxlength="4" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Next Revision Date</label>
+                  <input required [owlDateTime]="dt20" [owlDateTimeTrigger]="dt20" name="nextRevisionDate"
+                    disabled="true" class="form-control" [(ngModel)]="confirmationDetails.nextRevisionDate"
+                    #fromDate="ngModel" required>
+                  <owl-date-time [pickerType]="'calendar'" #dt20></owl-date-time>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <app-confirmation-employee-readonlysalary [employeeId]="employeeId">
+              </app-confirmation-employee-readonlysalary>
+            </div>
+            <div class="col-md-6" *ngIf="confirmationDetails.isSalaryChange">
+              <h2 class="display-1">
+                Revised Salary
+              </h2>
+              <div class="form-group">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Salary Components</th>
+                      <th style='text-align:right'>Rs. Per Month</th>
+                      <th style='text-align:right'>Rs. Per Annum</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of monthlyComponents; let i = index">
+                      <td>{{item.salaryHeadName}}</td>
+                      <td class="text-right">{{item.amount | number: "1.0-2"}}</td>
+                      <td class="text-right">{{item.annualAmount | number: "1.0-2"}}</td>
+                    </tr>
+                    <tr>
+                      <th>Monthly Salary</th>
+                      <th style='text-align:right'>{{monthlyTotal | number: "1.0-2"}}</th>
+                      <th style='text-align:right'>{{monthlyAnnualTotal | number: "1.0-2"}}</th>
+                    </tr>
+                    <tr *ngIf="reimbursementComponents.length > 0">
+                      <th colspan='3'>Reimbursements</th>
+                    </tr>
+                    <tr *ngFor="let item of reimbursementComponents; let i = index">
+                      <td>{{item.salaryHeadName}}</td>
+                      <td class="text-right">{{item.amount | number: "1.0-2"}}</td>
+                      <td class="text-right">{{item.annualAmount | number: "1.0-2"}}</td>
+                    </tr>
+                    <tr>
+                      <th colspan='3'>Annual Perks & Other Benefits</th>
+                    </tr>
+                    <tr *ngFor="let item of annualComponents; let i = index">
+                      <td>{{item.salaryHeadName}}</td>
+                      <td class="text-right">-</td>
+                      <td class="text-right">{{item.annualAmount | number: "1.0-2"}}</td>
+                    </tr>
+                    <tr>
+                      <th>Cost to Company (CTC)</th>
+                      <th style='text-align:right'>-</th>
+                      <th style='text-align:right'>{{totalCTC | number: "1.0-2"}}</th>
+                    </tr>
+                    <tr *ngIf="variableComponents && variableComponents.length >0">
+                      <th colspan='3'>Variable Components</th>
+                    </tr>
+                    <tr *ngFor="let item of variableComponents; let i = index">
+                      <td>{{item.salaryHeadName}}</td>
+                      <td class="text-right">-</td>
+                      <td class="text-right">{{item.annualAmount | number: "1.0-2"}}</td>
+                    </tr>
+                    <tr *ngIf="variableComponents && variableComponents.length >0">
+                      <th>Total Variable Pay</th>
+                      <th style='text-align:right'>-</th>
+                      <th style='text-align:right'>{{variableTotal | number: "1.0-2"}}</th>
+                    </tr>
+                    <tr *ngIf="onetimeComponents && onetimeComponents.length >0">
+                      <th colspan='3'>One Time Components</th>
+                    </tr>
+                    <tr *ngFor="let item of onetimeComponents; let i = index">
+                      <td>{{item.salaryHeadName}}</td>
+                      <td class="text-right">-</td>
+                      <td class="text-right">{{item.annualAmount | number: "1.0-2"}}</td>
+                    </tr>
+                    <tr *ngIf="onetimeComponents && onetimeComponents.length >0">
+                      <th>Total One Time Pay</th>
+                      <th style='text-align:right'>-</th>
+                      <th style='text-align:right'>{{onetimeTotal | number: "1.0-2"}}</th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="col-md-5">New Allowance </label>
+                    <div class="col-md-7">
+                      <span>{{allowanceDetails}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="currentTab=='attachment'">
+        <app-employee-attachments [employeeId]="this.employeeId" [editAllowed]="true" [deleteAllowed]="true"
+          [objectId]="this.employeeConfirmationId" [objectType]="this.objectType"></app-employee-attachments>
+      </div>
+      <!--History Details-->
+      <div *ngIf="currentTab=='history'">
+        <app-confirmation-history [employeeId]="employeeId" *ngIf="employeeId > 0"></app-confirmation-history>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Comments</label>
+          <textarea rows="3" class="form-control" name="comments" [(ngModel)]="comments"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group text-center actionButtons">
+
+      <button type="button" (click)="goBack()" class="btn btn-default" [matTooltipPosition]="'after'"
+        matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="approve()" matTooltip="Click to Approve ">Approve</button>
+
+      <button type="button" class="btn btn-danger" (click)="reject()" matTooltip="Click to Reject ">Reject</button>
+    </div>
+
+  </form>
+
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="employeeConfirmationId" [objectType]="this.objectType">
+        </app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="employeeConfirmationId" [objectType]="this.objectType">
+        </app-activity-viewer>
+      </div>
+    </div>
+  </div>
+
+</section>

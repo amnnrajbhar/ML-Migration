@@ -1,0 +1,324 @@
+<section class="content-header">
+    <h1>
+        Tour Plan
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Tour Plan</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-sm-12">
+                <div class="col-sm-6 pull-left">
+                    <h2><strong>Tour History</strong></h2>
+                </div>
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-info pull-right" (click)="TourPlanRequest(false,'','')"><i
+                            class="fa fa-plus" aria-hidden="true"></i>
+                        New Request</button>
+                </div>
+            </div>
+            &nbsp;
+            &nbsp;
+            <div class="col-sm-12">
+                <div class="col-sm-3" *ngIf="router.url =='/TourPlan'">
+                    <div class="form-group">
+                        <label for="emp">Employee No</label>
+                        <br>
+                        <input type="text" [(ngModel)]="EmployeeNo" class="form-control" id="empNo"
+                            placeholder="Employee No" name="empNo" ngControl="EmployeeNo" #empNoEnt="ngModel"
+                            (keyup)="getEmployee($event)">
+                    </div>
+                </div>
+                <div class="col-sm-5" *ngIf="router.url =='/TourPlanEss'">
+                    <div class="form-group">
+                        <label for="EmployeeNo">Employee No.</label>
+                        <br>
+                        <ng-multiselect-dropdown style="width:100%; background-color: white;" id="EmployeeNo"
+                            name="EmployeeNo" ngControl="selectedEmployee" required #EmployeeNoEnt="ngModel"
+                            [placeholder]="'Select Employee No.'" [data]="empListCon" [(ngModel)]="selectedEmployee"
+                            [settings]="dropdownSettings" (onSelect)="onItemSelectM($event)"
+                            (onSelectAll)="onSelectAll()" (focusout)="checkStatus();">
+                        </ng-multiselect-dropdown>
+
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Year <span style="color: red;">*</span> </label>
+                        <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                            [(ngModel)]="CalenderYear" placeholder="Year">
+                    </div>
+                </div>
+                &nbsp;
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="emp"></label>
+                        <br>
+                        <button *ngIf="!view" type="button" class="btn btn-success" (click)="getEmpTPRequests()"><i
+                                class="fas fa-angle-double-right"></i>&nbsp;Submit</button>
+
+                    </div>
+                </div>
+
+            </div>
+            <br>
+            <div class="box-body table-responsive ">
+                <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                    <thead style="background-color: #0099cc; color:white;">
+                        <tr>
+                            <th></th>
+                            <th class="col-xs-1">Sl.No</th>
+                            <th>Request No</th>
+                            <th>Requested By</th>
+                            <th>Requested Date</th>
+                            <th>Date</th>
+                            <th>Duration</th>
+                            <th>Type Of Work</th>
+                            <th>Details</th>
+                            <th>Approver Status</th>
+                            <th>Pending Approver</th>
+                            <th>Last Approver</th>
+                            <th>Approved Date</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let categ of EmpTPList;  let i = index">
+                            <td><button *ngIf="categ.approverStatus=='Pending'" type="button"
+                                    class="btn btn-xs btn-danger" (click)="CancelLeave(categ)"
+                                    matTooltip="Click to cancel Tour Plan">
+                                    <i class="fas fa-times"></i>
+                                </button></td>
+                            <td>{{i+1}}</td>
+                            <td><b>{{categ.id}}</b></td>
+                            <td>{{categ.reqBy}}</td>
+                            <td>{{categ.reqOn | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                            <td>{{categ.date | date:'dd/MM/yyyy'}}</td>
+                            <td>{{categ.duration}}</td>
+                            <td>{{categ.typeOfWork}}</td>
+                            <td>{{categ.details}}</td>
+                            <td>{{categ.approverStatus}}</td>
+                            <td>{{categ.pendingApprover}}</td>
+                            <td>{{categ.lastApprover}}</td>
+                            <td>{{categ.approvedDate| date:'dd/MM/yyyy'}}</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td class="pr-2">
+                                            <button type="button" class="btn btn-info btn-xs"
+                                                (click)="printLeave(categ)"
+                                                matTooltip="Click to Print Tour Plan details">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Tour Plan Request</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="row">
+                        <div class="col-sm-3" *ngIf="router.url !='/TourPlanEss'">
+                            <div class="form-group">
+                                <label for="ApplyFor">Apply for </label>
+                                <select [(ngModel)]="ApplyFor" class="form-control" id="ApplyFor" name="ApplyFor"
+                                    matTooltip="Apply For" #ApplyForEnt="ngModel" [disabled]="isEdit" required>
+                                    <option [ngValue]="null" disabled selected="true">--Select for--</option>
+                                    <option>Self</option>
+                                    <option>Others</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="ApplyFor=='Others'">
+                            <div class="form-group">
+                                <label for="userId">Employee Id <span style="color: red;">*</span> </label>
+                                <input type="text" name="userId" id="userId" (keyup)="getEmployee1($event)" placeholder="Enter Employee No"
+                                    [(ngModel)]="userId" class="form-control" matTooltip="userId" [disabled]="isEdit"
+                                    #userIdEnt="ngModel" required>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <button title="Add Rows" [matTooltipPosition]="'below'" matTooltip="Click to Add more Rows"
+                                (click)="addRows(i);" class="btn btn-info btn-xs pull-right" *ngIf="!isEdit">
+                                <i class="fa fa-plus"></i></button>
+                            <table class="table table-bordered  table-striped">
+                                <tr style="background-color: #68a7d2; color:white;">
+                                    <th>Sl. No</th>
+                                    <th>Date</th>
+                                    <th>Duration</th>
+                                    <th>Type Of Work</th>
+                                    <th>Details</th>
+                                    <th> </th>
+                                </tr>
+                                <tr *ngFor=" let sh of TourPlanList;let i= index">
+                                    <td><label>{{i+1}}</label></td>
+                                    <td><input [matTooltipPosition]="'below'" matTooltip="Click to change date"
+                                            [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" [name]="'fromDate'+sh.id"
+                                            class="form-control" [(ngModel)]="sh.FromDateforTP" [id]="'fromDate'+sh.id"
+                                            [disabled]="isEdit" #FromDateEnt="ngModel" placeholder="Date" required>
+                                        <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;">
+                                        </owl-date-time>
+                                    </td>
+                                    <td><select [(ngModel)]="sh.Duration1" class="form-control" [id]="'dur1'+sh.id"
+                                            [name]="'dur1'+sh.id" matTooltip="Duration" #dur1Ent="ngModel"
+                                            [disabled]="isEdit" required>
+                                            <option [ngValue]="null" disabled [selected]="true"> Select Duration
+                                            </option>
+                                            <option value="FD">Full Day</option>
+                                            <option value="FH">First Half</option>
+                                            <option value="SH">Second Half</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select [(ngModel)]="sh.typrWrk" class="form-control" [id]="'typrWrk'+sh.id"
+                                            [name]="'typrWrk'+sh.id" matTooltip="Type of Work" #typrWrkEnt="ngModel"
+                                            [disabled]="isEdit" required>
+                                            <option [ngValue]="null" disabled [selected]="true"> Select Type Of Work
+                                            </option>
+                                            <option>Field Work</option>
+                                            <option>Conference</option>
+                                            <option>Meeting</option>
+                                            <option>Activity</option>
+                                            <option>Leave</option>
+                                            <option>Travel</option>
+                                            <option>Office</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <textarea [name]="'reason'+sh.id" [id]="'reason'+sh.id" cols="40" rows="2"
+                                            maxlength="150" matTooltip="Reason" [(ngModel)]="sh.DetailsforTP"
+                                            placeholder="Details" class="form-control" [disabled]="isEdit"
+                                            required></textarea>
+                                    </td>
+
+                                    <td style="width:2%">
+                                        <button title="Remove Details" (click)="removeRows(per);"
+                                            class="btn btn-danger btn-sm" matTooltip="click to remove"
+                                            [disabled]="isEdit">
+                                            <i class="fa fa-trash"></i></button>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+                </form>
+                <div class="overlay" *ngIf="isLoadingPop">
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </div>
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <button *ngIf="!view" type="button" class="btn btn-success" (click)="OnSubmit()"
+                    [disabled]="isLoadingPop || (!desigForm.valid) || isLoadPop"><i
+                        class="fas fa-angle-double-right"></i>&nbsp; {{isEdit==true?'Cancel
+                    Entry':'Submit'}}</button>
+                <button *ngIf="!view" type="button" class="btn btn-danger" (click)="ClearData()"><i
+                        class="fas fa-times"></i>&nbsp;Clear</button>
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div hidden id="pdf">
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                <strong><b>Tour Plan Details</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Request No:</b></td>
+            <td style="width: 25%; color: blue;">{{reqNo}}</td>
+            <td style="width: 25%;"><b>Requested By:</b></td>
+            <td style="width: 25%; color: blue;">{{reqBy}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Requested On:</b></td>
+            <td style="width: 25%; color: blue;">{{reqOn | date:'dd/MM/yyyy'}}</td>
+            <td style="width: 25%;"><b>Date:</b></td>
+            <td style="width: 25%; color: blue;">{{date | date:'dd/MM/yyyy'}}</td>
+        </tr>
+        <tr>
+            <td style="width: 25%;"><b>Duration:</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{duration}}</td>
+        </tr>
+        <tr>
+            <td style="width: 30%;"><b>Type Of Work:</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{typeOfWork}}</td>
+        </tr>
+        <tr>
+            <td style="width: 30%;"><b>Details:</b></td>
+            <td colspan="3" style="width: 70%; color: blue;">{{details}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table table-striped" style="align-self: auto; ">
+        <tr>
+            <td colspan="7" style="text-align: center;">
+                <strong><b>Approver Details</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <th><b>Approver ID</b></th>
+            <th><b>Approver Name</b></th>
+            <th><b>Designation</b></th>
+            <th><b>Role</b></th>
+            <th><b>Department</b></th>
+            <th><b>Approved Date and Time</b></th>
+            <th><b>Approval Status</b></th>
+        </tr>
+        <tr>
+            <td style="color: blue;">{{appid}}</td>
+            <td style="color: blue;">{{appName}}</td>
+            <td style="color: blue;">{{appDesg}}</td>
+            <td style="color: blue;">{{appRole}}</td>
+            <td style="color: blue;">{{appDept}}</td>
+            <td style="color: blue;">{{appDate | date:'yyyy-MM-dd hh:mm'}}</td>
+            <td style="color: blue;">{{approverStatus}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <br>
+
+    <b>FD: FULL DAY</b>
+    <br>
+    <b>FH: FIST HALF</b>
+    <br>
+    <b>SH: SECOND HALF</b>
+
+</div>

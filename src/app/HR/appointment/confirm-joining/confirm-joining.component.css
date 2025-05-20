@@ -1,0 +1,13 @@
+.details-tab{
+    min-height: 300px;
+}
+
+.completed > a {
+    background-color: #22a354 !important;
+    color: white !important;
+}
+
+.completed.active > a {
+    background-color: #2fc268 !important;
+    color: #030 !important;
+}

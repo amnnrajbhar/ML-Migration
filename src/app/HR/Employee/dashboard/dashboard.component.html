@@ -1,0 +1,201 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Employee Dashboard
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Employee Dashboard</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+      <div class="form-group row">
+        <div class="col-md-2">
+          <label class="control-label">Plant</label>
+          <select [(ngModel)]="filterModel.PlantId" class="form-control" id="plant" name="plant"
+            (change)="getPayGroupList()">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.name}}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="control-label">Pay Group</label>
+          <select [(ngModel)]="filterModel.PayGroupId" class="form-control" id="paygroup" name="paygroup"
+            matTooltip="paygroup" >
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="control-label">Employee Category</label>
+          <select [(ngModel)]="filterModel.EmployeeCategoryId" class="form-control" id="employeecategory"
+            name="employeecategory" matTooltip="employeecategory">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="control-label">Department</label>
+          <select [(ngModel)]="filterModel.DepartmentId" class="form-control" id="Department" name="Department"
+            (change)="getSubDepartmentList()">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let pll of departmentList" [ngValue]="pll.id">{{pll.description}}</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="control-label">Sub-Department</label>
+          <select [(ngModel)]="filterModel.SubDepartmentId" class="form-control" id="SubDepartmentId"
+            name="SubDepartmentId">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let pll of subDepartmentList" [ngValue]="pll.id">{{pll.sdptidLtxt}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-2">
+          <label class="control-label">Designation</label>
+          <select [(ngModel)]="filterModel.DesignationId" class="form-control" id="DesignationId" name="DesignationId"
+            matTooltip="DesignationId">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of designationList" [ngValue]="cl.id">{{cl.name}}</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="control-label">Role</label>
+          <select [(ngModel)]="filterModel.RoleId" class="form-control" id="RoleId" name="RoleId" matTooltip="RoleId">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of roleList" [ngValue]="cl.id">{{cl.role_ltxt}}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="control-label">State</label>
+          <select [(ngModel)]="filterModel.StateId" class="form-control" id="StateId" name="StateId"
+            matTooltip="StateId" (change)="getLocationList()">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of stateList" [ngValue]="cl.id">{{cl.bezei}}</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="control-label">Location</label>
+          <select [(ngModel)]="filterModel.LocationId" class="form-control" id="LocationId" name="LocationId"
+            matTooltip="LocationId">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of locationList" [ngValue]="cl.id">{{cl.name}}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="control-label">Reporting Group</label>
+          <select [(ngModel)]="filterModel.ReportingGroupId" class="form-control" id="ReportingGroupId"
+            name="ReportingGroupId" matTooltip="ReportingGroupId">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of reportingGroupList" [ngValue]="cl.id">{{cl.reportingGroupLT}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group text-center actionButtons">
+        <button class="btn btn-primary btn-sm" (click)="getData();" matTooltip="click to Go" [disabled]="isLoading">
+          Filter</button>
+        <button class="btn btn-warning btn-sm" (click)="clear();" matTooltip="click to Clear Filter"
+          [disabled]="isLoading">
+          Clear Filter</button>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+    <div *ngIf="!isLoading">
+      <h3>Active Employees</h3>
+      <div class="row">
+        <div class="col-md-12">
+          <ul>
+            <li class="indicator">
+              <h1>{{filterData.totalActive}}</h1>
+              <h5 class="text-muted">Active</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalServingNoticePeriod}}</h1>
+              <h5 class="text-muted">Serving Notice Period</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalAge18To30}}</h1>
+              <h5 class="text-muted">Age 18 - 30</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalAge30To40}}</h1>
+              <h5 class="text-muted">Age 30 - 40</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalAge40To50}}</h1>
+              <h5 class="text-muted">Age 40 - 50</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalAge50To58}}</h1>
+              <h5 class="text-muted">Age 50 - 58</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalAgeAbove58}}</h1>
+              <h5 class="text-muted">Age Above 58</h5>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <br /><br />
+
+      <h3>Confirmed Employees</h3>
+      <div class="row">
+        <div class="col-md-12">
+          <ul>
+            <li class="indicator">
+              <h1>{{filterData.totalConfirmed}}</h1>
+              <h5 class="text-muted">Confirmed</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalConfirmationExtended}}</h1>
+              <h5 class="text-muted">Confirmation Extended</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalConfirmationDue}}</h1>
+              <h5 class="text-muted">Confirmation Due</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalConfirmationOverDue}}</h1>
+              <h5 class="text-muted">Over Due</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalConfirmationDueIn1Month}}</h1>
+              <h5 class="text-muted">Due in 1 Month</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalConfirmationDueIn3Months}}</h1>
+              <h5 class="text-muted">Due in 1-3 Months</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalConfirmationDueIn6Months}}</h1>
+              <h5 class="text-muted">Due in 3-6 Months</h5>
+            </li>
+            <li class="indicator">
+              <h1>{{filterData.totalConfirmationDueAbove6Months}}</h1>
+              <h5 class="text-muted">Due after 6 Months</h5>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

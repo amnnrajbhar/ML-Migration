@@ -1,0 +1,117 @@
+<section class="content-header">
+    <h1>
+        Leave & OnDuty Intimation
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Intimation</li>
+    </ol>
+</section>
+
+
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="emp">Employee No <span style="color: red;">*</span></label>
+                            <input type="text" [(ngModel)]="AbsentIntimationItem.empId" class="form-control" id="empNo"
+                                placeholder="Employee No" name="empNo" ngControl="EmployeeNo" #empNoEnt="ngModel"
+                                (keyup)="getEmployee($event)">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="Location">Intimation Type <span style="color: red;">*</span></label>
+                            <select [(ngModel)]="AbsentIntimationItem.intimationType" class="form-control"
+                                id="locationName" name="locationName" required>
+                                <option [ngValue]=null disabled [selected]="true">--Select type--</option>
+                                <option>Leave</option>
+                                <option>OnDuty</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="Location">Intimation Over <span style="color: red;">*</span></label>
+                            <select [(ngModel)]="AbsentIntimationItem.intimationOver" class="form-control"
+                                id="locationName" name="locationName" required>
+                                <option [ngValue]=null disabled [selected]="true">--Select type--</option>
+                                <option>Call</option>
+                                <option>Email</option>
+                                <option>Message</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="FromDate">Start Date <span style="color: red;">*</span> </label>
+                            <input [matTooltipPosition]="'below'" matTooltip="Click to change date" [owlDateTime]="dt12"
+                                placeholder="DD/MM/YYYY" [owlDateTimeTrigger]="dt12" name="FromDate"
+                                class="form-control" [(ngModel)]="StartDate" [disabled]="isEdit" #FromDate="ngModel"
+                                required>
+                            <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;">
+                            </owl-date-time>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="todate">End Date <span style="color: red;">*</span> </label>
+                            <input [matTooltipPosition]="'below'" [min]="StartDate" matTooltip="Click to change date"
+                                placeholder="DD/MM/YYYY" [owlDateTime]="dt14" [owlDateTimeTrigger]="dt14" name="todate"
+                                class="form-control" [(ngModel)]="EndDate" #todate="ngModel" [disabled]="isEdit"
+                                required>
+                            <owl-date-time [pickerType]="'calendar'" #dt14 style="width: 250px;">
+                            </owl-date-time>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="dur2">Duration <span style="color: red;">*</span> </label>
+                            <select [(ngModel)]="AbsentIntimationItem.duration" class="form-control" id="dur2"
+                                name="dur2" matTooltip="Duration" #dur2Ent="ngModel" [disabled]="isEdit" required>
+                                <option [ngValue]=null disabled [selected]="true"> --Select Duration--
+                                </option>
+                                <option value="FD">Full Day</option>
+                                <option value="FH">First Half</option>
+                                <option value="SH">Second Half</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="detailedReason">Detailed Reason (max 150 char) <span
+                                    style="color: red;">*</span></label>
+                            <textarea cols="30" rows="4" name="detailedReason" id="detailedReason" maxlength="150"
+                                placeholder="Enter Detailed Reason" matTooltip="Detailed Reason"
+                                [(ngModel)]="AbsentIntimationItem.reason" class="form-control" [disabled]="isEdit"
+                                maxlength="150" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="text-align: center;">
+                        <label>&nbsp;</label>
+                        <button *ngIf="!view" type="button" class="btn btn-success"
+                            matTooltip="Click to submit Intimation request" (click)="onSaveLeave()"> <i
+                                class="fas fa-thumbs-up"></i>&nbsp; Submit</button>
+                        &nbsp;
+                        <button *ngIf="!view" type="button" class="btn btn-danger"
+                            matTooltip="Click to clear Intimation request" (click)="clear()"> <i
+                                class="fas fa-times"></i>&nbsp; Clear</button>
+                    </div>
+                </div>
+            </div>
+
+            &nbsp;
+            &nbsp;
+        </div>
+    </div>
+</section>

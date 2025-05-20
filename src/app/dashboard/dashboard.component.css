@@ -1,0 +1,100 @@
+#content {
+  /* background-color: #c0c0c0; */
+  background-color: white;
+  /* border: 1px solid blue; */
+}
+
+#slide {
+  /* border: 1px solid red;
+    background-color: #000;
+    color: #fff; */
+  overflow: hidden;
+}
+
+#carousel .item {
+  height: 200px;
+  width: 100%;
+}
+
+.carousel-inner .item img {
+  height: 200px;
+  width: 100%;
+}
+
+.lightbox img {
+  border: none;
+}
+
+.card-chart {
+  background-color: white;
+}
+
+
+
+.avatar-circle {
+  width: 50px;
+  height: 50px;
+  background-color: lightseagreen;
+  text-align: center;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+}
+
+.initials {
+  /* position: relative; */
+  top: 25px;
+  /* 25% of parent */
+  font-size: 25px;
+  /* 50% of parent */
+  line-height: 25px;
+  /* 50% of parent */
+  color: #fff;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+}
+
+.bg-ligtseagreen {
+  background-color: lightseagreen;
+  opacity: 0.6;
+}
+
+.double-row {
+  display: flex;
+  flex-direction: row;
+  flex-basis: 100%;
+  flex: 2;
+}
+
+.card-columns {
+  column-count: 2;
+}
+
+/* @include media-breakpoint-only(xl) {
+      column-count: 3;
+    }
+} */
+
+  tr>td {
+    vertical-align: middle;
+    border: 1px solid #eee;
+}
+
+tr {
+    transition: 0.2s;
+}
+
+.no-border {
+    border: 0px;
+}
+
+tbody>tr:hover {
+    background-color: #aaa;
+    cursor: default;
+}
+
+input,
+select,
+textarea {
+    border: 1px solid #aaa !important;
+}

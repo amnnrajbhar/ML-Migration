@@ -1,0 +1,156 @@
+﻿<section class="content-header" >
+  <h1>
+    Master Sbu
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Sbu</li>
+  </ol>
+</section>
+<section class="content" >
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Sbu Data</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddSbu(false,sbuItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add Sbu</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="sbu" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th style="width:20px">Id</th>
+            <th>Sbu</th>
+            <th>Code</th>
+            <th>Description</th>
+            <th>SBU Head</th>
+            <th style="width:20px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sbu of sbuList; let i = index">
+            <td>{{sbu.id}}</td>
+            <td>{{sbu.name}}</td>
+            <td>{{sbu.code}}</td>
+            <td>{{sbu.description}}</td>
+            <td>{{getHeadSBUName(sbu?.headEmpId)}}</td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddSbu(true,sbu)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-md  modal-dialog-centered">
+ <div class="modal-content">
+   <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+       <span aria-hidden="true">&times;</span>
+     </button>
+     <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"  *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+   </div>
+   </div></div>
+   <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+<div  class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+        <div class="modal-header" style="background-color: #68a7d2;color:white;">
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">{{isEdit==true?'Update SBU ':'Add New SBU'}}</h3>
+      </div>
+      <div class="modal-body box-primary"
+      style="box-shadow: none;color:gray;background-size:cover;">
+          <form #sbuForm="ngForm">
+            <div class="form-horizontal">
+              <div class="form-group" [ngClass]="(!dname.valid && dname.touched)?'has-error':''">
+                <label for="dname" class="col-sm-3"><i class="fa fa-times-circle-o" *ngIf="!dname.valid && dname.touched"></i> SBU<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="dname" placeholder="Business Unit" [(ngModel)]="sbuItem.name" name="dname"
+                         ngControl="sbuItem.name" #dname="ngModel" required maxlength="50" (change)="sbuItem.name=sbuItem.name.trim()">
+                  <span class="help-block" *ngIf="!dname.valid && dname.touched">Please Enter business unit.</span>
+                </div>
+              </div>
+              <div class="form-group"  [ngClass]="(!code.valid && code.touched)?'has-error':''">
+                <label for="code" class="col-sm-3">Code<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="code" placeholder="Code" ngControl="sbuItem.code" [(ngModel)]="sbuItem.code" name="code" 
+                  maxlength="200" #code="ngModel" required (change)="sbuItem.code=sbuItem.code.trim()"/>
+                  <span class="help-block" *ngIf="!code.valid && code.touched ">Please Enter code.</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="dDesc" class="col-sm-3">Description</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" (change)="sbuItem.description=sbuItem.description.trim()" id="dDesc" placeholder="Description" [(ngModel)]="sbuItem.description" name="description" maxlength="200" />
+                </div>
+              </div>
+              <div class="form-group" [ngClass]="(!parentId.valid && parentId.touched)?'has-error':''">
+                  <label for="dParentId" class="col-sm-3"> Parent SBU<span style="color:red">*</span></label>
+                  <div class="col-sm-9">
+                    <select [(ngModel)]="selParentRole" class="form-control" id="dParentId" name="parentId" 
+                    ngControl="selParentRole" #parentId="ngModel" required>
+                    <option [ngValue]="null" disabled [selected]="true"> Select Parent SBU </option>
+                      <option *ngFor="let pDept of parentList" [ngValue]="pDept">{{pDept.name}}</option>
+                    </select>
+                    <span class="help-block" *ngIf="!parentId.valid && parentId.touched">Please Enter parent unit.</span>
+                    </div>
+                  </div>
+              <div class="form-group" [ngClass]="(selHeadEmpId.length<0 && !notFirst)?'has-error':''">
+              <!-- <div class="form-group"> -->
+                <label for="headEmpId" class="col-sm-3"> SBU Head<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                 
+                        <ng-multiselect-dropdown  style="width:100%; background-color: white;"  id="sbuhead" 
+                 name="sbuhead" ngControl="selHeadEmpId" required #headEmpId="ngModel"
+                            [placeholder]="'Select SBU Head'"
+                            [data]="empMListCon1"
+                            [(ngModel)]="selHeadEmpId"
+                            [settings]="dropdownSettings"
+                            (onSelect)="onItemSelect($event)"  
+                            (focusout)="checkStatus();"                   
+                      >
+                      </ng-multiselect-dropdown>
+                  <span class="help-block" *ngIf="selHeadEmpId.length<0 && !notFirst">Please select SBU Head.</span>
+                  </div>
+                </div>
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        
+      </div>
+      <div class="modal-footer modal-footer-bg">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" [matTooltipPosition]="'below'" matTooltip="Click to Add SBU"  class="btn btn-primary" (click)="onSaveSbu()" [disabled]="isLoadingPop || !sbuForm.valid">{{isEdit==true?'Update SBU':'Save SBU'}}</button>
+        <!-- <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button> -->
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" aria-label="Close" [disabled]="isLoadingPop" (click)="getSBUList()">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

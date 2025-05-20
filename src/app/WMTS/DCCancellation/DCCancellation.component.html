@@ -1,0 +1,263 @@
+<section class="content-header">
+    <h1 class="display-1">DC Cancellation</h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i></a>Home</li>
+        <li class="active">DC Cancellation</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title"> DC Cancellation</h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-sm-3">
+                <label for="dcno">Cancellation Type <span style="color: red;">*</span> </label>
+                <select [(ngModel)]="CancelType" (change)="Typeofcancellation(DCNo)" class="form-control" name="CancelType1"
+                    id="CancelType1">
+                    <option>Full DC</option>
+                    <option>Line Item</option>
+                    <option>Line Item Change</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="card-body" style="border: black; box-shadow: black;">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <input type="text" id="dcno" name="dcno" class="form-control" [(ngModel)]="DCNo"
+                                placeholder="DC No" matTooltip="Enter DC No" ng-control="DCNo" required>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-sm" (click)="getDcData(DCNo)"
+                                    matTooltip="Click to get data" [disabled]="DCNo==null || DCNo==''">Get Data</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        &nbsp;&nbsp;&nbsp;
+
+        <div class="box-body table-responsive">
+
+            <table *ngIf="CancelType=='Full DC'" class="table table-bordered table-striped"
+                cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style="background-color: #68a7d2;color:white;">Sl No</th>
+                        <th style="background-color: #68a7d2;color:white;">Item Code</th>
+                        <th style="background-color: #68a7d2;color:white;">Item Description</th>
+                        <th style="background-color: #68a7d2;color:white;">Batch No</th>
+                        <th style="background-color: #68a7d2;color:white;">DC No</th>
+                        <th style="background-color: #68a7d2;color:white;">Bin</th>
+                        <th style="background-color: #68a7d2;color:white;">Qty</th>
+                        <!-- <th>Bin Details</th>
+                        <th>Detailed View</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of filteredModel;let i=index">
+
+                        <td>{{i+1}}</td>
+                        <td>{{data.itemCode}}</td>
+                        <td>{{data.itemDesc}}</td>
+                        <td>{{data.batch}}</td>
+                        <td>{{data.dcno}}</td>
+                        <td>{{data.bin}}</td>
+                        <td>{{data.quantity}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <table *ngIf="CancelType=='Line Item'"  class="table table-bordered table-striped"
+                cellspacing="0">
+                <thead style="background-color: #68a7d2;color:white;">
+                    <tr>
+                        <th style="background-color: #68a7d2;color:white;">Select</th>
+                        <th style="background-color: #68a7d2;color:white;">Sl No</th>
+                        <th style="background-color: #68a7d2;color:white;">Item Code</th>
+                        <th style="background-color: #68a7d2;color:white;">Item Description</th>
+                        <th style="background-color: #68a7d2;color:white;">Batch No</th>
+                        <th style="background-color: #68a7d2;color:white;">DC No</th>
+                        <th style="background-color: #68a7d2;color:white;">Bin</th>
+                        <th style="background-color: #68a7d2;color:white;">Qty</th>
+                        <!-- <th>Bin Details</th>
+                        <th>Detailed View</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of filteredModel;let i=index">
+                        <td> <input type="checkbox" [id]="'chkusage'+data.id" [name]="'chkusage'+data.id"
+                                [(ngModel)]="data.isSelected" (change)="isAllSelected()" #usageEnt="ngModel"></td>
+                        <td>{{i+1}}</td>
+                        <td>{{data.itemCode}}</td>
+                        <td>{{data.itemDesc}}</td>
+                        <td>{{data.batch}}</td>
+                        <td>{{data.dcno}}</td>
+                        <td>{{data.bin}}</td>
+                        <td>{{data.quantity}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <table *ngIf="CancelType=='Line Item Change'"  class="table table-bordered table-striped"
+                cellspacing="0">
+                <thead style="background-color: #68a7d2;color:white;">
+                    <tr>
+                        <th style="background-color: #68a7d2;color:white;">Sl No</th>
+                        <th style="background-color: #68a7d2;color:white;">Item Code</th>
+                        <th style="background-color: #68a7d2;color:white;">Item Description</th>
+                        <th style="background-color: #68a7d2;color:white;">Batch No</th>
+                        <th style="background-color: #68a7d2;color:white;">DC No</th>
+                        <th style="background-color: #68a7d2;color:white;">Bin</th>
+                        <th style="background-color: #68a7d2;color:white;">Qty</th>
+                        <th style="background-color: #68a7d2;color:white;">Edit</th>
+                        <!-- <th>Bin Details</th>
+                        <th>Detailed View</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of filteredModel;let i=index">
+
+                        <td>{{i+1}}</td>
+                        <td>{{data.itemCode}}</td>
+                        <td>{{data.itemDesc}}</td>
+                        <td>{{data.batch}}</td>
+                        <td>{{data.dcno}}</td>
+                        <td>{{data.bin}}</td>
+                        <td>{{data.quantity}}</td>
+                        <!-- <td><input type="number" id="newqty" name="newqty" class="form-control" (change)="EditedQty()" [(ngModel)]="data.ReqQty"
+                            placeholder="Req Qty"  ng-control="ReqQty" required></td> -->
+                        <td><button class="btn btn-primary btn-sm" (click)="getShippers(data)"
+                                matTooltip="Click to remove quantity">Next</button></td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-group form-group-sm pull-right"> <button class="btn btn-primary btn-sm"
+                (click)="VerifyClicked()" matTooltip="Click to verify before submission"
+                [disabled]="DCNo==null || DCNo==''" *ngIf="CancelType != 'Line Item Change'">{{ CancelType=='Full DC' ?
+                'Cancel DC' : 'Cancel Selected Lines' }}</button></div>
+
+    </div>
+
+    <div class="modal fade" id="DetailedModal" role="dialog" aria-labelledby="DetailedLabel" aria-hidden="true"
+        data-backdrop="static" data-keyboard="false">
+
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body box-primary" style="box-shadow: none;">
+                    <div class="container">
+
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <form #dataForm1="ngForm" (keydown.enter)="$event.preventDefault()">
+
+                                    <table *ngIf="CancelType=='Line Item Change'"
+                                        class="table table-bordered table-striped" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th style="background-color: #68a7d2;color:white;">DC No</th>
+                                                <th style="background-color: #68a7d2;color:white;">Item Code</th>
+                                                <th style="background-color: #68a7d2;color:white;">Item Description</th>
+                                                <th style="background-color: #68a7d2;color:white;">Batch No</th>
+                                                <th style="background-color: #68a7d2;color:white;">Bin</th>
+                                                <th style="background-color: #68a7d2;color:white;">Qty</th>
+                                                <th style="background-color: #68a7d2;color:white;">New Qty</th>
+                                                <!-- <th>Bin Details</th>
+                                            <th>Detailed View</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+
+                                                <td>{{PickedfilteredModel[0].dcno}}</td>
+                                                <td>{{PickedfilteredModel[0].itemCode}}</td>
+                                                <td>{{PickedfilteredModel[0].itemDec}}</td>
+                                                <td>{{PickedfilteredModel[0].batchNo}}</td>
+                                                <td>{{PickedfilteredModel[0].bin}}</td>
+                                                <td>{{LineQty}}</td>
+                                                <td>{{LineQty - TotalRemQty}}</td>
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                   
+                                    <table *ngIf="CancelType=='Line Item Change'"
+                                        class="table table-bordered table-striped" cellspacing="0">
+                                        <thead style="background-color: #68a7d2;color:white;">
+                                            <tr>
+                                                <th colspan="5"
+                                                    style="text-align: center;background-color: #68a7d2;color:white;">
+                                                    Detailed Veiw</th>
+                                            </tr>
+                                            <tr style="background-color: #68a7d2;color:white;">
+                                                <th style="background-color: #68a7d2;color:white;">Sl No</th>
+                                                <th style="background-color: #68a7d2;color:white;">Barcode</th>
+                                                <th style="background-color: #68a7d2;color:white;">Full/Loose</th>
+                                                <th style="background-color: #68a7d2;color:white;">Available Qty</th>
+                                                <th style="background-color: #68a7d2;color:white;">Remove Qty</th>
+                                                <!-- <th>Bin Details</th>
+                                        <th>Detailed View</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let data of PickedfilteredModel;let i=index">
+
+                                                <td>{{i+1}}</td>
+                                                <td>{{data.barcode}}</td>
+                                                <td>{{data.looseFlag}}</td>
+                                                <td>{{data.qty}}</td>
+                                                <td><input type="number" id="removedqty" name="removedqty"
+                                                        class="form-control" [(ngModel)]="data.RemovedQty"
+                                                        placeholder="Remove Qty" ng-control="RemoveQty"
+                                                        (keyup)=QtyRemoved($event,i)></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4"
+                                                    style="text-align: right; vertical-align: middle;">
+                                                    Total Removable Qty</td>
+                                                <td>{{TotalRemQty}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button class="btn btn-primary btn-sm" (click)="UpdateDCforLineItemChange()"
+                                        matTooltip="Click to update">Update</button>
+
+                                </form>
+                            </div>
+                            <div class="overlay" *ngIf="isLoadingPop">
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                        data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+
+</section>

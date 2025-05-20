@@ -1,0 +1,204 @@
+﻿<section class="content-header">
+  <!-- <section class="content-header"> -->
+  <h1>
+    Master
+    <small>Department</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Department</li>
+  </ol>
+</section>
+<section class="content">
+  <!-- <section class="content"> -->
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Department</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddDepart(false,depItem)"><i
+            class="fa fa-plus" aria-hidden="true"></i> Add Department</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="department" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th class="col-sm-1">SNo</th>
+            <th>Department</th>
+            <th>Description</th>
+            <th class="col-sm-1"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let depart of depList; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{depart.name}}</td>
+            <td>{{depart.description}}</td>
+            <td>
+              <table>
+                <tr>
+                  <td class="pr-2">
+                    <button type="button" class="btn btn-primary btn-xs" (click)="onAddDepart(true,depart)">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                  <td class="pr-2">
+                    <button type="button" class="btn btn-primary btn-xs" (click)="deleteDepart(depart)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-primary btn-xs" (click)="openAuditLogs(depart.id)">
+                      <i class="fa fa-history"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Department</h3>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+        <form #depForm="ngForm">
+          <div class="form-horizontal">
+            <div class="form-group" [ngClass]="(!name.valid && name.touched)?'has-error':''">
+              <label for="dName" class="col-sm-3"><i class="fa fa-times-circle-o"
+                  *ngIf="!name.valid && name.touched"></i> Department<span style="color:red">*</span></label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dName" placeholder="Department Name"
+                  [(ngModel)]="depItem.name" name="name" ngControl="depItem.name" #name="ngModel" required
+                  maxlength="50">
+                <span class="help-block" *ngIf="!name.valid && name.touched">Please Enter Department Name.</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="dDesc" class="col-sm-3">Description</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dDesc" placeholder="Description"
+                  [(ngModel)]="depItem.description" name="description" maxlength="200" />
+              </div>
+            </div>
+            <div class="form-group" [ngClass]="(!reason.valid && reason.touched)?'has-error':''">
+              <label for="reason" class="col-sm-3"><i class="fa fa-times-circle-o"
+                  *ngIf="!reason.valid && reason.touched"></i> Audit Reason<span style="color:red">*</span></label>
+              <div class="col-sm-9">
+                <textarea type="text" class="form-control" name="reason" id="reason" placeholder="Audit Reason"
+                  [(ngModel)]="aduitpurpose" ngControl="aduitpurpose" (change)="aduitpurpose=aduitpurpose.trim()"
+                  #reason="ngModel" required></textarea>
+                <span class="help-block" *ngIf="!reason.valid && reason.touched">Please Enter audit Reason.</span>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveDepart()"
+          [disabled]="isLoadingPop || !depForm.valid">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- Audit Modal -->
+<div id="auditModal" class="modal fade">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;</button>
+        <h4 class="modal-title">Audit history</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="auditTable">
+          <thead>
+            <tr>
+              <th>Sl.no</th>
+              <th>Action</th>
+              <th>ActionBy</th>
+              <th>DateTime</th>
+              <th>KeyField</th>
+              <th>Changes</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <!-- <ng-container > -->
+          <tbody>
+            <tr *ngFor="let item of auditLogList;let i = index">
+              <td>{{auditLogList.length - i + '.0'}}</td>
+              <td class="col-sm-1">{{item.auditType}}</td>
+              <td class="col-sm-1">{{item.aduitUser}}</td>
+              <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy HH:mm"}}</td>
+              <td class="col-sm-1">{{item.keyValue}}</td>
+              <td class="col-sm-4">
+                <table class="table table-bordered" style="margin-bottom: 0;">
+                  <tr>
+                    <th>Field name</th>
+                    <th>Old value</th>
+                    <th>New value</th>
+                  </tr>
+                  <tr *ngFor="let ch of objParser(item.changes)">
+                    <td>{{ch.fieldname}}</td>
+                    <td>{{ch.oldvalue}}</td>
+                    <td>{{ch.newvalue}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td class="col-sm-4">{{item.purpose}}</td>
+            </tr>
+          </tbody>
+          <!-- </ng-container> -->
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

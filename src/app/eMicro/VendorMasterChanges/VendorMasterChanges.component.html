@@ -1,0 +1,571 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Vendor Master Changes
+        <small>Changes</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Vendor Master Changes</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title">Vendor Master Changes</h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-primary pull-right" (click)="onClickNewRequest()"><i
+                        class="fa fa-plus" aria-hidden="true"></i> New Request</button>
+            </div>
+        </div>
+        <div id="dateFilterPanel">
+            <div class="col-sm-12">
+                <div class="row">
+                    <!-- <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="requestno"> Requet No</label>
+                                <input [(ngModel)]="requestno" class="form-control" id="requestno" placeholder="Request No"
+                                    name="requestno" ngControl="requestno" #requestnoEnt="ngModel">
+                            </div>
+                        </div> -->
+                    <div class="col-sm-3">
+                        <div class="form-group form-group-sm">
+                            <label for="vendorCode"> Vendor Code</label>
+                            <input [(ngModel)]="vendorCode" class="form-control" id="vendorCode"
+                                placeholder="Vendor Code" name="vendorCode" ngControl="vendorCode"
+                                #vendorCodeEnt="ngModel">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group form-group-sm">
+                            <label for="status">Status</label>
+                            <select [(ngModel)]="status" class="form-control" id="status" name="status"
+                                ngControl="status" #statusEnt="ngModel" placeholder="Status" matTooltip="Select Status">
+                                <option [ngValue]="null">--Select an Option--</option>
+                                <option *ngFor="let status of statuslist" value={{status.name}}>{{status.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group form-group-sm">
+                            <label for="vendorName"> Vendor Name</label>
+                            <input [(ngModel)]="vendorName" class="form-control" id="vendorName"
+                                placeholder="Vendor Name" name="vendorName" ngControl="vendorName"
+                                #vendorNameEt="ngModel">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row ml-3">
+                    <div class="col-sm-4">
+                        <label>From Date</label>
+                        <!-- <input type="date" class="form-control" placeholder="From Date"  [(ngModel)]="ItemCodeExtensionModel.from_date"/> -->
+                        <div class="form-group form-group-sm"
+                            [ngClass]="(fromDate.touched && !fromDate.valid)?'has-error':''">
+                            <input [matTooltipPosition]="'below'" matTooltip="Click to change from date"
+                                [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" [max]="today" name="fromDate"
+                                class="form-control" [(ngModel)]="from_date" #fromDate="ngModel">
+                            <owl-date-time [pickerType]="'calendar'" #dt11 style="width: 250px;"></owl-date-time>
+                            <span class="help-block" *ngIf="!fromDate.valid && fromDate.touched">Please enter valid From
+                                Date.</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label>To Date</label>
+                        <div class="form-group form-group-sm"
+                            [ngClass]="(toDate.touched && !toDate.valid)?'has-error':''">
+                            <!-- <input type="date" [disabled]="from_date==null||from_date==''" class="form-control" placeholder="To Date"  [(ngModel)]="ItemCodeExtensionModel.to_date"> -->
+                            <input [min]="from_date" [max]="today" [matTooltipPosition]="'below'"
+                                matTooltip="Click to change to date" [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12"
+                                name="endDate" class="form-control" [(ngModel)]="to_date" #toDate="ngModel">
+                            <owl-date-time [pickerType]="'calendar'" #dt12 style="width: 250px;"></owl-date-time>
+                            <span class="help-block" *ngIf="!toDate.valid && toDate.touched">Please enter valid To
+                                Date.</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>&nbsp;</label>
+                        <div class="form-group form-group-sm">
+                            <button class="btn btn-primary btn-sm" (click)="getAllEntries();"
+                                [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)"
+                                matTooltip="click to go">Go</button>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+                                matTooltip="click to reset">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive">
+            <table id="userTable" class="table table-bordered table-striped">
+                <thead style="background-color: #68a7d2;color:white;">
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Requested Date</th>
+                        <th>Vendor Code</th>
+                        <th>Vendor Name</th>
+                        <th>Place</th>
+                        <th>Requested By</th>
+                        <th>Plant</th>
+                        <th>Status</th>
+                        <th>Last Approver</th>
+                        <th>Pending Approver</th>
+                        <th>Submit for Approval</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of VendorMasterFilter; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.requestedDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                        <td>{{item.vendorCode}}</td>
+                        <td>{{item.vendorName}}</td>
+                        <td>{{item.city}}</td>
+                        <td>{{item.requestedBy}}</td>
+                        <td>{{item.Plant}}</td>
+                        <td>{{item.status}}</td>
+                        <td>{{item.lastApprover}}</td>
+                        <td>{{item.pendingApprover}}</td>
+                        <td>
+                            <button
+                                *ngIf="item.status =='Created'|| item.status =='Reverted to initiator' && item.createdBy==this.currentUser.employeeId"
+                                type="button" [matTooltipPosition]="'after'" matTooltip="Click to Submit"
+                                class="btn btn-primary btn-xs" (click)="onSubmitEntry(item)">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td
+                                        *ngIf="item.status =='Created'|| item.status =='Reverted to initiator'">
+                                        <button *ngIf="item.createdBy==this.currentUser.employeeId" type="button"
+                                            [matTooltipPosition]="'after'" matTooltip="Click to edit details"
+                                            class="btn btn-primary btn-xs" (click)="onUserActions(false,item,false,'')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                    &nbsp;
+                                    <td>
+                                        <button
+                                            *ngIf="item.modifiedBy==null && item.status =='Created'|| item.status =='Reverted to initiator' && item.createdBy==this.currentUser.employeeId"
+                                            type="button" [matTooltipPosition]="'after'"
+                                            matTooltip="Click to edit details" class="btn btn-primary btn-xs"
+                                            (click)="onUserActions(false,item,false,'')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                    &nbsp;
+                                    <td
+                                        *ngIf="item.status !='Created' && item.status !='Reverted to initiator'">
+                                        <button
+                                            *ngIf="item.pendingApprover==currentUser.employeeId || item.approver1 ==userid ||  item.approver2 ==userid || 
+                                                                                                    item.approver3 ==userid ||  item.approver4 ==userid "
+                                            type="button" [matTooltipPosition]="'after'"
+                                            matTooltip="Click to edit details" class="btn btn-primary btn-xs"
+                                            (click)="onUserActions(true,item,false,'')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                    &nbsp;
+                                    <td>
+                                        <button type="button" [matTooltipPosition]="'after'"
+                                            matTooltip="Click to view details" class="btn btn-primary btn-xs"
+                                            (click)="onUserActions(true,item,false,'View')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                    &nbsp;
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+                        *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+            </div>
+        </div>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Vendor Master Form
+                </h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form #dataForm="ngForm" (keydown.enter)="$event.preventDefault()">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="vendor"> Vendor Code</label>
+                                        <input [(ngModel)]="vendorCode" class="form-control" id="vendorCode"
+                                            placeholder="Vendor Code" name="vendorCode" ngControl="vendorCode"
+                                            #vendorCEnt="ngModel" [disabled]="isEdit">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 pull-center" *ngIf="!isEdit"><br>
+                                    <label>&nbsp;</label>
+                                    <button class="btn btn-primary btn-sm" (click)="getCodeDetails(vendorCode);"
+                                        [disabled]="vendorCode == null" matTooltip="Click to Search">Get Data
+                                    </button>
+                                </div>
+                            </div>
+
+                            &nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm"
+                                                [ngClass]="((vendormasterchangesmodel.vendorType==null || vendormasterchangesmodel.vendorType=='' || vendormasterchangesmodel.vendorType==undefined)  && !notFirst)?'has-error':''">
+                                                <label for="vendorType">
+                                                    Vendor Type <span style="color:red">*</span>
+                                                </label><br>
+                                                <ng-select [items]="VendorTypeList" (blur)="checkVenTyp();" bindLabel="vDescription" required
+                                                    name="vendorType" bindValue="vCode" [multiple]="false" [virtualScroll]="true"
+                                                    placeholder="Select Vendor Type" disabled="isEdit"
+                                                    [(ngModel)]="vendormasterchangesmodel.vendorType">
+                                                    <ng-option *ngFor="let mat of VendorTypeList" value={{mat.vCode}}>
+                                                        {{mat.vCode}}-{{mat.vDescription}}
+                                                    </ng-option>
+                                                </ng-select>
+                                                <span class="help-block"
+                                                    *ngIf="(vendormasterchangesmodel.vendorType==null || vendormasterchangesmodel.vendorType=='' || vendormasterchangesmodel.vendorType==undefined) && !notFirst">Please
+                                                    Select Vendor Type
+                                                </span>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="vendorName">Name<span style="color:red">*</span></label>
+                                                <input [(ngModel)]="vendormasterchangesmodel.vendorName" class="form-control" id="vendorName"
+                                                    placeholder="Vendor Name" name="vendorName"
+                                                    (input)="vendormasterchangesmodel.vendorName=$event.target.value.toUpperCase()"
+                                                    ngControl="vendormasterchangesmodel.vendorName" #nameEnt="ngModel" disabled="isEdit" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="address">Address<span style="color:red">*</span></label>
+                                                <input [(ngModel)]="vendormasterchangesmodel.address" class="form-control" id="address"
+                                                    placeholder="Address" name="address" disabled="isEdit"
+                                                    ngControl="vendormasterchangesmodel.address" #addressEnt="ngModel" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="city">City<span style="color:red">*</span></label>
+                                                <input [(ngModel)]="vendormasterchangesmodel.city" class="form-control" id="city" placeholder="City"
+                                                    name="city" (input)="vendormasterchangesmodel.city=$event.target.value.toUpperCase()"
+                                                    disabled="isEdit" ngControl="vendormasterchangesmodel.city" #cityEnt="ngModel" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm"
+                                                [ngClass]="((vendormasterchangesmodel.country==null || vendormasterchangesmodel.country=='' || vendormasterchangesmodel.country==undefined)  && !notFirst)?'has-error':''">
+                                                <label for="accountGroupId">
+                                                    Country <span style="color:red">*</span>
+                                                </label><br>
+                                                <ng-select [items]="countrylist" (blur)="checkCountry();" bindLabel="landx" required name="Country"
+                                                    bindValue="land1" [multiple]="false" [virtualScroll]="true" placeholder="Select Country"
+                                                    [(ngModel)]="vendormasterchangesmodel.country" [disabled]="true">
+                                                    <ng-option *ngFor="let mat of countrylist" value={{mat.land1}}>{{mat.land1}}-{{mat.landx}}
+                                                    </ng-option>
+                                                </ng-select>
+                                                <span class="help-block"
+                                                    *ngIf="(vendormasterchangesmodel.country==null || vendormasterchangesmodel.country=='' || vendormasterchangesmodel.country==undefined) && !notFirst">Please
+                                                    Select Country</span>
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm"
+                                                [ngClass]="((vendormasterchangesmodel.state==null || vendormasterchangesmodel.state=='' || vendormasterchangesmodel.state==undefined)  && !notFirst)?'has-error':''">
+                                                <label for="state">
+                                                    State <span style="color:red">*</span>
+                                                </label><br>
+                                                <ng-select [items]="stateList" (blur)="checkState();" bindLabel="bezei" required name="state"
+                                                    bindValue="id" [multiple]="false" [virtualScroll]="true" placeholder="Select State"
+                                                    [(ngModel)]="vendormasterchangesmodel.state" [disabled]="true">
+                                                    <ng-option *ngFor="let item of stateList" value={{item.id}}>
+                                                        {{item.bezei}}
+                                                    </ng-option>
+                                                </ng-select>
+                                                <span class="help-block"
+                                                    *ngIf="(vendormasterchangesmodel.state==null || vendormasterchangesmodel.state=='' || vendormasterchangesmodel.state==undefined) && !notFirst">Please
+                                                    Select State</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-group-sm">
+                                                <label for="gstinNumber">GSTIN Number<span style="color:red">*</span></label>
+                                                <input [(ngModel)]="vendormasterchangesmodel.gstinNumber" class="form-control" id="gstinnumber"
+                                                    placeholder="GSTIN Number" name="gstinnumber" disabled="isEdit"
+                                                    ngControl="vendormasterchangesmodel.gstinnumber" #gstinnumberEnt="ngModel" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            &nbsp;&nbsp;&nbsp;
+                            <div class="box">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-sm">
+                                            <label for="reason">Reason for Customer Changes Request<span
+                                                    style="color:red">*</span></label>
+                                            <textarea [(ngModel)]="vendormasterchangesmodel.reason" class="form-control"
+                                                placeholder="Reason" id="reason" name="reason" matTooltip="Enter Reason"
+                                                type="text" required [disabled]="isEdit"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" *ngIf="isEdit">
+                                        <div class="form-group form-group-sm">
+                                            <label for="comments">Comments<span style="color:red">*</span></label>
+                                            <textarea [(ngModel)]="comments"
+                                                class="form-control" placeholder="Comments" id="Comments"
+                                                name="Comments" matTooltip="Enter Comments" type="text"
+                                                required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            &nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;
+                            <div class="box" *ngIf="Creator && isEdit">
+                                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                                    <div class="col-xs-6">
+                                        <h3 class="box-title">Vendor Code Details</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            &nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;
+                            <div class="box">
+                                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                                    <div class="col-xs-6">
+                                        <h3 class="box-title">Attachments</h3>
+                                    </div>
+                                </div>
+                                &nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;
+                                <div class="row" *ngIf="!isEdit">
+                                    <div class="col-sm-4">
+                                        <input #myInput type="file" accept=".doc,.pdf" id="file"
+                                            (change)="handleFileInput($event.target.files)" multiple>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <span class="text-red pull-left" *ngIf="errMsg1.length>0"><i
+                                                class="fa fa-warning"></i>{{errMsg1}}</span>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span class="text-red pull-left"><i class="fa fa-warning"></i>
+                                            NOTE:Maximum Upto 2Mb Can Be Uploaded</span>
+                                    </div>
+                                </div>
+                                &nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;
+                                <div class="row" *ngFor="let attach of fileslist">
+                                    <div class="col-sm-4">
+                                        <label for="attachments">{{attach}}</label>
+                                    </div>
+                                    <div class="col-sm-4" *ngIf="!isEdit && attach!= null">
+                                        <button title="Remove Files" (click)="removefile(attach);"
+                                            matTooltip="Click to delete" class="btn btn-secondary btn-sm">
+                                            <i class="fa fa-trash"></i></button>
+                                    </div>
+
+                                </div>
+                                <div class="row" *ngFor="let attach of attachments">
+                                    <div class="col-sm-4">
+                                        <label for="attachments"></label><a
+                                            (click)="downloadFile(vendormasterchangesmodel.requestNo,attach);"
+                                            style="cursor: pointer;text-decoration: underline; color: #68a7d2;"
+                                            [matTooltipPosition]="'below'"
+                                            matTooltip="Click to download the file">{{attach}}</a>
+                                    </div>
+                                    <div class="col-sm-4" *ngIf="!isEdit && attach!= null">
+                                        <button title="Remove Files"
+                                            (click)="deletefile(vendormasterchangesmodel,attach);"
+                                            matTooltip="Click to delete" class="btn btn-secondary btn-sm">
+                                            <i class="fa fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            &nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;
+                            <div class="box">
+                                <div class="box-header" style="background-color: #b6cedf; height: 35px;">
+                                    <div class="col-xs-6">
+                                        <h3 class="box-title">Approvers List</h3>
+                                    </div>
+                                </div>
+                                &nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;
+                                <div class="row" *ngIf='!isEdit'>
+                                    <div class="col-sm-12">
+                                        <div class="table">
+                                            <table id="approversTable" class="table table-striped">
+                                                <thead style="background-color: #68a7d2; color:white;">
+                                                    <tr>
+                                                        <th>Priority</th>
+                                                        <th>Location</th>
+                                                        <th>Employee ID</th>
+                                                        <th>ApproverName</th>
+                                                        <th>Role</th>
+                                                        <th>Department</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let user of Approverslist; let i = index">
+                                                        <td>{{user.priority}}</td>
+                                                        <td>{{getloc(user)}}</td>
+                                                        <td>{{user.approverId}}</td>
+                                                        <td>{{user.approverName}}</td>
+                                                        <td>{{user.role}}</td>
+                                                        <td>{{user.department}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf='isEdit'>
+                                    <div class="col-sm-12">
+                                        <div class="table">
+                                            <table id="approversTable" class="table table-striped">
+                                                <thead style="background-color: #68a7d2; color:white;">
+                                                    <tr>
+                                                        <th>Priority</th>
+                                                        <th *ngIf="!isEdit">Location</th>
+                                                        <th>Employee ID</th>
+                                                        <th>ApproverName</th>
+                                                        <th>Role</th>
+                                                        <th>Department</th>
+                                                        <th *ngIf="isEdit">Status</th>
+                                                        <th *ngIf="isEdit">Date</th>
+                                                        <th *ngIf="isEdit">Comments</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let user of transactionslist; let i = index">
+                                                        <td>{{user.approvalPriority}}</td>
+                                                        <td>{{user.doneBy}}</td>
+                                                        <td>{{user.approverName}}</td>
+                                                        <td>{{user.role}}</td>
+                                                        <td>{{user.department}}</td>
+                                                        <td>{{user.status}}</td>
+                                                        <td>{{user.doneOn |date:'dd/MM/yyyy HH:mm'}}</td>
+                                                        <td>{{user.comments}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="overlay" *ngIf="isLoadingPop">
+                        <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <!-- <button type="button" class="btn btn-primary" (click)="oncloserequest('close')"
+            matTooltip="Click to Close the Request" *ngIf="Closure" [disabled]="comments==''">Closure</button> -->
+                <div *ngIf="!view" class="row pull-right">
+                    <div  class="dropdown ">
+                    <button type="button" class="btn btn-primary" (click)="onCreate()" matTooltip="Click to Create"
+                        [disabled]="!dataForm.valid"
+                        *ngIf="isEdit && Creator && !Closure && vendormasterchangesmodel.createdBy!=this.currentUser.employeeId">Create</button>
+                    <button type="button" class="btn btn-primary" (click)="onreview('InProcess')"
+                        matTooltip="Click to Submit" [disabled]="!dataForm.valid"
+                        *ngIf="isEdit && Review && !Closure && !Creator">Submit</button>
+                    <button type="button" class="btn btn-primary" (click)="onreview('Rejected')"
+                        matTooltip="Click to Reject" *ngIf="isEdit && Review && !Closure"
+                        [disabled]="comments==''">Reject</button>
+                    &nbsp;
+                 
+                         <a *ngIf="isEdit && Review" data-toggle="dropdown" class="dropdown-toggle"
+                            href="#"><span>
+                                <button [disabled]="comments==''" type="button" class="btn btn-primary"
+                                    matTooltip="Click to Revert">Revert</button>
+                            </span>
+                        </a>
+                        <ul *ngIf="isEdit && Review" class="dropdown-menu">
+                            <li><a *ngIf="Aprlpriority >1" (click)="onRevertRequest('ReverttoLastApprover')">Previous
+                                    Approver</a>
+                            </li>
+                            <li><a (click)="onRevertRequest('ReverttoInitiator')">Initiator</a></li>
+                        </ul>
+                    </div>
+                    &nbsp;
+                    <button type="button" class="btn btn-primary" (click)="onSaveEntry('Save')"
+                        matTooltip="Click to Save" [disabled]="!dataForm.valid"
+                        *ngIf="!isEdit && vendormasterchangesmodel.status==null">Save</button>
+                    <button type="button" class="btn btn-primary" (click)="onSaveEntry('Submit')"
+                        matTooltip="Click to Save & Submit" [disabled]="!dataForm.valid"
+                        *ngIf="!isEdit && vendormasterchangesmodel.status==null">Save & Submit</button>
+                    <button type="button" class="btn btn-primary" (click)="onSubmitEntry(vendormasterchangesmodel)"
+                        matTooltip="Click to Save & Submit" [disabled]="!dataForm.valid" *ngIf="!isEdit && vendormasterchangesmodel.status=='Created' || vendormasterchangesmodel.status =='Reverted to initiator'
+                                       ">Save & Submit</button>
+                    <button type="button" class="btn btn-primary" (click)="OnClickback()" data-dismiss="modal"
+                        *ngIf="!isEdit" [disabled]="isLoadingPop" matTooltip="Click to Go Back">Back</button>
+                    <button type="button" class="btn btn-primary" (click)="resetForm()" *ngIf="!isEdit"
+                        matTooltip="Click to Clear">Clear</button>
+                    <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                        data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+                </div>
+                <div *ngIf="view" class="row pull-right">
+                    <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                        data-dismiss="modal" [disabled]="isLoadingPop" matTooltip="Click to close modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

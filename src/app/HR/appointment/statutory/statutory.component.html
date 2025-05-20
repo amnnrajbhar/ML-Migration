@@ -1,0 +1,217 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Statutory Details
+  </h1>
+
+</section>
+
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <form #statutoryDetailsForm="ngForm">
+    <div class="form-horizontal">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="panNo" class="col-md-4">PAN Number 
+              <span *ngIf="officialDetails.stateId !=1649" style="color:red">*</span></label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="panNo" [(ngModel)]="details.panNo"
+                ngControl="details.panNo" name="panNo" [disabled]="!editAllowed" onkeyup="this.value = this.value.toUpperCase();"
+                #panNoEnt="ngModel" maxlength="10"/>
+                <span class="help-block" *ngIf="panNoEnt.touched && !panNoEnt.valid">
+                  <span *ngIf="panNoEnt.errors.required"> Please enter PAN Number</span>
+                  <span *ngIf="panNoEnt.errors.maxlength">PAN number should be 10 characters.</span>
+                </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="aadharNo" class="col-md-4">Aadhar Number 
+              <span *ngIf="officialDetails.stateId !=1649" style="color:red">*</span></label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="aadharNo" [disabled]="!editAllowed"
+                [(ngModel)]="details.aadharNo" ngControl="details.aadharNo" name="aadharNo"
+                (keypress)="keyPressAllowOnlyNumber($event)" #aadharNoEnt="ngModel" maxlength="12"/>
+                <span class="help-block" *ngIf="aadharNoEnt.touched && !aadharNoEnt.valid">
+                  <span *ngIf="aadharNoEnt.errors.required"> Please enter Aadhar Number</span>
+                  <span *ngIf="aadharNoEnt.errors.maxlength">Aadhar number should be 12 digits.</span>
+                </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="esiDeduction" class="col-md-4">ESI Deduction <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select class="form-control" id="esiDeduction"
+                [(ngModel)]="details.esiDeduction" ngControl="details.esiDeduction"
+                name="esiDeduction" [disabled]="!editAllowed" required #esiDeductionEnt="ngModel">
+                <option value="Yes">Yes</option>              
+                <option value="No" >No</option>    
+              </select>
+              <span class="help-block" *ngIf="esiDeductionEnt.touched && !esiDeductionEnt.valid">
+                Please select a value                
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" >
+          <div class="form-group" *ngIf="details.esiDeduction == 'Yes'">
+            <label for="esiNo" class="col-md-4">ESI Number</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="esiNo" [(ngModel)]="details.esiNo"
+                ngControl="details.esiNo" name="esiNo" [disabled]="!editAllowed" maxlength="21"/>
+            </div>
+          </div>
+        </div>      
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="pfDeduction" class="col-md-4">PF Deduction <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select class="form-control" id="pfDeduction"
+                [(ngModel)]="details.pfDeduction" ngControl="details.pfDeduction"
+                name="pfDeduction" [disabled]="!editAllowed" required #pfDeductionEnt="ngModel">    
+                <option value="Yes">Yes</option>              
+                <option value="No" >No</option>    
+              </select>
+              <span class="help-block" *ngIf="pfDeductionEnt.touched && !pfDeductionEnt.valid">
+                Please select a value                
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" >
+          <div class="form-group" *ngIf="details.pfDeduction == 'Yes'">
+            <label for="uanNo" class="col-md-4">UAN Number </label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="uanNo" [(ngModel)]="details.uanNo"
+                ngControl="details.uanNo" name="uanNo" [disabled]="!editAllowed" (keypress)="keyPressAllowOnlyNumber($event)" maxlength="12"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" >
+          <div class="form-group" *ngIf="details.pfDeduction == 'Yes'">
+            <label for="pfNo" class="col-md-4">PF Number </label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="pfNo" [(ngModel)]="details.pfNo"
+                ngControl="details.pfNo" name="pfNo" [disabled]="!editAllowed" />
+            </div>
+          </div>
+        </div>      
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="gratuity" class="col-md-4">Gratuity <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select class="form-control" id="gratuity"
+                [(ngModel)]="details.gratuity" ngControl="details.gratuity"
+                name="gratuity" [disabled]="!editAllowed" required #gratuityEnt="ngModel">
+                <option value="Yes">Yes</option>              
+                <option value="No" >No</option>    
+              </select>
+              <span class="help-block" *ngIf="gratuityEnt.touched && !gratuityEnt.valid">
+                Please select a value                
+              </span>              
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="itDeduction" class="col-md-4">IT Deduction <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select class="form-control" id="itDeduction"
+                [(ngModel)]="details.itDeduction" ngControl="details.itDeduction"
+                name="itDeduction" [disabled]="!editAllowed" required #itDeductionEnt="ngModel">
+                <option value="Yes">Yes</option>              
+                <option value="No" >No</option>    
+              </select>              
+              <span class="help-block" *ngIf="itDeductionEnt.touched && !itDeductionEnt.valid">
+                Please select a value                
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="bonusPay" class="col-md-4">Bonus Pay <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select class="form-control" id="bonusPay"
+                [(ngModel)]="details.bonusPay" ngControl="details.bonusPay"
+                name="bonusPay" [disabled]="!editAllowed" required #bonusEnt="ngModel">
+                <option value="Yes">Yes</option>              
+                <option value="No" >No</option>    
+              </select>
+              <span class="help-block" *ngIf="bonusEnt.touched && !bonusEnt.valid">
+                Please select a value                
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- <div class="col-md-4">
+          <div class="form-group">
+            <label for="leaves" class="col-md-4">Leaves <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select class="form-control" id="leaves"
+                [(ngModel)]="details.leaves" ngControl="details.leaves"
+                name="leaves" [disabled]="!editAllowed" required #leavesEnt="ngModel">
+                <option value="Yes">Yes</option>              
+                <option value="No" >No</option>    
+              </select>              
+              <span class="help-block" *ngIf="leavesEnt.touched && !leavesEnt.valid">
+                Please select a value                
+              </span>
+            </div>
+          </div>
+        </div> -->
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="pt" class="col-md-4">PT Deduction <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select class="form-control" id="pt"
+                [(ngModel)]="details.pt" ngControl="details.pt"
+                name="pt" [disabled]="!editAllowed" required #ptDeductionEnt="ngModel">
+                <option value="Yes">Yes</option>              
+                <option value="No" >No</option>    
+              </select>
+              <span class="help-block" *ngIf="ptDeductionEnt.touched && !ptDeductionEnt.valid">
+                Please select a value                
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="pt" class="col-md-4">EPS <span style="color:red">*</span></label>
+            <div class="col-md-8">
+              <select class="form-control" id="eps"
+                [(ngModel)]="details.eps" ngControl="details.eps"
+                name="eps" [disabled]="!editAllowed" required #epsEnt="ngModel">
+                <option value="Yes">Yes</option>              
+                <option value="No" >No</option>    
+              </select>
+              <span class="help-block" *ngIf="epsEnt.touched && !epsEnt.valid">
+                Please select a value                
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+</form>
+</section>
+  

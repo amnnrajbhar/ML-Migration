@@ -1,0 +1,198 @@
+﻿<section class="content-header">
+  <h1 class="display-1">
+    Master
+    <small>Contract Employee</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Contract Employee</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Contract Employee</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+    </div>
+    <div id="datafilter">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-3">
+            <label for="location">Plant</label>
+            <select name="fltrlocatiom" id="fltrlocatiom" class="form-control" [(ngModel)]="filterLocation"
+              ngControl="filterLocation">
+              <option [ngValue]="undefined" disabled [selected]="true">--select location--</option>
+              <option *ngFor="let loc of plantList;let i=index" value={{loc.code}}>{{loc.code}}-{{loc.name}}</option>
+            </select>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="payGroup"> Pay Group</label>
+              <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup" name="payGroup"
+                matTooltip="Pay Group" #payGroup1Ent="ngModel">
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Pay Group </option>
+                <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.short_desc}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="dptid"> Department </label>
+              <select [(ngModel)]="filterDepartment" class="form-control" id="dptid" name="dptid"
+                matTooltip="Department" #dptidEnt="ngModel">
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Department </option>
+                <option *ngFor="let pl of departmentList" [ngValue]="pl.id">{{pl.name}}</option>
+              </select>
+              <span class="help-block" *ngIf="dptidEnt.touched && !dptidEnt.valid">Please select
+                Department</span>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="sdptid"> Sub Department </label>
+              <select [(ngModel)]="filterSubDepartment" class="form-control" id="sdptid" name="sdptid"
+                matTooltip="Sub Department" #sdptidEnt="ngModel">
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Sub Department </option>
+                <option *ngFor="let pl of subDeptList" [ngValue]="pl.id">{{pl.sdptidStxt}}</option>
+              </select>
+              <span class="help-block" *ngIf="sdptidEnt.touched && !sdptidEnt.valid">Please select sub
+                department</span>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="reportingGroup"> Reporting Group </label>
+              <select [(ngModel)]="filterReportingGroup" class="form-control" id="reportingGroup" name="reportingGroup"
+                matTooltip="Reporting Group" #reportingGroupEnt="ngModel">
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Reporting Group </option>
+                <option *ngFor="let pl of ReportingGroupList" [ngValue]="pl.id">{{pl.reportingGroupSt}}
+                </option>
+              </select>
+              <span class="help-block" *ngIf="reportingGroupEnt.touched && !reportingGroupEnt.valid">Please
+                select
+                Reporting Group</span>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="status"> Status </label>
+              <select [(ngModel)]="filterStatus" class="form-control" id="Status" name="Status" matTooltip="Status"
+                #StatusEnt="ngModel">
+                <option [ngValue]="undefined" disabled [selected]="true"> Select Status </option>
+                <option>Active</option>
+                <option>InActive</option>
+                <option>ToBe Approved</option>
+                <option>Blacklisted</option>
+              </select>
+              <span class="help-block" *ngIf="reportingGroupEnt.touched && !reportingGroupEnt.valid">Please
+                select
+                Reporting Group</span>
+            </div>
+          </div>
+          <div class="col-sm-5">
+            <label>&nbsp;</label>
+            <div class="form-group">
+              <button class="btn btn-success" (click)="getUsersList();" matTooltip="click to Go"><i
+                class="fas fa-arrow-right"></i>&nbsp; Go</button>
+              &nbsp;&nbsp;
+              <button class="btn btn-danger" (click)="clearFilter();"
+                matTooltip="click to clear filters"><i
+                class="fas fa-times"></i>&nbsp; Clear</button>
+              &nbsp;&nbsp;
+              <button class="btn btn-warning" (click)="exportExcel();" [disabled]="!userList.length>0"
+                matTooltip="click to export"><i
+                class="fas fa-file-excel"></i>&nbsp; 
+                Export Excel
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <div class="box-body table-responsive">
+      <table id="userTable" class="table table-bordered table-striped">
+        <thead style="background-color: #0099cc;color:white;">
+          <tr>
+            <th>Employee ID</th>
+            <th>Location</th>
+            <th>Name</th>
+            <th>Designation</th>
+            <th>Department</th>
+            <th>Sub Department</th>
+            <th>Pay Group</th>
+            <th>Employee Category</th>
+            <th>Reporting Group</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of userList; let i = index">
+            <td>{{user.employeeId}}</td>
+            <td>{{user.location}}</td>
+            <td>{{user.firstName}} {{user.middleName}} {{user.lastName}}</td>
+            <td>{{getdesig(user.dsgid)}}</td>
+            <td>{{getdept(user.dptid)}}</td>
+            <td>{{getsubdept(user.sdptid)}}</td>
+            <td>{{getpaygroup(user.payGroup)}}</td>
+            <td>{{getcat(user.staffCat)}}</td>
+            <td>{{getReporting(user.reportingGroup)}}</td>
+            <td>{{getRole(user.roleId)}}</td>
+            <td><span class="label"
+                [ngClass]="(user.isActive==1)?'label-success':'label-danger'">{{(user.isActive==1)?'ACTIVE':'INACTIVE'}}</span>
+            </td>
+            <td>
+              <table>
+                <tr>
+                  <td>
+                    <button type="button" class="btn btn-info btn-xs" (click)="EditUser(user.id)"
+                      matTooltip="Click to edit details">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                  &nbsp;
+                  <td>
+                    <button type="button" class="btn btn-info btn-xs" (click)="ViewUser(user.id)"
+                      matTooltip="Click to view details">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </td>
+                  &nbsp;
+                  <td>
+                    <button type="button" class="btn btn-danger btn-xs" (click)="deleteUser(user)"
+                      matTooltip="Click to deactivate user">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </td>
+                  &nbsp;
+                  <td *ngIf="user.isActive==0">
+                    <button type="button" class="btn btn-danger btn-xs" (click)="BlacklistUser(user)"
+                      matTooltip="Click to blacklist user">
+                      <i class="fas fa-ban"></i>
+                    </button>
+                  </td>
+                  <td *ngIf="user.isActive==3">
+                    <button type="button" class="btn btn-danger btn-xs" (click)="UnBlacklistUser(user)"
+                      matTooltip="Click to remove blacklist">
+                      <i class="fas fa-unlock"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>

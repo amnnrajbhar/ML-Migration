@@ -1,0 +1,116 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Offers Dashboard
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Offers Dashboard</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+    </div>
+    <div class="panel-body">
+      <div class="form-group row">
+        <div class="col-md-2">
+          <label class="control-label">Plant</label>
+          <select [(ngModel)]="filterModel.PlantId" class="form-control" id="plant" name="plant"
+            (change)="getPayGroupList()">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.name}}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="control-label">Pay Group</label>
+          <select [(ngModel)]="filterModel.PayGroupId" class="form-control" id="paygroup" name="paygroup"
+            matTooltip="paygroup" >
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="control-label">Employee Category</label>
+          <select [(ngModel)]="filterModel.EmployeeCategoryId" class="form-control" id="employeecategory"
+            name="employeecategory" matTooltip="employeecategory">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="control-label">Department</label>
+          <select [(ngModel)]="filterModel.DepartmentId" class="form-control" id="Department" name="Department">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let pll of departmentList" [ngValue]="pll.id">{{pll.description}}</option>
+          </select>
+        </div>
+
+
+        <div class="col-md-2">
+          <label class="control-label">State</label>
+          <select [(ngModel)]="filterModel.StateId" class="form-control" id="StateId" name="StateId"
+            matTooltip="StateId" (change)="getLocationList()">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of stateList" [ngValue]="cl.id">{{cl.bezei}}</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="control-label">Location</label>
+          <select [(ngModel)]="filterModel.LocationId" class="form-control" id="LocationId" name="LocationId"
+            matTooltip="LocationId">
+            <option value="" [selected]="true"> All </option>
+            <option *ngFor="let cl of locationList" [ngValue]="cl.id">{{cl.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-2">
+          <label class="control-label">Created Date From</label>
+          <input [owlDateTime]="dt11" [owlDateTimeTrigger]="dt11" name="CreatedDateFrom" class="form-control"
+            [(ngModel)]="filterModel.CreatedDateFrom" #CreatedDateFrom="ngModel" placeholder="From">
+          <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+        </div>
+        <div class="col-md-2">
+          <label class="control-label">Created Date To</label>
+          <div>
+            <input [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="CreatedDateTo" class="form-control"
+              [(ngModel)]="filterModel.CreatedDateTo" #CreatedDateTo="ngModel" placeholder="To">
+            <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+          </div>
+        </div>
+      </div>
+      <div class="form-group text-center actionButtons">
+        <button class="btn btn-primary btn-sm" (click)="getOfferList();" matTooltip="click to Go"
+          [disabled]="isLoading">
+          Filter</button>
+        <button class="btn btn-warning btn-sm" (click)="clear();" matTooltip="click to Clear Filter"
+          [disabled]="isLoading">
+          Clear Filter</button>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="overlay text-center h3" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+    <div class="row" *ngIf="!isLoading">
+      <div class="col-xs-2 indicator"><h1>{{filterData.totalOffersCreated}}</h1> <h5 class="text-muted">Created</h5>
+      </div>
+      <div class="col-xs-2 indicator"><h1>{{filterData.totalOffersApproved}}</h1> <h5 class="text-muted">Approved</h5>
+      </div>
+      <div class="col-xs-2 indicator"><h1>{{filterData.totalOffersReleased}}</h1> <h5 class="text-muted">Released</h5>
+      </div>
+      <div class="col-xs-2 indicator"><h1>{{filterData.totalOffersAccepted}}</h1> <h5 class="text-muted">Accepted</h5>
+      </div>
+      <div class="col-xs-2 indicator"><h1>{{filterData.totalOffersNotAccepted}}</h1> <h5 class="text-muted">Not-Accepted</h5>
+      </div>
+    </div>
+  </div>
+</section>

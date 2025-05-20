@@ -1,0 +1,188 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Initiate Exit Process
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Initiate Exit Process</li>
+  </ol>
+</section>
+
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId" *ngIf="employeeId > 0"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='details'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Details</a></li>
+    <!--li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a
+        (click)="onTabClick(1)">Attachments</a></li-->
+  </ul>
+
+  <div *ngIf="currentTab=='details'">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Service Withdrawn Details</h3>
+      </div>
+      <div class="panel-body form-horizontal">
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="terminationDate">Service Withdrawn Status</label>
+              <div class="col-md-8">
+                <span class="label label-lg label-success">{{terminationStatus}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4">Date Of Service Withdrawn</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="terminationDate" name="TerminationDate"
+                  [ngModel]="TerminationDate | date:'dd/MM/yyyy'" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4">Reason</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="reason" name="Reason"
+                  [(ngModel)]="terminationDetails.reason" [disabled]="true">
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="reasonNotes">Payout Months</label>
+              <div class="col-md-8">
+                <input type="number" [(ngModel)]="terminationDetails.payoutMonths" class="form-control"
+                  id="payoutMonths" name="payoutMonths" #payoutMonthsEnt="ngModel" required minlength="1"
+                  maxlength="4" [disabled]="true"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="additionalNotes">Additional Notes</label>
+              <div class="col-md-8">
+                <textarea [matTooltipPosition]="'below'" matTooltip="Input Reason For Service Withdrawn Date Change"
+                  [(ngModel)]="terminationDetails.additionalNotes" class="form-control" [disabled]="true"
+                  id="additionalNotes" name="additionalNotes"
+                  #reasonTerminationDateChange="ngModel"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  
+  <app-employee-attachments [objectId]="terminationId" [objectType]="this.objectType" [employeeId]="this.employeeId" 
+  [editAllowed]="true" [deleteAllowed]="false" *ngIf="currentTab=='attachments'"></app-employee-attachments>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Clearance Checklist</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+      <app-termination-checklist [terminationId]="this.terminationDetails.terminationId" [editAllowed]="true">
+      </app-termination-checklist>
+    </div>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Exit Interview</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4">Exit Interview Required</label>
+            <div class="col-md-8">
+              <select class="form-control" id="exitInterviewRequired" [(ngModel)]="exitInterviewRequired"
+              ngControl="exitInterviewRequired" name="exitInterviewRequired" #exitInteviewRequiredEnt="ngModel" required>
+              <option [ngValue]="null"  [selected]="true" default> Select </option>
+              <option [ngValue]="true" >Yes </option>
+              <option [ngValue]="false">No </option>             
+            </select>
+            <span class="help-block" *ngIf="exitInteviewRequiredEnt.touched && !exitInteviewRequiredEnt.valid">
+              Please select a value</span>             
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" *ngIf="exitInterviewRequired == false">
+          <div class="form-group">
+            <label class="col-md-4">Reason for No Exit Interview</label>
+            <div class="col-md-8">
+              <textarea type="text" class="form-control" [(ngModel)]="reason"
+              ngControl="reason" name="reason" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" *ngIf="exitInterviewRequired == true">
+          <div class="form-group">
+            <label class="col-md-4">Select Template</label>
+            <div class="col-md-8">
+              <select class="form-control" id="exitInterviewTemplateId" [(ngModel)]="selectedTemplateId"
+              ngControl="selectedTemplateId" name="exitInterviewTemplateId" #printTemplateEnt="ngModel" required>
+              <option [ngValue]="null"  [selected]="true" default> Select template </option>
+              <option *ngFor="let pl of templatesList" [ngValue]="pl.printTemplateId">{{pl.templateName}}</option>
+            </select>
+            <span class="help-block" *ngIf="printTemplateEnt.touched && !printTemplateEnt.valid">
+              Please select a value</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <span class="text-danger">Update the Checklist items and select the Exit Inteview template to initiate the Exit Process.</span>
+    </div>
+  </div>
+
+  <div class="row text-center actionButtons">
+    <div class="col-md-12">
+      <button type="button" (click)="Back()" class="btn btn-default" [matTooltipPosition]="'after'"
+      matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+      <button type="button" class="btn btn-primary" (click)="initiate()"
+        matTooltip="Click to initiate the exit process" [disabled]="isLoading">Initiate Exit</button>
+
+    </div>
+  </div>
+  <div>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="tabApprovals" class="tab-pane fade in active">
+        <app-flow-viewer [objectId]="this.terminationId" [objectType]="this.objectType"></app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="this.terminationId" [objectType]="this.objectType"></app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,247 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Comp Off Report
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i>Home</a></li>
+        <li class="active">Comp Off</li>
+    </ol>
+</section>
+
+<section class="content">
+
+    <div class="box">
+        <div class="box-header">
+            <div class="col-sm-12">
+                <form #compoffForm="ngForm">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="baseplant"> Plant <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="Plant" class="form-control" id="plant" name="plant"
+                                    matTooltip="plant" (change)="getpaygroupbasedonplant()" #plantEnt="ngModel"
+                                    >
+                                    <option [ngValue]="null" disabled [selected]="true"> Select plant </option>
+                                    <option *ngFor="let pl of plantList" value={{pl.code}}>{{pl.code}}-{{pl.name}}
+                                    </option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="payGroup"> Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="payGroup" name="payGroup"
+                                    matTooltip="Pay Group" #payGroup1Ent="ngModel" required>
+                                    <option [ngValue]="null" disabled [selected]="true"> Select Pay Group </option>
+                                    <option *ngFor="let pl of payGroupList1" value={{pl.id}}>{{pl.short_desc}}
+                                    </option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="empcat">Employee Category</label>
+                                <select [(ngModel)]="filterCategory" class="form-control" id="empcat" name="empcat"
+                                    matTooltip="staff Cat" #empcatEnt="ngModel">
+                                    <option [ngValue]="null" disabled [selected]="true"> Select Category </option>
+                                    <option *ngFor="let pl of empCatList" value={{pl.staffcat}}>{{pl.catltxt}}</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="dept">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="dept" name="dept"
+                                    matTooltip="Department" #deptEnt="ngModel">
+                                    <option [ngValue]="null" disabled [selected]="true"> Select Department
+                                    </option>
+                                    <option *ngFor="let pl of departmentList" value={{pl.dptid}}>{{pl.name}}</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="appStatus">Approval Status</label>
+                                <select [(ngModel)]="filterappStatus" class="form-control" id="appStatus"
+                                    name="appStatus" ngControl="filterappStatus" #appStatusEnt="ngModel"
+                                    [disabled]="isEdit" matTooltip="Select Approval Status">
+                                    <option [ngValue]="null" disabled [selected]="true">--Select an Option--</option>
+                                    <option>Approved</option>
+                                    <option>Pending</option>
+                                    <option>Rejected</option>
+                                    <option>Self Cancelled</option>
+                                    <option>Cancelled</option>
+                                    <option>HR Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="router.url =='/CompOffReport'">
+                            <label for="emp1">Employee No</label>
+                            <br>
+                            <input type="text" name="empNo" id="empNo" (keyup)="getEmployee($event)"
+                                placeholder="Enter Employee No." [(ngModel)]="EmployeeNo" class="form-control"
+                                matTooltip="Employee No" #EmployeeNo1Ent="ngModel">
+                            <input type="hidden" id="emp1" class="form-control" (keyup)="getEmployee($event)"
+                                [(ngModel)]="EmployeeNo" ngControl="EmployeeNo" name="emp1" />
+                        </div>
+                        <div class="col-sm-3" *ngIf="router.url =='/CompOffReportEss'">
+                            <div class="form-group">
+                                <label for="EmployeeNo1">Employee No.</label>
+                                <br>
+                                <ng-multiselect-dropdown style="width:100%; background-color: white;" id="EmployeeNo1"
+                                    name="EmployeeNo1" ngControl="EmployeeNo1" #EmployeeNoEnt="ngModel"
+                                    [placeholder]="'Select Employee No.'" [data]="empListCon" [(ngModel)]="EmployeeNo1"
+                                    [settings]="dropdownSettings" (onSelect)="onItemSelectM($event)"
+                                    (onSelectAll)="onSelectAll()" (focusout)="checkStatus();">
+                                </ng-multiselect-dropdown>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="startDate">
+                                    Start Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                        [min]="min" [owlDateTime]="dtStart" [owlDateTimeTrigger]="dtStart"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change startDate"
+                                        #startDate1="ngModel" [disabled]="isEdit">
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+                                <span class="help-block" *ngIf="!startDate1.valid && startDate1.touched">Please enter
+                                    valid
+                                    Start
+                                    Date.</span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="endDate">
+                                    End Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate"
+                                        [min]="min" [owlDateTime]="dtEnd" [owlDateTimeTrigger]="dtEnd"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change End Date"
+                                        #endDate1="ngModel" [disabled]="isEdit">
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtEnd">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtEnd></owl-date-time>
+                                <span class="help-block" *ngIf="!endDate1.valid && endDate1.touched">Please enter valid
+                                    End
+                                    Date.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        &nbsp;
+                        <br>
+                        <button type="button" class="btn btn-success" (click)="getEmpCompOffList()"><i
+                                class="fas fa-angle-double-right"></i>&nbsp; Search</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-danger" (click)="clearFilter()"><i
+                                class="fas fa-times"></i>&nbsp; Clear</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-warning" (click)="PrintCompOff()"><i
+                                class="fas fa-file-excel"></i>&nbsp; Export Comp Off
+                            Report</button>
+                    </div>
+                </form>
+            </div>
+
+            &nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;
+            <div class="col-sm-12">
+                <div class="box-body table-responsive ">
+                    <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr>
+                                <th class="col-sm-1">Sl.No</th>
+                                <th>Request No</th>
+                                <th>Requested By</th>
+                                <th>Requested Date</th>
+                                <th>Worked Date</th>
+                                <th>Shift Code</th>
+                                <th>In Time</th>
+                                <th>Out Time</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Balance Status</th>
+                                <th>Compoff Availed Date</th>
+                                <th>LapsBy Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let categ of CompOffRequestList;  let i = index">
+                                <td>{{i+1}}</td>
+                                <td>{{categ.reqNo}}</td>
+                                <td>{{categ.empName}}</td>
+                                <td>{{categ.requestedDate | date:'dd/MM/yyyy'}}</td>
+                                <td>{{categ.fromDate | date:'dd/MM/yyyy'}}</td>
+                                <td>{{categ.shift}}</td>
+                                <td>{{categ.intime}}</td>
+                                <td>{{categ.outtime}}</td>
+                                <td>{{categ.reason}}</td>
+                                <td>{{categ.apprvrStatus}}</td>
+                                <td><span class="label"
+                                        [ngClass]="(categ.sapApproved==true)?'label-success':'label-danger'">{{(categ.sapApproved==true)?'CREDITED':'NOT
+                                        CREDITED'}}</span></td>
+                                <td *ngIf="categ.compavailedDate == null">NA</td>
+                                <td *ngIf="categ.compavailedDate != null">{{categ.compavailedDate | date:'dd/MM/yyyy'}}
+                                </td>
+                                <td>{{categ.lapsBydate | date:'dd/MM/yyyy'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>
+
+<div hidden id="pdf1">
+    <table class="table table-bordered table table-striped" style="align-self: auto;; ">
+        <tr>
+            <td colspan="9" style="text-align: center;">
+                <strong><b>Comp-Off Report</b></strong>
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: center; vertical-align: bottom; ">Sl.No</th>
+            <th style="text-align: center; vertical-align: bottom; ">Req No.</th>
+            <th style="text-align: center; vertical-align: bottom; ">Applied On</th>
+            <th style="text-align: center; vertical-align: bottom; ">Applied For</th>
+            <th style="text-align: center; vertical-align: bottom; ">Worked Date</th>
+            <th style="text-align: center; vertical-align: bottom; ">Reason</th>
+            <th style="text-align: center; vertical-align: bottom; ">Type</th>
+            <th style="text-align: center; vertical-align: bottom; ">Status</th>
+            <th style="text-align: center; vertical-align: bottom; ">Pending With</th>
+        </tr>
+        <tr *ngFor="let categ of CompOffRequestList;  let i = index">
+            <td><b>{{i+1}}</b></td>
+            <td style="color: blue;">{{categ.reqNo}}</td>
+            <td style="color: blue;">{{categ.requestedDate | date:'dd/MM/yyyy hh:mm a'}}</td>
+            <td style="color: blue;">{{categ.pernr}}</td>
+            <td style="color: blue;">{{categ.fromDate | date:'dd/MM/yyyy'}}</td>
+            <td style="color: blue;">{{categ.reason}}</td>
+            <td style="color: blue;">{{categ.compType}}</td>
+            <td style="color: blue;">{{categ.apprvrStatus}}</td>
+            <td style="color: blue;">{{categ.pendingApprover}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+</div>

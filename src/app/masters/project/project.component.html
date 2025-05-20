@@ -1,0 +1,179 @@
+﻿<section class="content-header">
+  <h1>
+   Projects
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active"> Projects</li>
+  </ol>
+</section>
+<section class="content" >
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Project Data</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddProject(false,prjItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add Project</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="project" class="table table-bordered table-striped">
+        <thead style="background-color: #68a7d2;color:white;">
+          <tr>
+            <th style="width:20px">Id</th>
+            <th>Project Name</th>
+            <th>Project Code</th>
+            <th>Description</th>
+            <th>Account Name</th>
+            <th>Account Manager</th>
+            <th>Project Manager</th>
+            <th style="width:20px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prj of prjList; let i = index">
+            <td>{{prj.id}}</td>
+            <td>{{prj.name}}</td>
+            <td>{{prj.code}}</td>
+            <td>{{prj.description}}</td>
+            <td>{{getParentPrj(prj?.fkParentId)}}</td>
+            <td>{{getEmployeeName(prj?.fkProjectManager)}}</td>
+            <td>{{getEmployeeName(prj?.fkTeamLead)}}</td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddProject(true,prj)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-md  modal-dialog-centered">
+ <div class="modal-content">
+   <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+       <span aria-hidden="true">&times;</span>
+     </button>
+     <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"  *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+   </div>
+   </div></div>
+   <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+<div  class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+        <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title">Project</h3>
+      </div>
+      <div class="modal-body box-primary"
+      style="box-shadow: none;color:gray;background-size:cover;">
+        <!-- <div class="row"> -->
+          <form #prjForm="ngForm">
+            <div class="form-horizontal">
+              <div class="form-group" [ngClass]="(!name.valid && name.touched)?'has-error':''"> 
+                <label for="name" class="col-sm-3"><i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i> Project<span style="color:red">*</span></label> 
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="name" placeholder="Project Name" [(ngModel)]="prjItem.name" name="name"
+                         ngControl="prjItem.name" #name="ngModel" required maxlength="50" (change)="prjItem.name=prjItem.name.trim()">
+                   <span class="help-block" *ngIf="!name.valid && name.touched">Please Enter Project Name.</span>
+                </div>
+              </div>
+              <div class="form-group" [ngClass]="(!prjCode.valid && prjCode.touched)?'has-error':''">
+                  <label for="prjCode" class="col-sm-3"><i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i> Project Code<span style="color:red">*</span></label> 
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="prjCode" (change)="prjItem.code=prjItem.code.trim()" #prjCode="ngModel" placeholder="Project Code" [(ngModel)]="prjItem.code" name="prjCode" maxlength="200" required/>
+                    <span class="help-block" *ngIf="!prjCode.valid && prjCode.touched">Please Enter Project Code.</span>
+                  </div>
+                  </div>
+              <div class="form-group">
+                <label for="dDesc" class="col-sm-3">Description</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="dDesc" placeholder="Description" (change)="prjItem.description=prjItem.description.trim()" [(ngModel)]="prjItem.description" name="description" maxlength="200" />
+                  </div>
+                </div>
+              <div class="form-group" [ngClass]="(!parentId.valid && parentId.touched)?'has-error':''">
+                <label for="parentId" class="col-sm-3"> <i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i> Account <span style="color:red">*</span></label> 
+                <div class="col-sm-9">
+                  <select [(ngModel)]="selParentRole" class="form-control" id="parentId" name="parentId" ngControl="selParentRole" #parentId="ngModel"required>
+                      <option [ngValue]="null" disabled [selected]="true"> Select Account Name </option>
+
+                    <option *ngFor="let pDept of parentList" [ngValue]="pDept">{{pDept.name}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="!parentId.valid && parentId.touched">Please Select Parent Project</span>
+                  </div>
+                </div>
+              <div class="form-group"  [ngClass]="(managerId.length<0 && !notFirst)?'has-error':''">
+                <label for="managerId" class="col-sm-3"><i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i> Account Manager<span style="color:red">*</span></label> 
+                  <!-- <select [(ngModel)]="selManagerName" class="form-control" id="managerId" name="managerId" ngControl="selManagerName" #managerId="ngModel" required>
+                    <option *ngFor="let mgr of employeeList" [ngValue]="mgr">{{mgr.firstName}}&nbsp;{{mgr.lastName}}</option>
+                  </select> -->
+                  <div class="col-sm-9">
+                  <ng-multiselect-dropdown  style="width:100%; background-color: white;"  id="manager" 
+                 name="manager" ngControl="selManagerName" required #managerId="ngModel"
+                            [placeholder]="'Select Account Manager'"
+                            [data]="empListCon1"
+                            [(ngModel)]="selManagerName"
+                            [settings]="dropdownSettings"
+                            (onSelect)="onItemSelect($event)"
+                            (focusout)="checkStatus();"                      
+                      >
+                      </ng-multiselect-dropdown>
+                  <span class="help-block" *ngIf="managerId.length<0 && !notFirst">Please Select Account Manager</span>
+                </div>
+              </div>
+                <div class="form-group"  [ngClass]="(teamLeadId.length<0 && !notFirstMgr)?'has-error':''">
+                    <label for="teamLeadId" class="col-sm-3"><i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i>  Project Manager<span style="color:red">*</span></label> 
+                    <div class="col-sm-9">
+                      <!-- <select [(ngModel)]="selTeamLead" class="form-control" id="teamLeadId" name="teamLeadId" ngControl="selTeamLead" #teamLeadId="ngModel" required>
+                        <option *ngFor="let team of employeeList" [ngValue]="team">{{team.firstName}}&nbsp;{{team.lastName}}</option>
+                      </select> -->
+                      <ng-multiselect-dropdown  style="width:100%; background-color: white;"  id="prjmanager" 
+                      name="prjmanager" ngControl="selTeamLead" required #teamLeadId="ngModel"
+                                 [placeholder]="'Select Account Manager'"
+                                 [data]="empListCon2"
+                                 [(ngModel)]="selTeamLead"
+                                 [settings]="dropdownSettings"
+                                 (onSelect)="onItemSelectT($event)"
+                            (focusout)="checkMgrStatus();"                      
+
+                           >
+                           </ng-multiselect-dropdown>
+                      <span class="help-block" *ngIf="teamLeadId.length<0 && !notFirstMgr">Please Select Project Manger</span>
+                 </div>
+              </div>
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        <!-- </div> -->
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveProject()" [disabled]="isLoadingPop || !prjForm.valid">{{isEdit==true?'Update Project':'Save Project'}}</button>
+        <button type="button" class="btn btn-default"(click)="getProjectList()" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

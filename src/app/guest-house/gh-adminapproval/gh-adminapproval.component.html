@@ -1,0 +1,293 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Guest House Booking
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Admin Approval</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box shadow">
+    <div class="box-header">
+      <div class="col-xs-12">
+        <h3 class="box-title">Admin Approval</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="bookAppointment('all')">
+          <div class="card-counter primary">
+            <i class="fa fa-list-alt"></i>
+            <span class="count-numbers">
+              <div class="overlay" *ngIf="isLoading">
+                <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              {{allMeetings}}
+            </span>
+            <span class="count-name">All Bookings</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="bookAppointment('today')">
+          <div class="card-counter danger">
+            <i class="fa fa-user-clock"></i>
+            <span class="count-numbers">
+              <div class="overlay" *ngIf="isLoading">
+                <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              {{todayMeetings}}
+            </span>
+            <span class="count-name">Total Pending</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a [routerLink]="" (click)="bookAppointment('approve')">
+          <div class="card-counter success">
+            <i class="fa fa-user-check"></i>
+            <span class="count-numbers">
+              <div class="overlay" *ngIf="isLoading">
+                <i class="fa fa-spinner fa-pulse"></i>
+              </div>
+              {{approvedMeetings}}
+            </span>
+            <span class="count-name">Approved/Rejected</span>
+          </div>
+        </a>
+      </div>
+
+    </div>
+    <div class="box-body table-responsive">
+      <table id="roomsTable" class="table  table-striped" cellspacing="0">
+        <thead style="background-color: #0099cc; color:white;">
+          <tr>
+            <th>REQ.No.</th>
+            <th>Guest House Name</th>
+            <th>Location</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Manager</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let meeting of myMeetings; let i = index">
+            <td>{{meeting.requestNo}}</td>
+            <td>{{meeting.roomName}}</td>
+            <td>{{meeting.roomLocationName}}</td>
+            <td>{{meeting.fromDate | date:'dd/MM/yyyy'}} {{binddatetime(meeting.fromTime) | date:'HH:mm'}}
+            </td>
+            <td>{{meeting.toDate | date:'dd/MM/yyyy'}} {{binddatetime(meeting.toTime) | date:'HH:mm'}}
+            </td>
+            <td>{{meeting.managerName?meeting.managerName:'NA'}}</td>
+            <td>{{meeting.status}}</td>
+            <td>
+              <button type="button" [matTooltipPosition]="'after'" matTooltip="Click to Edit Entry"
+                class="btn btn-primary btn-xs" (click)="onMeeting(meeting)">
+                <i class="fas fa-pencil-alt"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" style="color:white; background:#68a7d2;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Booking Approval
+          </h4>
+        </div>
+        <div class="modal-body" style="border-top:none;background-size:cover;">
+          <form #calendarForm="ngForm">
+            <div class="row">
+              <div class="col-sm-6 col-md-6 col-lg-6">
+                <div class="form-group">
+                  <label for="calEnId">Requester
+                  </label>
+                  <input class="form-control" id="Requester" placeholder="Requester" [ngModel]="calendarMeeting.empName"
+                    name="Requester" readonly>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-6 col-lg-6">
+                <div class="form-group">
+                  <label for="Department">Department
+                  </label>
+                  <input class="form-control" id="Department" placeholder="Department" [ngModel]="calendarMeeting.empDepartment"
+                    name="Department" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="startDate">
+                    Start Date
+                  </label>
+                  <input name="startDate" id="startDate" class="form-control"
+                    [ngModel]="calendarMeeting.fromDate | date:'dd/MM/yyyy'" readonly>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="startTime">
+                    Time
+                  </label>
+                  <input id="startTime" name="startTime" class="form-control" type="text"
+                    value="{{fromTime | date:'HH:mm'}}" readonly>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="endDate">
+                    End Date
+                  </label>
+                  <input id="endDate" name="endDate" class="form-control"
+                    [ngModel]="calendarMeeting.toDate | date:'dd/MM/yyyy'" readonly>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="endTime">
+                    Time
+                  </label>
+                  <input id="endTime" name="endTime" class="form-control" type="text"
+                    value="{{toTime | date:'HH:mm'}}" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="purpose">
+                    Purpose
+                  </label>
+                  <input id="purpose" name="purpose" class="form-control" [ngModel]="calendarMeeting.purpose" readonly>
+                </div>
+                <div class="form-group">
+                  <label for="roomName">
+                    Guest House Name
+                  </label>
+                  <input id="roomName" name="roomName" class="form-control" [ngModel]="calendarMeeting.roomName"
+                    readonly>
+                </div>
+                <div class="form-group">
+                  <label for="no_Of_Room">
+                    Number of Room
+                  </label>
+                  <input id="no_Of_Room" name="no_Of_Room" class="form-control" [ngModel]="calendarMeeting.no_Of_Room"
+                    readonly>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="SelCompetency">
+                    Number Of Person
+                  </label>
+                  <input class="form-control" id="numberOfPersons" placeholder="Person Count"
+                    [ngModel]="calendarMeeting.numberOfPerson" name="numberOfPersons" readonly>
+                </div>
+                <div class="form-group">
+                  <label for="rmLocation">
+                    Location
+                  </label>
+                  <input id="rmLocation" name="rmLocation" class="form-control"
+                  [ngModel]="calendarMeeting.roomLocationName" readonly>
+                </div>
+                <div class="form-group">
+                  <label for="no_Of_Bed">
+                    Number of Bed
+                  </label>
+                  <input class="form-control" id="no_Of_Bed" placeholder="Number of Bed"
+                    [ngModel]="calendarMeeting.no_Of_Bed" name="no_Of_Bed" readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                  <label for="calEnId">Remarks
+                  </label>
+                  <textarea type="text" class="form-control" id="remarks" placeholder="Remarks" [ngModel]="calendarMeeting.comments"
+                    name="entityRemarks" readonly></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="calendarMeeting.managerName!=null">
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="lManager">
+                    Line Manager
+                  </label>
+                  <input id="lManager" name="lManager" class="form-control" [ngModel]="calendarMeeting.managerName"
+                    readonly>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group">
+                  <label for="lMgrcomments">
+                    Manager Comments
+                  </label>
+                  <textarea type="text" class="form-control" id="lMgrcomments" name="lMgrcomments"
+                    matTooltip="manager comments" placeholder="Manager Comments"
+                    [ngModel]="calendarMeeting.managerComments" readonly></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                  <label for="entityComments">Comments
+                  </label>
+                  <textarea type="text" class="form-control" id="Comments" placeholder="Comments" matTooltip="comments"
+                    [(ngModel)]="calendarMeeting.adminComments" name="entityComments" #entityComments="ngModel"
+                    (change)="calendarMeeting.adminComments =calendarMeeting.adminComments.trim()"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+          <button type="button" class="btn btn-primary" (click)="actionMeeting('Approved')"
+            matTooltip="Click to approve" [disabled]="calendarMeeting.adminApprovalDate!=null">Approve</button>
+          <button type="button" class="btn btn-primary" (click)="actionMeeting('Rejected')" matTooltip="Click to reject"
+            [disabled]="calendarMeeting.adminApprovalDate!=null">Reject</button>
+          <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+            matTooltip="Click to close modal" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md  modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+              *ngIf="errMsgModalPop.length>0"><i class="fa fa-check"></i>{{errMsgModalPop}}</span></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

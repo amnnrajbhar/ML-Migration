@@ -1,0 +1,175 @@
+<section class="content-header">
+  <h1 class="display-1">
+     Email Notification  List
+  </h1>
+  <ol class="breadcrumb">
+     <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+     <li class="active">Email Notification  List</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="panel panel-info">
+     <div class="panel-heading">
+        <div class="panel-title"><i class="glyphicon glyphicon-filter"></i> Filter</div>
+     </div>
+     <div class="panel-body">
+        <div class="row">
+           <div class="col-xs-12">
+              <div class="form-group row">
+                 <label class="col-md-2 control-label text-right">Plant</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="filterModel.selectedPlantId" class="form-control" id="plant" name="plant" 
+                    (change)="onPlantChange()">
+                    <option value="" [selected]="true"> All </option>
+                    <option *ngFor="let pll of plantList" [ngValue]="pll.id">{{pll.code}} - {{pll.name}}</option>
+                    </select>
+                 </div>
+                 <label class="col-md-2 control-label text-right">Pay Group</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="filterModel.selectedPayGroupId" class="form-control" id="paygroup" name="paygroup"
+                    matTooltip="paygroup" >
+                    <option value="" [selected]="true"> All </option>
+                    <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}}</option>
+                    </select>
+                 </div>
+              </div>
+              <div class="form-group row">
+                 <label class="col-md-2 control-label text-right">Employee Category</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="filterModel.selectedEmployeeCategoryId" class="form-control" id="employeecategory"
+                    name="employeecategory" matTooltip="employeecategory">
+                    <option value="" [selected]="true"> All </option>
+                    <option *ngFor="let cl of employeeCategoryList" [ngValue]="cl.id">{{cl.catltxt}}</option>
+                    </select>
+                 </div>
+                 <label class="col-md-2 control-label text-right">State</label>
+                 <div class="col-md-4">
+                    <select [(ngModel)]="filterModel.selectedStateId" class="form-control" id="state" name="state" #stateEnt="ngModel">
+                    <option value="" [selected]="true"> All </option>
+                    <option *ngFor="let sl of stateList" [ngValue]="sl.id">{{sl.bezei}}</option>
+                    </select> 
+                 </div>
+              </div>  
+              
+               <div class="form-group row">
+
+                  <label class="col-md-2 control-label text-right">Email Type</label>
+                  <div class="col-md-4">
+                     <select [(ngModel)]="filterModel.selectedEmailType" class="form-control" id="emailType" name="emailType" #emailTypeEnt="ngModel">
+                     <option value="" [selected]="true"> All </option>
+                     <option *ngFor="let sl of emailTypeList" [ngValue]="sl.type">{{sl.type}}</option>
+                     </select> 
+                  </div>
+                  <label class="col-md-2 control-label text-right">Email Id</label>
+                  <div class="col-md-4">
+                     <input type="text" id="selectedEmailId" class="form-control" 
+                     [(ngModel)]="filterModel.selectedEmailId" autocomplete="off"  ngControl="selectedEmailId" 
+                     name="selectedEmailId" />    
+                  </div>                  
+               </div>   
+             
+                 <div class="form-group text-center">
+                  <button class="btn btn-primary btn-sm" (click)="getEmailList();" matTooltip="click to Go">
+                  Filter</button>
+               </div>
+              </div>
+          
+        </div>
+        </div>
+     </div>
+  
+  <div class="row">
+   <div class="col-md-12 form-group">
+      <div class="pull-right actionButtons">
+         <button type="button" class="btn btn-warning" (click)="addNew()">Add New</button>
+         <button type="button" class="btn btn-primary" (click)="exportData()">Export</button>
+      </div>      
+   </div>
+
+     <!--div class="col-md-12 form-group">
+        <div class="pull-right">
+           <button type="button" class="btn btn-sm btn-primary" (click)="exportData()">Export</button>
+        </div>
+     </div-->
+  </div>
+  <div class="row">
+     <div class="col-md-12 table-responsive">
+        <div class="overlay text-center h3" *ngIf="isLoading">
+           <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+        <table mat-table class="table table-hover table-striped table-bordered" id="data">
+           <thead>
+              <tr>
+                 <th style="width: 100px;">Action</th>
+                 <th class="jobDetails">Plant Code</th>
+                 <th class="jobDetails">Plant Name</th>
+                 <th class="jobDetails">Pay Group</th>
+                 <th class="jobDetails">Employee Category</th>
+                 <th class="jobDetails">State</th>                   
+                 <th class="jobDetails">Email Type</th>
+                 <th class="jobDetails">Email Id</th>
+                 <th class="jobDetails">User Type</th>
+                 <th class="jobDetails">Name</th>
+              </tr>
+           </thead>
+           <tbody>
+              <tr *ngFor="let email of filterData.list; let i = index">
+                 <td style="width: 100px;">
+
+                  <a [routerLink]="['/HR/config/edit-email-notification', email.offerEmailNotificationId]" class="btn btn-xs btn-primary"
+                  [matTooltipPosition]="'after'" matTooltip="Click to edit details">
+                  <i class="fas fa-pen"></i></a>
+                 
+                  <button type="button" class="btn btn-xs btn-danger"  [matTooltipPosition]="'after'"
+                  (click)="performTask(email.offerEmailNotificationId)" matTooltip="Click to Delete this">
+                  <i class="fas fa-times"></i></button>
+
+                 </td>
+                 <td class="jobDetails">{{email.plantCode}}</td>
+                 <td class="jobDetails">{{email.plantName}}</td>
+                 <td class="jobDetails">{{email.payGroupName}}</td>
+                 <td class="jobDetails">{{email.employeeCategoryName}}</td>
+                 <td class="jobDetails">{{email.stateName}}</td>                 
+                 <td class="jobDetails">{{email.eMailType}}</td>
+                 <td class="jobDetails">{{email.emailId}}</td>
+                 <td class="jobDetails">{{email.userType}}</td>
+                 <td class="jobDetails">{{email.name}}</td>
+              </tr>
+           </tbody>
+        </table>
+        <div class="text-center">
+           <div class="overlay text-center h3" *ngIf="isLoading">
+              <i class="fa fa-spinner fa-pulse"></i>
+           </div>
+           <ul class="pagination" *ngIf="filterData.totalCount>0">
+              <li>
+                 <a (click)="gotoPage(filterData.pageNo)">
+                 Showing <b>{{((filterData.pageNo-1)*filterData.pageSize)+1}}</b> - <b>{{(filterData.pageNo*filterData.pageSize)>filterData.totalCount?filterData.totalCount:filterData.pageNo*filterData.pageSize}}</b> of <b>{{filterData.totalCount}}</b> records
+                 </a>
+              </li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(1)">First</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">Previous</a></li>
+              <li><a *ngIf="filterData.pageNo>2" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-2}}</a></li>
+              <li><a *ngIf="filterData.pageNo>1" (click)="gotoPage(filterData.pageNo-1)">{{filterData.pageNo-1}}</a></li>
+              <li class="active"><a (click)="gotoPage(filterData.pageNo)">{{filterData.pageNo}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">{{filterData.pageNo+1}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo+1" (click)="gotoPage(filterData.pageNo+2)">{{filterData.pageNo+2}}</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.pageNo+1)">Next</a></li>
+              <li><a *ngIf="filterData.totalPages>filterData.pageNo" (click)="gotoPage(filterData.totalPages)">Last</a></li>
+              <li><a (click)="gotoPage(filterData.pageNo)">Page <b>{{filterData.pageNo}}</b> of <b>{{filterData.totalPages}}</b></a></li>
+              <li>
+                 <a>
+                    Page Size 
+                    <select id="ddlPageSize" [(ngModel)]="filterModel.pageSize" (change)="pageSizeChange()">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    </select>
+                 </a>
+              </li>
+           </ul>
+        </div>
+     </div>
+  </div>
+</section>

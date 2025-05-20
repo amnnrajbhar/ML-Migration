@@ -1,0 +1,121 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Employee Profile
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Employee Profile</li>
+  </ol>
+</section>
+
+
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title"></h3>
+    </div>
+    <div class="panel-body">
+      <div class="form-horizontal">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Employee No</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.employeeNo" [disabled]="true"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Status</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.status" [disabled]="true"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Employment Type</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.employmentType" [disabled]="true"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Title <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.title" [disabled]="true"/>
+              </div>
+            </div>
+          </div>          
+        </div>
+      
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> First Name <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.firstName" [disabled]="true"/>       
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Middle Name</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.middleName" [disabled]="true"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Last Name</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" [(ngModel)]="details.lastName" [disabled]="true"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='official'?'active':''" id="tab_official"><a (click)="onTabClick(0)">Official</a></li>
+    <li [ngClass]="currentTab=='assets'?'active':''" id="tab_assets"><a (click)="onTabClick(1)">Assets</a></li>
+    <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachments"><a (click)="onTabClick(2)">Attachments</a></li>
+    <li [ngClass]="currentTab=='address'?'active':''" id="tab_address"><a (click)="onTabClick(3)">Address</a></li>
+    <li [ngClass]="currentTab=='education'?'active':''" id="tab_education"><a (click)="onTabClick(4)">Education</a></li>
+    <li [ngClass]="currentTab=='experience'?'active':''" id="tab_experience"><a (click)="onTabClick(5)">Experience</a></li>
+    <li [ngClass]="currentTab=='family'?'active':''" id="tab_family"><a (click)="onTabClick(6)">Family</a></li>
+    <li [ngClass]="currentTab=='languages'?'active':''" id="tab_languages"><a (click)="onTabClick(7)">Languages</a></li>
+    <li [ngClass]="currentTab=='activity'?'active':''" id="tab_activity"><a (click)="onTabClick(8)">Activity</a></li>   
+    
+  </ul>
+  <div class="details-tab">    
+      <app-profile-official [employeeId]="this.employeeId" [editAllowed]="false" *ngIf="currentTab=='official'"></app-profile-official>
+      <app-profile-assets [employeeId]="this.employeeId" [editAllowed]="false" *ngIf="currentTab=='assets'"></app-profile-assets>
+      <app-employee-attachments [employeeId]="employeeId" [editAllowed]="true" [deleteAllowed]="false" *ngIf="currentTab=='attachments'"></app-employee-attachments>
+      <app-profile-address [employeeId]="this.employeeId" [editAllowed]="false" *ngIf="currentTab=='address'"></app-profile-address>
+    <app-profile-education  [employeeId]="this.employeeId" [editAllowed]="false" *ngIf="currentTab=='education'">
+    </app-profile-education>
+    <app-profile-experience [employeeId]="this.employeeId" [editAllowed]="false" *ngIf="currentTab=='experience'"></app-profile-experience>
+    <app-profile-family [employeeId]="this.employeeId" [editAllowed]="false" *ngIf="currentTab=='family'"></app-profile-family>
+    <app-profile-languages [employeeId]="this.employeeId" [editAllowed]="false" *ngIf="currentTab=='languages'"></app-profile-languages>    
+      <app-activity-viewer [objectId]="this.employeeId" [objectType]="'Employee'" *ngIf="currentTab=='activity'"></app-activity-viewer>      
+  </div>
+  <div class="text-center actionButtons">
+    
+    <button type="button" class="btn btn-default" (click)="onBack()">Back</button>
+    <button type="button" class="btn btn-warning" *ngIf="currentTab!='official'" (click)="onPrevious()">Previous</button>
+    <button type="button" class="btn btn-primary" *ngIf="currentTab!='activity'" (click)="onNext()">Next</button>
+  </div>
+
+
+  </section>

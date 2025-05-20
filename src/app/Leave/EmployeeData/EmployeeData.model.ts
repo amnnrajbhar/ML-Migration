@@ -1,0 +1,45 @@
+import { AnimationStyleMetadata } from "@angular/animations";
+
+export class EmployeeData {
+    id: number;
+    employeeId: string;
+    baseLocation: string = null;
+    fkDepartment: string;
+    paygroup: string;
+    Category: string;
+    subDepartment: string;
+    reportingGroup: string;
+    holiday: string;
+    calendar: string;
+    swipeCount: number;
+    shiftCode: string;
+    typ: string;
+    message: string;
+    modifiedBy: string;
+    month: string;
+    mediclaimorESI: string;
+    dateofJoining: string;
+    pageNo: number;
+    pageSize: number;
+    firstName:string;
+    middleName:string;
+    lastName:string;
+    fkReportingManager: string;
+    fkManager: any;
+    reportingManager: string;
+    approvingManager: any;
+    email: any;
+    mediclaimNo: any;
+    mediclaimExpiry: any;
+    department:any;
+    typeCodeH: any;
+    typeNameH: any;
+    typeCodeC: any;
+    typeNameC: any;
+    workType: any;
+    punchingDevice: any;
+    totalCount: any;
+    totalPages: any;
+    empNoName: any;
+    employeeSearchType: any;
+}

@@ -1,0 +1,377 @@
+<section class="content-header">
+    <h1 class="display-1">
+        Dispose Asset
+        <small> ITAMS </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    </ol>
+</section>
+
+<!--Main Content-->
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <h1 class="display-1">
+                <small><i>Dispose Asset </i></small>
+            </h1>
+            <div id="dateFilterPanel">
+                <div class="col-sm-12">
+                    <div class="card-body" style="border: black; box-shadow: grey;">
+                        <form #filterForm="ngForm">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="location"> Location <span style="color:red">*</span></label>
+                                        <select [(ngModel)]="filterlocation" class="form-control" id="location"
+                                            name="location" ngControl="filterlocation" #locationEnt="ngModel"
+                                            matTooltip="Select location">
+                                            <option [ngValue]="undefined" disabled>--Select an Option--
+                                            </option>
+                                            <option *ngFor="let status of plantList" value={{status.code}}>
+                                                {{status.code}}-{{status.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                &nbsp;&nbsp;&nbsp;
+                                <div class="col-sm-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="filterstatus">Asset Status<span style="color:red">*</span></label>
+                                        <input class="form-control input-sm" type="text" name="filterstatus"
+                                            [(ngModel)]="filterstatus" text="Retired" [value]="Retired"
+                                            placeholder="Retired" ngControl="filterstatus" id="filterstatus" required
+                                            readonly=true />
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label>&nbsp;</label><br>
+                                    <button class="btn btn-primary btn-sm" (click)="getAllEntries();"
+                                        [disabled]="filterlocation == null" matTooltip="click to go">Go</button>
+                                    <label>&nbsp;</label>
+                                    <label>&nbsp;</label>
+                                    <button class="btn btn-primary btn-sm" (click)="clearFilter();"
+                                        matTooltip="click to reset">Clear</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <button type="button" class="btn btn-primary pull-right"
+                                        (click)="onUserActions1(false,DisposeAssetModel,false,'')"><i
+                                            class="fa fa-trash" aria-hidden="true"></i> Dispose</button>
+                                </div>
+                            </div>
+                        </form>
+                        &nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="box-body table-responsive">
+                            <table id="assetTable" class="table table-bordered table-striped">
+                                <thead style="background-color: #53aae4;color:white;">
+                                    <tr>
+                                        <th> <input type="checkbox" [(ngModel)]="isMasterSel" name="list_name"
+                                                (change)="checkUncheckAll()">
+                                            &nbsp;&nbsp;&nbsp;
+                                            <label for="all">All</label>
+                                        </th>
+                                        <th>Sl No.</th>
+                                        <th>Asset ID</th>
+                                        <th>Asset No</th>
+                                        <th>Category</th>
+                                        <th>Employee Number</th>
+                                        <th>Processor</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of assetList; let i = index">
+                                        <td><input type="checkbox" [id]="'chkusage'+item.id" [name]="'send'+item.id"
+                                                [(ngModel)]="item.isSelected" (change)="isAllSelected()"
+                                                #usageEnt="ngModel"> </td>
+                                        <td> {{i+1}} </td>
+                                        <td>{{item.assetId}}</td>
+                                        <td>{{item.assetNo}}</td>
+                                        <td>{{item.category}}</td>
+                                        <td>{{item.empNo}}</td>
+                                        <td>{{item.processor}}</td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    &nbsp;
+                                                    <td>
+                                                        <button type="button" [matTooltipPosition]="'after'"
+                                                            matTooltip="Click to view details"
+                                                            class="btn btn-primary btn-xs"
+                                                            (click)="onUserActions(true,item,false,'View')">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--For Viewing Asset Details-->
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title"> <i>Asset Data & Status</i>
+                </h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;">
+                <form #dataForm="ngForm" (keydown.enter)="$event.preventDefault()">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="assetId"> Asset Id <span style="color:red">*</span></label>
+                                <input [(ngModel)]="DisposeAsset.assetId" class="form-control" placeholder="Asset Id"
+                                    name="assetIdd" id="assetIdd" ngControl="DisposeAsset.assetId" #assetIdEnt="ngModel"
+                                    readonly="true" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="assetNo"> Asset No. <span style="color:red">*</span></label>
+                                <input [(ngModel)]="DisposeAsset.assetNo" class="form-control" id="assetNoo"
+                                    placeholder="Max of 35 chars." name="assetNoo" ngControl="DisposeAsset.assetNo"
+                                    #assetNoEnt="ngModel" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="location"> Location </label>
+                                <input class="form-control input-sm" type="text" name="location"
+                                    [(ngModel)]="DisposeAsset.location" placeholder="Location" [value]="location"
+                                    maxlength="80" [disabled]="isDisabled" id="location" matTooltip="Enter Location"
+                                    ngControl="DisposeAsset.location" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="category">Category</label>
+                                <input class="form-control input-sm" type="text" name="category1"
+                                    [(ngModel)]="DisposeAsset.category" placeholder="Category" [value]="category"
+                                    maxlength="80" [disabled]="isDisabled" id="category1" matTooltip="Enter Category"
+                                    ngControl="DisposeAsset.category" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="barcode"> Barcode </label>
+                                <input class="form-control input-sm" type="text" name="barcode"
+                                    [(ngModel)]="DisposeAsset.barcode" placeholder="Barcode" [value]="barcode"
+                                    maxlength="80" [disabled]="isDisabled" id="barcode" matTooltip="Enter Barcode"
+                                    ngControl="DisposeAsset.barcode" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="model"> Model </label>
+                                <input class="form-control input-sm" type="text" name="model"
+                                    [(ngModel)]="DisposeAsset.model" placeholder="Model" [value]="model" maxlength="80"
+                                    [disabled]="isDisabled" id="model" matTooltip="Enter Model"
+                                    ngControl="DisposeAsset.model" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="manufacturer"> Manufacturer </label>
+                                <input class="form-control input-sm" type="text" name="manufacturer"
+                                    [(ngModel)]="DisposeAsset.manufacturer" placeholder="Manufacturer"
+                                    ngControl="DisposeAsset.manufacturer" [value]="manufacturer" maxlength="80"
+                                    [disabled]="isDisabled" id="manufacturer" matTooltip="Enter Manufacturer"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="partNo"> Part No.</label>
+                                <input class="form-control input-sm" type="text" name="partNo"
+                                    [(ngModel)]="DisposeAsset.partNo" placeholder="Part No" [value]="partNo"
+                                    maxlength="80" [disabled]="isDisabled" id="partNo" matTooltip="Enter Part No"
+                                    ngControl="DisposeAsset.partNo" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="serialNo"> Serial No. </label>
+                                <input class="form-control input-sm" type="text" name="serialNo"
+                                    [(ngModel)]="DisposeAsset.serialNo" placeholder="Serial No" [value]="serialNo"
+                                    ngControl="DisposeAsset.serialNo" maxlength="80" [disabled]="isDisabled"
+                                    id="serialNo" matTooltip="Enter Serial No" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="processor"> Processor </label>
+                                <input class="form-control input-sm" type="text" name="processor"
+                                    [(ngModel)]="DisposeAsset.processor" placeholder="Processor" [value]="processor"
+                                    ngControl="DisposeAsset.processor" maxlength="80" [disabled]="isDisabled"
+                                    id="processor" matTooltip="Enter Processor" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1">
+                            <div class="form-group form-group-sm">
+                                <label for="ram"> RAM</label>
+                                <input class="form-control input-sm" type="text" name="ram"
+                                    [(ngModel)]="DisposeAsset.ram" placeholder="Ram" [value]="ram" maxlength="80"
+                                    ngControl="DisposeAsset.ram" [disabled]="isDisabled" id="ram" matTooltip="Enter Ram"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-xs-1">
+                            <div class="form-group form-group-sm">
+                                <label for="hdd"> HDD.</label>
+                                <input class="form-control input-sm" type="text" name="hdd"
+                                    [(ngModel)]="DisposeAsset.hdd" placeholder="HDD" [value]="hdd" maxlength="80"
+                                    ngControl="DisposeAsset.hdd" [disabled]="isDisabled" id="hdd" matTooltip="Enter Hdd"
+                                    readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="ipAddress"> IP Address</label>
+                                <input class="form-control input-sm" type="text" name="ipAddress"
+                                    [(ngModel)]="DisposeAsset.ipAddress" placeholder="Ip No" [value]="ipAddress"
+                                    ngControl="DisposeAsset.ipAddress" maxlength="80" [disabled]="isDisabled"
+                                    id="ipAddress" matTooltip="Enter ipAddress" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group form-group-sm">
+                                <label for="gxp"> GxP Applicable </label>
+                                <input class="form-control input-sm" type="text" name="gxp"
+                                    [(ngModel)]="DisposeAsset.gxPApplicable" placeholder="GxP" [value]="gxp"
+                                    maxlength="80" ngControl="DisposeAsset.gxPApplicable" [disabled]="isDisabled"
+                                    id="gxp" matTooltip="Enter GxP" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="form-group form-group-sm">
+                                <label for="config"> Configurations. </label>
+                                <input class="form-control input-sm" type="text" name="config"
+                                    [(ngModel)]="DisposeAsset.config" placeholder="Config" [value]="config"
+                                    ngControl="DisposeAsset.config" maxlength="80" [disabled]="isDisabled" id="config"
+                                    matTooltip="Enter Config" readonly="true" disabled />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-group-sm">
+                                <label for="assetState"> Asset State </label>
+                                <select [(ngModel)]="DisposeAsset.assetState" class="form-control" id="assetState"
+                                    name="assetState" ngControl="DisposeAsset.assetState"
+                                    matTooltip="Select Asset State" disabled>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let status of statuslist" value={{status.id}}>
+                                        {{status.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <div *ngIf="view" class="row pull-right">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" [disabled]="isLoadingPop"
+                        matTooltip="Click to close modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--For Disposing Details-->
+<div class="modal fade" id="myModal1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title"> <i>Dispose Asset Details</i>
+                </h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;">
+                <form #dataForm1="ngForm" (keydown.enter)="$event.preventDefault()">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group form-group-sm">
+                                <label for="vendorcode"> Vendor Code </label>
+                                <input class="form-control input-sm" type="text" name="vendorcode"
+                                    [(ngModel)]="DisposeAsset.vendorcode" placeholder="Vendor Code" [value]="vendorcode"
+                                    ngControl="DisposeAsset.vendorcode" id="vendorcode" matTooltip="Enter Vendor Code"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group form-group-sm">
+                                <label for="vendorname"> Vendor Name </label>
+                                <input class="form-control input-sm" type="text" name="vendorname"
+                                    [(ngModel)]="DisposeAsset.vendorname" placeholder="Vendor Name" [value]="vendorname"
+                                    ngControl="DisposeAsset.vendorname" id="vendorname" matTooltip="Enter Vendor Name"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group form-group-sm">
+                                <label for="vendorcity"> Vendor City </label>
+                                <input class="form-control input-sm" type="text" name="vendorcity"
+                                    [(ngModel)]="DisposeAsset.vendorcity" placeholder="Vendor City" [value]="vendorcity"
+                                    ngControl="DisposeAsset.vendorcity" id="vendorcity" matTooltip="Enter Vendor City"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group form-group-sm">
+                                <label for="newassState"> New Asset State </label>
+                                <select [(ngModel)]="DisposeAsset.newassState" class="form-control" id="newassState"
+                                    name="newassState" ngControl="DisposeAsset.newassState"
+                                    matTooltip="Select Asset State" required>
+                                    <option [ngValue]="null" disabled>--Select an Option--
+                                    </option>
+                                    <option *ngFor="let status of statuslist" value={{status.id}}>
+                                        {{status.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i
+                        class="fa fa-warning"></i>{{errMsgPop}}</span>
+                <div class="row pull-right">
+                    <button type="button" class="btn btn-primary" (click)="onSaveEntry('SUBMIT')"
+                        matTooltip="Click to Save & Submit"
+                        [disabled]="!dataForm1.touched || DisposeAsset.newassState != '6'">Save &
+                        Submit</button>
+                    <button type=" button" class="btn btn-primary" (click)="resetForm()"
+                        matTooltip="Click to Clear">Clear</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" [disabled]="isLoadingPop"
+                        matTooltip="Click to close modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

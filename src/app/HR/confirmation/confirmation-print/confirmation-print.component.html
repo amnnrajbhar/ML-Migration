@@ -1,0 +1,72 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Print Confirmation Letter
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Print Confirmation Letter</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="form-group row actionButtons">
+    <!-- <div class="col-sm-offset-3 col-sm-1">
+      <button type="button" (click)="goBack()" class="btn btn-sm btn-default" [matTooltipPosition]="'after'"
+        matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+    </div> -->
+    <div class="col-md-4" *ngIf="canEmail">
+      <div class="form-group">
+        <label class="col-md-4">Select Email</label>
+        <div class="col-md-8">
+          <select class="form-control" [(ngModel)]="request.emailType">
+            <option value="0">Select Email</option>
+            <option value="Candidate">Candidate</option>
+            <option value="Everyone">Everyone</option>
+            <option value="Intimation">Intimation</option>
+            <option value="Custom">Custom</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3" *ngIf="request.emailType == 'Custom'">
+      <input type="text" class="form-control" id="emailId" placeholder="Comma separated Email Ids to send email"
+        [(ngModel)]="request.EmailId" ngControl="request.EmailId" name="emailId" #emailEnt="ngModel" required/>
+        <span class="help-block" *ngIf="emailEnt.touched && !emailEnt.valid">Please enter valid email id</span>
+    </div>
+    <div class="col-sm-5" style="float:right">
+      <button type="button" (click)="sendEmail()" class="btn btn-sm btn-success" [matTooltipPosition]="'after'"
+        matTooltip="Click to send the letter" [disabled]="isLoading" *ngIf="canEmail">
+        <i class="fas fa-arrow-right"></i> Send
+      </button>
+      <button type="button" (click)="print()" class="btn btn-sm btn-info" [matTooltipPosition]="'after'"
+        matTooltip="Click to print the letter" [disabled]="isLoading" *ngIf="canPrint">
+        <i class="fas fa-print"></i> Print
+      </button>
+      <button type="button" (click)="download()" class="btn btn-sm btn-warning" [matTooltipPosition]="'after'"
+        matTooltip="Click to download the letter" [disabled]="isLoading" *ngIf="canDownload">
+        <i class="fas fa-download"></i> Download
+      </button>
+      <button type="button" (click)="goBack()" class="btn btn-sm btn-default" [matTooltipPosition]="'after'"
+      matTooltip="Click to go back to list">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    
+    <div class="form-group checkbox">
+      <label >
+        <input type="checkbox" [(ngModel)]="removeSignature" name="removeSignature" *ngIf="canPrint"/> Remove Signature
+      </label>
+    </div>
+    </div>
+  </div>
+  <div class="printable" style="font-family:'Times New Roman', Times, serif">
+    <div class="panel panel-default" id="pdfcontent">
+      <div class="panel-body">
+        <div [innerHTML]="details.content | safeHtml"></div>
+      </div>
+    </div>    
+  </div>
+</section>

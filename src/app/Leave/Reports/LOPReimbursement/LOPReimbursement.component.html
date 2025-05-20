@@ -1,0 +1,208 @@
+<section class="content-header">
+    <h1>
+        Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+            <h3 class="box-title">LOP Reimbursement Report</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Plant <span style="color:red">*</span> </label>
+                        <select [(ngModel)]="filterPlant" class="form-control" id="locationName" name="locationName"
+                            (change)="getPaygroupsBasedOnPlant()">
+                            <option [ngValue]="null">select plant</option>
+                            <option *ngFor="let location of locationList" value="{{location.code}}">
+                                {{location.code + '-' + location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="paygroup">Pay Group</label>
+                        <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                            <option [ngValue]="null">select Pay Group</option>
+                            <option *ngFor="let location of payGroupList1" value="{{location.paygroup}}">
+                                {{location.short_desc}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="staffcat">Staff Category</label>
+                        <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                            <option [ngValue]="null">select Category</option>
+                            <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                {{cat.catltxt}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Department</label>
+                        <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                            name="locationName">
+                            <option [ngValue]="null">select Department</option>
+                            <option *ngFor="let location of departmentList" value="{{location.dptid}}">
+                                {{location.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="Location">Reporting Group </label>
+                        <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                            name="locationName" required>
+                            <option [ngValue]="null">select Reporting Group</option>
+                            <option *ngFor="let location of ReportingGroupList" value="{{location.reportingGroup}}">
+                                {{location.reportingGroupLt}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="startDate">
+                            From Date <span style="color:red">*</span>
+                        </label>
+                        <div class='input-group date'>
+                            <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                [min]="min" [owlDateTime]="dtStartlop" [owlDateTimeTrigger]="dtStartlop"
+                                placeholder="DD/MM/YYYY" [matTooltipPosition]="'below'"
+                                matTooltip="Click to change startDate" #startDate1="ngModel" [disabled]="isEdit"
+                                required>
+                            <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStartlop">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                        <owl-date-time [pickerType]="'calendar'" #dtStartlop></owl-date-time>
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="endDate">
+                            To Date <span style="color:red">*</span>
+                        </label>
+                        <div class='input-group date'>
+                            <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate"
+                                placeholder="DD/MM/YYYY" [min]="min" [owlDateTime]="dtendlp"
+                                [owlDateTimeTrigger]="dtendlp" [matTooltipPosition]="'below'"
+                                matTooltip="Click to change endDate" #endDate1="ngModel" [disabled]="isEdit" required>
+                            <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtendlp">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                        <owl-date-time [pickerType]="'calendar'" #dtendlp></owl-date-time>
+
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <label for="emp">Employee No.</label>
+                    <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode" #fltrdelrymodeEnt="ngModel"
+                        matTooltip="select delivery Mode" [placeholder]="'select Delivery Mode(multiple)'"
+                        [data]="empListCon" [(ngModel)]="selectedEmployeeList" [settings]="deliveryModeSettings"
+                        (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                        (onSelectAll)="onSelectAll($event)">
+                    </ng-multiselect-dropdown>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <label>&nbsp;</label>
+                    <div class="form-group">
+                        <button class="btn btn-success" (click)="GetReimbursementReport('View');"
+                            matTooltip="click to export"><i class="fas fa-angle-double-right"></i>&nbsp; Search</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-warning" (click)="GetReimbursementReport('PDF');"
+                            matTooltip="click to export"><i class="fa fa-file-pdf"></i>&nbsp; Export</button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-danger" (click)="ClearData();" matTooltip="click to Clear"><i
+                                class="fas fa-times"></i>&nbsp; Clear</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-12">
+            <div class="box-body table-responsive">
+                <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                    <thead style="background-color: #0099cc; color:white;">
+                        <tr>
+                            <th class="col-sm-1">Sl.No</th>
+                            <th>Employee No</th>
+                            <th>Employee Name</th>
+                            <th>Designation</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Date of Reimbursement</th>
+                            <th>Month of Reimbursement</th>
+                            <th>Attendance Status</th>
+                            <th>Requested Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let categ of ReimbursementReport;  let i = index">
+                            <td>{{i+1}}</td>
+                            <td>{{categ.employeeId}}</td>
+                            <td>{{categ.empName}}</td>
+                            <td>{{categ.desgName}}</td>
+                            <td>{{categ.role}}</td>
+                            <td>{{categ.deptName}}</td>
+                            <td>{{categ.fromDate | date:'dd/MM/yyyy'}}</td>
+                            <td>{{categ.month}}</td>
+                            <td>{{categ.status}}</td>
+                            <td>{{categ.submittedDate | date:'dd/MM/yyyy'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div hidden id="LOPR">
+    <div class="table table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-1">Sl.No</th>
+                    <th>Employee No</th>
+                    <th>Employee Name</th>
+                    <th>Designation</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Date of Reimbursement</th>
+                    <th>Month of Reimbursement</th>
+                    <th>Attendance Status</th>
+                    <th>Requested Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let categ of ReimbursementReport;  let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{categ.employeeId}}</td>
+                    <td>{{categ.empName}}</td>
+                    <td>{{categ.desgName}}</td>
+                    <td>{{categ.role}}</td>
+                    <td>{{categ.deptName}}</td>
+                    <td>{{categ.fromDate | date:'dd/MM/yyyy'}}</td>
+                    <td>{{categ.month}}</td>
+                    <td>{{categ.status}}</td>
+                    <td>{{categ.submittedDate | date:'dd/MM/yyyy'}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

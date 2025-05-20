@@ -1,0 +1,3080 @@
+<section class="content-header">
+    <h1>
+        Reports
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+        <li class="active">Reports</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box">
+        <div class="box-header">
+            <div class="col-xs-6">
+                <h3 class="box-title">Reports</h3>
+                <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+            </div>
+            <div class="col-xs-6">
+
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="report">Report Type</label>
+                        <select [(ngModel)]="filterReport" class="form-control" id="reporttyp" (change)="ClearData()"
+                            name="reporttyp">
+                            <!-- <option [ngValue]="null">select Report Type</option> -->
+                            <option [ngValue]="null" disabled style="text-align: center;">
+                                <h3><- - - - - DAILY - - - - -></h3>
+                            </option>
+                            <option value="DailyReport">Daily Report</option>
+                            <option value="DailyShiftReport">Daily Shift Report</option>
+                            <option value="DailyEsslPunchReport">Daily Biometric Punch Report</option>
+                            <option disabled style="text-align: center;">
+                                <h3><- - - - - MONTHLY- - - - -></h3>
+                            </option>
+                            <option value="MusterReport">Attendance Muster/Summary Report</option>
+                            <option value="YearlyLeaveReport">Yearly Leave Balance Report</option>
+                            <option value="MonthlyDetailed">Monthly Attendance Report</option>
+                            <!-- <option value="Contractual">Monthly Contractual Report</option> -->
+                            <option value="AddAttr">Monthly Addition and Attrition</option>
+                            <option value="ManualEntryAudit">Monthly Manual Entry Audit Report</option>
+                            <option value="MonthlyOT">Monthly OT Report</option>
+                            <option value="LOPR">LOP Reimbursement Report</option>
+                            <option value="IntimationReport">Leave & OnDuty Intimation Report.</option>
+                            <option disabled style="text-align: center;">
+                                <h3><- - - - - DEVICE- - - - -></h3>
+                            </option>
+                            <option value="DevBio">Device Biometric Report</option>
+                            <option disabled style="text-align: center;">
+                                <h3><- - - - - SHIFT- - - - -></h3>
+                            </option>
+                            <option value="ShiAll"> Shift Allowance Report</option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dateFilterPanel" *ngIf="filterReport=='MusterReport'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Monthly Muster Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color:red">*</span> </label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="paygroup">Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                    <option [ngValue]="null">select Pay Group</option>
+                                    <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                        {{location.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                    <option [ngValue]="null">select Category</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                                    name="locationName">
+                                    <option [ngValue]="null">select Department</option>
+                                    <option *ngFor="let location of departmentList" value="{{location.dptid}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Reporting Group </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Reporting Group</option>
+                                    <option *ngFor="let location of ReportingGroupList"
+                                        value="{{location.reportingGroup}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Month <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterMonth" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Month</option>
+                                    <option *ngFor="let location of MonthsList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Year <span style="color: red;">*</span> </label>
+                                <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                                    [(ngModel)]="CalenderYear" placeholder="Year">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="emp">Employee No.</label>
+                            <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode"
+                                #fltrdelrymodeEnt="ngModel" matTooltip="select employee number(multiple)"
+                                [placeholder]="'select employee number(multiple)'" [data]="empListCon"
+                                [(ngModel)]="selectedEmployeeList" [settings]="deliveryModeSettings"
+                                (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                                (onSelectAll)="onSelectAll($event)">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Action">Report Type</label>
+                                <div class="row">
+                                    <mat-radio-group aria-label="Select option?" id="filterType" name="filterType"
+                                        [(ngModel)]="AttendanceType" [disabled]="isEdit" ngControl="filterType"
+                                        #filterTypeEnt="ngModel">
+                                        <mat-radio-button value='Summary'>Summary</mat-radio-button>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <mat-radio-button value="Detailed">Detailed</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" *ngIf="AttendanceType=='Summary'"
+                                    (click)="GetMonthlyMusterReport();" matTooltip="click to export">Export to
+                                    Excel</button>
+                                <button class="btn btn-primary" *ngIf="AttendanceType=='Detailed'"
+                                    (click)="GetMonthlyDetailedReport();" matTooltip="click to export">Export to
+                                    Excel</button>
+                                <!-- &nbsp;&nbsp;
+                                <button class="btn btn-primary" *ngIf="AttendanceType=='Detailed'"
+                                    (click)="GetMonthlyDetailedReportPdf()" matTooltip="click to export">Export to
+                                    Pdf</button> -->
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="click to Clear">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dateFilterPanel" *ngIf="filterReport=='LOPR'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">LOP Reimbursement Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color:red">*</span> </label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="paygroup">Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                    <option [ngValue]="null">select Pay Group</option>
+                                    <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                        {{location.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                    <option [ngValue]="null">select Category</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                                    name="locationName">
+                                    <option [ngValue]="null">select Department</option>
+                                    <option *ngFor="let location of departmentList" value="{{location.dptid}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Reporting Group </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Reporting Group</option>
+                                    <option *ngFor="let location of ReportingGroupList"
+                                        value="{{location.reportingGroup}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="startDate">
+                                    From Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                        [min]="min" [owlDateTime]="dtStartlop" [owlDateTimeTrigger]="dtStartlop"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change startDate"
+                                        #startDate1="ngModel" [disabled]="isEdit" required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStartlop">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStartlop></owl-date-time>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="endDate">
+                                    To Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate"
+                                        [min]="min" [owlDateTime]="dtendlp" [owlDateTimeTrigger]="dtendlp"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change endDate"
+                                        #endDate1="ngModel" [disabled]="isEdit" required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtendlp">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtendlp></owl-date-time>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="emp">Employee No.</label>
+                            <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode"
+                                #fltrdelrymodeEnt="ngModel" matTooltip="select delivery Mode"
+                                [placeholder]="'select Delivery Mode(multiple)'" [data]="empListCon"
+                                [(ngModel)]="selectedEmployeeList" [settings]="deliveryModeSettings"
+                                (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                                (onSelectAll)="onSelectAll($event)">
+                            </ng-multiselect-dropdown>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetReimbursementReport('View');"
+                                    matTooltip="click to export">Search</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="GetReimbursementReport('PDF');"
+                                    matTooltip="click to export">Export</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="click to Clear">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-12">
+                    <div class="box-body table-responsive" *ngIf="filterReport == 'LOPR'">
+                        <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                            <thead style="background-color: #0099cc; color:white;">
+                                <tr>
+                                    <th class="col-sm-1">Sl.No</th>
+                                    <th>Employee No</th>
+                                    <th>Employee Name</th>
+                                    <th>Designation</th>
+                                    <th>Role</th>
+                                    <th>Department</th>
+                                    <th>Date of Reimbursement</th>
+                                    <th>Month of Reimbursement</th>
+                                    <th>Attendance Status</th>
+                                    <th>Requested Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let categ of ReimbursementReport;  let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{categ.employeeId}}</td>
+                                    <td>{{categ.empName}}</td>
+                                    <td>{{categ.desgName}}</td>
+                                    <td>{{categ.role}}</td>
+                                    <td>{{categ.deptName}}</td>
+                                    <td>{{categ.fromDate | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{categ.month}}</td>
+                                    <td>{{categ.status}}</td>
+                                    <td>{{categ.submittedDate | date:'dd/MM/yyyy'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dateFilterPanel" *ngIf="filterReport=='YearlyLeaveReport'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Yearly Leave Balance Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant</label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">Select Plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="paygroup">Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                    <option [ngValue]="null">Select PayGroup</option>
+                                    <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                        {{location.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                    <option [ngValue]="null">Select Staff Category</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Department">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="departmentName"
+                                    name="departmentName">
+                                    <option [ngValue]="null">Select Department</option>
+                                    <option *ngFor="let location of departmentList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Reporting">Reporting Group <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="ReportingGroup"
+                                    name="ReportingGroup" required>
+                                    <option [ngValue]="null">Select Reporting Group</option>
+                                    <option *ngFor="let location of ReportingGroupList"
+                                        value="{{location.reportingGroup}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                                    [(ngModel)]="CalenderYear" placeholder="Year">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="emp">Employee No.</label>
+                            <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode"
+                                #fltrdelrymodeEnt="ngModel" matTooltip="select delivery Mode"
+                                [placeholder]="'select Delivery Mode(multiple)'" [data]="empListCon"
+                                [(ngModel)]="selectedEmployeeList" [settings]="deliveryModeSettings"
+                                (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                                (onSelectAll)="onSelectAll($event)">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetLeaveBalanceReport();"
+                                    matTooltip="click to get data">Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="generateExcel();"
+                                    matTooltip="click to export">Export to Excel</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="click to clear">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dateFilterPanel" *ngIf="filterReport=='MonthlyDetailed'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Monthly Detailed Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color:red">*</span> </label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="paygroup">Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                    <option [ngValue]="null">select Pay Group</option>
+                                    <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                        {{location.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                    <option [ngValue]="null">select Category</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                                    name="locationName">
+                                    <option [ngValue]="null">select Department</option>
+                                    <option *ngFor="let location of departmentList" value="{{location.dptid}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Reporting Group </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Reporting Group</option>
+                                    <option *ngFor="let location of ReportingGroupList"
+                                        value="{{location.reportingGroup}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Month <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterMonth" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Month</option>
+                                    <option *ngFor="let location of MonthsList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Year <span style="color: red;">*</span> </label>
+                                <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                                    [(ngModel)]="CalenderYear" placeholder="Year">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="emp">Employee No.</label>
+                            <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode"
+                                #fltrdelrymodeEnt="ngModel" matTooltip="select delivery Mode"
+                                [placeholder]="'select Delivery Mode(multiple)'" [data]="empListCon"
+                                [(ngModel)]="selectedEmployeeList" [settings]="deliveryModeSettings"
+                                (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                                (onSelectAll)="onSelectAll($event)">
+                            </ng-multiselect-dropdown>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Action">Attendance Type</label>
+                                <div class="row">
+                                    <mat-radio-group aria-label="Select option?" id="filterType1" name="filterType1"
+                                        [(ngModel)]="ViewType" [disabled]="isEdit" ngControl="filterType1"
+                                        #filterType1Ent="ngModel">
+                                        <mat-radio-button value="Calendar">Calendar Month</mat-radio-button>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <mat-radio-button value='Payable'>Payable Month</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Action">Summary/BreakUp </label>
+                                <div class="row">
+                                    <mat-radio-group aria-label="Select option?" id="filterType" name="filterType"
+                                        [(ngModel)]="AttendanceType" [disabled]="isEdit" ngControl="filterType"
+                                        #filterTypeEnt="ngModel">
+                                        <mat-radio-button value="Detailed">Day Wise Breakup</mat-radio-button>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <mat-radio-button value='Summary'>Attendance Summary</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" *ngIf="AttendanceType=='Detailed'"
+                                    (click)="GetMonthlyDaywiseReport();" matTooltip="click to export">Export to
+                                    Excel</button>
+                                <button class="btn btn-primary" *ngIf="AttendanceType=='Summary'"
+                                    (click)="GetMonthlyMusterReport();" matTooltip="click to export">Export to
+                                    Excel</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="enter Expected Out Time">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'DailyReport'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Daily Attendance Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="paygroup">Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                    <option [ngValue]="null">select Pay Group</option>
+                                    <option *ngFor="let location of payGroupList1" value="{{location.paygroup}}">
+                                        {{location.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                    <option [ngValue]="null">select Category</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                                    name="locationName">
+                                    <option [ngValue]="null">select Department</option>
+                                    <option *ngFor="let location of departmentList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Reporting Group </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Reporting Group</option>
+                                    <option *ngFor="let location of ReportingGroupList"
+                                        value="{{location.reportingGroup}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="startDate">
+                                    Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                        [min]="min" [owlDateTime]="dtStart" [owlDateTimeTrigger]="dtStart"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change startDate"
+                                        #startDate1="ngModel" [disabled]="isEdit" required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStart></owl-date-time>
+                                <span class="help-block" *ngIf="!startDate1.valid && startDate1.touched">Please
+                                    enter Date.</span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetDailyReport('pdf');"
+                                    matTooltip="click to get the data">Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="printreport()" [disabled]="!Present>0"
+                                    matTooltip="click to export"><i class="fas fa-file-pdf"></i>&nbsp; Export to PDF</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="DailyReportexportToExcel();"
+                                    [disabled]="!Present>0" matTooltip="click to export"><i
+                                        class="fas fa-file-excel"></i>&nbsp; Export to EXCEL
+                                </button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="enter Expected Out Time">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'DailyShiftReport'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Daily Shift Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="startDate">
+                                    Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                        [min]="min" [owlDateTime]="dtStart1" [owlDateTimeTrigger]="dtStart1"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change startDate"
+                                        #startDate1="ngModel" [disabled]="isEdit" required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart1">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStart1></owl-date-time>
+                                <span class="help-block" *ngIf="!startDate1.valid && startDate1.touched">Please
+                                    enter Date.</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetDailyShiftReport();"
+                                    matTooltip="click to get data">Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="printshiftreport();"
+                                    [disabled]="!ShiftReport.length>0" matTooltip="click to export">Export</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="enter Expected Out Time">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'DailyEsslPunchReport'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Daily Biometric Punch Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="startDate">
+                                    From Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                        [min]="min" [owlDateTime]="dtStartEs" [owlDateTimeTrigger]="dtStartEs"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change startDate"
+                                        #startDate1="ngModel" [disabled]="isEdit" required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStartEs">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStartEs></owl-date-time>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="endDate">
+                                    To Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate"
+                                        [min]="min" [owlDateTime]="dtStartts" [owlDateTimeTrigger]="dtStartts"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change endDate"
+                                        #endDate1="ngModel" [disabled]="isEdit" required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStartEs">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStartts></owl-date-time>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="paygroup">Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                    <option [ngValue]="null">select Pay Group</option>
+                                    <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                        {{location.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                    <option [ngValue]="null">select Category</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                                    name="locationName">
+                                    <option [ngValue]="null">select Department</option>
+                                    <option *ngFor="let location of departmentList" value="{{location.dptid}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Sub Department</label>
+                                <select [(ngModel)]="filterSubDepartment" class="form-control" id="locationName"
+                                    name="locationName">
+                                    <option [ngValue]="null">select Sub Department</option>
+                                    <option *ngFor="let location of subdepartmentList" value="{{location.sdptid}}">
+                                        {{location.sdptxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Reporting Group </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Reporting Group</option>
+                                    <option *ngFor="let location of ReportingGroupList"
+                                        value="{{location.reportingGroup}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="emp">Employee No.</label>
+                            <ng-multiselect-dropdown id="fltdeliverymode" name="fltdeliverymode"
+                                #fltrdelrymodeEnt="ngModel" matTooltip="select delivery Mode"
+                                [placeholder]="'select Delivery Mode(multiple)'" [data]="empListCon"
+                                [(ngModel)]="selectedEmployeeList" [settings]="deliveryModeSettings"
+                                (onDeSelect)="onItemDeSelect($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                                (onSelectAll)="onSelectAll($event)">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="col-sm-8">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetDailyEsslPunchReport();"
+                                    matTooltip="click to get data">Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="PrintEsslreport();"
+                                    [disabled]="!EsslPunchReport.length>0" matTooltip="click to export"><i
+                                        class="fas fa-file-pdf"></i>&nbsp;Print
+                                    Report to PDF</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="generateEsslReportToExcelExcel()"
+                                    *ngIf="filterPlant != 'ML00'" [disabled]="!EsslPunchReport.length>0"
+                                    matTooltip="click to export"><i class="fas fa-file-excel"></i>&nbsp;Export to
+                                    Excel</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="generateEsslReportToExcelExcel1()"
+                                    *ngIf="filterPlant == 'ML00'" [disabled]="!EsslPunchReport.length>0"
+                                    matTooltip="click to export"><i class="fas fa-file-excel"></i>&nbsp;Export to
+                                    Excel</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="enter Expected Out Time">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'Contractual'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Monthly Contractual Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                    <option [ngValue]="null">select Category</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Reporting Group <span style="color: red;">*</span> </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Reporting Group</option>
+                                    <option *ngFor="let location of ReportingGroupList"
+                                        value="{{location.reportingGroup}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Month <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterMonth" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Month</option>
+                                    <option *ngFor="let location of MonthsList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                                    [(ngModel)]="CalenderYear" placeholder="Year">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetContractualReport();"
+                                    matTooltip="click to export">Export</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="enter Expected Out Time">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'AddAttr'">
+
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Monthly Addition and Attrition Report</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Month <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterMonth" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Month</option>
+                                    <option *ngFor="let location of MonthsList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                                    [(ngModel)]="CalenderYear" placeholder="Year">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Action">Report Type</label>
+                                <div class="row">
+                                    <mat-radio-group aria-label="Select option?" id="filterType" name="filterType"
+                                        [(ngModel)]="AttendanceType" [disabled]="isEdit" ngControl="filterType"
+                                        #filterTypeEnt="ngModel">
+                                        <mat-radio-button value="Detailed">Detailed</mat-radio-button>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <mat-radio-button value='Summary'>Summary</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetAddAttrReport();"
+                                    matTooltip="click to export">Export</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="enter Expected Out Time">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'ManualEntryAudit'">
+
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Monthly Manual Entry Audit Report</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Month <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterMonth" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Month</option>
+                                    <option *ngFor="let location of MonthsList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                                    [(ngModel)]="CalenderYear" placeholder="Year">
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetManualEntryAuditReport();"
+                                    matTooltip="click to get details">GO</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="printManualreport();"
+                                    [disabled]="!ManualEntryAuditReport.length>0"
+                                    matTooltip="click to export">Export</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="enter Expected Out Time">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'MonthlyOT'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Monthly OT Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Month <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterMonth" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Month</option>
+                                    <option *ngFor="let location of MonthsList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                                    [(ngModel)]="CalenderYear" placeholder="Year">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Action">Attendance Type</label>
+                                <div class="row">
+                                    <mat-radio-group aria-label="Select option?" id="filterType1" name="filterType1"
+                                        [(ngModel)]="AttendanceType" [disabled]="isEdit" ngControl="filterType1"
+                                        #filterType1Ent="ngModel">
+                                        <mat-radio-button value="Calendar">Calendar Month</mat-radio-button>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <mat-radio-button value='Payable'>Payable Month</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Action">Report Type</label>
+                                <div class="row">
+                                    <mat-radio-group aria-label="Select option?" id="filterType" name="filterType"
+                                        [(ngModel)]="ViewType" [disabled]="isEdit" ngControl="filterType"
+                                        #filterTypeEnt="ngModel">
+                                        <mat-radio-button value="Summary">Summary</mat-radio-button>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <mat-radio-button value='Detailed'>Detailed</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetMonthlyOTReport();"
+                                    matTooltip="click to get data">Go</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="printMonthlyOTreport();"
+                                    [disabled]="!MonthlyOTReport.length>0" matTooltip="click to export">Export</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData();"
+                                    matTooltip="enter Expected Out Time">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="box-body table-responsive" *ngIf="filterReport == 'MonthlyOT' && ViewType=='Detailed'">
+                    <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr>
+                                <th>Sl.No.</th>
+                                <th>Employee_ID</th>
+                                <th>Full_Name</th>
+                                <th>Designation</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Contractor_Name</th>
+                                <th>OTDate</th>
+                                <th> Shift </th>
+                                <th>Shift_Start_Time</th>
+                                <th>Shift_End_Time</th>
+                                <th>In_Time</th>
+                                <th>OUT_Time</th>
+                                <th>Attendance_Status</th>
+                                <th>Total_Hour_Worked</th>
+                                <th>OT_Hour</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let lp of MonthlyOTReport;let i=index">
+                                <td style="width: 5%;">{{i+1}}</td>
+                                <td style="width: 8%;">{{lp.pernr}}</td>
+                                <td style="width: 10%;">{{lp.empName}}</td>
+                                <td style="width: 8%;">{{lp.designation}}</td>
+                                <td style="width: 5%;">{{lp.role}}</td>
+                                <td style="width: 8%;">{{lp.department}}</td>
+                                <td style="width: 8%;">{{lp.contractorId}}</td>
+                                <td style="width: 8%;">{{lp.otDate | date:'dd/MM/yyyy'}}</td>
+                                <td style="width: 5%;">{{lp.shift}}</td>
+                                <td style="width: 5%;">{{lp.shiftStartTime}}</td>
+                                <td style="width: 5%;">{{lp.shiftEndTime}}</td>
+                                <td style="width: 5%;">{{lp.employeeInTime}}</td>
+                                <td style="width: 5%;">{{lp.employeeOutTime}}</td>
+                                <td style="width: 5%;">{{lp.attendanceStatus}}</td>
+                                <td style="width: 5%;">{{lp.total}}</td>
+                                <td style="width: 5%;">{{lp.ot}}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-body table-responsive" *ngIf="filterReport == 'MonthlyOT' && ViewType=='Summary'">
+                    <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                        <thead style="background-color: #0099cc; color:white;">
+                            <tr>
+                                <th>Sl.No.</th>
+                                <th>Employee_ID</th>
+                                <th>Full_Name</th>
+                                <th>Designation</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Contractor_Name</th>
+                                <th>Total OT Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let lp of MonthlyOTReport;let i=index">
+                                <td style="width: 5%;">{{i+1}}</td>
+                                <td style="width: 10%;">{{lp.pernr}}</td>
+                                <td style="width: 25%;">{{lp.empName}}</td>
+                                <td style="width: 20%;">{{lp.designation}}</td>
+                                <td style="width: 15%;">{{lp.role}}</td>
+                                <td style="width: 15%;">{{lp.department}}</td>
+                                <td style="width: 8%;">{{lp.contractorId}}</td>
+                                <td style="width: 10%;"><a (click)="ShowForm(lp.pernr);"
+                                        style="cursor: pointer;text-decoration: underline; color: #68a7d2;"
+                                        [matTooltipPosition]="'below'"
+                                        matTooltip="Click to see details">{{lp.totalOT}}</a> </td>
+                                <!-- <td>{{lp.totalOT}}</td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'DevBio'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Biometric Device Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color:red">*</span> </label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">Select Plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetDevBio();"
+                                    matTooltip="click to Search">Search</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="GetDevBioReportPdf();"
+                                    matTooltip="click to export">Export to Pdf</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData()"
+                                    matTooltip="click to Clear">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="col-sm-12">
+                    <div class="box-body table-responsive" *ngIf="filterReport == 'DevBio'">
+                        <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                            <thead style="background-color: #0099cc; color:white;">
+                                <tr>
+                                    <th class="col-sm-1">Sl.No</th>
+                                    <th>Device Id</th>
+                                    <th>Device Name</th>
+                                    <th>Serial Number</th>
+                                    <th>Ip Address</th>
+                                    <th>Device Location</th>
+                                    <th>Device Type</th>
+                                    <th>Last Ping</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let categ of DevBioReport;  let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{categ.deviceId}}</td>
+                                    <td>{{categ.deviceFname}}</td>
+                                    <td>{{categ.serialNumber}}</td>
+                                    <td>{{categ.ipAddress}}</td>
+                                    <td>{{categ.deviceLocation}}</td>
+                                    <td>{{categ.deviceType}}</td>
+                                    <td>{{categ.lastPing | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'ShiAll'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Employee Shift Allowance Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant1()">
+                                    <option [ngValue]="null">--Select Plant--</option>
+                                    <option *ngFor="let location of locationList" value="{{location.fkPlantId}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="paygroup">Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                    <option [ngValue]="null">--Select Pay Group--</option>
+                                    <option *ngFor="let location of payGroupList11" value="{{location.id}}">
+                                        {{location.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                    <option [ngValue]="null">--Select Emp Category--</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="department">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="department"
+                                    name="department">
+                                    <option [ngValue]="null">--Select Department--</option>
+                                    <option *ngFor="let location of departmentList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="reportingGroup">Reporting Group </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="reportingGroup"
+                                    name="locatireportingGrouponName">
+                                    <option [ngValue]="null">--Select Reporting Group--</option>
+                                    <option *ngFor="let location of ReportingGroupList" value="{{location.id}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="emp">Employee No<span style="color: red;"></span></label>
+                                <br>
+                                <input type="text" [(ngModel)]="EmployeeNo" class="form-control" id="empNo"
+                                    placeholder="Employee No" name="empNo" ngControl="EmployeeNo" #empNoEnt="ngModel"
+                                    (keyup)="getEmployee($event)">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="startDate">
+                                    From Date
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                        [min]="min" [owlDateTime]="dtStart11" [owlDateTimeTrigger]="dtStart11"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change From Date"
+                                        placeholder="DD/MM/YYYY" #startDate1="ngModel" [disabled]="isEdit">
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStart11">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    <owl-date-time [pickerType]="'calendar'" #dtStart11></owl-date-time>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="endDate">
+                                    To Date
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="endDate" name="endDate" class="form-control" [(ngModel)]="toDate"
+                                        [min]="min" [owlDateTime]="dtEnd11" [owlDateTimeTrigger]="dtEnd11"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change To Date"
+                                        placeholder="DD/MM/YYYY" #endDate1="ngModel" [disabled]="isEdit">
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtEnd11">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    <owl-date-time [pickerType]="'calendar'" #dtEnd11></owl-date-time>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Action">Report Type</label>
+                                <div class="row">
+                                    <mat-radio-group aria-label="Select option?" id="filterType" name="filterType"
+                                        [(ngModel)]="ViewType" [disabled]="isEdit" ngControl="filterType"
+                                        #filterTypeEnt="ngModel">
+                                        <mat-radio-button value="Summary">Summary</mat-radio-button>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <mat-radio-button value='Detailed'>Detailed</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label>&nbsp;</label>
+                        <div class="form-group">
+                            <button class="btn btn-primary" (click)="GetShiftAllowanceReportPdf('View');"
+                                matTooltip="click to Search">Search</button>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-primary" (click)="GetShiftAllowanceReportPdf('PDF');"
+                                matTooltip="click to export"><i class="fas fa-file-pdf"></i>&nbsp;Export to
+                                Pdf</button>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-primary" (click)="ClearData()"
+                                matTooltip="click to Clear">Clear</button>
+                        </div>
+                    </div>
+                </div>
+
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="col-sm-12">
+                    <div class="box-body table-responsive" *ngIf="filterReport == 'ShiAll' && ViewType =='Summary'">
+                        <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                            <thead style="background-color: #3ba7ff; color:white;">
+                                <tr>
+                                    <th class="col-sm-1">Sl.No</th>
+                                    <th>Employee No</th>
+                                    <th>Employee Name</th>
+                                    <th>Designation</th>
+                                    <th>Role</th>
+                                    <th>Department</th>
+                                    <th>Shift Code</th>
+                                    <th>No.Of Days</th>
+                                    <th>Per Day Allowance</th>
+                                    <th>Total Allowance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let categ of EmpShiftAll;  let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{categ.pernr}}</td>
+                                    <td>{{categ.empName}}</td>
+                                    <td>{{categ.designation}}</td>
+                                    <td>{{categ.role}}</td>
+                                    <td>{{categ.department}}</td>
+                                    <td>{{categ.shift}}</td>
+                                    <td>{{categ.noofDays}}</td>
+                                    <td>{{categ.perdayallowance}}</td>
+                                    <td>{{categ.total}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="box-body table-responsive" *ngIf="filterReport == 'ShiAll' && ViewType =='Detailed'">
+                        <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                            <thead style="background-color: #3ba7ff; color:white;">
+                                <tr>
+                                    <th class="col-sm-1">Sl.No</th>
+                                    <th>Employee No</th>
+                                    <th>Employee Name</th>
+                                    <th>Designation</th>
+                                    <th>Role</th>
+                                    <th>Department</th>
+                                    <th>Shift Code</th>
+                                    <th>Date</th>
+                                    <th>Per Day Allowance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let categ of EmpShiftAll;  let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{categ.pernr}}</td>
+                                    <td>{{categ.empName}}</td>
+                                    <td>{{categ.designation}}</td>
+                                    <td>{{categ.role}}</td>
+                                    <td>{{categ.department}}</td>
+                                    <td>{{categ.shift}}</td>
+                                    <td>{{categ.date | date:'yyyy/MM/dd'}}</td>
+                                    <td>{{categ.perdayallowance}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="filterPanel" *ngIf="filterReport == 'IntimationReport'">
+            <div class="box">
+                <div class="box-header" style="background-color: #DCE9F9;height: 35px;">
+                    <h3 class="box-title">Leave & OnDuty Intimation Report</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Plant <span style="color: red;">*</span></label>
+                                <select [(ngModel)]="filterPlant" class="form-control" id="locationName"
+                                    name="locationName" (change)="getPaygroupsBasedOnPlant()">
+                                    <option [ngValue]="null">select plant</option>
+                                    <option *ngFor="let location of locationList" value="{{location.code}}">
+                                        {{location.code + '-' + location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="paygroup">Pay Group</label>
+                                <select [(ngModel)]="filterPayGroup" class="form-control" id="paygroup" name="paygroup">
+                                    <option [ngValue]="null">select Pay Group</option>
+                                    <option *ngFor="let location of payGroupList1" value="{{location.id}}">
+                                        {{location.short_desc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="staffcat">Staff Category</label>
+                                <select [(ngModel)]="filterStaffcat" class="form-control" id="staffcat" name="staffcat">
+                                    <option [ngValue]="null">select Category</option>
+                                    <option *ngFor="let cat of StaffCategoryList" value="{{cat.id}}">
+                                        {{cat.catltxt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Department</label>
+                                <select [(ngModel)]="filterDepartment" class="form-control" id="locationName"
+                                    name="locationName">
+                                    <option [ngValue]="null">select Department</option>
+                                    <option *ngFor="let location of departmentList" value="{{location.id}}">
+                                        {{location.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Location">Reporting Group </label>
+                                <select [(ngModel)]="filterReportingGroup" class="form-control" id="locationName"
+                                    name="locationName" required>
+                                    <option [ngValue]="null">select Reporting Group</option>
+                                    <option *ngFor="let location of ReportingGroupList"
+                                        value="{{location.reportingGroup}}">
+                                        {{location.reportingGroupLt}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="number" matTooltip="Enter Year" name="year" class="form-control"
+                                    [(ngModel)]="CalenderYear" placeholder="Year">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="startDate">
+                                   From Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="startDate" name="startDate" class="form-control" [(ngModel)]="fromDate"
+                                        [min]="min" [owlDateTime]="dtStartLO" [owlDateTimeTrigger]="dtStartLO"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change startDate"
+                                        #startDate1="ngModel" [disabled]="isEdit" required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStartLO">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStartLO></owl-date-time>
+                                <span class="help-block" *ngIf="!startDate1.valid && startDate1.touched">Please
+                                    enter Date.</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="toDate">
+                                   To Date <span style="color:red">*</span>
+                                </label>
+                                <div class='input-group date'>
+                                    <input id="toDate" name="toDate" class="form-control" [(ngModel)]="toDate"
+                                    [owlDateTime]="dtStartTO" [owlDateTimeTrigger]="dtStartTO"
+                                        [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+                                        #toDate1="ngModel" [disabled]="isEdit" required>
+                                    <span class="input-group-addon trigger" [owlDateTimeTrigger]="dtStartTO">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <owl-date-time [pickerType]="'calendar'" #dtStartTO></owl-date-time>
+                                <span class="help-block" *ngIf="!toDate1.valid && toDate1.touched">Please
+                                    enter Date.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>&nbsp;</label>
+                            <div class="form-group">
+                                <button class="btn btn-primary" (click)="GetIntimationReportPdf('View');"
+                                    matTooltip="click to Search">Search</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="GetIntimationReportPdf('PDF');"
+                                    matTooltip="click to export">Export to Pdf</button>
+                                &nbsp;&nbsp;
+                                <button class="btn btn-primary" (click)="ClearData()"
+                                    matTooltip="click to Clear">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
+                <div class="col-sm-12">
+                    <div class="box-body table-responsive" *ngIf="filterReport == 'IntimationReport'">
+                        <table id="userTable" class="table table-bordered  table-striped" cellspacing="0">
+                            <thead style="background-color: #0099cc; color:white;">
+                                <tr>
+                                    <th class="col-sm-1">Sl.No</th>
+                                    <th>Employee No</th>
+                                    <th>Employee Name</th>
+                                    <th>Designation</th>
+                                    <th>Role</th>
+                                    <th>Department</th>
+                                    <th>From Date</th>
+                                    <th>To Date</th>
+                                    <th>Intimation Type</th>
+                                    <th>Intimation Over</th>
+                                    <th>Reason</th>
+                                    <th>Intimation Updated By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let categ of IntimationReport;  let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{categ.empId}}</td>
+                                    <td>{{categ.empName}}</td>
+                                    <td>{{categ.designation}}</td>
+                                    <td>{{categ.role}}</td>
+                                    <td>{{categ.department}}</td>
+                                    <td>{{categ.fromDate | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{categ.toDate | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{categ.intimationType}}</td>
+                                    <td>{{categ.intimationOver}}</td>
+                                    <td>{{categ.reason}}</td>
+                                    <td>{{categ.updatedBy}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="overlay" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <table hidden class="table table-bordered  table-striped striped" #table id="excel">
+        <tr style="text-align: center;align-items: center;" class="text-center">
+            <th colspan="32" style="text-align: center;align-items: center;">
+                <h4 style="text-align: center;align-items: center;">MICRO LABS LIMITED</h4>
+            </th>
+        </tr>
+        <tr style="text-align: center;align-items: center;">
+            <th colspan="32" style="text-align: center;align-items: center;">
+                <h4>Muster Monthly Attendance Detail Report</h4>
+            </th>
+        </tr>
+        <tr>
+            <td colspan="32"></td>
+        </tr>
+        <table id="excel1" class="table table-bordered  table-striped" *ngFor="let rep of ReportData;let i=index">
+
+            <tr>
+                <td colspan="32">{{rep.month}}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>8</th>
+                <th>9</th>
+                <th>10</th>
+                <th>11</th>
+                <th>12</th>
+                <th>13</th>
+                <th>14</th>
+                <th>15</th>
+                <th>16</th>
+                <th>17</th>
+                <th>18</th>
+                <th>19</th>
+                <th>20</th>
+                <th>21</th>
+                <th>22</th>
+                <th>23</th>
+                <th>24</th>
+                <th>25</th>
+                <th>26</th>
+                <th>27</th>
+                <th>28</th>
+                <th>29</th>
+                <th>30</th>
+                <th>31</th>
+            </tr>
+            <tr class="bordered" *ngFor="let att of rep.attendance">
+                <td>{{getName(att.ord)}}</td>
+                <td>{{att.day1}}</td>
+                <td>{{att.day2}}</td>
+                <td>{{att.day3}}</td>
+                <td>{{att.day4}}</td>
+                <td>{{att.day5}}</td>
+                <td>{{att.day6}}</td>
+                <td>{{att.day7}}</td>
+                <td>{{att.day8}}</td>
+                <td>{{att.day9}}</td>
+                <td>{{att.day10}}</td>
+                <td>{{att.day11}}</td>
+                <td>{{att.day12}}</td>
+                <td>{{att.day13}}</td>
+                <td>{{att.day14}}</td>
+                <td>{{att.day15}}</td>
+                <td>{{att.day16}}</td>
+                <td>{{att.day17}}</td>
+                <td>{{att.day18}}</td>
+                <td>{{att.day19}}</td>
+                <td>{{att.day20}}</td>
+                <td>{{att.day21}}</td>
+                <td>{{att.day22}}</td>
+                <td>{{att.day23}}</td>
+                <td>{{att.day24}}</td>
+                <td>{{att.day25}}</td>
+                <td>{{att.day26}}</td>
+                <td>{{att.day27}}</td>
+                <td>{{att.day28}}</td>
+                <td>{{att.day29}}</td>
+                <td>{{att.day30}}</td>
+                <td>{{att.day31}}</td>
+            </tr>
+            <!-- <tr>
+            <td colspan="32">&nbsp;</td>
+        </tr> -->
+
+
+        </table>
+
+    </table>
+</div>
+
+<div hidden id="pdf">
+    <!-- <tr style="text-align: center;align-items: center;">
+        <th colspan="14" style="text-align: center;align-items: center;border: 0.5px;">MICRO LABS LIMITED</th>
+    </tr>
+    <tr style="text-align: center;align-items: center;">
+        <th colspan="14" style="text-align: center;align-items: center;border: 0.5px;">Daily Attendance Detail Report for the Date: {{fromDate | date:'dd/MM/yyyy'}}</th>
+    </tr> -->
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="2" style="text-align: center;"> <strong>Summary Of Attendance</strong> </td>
+        </tr>
+
+        <tr>
+            <th>Present</th>
+            <td>{{Present}}</td>
+        </tr>
+        <tr>
+            <th>Absent</th>
+            <td>{{Absent}}</td>
+        </tr>
+        <tr>
+            <th>On Duty</th>
+            <td>{{Onduty}}</td>
+        </tr>
+        <tr>
+            <th>On Duty(Pending for Approval)</th>
+            <td>{{PendingOnduty}}</td>
+        </tr>
+        <tr>
+            <th>Late Punch</th>
+            <td>{{LatepunchCount}}</td>
+        </tr>
+        <tr>
+            <th>Leave</th>
+            <td>{{Leave}}</td>
+        </tr>
+        <tr>
+            <th>Leave(Pending for Approval)</th>
+            <td>{{PendingLeave}}</td>
+        </tr>
+        <tr>
+            <th>Loss Of Pay</th>
+            <td>{{Lop}}</td>
+        </tr>
+        <tr>
+            <th>Total</th>
+            <td>{{Present+Absent+Onduty+PendingOnduty+Leave+PendingLeave+Lop+LatepunchCount}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width:20%;">Employee Name</th>
+            <th style="width: 15%;">Reporting Group</th>
+            <th style="width: 12%;">Department</th>
+            <th style="width: 10%;">In time</th>
+            <th style="width: 10%;">Shift</th>
+            <th style="width: 8%;">Late</th>
+            <th style="width: 10%;">Late Count</th>
+        </tr>
+        <tr *ngFor="let lp of LatePunch;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.reportingGroup}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.intime}}</td>
+            <td>{{lp.shift}}</td>
+            <td>{{lp.late}}</td>
+            <td>{{lp.lateCount}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Employees On Leave</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 20%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 6%;">No of Days</th>
+        </tr>
+        <tr *ngFor="let lp of ApprovedLeaves;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="10" style="text-align: center;">Employees On Leave - Approval pending from HOD</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 5%;">No of Days</th>
+            <th style="width: 15%;">Pending Approver</th>
+        </tr>
+        <tr *ngFor="let lp of LeavesPendingForApproval;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+            <td>{{lp.pendingApprover}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Employees On LOP</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 10%;">NO of Days</th>
+        </tr>
+        <tr *ngFor="let lp of lossofPay;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Employees On OnDuty</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">From Time</th>
+            <th style="width: 10%;">To Time</th>
+        </tr>
+        <tr *ngFor="let lp of ApprovedOnduty;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.stTime}}</td>
+            <td>{{lp.edTime}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="10" style="text-align: center;">Employees On OnDuty - Approval pending from HOD</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 20%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 5%;">From Time</th>
+            <th style="width: 5%;">To Time</th>
+            <th style="width: 15%;">Pending Approver</th>
+        </tr>
+        <tr *ngFor="let lp of OndutyPendingforApproval;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.stTime}}</td>
+            <td>{{lp.edTime}}</td>
+            <td>{{lp.pendingApprover}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <td colspan="9" style="text-align: center;">Absent Employees</td>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Designation</th>
+            <th style="width: 12%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 8%;">Absent Count</th>
+        </tr>
+        <tr *ngFor="let lp of absentEmployees;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+</div>
+
+<table *ngIf="filterReport == 'DailyReport'" #dailyreport id="DailyReport">
+    <table>
+        <tr style="text-align: center;align-items: center;">
+            <th colspan="14" style="text-align: center;align-items: center;border: 0.5px;">MICRO LABS LIMITED</th>
+        </tr>
+        <tr style="text-align: center;align-items: center; ">
+            <th colspan="14" style="text-align: center;align-items: center;border: 0.5px;">Daily Attendance Detail
+                Report
+                for the Date: {{fromDate | date:'dd/MM/yyyy'}}</th>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="2" style="text-align: center;"> <strong>Summary Of Attendance</strong> </th>
+        </tr>
+
+        <tr>
+            <th>Present</th>
+            <td>{{Present}}</td>
+        </tr>
+        <tr>
+            <th>Absent</th>
+            <td>{{Absent}}</td>
+        </tr>
+        <tr>
+            <th>On Duty</th>
+            <td>{{Onduty}}</td>
+        </tr>
+        <tr>
+            <th>On Duty(Pending for Approval)</th>
+            <td>{{PendingOnduty}}</td>
+        </tr>
+        <tr>
+            <th>Late Punch</th>
+            <td>{{LatepunchCount}}</td>
+        </tr>
+        <tr>
+            <th>Leave</th>
+            <td>{{Leave}}</td>
+        </tr>
+        <tr>
+            <th>Leave(Pending for Approval)</th>
+            <td>{{PendingLeave}}</td>
+        </tr>
+        <tr>
+            <th>Loss Of Pay</th>
+            <td>{{Lop}}</td>
+        </tr>
+        <tr>
+            <th>Leave Intimation</th>
+            <td>{{LeaveIntimation}}</td>
+        </tr>
+        <tr>
+            <th>OnDuty Intimation</th>
+            <td>{{OnDutyIntimation}}</td>
+        </tr>
+        <tr>
+            <th>Total</th>
+            <td>{{Present+Absent+Onduty+PendingOnduty+Leave+PendingLeave+Lop+LatepunchCount+LeaveIntimation+OnDutyIntimation}}
+            </td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <thead class="bordered striped">
+            <tr>
+                <th colspan="9" style="text-align: center;background-color: #73aaec;">Employees On Late Punch</th>
+            </tr>
+
+            <tr style="border: black;">
+                <th style="width: 5%;">Sl.No.</th>
+                <th style="width: 10%;">Employee No.</th>
+                <th style="width:20%;">Employee Name</th>
+                <th style="width: 15%;">Reporting Group</th>
+                <th style="width: 12%;">Department</th>
+                <th style="width: 10%;">In time</th>
+                <th style="width: 10%;">Shift</th>
+                <th style="width: 8%;">Late</th>
+                <th style="width: 10%;">Late Count</th>
+            </tr>
+        </thead>
+        <tbody class="bordered striped">
+            <tr *ngFor="let lp of LatePunch;let i=index">
+                <td>{{i+1}}</td>
+                <td>{{lp.userId}}</td>
+                <td>{{lp.empName}}</td>
+                <td>{{lp.reportingGroup}}</td>
+                <td>{{lp.department}}</td>
+                <td>{{lp.intime}}</td>
+                <td>{{lp.shift}}</td>
+                <td>{{lp.late}}</td>
+                <td>{{lp.lateCount}}</td>
+            </tr>
+        </tbody>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">Employees On Leave</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 20%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 6%;">No of Days</th>
+        </tr>
+        <tr *ngFor="let lp of ApprovedLeaves;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="10" style="text-align: center;background-color: #73aaec;">Employees On Leave - Approval pending
+                from HOD</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 5%;">No of Days</th>
+            <th style="width: 15%;">Pending Approver</th>
+        </tr>
+        <tr *ngFor="let lp of LeavesPendingForApproval;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+            <td>{{lp.pendingApprover}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">Employees On LOP</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">Leave Type</th>
+            <th style="width: 10%;">NO of Days</th>
+        </tr>
+        <tr *ngFor="let lp of lossofPay;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.leaveType}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">Employees On OnDuty</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 10%;">From Time</th>
+            <th style="width: 10%;">To Time</th>
+        </tr>
+        <tr *ngFor="let lp of ApprovedOnduty;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.stTime}}</td>
+            <td>{{lp.edTime}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="10" style="text-align: center;background-color: #73aaec;">Employees On OnDuty - Approval
+                pending from HOD</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 20%;">Employee Name</th>
+            <th style="width: 10%;">Department</th>
+            <th style="width: 10%;">Division</th>
+            <th style="width: 10%;">From Date</th>
+            <th style="width: 10%;">To Date</th>
+            <th style="width: 5%;">From Time</th>
+            <th style="width: 5%;">To Time</th>
+            <th style="width: 15%;">Pending Approver</th>
+        </tr>
+        <tr *ngFor="let lp of OndutyPendingforApproval;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.stTime}}</td>
+            <td>{{lp.edTime}}</td>
+            <td>{{lp.pendingApprover}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">Absent Employees</th>
+        </tr>
+        <tr>
+            <th style="width: 5%;">Sl.No.</th>
+            <th style="width: 10%;">Employee No.</th>
+            <th style="width: 15%;">Employee Name</th>
+            <th style="width: 15%;">Department</th>
+            <th style="width: 11%;">Designation</th>
+            <th style="width: 12%;">Division</th>
+            <th style="width: 12%;">From Date</th>
+            <th style="width: 12%;">To Date</th>
+            <th style="width: 8%;">Absent Count</th>
+        </tr>
+        <tr *ngFor="let lp of absentEmployees;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.userId}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.division}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.endDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.noOfDays}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">Leave Intimation</th>
+        </tr>
+        <td>
+            <tr>
+                <th style="width: 5%;">Sl.No.</th>
+                <th style="width: 10%;">Employee No.</th>
+                <th style="width: 15%;">Employee Name</th>
+                <th style="width: 15%;">Department</th>
+                <th style="width: 11%;">Designation</th>
+                <th style="width: 12%;">Division</th>
+                <th style="width: 12%;">From Date</th>
+                <th style="width: 12%;">To Date</th>
+                <th style="width: 8%;">Intimation Type</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </td>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th colspan="9" style="text-align: center;background-color: #73aaec;">OnDuty Intimation</th>
+        </tr>
+        <td>
+            <tr>
+                <th style="width: 5%;">Sl.No.</th>
+                <th style="width: 10%;">Employee No.</th>
+                <th style="width: 15%;">Employee Name</th>
+                <th style="width: 15%;">Department</th>
+                <th style="width: 11%;">Designation</th>
+                <th style="width: 12%;">Division</th>
+                <th style="width: 12%;">From Date</th>
+                <th style="width: 12%;">To Date</th>
+                <th style="width: 8%;">Intimation Type</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </td>
+    </table>
+</table>
+
+<div *ngIf="filterReport == 'DailyEsslPunchReport' && filterPlant != 'ML00'" id="essl">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Sl.No.</th>
+            <th>Employee No.</th>
+            <th>Employee Name</th>
+            <th>Designation</th>
+            <th>Department</th>
+            <th>Log Date&time</th>
+            <th>Device Name</th>
+            <th>Direction</th>
+            <th>Shift</th>
+            <th>IP Address</th>
+            <th>Device Location</th>
+        </tr>
+        <tr *ngFor="let lp of EsslPunchReport;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.pernr}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.logDateTime | date:'dd/MM/yyyy hh:mm a'}}</td>
+            <td>{{lp.deviceFName}}</td>
+            <td>{{lp.deviceDirection}}</td>
+            <td>{{lp.shift}}</td>
+            <td>{{lp.ipAddress}}</td>
+            <td>{{lp.deviceLocation}}</td>
+        </tr>
+    </table>
+</div>
+
+<div *ngIf="filterReport == 'DailyEsslPunchReport' && filterPlant == 'ML00'" id="essl1">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Sl.No.</th>
+            <th>Employee No.</th>
+            <th>Employee Name</th>
+            <th>Designation</th>
+            <th>Department</th>
+            <th>Log Date</th>
+            <th>Log Date&time</th>
+            <th>Shift</th>
+            <th>IP Address</th>
+        </tr>
+        <tr *ngFor="let lp of EsslPunchReport;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.pernr}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.eventDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.eventTime | date:'dd/MM/yyyy hh:mm:ss a'}}</td>
+            <td>{{lp.shift}}</td>
+            <td>{{lp.ipAddress}}</td>
+        </tr>
+    </table>
+
+</div>
+
+<div *ngIf="filterReport == 'DailyShiftReport'" id="shift">
+    <!-- <tr style="text-align: center;align-items: center;">
+        <th colspan="14" style="text-align: center;align-items: center;border: 0.5px;">MICRO LABS LIMITED</th>
+    </tr>
+    <tr style="text-align: center;align-items: center;">
+        <th colspan="14" style="text-align: center;align-items: center;border: 0.5px;">Daily Attendance Detail Report for the Date: {{fromDate | date:'dd/MM/yyyy'}}</th>
+    </tr> -->
+
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped">
+        <!-- <tr>
+            <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+        </tr> -->
+        <tr>
+            <th>Sl.No.</th>
+            <th>Employee No.</th>
+            <th>Employee Name</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Reporting group</th>
+            <th>Sub Department</th>
+            <th>Shift</th>
+            <th>Shift Name</th>
+        </tr>
+        <tr *ngFor="let lp of ShiftReport;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.pernr}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.reportingGroup}}</td>
+            <td>{{lp.subDept}}</td>
+            <td>{{lp.shift}}</td>
+            <td>{{lp.shiftName}}</td>
+        </tr>
+    </table>
+
+</div>
+
+<div hidden id="AddAttr">
+    <table class="table table-bordered table-striped" *ngIf="AttendanceType=='Summary'">
+        <!-- <tr>
+            <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+        </tr> -->
+        <tr>
+            <th>Sl.No.</th>
+            <th>Available.</th>
+            <th>Addition</th>
+            <th>Attrition</th>
+        </tr>
+        <tr *ngFor="let lp of AddAttrReport;let i=index">
+            <td style="width: 10%;">{{i+1}}</td>
+            <td style="width: 30%;">{{lp.available}}</td>
+            <td style="width: 30%;">{{lp.addition}}</td>
+            <td style="width: 30%;">{{lp.attrition}}</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered table-striped" *ngIf="AttendanceType=='Detailed'">
+        <tr>
+            <th colspan="6" style="text-align: center;">
+                <h3>Addition</h3>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:5%">Sl.No.</th>
+            <th style="width:10%">Pernr.</th>
+            <th style="width:25%">Employee Name</th>
+            <th style="width:20%">Designation</th>
+            <th style="width:20%">Department</th>
+            <th style="width:20%">DOJ</th>
+        </tr>
+        <tr *ngFor="let lp of AdditionReport;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.pernr}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.doj}}</td>
+        </tr>
+    </table>
+    &nbsp;&nbsp;&nbsp;
+    <table class="table table-bordered table-striped" *ngIf="AttendanceType=='Detailed'">
+        <tr>
+            <th colspan="6" style="text-align: center;">
+                <h3>Attrition</h3>
+            </th>
+        </tr>
+        <tr>
+            <th style="width:5%">Sl.No.</th>
+            <th style="width:10%">Pernr.</th>
+            <th style="width:25%">Employee Name</th>
+            <th style="width:20%">Designation</th>
+            <th style="width:20%">Department</th>
+            <th style="width:20%">DOL</th>
+        </tr>
+        <tr *ngFor="let lp of AttritionReport;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lp.pernr}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.doj}}</td>
+        </tr>
+    </table>
+
+</div>
+
+<div *ngIf="filterReport == 'ManualEntryAudit'" id="manualaudit">
+    <table class="table table-bordered table-striped">
+        <!-- <tr>
+            <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+        </tr> -->
+        <tr>
+            <th>Sl.No.</th>
+            <th>Employee No.</th>
+            <th>Employee Name</th>
+            <th>Location</th>
+            <th>Swipe Date</th>
+            <th>Swipe Type</th>
+            <th>Prev Time</th>
+            <th>Actual Time</th>
+            <th>Reason Type</th>
+            <th>Remarks</th>
+            <th>User Name</th>
+            <th>User Ip</th>
+            <th>User Designation</th>
+            <th>User Department</th>
+            <th>Updated date </th>
+        </tr>
+        <tr *ngFor="let lp of ManualEntryAuditReport;let i=index">
+            <td style="width: 5%;">{{i+1}}</td>
+            <td>{{lp.pernr}}</td>
+            <td>{{lp.empName}}</td>
+            <td>{{lp.locid}}</td>
+            <td>{{lp.startDate | date:'dd/MM/yyyy'}}</td>
+            <td>{{lp.inout == 'I'?'In':'Out'}}</td>
+            <td>{{lp.prevTime}}</td>
+            <td>{{lp.start}}</td>
+            <td>{{lp.reasonType}}</td>
+            <td>{{lp.remarks}}</td>
+            <td>{{lp.username}}</td>
+            <td>{{lp.ipAddress}}</td>
+            <td>{{lp.designation}}</td>
+            <td>{{lp.department}}</td>
+            <td>{{lp.createdDate | date:'dd/MM/yyyy'}}</td>
+        </tr>
+    </table>
+</div>
+
+<div hidden *ngIf="filterReport == 'MonthlyOT' && ViewType=='Detailed'" id="MonthlyOT">
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <!-- <tr>
+            <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+        </tr> -->
+            <tr>
+                <th>Sl.No.</th>
+                <th>Employee_ID</th>
+                <th>Full_Name</th>
+                <th>Designation</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Contractor_Name</th>
+                <th>OTDate</th>
+                <th> Shift </th>
+                <th>Shift_Start_Time</th>
+                <th>Shift_End_Time</th>
+                <th>In_Time</th>
+                <th>OUT_Time</th>
+                <th>Attendance_Status</th>
+                <th>Total_Hour_Worked</th>
+                <th>OT_Hour</th>
+
+            </tr>
+            <tr *ngFor="let lp of MonthlyOTReport;let i=index">
+                <td style="width: 5%;">{{i+1}}</td>
+                <td style="width: 8%;">{{lp.pernr}}</td>
+                <td style="width: 10%;">{{lp.empName}}</td>
+                <td style="width: 8%;">{{lp.designation}}</td>
+                <td style="width: 5%;">{{lp.role}}</td>
+                <td style="width: 8%;">{{lp.department}}</td>
+                <td style="width: 8%;">{{lp.contractorId}}</td>
+                <td style="width: 8%;">{{lp.otDate | date:'dd/MM/yyyy'}}</td>
+                <td style="width: 5%;">{{lp.shift}}</td>
+                <td style="width: 5%;">{{lp.shiftStartTime}}</td>
+                <td style="width: 5%;">{{lp.shiftEndTime}}</td>
+                <td style="width: 5%;">{{lp.employeeInTime}}</td>
+                <td style="width: 5%;">{{lp.employeeOutTime}}</td>
+                <td style="width: 5%;">{{lp.attendanceStatus}}</td>
+                <td style="width: 5%;">{{lp.total}}</td>
+                <td style="width: 5%;">{{lp.ot}}</td>
+
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div hidden *ngIf="filterReport == 'MonthlyOT' && ViewType=='Summary'" id="MonthlyOT1">
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <!-- <tr>
+            <td colspan="9" style="text-align: center;">Employees On Late Punch</td>
+        </tr> -->
+            <tr>
+                <th>Sl.No.</th>
+                <th>Employee_ID</th>
+                <th>Full_Name</th>
+                <th>Designation</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Total OT Hours</th>
+            </tr>
+            <tr *ngFor="let lp of MonthlyOTReport;let i=index">
+                <td style="width: 5%;">{{i+1}}</td>
+                <td style="width: 10%;">{{lp.pernr}}</td>
+                <td style="width: 25%;">{{lp.empName}}</td>
+                <td style="width: 20%;">{{lp.designation}}</td>
+                <td style="width: 15%;">{{lp.role}}</td>
+                <td style="width: 15%;">{{lp.department}}</td>
+                <td style="width: 10%;">{{lp.totalOT}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div hidden id="MonthlyDetailed">
+    <table class="table table-bordered table-striped">
+        <th *ngFor="let rep of ReportData;let i=index">
+            <tr>
+                <td colspan="32">{{rep.month}}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>8</th>
+                <th>9</th>
+                <th>10</th>
+                <th>11</th>
+                <th>12</th>
+                <th>13</th>
+                <th>14</th>
+                <th>15</th>
+                <th>16</th>
+                <th>17</th>
+                <th>18</th>
+                <th>19</th>
+                <th>20</th>
+                <th>21</th>
+                <th>22</th>
+                <th>23</th>
+                <th>24</th>
+                <th>25</th>
+                <th>26</th>
+                <th>27</th>
+                <th>28</th>
+                <th>29</th>
+                <th>30</th>
+                <th>31</th>
+            </tr>
+            <tr *ngFor="let att of rep.attendance">
+                <td>{{getName(att.ord)}}</td>
+                <td>{{att.day1}}</td>
+                <td>{{att.day2}}</td>
+                <td>{{att.day3}}</td>
+                <td>{{att.day4}}</td>
+                <td>{{att.day5}}</td>
+                <td>{{att.day6}}</td>
+                <td>{{att.day7}}</td>
+                <td>{{att.day8}}</td>
+                <td>{{att.day9}}</td>
+                <td>{{att.day10}}</td>
+                <td>{{att.day11}}</td>
+                <td>{{att.day12}}</td>
+                <td>{{att.day13}}</td>
+                <td>{{att.day14}}</td>
+                <td>{{att.day15}}</td>
+                <td>{{att.day16}}</td>
+                <td>{{att.day17}}</td>
+                <td>{{att.day18}}</td>
+                <td>{{att.day19}}</td>
+                <td>{{att.day20}}</td>
+                <td>{{att.day21}}</td>
+                <td>{{att.day22}}</td>
+                <td>{{att.day23}}</td>
+                <td>{{att.day24}}</td>
+                <td>{{att.day25}}</td>
+                <td>{{att.day26}}</td>
+                <td>{{att.day27}}</td>
+                <td>{{att.day28}}</td>
+                <td>{{att.day29}}</td>
+                <td>{{att.day30}}</td>
+                <td>{{att.day31}}</td>
+            </tr>
+            <tr>
+                <td colspan="32">&nbsp;</td>
+            </tr>
+        </th>
+    </table>
+</div>
+
+<div class="table table-responsive" *ngIf="filterReport=='YearlyLeaveReport'">
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th rowspan="2">SNo</th>
+            <th rowspan="2">Employee No</th>
+            <th rowspan="2">Employee Name</th>
+            <th rowspan="2">Department</th>
+            <th rowspan="2">Designation</th>
+            <th style="text-align: center;" colspan="3">Casual Leave</th>
+            <th style="text-align: center;" colspan="3">Sick Leave</th>
+            <th style="text-align: center;" colspan="3">Earned Leave</th>
+            <th style="text-align: center;" colspan="3">Total Leave</th>
+            <th style="text-align: center;" colspan="3">Previous Year</th>
+        </tr>
+        <tr>
+
+            <th>Opening</th>
+            <th>Availed</th>
+            <th>Closing</th>
+            <th>Opening</th>
+            <th>Availed</th>
+            <th>Closing</th>
+            <th>Opening</th>
+            <th>Availed</th>
+            <th>Closing</th>
+            <th>Opening</th>
+            <th>Availed</th>
+            <th>Closing</th>
+            <th>Opening</th>
+            <th>Availed</th>
+            <th>Closing</th>
+        </tr>
+        <tr *ngFor="let lv of ReportData;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{lv.pernr}}</td>
+            <td>{{lv.fullName}}</td>
+            <td>{{lv.department}}</td>
+            <td>{{lv.designation}}</td>
+            <td>{{lv.cl_open}}</td>
+            <td>{{lv.cl_avail}}</td>
+            <td>{{lv.cl_close}}</td>
+            <td>{{lv.sl_open}}</td>
+            <td>{{lv.sl_avail}}</td>
+            <td>{{lv.sl_close}}</td>
+            <td>{{lv.el_open}}</td>
+            <td>{{lv.el_avail}}</td>
+            <td>{{lv.el_close}}</td>
+            <td>{{lv.tot_open}}</td>
+            <td>{{lv.tot_availed}}</td>
+            <td>{{lv.tot_close}}</td>
+            <td>{{lv.prev_open}}</td>
+            <td>{{lv.prev_availed}}</td>
+            <td>{{lv.prev_close}}</td>
+        </tr>
+    </table>
+</div>
+
+<div hidden id="pdf110">
+    <div class="table table-responsive">
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th style="text-align: center; width: 10%;">SNo</th>
+                <th style="text-align: center; width: 10%;">Device Id</th>
+                <th style="text-align: center; width: 20%;">Device Name</th>
+                <th style="text-align: center; width: 15%;">Serial Number</th>
+                <th style="text-align: center; width: 10%;">Ip Address</th>
+                <th style="text-align: center; width: 15%;">Device Location</th>
+                <th style="text-align: center; width: 10%;">Device Type</th>
+                <th style="text-align: center; width: 10%;">Last Ping (Date & Time)</th>
+            </tr>
+            <tr *ngFor="let categ of DevBioReport;  let i = index">
+                <td>{{i+1}}</td>
+                <td>{{categ.deviceId}}</td>
+                <td>{{categ.deviceFname}}</td>
+                <td>{{categ.serialNumber}}</td>
+                <td>{{categ.ipAddress}}</td>
+                <td>{{categ.deviceLocation}}</td>
+                <td>{{categ.deviceType}}</td>
+                <td>{{categ.lastPing | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div hidden id="Intimation">
+    <div class="table table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-1">Sl.No</th>
+                    <th>Employee No</th>
+                    <th>Employee Name</th>
+                    <th>Designation</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Intimation Type</th>
+                    <th>Intimation Over</th>
+                    <th>Reason</th>
+                    <th>Intimation Updated By</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let categ of IntimationReport;  let i = index">
+                    <td style="width: 2%;">{{i+1}}</td>
+                    <td style="width: 8%;">{{categ.empId}}</td>
+                    <td style="width: 15%;">{{categ.empName}}</td>
+                    <td style="width: 8%;">{{categ.designation}}</td>
+                    <td style="width: 8%;">{{categ.role}}</td>
+                    <td style="width: 8%;">{{categ.department}}</td>
+                    <td style="width: 8%;">{{categ.fromDate | date:'dd/MM/yyyy'}}</td>
+                    <td style="width: 8%;">{{categ.toDate | date:'dd/MM/yyyy'}}</td>
+                    <td style="width: 8%;">{{categ.intimationType}}</td>
+                    <td style="width: 7%;">{{categ.intimationOver}}</td>
+                    <td style="width: 10%;">{{categ.reason}}</td>
+                    <td style="width: 10%;">{{categ.updatedBy}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div hidden id="LOPR">
+    <div class="table table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-1">Sl.No</th>
+                    <th>Employee No</th>
+                    <th>Employee Name</th>
+                    <th>Designation</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Date of Reimbursement</th>
+                    <th>Month of Reimbursement</th>
+                    <th>Attendance Status</th>
+                    <th>Requested Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let categ of ReimbursementReport;  let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{categ.empId}}</td>
+                    <td>{{categ.empName}}</td>
+                    <td>{{categ.designation}}</td>
+                    <td>{{categ.role}}</td>
+                    <td>{{categ.department}}</td>
+                    <td>{{categ.fromDate | date:'dd/MM/yyyy'}}</td>
+                    <td>{{categ.month}}</td>
+                    <td>{{categ.status}}</td>
+                    <td>{{categ.requestedDate | date:'dd/MM/yyyy'}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Details OT View -->
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #68a7d2;color:white;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">Employee OT Detailed View</h3>
+            </div>
+            <div class="modal-body box-primary" style="box-shadow: none;color:gray;background-size:cover;">
+                <form #desigForm="ngForm">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table id="OTTable" class="table table-bordered  table-striped">
+                                <thead style="background-color: #0099cc; color:white;">
+                                    <tr>
+                                        <th>Sl.No.</th>
+                                        <th>Employee_ID</th>
+                                        <th>Full_Name</th>
+                                        <th>Designation</th>
+                                        <th>Role</th>
+                                        <th>Department</th>
+                                        <th>Contractor_Name</th>
+                                        <th>OTDate</th>
+                                        <th> Shift </th>
+                                        <th>Shift_Start_Time</th>
+                                        <th>Shift_End_Time</th>
+                                        <th>In_Time</th>
+                                        <th>OUT_Time</th>
+                                        <th>Attendance_Status</th>
+                                        <th>Total_Hour_Worked</th>
+                                        <th>OT_Hour</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let lp of details;let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{lp.pernr}}</td>
+                                        <td>{{lp.empName}}</td>
+                                        <td>{{lp.designation}}</td>
+                                        <td>{{lp.role}}</td>
+                                        <td>{{lp.department}}</td>
+                                        <td>{{lp.contractorId}}</td>
+                                        <td>{{lp.otDate | date:'dd/MM/yyyy'}}</td>
+                                        <td>{{lp.shift}}</td>
+                                        <td>{{lp.shiftStartTime}}</td>
+                                        <td>{{lp.shiftEndTime}}</td>
+                                        <td>{{lp.employeeInTime}}</td>
+                                        <td>{{lp.employeeOutTime}}</td>
+                                        <td>{{lp.attendanceStatus}}</td>
+                                        <td>{{lp.total}}</td>
+                                        <td>{{lp.ot}}</td>
+
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+                    data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div hidden id="AllowanceSum">
+    <table class="table table-bordered  table-striped">
+        <thead>
+            <tr>
+                <th class="col-sm-1">Sl.No</th>
+                <th>Employee No</th>
+                <th>Employee Name</th>
+                <th>Designation</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Shift Code</th>
+                <th>No.Of Days</th>
+                <th>Per Day Allowance</th>
+                <th>Total Allowance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let categ of EmpShiftAll;  let i = index">
+                <td>{{i+1}}</td>
+                <td>{{categ.pernr}}</td>
+                <td>{{categ.empName}}</td>
+                <td>{{categ.designation}}</td>
+                <td>{{categ.role}}</td>
+                <td>{{categ.department}}</td>
+                <td>{{categ.shift}}</td>
+                <td>{{categ.noofDays}}</td>
+                <td>{{categ.perdayallowance}}</td>
+                <td>{{categ.total}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div hidden id="AllowanceDet">
+    <table class="table table-bordered  table-striped">
+        <thead>
+            <tr>
+                <th class="col-sm-1">Sl.No</th>
+                <th>Employee No</th>
+                <th>Employee Name</th>
+                <th>Designation</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Shift Code</th>
+                <th>Date</th>
+                <th>Per Day Allowance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let categ of EmpShiftAll;  let i = index">
+                <td>{{i+1}}</td>
+                <td>{{categ.pernr}}</td>
+                <td>{{categ.empName}}</td>
+                <td>{{categ.designation}}</td>
+                <td>{{categ.role}}</td>
+                <td>{{categ.department}}</td>
+                <td>{{categ.shift}}</td>
+                <td>{{categ.date | date:'yyyy/MM/dd'}}</td>
+                <td>{{categ.perdayallowance}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

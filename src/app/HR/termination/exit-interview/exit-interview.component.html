@@ -1,0 +1,84 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Exit Interview <span class="label label-success" *ngIf="isAnswered"><b>Submitted</b></span>    
+    <span class="label label-warning" *ngIf="exitInterviewRequired == true && !isAnswered"><b>Pending</b></span>
+    <span class="label label-warning" *ngIf="exitInterviewRequired==false"><b>Not Applicable</b></span>
+  </h1>
+</section>
+
+<section class="content">
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Questionaire</h3>
+    </div>
+    <div class="panel-body form-horizontal" id="printArea">     
+
+      <span class="text-danger" *ngIf="questions == null || questions.length == 0 && exitInterviewRequired == true">Exit Process not initiated. Interview template selection pending.</span>
+      <span class="text-danger" *ngIf="exitInterviewRequired == false">Exit Interview not required.</span>
+
+      <ul class="list-group" *ngIf="questions.length > 0 && exitInterviewRequired == true">
+       
+        <li class="list-group-item" *ngFor="let item of questions; let i = index">
+          <div class="row" >
+            <div class="col-md-12"> 
+              <div class="col-md-6">
+                <div class="{{item.parentQuestionId != null ? 'col-md-offset-1 col-md-11':'col-md-12'}}">
+                  <label>{{item.questionId}} {{item.questionText}} <span style="color:red" *ngIf="item.isMandatory == true">*</span></label>       
+                </div>        
+              </div>
+              <div class="col-md-6">
+
+                <textarea [disabled]="!editAllowed" name="answer" rows="2" class="form-control" *ngIf="item.questionType=='Textbox'" 
+                [(ngModel)]="item.answer" [maxlength]="item.maxLength"></textarea>
+                <span *ngIf="item.questionType=='Textbox' && item.maxLength > 0"><i>Maximum {{item.maxLength}} characters allowed.</i></span>
+
+                <select [disabled]="!editAllowed" class="form-control" name="answer" 
+                *ngIf="item.questionType=='Dropdown'" [(ngModel)]="item.answer">
+                  <option [ngValue]="null" disabled>Select a value</option>
+                  <option *ngFor="let opt of item.options; let j = index" 
+                  [value]="opt.optionText" >{{opt.optionId}} {{opt.optionText}}</option>                  
+                </select>
+
+                <div *ngIf="item.questionType=='Checkbox'">
+                  <div *ngFor="let opt of item.options; let j = index">
+                    <div class="checkbox">
+                      <label><input [disabled]="!editAllowed" type="checkbox" [(ngModel)]="opt.isSelected" value="{{opt.optionId}}">{{opt.optionId}} {{opt.optionText}}</label>
+                    </div>
+                    <div *ngIf="opt.takeTextInput == true && opt.isSelected == true">
+                      <input type="text" [(ngModel)]="opt.textInput" [maxlength]="opt.textMaxLength"/>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>    
+
+      <div *ngIf="questions.length > 0 && exitInterviewRequired == true" class="row">
+        <div class="checkbox col-md-12">
+          <h3><input [disabled]="!editAllowed" type="checkbox" [(ngModel)]="isDeclared" />
+          I here by declare that the above answers are true and accurate to the best of my knowledge.
+          </h3>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-center">      
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+      <button type="button" class="btn btn-primary" *ngIf="editAllowed && questions.length > 0 && exitInterviewRequired == true" (click)="SaveData()" [disabled]="isLoading">Submit</button>
+    </div>
+  </div>
+
+</section>

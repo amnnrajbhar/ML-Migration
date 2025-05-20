@@ -1,0 +1,10 @@
+@media print {
+    /* Hide everything in the body when printing... */
+    body.printing * { display: none; }
+    /* ...except our special div. */
+    body.printing .printable { display: block; }
+}
+
+.printable{
+    margin: 10px 150px;
+}

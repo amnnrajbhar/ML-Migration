@@ -1,0 +1,190 @@
+<section class="content-header">
+  <h1>
+    Guest House Booking
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Booking Report</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Booking Report</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <!-- <button class="btn btn-primary pull-right" (click)="exportAsXLSX()" matTooltip="click to export to Excel"
+          [disabled]="myMeetings.length==0"><i class="fa fa-file-excel"></i> Export Excel</button>
+          &nbsp; -->
+          <button class="btn btn-primary pull-right" (click)="downloadPdf()" matTooltip="click to export to PDF"
+          [disabled]="myMeetings.length==0"><i class="fa fa-file-pdf-a"></i> Export PDF</button>
+      </div>
+    </div>
+    <div id="dateFilterPanel">
+      <div class="row ml-3">
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <label for="Location">Guest House</label>
+            <ng-multiselect-dropdown id="fltLocation" name="fltLocation" #fltLocationEnt="ngModel" matTooltip="select Location"
+              [placeholder]="'select Guest House(multiple)'" [data]="locationList" [(ngModel)]="selectedLocations"
+              [settings]="locationSettings" (onDeSelect)="onLocationDeSelect($event)" (onDeSelectAll)="onLocationDeSelectAll($event)"
+              (onSelectAll)="onLocationSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <label for="Purpose">Purpose</label>
+            <ng-multiselect-dropdown id="fltPurpose" name="fltPurpose" #fltPurposeEnt="ngModel" matTooltip="select Purpose"
+              [placeholder]="'select Purpose(multiple)'" [data]="purposeList" [(ngModel)]="selectedPurpose"
+              [settings]="ddlPurposeSettings" (onDeSelect)="onPurposeDeSelect($event)" (onDeSelectAll)="onPurposeDeSelectAll($event)"
+              (onSelectAll)="onPurposeSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group form-group-sm">
+            <label for="status">Status</label>
+            <ng-multiselect-dropdown id="fltstatus" name="fltstatus" #fltrdelrymodeEnt="ngModel" matTooltip="select status"
+              [placeholder]="'select status(multiple)'" [data]="StatusList" [(ngModel)]="selectedStatus"
+              [settings]="ddlStatusSettings" (onDeSelect)="onStatusDeSelect($event)" (onDeSelectAll)="onStatusDeSelectAll($event)"
+              (onSelectAll)="onStatusSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="row ml-3">
+        <div class="col-sm-3">
+          <label>From Date</label>
+          <div class="form-group form-group-sm">
+            <input [matTooltipPosition]="'below'" matTooltip="Click to change from date" [owlDateTime]="dt11"
+              [owlDateTimeTrigger]="dt11" name="fromDate" class="form-control" [(ngModel)]="from_date" #fromDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <label>To Date</label>
+          <div class="form-group form-group-sm">
+            <input [min]="from_date" [matTooltipPosition]="'below'" matTooltip="Click to change to date"
+              [owlDateTime]="dt12" [owlDateTimeTrigger]="dt12" name="endDate" class="form-control" [(ngModel)]="to_date"
+              #toDate="ngModel">
+            <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+          </div>
+        </div>
+
+        <div class="col-sm-3">
+          <label>&nbsp;</label>
+          <div class="form-group form-group-sm">
+            <button class="btn btn-primary btn-sm" (click)="getMyMeetings();" matTooltip="click to Go"
+              [disabled]="(!toDate.valid && toDate.touched) || (!fromDate.valid && fromDate.touched)">Go</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-primary btn-sm" (click)="clearFilter();" matTooltip="click to clear filters">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table id="roomsTable" class="table  table-striped" cellspacing="0">
+        <thead style="background-color: #0099cc; color:white;">
+          <tr>
+            <th>SNo</th>
+            <th>REQ.No.</th>
+            <th>Emp. Name</th>
+            <th>Emp. Department</th>
+            <th>Emp. Location</th>
+            <th>Guest House</th>
+            <th>Guest House Location</th>
+            <th>Purpose</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Status</th>
+            <th>1st Approver</th>
+            <th>1st approver Comments</th>
+            <th>2nd Approver</th>
+            <th>2nd approver Comments</th>
+            <th>Emp. Comments</th>
+            <th>Cancel Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let meeting of myMeetings; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{meeting.requestNo}}</td>
+            <td>{{meeting.empName}}</td>
+            <td>{{meeting.empDepartment}}</td>
+            <td>{{meeting.empLocatonCode}} - {{meeting.empLocation}}</td>
+            <td>{{meeting.roomName}}</td>
+            <td>{{meeting.roomLocationName}}</td>
+            <td>{{meeting.purpose}}</td>
+            <td>{{meeting.fromDate | date:'dd/MM/yyyy'}} {{binddatetime(meeting.fromTime) | date:'HH:mm'}}
+            </td>
+            <td>{{meeting.toDate | date:'dd/MM/yyyy'}} {{binddatetime(meeting.toTime) | date:'HH:mm'}}
+            </td>
+            <td>{{meeting.status}}</td>
+            <td>{{meeting.managerName?meeting.managerName:'NA'}}</td>
+            <td>{{meeting.managerComments}}</td>
+            <td>{{meeting.adminName?meeting.adminName:'NA'}}</td>
+            <td>{{meeting.adminComments}}</td>
+            <td>{{meeting.comments}}</td>
+            <td>{{meeting.cancelComments}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div hidden id ="pdf">
+        <table hidden class="table-responsive" >
+        <thead>
+          <tr>
+            <th>SNo</th>
+            <th>REQ.No.</th>
+            <th>Emp. Name</th>
+            <th>Emp. Department</th>
+            <th>Emp. Location</th>
+            <th>Guest House</th>
+            <th>Guest House Location</th>
+            <th>Purpose</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Status</th>
+            <th>1st Approver</th>
+            <th>1st approver Comments</th>
+            <th>2nd Approver</th>
+            <th>2nd approver Comments</th>
+            <th>Emp. Comments</th>
+            <th>Cancel Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let meeting of myMeetings; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{meeting.requestNo}}</td>
+            <td>{{meeting.empName}}</td>
+            <td>{{meeting.empDepartment}}</td>
+            <td>{{meeting.empLocatonCode}} - {{meeting.empLocation}}</td>
+            <td>{{meeting.roomName}}</td>
+            <td>{{meeting.roomLocationName}}</td>
+            <td>{{meeting.purpose}}</td>
+            <td>{{meeting.fromDate | date:'dd/MM/yyyy'}} {{binddatetime(meeting.fromTime) | date:'HH:mm'}}
+            </td>
+            <td>{{meeting.toDate | date:'dd/MM/yyyy'}} {{binddatetime(meeting.toTime) | date:'HH:mm'}}
+            </td>
+            <td>{{meeting.status}}</td>
+            <td>{{meeting.managerName?meeting.managerName:'NA'}}</td>
+            <td>{{meeting.managerComments}}</td>
+            <td>{{meeting.adminName?meeting.adminName:'NA'}}</td>
+            <td>{{meeting.adminComments}}</td>
+            <td>{{meeting.comments}}</td>
+            <td>{{meeting.cancelComments}}</td>
+          </tr>
+        </tbody>
+    </table>
+    </div>
+
+    </div>
+    <div class="overlay" *ngIf="isLoading">
+      <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>

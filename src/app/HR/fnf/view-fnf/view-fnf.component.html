@@ -1,0 +1,496 @@
+<section class="content-header">
+  <h1 class="display-1">
+    View FNF
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">View FNF</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <ul class="nav nav-tabs">
+    <li [ngClass]="currentTab=='initiate'?'active':''" id="tab_details"><a (click)="onTabClick(0)">Initiate</a></li>
+    <li [ngClass]="currentTab=='submit'?'active':''" id="tab_submit" *ngIf="isSubmitted"><a (click)="onTabClick(1)">Submit To Accounts</a>
+    </li>
+    <li [ngClass]="currentTab=='payment'?'active':''" id="tab_payment" *ngIf="isPayment"><a (click)="onTabClick(2)">Payment Details</a>
+    </li>
+    <li [ngClass]="currentTab=='issue'?'active':''" id="tab_issue" *ngIf="isIssued"><a (click)="onTabClick(3)">Issue Details</a> </li>
+    <li [ngClass]="currentTab=='attachments'?'active':''" id="tab_attachment"><a (click)="onTabClick(4)">Attachments</a></li>
+  </ul>
+
+  <div class="details-tab">    
+    <div class="panel panel-info" *ngIf="currentTab=='initiate'">
+      <div class="panel-heading">
+        <h3 class="panel-title">FNF Details</h3>
+      </div>
+
+      <div class="panel-body">
+        <form #fnfForm="ngForm" class="form-horizontal">
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="dateOfResignation">Date of Resignation </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="dateOfResignation" name="dateOfResignation"
+                    [ngModel]="resignationDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="noticePeriod">Notice Period</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="noticePeriod" name="noticePeriod"
+                    [ngModel]="resignationDetails.noticePeriod" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="expectedLastDate">Exptected Last Working Date</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="expectedLastDate" name="expectedLastDate"
+                    [ngModel]="lastWorkingDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="actualLastDate">Actual Last Working Date</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="actualLastDate" name="actualLastDate"
+                    [ngModel]="actualLastDate | date:'dd/MM/yyyy'" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="noticeShortfallDays">Notice Shortfall Days</label>
+                <div class="col-md-8">
+                  <input type="number" matTooltip="Input Extension Months" [ngModel]="diffDays" class="form-control"
+                    id="noticeShortfallDays" name="noticeShortfallDays" #monthlyGross="ngModel" [disabled]="true">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">   
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="monthlyGross">Monthly Gross</label>
+                <div class="col-md-8">
+                  <input type="number" matTooltip="Input Monthly Gross" [(ngModel)]="monthlyTotal" class="form-control"
+                    id="monthlyGross" name="monthlyGross" #monthlyGross="ngModel" [disabled]="true">
+                </div>
+              </div>
+            </div>       
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="payableDays">Payable Days</label>
+                <div class="col-md-8">
+                  <input type="number" matTooltip="Input Extension Months" [(ngModel)]="fnfDetails.payableDays"
+                    class="form-control" id="payableDays" name="payableDays" #payableDays="ngModel" [disabled]="true">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="cl">CL</label>
+                <div class="col-md-8">
+                  <input type="number" matTooltip="Input CL" [(ngModel)]="fnfDetails.cl" class="form-control" id="cl"
+                    name="cl" #monthlyGross="ngModel" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="ml">SL</label>
+                <div class="col-md-8">
+                  <input type="number" matTooltip="Input SL" [(ngModel)]="fnfDetails.ml" class="form-control" id="ml"
+                    name="ml" #payableDays="ngModel" [disabled]="true">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="el">EL</label>
+                <div class="col-md-8">
+                  <input type="number" matTooltip="Input EL" [(ngModel)]="fnfDetails.el" class="form-control" id="el"
+                    name="el" #payableDays="ngModel" [disabled]="true">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="waivedoffdays">Waived Off Days</label>
+                <div class="col-md-8">
+                <input type="number" matTooltip="Input Waived Off Days" [(ngModel)]="fnfDetails.waivedOffDays" class="form-control" id="waivedoffdays"
+                name="waivedoffdays" #payableDays="ngModel" [disabled]="true">            
+              </div>
+            </div>
+          </div>
+        
+          <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4" for="remarks">Reason</label>
+            <div class="col-md-8">
+                <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Reson(Max 100 Chars)"
+                  [(ngModel)]="fnfDetails.reason" class="form-control" id="reason" name="reason" #remarks="ngModel"
+                  [disabled]="true" minlength="10" maxlength="500" required></textarea>
+              </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+          <div class="form-group">
+            <label class="col-md-4" for="remarks">Remarks</label>
+            <div class="col-md-8">
+                <textarea [matTooltipPosition]="'below'" matTooltip="Input Detail Remarks(Max 500 Chars)"
+                  [(ngModel)]="fnfDetails.remarks" class="form-control" id="remarks" name="remarks" #remarks="ngModel"
+                  [disabled]="true" minlength="10" maxlength="500" required></textarea>
+              </div>
+            </div>
+          </div>
+          </div>
+          <div class="overlay text-center h3" *ngIf="isLoading">
+            <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+
+          <div >
+            <h3>
+              Settlement Details
+            </h3>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th width="20%">Head</th>
+                    <th width="25%">Details</th>
+                    <th width="10%">Type</th>
+                    <th width="10%">Eligible Amount</th>
+                    <th width="10%">Payable Amount</th>
+                    <th width="25%">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of settlementDetails; let i = index">
+                    <td width="20%">{{item.head}}</td>
+                    <td width="25%">{{item.details}}</td>
+                    <td width="10%">{{item.type}}</td>
+                    <td width="10%" class="text-right">{{item.eligibleAmount | number: "1.0-2"}}</td>
+                    <td width="10%" class="text-right">{{item.payableAmount | number: "1.0-2"}}</td>
+                    <td width="25%">{{item.remarks}}</td>
+                  </tr>
+                </tbody>
+
+              </table>
+            </div>
+          </div>
+            <div class="row">
+              <div class="col-md-12">
+                  <div class="col-md-offset-5 col-md-5">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <!-- <th>Eligible</th> -->
+                            <th>Payable</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Total Earnings</td>
+                            <!-- <td><input type="text" class="form-control text-right" id="totalEarningsEligible"
+                                name="totalEarningsEligible" [(ngModel)]="details.totalEarningsEligible"
+                                [disabled]="true"></td> -->
+                            <td><input type="text" class="form-control text-right" id="totalEarningsPayable"
+                                name="totalEarningsPayable" [(ngModel)]="details.totalEarningsPayable" [disabled]="true">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Total Deductions</td>
+                            <!-- <td><input type="text" class="form-control text-right" id="totalDeductionsEligible"
+                                name="totalDeductionsEligible" [(ngModel)]="details.totalDeductionsEligible"
+                                [disabled]="true"></td> -->
+                            <td><input type="text" class="form-control text-right" id="totalDeductionsPayable"
+                                name="totalDeductionsPayable" [(ngModel)]="details.totalDeductionsPayable"
+                                [disabled]="true"></td>
+                          </tr>
+                          <tr>
+                            <td>Net Payable</td>
+                            <!-- <td><input type="text" class="form-control text-right" id="totalEligible" name="totalEligible"
+                                [(ngModel)]="details.totalEligible" [disabled]="true"></td> -->
+                            <td><input type="text" class="form-control text-right" id="totalPayable" name="totalPayable"
+                                [(ngModel)]="details.totalPayable" [disabled]="true"></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                  </div>
+              </div>
+            </div>
+        </form>
+      </div>
+    </div>
+    <div class="panel panel-info" *ngIf="currentTab=='submit'">
+      <div class="panel-heading">
+        <h3 class="panel-title">Submit To Accounts</h3>
+      </div>
+      <div class="panel-body">
+        <form #fnfForm="ngForm" class="form-horizontal">
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="receiptDate">Date of Submission </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="submittedDate" name="submittedDate" [(ngModel)]="fnfDetails.submittedDate"
+                    [owlDateTime]="submittedDate" [owlDateTimeTrigger]="submittedDate" disabled>
+                  <owl-date-time [pickerType]="'calendar'" #submittedDate></owl-date-time>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="relievingDate">Submitted To </label>
+                <div class="col-md-8">
+                  <input type="text" id="submittedToName" class="form-control" [(ngModel)]="fnfDetails.submittedToName"
+                    autocomplete="off" ngControl="fnfDetails.submittedToName" name="submittedToName" disabled />
+                  <input type="hidden" id="employeeId" [(ngModel)]="employee.id" name="employeeId" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+    <div class="panel panel-info" *ngIf="currentTab=='payment'">
+      <div class="panel-heading">
+        <h3 class="panel-title">Update Payment</h3>
+      </div>
+      <div class="panel-body">
+        <form #fnfForm="ngForm" class="form-horizontal">
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="receiptDate">Date of Receipt </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="receiptDate" name="receiptDate"
+                    [(ngModel)]="fnfDetails.receiptDate" [owlDateTime]="receiptDate" [owlDateTimeTrigger]="receiptDate"
+                    disabled>
+                  <owl-date-time [pickerType]="'calendar'" #receiptDate></owl-date-time>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="relievingDate">Mode Of Payment</label>
+                <div class="col-md-8">
+                  <select [(ngModel)]="fnfDetails.modeOfPayment" class="form-control" id="mode" name="mode"
+                    matTooltip="Mode Of Payment" #modeEnt="ngModel" disabled>
+                    <option [ngValue]="null" disabled [selected]="true"> Select Mode Of Payment </option>
+                    <option *ngFor="let pl of modes" [ngValue]="pl.mode">{{pl.mode}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="modeEnt.touched && !modeEnt.valid">Please Select Mode</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="receiptDate">{{fnfDetails.modeOfPayment}} Date</label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="chequeDate" name="chequeDate"
+                    [(ngModel)]="fnfDetails.chequeDate" [owlDateTime]="chequeDate" [owlDateTimeTrigger]="chequeDate"
+                    disabled>
+                  <owl-date-time [pickerType]="'calendar'" #chequeDate></owl-date-time>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="ChequeNo">{{fnfDetails.modeOfPayment}} No</label>
+                <div class="col-md-8">
+                  <input type="number" matTooltip="Input Cheque/DD No" [(ngModel)]="fnfDetails.chequeNo" disabled
+                    class="form-control" id="ChequeNo" name="ChequeNo">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="bankName">Bank Name</label>
+                <div class="col-md-8">
+                  <input type="text" matTooltip="Input Cheque/DD No" [(ngModel)]="fnfDetails.bankName" disabled
+                    class="form-control" id="bankName" name="bankName">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="receiptDate">Amount</label>
+                <div class="col-md-8">
+                  <input type="number" matTooltip="Input Cheque/DD Months" [(ngModel)]="fnfDetails.amount"
+                    class="form-control" id="amount" name="amount" disabled>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+    <div class="panel panel-info" *ngIf="currentTab=='issue'">
+      <div class="panel-heading">
+        <h3 class="panel-title">Issued Details</h3>
+      </div>
+      <div class="panel-body">
+        <form #fnfForm="ngForm" class="form-horizontal">
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="receiptDate">Date of Issue </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="issueDate" name="issueDate"
+                    [(ngModel)]="fnfDetails.issueDate" [owlDateTime]="issueDate" [owlDateTimeTrigger]="issueDate"
+                    disabled>
+                  <owl-date-time [pickerType]="'calendar'" #issueDate></owl-date-time>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="issuemode">Mode Of Issue</label>
+                <div class="col-md-8">
+                  <select [(ngModel)]="fnfDetails.modeOfIssue" class="form-control" id="issuemode" name="issuemode"
+                    matTooltip="Mode Of Payment" #issuemodeEnt="ngModel" disabled>
+                    <option [ngValue]="null" disabled [selected]="true"> Select Mode Of Issue </option>
+                    <option *ngFor="let pl of issuemodes" [ngValue]="pl.issuemode">{{pl.issuemode}}</option>
+                  </select>
+                  <span class="help-block" *ngIf="issuemodeEnt.touched && !issuemodeEnt.valid">Please Select Issue
+                    Mode</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row" *ngIf="fnfDetails.modeOfIssue=='In Person'">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="receiptDate">Issued To </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="issueName" name="issueName" matTooltip="Issuing Person Name"
+                    [(ngModel)]="fnfDetails.issuingPersonName" disabled>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="issueMobile">Mobile No</label>
+                <div class="col-md-8">
+                  <input type="test" matTooltip="Issuing Person Mobile" [(ngModel)]="fnfDetails.issuingPersonMobile"
+                    class="form-control" id="issueMobile" name="issueMobile" disabled>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="issueEmail">Email ID</label>
+                <div class="col-md-8">
+                  <input type="test" matTooltip="Issuing Person Email" [(ngModel)]="fnfDetails.issuingPersonEmail"
+                    class="form-control" id="issueEmail" name="issueEmail" disabled>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row" *ngIf="fnfDetails.modeOfIssue=='Courier'">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="carrierName">Courier Name</label>
+                <div class="col-md-8">
+                  <input type="test" matTooltip="Courier/Speed Post Name" [(ngModel)]="fnfDetails.carrierName"
+                    class="form-control" id="carrierName" name="carrierName" disabled>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="docketno">Docket No</label>
+                <div class="col-md-8">
+                  <input type="test" matTooltip="Docket No" [(ngModel)]="fnfDetails.docketno" class="form-control"
+                    id="docketno" name="docketno" disabled>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4" for="receiptDate">Date of Dispatch </label>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="dispatchDate" name="dispatchDate"
+                    [(ngModel)]="fnfDetails.dispatchDate" [owlDateTime]="dispatchDate" [owlDateTimeTrigger]="dispatchDate"
+                    disabled>
+                  <owl-date-time [pickerType]="'calendar'" #dispatchDate></owl-date-time>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+ 
+      <app-employee-attachments [objectId]="this.fnfId" [objectType]="this.objectType" [employeeId]="this.employeeId" 
+      [editAllowed]="true" [deleteAllowed]="false" *ngIf="currentTab=='attachments'"></app-employee-attachments>
+
+  </div>
+</section>
+<div class="row text-center actionButtons">
+  <div class="col-md-12">
+    <button type="button" (click)="goBack()" class="btn btn-default" matTooltip="Click to go back to list">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <button type="button" class="btn btn-primary" (click)="showNext()" *ngIf="currentTab!='issue'"
+      matTooltip="Click to view next tab details">Next</button>
+  </div>
+</div>
+<div>
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#tabActivity">Activity</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div id="tabApprovals" class="tab-pane fade in active">
+      <app-flow-viewer [objectId]="fnfId" [objectType]="this.objectType">
+      </app-flow-viewer>
+    </div>
+    <div id="tabActivity" class="tab-pane fade">
+      <app-activity-viewer [objectId]="fnfId" [objectType]="this.objectType">
+      </app-activity-viewer>
+    </div>
+  </div>
+</div>

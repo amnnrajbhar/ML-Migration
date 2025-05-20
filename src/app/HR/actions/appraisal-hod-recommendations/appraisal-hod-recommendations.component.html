@@ -1,0 +1,190 @@
+<ul class="nav nav-tabs">
+  <li [ngClass]="(i+1) == 1 ? 'active' : ''" *ngFor="let item of employeeDetail.recommendationDetails; let i = index">
+    <a data-toggle="tab" href="#tabRecommendation{{i+1}}">Recommendation {{i + 1}}</a>
+  </li>
+</ul>
+<div class="tab-content details-tab">
+  <div id="tabRecommendation{{i+1}}" [ngClass]="(i+1 == 1) ? 'tab-pane fade in active' : 'tab-pane fade'"
+    *ngFor="let item of employeeDetail.recommendationDetails; let i = index">
+    <div class="panel panel-info">
+
+      <div class="panel-heading">
+        <h3 class="panel-title">Appraisal Recommendations by {{item.approverName}}</h3>
+      </div>
+      <div class="overlay text-center h3" *ngIf="isLoading">
+        <i class="fa fa-spinner fa-pulse"></i>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>Current Responsibilities</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let field of item.oldResponsibilities; let i = index">
+                    <td>
+                      {{field.description}}
+                      <!-- <textarea name="oldResponsibilities" [(ngModel)]="field.oldResponsibilities" class="form-control" disabled></textarea> -->
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>New Responsibilities</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let field of item.newResponsibilities; let i = index">
+                    <td>
+                      {{field.description}}
+                      <!-- <textarea name="newResponsibilities" [(ngModel)]="field.newResponsibilities" class="form-control" disabled></textarea> -->
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>Next Year KRA</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let field of item.nextYearKra; let i = index">
+                    <td>
+                      {{field.nextYearKra}}
+                      <!-- <textarea name="nextYearKra" [(ngModel)]="field.nextYearKra" class="form-control" disabled></textarea> -->
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Recommended Rating</label>
+              <input type="text" class="form-control" id="recommendedRating" [(ngModel)]="item.rating" disabled="true"
+                name="recommendedRating" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Increment Type</label>
+              <input type="text" class="form-control" id="recommendedSalaryType" [(ngModel)]="item.salaryType"
+                disabled="true" name="recommendedSalaryType" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Recommended Amount</label>
+              <input type="text" class="form-control" id="recommendedSalary" [(ngModel)]="item.recommendedSalary"
+                disabled="true" name="recommendedSalary" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>One Time Consideration Type</label>
+              <input type="text" class="form-control" id="oneTimeSalaryType" [(ngModel)]="item.oneTimeSalaryType"
+                disabled="true" name="oneTimeSalaryType" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>One Time Consideration Salary</label>
+              <input type="text" class="form-control" id="oneTimeSalaryAmount" [(ngModel)]="item.oneTimeSalaryAmount"
+                disabled="true" name="oneTimeSalaryAmount" />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="initial">Sales</label>
+              <input type="text" class="form-control" id="sales" [(ngModel)]="item.sales" ngControl="item.sales"
+                name="sales" disabled="true" />
+
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="initial">Growth</label>
+              <input type="text" class="form-control" id="growth" [(ngModel)]="item.growth" disabled="true"
+                ngControl="item.growth" name="growth" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Promotion Recommended</label>
+              <input type="text" class="form-control" id="isPromotionRecommended"
+                [(ngModel)]="item.isPromotionRecommendedText" disabled="true" name="isPromotionRecommended" />
+            </div>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="item.isPromotionRecommendedText =='Yes'">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Justification for Promotion</label>
+              <textarea name="promotionComment" [(ngModel)]="item.promotionComment" class="form-control"
+                disabled></textarea>
+
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Recommended Designation</label>
+              <input type="text" class="form-control" id="recommendedDesignation"
+                [(ngModel)]="item.recommendedDesignationText" disabled name="recommendedDesignation" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Recommended Role</label>
+              <input type="text" class="form-control" id="recommendedRole" [(ngModel)]="item.recommendedRoleText"
+                disabled name="recommendedRole" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Special Achievement</label>
+              <textarea name="specialAchievement" [(ngModel)]="item.specialAchievement" class="form-control"
+                disabled></textarea>
+
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Additional Notes</label>
+              <textarea name="hodAdditionalNotes" [(ngModel)]="item.hodAdditionalNotes" class="form-control"
+                disabled></textarea>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

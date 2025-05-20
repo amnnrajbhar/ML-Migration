@@ -1,0 +1,124 @@
+﻿<section class="content-header" >
+  <h1>
+    Master
+    <small>Role</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Role</li>
+  </ol>
+</section>
+<section class="content" >
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Role Data</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddRole(false,roleItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add Role</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="addRole" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:20px">Id</th>
+            <th>Role</th>
+            <th>Description</th>
+            <th>Parent</th>
+            <th style="width:20px">.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of roleList; let i = index">
+            <td>{{role.id}}</td>
+            <td>{{role.role}}</td>
+            <td>{{role.description}}</td>
+            <td>{{getRoleName(role.fkSuperRoleId)}}</td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="roleForm.reset();onAddRole(true,role)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-md  modal-dialog-centered">
+ <div class="modal-content">
+   <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+       <span aria-hidden="true">&times;</span>
+     </button>
+     <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"  *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+   </div>
+   </div></div>
+   <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+<div  class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Role</h4>
+      </div>
+      <div class="modal-body box box-primary" style="box-shadow: none">
+        <!-- <div class="row"> -->
+          <form #roleForm="ngForm">
+            <div class="form-horizontal">
+              <div class="form-group" [ngClass]="(!name.valid && name.touched)?'has-error':''">
+                <label for="rName" class="col-sm-3"><i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i> Role<span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="rName" placeholder="Role Name" [(ngModel)]="roleItem.role" name="name"
+                         ngControl="roleItem.role" #name="ngModel" required maxlength="50">
+                  <span class="help-block" *ngIf="!name.valid && name.touched">Please Enter Role Name.</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="rDesc" class="col-sm-3">Description</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="rDesc" placeholder="Description" [(ngModel)]="roleItem.description" name="description" maxlength="200" />
+                  </div>
+                </div>
+             
+              <div class="form-group">
+                <label for="parentId" class="col-sm-3"> Parent Role</label>
+                <div class="col-sm-9">
+                  <select [(ngModel)]="selParentRole" class="form-control" id="parentId" name="parentId" ngControl="selParentRole" #parentId="ngModel">
+                    <option *ngFor="let pRole of parentList" [ngValue]="pRole">{{pRole.role}}</option>
+                  </select>
+                  </div>
+                </div>
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveRole()" [disabled]="isLoadingPop || !roleForm.valid">{{isEdit==true?'Update Role':'Save Role'}}</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

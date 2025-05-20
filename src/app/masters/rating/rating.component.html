@@ -1,0 +1,132 @@
+﻿<section class="content-header" >
+  <h1>
+    Rating Master
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">General Rating</li>
+  </ol>
+</section>
+<section class="content" >
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Rating Data</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddRating(false,ratingItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add Rating</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="rating" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:20px">Id</th>
+            <th>Rating Scale</th>
+            <th>Description</th>
+            <th>Calendar</th>
+            <th>Created Date</th>
+            <th style="width:20px">.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ratin of ratingList; let i = index">
+            <td>{{ratin.id}}</td>
+            <td>{{ratin.scale}}</td>
+            <td>{{ratin.definition}}</td>
+            <!-- <td>{{ratin.fkCalendarId}}</td> -->
+            <td>{{getCalNames(ratin.fkCalendarId)}}</td>
+            <td>{{ratin.createdDate | date:'dd-MM-yyyy'}}</td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddRating(true,ratin)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-md  modal-dialog-centered">
+ <div class="modal-content">
+   <div class="modal-header">
+     <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+       <span aria-hidden="true">&times;</span>
+     </button>
+     <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"  *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+   </div>
+   </div></div>
+   <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+<div  class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Rating</h4>
+      </div>
+      <div class="modal-body box box-primary">
+        <div class="row">
+          <form #ratForm="ngForm">
+            <div class="col-sm-6">
+              <div class="form-group" [ngClass]="(!name.valid && name.touched)?'has-error':''">
+                <label for="name" class="col-lg-3"><i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i> Rating<span style="color:red">*</span></label>
+                  <input type="text" class="form-control" id="name" placeholder="Rating Name" [(ngModel)]="ratingItem.scale" name="name"
+                         ngControl="ratingItem.scale" #name="ngModel" required maxlength="50">
+                  <span class="help-block" *ngIf="!name.valid && name.touched">Please Enter Rating Name.</span>
+                </div>
+              <div class="form-group">
+                <label for="dDesc" class="col-lg-3">Description</label>
+                  <input type="text" class="form-control" id="dDesc" placeholder="Description" [(ngModel)]="ratingItem.definition" name="description" maxlength="200" />
+                  </div>
+                </div>
+                <div class="col-sm-6">
+               <div class="form-group">
+                <label for="parentId" class="col-lg-3"> Calendar </label>
+                   <select [(ngModel)]="selParentRole" class="form-control" id="parentId" name="parentId" ngControl="selParentRole" #parentId="ngModel">
+                    <option *ngFor="let cal1 of parentList" [ngValue]="cal1">{{cal1.fiscalYear}}</option>
+                  </select>
+                  </div>
+              <div class="form-group" *ngIf="isEdit" [ngClass]="(!rating_status.valid && rating_status.touched)?'has-error':''">
+                <label for="rating_status"  class="col-lg-3"><i class="fa fa-times-circle-o" *ngIf="!rating_status.valid && rating_status.touched"></i> Status<span style="color:red">*</span></label>
+               
+                <select [(ngModel)]="ratingItem.isActive" class="form-control" id="rating_status" name="rating_status" ngControl="ratingItem.isActive"
+                        #rating_status="ngModel" required>
+                  <option [ngValue]="true">Active</option>
+                  <option [ngValue]="false">Inactive</option>
+                </select>
+              
+                <span class="help-block" *ngIf="!rating_status.valid && rating_status.touched">Please Select Status.</span>
+              </div></div>
+            
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+        <button type="button" class="btn btn-primary" (click)="onSaveRating()" [disabled]="isLoadingPop || !ratForm.valid">{{isEdit==true?'Update Rating':'Save Rating'}}</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

@@ -1,0 +1,522 @@
+<section class="content-header">
+  <h1>
+   WorkFlowApprovers
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">WorkFlowApprovers</li>
+
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <div class="col-xs-6">
+            <h3 class="box-title">WorkFlowApprovers</h3>
+            <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+          </div>
+          <div class="col-xs-6">
+            <button type="button" class="btn btn-primary pull-right" (click)="onAddWorkFlowApprovers(false,workflowapprovers)"><i
+                class="fa fa-plus" aria-hidden="true"></i> Add Approvers</button>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive">
+          <table id="materialTable" class="table table-bordered table-striped">
+            <thead style="background-color: #68a7d2;color:white;">
+              <tr>
+                <th>Sl.No</th>
+                <th>Material Type</th>
+                 <th>Location</th>
+                <th>Storage Location</th>
+                <th>ApproverId</th>
+                <th>Priority</th>
+                <th>Role</th>
+                <th>Process</th>
+                <th>IsActive</th>
+                <th class="col-sm-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let approver of workflowapproverslist; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{gettype(approver.keyValue)}}</td>
+                <td>{{getloc(approver.keyValue)}}</td>
+                <td>{{getstoloc(approver.keyValue)}}</td>
+                <td>{{approver.approverId}}</td>
+                <td>{{approver.priority}}</td>
+                <td>{{approver.role}}</td>
+                <td>{{getprocessname(approver.processId)}}</td>
+                <td><span class="label"
+                  [ngClass]="(approver.isActive==true)?'label-success':'label-danger'">{{(approver.isActive==true)?'ACTIVE':'INACTIVE'}}</span>
+              </td>           
+                <td  class="pr-2">
+                    <button type="button" class="btn btn-primary btn-xs" (click)="onAddWorkFlowApprovers(true,approver)">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  &nbsp;
+                    <button type="button" class="btn btn-primary btn-xs" (click)="openAuditLogs(approver.id)">
+                      <i class="fa fa-history"></i>
+                    </button>
+                </td>               
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="overlay" *ngIf="isLoading">
+          <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #68a7d2;color:white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">{{isEdit==true?'Update Approvers':'New Approvers'}}</h4>
+      </div>
+      <div class="modal-body box-primary" style="box-shadow: none;">
+        <form #materialForm="ngForm">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group form-group-sm"
+                [ngClass]="(!processIdEnt.valid && processIdEnt.touched)?'has-error':''">
+                <label for="processId">Process<span style="color:red">*</span></label>
+                <select [(ngModel)]="workflowapprovers.processId" class="form-control" id="processId" name="processId"
+                  ngControl="workflowapprovers.processId" #processIdEnt="ngModel" 
+                  matTooltip="select Process" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let process of processlist" value={{process.processId}}>{{process.processName}}
+                  </option>
+                </select>
+                <span class="help-block" *ngIf="!processIdEnt.valid && processIdEnt.touched">Please select Process.</span>
+              </div>               
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [ngClass]="(!locationEnt.valid && locationEnt.touched)?'has-error':''">
+                  <label for="location">Location<span style="color:red">*</span></label>
+                  <select [(ngModel)]="location" class="form-control" id="location" name="location"
+                  ngControl="location" #locationEnt="ngModel" 
+                  matTooltip="select Location" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let loc of locationList" value={{loc.code}}>
+                    {{loc.code}}-{{loc.name}}
+                  </option>
+                </select>
+                  <span class="help-block" *ngIf="!locationEnt.valid && locationEnt.touched">Please select location</span>
+                </div>
+              </div>
+             
+            </div>
+            <div class="row">
+              <div class="col-sm-6" *ngIf="workflowapprovers.processId != 3 && workflowapprovers.processId != 4 &&
+              workflowapprovers.processId != 5 && workflowapprovers.processId != 6">
+                <div class="form-group form-group-sm"
+                [ngClass]="(!mat_typeEnt.valid && mat_typeEnt.touched)?'has-error':''">
+                <label for="mat_type">Material Type<span style="color:red">*</span></label>
+                <select [(ngModel)]="matType" class="form-control" id="mat_type" name="mat_type"
+                  ngControl="matType" #mat_typeEnt="ngModel" (change)="getstoloclist(matType);"
+                  matTooltip="select Material Type" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let mat_type of materialList" [ngValue]="mat_type.type">{{mat_type.type}}-{{mat_type.description}}
+                  </option>
+                </select>
+                <span class="help-block" *ngIf="!mat_typeEnt.valid && mat_typeEnt.touched">Please select Material
+                  Type.</span>
+              </div>              
+              </div>
+              <div class="col-sm-6" *ngIf="workflowapprovers.processId == 6 ">
+                <div class="form-group form-group-sm"
+                [ngClass]="(!softwareEnt.valid && softwareEnt.touched)?'has-error':''">
+                <label for="software">Software<span style="color:red">*</span></label>
+                <select [(ngModel)]="matType" class="form-control" id="software" name="software"
+                  ngControl="matType" #softwareEnt="ngModel" 
+                  matTooltip="select Material Type" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let mat_type of softwareList" [ngValue]="mat_type.name">{{mat_type.name}}
+                  </option>
+                </select>
+                <span class="help-block" *ngIf="softwareEnt.valid && softwareEnt.touched">Please select software
+                  .</span>
+              </div>              
+              </div>
+              <div class="col-sm-6" *ngIf="workflowapprovers.processId == 6 && matType=='SAP UserId'">
+                <div class="form-group form-group-sm"
+                [ngClass]="(!softwareEnt.valid && softwareEnt.touched)?'has-error':''">
+                <label for="software">Category<span style="color:red">*</span></label>
+                <select [(ngModel)]="workflowapprovers.vendorCat" class="form-control" id="software" name="software"
+                  ngControl="workflowapprovers.vendorCat" #softwareEnt="ngModel" 
+                  matTooltip="select Material Type" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option value='PR' >Primary SAP User ID</option>
+                  <option value='SE' >Secondary SAP User ID</option>
+                </select>
+                <span class="help-block" *ngIf="softwareEnt.valid && softwareEnt.touched">Please select category
+                  .</span>
+              </div>              
+              </div>
+              <div class="col-sm-6" *ngIf="workflowapprovers.processId == 6 && matType=='SAP UserId'">
+                <div class="form-group form-group-sm"
+                [ngClass]="(!softwareEnt.valid && softwareEnt.touched)?'has-error':''">
+                <label for="software">Sub Category<span style="color:red">*</span></label>
+                <select [(ngModel)]="workflowapprovers.vendorSubCat" class="form-control" id="software" name="software"
+                  ngControl="workflowapprovers.vendorSubCat" #softwareEnt="ngModel" 
+                  matTooltip="select Material Type" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option value='B' >Block ID</option>
+                  <option value='C' *ngIf="workflowapprovers.vendorCat=='PR'">Changes in Existing ID</option>
+                  <option value='D' *ngIf="workflowapprovers.vendorCat=='PR'" >Delete ID</option>
+                  <option value='N' >New ID</option>
+                  <option value='R' >Rename ID</option>
+                  <option value='P' >Reset Password</option>
+                </select>
+                <span class="help-block" *ngIf="softwareEnt.valid && softwareEnt.touched">Please select category
+                  .</span>
+              </div>              
+              </div>
+              <div class="col-sm-6" *ngIf="workflowapprovers.processId == 3">
+                <div class="form-group form-group-sm"
+                  [ngClass]="(!vendorCatEnt.valid && vendorCatEnt.touched)?'has-error':''">
+                  <label for="vendorCat">Vendor Category<span style="color:red">*</span></label>                        
+                  <select [(ngModel)]="workflowapprovers.vendorCat" class="form-control" id="vendorCat"
+                  name="vendorCat" ngControl="workflowapprovers.vendorCat" #vendorCatEnt="ngModel"
+                  matTooltip="select Vendor Category" [disabled]="isEdit"  required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option value='RM' >Raw Material Vendor</option>
+                  <option value='PM' >Packing Material Vendor</option>
+                  <option value='GM' >General Material & Service Vendor </option>
+                </select>
+                  <span class="help-block" *ngIf="!vendorCatEnt.valid && vendorCatEnt.touched">Please select
+                    Vendor Category</span>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [ngClass]="(!ApproverIdEnt.valid && ApproverIdEnt.touched)?'has-error':''">
+                  <label for="ApproverId">Approver Id<span style="color:red">*</span></label>
+                  <select [(ngModel)]="workflowapprovers.approverId" class="form-control" id="approverId" name="approverId"
+                  ngControl="workflowapprovers.approverId" #ApproverIdEnt="ngModel" 
+                  matTooltip="select Approver" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let user of employeeList" value={{user.employeeId}}>
+                    {{user.employeeId}}-{{user.firstName}} {{user.middleName}} {{user.lastName}}
+                  </option>
+                </select>
+                  <span class="help-block" *ngIf="!ApproverIdEnt.valid && ApproverIdEnt.touched">Please select Approver</span>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="matType=='FG'">
+              <div class="col-sm-6">
+                <div class="form-group form-group-sm"
+                [ngClass]="(!Prod_typeEnt.valid && Prod_typeEnt.touched)?'has-error':''">
+                <label for="Prod_type">Product Type<span style="color:red">*</span></label>
+                <select [(ngModel)]="Prod_type" class="form-control" id="Prod_type" name="Prod_type"
+                  ngControl="Prod_type" #Prod_typeEnt="ngModel" 
+                  matTooltip="select Product Type" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option value='D'>Domestic</option>
+                  <option value='E'>Export</option>
+                  <option value='V'>Validation</option>
+                </select>
+                <span class="help-block" *ngIf="!Prod_typeEnt.valid && Prod_typeEnt.touched">Please select Product
+                  Type.</span>
+              </div>              
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group form-group-sm"
+                [ngClass]="(!marketEnt.valid && marketEnt.touched)?'has-error':''">
+                <label for="market">Market<span style="color:red">*</span></label>
+                <select [(ngModel)]="market" class="form-control" id="market" name="market"
+                  ngControl="market" #marketEnt="ngModel" 
+                  matTooltip="select Market Type" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option [disabled]="Prod_type!='D'" value='DO'>Domestic</option>
+                  <option [disabled]="Prod_type=='D'" value='RE'>Regulatory</option>
+                  <option [disabled]="Prod_type=='D'" value='RO'>Rest of World</option>
+                  <option [disabled]="Prod_type=='D'" value='US'>United States</option>
+                  <option [disabled]="Prod_type=='D'" value='UK'>United Kingdom</option>
+                </select>
+                <span class="help-block" *ngIf="!marketEnt.valid && marketEnt.touched">Please select Market
+                  Type.</span>
+              </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6" *ngIf="workflowapprovers.processId != 3 && workflowapprovers.processId != 4 &&
+              workflowapprovers.processId != 5 && workflowapprovers.processId != 6">
+                <div class="form-group form-group-sm"
+                [ngClass]="(!storagelocationEnt.valid && storagelocationEnt.touched)?'has-error':''">
+                <label for="storagelocation">Storage Location<span style="color:red">*</span></label>
+                <select [(ngModel)]="storagelocation" class="form-control" id="storagelocation" name="storagelocation"
+                  ngControl="storagelocation" #storagelocationEnt="ngModel" 
+                  matTooltip="select Storage Location" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let loc of storagelocationlist1" value={{loc.storageLocationId}}>
+                    {{loc.storageLocationId}}-{{loc.storageLocationName}}
+                  </option>
+                </select>
+                <span class="help-block" *ngIf="storagelocation==null && storagelocationEnt.touched">Please select 
+                  storageLocation.</span>
+              </div>               
+              </div>
+              <div class="col-sm-6" *ngIf="workflowapprovers.processId == 4">
+                <div class="form-group form-group-sm">
+                  <label for="viewType">Customer Type<span style="color:red">*</span></label>
+                      <div class="row">
+                        <mat-radio-group aria-label="Select option?" id="viewType" name="viewType"
+                          [(ngModel)]="workflowapprovers.viewType" 
+                          ngControl="workflowapprovers.viewType" #viewTypeEnt="ngModel" required>
+                          <mat-radio-button value='Domestic'>Domestic</mat-radio-button>
+                          &nbsp;&nbsp;&nbsp;
+                          <mat-radio-button value='Exports'>Exports</mat-radio-button>
+                        </mat-radio-group>
+                      </div>
+                </div>
+              </div>
+              <div class="col-sm-6" *ngIf="workflowapprovers.processId == 3">
+                <div class="form-group form-group-sm"
+                        [ngClass]="(!vendorSubCatEnt.valid && vendorSubCatEnt.touched)?'has-error':''">
+                        <label for="vendorSubCat">Vendor Sub-Category<span style="color:red">*</span></label>
+                        <select [(ngModel)]="workflowapprovers.vendorSubCat" class="form-control" id="vendorSubCat"
+                          name="vendorSubCat" ngControl="workflowapprovers.vendorSubCat" #vendorSubCatEnt="ngModel"
+                          [disabled]="isEdit" matTooltip="Select vendorSubCat" required>
+                          <option [ngValue]="undefined" disabled>--Select an Option--</option>
+                          <option *ngIf="workflowapprovers.vendorCat=='RM'" value="1">RM Supplier</option>
+                          <option *ngIf="workflowapprovers.vendorCat=='RM'" value="2">RM Manufacture</option>
+                          <option *ngIf="workflowapprovers.vendorCat=='RM'" value="3">RM Supplier & Manufacturer</option>
+                          <option *ngIf="workflowapprovers.vendorCat=='PM'" value="4">PM Supplier</option>
+                          <option *ngIf="workflowapprovers.vendorCat=='PM'" value="5">PM Manufacture</option>
+                          <option *ngIf="workflowapprovers.vendorCat=='PM'" value="6">PM Supplier & Manufacturer</option>
+                          <option *ngIf="workflowapprovers.vendorCat=='GM'" value="7">Supplier</option>
+                          <option *ngIf="workflowapprovers.vendorCat=='GM'" value="8">Service</option>
+                        </select>
+                        <span class="help-block" *ngIf="!vendorSubCatEnt.valid && vendorSubCatEnt.touched">Please select Sub-Category</span>
+                      </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [ngClass]="(!priorityEnt.valid && priorityEnt.touched)?'has-error':''">
+                  <label for="priority">Priority<span style="color:red">*</span></label>
+                  <input type="text" required class="form-control" id="priority" placeholder="Priority"
+                    [(ngModel)]="workflowapprovers.priority" name="priority"
+                    ngControl="workflowapprovers.priority == '' ? '' : workflowapprovers.priority" #priorityEnt="ngModel">
+                  <span class="help-block" *ngIf="!priorityEnt.valid && priorityEnt.touched">Please enter priority</span>
+                </div>
+              </div>
+              <!-- <div class="col-sm-6">
+                <div class="form-group" [ngClass]="(!materialgroupEnt.valid && materialgroupEnt.touched)?'has-error':''">
+                  <label for="materialgroup">Material Group<span style="color:red">*</span></label>
+                  <select [(ngModel)]="materialgroup" class="form-control" id="materialgroup" name="materialgroup"
+                  ngControl="materialgroup" #materialgroupEnt="ngModel" 
+                  matTooltip="select materialgroup" required>
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let user of materialgroupList" value={{user.stxt}}>
+                    {{user.stxt}}
+                  </option>
+                </select>
+                  <span class="help-block" *ngIf="materialgroup==null && materialgroupEnt.touched">Please select materialgroup</span>
+                </div>
+              </div> -->
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group" [ngClass]="(!parllelApprover1Ent.valid && parllelApprover1Ent.touched)?'has-error':''">
+                  <label for="parllelApprover1">Parallel Approver1<span style="color:red"
+                    *ngIf="workflowapprovers.processId != 3">*</span></label>                   
+                  <select [(ngModel)]="workflowapprovers.parllelApprover1" class="form-control" id="parllelApprover1" name="parllelApprover1"
+                  ngControl="workflowapprovers.parllelApprover1" #parllelApprover1Ent="ngModel" 
+                  matTooltip="select parllelApprover" [required]="workflowapprovers.processId != 3">
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let user of employeeList" value={{user.employeeId}}>
+                    {{user.employeeId}}-{{user.firstName}} {{user.middleName}} {{user.lastName}}
+                  </option>
+                </select>
+                  <span class="help-block" *ngIf="!parllelApprover1Ent.valid && parllelApprover1Ent.touched">Please select Parallel Approver</span>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group" [ngClass]="(!parllelApprover2Ent.valid && parllelApprover2Ent.touched)?'has-error':''">
+                  <label for="parllelApprover2">Parallel Approver2</label>                   
+                  <select [(ngModel)]="workflowapprovers.parllelApprover2" class="form-control" id="parllelApprover2" name="parllelApprover2"
+                  ngControl="workflowapprovers.parllelApprover2" #parllelApprover2Ent="ngModel" 
+                  matTooltip="select Parallel Approver"  >
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let user of employeeList" value={{user.employeeId}}>
+                    {{user.employeeId}}-{{user.firstName}} {{user.middleName}} {{user.lastName}}
+                  </option>
+                </select>
+                  <span class="help-block" *ngIf="!parllelApprover2Ent.valid && parllelApprover2Ent.touched">Please select Parallel Approver</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="parllelApprover3">Parallel Approver3</label>                 
+                  <select [(ngModel)]="workflowapprovers.parllelApprover3" class="form-control" id="parllelApprover3" name="parllelApprover3"
+                  ngControl="workflowapprovers.parllelApprover3" #parllelApprover3Ent="ngModel" 
+                  matTooltip="select Parallel Approver" >
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let user of employeeList" value={{user.employeeId}}>
+                    {{user.employeeId}}-{{user.firstName}} {{user.middleName}} {{user.lastName}}
+                  </option>
+                </select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="parllelApprover4">Parallel Approver4</label>                
+                  <select [(ngModel)]="workflowapprovers.parllelApprover4" class="form-control" id="parllelApprover4" name="parllelApprover4"
+                  ngControl="workflowapprovers.parllelApprover4" #parllelApprover4Ent="ngModel" 
+                  matTooltip="select Parallel Approver" >
+                  <option [ngValue]="undefined" disabled [selected]="true">--Select an Option--</option>
+                  <option *ngFor="let user of employeeList" value={{user.employeeId}}>
+                    {{user.employeeId}}-{{user.firstName}} {{user.middleName}} {{user.lastName}}
+                  </option>
+                </select>                 
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group" [ngClass]="(!roleEnt.valid && roleEnt.touched)?'has-error':''">
+                  <label for="role">Role<span style="color:red">*</span></label>
+                  <input type="text" required class="form-control" id="role"  
+                    (change)="workflowapprovers.role=workflowapprovers.role.trim()" placeholder="Role"
+                    [(ngModel)]="workflowapprovers.role" name="role"
+                    ngControl="workflowapprovers.role == '' ? '' : workflowapprovers.role" #roleEnt="ngModel">
+                  <span class="help-block" *ngIf="!roleEnt.valid && roleEnt.touched">Please enter role</span>
+                </div>
+              </div>
+            
+            </div>
+           
+            <div class="row">
+              <div class="col-sm-6">  
+                <div  class="form-group">             
+                <div class="checkbox">
+                  &nbsp;
+                  &nbsp;
+                  &nbsp;
+                  <input type="checkbox" id="chkacknow" name="isActive" [(ngModel)]="workflowapprovers.isActive">
+                  <label>
+                    <b>IsActive</b></label>
+                </div>
+              </div> 
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-sm-12">
+              <div class="form-group" [ngClass]="(!reason.valid && reason.touched)?'has-error':''">
+                <label for="reason">Audit Reason<span style="color:red">*</span></label>
+                <!-- <label for="reason" class="col-sm-3"><i class="fa fa-times-circle-o"
+                    *ngIf="!reason.valid && reason.touched"></i>Audit Reason<span style="color:red">*</span></label>                -->
+                  <textarea type="text" class="form-control" name="reason" id="reason" placeholder="Audit Reason"
+                    [(ngModel)]="aduitpurpose" ngControl="aduitpurpose" (change)="aduitpurpose=aduitpurpose.trim()"
+                    #reason="ngModel" required></textarea>
+                  <span class="help-block" *ngIf="!reason.valid && reason.touched">Please Enter audit Reason.</span>
+                </div>
+              </div>
+            </div> 
+          </div>
+        </form>
+        <div class="overlay" *ngIf="isLoadingPop">
+          <i class="fa fa-spinner fa-pulse"></i>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveApprovers()"
+          [disabled]="isLoadingPop || !materialForm.valid">{{isEdit==true?'Update':'Save'}}</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+
+      </div>
+    </div>
+
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div id="auditModal" class="modal fade">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;</button>
+        <h4 class="modal-title">Audit history</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped" id="auditTable">
+          <thead>
+            <tr>
+              <th>Sl.no</th>
+              <th>Action</th>
+              <th>ActionBy</th>
+              <th>DateTime</th>
+              <th>KeyField</th>
+              <th>Changes</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <!-- <ng-container > -->
+          <tbody>
+            <tr *ngFor="let item of auditLogList;let i = index">
+              <td>{{auditLogList.length - i + '.0'}}</td>
+              <td class="col-sm-1">{{item.auditType}}</td>
+              <td class="col-sm-1">{{item.aduitUser}}</td>
+              <td class="col-sm-1">{{item.auditDateTime | date:"dd/MM/yyyy HH:mm"}}</td>
+              <td class="col-sm-1">{{item.keyValue}}</td>
+              <td class="col-sm-4">
+                <table class="table table-bordered" style="margin-bottom: 0;">
+                  <tr>
+                    <th>Field name</th>
+                    <th>Old value</th>
+                    <th>New value</th>
+                  </tr>
+                  <tr *ngFor="let ch of objParser(item.changes)">
+                    <td>{{ch.fieldname}}</td>
+                    <td>{{ch.oldvalue}}</td>
+                    <td>{{ch.newvalue}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td class="col-sm-4">{{item.purpose}}</td>
+            </tr>
+          </tbody>
+          <!-- </ng-container> -->
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

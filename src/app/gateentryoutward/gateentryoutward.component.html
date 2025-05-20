@@ -1,0 +1,351 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Gate Entry Outward
+    <small></small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Gate Entry  Outward</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Gate Entry  Outward</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="userForm.reset();onAddUser(false,geItem)"><i
+            class="fa fa-plus" aria-hidden="true"></i> Add Gate Entry Outward</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+      <table id="userTable" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>SNo</th>
+            <th>PO Number</th>
+            <th>PO Date</th>
+            <th>Material Code</th>
+            <th>Material Description</th>
+            <th>UOM</th>
+            <th>Qty</th>
+            <!-- <th>Qty Received</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of userList; let i = index">
+            <td>{{user.employeeId}}</td>
+            <td>{{user.firstName}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.designation}}</td>
+            <td>{{user.joiningDate | date:'dd/MM/yyyy'}}</td>
+            <td><span class="label"
+                [ngClass]="(user.isActive==true)?'label-success':'label-danger'">{{(user.isActive==true)?'ACTIVE':'INACTIVE'}}</span>
+            </td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding"
+                (click)="userForm.reset();onAddUser(true,user)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-md  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSaveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" style="color: #0FB381; text-align: center;"><span class="text pull-center"
+            *ngIf="errMsgPop1.length>0"><i class="fa fa-check"></i>{{errMsgPop1}}</span></h3>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="isLoading">
+    <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false">
+
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Gate Entry Outward - Form</h4>
+        <div class="float-right">
+          <h3>Entry Date and Time - {{today | date:'dd/MM/yyyy hh:mm:SS'}}</h3>
+        </div>
+
+      </div>
+      <!-- <div class="tabs-container"> -->
+
+
+      <div class="modal-body box-primary"
+        style="box-shadow: none;background-image: url('assets/dist/img/formbg1.jpg');background-size:cover;">
+        <div class="row">
+         <div class="col-sm-12">
+            <form #userForm="ngForm">
+              <!--  <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="usrid">Location</label>
+                    <input type="text" minlength="6" class="form-control" id="usrid" placeholder="Location"
+                      [(ngModel)]="geItem.location" name="location" ngControl="geItem.location" #locationEnt="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="gonumber">GO No<span
+                        style="color:red">*</span></label>
+                      <div class="row">
+                      <div class="col-sm-10">
+                        <input type="text" style="width: 100%;" minlength="6" class="form-control" id="gonumber" placeholder="GO #"
+                          [(ngModel)]="geItem.gonumber" name="gonumber" ngControl="geItem.gonumber" #po_idEnt="ngModel">
+                      </div>
+                      <div class="col-sm-2">
+                        <button class="btn btn-primary"  style="width: 100%;" (click)="isPO=true">Go</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group" [ngClass]="(!gatenumber.valid && gatenumber.touched)?'has-error':''">
+                    <label for="gatenumber"><i class="fa fa-times-circle-o"
+                        *ngIf="!gatenumber.valid && gatenumber.touched"></i>Gate No<span
+                        style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="gatenumber" placeholder="Gate No"
+                      [(ngModel)]="geItem.gatenumber" name="gatenumber" ngControl="geItem.gatenumber"
+                      #gatenumber="ngModel" required>
+                    <span class="help-block" *ngIf="!gatenumber.valid && gatenumber.touched">Please Enter Gate
+                      Number.</span>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="fiscalyr">Financial Year</label>
+                    <input type="text" class="form-control" id="usrLName" placeholder="Fiscal Yr"
+                      [(ngModel)]="geItem.fiscalyr" ngControl="geItem.fiscalyr" name="fiscalyr" />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="mattype"> Material Type</label>
+                      <input [(ngModel)]="mattype" class="form-control" id="mattype" placeholder="Material Type"
+                        name="mattype" ngControl="mattype" #mattypente="ngModel">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="department"> Department<span style="color:red">*</span></label>
+                      <input [(ngModel)]="department" class="form-control" id="project" placeholder="Department"
+                        name="department" ngControl="department" #departmentEnt="ngModel">
+                      <span style="color:red"
+                        [hidden]="departmentEnt?.length<=0 && departmentEnt?.length>0 && isEdit?false:true">Please Enter
+                        Department Name.</span>
+                    </div>
+                  </div>
+                </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="docnumber">Document No<span style="color:red">*</span></label>
+                    <input [(ngModel)]="docnumber" class="form-control" placeholder="Doc No" id="docnumber"
+                      name="docnumber" ngControl="docnumber" #docnumberEnt="ngModel">
+                    <span style="color:red"
+                      [hidden]="docnumberEnt?.length<=0 && docnumberEnt?.length>0 && isEdit && docnumberEnt==null?false:true">Please
+                      Enter Doc Number.</span>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="docdate"> Document Date<span style="color:red">*</span></label>
+                    <input [(ngModel)]="docdate" class="form-control" placeholder="Doc Date" id="docdate" name="docdate"
+                      ngControl="docdate" #docdateEnt="ngModel">
+                    <span style="color:red"
+                      [hidden]="docdateEnt?.length<=0 && docdateEnt?.length>0 && isEdit?false:true">Please Enter Doc
+                      Date.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="sendperson"> Sending Person</label>
+                    <input [(ngModel)]="sendperson" class="form-control" placeholder=" Sending Person" id="sendperson"
+                      name="sendperson" ngControl="sendperson" #sendpersonEnt="ngModel">
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="destination"> Destination<span style="color:red">*</span></label>
+                    <input [(ngModel)]="destination" class="form-control" id="destination" placeholder="Destination"
+                      name="destination" ngControl="destination" #destinationEnt="ngModel">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="outTime">Expt Out Time<span style="color:red">*</span></label>
+                    <input [(ngModel)]="outTime" class="form-control" id="outTime" placeholder="Out Timr"
+                      name="outTime" ngControl="outTime" #outTimeEnt="ngModel">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-12">
+                  <h3>Material Details</h3>
+                  <div class="box-body table-responsive">
+                    <table id="personTable" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>S. No</th>
+                          <th *ngIf="isPO==true">Material Code</th>
+                          <th>Material Description</th>
+                          <th>UOM</th>
+                          <th>No of Cases</th>
+                          <th>Qty</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let per of person; let rec=index">
+                          <td>
+                              <label>{{rec+1}}.</label>
+                          </td>
+                          <td style="width: 10%;" *ngIf="isPO==true">
+                            <input class="form-control" type="text" [name]="'name'+rec" [(ngModel)]="per.name"
+                              placeholder="Name" />
+                          </td>
+                          <td style="width:30%">
+                              <input class="form-control" type="tel" maxlength="10" [name]="'phone'+rec"
+                                [readonly]="!per.temp1" [(ngModel)]="per.phone" placeholder="Material Desc" />
+                          </td>
+                          <td style="width:30%">
+                            <input class="form-control" type="email" [name]="'email'+rec" [(ngModel)]="per.uom"
+                              placeholder="UOM" />
+                          </td>
+                          <td style="width:30%">
+                            <input class="form-control" type="email" [name]="'email'+rec" [(ngModel)]="per.noc"
+                              placeholder="No of Cases" />
+                          </td>
+                          <td style="width:30%">
+                            <input class="form-control" type="qty" [name]="'qty'+rec" [(ngModel)]="per.qty"
+                              placeholder="Qty" />
+                          </td>
+
+                          <td>
+                            <button title="Remove Details" (click)="removeRows((per.id!=0)?per.id:rec, rec);"
+                              class="btn btn-secondary pull-right">
+                              <i class="fa fa-trash"></i></button>
+                          </td>
+                        </tr>
+
+
+                      </tbody>
+                    </table>
+                    <div class="col-md-6" style="float: right;margin-top:10px;margin-right:-5px;">
+                      <button title="Add Rows" [matTooltipPosition]="'below'" matTooltip="Click to Add more Rows"
+                        (click)="addRows(rec);" class="btn btn-primary pull-right">
+                        <i class="fa fa-plus"></i></button>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="outDate">Out Date<span style="color:red">*</span></label>
+                      <input [(ngModel)]="outDate" class="form-control" id="outDate" placeholder="Person Name"
+                        name="outDate" ngControl="outDate" #outDateEnt="ngModel">
+                      <span style="color:red"
+                        [hidden]="outDateEnt?.length<=0 && outDateEnt?.length>0 && isEdit?false:true">Please Enter
+                        Name.</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="outTime">Out Time<span style="color:red">*</span></label>
+                      <input [(ngModel)]="outTime" class="form-control" id="outTime" placeholder="Out Time"
+                        name="outTime" ngControl="outTime" #outTimeEnt="ngModel">
+                      <span style="color:red"
+                        [hidden]="outTimeEnt?.length<=0 && outTimeEnt?.length>0 && isEdit?false:true">Please Enter
+                        Name.</span>
+                    </div>
+                  </div>
+                </div>
+              <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="personName">Person Name<span style="color:red">*</span></label>
+                      <input [(ngModel)]="personName" class="form-control" id="personName" placeholder="Person Name"
+                        name="personName" ngControl="personName" #personNameEnt="ngModel">
+                      <span style="color:red"
+                        [hidden]="personNameEnt?.length<=0 && personNameEnt?.length>0 && isEdit?false:true">Please Enter
+                        Name.</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="vehicleno">Vehicle No.<span style="color:red">*</span></label>
+                      <input [(ngModel)]="vehicleno" class="form-control" id="vehicleno" placeholder="Vehicle No"
+                        name="vehicleno" ngControl="vehicleno" #vehiclenoEnt="ngModel">
+                      <span style="color:red"
+                        [hidden]="vehiclenoEnt?.length<=0 && vehiclenoEnt?.length>0 && isEdit?false:true">Please Enter
+                        Name.</span>
+                    </div>
+                  </div>
+                </div>
+            </form>
+
+          </div> -->
+           </form> 
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+
+        </div>
+
+
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-primary" (click)="onSaveUser(true)"
+          [disabled]="!userForm.valid">{{isEdit==true?'Update User':'Save'}}</button>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;"
+          data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+      </div>
+      <!-- </div> -->
+      <!-- /.modal-content -->
+
+    </div>
+    <!-- /.modal-dialog -->
+
+  </div>
+</div>

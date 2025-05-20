@@ -1,0 +1,79 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Print Transfer Letter
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Print Transfer Letter</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="form-group row actionButtons">
+    <div class="col-xs-2 text-right">
+      <button type="button" (click)="goBack()" class="btn btn-sm btn-default" [matTooltipPosition]="'after'"
+        matTooltip="Click to go back to list">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+    </div>
+    <div class="col-xs-4">
+      <div class="form-group">
+        <label class="col-md-4"> Print Template <span style="color:red">*</span></label>
+        <div class="col-md-6">
+          <select class="form-control" id="printTemplateId" [(ngModel)]="selectedTemplateId"
+            ngControl="selectedTemplateId" name="printTemplateId" #printTemplateEnt="ngModel" required>
+            <option [ngValue]="null" disabled [selected]="true"> Select print template </option>
+            <option *ngFor="let pl of printTemplates" [ngValue]="pl.printTemplateId">{{pl.templateName}}</option>
+          </select>
+          <span class="help-block" *ngIf="printTemplateEnt.touched && !printTemplateEnt.valid">
+            Please select a value</span>
+        </div>
+        <div class="col-sm-2">
+          <button type="button" (click)="getLetter()" class="btn btn-sm btn-success" [matTooltipPosition]="'after'"
+            matTooltip="Click to get the letter" [disabled]="isLoading">
+            Get</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6" *ngIf="transferDetails.employeeTransferId > 0">
+      <div class="col-sm-6">
+        <input type="text" class="form-control" id="emailId" placeholder="Email Id to send email"
+          [(ngModel)]="request.EmailId" ngControl="request.EmailId" name="emailId" #emailEnt="ngModel" required
+          email="true" *ngIf="canEmail"/>
+        <span class="help-block" *ngIf="emailEnt.touched && !emailEnt.valid">Please enter valid email id</span>
+
+        <div class="form-group checkbox" *ngIf="canPrint">
+          <label>
+            <input type="checkbox" [(ngModel)]="removeSignature" name="removeSignature"  /> Remove Signature
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-6 actionButtons">
+        <button type="button" (click)="sendEmail()" class="btn btn-sm btn-success" [matTooltipPosition]="'after'"
+          matTooltip="Click to send the letter" [disabled]="isLoading"  *ngIf="canEmail">
+          <i class="fas fa-arrow-right"></i> Send
+        </button>
+        <button type="button" (click)="print()" class="btn btn-sm btn-info" [matTooltipPosition]="'after'"
+          matTooltip="Click to print the letter" [disabled]="isLoading"  *ngIf="canPrint">
+          <i class="fas fa-print"></i> Print
+        </button>
+        <button type="button" (click)="download()" class="btn btn-sm btn-warning" [matTooltipPosition]="'after'"
+          matTooltip="Click to download the letter" [disabled]="isLoading"  *ngIf="canDownload">
+          <i class="fas fa-download"></i> Download
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="printable" style="font-family:'Times New Roman', Times, serif">
+    <div class="panel panel-default" id="pdfcontent">
+      <div class="panel-body">
+        <div [innerHTML]="details.content | safeHtml"></div>
+      </div>
+    </div>
+    <div>
+      <span>Created By: {{details.createdByName}}</span>
+    </div>
+  </div>
+</section>

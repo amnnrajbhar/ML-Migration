@@ -1,0 +1,151 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Clearance Checklist
+  </h1>
+
+</section>
+
+<section class="content">
+
+  <div class="panel panel-info" *ngIf="editAllowed">
+    <div class="panel-body form-horizontal">
+      <form #checklistForm="ngForm">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Detail <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="title" [(ngModel)]="item.title"
+                  ngControl="item.title" name="title" #titleEnt="ngModel" required />
+                <span class="help-block" *ngIf="titleEnt.touched && !titleEnt.valid">
+                  Please enter detail</span>
+              </div>
+            </div>
+          </div>         
+      
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> Department <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <select [(ngModel)]="selectedDepartment" class="form-control" id="selectedDepartment" name="selectedDepartment"
+                #departmentEnt="ngModel" required>
+                <option [ngValue]="null" disabled [selected]="true"> Select Department </option>
+                <option *ngFor="let pl of departmentList" [ngValue]="pl">{{pl.description }} </option>
+              </select>
+              <span class="help-block" *ngIf="departmentEnt.touched && !departmentEnt.valid">Please select
+                department</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4"> SPOC <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <input type="text" id="spocEmployeeName" class="form-control" (keyup)="getSpocEmployeeName($event)"
+                [(ngModel)]="item.spocEmployeeName" ngControl="item.spocEmployeeName"  autocomplete="off"
+                name="spocEmployeeName"  required #spocEnt="ngModel" />    
+                <input type="hidden" id="spocEmployeeId" 
+                [(ngModel)]="item.spocEmployeeId"
+                name="spocEmployeeId"/>
+                <span class="help-block" *ngIf="spocEnt.touched && !spocEnt.valid">
+                  Please select spoc employee</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="button" class="btn btn-primary btn-sm" [disabled]="isLoading || !checklistForm.valid"
+            *ngIf="!isEdit" (click)="onAddLineClick()">
+            <i class="fas fa-plus"></i> Add</button>
+          <button type="button" class="btn btn-success btn-sm" [disabled]="isLoading || !checklistForm.valid"
+            *ngIf="isEdit" (click)="onUpdateClick()">
+            <i class="fas fa-check"></i> Update</button>
+          <button type="button" class="btn btn-default btn-sm" (click)="clearInput()">
+            Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th *ngIf="editAllowed">Action</th>          
+          <th>Sl No</th>
+          <th *ngIf="!editAllowed">Status</th>
+          <th>Detail</th>
+          <th>Department</th>
+          <th>SPOC</th>     
+          <th *ngIf="!editAllowed">Reason</th>
+          <th *ngIf="!editAllowed">Completed On</th>
+          <th *ngIf="!editAllowed">Completed By</th>     
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of checklistItemList; let i = index">
+          <td *ngIf="editAllowed || actionAllowed">
+            <ng-template [ngIf]="editAllowed">
+              <button (click)="EditLine(item, i)" *ngIf="item.status != 'Completed'" title="click to edit this " class="btn btn-xs btn-primary">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button (click)="RemoveLine(i)" *ngIf="item.status != 'Completed'" title="click to remove this " class="btn btn-xs btn-danger">
+                <i class="fas fa-times"></i>
+              </button>
+            </ng-template>
+            <ng-template [ngIf]="actionAllowed && item.status == 'Pending'">
+
+              <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#CommentsModal"
+              [matTooltipPosition]="'after'" (click)="complete(item.checklistItemId)"
+              matTooltip="Click to update as completed">
+              <i class="fas fa-check"></i></button>
+
+              <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#CommentsModal"
+              [matTooltipPosition]="'after'" (click)="cancel(item.checklistItemId)"
+              matTooltip="Click to mark Not Applicable">
+              <i class="fas fa-times"></i></button>
+
+            </ng-template>
+          </td>          
+          <td>{{i+1}}</td>
+          <td *ngIf="!editAllowed"><span class="label label-{{item.statusColor}}">{{item.status}}</span></td>
+          <td>{{item.title}}</td>
+          <td>{{item.departmentName}}</td>
+          <td>{{item.spocEmployeeFirstName +' '+item.spocEmployeeMiddleName+' '+item.spocEmployeeLastName }}</td>
+          <td *ngIf="!editAllowed">{{item.reason}}</td>
+          <td *ngIf="!editAllowed">{{item.completedDate | date: "dd/MM/yyyy hh:mm a"}}</td>
+          <td *ngIf="!editAllowed">{{item.completedByName}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</section>
+  
+
+<!-- Comments Modal -->
+<div id="CommentsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Comments</h4>
+      </div>
+      <div class="modal-body">
+        <label>Comments</label>
+        <textarea rows="3" class="form-control" [(ngModel)]="comments"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="UpdateChecklist()">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

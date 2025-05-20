@@ -1,0 +1,131 @@
+﻿<section class="content-header" >
+  <h1>
+    Assesment Master
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Master</a></li>
+    <li class="active">Assesment</li>
+  </ol>
+</section>
+<section class="content" >
+  <div class="box">
+    <div class="box-header">
+      <div class="col-xs-6">
+        <h3 class="box-title">Assesment</h3>
+        <span class="label label-danger" *ngIf="errMsg.length>0">{{errMsg}}</span>
+      </div>
+      <div class="col-xs-6">
+        <button type="button" class="btn btn-primary pull-right" (click)="onAddAssess(false,assessItem)"><i class="fa fa-plus" aria-hidden="true"></i>Add Assesment</button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+
+      <table id="assessment" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:20px">Id</th>
+            <!-- <th>Assesment Name</th> -->
+            <th>Employee</th>
+            <th>Emp Id</th>
+            <th>Email</th>
+            <th>Calender </th>
+            <th>Created Date</th>
+            <th style="width:20px">.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let assess of assessList; let i = index">
+            <td>{{assess.id}}</td>
+            <!-- <td>{{assess.name}}</td> -->
+            <td>{{getEmpName(assess?.fkEmpId)}}</td>
+            <td>{{getEmpId(assess?.fkEmpId)}}</td>
+            <td>{{getEmpEmail(assess?.fkEmpId)}}</td>
+            <td>{{getCalName(assess?.fkCalendarId)}}</td>
+            <td>{{assess.createdDate | date:'dd-MM-yyyy'}}</td>
+            <td>
+              <button type="button" class="bg-gray-light no-border no-padding" (click)="onAddAssess(true,assess)">
+                <img src="../../../assets/dist/img/Picture2.png" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+    <div class="overlay" *ngIf="isLoading">
+      <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+    </div>
+  </div>
+</section>
+
+<div  class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Assessment</h4>
+      </div>
+      <div class="modal-body box box-primary">
+        <div class="row">
+          <form #assessForm="ngForm">
+              <div class="col-sm-6">
+              <!-- <div class="form-group" [ngClass]="(!name.valid && name.touched)?'has-error':''">
+                <label for="name"><i class="fa fa-times-circle-o" *ngIf="!name.valid && name.touched"></i> Assesment<span style="color:red">*</span></label>
+                  <input type="text" class="form-control" id="name" placeholder="Assessment Name" [(ngModel)]="assessItem.name" name="name"
+                         ngControl="assessItem.name" #name="ngModel" required maxlength="50">
+                  <span class="help-block" *ngIf="!name.valid && name.touched">Please Enter Assesment Name.</span>
+                </div> -->
+              <div class="form-group" [ngClass]="(!parentId.valid && parentId.touched)?'has-error':''">
+                <label for="dParentId"><i class="fa fa-times-circle-o" *ngIf="!parentId.valid && parentId.touched"></i> Assessee<span style="color:red">*</span></label> 
+                
+                  <!-- <select [(ngModel)]="selParentRole" class="form-control" id="parentId" name="parentId" ngControl="selParentRole" #parentId="ngModel" required>
+                    <option *ngFor="let emp of employeeList" [ngValue]="emp">{{emp.firstName}} &#40;{{emp.employeeId}}&#41;</option>
+                  </select> -->
+                  <input type="text" [(ngModel)]="filteredName" class="form-control" id="parentId" name="parentId" ngControl="filteredName" #parentId="ngModel" (keyup)="complete(filteredName)" (keydown)="complete(filteredName)" class="form-control" (focus)="getFilteredList();selectedName=true" autocomplete="off"/>
+                  <select [(ngModel)]="selParentRole1" class="form-control" size="4" *ngIf="selectedName" name="selParentRole1">
+                  <option *ngFor="let em of filteredEmployee" (click)="fillTextbox(em)" [ngValue]="em">{{em.firstName}} &#40;{{em.employeeId}}&#41;</option>
+                </select>
+                  <!-- <span class="help-block" *ngIf="!parentId.valid && parentId.touched">Please Select Assessor Name.</span> -->
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group" [ngClass]="(!calendarYr.valid && calendarYr.touched)?'has-error':''">
+                    <label for="calendarYr"><i class="fa fa-times-circle-o" *ngIf="!calendarYr.valid && calendarYr.touched"></i> Calendar Year<span style="color:red">*</span></label> 
+                      <select [(ngModel)]="selCalYr" class="form-control" id="calendarYr" name="calendarYr" ngControl="selCalYr" #calendarYr="ngModel" required>
+                        <option *ngFor="let cal of calendarList" [ngValue]="cal">{{cal.fiscalYear}}</option>
+                      </select>
+                      <span class="help-block" *ngIf="!calendarYr.valid && calendarYr.touched">Please Select Calendar Year.</span>
+                      </div>
+                    
+              <div class="form-group" *ngIf="isEdit" [ngClass]="(!assess_status.valid && assess_status.touched)?'has-error':''">
+                <label for="assess_status" ><i class="fa fa-times-circle-o" *ngIf="!assess_status.valid && assess_status.touched"></i> Status<span style="color:red">*</span></label>
+               
+                <select [(ngModel)]="assessItem.isActive" class="form-control" id="assess_status" name="assess_status" ngControl="assessItem.isActive"
+                        #assess_status="ngModel" required>
+                  <option [ngValue]="true">Active</option>
+                  <option [ngValue]="false">Inactive</option>
+                </select>
+              
+                <span class="help-block" *ngIf="!assess_status.valid && assess_status.touched">Please Select Status.</span>
+              </div>
+            </div>
+          </form>
+          <div class="overlay" *ngIf="isLoadingPop">
+            <!--<i class="fa fa-refresh fa-spin"></i>--> <i class="fa fa-spinner fa-pulse"></i>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="text-red pull-left" *ngIf="errMsgPop.length>0"><i class="fa fa-warning"></i>{{errMsgPop}}</span>
+        <button type="button" class="btn btn-default" style="background-color:darkgray;color:white;" data-dismiss="modal" [disabled]="isLoadingPop">Close</button>
+        <button type="button" class="btn btn-primary" (click)="onSaveAssess()" [disabled]="isLoadingPop || !assessForm.valid">{{isEdit==true?'Update Assessment':'Save Assessment'}}</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

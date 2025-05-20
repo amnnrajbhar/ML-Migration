@@ -1,0 +1,468 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Transfer Details
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Transfer Details</li>
+  </ol>
+</section>
+<section class="content">
+
+  <app-employee-quick-view [employeeId]="employeeId"></app-employee-quick-view>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <form #tranferForm="ngForm" class="form-horizontal">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Transfer Details</h3>
+      </div>
+
+      <div class="panel-body">
+        <div class="row">
+
+          <div class="col-md-4">
+           
+              <label for="effectiveDate">Transfer Date<span style="color:red">*</span></label>
+             
+                <input [matTooltipPosition]="'below'" matTooltip="Click to change transfer date" [owlDateTime]="dt11"
+                  id="effectiveDate" #joiningDateEnt="ngModel" placeholder="Transfer Date" [owlDateTimeTrigger]="dt11"
+                  name="terminationDate" class="form-control" required [(ngModel)]="transferDetails.effectiveDate"
+                  [disabled]="!editAllowed">
+                <owl-date-time [pickerType]="'calendar'" #dt11></owl-date-time>
+             
+          </div>
+          <!-- <div class="col-md-4">
+            <div class="form-group">
+              <label class="col-md-4" for="approvalType">Approval Type <span style="color:red">*</span></label>
+              <div class="col-md-8">
+                <select [(ngModel)]="transferDetails.approvalType" class="form-control" id="approvalType"
+                  name="approvalType" matTooltip="Approval Type" #empCatEnt="ngModel" required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Approval Type </option>
+                  <option *ngFor="let pl of approvalTypes" [ngValue]="pl.type">{{pl.type}} </option>
+                </select>
+              </div>
+            </div>
+          </div> -->
+          <div class="col-md-4">
+           
+              <label for="transferReason">Reason for Transfer <span style="color:red">*</span></label>
+            
+                <select [(ngModel)]="transferDetails.transferReason" class="form-control" id="transferReason"
+                  name="transferReason" matTooltip="Approval Type" #empCatEnt="ngModel" required>
+                  <option [ngValue]="null" disabled [selected]="true"> Select Reason for Transfer </option>
+                  <option *ngFor="let pl of transferReasons" [ngValue]="pl.type">{{pl.type}} </option>
+                </select>
+              
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="col-md-8">
+                <input type="checkbox" name="isDestinationHodApprovalRequired" [(ngModel)]="transferDetails.isDestinationHodApprovalRequired" />Is Destination Hod Approval Required?
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col-md-4" *ngIf="approvalType == 'HR'">
+            <label for="requestedByName">Requested By (Reporting Manager / HOD)<span style="color:red">*</span></label>
+            <input type="text" id="requestedByName" class="form-control" #requestedByNameEnt="ngModel"
+              (keyup)="getRequestorEmployees($event)" [(ngModel)]="filterModel.requestedByName"
+              ngControl="filterModel.requestedByName" name="requestedByName" required autocomplete="off" />
+            <span class="help-block" *ngIf="requestedByNameEnt.touched && !requestedByNameEnt.valid">Please enter
+              Requested by employee</span>
+            <input type="hidden" id="requestedById" [(ngModel)]="filterModel.requestedById" name="requestedById" />
+          </div>
+          <div class="col-md-4">
+            <label for="approvedByName">Approved By<span style="color:red">*</span></label>
+            <input type="text" id="approvedByName" class="form-control" #approvedByNameEnt="ngModel"
+              (keyup)="getApproverEmployees($event)" [(ngModel)]="filterModel.approvedByName"
+              ngControl="filterModel.approvedByName" name="approvedByName" required autocomplete="off" />
+            <span class="help-block" *ngIf="approvedByNameEnt.touched && !approvedByNameEnt.valid">Please enter
+              Approved by employee</span>
+            <input type="hidden" id="approvedById" [(ngModel)]="filterModel.approvedById" name="approvedById" />
+          </div>
+          <div class="col-md-4">
+            <label for="destinationSpocName">Destination Spoc<span style="color:red">*</span></label>
+            <input type="text" id="destinationSpocName" class="form-control" #destinationSpocNameEnt="ngModel"
+              (keyup)="getSpocEmployees($event)" [(ngModel)]="filterModel.destinationSpocName"
+              ngControl="filterModel.destinationSpocName" name="destinationSpocName" required autocomplete="off" />
+            <span class="help-block" *ngIf="destinationSpocNameEnt.touched && !destinationSpocNameEnt.valid">Please enter
+              Destination Spoc</span>
+            <input type="hidden" id="destinationSpocId" [(ngModel)]="filterModel.destinationSpocId" name="destinationSpocId" />
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-4">
+           
+              <label for="reportingDate">Reporting Date <span style="color:red">*</span></label>
+             
+                <input [matTooltipPosition]="'below'" matTooltip="Click to change reporting date" [owlDateTime]="dt12"
+                  id="reportingDate" #joiningDateEnt="ngModel" placeholder="Reporting Date" [owlDateTimeTrigger]="dt12"
+                  name="reportingDate" class="form-control" required [(ngModel)]="transferDetails.reportingDate"
+                  [disabled]="!editAllowed">
+                <owl-date-time [pickerType]="'calendar'" #dt12></owl-date-time>
+              
+           
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="col-md-8">
+                <input type="checkbox" name="vacancyAvailable" [(ngModel)]="transferDetails.isVacancyAvailable" />Is Vacancy available in requested Area?
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="transferDetails.isVacancyAvailable == true">
+            <label for="destinationVacantPositionEmployeeName">Employee Vacating in Destination<span style="color:red">*</span></label>
+            <input type="text" id="destinationVacantPositionEmployeeName" class="form-control" #destinationVacantPositionEmployeeNameEnt="ngModel"
+              (keyup)="getVacantEmployees($event)" [(ngModel)]="filterModel.destinationVacantPositionEmployeeName"
+              ngControl="filterModel.destinationVacantPositionEmployeeName" name="destinationVacantPositionEmployeeName" required autocomplete="off" />
+            <span class="help-block" *ngIf="destinationVacantPositionEmployeeNameEnt.touched && !destinationVacantPositionEmployeeNameEnt.valid">Please enter
+              Destination Employee for Vacant Position</span>
+            <input type="hidden" id="destinationVacantPositionEmployeeId" [(ngModel)]="filterModel.destinationVacantPositionEmployeeId" name="destinationVacantPositionEmployeeId" />
+          </div>
+    
+
+
+
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="col-md-12">
+                <input type="checkbox" name="openPositionsVerified" [(ngModel)]="transferDetails.openPositionChecked" />Have you checked on open positions on requested location/department??
+              </div>
+            </div>
+          </div>
+        </div>  
+      </div>
+    </div>
+
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Job Details</h3>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-4"><h2>Current</h2></div>
+          <div class="col-md-4"><h2>Transferring</h2></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="initial">Plant</label>
+            <input type="text" class="form-control" id="oldPlant" [(ngModel)]="employeeDetails.plantName"
+              ngControl="employee.oldPlant" disabled name="oldPlant" />
+
+          </div>
+          <div class="col-md-4">
+            <label for="initial">Plant</label>
+            <select [disabled]="!isTransfer" [(ngModel)]="filterModel.plantId" class="form-control"
+              id="appraisalNewPlant" name="appraisalNewPlant" matTooltip="Plant" #plantEnt="ngModel" required (change)="onPlantChange()">
+              <option [ngValue]="null" disabled [selected]="true"> Select Plant </option>
+              <option *ngFor="let pl of plantList" [ngValue]="pl.id">{{pl.code}} - {{pl.name}} </option>
+            </select>
+            <!-- <span class="help-block" *ngIf="plantEnt.touched">Please select Plant</span> -->
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="initial">PayGroup</label>
+            <input type="text" class="form-control" id="oldPaygroup" [(ngModel)]="employeeDetails.payGroupName"
+              ngControl="employee.oldPaygroup" disabled name="oldPaygroup" />
+          </div>
+          <div class="col-md-4">
+            <label for="initial">PayGroup</label>
+            <select [disabled]="!isTransfer" [(ngModel)]="filterModel.payGroupId" class="form-control"
+              id="offerPayGroup" name="offerPayGroup" matTooltip="Plant" #payGroupEnt="ngModel" required>
+              <option [ngValue]="null" [selected]="true"> Select Pay Group </option>
+              <option *ngFor="let pl of payGroupList" [ngValue]="pl.id">{{pl.long_Desc}} - {{pl.payGroup}}
+              </option>
+            </select>
+            <!-- <span class="help-block" *ngIf="payGroupEnt.touched">Please select Pay
+                    Group</span> -->
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="initial">State</label>
+            <input type="text" class="form-control" id="oldState" [(ngModel)]="employeeDetails.state"
+              ngControl="employee.oldState" disabled name="oldState" />
+          </div>
+          <div class="col-md-4">
+            <label for="initial">State</label>
+            <select [disabled]="!isTransfer" [(ngModel)]="filterModel.stateId" class="form-control"
+              (change)="onStateChange($event)" id="offerlocationState" name="offerlocationState" matTooltip="State"
+              #locationStateEnt="ngModel" required>
+              <option [ngValue]="null" disabled [selected]="true"> Select State </option>
+              <option *ngFor="let pl of stateList" [ngValue]="pl.id">{{pl.bezei}}</option>
+            </select>
+            <!-- <span class="help-block" *ngIf="locationStateEnt.touched">Please select
+                    State</span> -->
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label for="initial">Location</label>
+            <input type="text" class="form-control" id="oldLocation" [(ngModel)]="employeeDetails.location"
+              ngControl="employee.oldLocation" disabled name="oldLocation" />
+
+          </div>
+          <div class="col-md-4">
+            <label for="initial">Location</label>
+            <select [disabled]="!isTransfer" [(ngModel)]="filterModel.locationId" class="form-control"
+              id="offerLocation" name="offerLocation" matTooltip="Location" #locationEnt="ngModel" required>
+              <option [ngValue]="null" disabled [selected]="true"> Select Location </option>
+              <option *ngFor="let pl of locationList" [ngValue]="pl.id">{{pl.name }} </option>
+            </select>
+            <!-- <span class="help-block" *ngIf="locationEnt.touched">Please select
+                    Location</span> -->
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label for="initial">Department</label>
+            <input type="text" class="form-control" id="oldDepartment" [(ngModel)]="employeeDetails.department"
+              ngControl="employee.oldDepartment" disabled name="oldDepartment" />
+          </div>
+          <div class="col-md-4">
+            <label for="initial">Department</label>
+            <select [disabled]="!isTransfer" [(ngModel)]="filterModel.departmentId" class="form-control" id="department"
+              name="department" #departmentEnt="ngModel" required (change)="onDepartmentChange($event)">
+              <option [ngValue]="null" disabled [selected]="true"> Select Department </option>
+              <option *ngFor="let dl of departmentList" [ngValue]="dl.id">{{dl.description }} </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label for="initial">Sub-Department</label>
+            <input type="text" class="form-control" id="oldSubDepartment" ngControl="employee.oldSubDepartment"
+              [(ngModel)]="employeeDetails.subDepartmentName" disabled name="oldSubDepartment" />
+          </div>
+          <div class="col-md-4">
+            <label for="initial">Sub-Department</label>
+            <select [disabled]="!isTransfer" class="form-control" id="subDepartmentId"
+              [(ngModel)]="filterModel.subDepartmentId" ngControl="filterModel.subDepartmentId" name="subDepartmentId">
+              <option [ngValue]="null" disabled [selected]="true"> Select sub-department </option>
+              <option *ngFor="let pl of subDepartmentList" [ngValue]="pl.id">{{pl.sdptidLtxt}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <label for="initial">Reporting Manager</label>
+            <input type="text" class="form-control" id="oldRM" [(ngModel)]="employeeDetails.reportingManagerName"
+              ngControl="employeeDetail.rmName" disabled name="oldRM" />
+          </div>
+          <div class="col-md-4">
+            <label for="rmName">Reporting Manager</label>
+            <input [disabled]="!isTransfer" type="text" id="rmName" class="form-control" #rmCatEnt="ngModel"
+              (keyup)="getRMEmployees($event)" [(ngModel)]="filterModel.rmName" ngControl="filterModel.rmName"
+              name="rmName" required autocomplete="off" />
+            <span class="help-block" *ngIf="rmCatEnt.touched && !rmCatEnt.valid">Please enter
+              RM</span>
+            <input type="hidden" id="rmId" [(ngModel)]="filterModel.rmId" name="rmId" />
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <label for="initial">HOD</label>
+            <input type="text" class="form-control" id="oldHod" [(ngModel)]="employeeDetails.approvingManagerName"
+              ngControl="employee.hodName" disabled name="oldHod" />
+          </div>
+          <div class="col-md-4">
+            <label for="hodName">HOD</label>
+            <input [disabled]="!isTransfer" type="text" id="hodName" class="form-control" #hodCatEnt="ngModel"
+              (keyup)="getHodEmployees($event)" [(ngModel)]="filterModel.hodName" ngControl="filterModel.hodName"
+              name="hodName" required autocomplete="off" />
+            <span class="help-block" *ngIf="hodCatEnt.touched && !hodCatEnt.valid">Please enter
+              Hod</span>
+            <input type="hidden" id="hodId" [(ngModel)]="filterModel.hodId" name="hodId" />
+
+          </div>
+        </div>
+        <div class="row">
+         <div class="col-md-4">
+          <label for="noticePeriod">Notice Period</label>
+          <input type="text" class="form-control" id="noticePeriod" [(ngModel)]="employeeDetails.noticePeriod"
+            ngControl="employee.noticePeriod" disabled name="noticePeriod" />
+        </div>
+        <div class="col-md-4">
+            <label for ="noticePeriod"> Notice Period in Months</label>
+            <select  class="form-control" id="newNoticePeriod"  name="newNoticePeriod" 
+            [(ngModel)]="filterModel.noticePeriod" ngControl="filterModel.noticePeriod" [disabled]="!isTransfer">
+              <option disabled> Select months </option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><input type="checkbox" name="isStaffCategoryChange"
+            [(ngModel)]="isStaffCategoryChange" />
+          Staff Category Change</h3>
+      </div>
+      <div class="panel-body">
+        <div class="col-md-4">
+          <label for="initial">Category</label>
+          <input type="text" class="form-control" id="oldCategory" [(ngModel)]="employeeDetails.employeeCategoryName"
+            ngControl="employee.oldCategory" disabled name="oldCategory" />
+        </div>
+        <div class="col-md-4">
+          <label for="initial">Category</label>
+          <select [disabled]="!isStaffCategoryChange" [(ngModel)]="filterModel.employeeCategoryId" class="form-control"
+            id="offerEmployeeCategory" name="offerEmployeeCategory" matTooltip="Employee Category" #empCatEnt="ngModel"
+            required>
+            <option [ngValue]="null" disabled [selected]="true"> Select Employee Category </option>
+            <option *ngFor="let pl of employeeCategoryList" [ngValue]="pl.id">{{pl.catltxt}} </option>
+          </select>
+          <!-- <span class="help-block" *ngIf="empCatEnt.touched">Please select Employee
+                  Category</span> -->
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <input type="checkbox" name="isDesignationChange" [(ngModel)]="isDesignationChange" />
+          Designation Change</h3>
+      </div>
+
+      <div class="panel-body">
+        <div class="col-md-4">
+          <label for="initial">Designation</label>
+          <input type="text" class="form-control" id="oldDesignation" [(ngModel)]="employeeDetails.designation" disabled
+            name="oldDesignation" />
+        </div>
+        <div class="col-md-4">
+          <label for="initial">Designation</label>
+          <select [(ngModel)]="filterModel.designationId" class="form-control" id="designation" name="designation"
+            matTooltip="Designation" #designationEnt="ngModel" required [disabled]="!isDesignationChange">
+            <option [ngValue]="null" disabled [selected]="true"> Select Designation </option>
+            <option *ngFor="let pl of designationList" [ngValue]="pl.id">{{pl.name}} </option>
+          </select>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><input type="checkbox" name="isRoleChange" [(ngModel)]="isRoleChange" />
+          Role Change</h3>
+      </div>
+      <div class="panel-body">
+        <div class="col-md-4">
+          <label for="initial">Role</label>
+          <input type="text" class="form-control" id="oldRole" [(ngModel)]="employeeDetails.role"
+            ngControl="employee.oldRole" disabled name="oldRole" />
+        </div>
+        <div class="col-md-4">
+          <label for="initial">Role</label>
+          <select [disabled]="!isRoleChange" [(ngModel)]="filterModel.roleId" class="form-control" matTooltip="Role"
+            #roleEnt="ngModel" required name="roleId">
+            <option [ngValue]="null" disabled [selected]="true"> Select Role </option>
+            <option *ngFor="let pl of roleList" [ngValue]="pl.id">{{pl.role_ltxt}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Additional Notes</h3>
+      </div>
+      <div class="panel-body">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="additionalNotes">Additional Notes</label>
+            <textarea [(ngModel)]="transferDetails.additionalNote" class="form-control" id="additionalNotes"
+              name="additionalNotes" #additionalNotesEnt="ngModel"></textarea>
+          </div>
+        </div>
+        <div class="col-md-6" *ngIf="this.transferId <= 0">
+          <div class="form-group">
+            <label class="col-md-4">Attachment</label>
+            <div class="col-md-8">
+              <input #attachment type="file" name="attachment" id="attachment" (change)="selectFiles($event)"
+                accept="application/pdf, image/jpeg, image/jpg, image/png" multiple max-file-size="2000" />
+              <p class="text-danger">Only pdf/jpeg/png files are allowed. Maximum file size allowed is 2MB.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center actionButtons">
+      <div class="col-md-12">
+        <button type="button" (click)="goBack()" class="btn btn-default" [matTooltipPosition]="'after'"
+          matTooltip="Click to go back to list">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <button type="button" class="btn btn-success" (click)="save()" matTooltip="Click to Submit Transfer Request"
+          [disabled]="isLoading || !tranferForm.valid">Submit</button>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf="this.employeeId > 0">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          History</h3>
+      </div>
+      <div class="panel-body">
+        <app-transfer-history [employeeId]="this.employeeId"></app-transfer-history>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="this.transferId > 0">
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a data-toggle="tab" href="#tabAttachments">Attachments</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabApprovals">Approvals</a>
+      </li>
+      <li>
+        <a data-toggle="tab" href="#tabActivity">Activity</a>
+      </li>
+    </ul>
+    <div class="tab-content details-tab">
+      <div id="tabAttachments" class="tab-pane fade in active">
+        <app-employee-attachments [employeeId]="this.employeeId" [editAllowed]="true" [deleteAllowed]="false"
+          [objectId]="this.transferId" [objectType]="this.objectType"></app-employee-attachments>
+      </div>
+      <div id="tabApprovals" class="tab-pane fade">
+        <app-flow-viewer [objectId]="this.transferId" [objectType]="this.objectType">
+        </app-flow-viewer>
+      </div>
+      <div id="tabActivity" class="tab-pane fade">
+        <app-activity-viewer [objectId]="this.transferId" [objectType]="this.objectType">
+        </app-activity-viewer>
+      </div>
+    </div>
+  </div>
+</section>

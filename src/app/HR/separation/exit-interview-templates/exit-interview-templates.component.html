@@ -1,0 +1,166 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Exit Interview Templates
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Exit Interview Templates</li>
+  </ol>
+</section>
+
+<section class="content">
+
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Add/Edit Template</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+          <div class="form-group">
+            <label class="col-md-4 text-right">Select Template</label>
+            <div class="col-md-4">
+              <select class="form-control" id="exitInterviewTemplateId" [(ngModel)]="selectedTemplateId"
+                ngControl="selectedTemplateId" name="exitInterviewTemplateId" #printTemplateEnt="ngModel" required>
+                <option [ngValue]="null" [disabled]="true"> Select template </option>
+                <option [ngValue]="0" > Add New...</option>
+                <option *ngFor="let pl of templatesList" [ngValue]="pl.printTemplateId">{{pl.templateName}}</option>
+              </select>
+              <span class="help-block" *ngIf="printTemplateEnt.touched && !printTemplateEnt.valid">
+                Please select a value</span>
+            </div>
+            <div class="col-md-4">
+              <button type="button" class="btn btn-primary" (click)="GetDetails()"
+                matTooltip="Click to get template details" [disabled]="isLoading">Get Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Edit Template Questions</h3>
+    </div>
+    <div class="panel-body form-horizontal">     
+      <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+          <div class="form-group">
+            <label class="col-md-4 text-right">Template Name</label>
+            <div class="col-md-4">
+              <input type="text" name="templateName" maxlength="50" class="form-control" [(ngModel)]="templateName" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="list-group">
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-1 text-center"><label>Remove</label></div>
+              <div class="col-md-1 text-center"><label>ID</label></div>
+              <div class="col-md-4 text-center"><label>Question</label></div>
+              <div class="col-md-4 text-center"><label>Type</label></div>
+              <div class="col-md-1"><label>Mandatory?</label></div>
+              <div class="col-md-1"><label>Parent Id</label></div>
+            </div>
+          </div>
+        </li>
+        <li class="list-group-item" *ngFor="let item of questions; let i = index">
+          <div class="row" >
+            <div class="col-md-12">
+              <div class="col-md-1">
+                <button class="btn btn-xs btn-danger" type="button" (click)="deleteQuestion(i)"><i class="fas fa-times"></i></button>
+              </div>
+              <div class="col-md-1">
+                <input type="hidden" name="order" class="form-control" [(ngModel)]="item.order" [value]="i" />
+                <input type="text" name="questionId" class="form-control" [(ngModel)]="item.questionId" />
+              </div>
+              <div class="col-md-4">
+                <textarea [(ngModel)]="item.questionText" class="form-control" name="questionText" maxlength="200"
+                  rows="2"></textarea>
+              </div>
+              <div class="col-md-4">
+                <select class="form-control" name="questionType" [(ngModel)]="item.questionType" required>
+                  <option [ngValue]="null" disabled>Select type</option>
+                  <option value="Textbox">Textbox</option>
+                  <option value="Checkbox">Checkbox</option>
+                  <option value="Dropdown">Dropdown</option>
+                  <option value="Parent">Parent Question</option>
+                </select>
+                <div *ngIf="item.questionType=='Textbox'">
+                  <label>Max Length</label>
+                  <input name="maxLength" class="form-control" [(ngModel)]="item.maxLength" />
+                </div>
+                <div *ngIf="item.questionType=='Checkbox' || item.questionType=='Dropdown'">
+                  <label>Options</label>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th style="max-width:50px">ID</th>
+                        <th>Option</th>
+                        <th>Text Input</th>
+                        <th>Max Length</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let opt of item.options; let j = index">
+                        <td>
+                          <button class="btn btn-xs btn-danger" type="button" (click)="deleteOption(i, j)"><i class="fas fa-times"></i></button>
+                        </td>
+                        <td style="max-width:50px">
+                          <input type="hidden" name="order" class="form-control" [(ngModel)]="opt.order" [value]="j" />
+                          <input type="text" name="optionId" class="form-control" [(ngModel)]="opt.optionId" />
+                        </td>
+                        <td><input type="text" name="optionText" class="form-control" [(ngModel)]="opt.optionText" /></td>
+                        <td><input type="checkbox" name="takeTextInput" [(ngModel)]="opt.takeTextInput" /></td>
+                        <td><input type="text" name="textMaxLength" class="form-control" *ngIf="opt.takeTextInput" [(ngModel)]="opt.textMaxLength" /></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <button type="button" class="btn btn-info btn-sm" (click)="addNewOption(i)">+ Add New Option</button>
+                </div>
+              </div>
+              <div class="col-md-1">
+                <div class="form-group checkbox">
+                  <label for="isMandatory">
+                    <input type="checkbox" [(ngModel)]="item.isMandatory" name="isMandatory" /> Mandatory
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-1">
+                <input type="text" name="parentQuestionId" *ngIf="item.questionType!='Parent'" class="form-control" [(ngModel)]="item.parentQuestionId" />
+              </div>
+
+            </div>
+          </div>
+        </li>
+      </ul>      
+
+      <div class="row">
+        <div class="col-md-12">
+          <button type="button" class="btn btn-info btn-sm" (click)="addNewClick()">+ Add New Question</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-center">
+      
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+      <button type="button" class="btn btn-primary" (click)="onSaveClick()" [disabled]="isLoading">Save</button>
+    </div>
+  </div>
+</section>

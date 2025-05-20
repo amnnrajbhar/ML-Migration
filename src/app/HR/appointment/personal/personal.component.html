@@ -1,0 +1,356 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Personal details
+  </h1>
+
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <form #personalDetailsForm2="ngForm">
+  <div class="form-horizontal">
+    
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="maritalStatus" class="col-md-4">Marital Status <span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <select class="form-control" id="maritalStatus" [(ngModel)]="details.maritalStatusId"
+              ngControl="details.maritalStatusId" name="maritalStatusId" [disabled]="!editAllowed"
+              #maritalStatusEnt="ngModel" required>
+              <option [ngValue]="null" disabled [selected]="true"> Select marital status </option>
+              <option *ngFor="let pl of maritalStatusList" [ngValue]="pl.id">{{pl.name}}</option>
+            </select>
+            <span class="help-block" *ngIf="submitted && !maritalStatusEnt.valid">
+              Please select marital status</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="col-md-4"> Gender <span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <select [(ngModel)]="details.gender" class="form-control" #genderEnt="ngModel" required name="gender" [disabled]="!editAllowed">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <span class="help-block" *ngIf="submitted && !genderEnt.valid">
+              Please select gender</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="dateOfBirth" class="col-md-4">Date of Birth <span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" id="dateOfBirth" [(ngModel)]="details.dateOfBirth"
+              ngControl="details.dateOfBirth" name="dateOfBirth" [disabled]="!editAllowed"
+              [owlDateTime]="dtDOB" [owlDateTimeTrigger]="dtDOB" #dobByEnt="ngModel" required/>
+              <owl-date-time [pickerType]="'calendar'" #dtDOB></owl-date-time>
+              <span class="help-block" *ngIf="submitted && !dobByEnt.valid">
+                Please enter valid date of birth</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="placeOfBirth" class="col-md-4">Place of Birth </label>
+          <div class="col-md-8"><input type="text" class="form-control" id="placeOfBirth" [disabled]="!editAllowed"
+              [(ngModel)]="details.placeOfBirth" ngControl="details.placeOfBirth" name="placeOfBirth" maxlength="30"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="countryOfBirthId" class="col-md-4">Country of Birth <span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <select class="form-control" id="countryOfBirthId" [(ngModel)]="details.countryOfBirthId"
+                ngControl="details.countryOfBirthId" name="countryOfBirthId" [disabled]="!editAllowed" 
+                #countryOfBirthEnt="ngModel" required>
+                <option [ngValue]="null" disabled [selected]="true"> Select country </option>
+                <option *ngFor="let pl of countryList" [ngValue]="pl.id">{{pl.landx}}</option>
+              </select>               
+            <span class="help-block" *ngIf="submitted && !countryOfBirthEnt.valid">
+              Please select country of birth</span>         
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="caste" class="col-md-4">Caste</label>
+          <div class="col-md-8"><input type="text" class="form-control" id="caste" [(ngModel)]="details.caste"
+              ngControl="details.caste" name="caste"  [disabled]="!editAllowed"  maxlength="30"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="religion" class="col-md-4">Religion <span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <select class="form-control" id="religion" [(ngModel)]="details.religionId" ngControl="details.religionId"
+              name="religionId" [disabled]="!editAllowed" #religionEnt="ngModel" required>
+            <option [ngValue]="null" disabled [selected]="true"> Select religion </option>
+            <option *ngFor="let pl of religionList" [ngValue]="pl.id">{{pl.religion}}</option>
+            </select>
+            <span class="help-block" *ngIf="submitted && !religionEnt.valid">
+              Please select a religion</span>   
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="nationality" class="col-md-4">Nationality <span style="color:red">*</span></label>
+          <div class="col-md-8">
+            <select class="form-control" id="nationalityId" [(ngModel)]="details.nationalityId"
+              ngControl="details.nationalityId" name="nationalityId" [disabled]="!editAllowed" 
+              #nationalityEnt="ngModel" required>
+            <option [ngValue]="null" disabled [selected]="true"> Select nationality </option>
+            <option *ngFor="let pl of nationalityList" [ngValue]="pl.id">{{pl.nationality}}</option>
+            </select>
+            <span class="help-block" *ngIf="submitted && !nationalityEnt.valid">
+              Please select nationality</span>   
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="telephoneNumber" class="col-md-4">Telephone Number</label>
+          <div class="col-md-8"><input type="text" class="form-control" id="telephoneNumber"
+              [(ngModel)]="details.telephoneNumber" ngControl="details.telephoneNumber"
+              (keypress)="keyPressAllowOnlyNumber($event)" name="telephoneNumber"  [disabled]="!editAllowed" maxlength="15"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4" *ngIf="offerId>0">
+        <div class="form-group">
+          <label for="mobileNumber" class="col-md-4">Mobile Number <span style="color:red">*</span></label>
+          <div class="col-md-8"><input type="text" class="form-control" id="mobileNumber" 
+            [(ngModel)]="details.mobileNumber" (keypress)="keyPressAllowOnlyNumber($event)" #mobileEnt="ngModel" required
+              ngControl="details.mobileNumber" name="mobileNumber" minlength="10" maxlength="10" [disabled]="!editAllowed"/>
+              <span class="help-block" *ngIf="submitted && !mobileEnt.valid">
+                <span *ngIf="mobileEnt.errors.required"> Please enter mobile number</span>
+                <span *ngIf="mobileEnt.errors.maxlength">Mobile number should be 10 digits.</span>
+              </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="emailId" class="col-md-4">Email ID <span style="color:red">*</span></label>
+          <div class="col-md-8"><input type="text" class="form-control" id="emailId" 
+            [(ngModel)]="details.emailId" #emailEnt="ngModel" required maxlength="50"
+              ngControl="details.emailId" name="emailId"  [disabled]="!editAllowed"/>
+              <span class="help-block" *ngIf="submitted && !emailEnt.valid">
+                <span *ngIf="emailEnt.errors.required"> Please enter Email Id</span>                
+              </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">     
+      <div class="col-md-4">
+        <div class="form-group" *ngIf="!offerDetails || offerDetails.stateId!=1649">
+          <label for="panNumber" class="col-md-4">PAN <span style="color:red">*</span></label>
+          <div class="col-md-8"><input type="text" class="form-control" id="panNumber" [(ngModel)]="details.panNumber"
+              ngControl="details.panNumber" name="panNumber"  [disabled]="!editAllowed"
+              #panNoEnt="ngModel" maxlength="10" onkeyup="this.value = this.value.toUpperCase();"/> 
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group" *ngIf="!offerDetails || offerDetails.stateId!=1649">
+          <label for="AdharNaadharNumberumber" class="col-md-4">Aadhar Number <span style="color:red">*</span></label>
+          <div class="col-md-8"><input type="text" class="form-control" id="aadharNumber" [(ngModel)]="details.aadharNumber"
+              ngControl="details.aadharNumber" name="aadharNumber"  [disabled]="!editAllowed"
+              #AdharNoEnt="ngModel" maxlength="12" (keypress)="keyPressAllowOnlyNumber($event)"/>   
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+        <label for="pfNo" class="col-md-4">PF No</label>
+        <div class="col-md-8"><input type="text" class="form-control" id="pfNo" [(ngModel)]="details.pfNo" 
+          ngControl="details.pfNo" name="pfNo" [disabled]="!editAllowed" maxlength="30"></div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="uanNumber" class="col-md-4">UAN</label>
+          <div class="col-md-8"><input type="text" class="form-control" id="uanNumber" [(ngModel)]="details.uanNumber"
+              ngControl="details.uanNumber" name="uanNumber"  [disabled]="!editAllowed" maxlength="12" (keypress)="keyPressAllowOnlyNumber($event)"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="esiNo" class="col-md-4">ESI No</label>
+          <div class="col-md-8"><input type="text" class="form-control" id="esiNo" [(ngModel)]="details.esiNo"
+              ngControl="details.esiNo" name="esiNo"  [disabled]="!editAllowed" maxlength="21"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="bloodGroup" class="col-md-4">Blood Group <span style="color:red">*</span></label>
+          <div class="col-md-8">
+              <select class="form-control" id="bloodGroup" [(ngModel)]="details.bloodGroup"
+              ngControl="details.bloodGroup" name="bloodGroup" [disabled]="!editAllowed"
+              #bloodGroupEnt="ngModel" required>
+              <option value="A+">A+</option>    
+              <option value="A-">A-</option>    
+              <option value="B+">B+</option>    
+              <option value="B-">B-</option>    
+              <option value="O+">O+</option>    
+              <option value="O-">O-</option>    
+              <option value="AB+">AB+</option>    
+              <option value="AB-">AB-</option>                  
+                </select>
+                <span class="help-block" *ngIf="submitted && !bloodGroupEnt.valid">
+                  Please select blood group</span>   
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="identificationMarks" class="col-md-4">Personal Identification Marks</label>
+          <div class="col-md-8"><input type="text" class="form-control" id="identificationMarks"
+              [(ngModel)]="details.identificationMarks" ngControl="details.identificationMarks"
+              name="identificationMarks" [disabled]="!editAllowed" maxlength="50"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="physicallyChallenged" class="col-md-4">Specially Abled <span style="color:red">*</span></label>
+          <div class="col-md-8">
+              <select class="form-control" id="physicallyChallenged"
+              [(ngModel)]="details.physicallyChallenged" ngControl="details.physicallyChallenged"
+              name="physicallyChallenged" [disabled]="!editAllowed" #physicallyChallengedEnt="ngModel" required>
+              <option value="No" selected='true'>No</option>    
+              <option value="Yes">Yes</option>                  
+                </select>
+                <span class="help-block" *ngIf="submitted && !physicallyChallengedEnt.valid">
+                  Please set Specially Abled</span>   
+          </div>
+        </div>
+        <div class="form-group" *ngIf="details.physicallyChallenged=='Yes'">
+          <label for="physicallyChallengedDetails" class="col-md-4">Specially Abled Details <span style="color:red">*</span></label>
+          <div class="col-md-8"><input type="text" class="form-control" id="physicallyChallengedDetails"
+              [(ngModel)]="details.physicallyChallengedDetails" ngControl="details.physicallyChallengedDetails"
+              name="physicallyChallengedDetails"  [disabled]="!editAllowed" maxlength="100"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-xs-12">
+        <h2>Emergency Contact Details</h2>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="emergencyContactPersonName" class="col-md-4">Contact Name <span style="color:red">*</span></label>
+          <div class="col-md-8"><input type="text" class="form-control" id="emergencyContactPersonName"
+              [(ngModel)]="details.emergencyContactPersonName" ngControl="details.emergencyContactPersonName"
+              name="emergencyContactPersonName"  [disabled]="!editAllowed" #ecNameEnt="ngModel" required maxlength="50"/>
+              <span class="help-block" *ngIf="submitted && !ecNameEnt.valid">
+                Please enter emergency contact name</span>   
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="emergencyContactRelationshipId" class="col-md-4">Relationship <span style="color:red">*</span></label>
+          <div class="col-md-8">
+              <select class="form-control" class="form-control" id="emergencyContactRelationshipId"
+              [(ngModel)]="details.emergencyContactRelationshipId" ngControl="details.emergencyContactRelationshipId"
+              name="emergencyContactRelationshipId" [disabled]="!editAllowed" #ecRelationshipEnt="ngModel" required>
+            <option [ngValue]="null" disabled [selected]="true"> Select relationship </option>
+            <option *ngFor="let pl of relationTypeList" [ngValue]="pl.id">{{pl.relationship}}</option>
+            </select>
+            <span class="help-block" *ngIf="submitted && !ecRelationshipEnt.valid">
+              Please select emergency contact relationship</span>   
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="emergencyContactAddressLine1" class="col-md-4">Address Line 1 <span style="color:red">*</span></label>
+          <div class="col-md-8"><input type="text" class="form-control" id="emergencyContactAddressLine1"
+              [(ngModel)]="details.emergencyContactAddressLine1" ngControl="details.emergencyContactAddressLine1"
+              name="emergencyContactAddressLine1"  [disabled]="!editAllowed" #ecAddressLine1Ent="ngModel" required maxlength="100"/>
+              <span class="help-block" *ngIf="submitted && !ecAddressLine1Ent.valid">
+                Please enter address line 1</span>   
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="emergencyContactAddressLine2" class="col-md-4">Address Line 2 </label>
+          <div class="col-md-8"><input type="text" class="form-control" id="emergencyContactAddressLine2"
+              [(ngModel)]="details.emergencyContactAddressLine2" ngControl="details.emergencyContactAddressLine2"
+              name="emergencyContactAddressLine2"  [disabled]="!editAllowed" #ecAddressLine2Ent="ngModel" maxlength="100"/>
+              <span class="help-block" *ngIf="submitted && !ecAddressLine2Ent.valid">
+                Please enter address line 2</span>   
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="emergencyContactTelephoneNumber" class="col-md-4">Telephone No</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" id="emergencyContactTelephoneNumber"
+              [(ngModel)]="details.emergencyContactTelephoneNumber" ngControl="details.emergencyContactTelephoneNumber"
+              name="emergencyContactTelephoneNumber" (keypress)="keyPressAllowOnlyNumber($event)" [disabled]="!editAllowed"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="emergencyContactMobileNumber" class="col-md-4">Mobile No <span style="color:red">*</span></label>
+          <div class="col-md-8"><input type="text" class="form-control" id="emergencyContactMobileNumber"
+              [(ngModel)]="details.emergencyContactMobileNumber" ngControl="details.emergencyContactMobileNumber"
+              name="emergencyContactMobileNumber" (keypress)="keyPressAllowOnlyNumber($event)" 
+              [disabled]="!editAllowed" #ecMobileNoEnt="ngModel" required minlength="10" maxlength="10" />              
+                <span class="help-block" *ngIf="submitted && !ecMobileNoEnt.valid">
+                  <span *ngIf="ecMobileNoEnt.errors.required"> Please enter mobile number</span>
+                  <span *ngIf="ecMobileNoEnt.errors.maxlength">Mobile number should be 10 digits.</span>
+                </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</form>
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+</section>

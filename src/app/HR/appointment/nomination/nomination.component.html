@@ -1,0 +1,62 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Nomination Details
+  </h1>
+  
+</section>
+
+<section class="content">
+  <div>
+    <span class="text-danger">Note: Provide nominee details for PF, ESI and Gratuity where applicable. The total percentage for each should be 100.</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Sl No</th>
+          <th>Name </th>
+          <th>Relationship </th>
+          <th>Date of Birth </th>
+          <th>PF % </th>
+          <th>ESI / GPA % </th>         
+          <th>Gratuity % </th>         
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of nominationList; let i = index">          
+          <td>{{i+1}}</td>
+          <td>
+            <input type="text" [(ngModel)]="item.name" class="form-control" disabled="true" name="name" />
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="item.relationship" class="form-control" disabled="true" name="relationship" />
+          </td>
+          <td>
+            <input type="text" class="form-control" [value]="item.dateOfBirth | date:'dd/MM/yyyy'"  disabled="true" name="dateOfBirth" />
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="item.pfPercent" class="form-control text-right" [disabled]="!editAllowed || !pfApplicable" name="pfPercent" maxlength="5"/>
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="item.esiPercent" class="form-control text-right" [disabled]="!editAllowed || !esiApplicable" name="esiPercent" maxlength="5"/>
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="item.gratuityPercent" class="form-control text-right" [disabled]="!editAllowed || !gratuityApplicable" name="gratuityPercent" maxlength="5"/>
+          </td>      
+        </tr>
+      </tbody>
+    </table>    
+  </div>
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div> 
+  <div>
+    <h4>Nomination Forms:</h4>
+    <span class="text-danger">Download the below forms, take printout and duly fill the details and submit while joining the company.</span>
+    <ul>
+      <li><a href="assets/forms/EPFO_Form_11.pdf" download="EPFO_Form_11.pdf">EPFO_Form_11.pdf</a></li>
+      <li><a href="assets/forms/ESIC_Form_1.pdf" download="ESIC_Form_1.pdf">ESIC_Form_1.pdf</a></li>
+      <li><a href="assets/forms/Gratuity_Form_F.pdf" download="Gratuity_Form_F.pdf">Gratuity_Form_F.pdf</a></li>
+    </ul>
+  </div>
+</section>

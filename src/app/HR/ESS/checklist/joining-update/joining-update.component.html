@@ -1,0 +1,375 @@
+<section class="content-header">
+  <h1 class="display-1">
+    Onboarding Checklist Update
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-database" aria-hidden="true"></i> Home</a></li>
+    <li class="active">Onboarding Checklist</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title"></h3>
+    </div>
+    <div class="panel-body">
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="offerId"> Offer ID </label>
+          <p>{{offerDetails.offerId}}</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="status"> Status </label>
+          <p>{{offerDetails.status}}</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="status"> Created By </label>
+          <p>{{offerDetails.createdByName}}</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="status"> Created Date </label>
+          <p>{{offerDetails.createdDate | date: 'dd/MM/yyyy hh:mm a'}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Personal Details</h3>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="title"> Title <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.title" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="offerFName"> First Name<span style="color:red">*</span>
+            </label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.firstName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="middlename">Middle Name</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.middleName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.lastName" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="gender"> Gender <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.gender" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="age"> Age <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.age" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="addressLine1">Address Line 1</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.addressLine1" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="addressLine2">Address Line 2</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.addressLine2" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="addressLine3">Address Line 3</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.addressLine3" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.city" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="pinCode">Pin Code</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.pinCode" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.state" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="mobileNo">Mobile No</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.mobileNo" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="personalEmailId">Personal Email</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.personalEmailId" disabled="true" />
+          </div>
+        </div>
+      </div>     
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="personalEmailId">Qualification</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.qualification" disabled="true" />
+          </div>
+        </div>        
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="totalExperience">Total Experience</label>
+          <!-- <p>{{offerDetails.totalExperience | number: '1.0-2'}}</p> -->
+          <input type="text" class="form-control" [(ngModel)]="offerDetails.totalExperience" disabled="true" />
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Job Details</h3>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="plant"> Plant<span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.plantName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">  
+            <label for="plant"> Pay Group <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.payGroupName" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">  
+            <label for="employeeCategory"> Employee Category<span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.employeeCategoryName" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="location"> Location <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.location" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="department"> Department <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.department" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="designation"> Designation <span style="color:red">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.designation" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.role" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="grade">Grade</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.grade" disabled="true" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="interviewedBy">Interviewed By</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.interviewedBy" disabled="true" />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="reportingManager"> Reporting Manager <span style="color:red">*</span></label>
+              <input type="text" id="reportingManager" class="form-control" 
+              [(ngModel)]="offerDetails.reportingManagerName"  ngControl="offerDetails.reportingManagerName" 
+              name="reportingManager"  disabled="true" />   
+             
+          </div>
+        </div> 
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="approvingManager"> HOD <span style="color:red">*</span></label>
+              <input type="text" id="approvingManager" class="form-control" 
+              [(ngModel)]="offerDetails.approvingManagerName" ngControl="offerDetails.approvingManagerName" 
+              name="approvingManager" disabled="true"  required/>   
+             
+          </div>
+        </div>
+      </div>
+    </div>     
+  </div>
+  
+  <div class="panel panel-info" >
+    <div class="panel-heading">
+      <h3 class="panel-title">Other Details</h3>
+    </div>
+    <div class="panel-body">
+     
+      <div class="row">        
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="recruitmentType">Recruitment Type</label>
+            <input type="text" class="form-control" [(ngModel)]="offerDetails.recruitmentType" disabled="true" />
+          </div>
+          <div id="divRecruitmentDetails" *ngIf="offerDetails.recruitmentType == 'Replacement'">
+            <div class="form-group">
+              <label for="replacingEmployeeNumber">Replacing Emp No</label>
+              <input type="text" class="form-control" [(ngModel)]="offerDetails.replacingEmployeeNumber" disabled="true" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <div class="form-group">
+              <label for="joiningDate">Tentative Joining</label>
+              <!-- <p>{{offerDetails.joiningDate | date:'dd/MM/yyyy'}}</p> -->
+              <input type="text" class="form-control" [value]="offerDetails.joiningDate | date:'dd/MM/yyyy'" disabled="true" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Additional Details</label>
+            <textarea rows="3" class="form-control" [(ngModel)]="offerDetails.additionalDetails" disabled="true" ></textarea>
+          </div>
+        </div>
+      </div>     
+    </div>
+  </div>
+
+  <div class="panel panel-success" >
+    <div class="panel-heading">
+      <h3 class="panel-title">Checklist Details</h3>
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th >Action</th>          
+              <th >Checklist ID</th>
+              <th >Status</th>
+              <th >Detail</th>   
+              <th >Remarks</th>
+              <th >Completed On</th>
+              <th >Completed By</th>     
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of checklistItems; let i = index">
+              <td >
+                <ng-template [ngIf]="[item.status] == 'Pending'">
+                    
+                  <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#CommentsModal"
+                    [matTooltipPosition]="'after'" (click)="complete(item.checklistItemId)"
+                    matTooltip="Click to update as completed">
+                    <i class="fas fa-check"></i></button>
+
+                    <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#CommentsModal"
+                    [matTooltipPosition]="'after'" (click)="notApplicable(item.checklistItemId)"
+                    matTooltip="Click to mark Not Applicable">
+                    <i class="fas fa-times"></i></button>
+
+                </ng-template>
+              </td>
+              <td>{{item.checklistItemId}}</td>
+              <td ><span class="label label-{{item.statusColor}}">{{item.status}}</span></td>
+              <td>{{item.title}}</td>
+              <td >{{item.remarks}}</td>
+              <td >{{item.completedDate | date: "dd/MM/yyyy hh:mm a"}}</td>
+              <td >{{item.completedByName}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </div>
+  </div>
+
+  <div class="overlay text-center h3" *ngIf="isLoading">
+    <i class="fa fa-spinner fa-pulse"></i>
+  </div>
+  <div class="form-group text-center actionButtons">
+
+    <button type="button" class="btn btn-default" (click)="cancel()" matTooltip="Click to go back"
+      [disabled]="isLoading">
+      Back
+    </button>
+  </div>
+</section>
+
+
+<!-- Comments Modal -->
+<div id="CommentsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Enter Comments</h4>
+      </div>
+      <div class="modal-body">
+        <label>Comments</label>
+        <textarea rows="3" class="form-control" [(ngModel)]="comments"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="UpdateChecklist()">Submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
