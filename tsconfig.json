@@ -1,18 +1,22 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
+    "downlevelIteration": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "importHelpers": true,
+    "module": "esnext",
     "target": "es5",
     "skipLibCheck": true,
     "noImplicitAny": false,
     "strictNullChecks": false,
-    "strict": false, // Explicitly disable all strict checks
-    "noImplicitThis": false, // Relax 'this' type checking
+    "strict": false,
+    "noImplicitThis": false,
     "allowJs": true,
     "typeRoots": [
       "node_modules/@types"
@@ -24,5 +28,11 @@
     "paths": {
       "ng-pick-datetime": ["./node_modules/ng-pick-datetime"]
     }
+  },
+  "angularCompilerOptions": {
+    "enableIvy": false,
+    "fullTemplateTypeCheck": false,
+    "strictInjectionParameters": false,
+    "disableTypeScriptVersionCheck": true
   }
 }
