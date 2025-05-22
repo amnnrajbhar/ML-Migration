@@ -15,7 +15,8 @@ declare var $: any;
   styleUrls: ['./mymeetings.component.css']
 })
 export class MymeetingsComponent implements OnInit {
-  @ViewChild(NgForm) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+
   currentUser: AuthData;
   urlPath: string = '';
   errMsg: string = "";

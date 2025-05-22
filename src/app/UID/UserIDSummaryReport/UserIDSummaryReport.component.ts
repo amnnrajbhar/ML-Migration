@@ -12,7 +12,8 @@ import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
 import { AuthData } from '../../auth/auth.model';
 import { FormControl, NgForm } from '@angular/forms';
 import { colors } from '../../shared/colors';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import { UserIdRequest } from '../../UID/UserIdRequest/UserIdRequest.model';
 import { Transactions } from '../../eMicro/ItemCodeCreation/transactions.model';
 import { WorkFlowApprovers } from '../../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -24,6 +25,7 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
+
 
 interface task {
     value: string;
@@ -46,9 +48,10 @@ interface UGrpsList { id: number, UserGroup: string, sid: number, UserSubGroups:
 
 })
 export class UserIDSummaryReportComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
 
-    @ViewChild('myInput') myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+
 
 
     searchTermBaseLoc = new FormControl();

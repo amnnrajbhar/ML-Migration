@@ -12,7 +12,7 @@ import { GateEntryD } from './gateentryd.model';
 import { GateEntryHeader } from './gateentryheader.model';
 import { GEPOInputs } from './gepoinputs.model';
 import { GateEntryMaterial } from './gateentrymaterial.model';
-import { eraseStyles } from '@angular/animations/browser/src/util';
+// import { eraseStyles } from '@angular/animations/browser/src/util';
 import { GenericGateEntryM } from './genericgateentrym.model';
 import { RFCCreateGEPO } from './rfccreategepo.model';
 declare var jQuery: any;
@@ -24,7 +24,8 @@ declare var $: any;
   styleUrls: ['./gateentry.component.css']
 })
 export class GateentryComponent implements OnInit {
-  @ViewChild(NgForm) userForm: NgForm;
+@ViewChild(NgForm, { static: false }) userForm: NgForm;
+
   searchTerm = new FormControl();
   currentUser: AuthData;
   tableWidget: any;

@@ -18,7 +18,8 @@ declare var $: any;
   styleUrls: ['./Assetdashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  @ViewChild('filterForm') filterForm: any;
+@ViewChild('filterForm', { static: false }) filterForm: any;
+
   searchTerm = new FormControl();
   currentUser: AuthData;
   public tableWidget: any;

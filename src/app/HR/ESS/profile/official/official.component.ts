@@ -23,7 +23,7 @@ declare var $: any;
   providers: [Util,AppointmentService],
 })
 export class OfficialComponent implements OnInit {
-  @ViewChild(NgForm) educationForm: NgForm;
+  @ViewChild(NgForm , { static: false })  educationForm: NgForm;
   @Input() employeeId: number;
   @Input() editAllowed: boolean ;
   @Input() profileId: number = 0;

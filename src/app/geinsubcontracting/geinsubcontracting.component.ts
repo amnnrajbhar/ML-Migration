@@ -22,7 +22,8 @@ declare var $ :any;
 })
 export class GEInSubContractingComponent implements OnInit {
 
-  @ViewChild('userForm') userForm: any;
+ @ViewChild('userForm', { static: false }) userForm: any;
+
 
   searchTerm = new FormControl();
   currentUser: AuthData;

@@ -17,7 +17,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class MoreLinksComponent implements OnInit {
-  @ViewChild(NgForm) moreLinksForm: NgForm;
+  @ViewChild(NgForm , { static: false })  moreLinksForm: NgForm;
   isLoading: boolean = false;
   currentUser: AuthData;
   item: any = {};

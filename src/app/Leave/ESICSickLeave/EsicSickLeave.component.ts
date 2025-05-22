@@ -4,17 +4,21 @@ declare var toastr: any;
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
-import 'rxjs/Rx';
-import { HttpClient } from '@angular/common/http';
+ 
+import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
+
+
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { ActivatedRoute, Router } from '@angular/router';
 import { debug } from 'util';
 import { FormControl, NgForm } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatAccordion } from '@angular/material';
@@ -26,7 +30,7 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe, DecimalPipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
-import { filter } from 'rxjs-compat/operator/filter';
+//import { filter } from 'rxjs-compat/operator/filter';
 import { max, now } from 'moment';
 //import { L } from '@angular/core/src/render3';
 
@@ -37,10 +41,11 @@ import { max, now } from 'moment';
   styleUrls: ['./EsicSickLeave.component.css']
 })
 export class EsicSickLeaveComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm: NgForm;
 
-  @ViewChild('myInput') myInputVariable: ElementRef;
+
+  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -103,7 +108,7 @@ export class EsicSickLeaveComponent implements OnInit {
   LeaveContactNo: any;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: Http, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -724,7 +729,7 @@ export class EsicSickLeaveComponent implements OnInit {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //  //console.log(err.json());
@@ -736,15 +741,17 @@ export class EsicSickLeaveComponent implements OnInit {
     return promise;
   }
 
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+getHeader(): { headers: HttpHeaders } {
+  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 
   minSick: any;
   minCasual: any;

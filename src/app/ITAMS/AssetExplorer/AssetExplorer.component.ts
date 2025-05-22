@@ -18,7 +18,8 @@ declare var $: any;
 })
 
 export class AssetExplorerComponent implements OnInit {
-  @ViewChild(NgForm) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+
   public tableWidget: any;
   isLoading: boolean = false;
   errMsg: string = "";

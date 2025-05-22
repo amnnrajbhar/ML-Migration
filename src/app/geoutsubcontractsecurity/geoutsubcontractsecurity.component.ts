@@ -20,7 +20,8 @@ declare var $: any;
   styleUrls: ['./geoutsubcontractsecurity.component.css']
 })
 export class GeOutSubContractSecurityComponent implements OnInit {
-  @ViewChild('userForm') userForm: any;
+ @ViewChild('userForm', { static: false }) userForm: any;
+
   searchTerm = new FormControl();
   currentUser: AuthData;
   tableWidget: any;

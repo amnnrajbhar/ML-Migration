@@ -30,7 +30,8 @@ declare var require: any;
   providers: [Util]
 })
 export class ViewRecallComponent implements OnInit {
-  @ViewChild(ReadonlyemployeeSalaryComponent) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
+@ViewChild(ReadonlyemployeeSalaryComponent, { static: false }) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
+
   currentUser: AuthData;
   objectType: string = "Recall";
   employeeId: any;

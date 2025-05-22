@@ -16,7 +16,8 @@ declare var toastr: any;
   styleUrls: ['./family.component.css']
 })
 export class FamilyComponent implements OnInit {
-  @ViewChild(NgForm) familyForm: NgForm;
+@ViewChild(NgForm, { static: false }) familyForm: NgForm;
+
   @Input() appointmentId: number;
   @Input() offerId: number;
   @Input() guid: string;

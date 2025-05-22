@@ -3,7 +3,7 @@ import { HttpService } from '../../shared/http-service';
 import { APIURLS } from '../../shared/api-url';
 import { Competency } from './competency.model';
 import { AuthData } from '../../auth/auth.model';
-import { RequestOptions, Headers } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 import { SBU } from '../sbu/sbu.model';
 import { Employee } from '../employee/employee.model';
 import { Router } from '@angular/router';
@@ -19,7 +19,8 @@ declare var $: any;
 })
 export class CompetencyComponent implements OnInit {
   public tableWidget: any;
-  @ViewChild(NgForm) competencyForm: NgForm;
+@ViewChild(NgForm, { static: false }) competencyForm: NgForm;
+
   parentList: any[];
   selParentRole: any;
   selCompetencyHead: any = [];
@@ -233,15 +234,17 @@ export class CompetencyComponent implements OnInit {
     jQuery("#myModal").modal('show');
   }
 
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+getHeader(): { headers: HttpHeaders } {
+  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 
   onSaveCompetency() {
     this.errMsg = "";

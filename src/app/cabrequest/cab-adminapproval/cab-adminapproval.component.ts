@@ -16,7 +16,8 @@ declare var $: any;
   styleUrls: ['./cab-adminapproval.component.css']
 })
 export class CabAdminapprovalComponent implements OnInit {
-  @ViewChild(NgForm) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+
   currentUser: AuthData;
   urlPath: string = '';
   errMsg: string = "";

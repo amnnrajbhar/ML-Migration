@@ -6,7 +6,8 @@ import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import * as _ from "lodash";
 import { FormControl, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import { Purpose } from './purpose.model';
 import swal from 'sweetalert';
 import { AuditLogChange } from '../auditlogchange.model';
@@ -23,8 +24,9 @@ export class actionItemModel {
 })
 
 export class PurposeComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm) purposeForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) purposeForm: NgForm;
+
   searchTerm: FormControl = new FormControl();
   public tableWidget: any;
   purposeList: any[];

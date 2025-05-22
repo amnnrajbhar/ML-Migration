@@ -15,7 +15,8 @@ declare var jQuery: any;
 })
 export class MaterialmasterComponent implements OnInit {
 
-  @ViewChild(NgForm) materialForm: NgForm;
+@ViewChild(NgForm, { static: false }) materialForm: NgForm;
+
   public tableWidget: any;
   companyId: number;
   materialList: MaterialMaster[] = [];

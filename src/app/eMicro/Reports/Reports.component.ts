@@ -13,7 +13,8 @@ import { Payroll } from '../../masters/employee/employee-payroll.model';
 import { Role } from '../../profile/add-role/add-role.model';
 import { debug } from 'util';
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { ItemCodeExtension } from '../ItemCodeExtension/ItemCodeExtension.model';
@@ -53,7 +54,7 @@ import { ItemCodeModification } from '../ItemCodeModification/ItemCodeModificati
   styleUrls: ['./Reports.component.css',]
 })
 export class ReportsComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
 
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];

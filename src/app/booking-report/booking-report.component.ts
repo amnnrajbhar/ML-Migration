@@ -17,6 +17,7 @@ import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
 
+
 @Component({
   selector: 'app-booking-report',
   templateUrl: './booking-report.component.html',

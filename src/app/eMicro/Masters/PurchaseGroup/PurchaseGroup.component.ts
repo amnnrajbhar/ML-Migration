@@ -28,7 +28,8 @@ export class actionItemModel {
 })
 export class PurchaseGroupComponent implements OnInit {
 
-  @ViewChild(NgForm) materialForm: NgForm;
+@ViewChild(NgForm, { static: false }) materialForm: NgForm;
+
   public tableWidget: any;
   companyId: number;
   materialList: MaterialMaster[] = [];

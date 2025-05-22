@@ -67,7 +67,8 @@ export class MyCalendarUtils extends CalendarUtils {
   }]
 })
 export class VisitorappointmentComponent implements OnInit {
-  @ViewChild(NgForm) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+
   title = 'Schedule a meeting';
   selectedVisitorType: any;
   selectedPurpose: any;

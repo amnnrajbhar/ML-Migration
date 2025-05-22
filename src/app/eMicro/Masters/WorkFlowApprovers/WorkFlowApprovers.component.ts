@@ -38,7 +38,8 @@ export class actionItemModel {
 })
 export class WorkFlowApproversComponent implements OnInit {
 
-  @ViewChild(NgForm) materialForm: NgForm;
+@ViewChild(NgForm, { static: false }) materialForm: NgForm;
+
   public tableWidget: any;
   companyId: number;
   materialList: MaterialMaster[] = [];

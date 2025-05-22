@@ -2,8 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AuthData } from '../../auth/auth.model';
 import { APIURLS } from '../../shared/api-url';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
-import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+
 
 import { switchMap } from 'rxjs/operators';
 import swal from 'sweetalert';
@@ -15,7 +16,7 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class AppointmentService{
     
-    constructor(private router: Router, private route: ActivatedRoute, private http: Http) { }
+    constructor(private router: Router, private route: ActivatedRoute, private http: HttpClient) { }
         
   getAddressTypes():any {      
     let list: any[] = [];
@@ -186,7 +187,7 @@ export class AppointmentService{
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //  //console.log(err.json());
@@ -205,7 +206,7 @@ export class AppointmentService{
         .then(
           res => { // Success
             // console.log(res.json());
-            resolve(res.json());
+            resolve(res);
             // resolve(res.status);
           },
           err => {
@@ -226,7 +227,7 @@ export class AppointmentService{
             .then(
                 res => { // Success
                     //console.log(res.json());
-                    resolve(res.json());
+                    resolve(res);
                 },
                 err => {
                     // console.log(err.json());
@@ -238,13 +239,14 @@ export class AppointmentService{
     return promise;
 }
   
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+getHeader(): { headers: HttpHeaders } {
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  });
+
+  return { headers };
+}
 
  
 

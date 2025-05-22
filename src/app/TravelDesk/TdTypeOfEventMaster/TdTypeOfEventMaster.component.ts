@@ -18,7 +18,8 @@ declare var jQuery: any;
 })
 export class TdTypeOfEventMasterComponent implements OnInit {
 
-  @ViewChild(NgForm) TdTypeOfEventMasterForm: NgForm;
+  @ViewChild(NgForm, { static: false }) TdTypeOfEventMasterForm: NgForm;
+
   public tableWidget: any;
   id: number;
   TdTypeOfEventMasterList: TdTypeOfEventMaster[] = [];

@@ -1,53 +1,65 @@
 import { AuthData } from './../auth/auth.model';
 import { APIURLS } from './api-url';
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
+
 import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
-import 'rxjs/Rx';
+
+import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
+
 @Injectable()
 export class HttpService {
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
 
     }
-    getHeaderForLogin(): any {
-        var headers = new Headers();
-        headers.append("Accept", 'application/json; charset=utf-8');
+ getHeaderForLogin(): { headers: HttpHeaders } {
+  const headers = new HttpHeaders({
+    'Accept': 'application/json; charset=utf-8',
+    'Content-Type': 'application/json'
+    // If you want to use 'application/x-www-form-urlencoded', replace the Content-Type here
+    // 'Content-Type': 'application/x-www-form-urlencoded'
+  });
 
-        // headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        headers.append('Content-Type', 'application/json');
-        let options = new RequestOptions({ headers: headers });
-        return options;
-    }
-    getHeaderForForgotPwd(): any {
-        var headers = new Headers();
-        headers.append("Accept", 'application/json; charset=utf-8');
-        headers.append('Content-Type', 'application/json');
-        let options = new RequestOptions({ headers: headers });
-        return options;
-    }
+  return { headers };
+}
+  getHeaderForForgotPwd(): { headers: HttpHeaders } {
+  const headers = new HttpHeaders({
+    'Accept': 'application/json; charset=utf-8',
+    'Content-Type': 'application/json'
+  });
 
-    getHeader(): any {
-        var headers = new Headers();
-        headers.append("Accept", 'application/json');
-        headers.append('Content-Type', 'application/json');
-        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-        headers.append("Authorization", "Bearer " + authData.token);
-        let options = new RequestOptions({ headers: headers });
-        return options;
-    }
+  return { headers };
+}
 
-    getHeaderForFileUpload(): any {
-        var headers = new Headers();
-        headers.append("Accept", 'application/json; charset=utf-8');
-        //headers.append('Content-Type', 'multipart/form-data; charset=utf-8');
-        //headers.append('Access-Control-Allow-Origin', '*');
-        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-        headers.append("Authorization", "Bearer " + authData.token);
-        let options = new RequestOptions({ headers: headers });
-        return options;
-    }
+   getHeader(): { headers: HttpHeaders } {
+  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
+
+getHeaderForFileUpload(): { headers: HttpHeaders } {
+  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+  let headers = new HttpHeaders({
+    'Accept': 'application/json; charset=utf-8'
+    // Do NOT set 'Content-Type' here for file uploads (multipart/form-data)
+  });
+
+  if (authData && authData.token) {
+    headers = headers.set('Authorization', 'Bearer ' + authData.token);
+  }
+
+  return { headers };
+}
+
 
     postLogin(postParams): any {
         var data = {
@@ -56,29 +68,27 @@ export class HttpService {
             tenantId: 1,
             ip:postParams.ip
         }
-        const promise = new Promise((resolve, reject) => {
-            this.http.post(APIURLS.BR_BASE_URL + APIURLS.BR_AUTH_API, data, this.getHeaderForLogin())
-                .toPromise()
-                .then(
-                    res => { // Success
-                        //console.log(res.json());
-                        // debugger;
-                        if (res.status != 401) {
-                            resolve(res.json());
-                        }
-                        else {
-                            resolve(res.status);
+     const promise = new Promise((resolve, reject) => {
+  this.http.post(
+    APIURLS.BR_BASE_URL + APIURLS.BR_AUTH_API,
+    data,
+    { ...this.getHeaderForLogin(), observe: 'response' as 'response' }
+  )
+  .toPromise()
+  .then(
+    res => {
+      if (res.status !== 401) {
+        resolve(res.body);  // res.body is parsed JSON
+      } else {
+      resolve((res as any).status);
+      }
+    },
+    err => {
+      reject(err.status);
+    }
+  );
+});
 
-                        }
-
-                    },
-                    err => {
-
-                        reject(err.status);
-                    }
-                );
-
-        });
         return promise;
     }
 
@@ -89,7 +99,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -109,7 +119,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         // //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         // //console.log(err.json());
@@ -128,7 +138,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -150,7 +160,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -169,7 +179,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -188,7 +198,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -207,82 +217,59 @@ export class HttpService {
         return headers;
     }
 
-    getImageFile(apiKey: string, id: number, filename: string): any {
-        const promise = new Promise((resolve, reject) => {
-            this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=' + id + ',' + filename + '.jpeg', { responseType: ResponseContentType.Blob })
-                // this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=1,test.jpg, {responseType: ResponseContentType.Blob}' )
-
-                .toPromise()
-                .then(
-                    res => { // Success
-                        console.log(res);
-                        // resolve(res.blob());
-                        resolve(new Blob([res.blob()], { type: 'image/jpeg' }));
-                        //             var blob = new Blob([res.blob()], {type: 'application/blob'} )
-
-                        //   return blob;            
-                    },
-                    err => {
-                        //console.log(err.json());
-                        reject(err.json());
-                    }
-                );
-
-        });
-        return promise;
-    }
+   getImageFile(apiKey: string, id: number, filename: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    this.http.get(`${APIURLS.BR_BASE_URL}${apiKey}?filename=${id},${filename}.jpeg`, {
+      responseType: 'blob',
+      headers: this.getFileDownloadHeader().headers
+    })
+    .toPromise()
+    .then(
+      res => {
+        resolve(res); // already a Blob
+      },
+      err => {
+        reject(err);
+      }
+    );
+  });
+}
 
 
-    getFile(apiKey: string, id: string, filename: string): any {
-        const promise = new Promise((resolve, reject) => {
-            this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=' + id + ',' + filename, { responseType: ResponseContentType.Blob })
-                // this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=1,test.jpg, {responseType: ResponseContentType.Blob}' )
-
-                .toPromise()
-                .then(
-                    res => { // Success
-                        console.log(res);
-                        // resolve(res.blob());
-                        resolve(new Blob([res.blob()], {type: 'application/blob'},));
-                        //             var blob = new Blob([res.blob()], {type: 'application/blob'} )
-
-                        //   return blob;            
-                    },
-                    err => {
-                        //console.log(err.json());
-                        reject(err.json());
-                    }
-                );
-
-        });
-        return promise;
-    }
+getFile(apiKey: string, id: string, filename: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    this.http.get(`${APIURLS.BR_BASE_URL}${apiKey}?filename=${id},${filename}`, {
+      responseType: 'blob',
+      headers: this.getFileDownloadHeader().headers // If you're using a custom header method
+    }).toPromise().then(
+      res => {
+        resolve(res); // Already a Blob
+      },
+      err => {
+        reject(err);
+      }
+    );
+  });
+}
 
 
-    getSAPFile(apiKey: string, id: string, filename: string): any {
-        const promise = new Promise((resolve, reject) => {
-            this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename='+ filename, { responseType: ResponseContentType.Blob })
-                // this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=1,test.jpg, {responseType: ResponseContentType.Blob}' )
 
-                .toPromise()
-                .then(
-                    res => { // Success
-                        console.log(res);
-                        // resolve(res.blob());
-                        resolve(new Blob([res.blob()], {type: 'application/blob'},));
-                        //             var blob = new Blob([res.blob()], {type: 'application/blob'} )
+getSAPFile(apiKey: string, id: string, filename: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    this.http.get(`${APIURLS.BR_BASE_URL}${apiKey}?filename=${filename}`, {
+      responseType: 'blob',
+      headers: this.getFileDownloadHeader().headers  // if you use custom headers
+    }).toPromise().then(
+      res => {
+        resolve(res); // 'res' is already a Blob
+      },
+      err => {
+        reject(err);
+      }
+    );
+  });
+}
 
-                        //   return blob;            
-                    },
-                    err => {
-                        //console.log(err.json());
-                        reject(err.json());
-                    }
-                );
-
-        });
-        return promise;
-    }
 
     post(apiKey: string, postParams): any {
         const promise = new Promise((resolve, reject) => {
@@ -291,7 +278,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         // console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                         // resolve(res.status);
                     },
                     err => {
@@ -310,7 +297,7 @@ export class HttpService {
                 .toPromise()
                 .then(
                     res => { // Success
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
 
@@ -331,15 +318,15 @@ export class HttpService {
                         // Success
 
                         // //console.log('success '+res);
-                        //  resolve(res.json());
+                        //  resolve(res);
                         //  return res.text() ? res.json() : {}; 
 
                         // //console.log('success '+res);
-                        // resolve(res.json());
+                        // resolve(res);
                         //  return res.text() ? res.json() : {}; 
 
                         //  //console.log('success '+res);
-                        resolve(res.status);
+                      resolve((res as any).status);
                         //  return res.text() ? res.json() : {}; 
                         //>>>>>>> .r26
 
@@ -362,7 +349,7 @@ export class HttpService {
                 .then(
                     res => {
 
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
                         //console.log(err.json());
@@ -381,7 +368,7 @@ export class HttpService {
                 .then(
                     res => {
 
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
                         //console.log(err.json());
@@ -400,7 +387,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -420,7 +407,7 @@ export class HttpService {
                 .then(
                     res => {
 
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
                         //console.log(err.json());
@@ -442,7 +429,7 @@ export class HttpService {
                     res => { // Success
                         //console.log(res.json());
 
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
                         // console.log(err.json());
@@ -460,7 +447,7 @@ export class HttpService {
                 .toPromise()
                 .then(
                     res => { // Success
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
                         //console.log(err.json());
@@ -480,7 +467,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -501,7 +488,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
                         // console.log(err.json());
@@ -521,7 +508,7 @@ export class HttpService {
                 .then(
                 res => { 
 
-                    resolve(res.status);
+                  resolve((res as any).status);
                 },
                 err => {
                     //console.log(err.json());
@@ -543,7 +530,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         // console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                         // resolve(res.status);
                     },
                     err => {
@@ -561,7 +548,7 @@ export class HttpService {
                 .toPromise()
                 .then(
                     res => { // Success
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
 
@@ -582,15 +569,15 @@ export class HttpService {
                         // Success
 
                         // //console.log('success '+res);
-                        //  resolve(res.json());
+                        //  resolve(res);
                         //  return res.text() ? res.json() : {}; 
 
                         // //console.log('success '+res);
-                        // resolve(res.json());
+                        // resolve(res);
                         //  return res.text() ? res.json() : {}; 
 
                         //  //console.log('success '+res);
-                        resolve(res.status);
+                      resolve((res as any).status);
                         //  return res.text() ? res.json() : {}; 
                         //>>>>>>> .r26
 
@@ -611,7 +598,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -629,7 +616,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -647,7 +634,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -659,41 +646,36 @@ export class HttpService {
         return promise;
     }
 
-    HRdownloadFile(apiKey: string): any {
-        const promise = new Promise((resolve, reject) => {
-            this.http.get(APIURLS.BR_BASE_HR_URL + apiKey, this.getFileDownloadHeader())
-                // this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=1,test.jpg, {responseType: ResponseContentType.Blob}' )
+  HRdownloadFile(apiKey: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    this.http.get(APIURLS.BR_BASE_HR_URL + apiKey, {
+      responseType: 'blob',
+      headers: this.getFileDownloadHeader().headers
+    }).toPromise().then(
+      res => {
+        // `res` is already a Blob
+        resolve(res);
+      },
+      err => {
+        reject(err);
+      }
+    );
+  });
+}
 
-                .toPromise()
-                .then(
-                    res => { // Success
-                        console.log(res);
-                        // resolve(res.blob());
-                        resolve(new Blob([res.blob()], {type: 'application/blob'},));
-                        //             var blob = new Blob([res.blob()], {type: 'application/blob'} )
 
-                        //   return blob;            
-                    },
-                    err => {
-                        //console.log(err.json());
-                        reject(err.json());
-                    }
-                );
+getFileDownloadHeader(): { headers: HttpHeaders, responseType: 'blob' } {
+  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
-        });
-        return promise;
-    }
+  const headers = new HttpHeaders({
+    'Authorization': 'Bearer ' + authData.token
+  });
 
-    getFileDownloadHeader(): any {
-        var headers = new Headers();
-        //headers.append("responseType", "application/blob");
-        //headers.append("Accept", 'application/json');
-        //headers.append('Content-Type', 'application/json');
-        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-        headers.append("Authorization", "Bearer " + authData.token);
-        let options = new RequestOptions({ headers: headers, responseType: ResponseContentType.Blob });
-        return options;
-    }
+  return {
+    headers,
+    responseType: 'blob'  // Note: typed as string 'blob' here
+  };
+}
 
     HRpostAttachmentFile(apiKey: string, postParams): any {
         console.log('parameters:' + postParams.name);
@@ -702,7 +684,7 @@ export class HttpService {
                 .toPromise()
                 .then(
                     res => { // Success
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
                         //console.log(err.json());
@@ -720,7 +702,7 @@ export class HttpService {
                 .toPromise()
                 .then(
                     res => { // Success
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -740,7 +722,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -758,7 +740,7 @@ export class HttpService {
                 .toPromise()
                 .then(
                     res => {
-                        resolve(res.status);
+                      resolve((res as any).status);
 
                     },
                     err => {
@@ -779,7 +761,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -798,7 +780,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         // console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                         // resolve(res.status);
                     },
                     err => {
@@ -818,7 +800,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         // console.log(res.json());
-                        resolve(res.status);
+                      resolve((res as any).status);
                         // resolve(res.status);
                     },
                     err => {
@@ -839,7 +821,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         // console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                         // resolve(res.status);
                     },
                     err => {
@@ -857,7 +839,7 @@ export class HttpService {
                 .toPromise()
                 .then(
                     res => { // Success
-                        resolve(res.status);
+                      resolve((res as any).status);
                     },
                     err => {
 
@@ -878,15 +860,15 @@ export class HttpService {
                         // Success
 
                         // //console.log('success '+res);
-                        //  resolve(res.json());
+                        //  resolve(res);
                         //  return res.text() ? res.json() : {}; 
 
                         // //console.log('success '+res);
-                        // resolve(res.json());
+                        // resolve(res);
                         //  return res.text() ? res.json() : {}; 
 
                         //  //console.log('success '+res);
-                        resolve(res.status);
+                      resolve((res as any).status);
                         //  return res.text() ? res.json() : {}; 
                         //>>>>>>> .r26
 
@@ -907,7 +889,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -925,7 +907,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -943,7 +925,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -962,7 +944,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -981,7 +963,7 @@ export class HttpService {
                 .toPromise()
                 .then(  
                     res => {
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         reject(err.json());
@@ -997,7 +979,7 @@ export class HttpService {
                 .toPromise()
                 .then(  
                     res => {
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         reject(err.json());
@@ -1015,7 +997,7 @@ export class HttpService {
                 .then(  
                     res => {
 
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -1038,7 +1020,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -1059,7 +1041,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -1081,7 +1063,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -1103,7 +1085,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -1124,7 +1106,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -1146,7 +1128,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -1165,7 +1147,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         // console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                         // resolve(res.status);
                     },
                     err => {
@@ -1185,7 +1167,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -1204,7 +1186,7 @@ export class HttpService {
                 .then(
                     res => { // Success
                         //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -1224,7 +1206,7 @@ export class HttpService {
                 .toPromise()
                 .then(
                     res => { // Success
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //console.log(err.json());
@@ -1245,7 +1227,7 @@ export class HttpService {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //  //console.log(err.json());
@@ -1264,7 +1246,7 @@ export class HttpService {
         .then(
           res => { // Success
             //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //console.log(err.json());
@@ -1282,7 +1264,7 @@ export class HttpService {
         .then(
           res => { // Success
             // console.log(res.json());
-            resolve(res.json());
+            resolve(res);
             // resolve(res.status);
           },
           err => {
@@ -1300,7 +1282,7 @@ export class HttpService {
         .toPromise()
         .then(
           res => { // Success
-            resolve(res.status);
+          resolve((res as any).status);
           },
           err => {
 
@@ -1321,15 +1303,15 @@ export class HttpService {
             // Success
 
             // //console.log('success '+res);
-            //  resolve(res.json());
+            //  resolve(res);
             //  return res.text() ? res.json() : {}; 
 
             // //console.log('success '+res);
-            // resolve(res.json());
+            // resolve(res);
             //  return res.text() ? res.json() : {}; 
 
             //  //console.log('success '+res);
-            resolve(res.status);
+          resolve((res as any).status);
             //  return res.text() ? res.json() : {}; 
             //>>>>>>> .r26
 
@@ -1350,7 +1332,7 @@ export class HttpService {
         .then(
           res => { // Success
             //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //console.log(err.json());
@@ -1368,7 +1350,7 @@ export class HttpService {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //  //console.log(err.json());
@@ -1379,30 +1361,25 @@ export class HttpService {
     });
     return promise;
   }
-  LAdownloadFile(apiKey: string): any {
-    const promise = new Promise((resolve, reject) => {
-      this.http.get(APIURLS.BR_LA_URL + apiKey, this.getFileDownloadHeader())
-        // this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=1,test.jpg, {responseType: ResponseContentType.Blob}' )
+ LAdownloadFile(apiKey: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    this.http.get(APIURLS.BR_LA_URL + apiKey, {
+      responseType: 'blob',
+      headers: this.getFileDownloadHeader().headers
+    })
+    .toPromise()
+    .then(
+      res => {
+        // `res` is already a Blob
+        resolve(res);
+      },
+      err => {
+        reject(err);
+      }
+    );
+  });
+}
 
-        .toPromise()
-        .then(
-          res => { // Success
-            console.log(res);
-            // resolve(res.blob());
-            resolve(new Blob([res.blob()], { type: 'application/blob' },));
-            //             var blob = new Blob([res.blob()], {type: 'application/blob'} )
-
-            //   return blob;            
-          },
-          err => {
-            //console.log(err.json());
-            reject(err.json());
-          }
-        );
-
-    });
-    return promise;
-  }
   LAfileUpload(apiKey: string, id: string, postParams): any {
     // debugger;
     const promise = new Promise((resolve, reject) => {
@@ -1411,7 +1388,7 @@ export class HttpService {
         .then(
           res => {
 
-            resolve(res.status);
+          resolve((res as any).status);
           },
           err => {
             //console.log(err.json());
@@ -1422,30 +1399,25 @@ export class HttpService {
     });
     return promise;
   }
-  LAgetFile(apiKey: string, id: string, filename: string): any {
-    const promise = new Promise((resolve, reject) => {
-      this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=' + id + ',' + filename, { responseType: ResponseContentType.Blob })
-        // this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=1,test.jpg, {responseType: ResponseContentType.Blob}' )
+LAgetFile(apiKey: string, id: string, filename: string): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    this.http.get(APIURLS.BR_BASE_URL + apiKey + '?filename=' + id + ',' + filename, {
+      responseType: 'blob',
+      headers: this.getFileDownloadHeader().headers
+    })
+    .toPromise()
+    .then(
+      res => {
+        // Response is already a Blob
+        resolve(res);
+      },
+      err => {
+        reject(err);
+      }
+    );
+  });
+}
 
-        .toPromise()
-        .then(
-          res => { // Success
-            console.log(res);
-            // resolve(res.blob());
-            resolve(new Blob([res.blob()], { type: 'application/blob' },));
-            //             var blob = new Blob([res.blob()], {type: 'application/blob'} )
-
-            //   return blob;            
-          },
-          err => {
-            //console.log(err.json());
-            reject(err.json());
-          }
-        );
-
-    });
-    return promise;
-  }
   LAExcelUpload(apiKey: string, id: string, postParams): any {
     // debugger;
     const promise = new Promise((resolve, reject) => {
@@ -1454,7 +1426,7 @@ export class HttpService {
         .then(
           res => {
 
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //console.log(err.json());

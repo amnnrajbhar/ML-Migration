@@ -6,7 +6,7 @@ import { HttpService } from './../../shared/http-service';
 import { Component, OnInit } from '@angular/core';
 import { Department } from './department.model';
 import { HttpClientModule } from '@angular/common/http';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 declare var jQuery: any;
@@ -29,7 +29,7 @@ export class SoftSkillComponent implements OnInit {
     errMsgPop: string = "";
     isEdit: boolean = false;
     checkAll: boolean = false;
-    constructor(private appService: AppComponent, private httpService: HttpService, private http:Http) { }
+    constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient) { }
 
     private initDatatable(): void {
       let exampleId: any = jQuery('#department');
@@ -69,15 +69,17 @@ export class SoftSkillComponent implements OnInit {
       }
       jQuery("#myModal").modal('show');
     }
-    getHeader(): any { 
-      var headers = new Headers();
-      headers.append("Accept", 'application/json');
-      headers.append('Content-Type', 'application/json');
-      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-      headers.append("Authorization", "Bearer " + authData.token);
-      let options = new RequestOptions({ headers: headers });
-      return options;
-    }
+   getHeader(): { headers: HttpHeaders } {
+  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
   
     getDepartList() {
      

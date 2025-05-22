@@ -22,7 +22,8 @@ declare var $: any;
   styleUrls: ['./geoutsubcontracting.component.css']
 })
 export class GEOutSubContractingComponent implements OnInit {
-  @ViewChild('userForm') userForm: any;
+ @ViewChild('userForm', { static: false }) userForm: any;
+
   searchTerm = new FormControl();
   currentUser: AuthData;
   tableWidget: any;

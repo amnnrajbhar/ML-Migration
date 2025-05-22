@@ -10,7 +10,8 @@ declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { ItemCodeModification } from '../ItemCodeModification/ItemCodeModification.model';
@@ -30,7 +31,7 @@ declare var require: any;
   styleUrls: ['./ItemCodeModification.component.css']
 })
 export class ItemCodeModificationComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
   
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
@@ -1153,7 +1154,7 @@ export class ItemCodeModificationComponent implements OnInit {
   fileToUpload: File | null = null;
   File: File | null = null;
   files:File[]=[]
-  @ViewChild('myInput') myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
   formData: FormData = new FormData();
 
   handleFileInput(files: FileList) {

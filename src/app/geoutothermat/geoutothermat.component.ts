@@ -26,9 +26,11 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   styleUrls: ['./geoutothermat.component.css']
 })
 export class GEOutOtherMaterialComponent implements OnInit {
-  @ViewChild('userForm') userForm: any;
-  @ViewChild('matForm') matForm: any;
-  @ViewChild('userSAPForm') userSAPForm: any;
+ @ViewChild('userForm', { static: false }) userForm: any;
+
+@ViewChild('matForm', { static: false }) matForm: any;
+@ViewChild('userSAPForm', { static: false }) userSAPForm: any;
+
 
   searchTerm = new FormControl();
   currentUser: AuthData;

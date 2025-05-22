@@ -18,7 +18,8 @@ import { Util } from '../../Services/util.service';
 })
 
 export class NoEmailToCandidateConfigComponent implements OnInit {
-  @ViewChild(NgForm) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+
   isEdit: boolean = false;
   editIndex: number = -1;
   count: number = 0;

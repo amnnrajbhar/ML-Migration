@@ -20,7 +20,8 @@ declare var $: any;
   styleUrls: ['./geoutreturnablematclosure.component.css']
 })
 export class GEOutRetMatClosureComponent implements OnInit {
-  @ViewChild('userForm') userForm: any;
+ @ViewChild('userForm', { static: false }) userForm: any;
+
 
   searchTerm = new FormControl();
   currentUser: AuthData;

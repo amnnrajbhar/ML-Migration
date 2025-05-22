@@ -10,7 +10,8 @@ declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { stringify } from 'querystring';
@@ -51,10 +52,11 @@ import { HttpClient,HttpClientModule } from '@angular/common/http';
   styleUrls: ['./NPDRequest.component.css']
 })
 export class NPDRequestComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
-    @ViewChild(NgForm) dataForm: NgForm;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(NgForm  , { static: false })dataForm: NgForm;
 
-    @ViewChild('myInput') myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+
 
     public tableWidget: any;
 

@@ -23,7 +23,8 @@ export class actionItemModel {
 })
 export class GuesthouseLocationComponent implements OnInit {
 
-  @ViewChild(NgForm) locationForm: NgForm;
+@ViewChild(NgForm, { static: false }) locationForm: NgForm;
+
   currentUser = {} as AuthData;
   urlPath: string = '';
   isEdit: boolean = false;

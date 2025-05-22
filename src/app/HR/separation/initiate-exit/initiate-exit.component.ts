@@ -19,7 +19,8 @@ declare var toastr: any;
   styleUrls: ['./initiate-exit.component.css']
 })
 export class InitiateExitComponent implements OnInit {
-  @ViewChild(ResignationChecklistComponent) resignationChecklistComponent: ResignationChecklistComponent;
+@ViewChild(ResignationChecklistComponent, { static: false }) resignationChecklistComponent: ResignationChecklistComponent;
+
   currentUser: AuthData;
   resignationId: any;
   employeeId: any;

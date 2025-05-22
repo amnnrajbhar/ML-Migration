@@ -18,7 +18,8 @@ declare var toastr: any;
   providers: [Util]
 })
 export class ConfirmationAutoInitiationComponent implements OnInit {
-  @ViewChild(NgForm) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+
   isLoading: boolean = false;
   currentUser: AuthData;
   filterModel: any = {};

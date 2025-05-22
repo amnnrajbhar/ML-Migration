@@ -21,7 +21,8 @@ import { RFCSTOHeader } from './rfcstoheader.model';
   styleUrls: ['./geoutstocktransfer.component.css']
 })
 export class GEOutStockTransferComponent implements OnInit {
-  @ViewChild('userForm') userForm: any;
+ @ViewChild('userForm', { static: false }) userForm: any;
+
   searchTerm = new FormControl();
   currentUser: AuthData;
   tableWidget: any;

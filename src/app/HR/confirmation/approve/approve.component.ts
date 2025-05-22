@@ -22,7 +22,7 @@ import swal from 'sweetalert';
   providers:[Util]
 })
 export class ApproveComponent implements OnInit {
-  @ViewChild(ConfirmationEmployeeSalaryComponent) employeeSalaryComponent: ConfirmationEmployeeSalaryComponent;
+  @ViewChild(ConfirmationEmployeeSalaryComponent ,{static:false})  employeeSalaryComponent: ConfirmationEmployeeSalaryComponent;
   employeeId: number = 0;
   employeeConfirmationId: any;
   taskId: any;

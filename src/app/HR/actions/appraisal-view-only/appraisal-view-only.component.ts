@@ -21,7 +21,8 @@ declare var toastr: any;
   styleUrls: ['./appraisal-view-only.component.css']
 })
 export class AppraisalViewOnlyComponent implements OnInit {
-  @ViewChild(ReadonlyemployeeSalaryComponent) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
+@ViewChild(ReadonlyemployeeSalaryComponent, { static: false }) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
+
   currentUser: AuthData;
   appraisalId: any;
   objectType: string = "Appraisal";

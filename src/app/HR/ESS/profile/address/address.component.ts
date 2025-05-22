@@ -23,7 +23,8 @@ declare var $: any;
   providers: [Util, AppointmentService],
 })
 export class AddressComponent implements OnInit {
-  @ViewChild(NgForm) addressForm: NgForm;
+@ViewChild(NgForm, { static: false }) addressForm: NgForm;
+
   @Input() employeeId: number;
   @Input() profileDetails: TemporaryProfile;
   @Input() editAllowed: boolean;

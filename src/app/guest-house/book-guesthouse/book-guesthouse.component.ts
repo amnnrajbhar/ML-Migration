@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, NgForm, Validators } from '@angular/forms';
-import { Headers, RequestOptions } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+ 
 import swal from 'sweetalert';
 import { AppComponent } from '../../app.component';
 import { AuthData } from '../../auth/auth.model';
@@ -23,7 +23,8 @@ declare var $: any;
   styleUrls: ['./book-guesthouse.component.css']
 })
 export class BookGuesthouseComponent implements OnInit {
-  @ViewChild(NgForm) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+
   currentUser: AuthData;
   isLoading: boolean;
   urlPath: string = '';

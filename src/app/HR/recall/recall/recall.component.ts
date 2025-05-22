@@ -25,7 +25,8 @@ import swal from 'sweetalert';
   providers: [Util]
 })
 export class RecallComponent implements OnInit {
-  @ViewChild(EmployeeSalaryComponent) employeeSalaryComponent: EmployeeSalaryComponent;
+@ViewChild(EmployeeSalaryComponent, { static: false }) employeeSalaryComponent: EmployeeSalaryComponent;
+
   currentUser: AuthData;
   employeeId: any;
   resignationId: any;

@@ -3,7 +3,7 @@ import { AppComponent } from '../../app.component';
 import { APIURLS } from '../../shared/api-url';
 import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { Location } from './location.model';
@@ -27,7 +27,8 @@ export class actionItemModel {
 
 export class LocationMasterComponent implements OnInit {
   public tableWidget: any;
-  @ViewChild(NgForm) locationMasterForm: NgForm;
+@ViewChild(NgForm, { static: false }) locationMasterForm: NgForm;
+
   LocationMasterList: any[] = [[]];
   locationMasterItem: Location = new Location();
   isLoading: boolean = false;

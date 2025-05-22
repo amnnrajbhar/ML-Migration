@@ -1,14 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import { APIURLS } from './../shared/api-url';
 import { HttpService } from './../shared/http-service';
 import { AuthData } from './auth.model';
 import { Injectable } from '@angular/core';
-import 'rxjs/Rx';
-import { Http } from '@angular/http';
+ 
+import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
+
+//import { Http } from '@angular/http';
 @Injectable()
 export class AuthService {
     authData: AuthData = new AuthData(false, 0, '', '', '', '','', [], '', false, 0, 0, true,'','',0, 0,'','','',false,0,0,'',0,0,'','','','',0,0, []);
     myStorage = window.localStorage;
-    constructor(private httpService: HttpService,private http:Http) { }
+    constructor(private httpService: HttpService,private http:HttpClient) { }
 
   login(username, password, tenantid, ip) {
     let postParams = {

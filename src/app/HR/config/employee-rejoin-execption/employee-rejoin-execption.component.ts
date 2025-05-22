@@ -22,7 +22,8 @@
 })
 
 export class EmployeeRejoinExecptionComponent implements OnInit {
-    @ViewChild(NgForm) detailsForm: NgForm;
+  @ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+
     isLoading: boolean = false;
     currentUser: AuthData;
     filterModel: any = {};

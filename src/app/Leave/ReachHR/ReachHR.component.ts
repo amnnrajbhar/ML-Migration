@@ -4,17 +4,20 @@ declare var toastr: any;
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
-import 'rxjs/Rx';
-import { HttpClient } from '@angular/common/http';
+ 
+import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
+
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { ActivatedRoute, Router } from '@angular/router';
 import { debug } from 'util';
 import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatAccordion } from '@angular/material';
@@ -34,10 +37,11 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./ReachHR.component.css']
 })
 export class ReachHRComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm: NgForm;
+
   protected aFormGroup: FormGroup;
-  @ViewChild('myInput') myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -107,7 +111,7 @@ export class ReachHRComponent implements OnInit {
   resultCode: any = null;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: Http, private https: HttpClient, private route: ActivatedRoute, private formBuilder: FormBuilder) {
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute, private formBuilder: FormBuilder) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
   }
 
@@ -327,7 +331,7 @@ export class ReachHRComponent implements OnInit {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //  //console.log(err.json());
@@ -339,15 +343,17 @@ export class ReachHRComponent implements OnInit {
     return promise;
   }
 
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+getHeader(): { headers: HttpHeaders } {
+  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 
   MonthorYearList: any[] = [];
   monthslist() {

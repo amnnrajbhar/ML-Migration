@@ -6,7 +6,8 @@ import { Router } from '@angular/router';
 import { AppComponent } from '../../app.component';
 import swal from 'sweetalert';
 import * as _ from "lodash";
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 
 declare var require: any;
 declare var jQuery: any;
@@ -31,9 +32,10 @@ import { MedServiceFilterModel } from '../../Models/medServiceFilterModel.model'
     styleUrls: ['./MediServiceRequest.component.css']
 })
 export class MediServiceRequestComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
 
-    @ViewChild('myInput') myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+
 
     public tableWidget: any;
     currentUser: AuthData;

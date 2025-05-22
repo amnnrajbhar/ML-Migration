@@ -5,7 +5,7 @@ import { APIURLS } from '../../shared/api-url';
 import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 // import { HttpClientModule } from '@angular/common/http';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 import { Employee } from '../employee/employee.model';
@@ -30,8 +30,9 @@ export class actionItemModel {
 })
 
 export class BelongingsComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm) belongingsForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+ @ViewChild(NgForm, { static: false }) belongingsForm: NgForm;
+
   searchTerm: FormControl = new FormControl();
   // private trigger: Subject<void> = new Subject<void>();
   public tableWidget: any;
@@ -60,7 +61,7 @@ export class BelongingsComponent implements OnInit {
   oldbelongingsItem: Belongings = new Belongings();// For aduit log
   auditType: string;// set ActionTypes: Create,Update,Delete
   aduitpurpose: string;
-  constructor(private appService: AppComponent, private httpService: HttpService, private http: Http, private router: Router) { }
+  constructor(private appService: AppComponent, private httpService: HttpService, private http: HttpClient, private router: Router) { }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#belongings');
@@ -124,15 +125,17 @@ export class BelongingsComponent implements OnInit {
     }
     jQuery("#myModal").modal('show');
   }
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+ getHeader(): { headers: HttpHeaders } {
+  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 
   getHeadBelongingsName(id: number) {
     let temp: any;

@@ -17,7 +17,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class ResignationChecklistComponent implements OnInit {
-  @ViewChild(NgForm) checklistForm: NgForm;
+  @ViewChild(NgForm  , { static: false }) checklistForm: NgForm;
   @Input() resignationId: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();

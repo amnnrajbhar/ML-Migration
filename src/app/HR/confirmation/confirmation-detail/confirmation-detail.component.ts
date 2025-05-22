@@ -21,7 +21,7 @@ import swal from 'sweetalert';
   providers: [Util]
 })
 export class ConfirmationDetailComponent implements OnInit {
-  @ViewChild(ConfirmationEmployeeSalaryComponent) employeeSalaryComponent: ConfirmationEmployeeSalaryComponent;
+  @ViewChild(ConfirmationEmployeeSalaryComponent,{static:false})  employeeSalaryComponent: ConfirmationEmployeeSalaryComponent;
   employeeId: any;
   employeeConfirmationId: any;
   employeeDetail: any = {};

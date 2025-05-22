@@ -14,7 +14,8 @@ declare var jQuery: any;
 declare var toastr: any;
 import { Subject } from 'rxjs';
 declare var jQuery: any;
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 
 import {
     startOfMonth,
@@ -76,8 +77,10 @@ export class MyCalendarUtils extends CalendarUtils {
 })
 export class WorkingCalendarReportsComponent implements OnInit {
     searchTerm: FormControl = new FormControl();
-    @ViewChild(NgForm) desigForm: NgForm;
-    @ViewChild('native') native: ElementRef;
+  @ViewChild(NgForm, { static: false }) desigForm: NgForm;
+
+  @ViewChild('native', { static: false }) native: ElementRef;
+
     public filteredItems = [];
 
 
@@ -177,7 +180,7 @@ export class WorkingCalendarReportsComponent implements OnInit {
     }
 
     constructor(@Inject(LOCALE_ID) locale: string, private httpService: HttpService, private router: Router,
-        private appService: AppComponent, private http: Http, private excelService: ExcelService) {}
+        private appService: AppComponent, private http: HttpClient, private excelService: ExcelService) {}
 
         // this.dateOrViewChanged();
     
@@ -375,7 +378,7 @@ export class WorkingCalendarReportsComponent implements OnInit {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -387,15 +390,17 @@ export class WorkingCalendarReportsComponent implements OnInit {
         return promise;
     }
 
-    getHeader(): any {
-        var headers = new Headers();
-        headers.append("Accept", 'application/json');
-        headers.append('Content-Type', 'application/json');
-        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-        headers.append("Authorization", "Bearer " + authData.token);
-        let options = new RequestOptions({ headers: headers });
-        return options;
-    }
+   getHeader(): { headers: HttpHeaders } {
+  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 
 
     setFormatedDateTime(date: any) {

@@ -16,7 +16,8 @@ declare var $: any;
   styleUrls: ['./gh-adminapproval.component.css']
 })
 export class GhAdminapprovalComponent implements OnInit {
-  @ViewChild(NgForm) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+
   currentUser: AuthData;
   urlPath: string = '';
   errMsg: string = "";

@@ -10,7 +10,8 @@ declare var $: any;
 import * as _ from "lodash";
 import { AuthData } from '../../auth/auth.model'
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
@@ -41,6 +42,7 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
+
 declare var require: any;
 
 
@@ -61,25 +63,26 @@ export class nongxpforms {
 
 @Injectable()
 export class ItemCodeCreationComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
 
-  @ViewChild('myInput') myInputVariable: ElementRef;
-  @ViewChild('myInput1') myInputVariable1: ElementRef;
-  @ViewChild('myInput2') myInputVariable2: ElementRef;
-  @ViewChild('myInput3') myInputVariable3: ElementRef;
-  @ViewChild('myInput4') myInputVariable4: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput1', { static: false }) myInputVariable1: ElementRef;
+@ViewChild('myInput2', { static: false }) myInputVariable2: ElementRef;
+@ViewChild('myInput3', { static: false }) myInputVariable3: ElementRef;
+@ViewChild('myInput4', { static: false }) myInputVariable4: ElementRef;
 
-  // @ViewChild(NgForm) dataForm: NgForm;
-  // @ViewChild(NgForm) PMForm: NgForm;
-  // @ViewChild(NgForm) BULKForm: NgForm;
-  // @ViewChild(NgForm) RMNGXPForm: NgForm;
-  // @ViewChild(NgForm) PMNGXPForm: NgForm;
-  // @ViewChild(NgForm) BULKNGXPForm: NgForm;
-  // @ViewChild(NgForm) FGNGXPForm: NgForm;
-  // @ViewChild(NgForm) LCNGXPForm: NgForm;
-  // @ViewChild(NgForm) OSENGXPForm: NgForm;
-  // @ViewChild(NgForm) PPCNGXPForm: NgForm;
-  // @ViewChild(NgForm) RMForm: NgForm;
+
+  // @ViewChild(NgForm  , { static: false })dataForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMNGXPForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMNGXPForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKNGXPForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })FGNGXPForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })LCNGXPForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })OSENGXPForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })PPCNGXPForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMForm: NgForm;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();

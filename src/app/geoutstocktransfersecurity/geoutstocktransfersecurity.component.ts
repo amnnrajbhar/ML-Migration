@@ -23,7 +23,8 @@ declare var $: any;
 })
 export class GeOutStockTransferSecurityComponent implements OnInit {
 
-  @ViewChild('userForm') userForm: any;
+ @ViewChild('userForm', { static: false }) userForm: any;
+
   searchTerm = new FormControl();
   currentUser: AuthData;
   tableWidget: any;

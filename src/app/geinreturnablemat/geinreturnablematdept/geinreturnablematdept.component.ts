@@ -20,7 +20,8 @@ declare var jQuery: any;
   styleUrls: ['./geinreturnablematdept.component.css']
 })
 export class GeinreturnablematdeptComponent implements OnInit {
-  @ViewChild(NgForm) depForm: NgForm;
+@ViewChild(NgForm, { static: false }) depForm: NgForm;
+;
 
   searchTerm = new FormControl();
   currentUser: AuthData;

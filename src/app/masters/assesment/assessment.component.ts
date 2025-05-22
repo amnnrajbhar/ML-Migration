@@ -6,7 +6,7 @@
   import { Component, OnInit } from '@angular/core';
   import { Assessment } from './assessment.model';
   import { HttpClientModule } from '@angular/common/http';
-  import { Http, RequestOptions, Headers } from '@angular/http';
+  import { HttpClient, HttpHeaders } from '@angular/common/http';
   import * as _ from "lodash";
   import { error } from '@angular/compiler/src/util';
   import { Employee } from '../employee/employee.model';
@@ -27,10 +27,11 @@ import { Router } from '@angular/router';
   employeeList: any[] = [[]];
   selParentRole: any;
   selCalYr: any;
-  empItem: Employee = this.empItem = new Employee(0,	'',	'',	0,	0,		0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true,0,0,0);
-  assessItem: Assessment = this.assessItem = new Assessment(0, '', '', 0,0,'',true, true, true, true, true, true,true, true, true,'',true, '' );
-  calendarList: any[] = [[]];
-  calendarItem: Calendar = this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
+    calendarList: any[] = [[]];
+empItem: Employee = new Employee(0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', '', '', 0, '', '', 0, '', 0, '', true, 0, 0, 0);
+assessItem: Assessment = new Assessment(0, '', '', 0, 0, '', true, true, true, true, true, true, true, true, true, '', true, '');
+calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
+
   isLoading: boolean = false;
   errMsg: string = "";
   calenderId: string="";
@@ -39,7 +40,7 @@ import { Router } from '@angular/router';
   isEdit: boolean = false;
   checkAll: boolean = false;
   path: string = '';
-  constructor(private appService: AppComponent, private httpService: HttpService, private http:Http,  private router: Router) { }
+  constructor(private appService: AppComponent, private httpService: HttpService,  private router: Router) { }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#assessment');
@@ -112,15 +113,17 @@ import { Router } from '@angular/router';
     }
     jQuery("#myModal").modal('show');
   }
-  getHeader(): any { 
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+ getHeader(): { headers: HttpHeaders } {
+  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 
   getEmpName(id: number){
     var temp: any;

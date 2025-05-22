@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Lightbox } from 'ngx-lightbox';
+// import { Lightbox } from 'ngx-lightbox';
 declare var jQuery: any;
 declare var toastr: any;
 import { Chart } from 'chart.js';
@@ -11,7 +11,8 @@ import { HttpService } from '../../shared/http-service';
 import { Router } from '@angular/router';
 import { APIURLS } from '../../shared/api-url';
 import { MOMENT } from 'angular-calendar';
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { ExcelService } from '../../shared/excel-service';
 declare var $: any;
 import swal from 'sweetalert';
@@ -37,7 +38,7 @@ declare var toastr: any;
 })
 export class EmployeeDataComponent implements OnInit {
   todayDate = new Date();
-  @ViewChild('myInput') myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
   today: Date = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), this.todayDate.getDate());
   tableWidget: any;
   errMsg: string;
@@ -106,7 +107,7 @@ export class EmployeeDataComponent implements OnInit {
 
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private excelService: ExcelService, private http: Http,) {
+    private excelService: ExcelService, private http: HttpClient,) {
   }
 
   ngAfterViewInit() {
@@ -460,7 +461,7 @@ export class EmployeeDataComponent implements OnInit {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //  //console.log(err.json());
@@ -472,15 +473,17 @@ export class EmployeeDataComponent implements OnInit {
     return promise;
   }
 
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+getHeader(): { headers: HttpHeaders } {
+  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 
 
   formData: FormData = new FormData();

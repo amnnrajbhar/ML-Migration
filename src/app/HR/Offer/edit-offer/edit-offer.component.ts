@@ -26,11 +26,12 @@ declare var require: any;
 })
 
 export class EditOfferComponent implements OnInit {
-  @ViewChild(ChecklistComponent) checklistDetails: ChecklistComponent;
-  @ViewChild(OfferSalaryComponent) offerSalaryComponent: OfferSalaryComponent;
-  @ViewChild(AdditionalInfoComponent) additionalInfoComponent: AdditionalInfoComponent;
-  @ViewChild('replacingEmployeeNo') replacingEmployeeNoEle: ElementRef;
-  @ViewChild(AttachmentsComponent) attachmentDetails:AttachmentsComponent;
+@ViewChild(ChecklistComponent, { static: false }) checklistDetails: ChecklistComponent;
+@ViewChild(OfferSalaryComponent, { static: false }) offerSalaryComponent: OfferSalaryComponent;
+@ViewChild(AdditionalInfoComponent, { static: false }) additionalInfoComponent: AdditionalInfoComponent;
+@ViewChild('replacingEmployeeNo', { static: false }) replacingEmployeeNoEle: ElementRef;
+@ViewChild(AttachmentsComponent, { static: false }) attachmentDetails: AttachmentsComponent;
+
 
   selectedType:any={};
   

@@ -19,7 +19,8 @@ declare var toastr: any;
 })
 
 export class AssetsComponent implements OnInit {
-  @ViewChild(NgForm) assetForm: NgForm;
+@ViewChild(NgForm, { static: false }) assetForm: NgForm;
+
   @Input() appointmentId: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();

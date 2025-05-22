@@ -23,7 +23,8 @@ declare var toastr: any;
   providers: [Util]
 })
 export class MassEmailCommunicationComponent implements OnInit {
-  @ViewChild(NgForm) massEmailComunicationForm: NgForm;
+@ViewChild(NgForm, { static: false }) massEmailComunicationForm: NgForm;
+
 
   currentUser: AuthData;
   isLoading: boolean = false;

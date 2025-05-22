@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { unauthorized } from './unauthorized.model';
 import { AuthData } from '../auth/auth.model';
-import { RequestOptions, Headers } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 import { APIURLS } from '../shared/api-url';
 import { AppComponent } from '../app.component';
 import { HttpService } from '../shared/http-service';
@@ -45,13 +45,15 @@ private reInitDatatable(): void {
   ngOnInit() {
     
   }
- getHeader(): any { 
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+getHeader(): { headers: HttpHeaders } {
+  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 }

@@ -3,16 +3,19 @@ import { APIURLS } from '../../shared/api-url';
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { throwError as _observableThrow, of as _observableOf } from 'rxjs';
-import 'rxjs/Rx';
-import { HttpClient } from '@angular/common/http';
+ 
+import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
+
+
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import swal from 'sweetalert';
 import { ExcelService } from '../../shared/excel-service';
 import htmlToPdfmake from 'html-to-pdfmake';
@@ -26,9 +29,10 @@ import { ExpenseUpdate } from '../ExpenseUpdate/ExpenseUpdate.model';
   styleUrls: ['./FinancialReport.component.css']
 })
 export class FinancialReportComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild('myInput') myInputVariable: ElementRef;
-  @ViewChild(NgForm) financialForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild(NgForm, { static: false }) financialForm: NgForm;
+
 
   // accsubList: AccountReports[] = [];
   AccountSubmissionList: ExpenseUpdate[] = [];
@@ -70,7 +74,7 @@ export class FinancialReportComponent implements OnInit {
   calYear: string;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: Http, private https: HttpClient, private excelService: ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs;} 
+    private http: HttpClient, private https: HttpClient, private excelService: ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs;} 
       
   dropdownList = [];
 
@@ -501,7 +505,7 @@ export class FinancialReportComponent implements OnInit {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             // console.log(err.json());
@@ -519,15 +523,17 @@ export class FinancialReportComponent implements OnInit {
     jQuery("#saveModal").modal('hide');
   }
  
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+getHeader(): { headers: HttpHeaders } {
+  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 
   onFocus() {
     this.autocompleteTrigger._onChange('');

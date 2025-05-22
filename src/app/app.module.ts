@@ -2,7 +2,8 @@ import { ExcelService } from './shared/excel-service';
 import { HttpService } from './shared/http-service';
 import { AuthGuard } from './auth/auth-guard.service';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpModule } from '@angular/http';
+
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './auth/auth.service';
 import { BrowserModule } from '@angular/platform-browser';
@@ -120,7 +121,6 @@ export const MY_MOMENT_FORMATS = {
     // FnFModule,
 
     FormsModule,
-    HttpModule,
     HttpClientModule,
     AppRoutingModule,
 

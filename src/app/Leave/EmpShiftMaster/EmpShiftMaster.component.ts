@@ -4,7 +4,7 @@ import { APIURLS } from '../../shared/api-url';
 declare var toastr: any;
 import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { EmpShiftMaster } from './EmpShiftMaster.model';
@@ -46,7 +46,7 @@ export class actionItemModel {
 
 export class EmpShiftMasterComponent implements OnInit {
   public tableWidget: any;
-  @ViewChild(NgForm) EmpShiftMasterForm: NgForm;
+  @ViewChild(NgForm  , { static: false }) EmpShiftMasterForm: NgForm;
   EmpShiftMasterList: any[] = [[]];
   EmpShiftMasterItem: EmpShiftMaster = new EmpShiftMaster();
   isLoading: boolean = false;

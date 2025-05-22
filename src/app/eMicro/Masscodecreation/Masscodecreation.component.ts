@@ -11,7 +11,8 @@ declare var $: any;
 import * as _ from "lodash";
 import { debug } from 'util';
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { ItemCodeExtension } from '../ItemCodeExtension/ItemCodeExtension.model';
@@ -49,8 +50,8 @@ declare var require: any;
   styleUrls: ['./Masscodecreation.component.css']
 })
 export class MassCodeCreationComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild('myInput') myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();

@@ -43,6 +43,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { CustomerMaster } from '../CustomerMaster/CustomerMaster.model';
+
 declare var require: any;
 
 @Component({
@@ -51,8 +52,9 @@ declare var require: any;
     styleUrls: ['./CustomerMasterChanges.component.css']
 })
 export class CustomerMasterChangesComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
-    @ViewChild('myInput') myInputVariable: ElementRef;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+
 
     searchTermBaseLoc = new FormControl();
     public filteredItemsBaseLoc = [];

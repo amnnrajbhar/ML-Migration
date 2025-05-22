@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpService } from '../../../shared/http-service';
 import { APIURLS } from '../../../shared/api-url';
 import { AuthData } from '../../../auth/auth.model';
@@ -14,7 +14,8 @@ type excelData = any[][];
 })
 export class BulkConfirmationComponent implements OnInit {
   currentUser: AuthData;
-  @ViewChild('file') file;
+ @ViewChild('file', { static: false }) file: ElementRef;
+
   data: excelData = [[1, 2], [3, 4]];
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
   fileName: string = 'SheetJS.xlsx';

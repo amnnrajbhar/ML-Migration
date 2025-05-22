@@ -17,7 +17,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class AdditionalInfoComponent implements OnInit {
-  @ViewChild(NgForm) checklistForm: NgForm;
+  @ViewChild(NgForm  , { static: false }) checklistForm: NgForm;
   @Input() offerId: number;
   @Input() employeeCategoryId: number;
   @Input() totalExperience: number;

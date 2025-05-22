@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, NgForm, Validators } from '@angular/forms';
-import { Headers, RequestOptions } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+ 
 import swal from 'sweetalert';
 import { AppComponent } from '../../app.component';
 import { AuthData } from '../../auth/auth.model';
@@ -11,7 +11,7 @@ import { AppService } from '../../shared/app.service';
 import { HttpService } from '../../shared/http-service';
 import { RoomInformation } from './room.model';
 import { IfStmt } from '@angular/compiler';
-import { forEach } from '@angular/router/src/utils/collection';
+//import { forEach } from '@angular/router/src/utils/collection';
 import { RoomType } from '../roomtype-master/roomtype.model';
 import { RoomFacility } from '../roomfacilities-master/roomfacility.model';
 import { Facilities } from './facility.model';
@@ -39,7 +39,8 @@ export class actionItemModel {
   styleUrls: ['./room-maintenance.component.css']
 })
 export class RoomMaintenanceComponent implements OnInit {
-  @ViewChild(NgForm) meetingroomForm: NgForm;
+@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
+
   currentUser: AuthData;
   urlPath: string = '';
   isEdit: boolean = false;

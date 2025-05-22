@@ -8,14 +8,14 @@ import { AppComponent } from '../../app.component';
 import { FormControl, NgForm } from '@angular/forms';
 import { AuthData } from '../../auth/auth.model';
 import swal from 'sweetalert';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from 'console';
 import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
 import { ExcelService } from '../../shared/excel-service';
 import * as fs from 'file-saver';
-import { DISABLED } from '@angular/forms/src/model';
+// import { DISABLED } from '@angular/forms/src/model';
 
 
 declare var jQuery: any;
@@ -31,7 +31,8 @@ export class actionItemModel {
 })
 export class LeaveStructurecomponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-  @ViewChild(NgForm) leaveForm: NgForm;
+@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
+
   public filteredItems = [];
   public tableWidget: any;
   leavestructureItem: LeaveStructure = new LeaveStructure();
@@ -57,7 +58,7 @@ export class LeaveStructurecomponent implements OnInit {
   public filteredItemsBasePlant = [];
 
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent, private excelService: ExcelService,
-    private http: Http) { }
+    private http: HttpClient) { }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#LeaveTable');
@@ -436,7 +437,7 @@ export class LeaveStructurecomponent implements OnInit {
         .toPromise()
         .then(
           res => {
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             reject(err.json());
@@ -446,15 +447,17 @@ export class LeaveStructurecomponent implements OnInit {
     return promise;
   }
 
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+getHeader(): { headers: HttpHeaders } {
+  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+
+  const headers = new HttpHeaders({
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + authData.token
+  });
+
+  return { headers };
+}
 
   setFormatedDate(date: any) {
     let dt = new Date(date);

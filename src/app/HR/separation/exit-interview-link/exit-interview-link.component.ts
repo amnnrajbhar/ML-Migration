@@ -7,7 +7,8 @@ import { HttpService } from '../../../shared/http-service';
 import { Util } from '../../Services/util.service';
 import { AppointmentService } from '../../Services/appointmentService.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { NgForm } from '@angular/forms';
 declare var $: any;
 declare var toastr: any;
@@ -37,7 +38,7 @@ export class ExitInterviewLinkComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute, private service: AppointmentService,
-    private util: Util, private http: Http) { }
+    private util: Util, private http: HttpClient) { }
 
   ngOnInit() {
     this.urlPath = this.router.url;

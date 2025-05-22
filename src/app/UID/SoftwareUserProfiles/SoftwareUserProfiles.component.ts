@@ -22,7 +22,8 @@ export class actionItemModel {
 })
 export class SoftwareUserProfilesComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-  @ViewChild(NgForm) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+
   public filteredItems = [];
 
   public tableWidget: any;

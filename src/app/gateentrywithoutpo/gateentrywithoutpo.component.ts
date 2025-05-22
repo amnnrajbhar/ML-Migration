@@ -22,10 +22,12 @@ declare var $: any;
   styleUrls: ['./gateentrywithoutpo.component.css']
 })
 export class GateentryWithoutPOComponent implements OnInit {
-  @ViewChild('userForm') userForm: any;
-  @ViewChild('depForm') depForm: any;
-  @ViewChild('suppForm') suppForm: any;
-  @ViewChild('matForm') matForm: any;
+ @ViewChild('userForm', { static: false }) userForm: any;
+
+ @ViewChild('depForm', { static: false }) depForm: any;
+@ViewChild('suppForm', { static: false }) suppForm: any;
+@ViewChild('matForm', { static: false }) matForm: any;
+
 
   searchTerm = new FormControl();
   currentUser: AuthData;

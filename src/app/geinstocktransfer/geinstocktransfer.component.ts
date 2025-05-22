@@ -22,7 +22,8 @@ declare var $: any;
   styleUrls: ['./geinstocktransfer.component.css']
 })
 export class GEInStockTransferComponent implements OnInit {
-  @ViewChild('userForm') userForm: any;
+ @ViewChild('userForm', { static: false }) userForm: any;
+
 
   searchTerm = new FormControl();
   currentUser: AuthData;

@@ -20,7 +20,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class AnnouncementsComponent implements OnInit {
-  @ViewChild(NgForm) announcementForm: NgForm;
+  @ViewChild(NgForm , { static: false })  announcementForm: NgForm;
   isLoading: boolean = false;
   currentUser: AuthData;
   filterData: any = {};

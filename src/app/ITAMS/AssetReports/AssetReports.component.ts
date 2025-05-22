@@ -27,7 +27,8 @@ declare var toastr: any;
 })
 
 export class AssetReportsComponent implements OnInit {
-  @ViewChild('filterForm') filterForm: any;
+@ViewChild('filterForm', { static: false }) filterForm: any;
+
   searchTerm = new FormControl();
   currentUser: AuthData;
   public tableWidget: any;

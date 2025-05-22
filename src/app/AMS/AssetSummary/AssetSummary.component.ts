@@ -22,7 +22,8 @@ declare var toastr: any;
   styleUrls: ['./AssetSummary.component.css']
 })
 export class AssetSummaryComponent implements OnInit {
-  @ViewChild('filterForm') filterForm: any;
+@ViewChild('filterForm', { static: false }) filterForm: any;
+
   searchTerm = new FormControl();
   currentUser: AuthData;
   public tableWidget: any;

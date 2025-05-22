@@ -3,18 +3,22 @@ import { APIURLS } from '../../shared/api-url';
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Http } from '@angular/http';
+//import { Http } from '@angular/http';
 import { throwError as _observableThrow, of as _observableOf } from 'rxjs';
-import 'rxjs/Rx';
+ 
+import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
+
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
 import swal from 'sweetalert';
 import { EssTemplates } from './EssTemplates.model';
 import * as moment from 'moment';
+import { HttpClient } from '@angular/common/http';
 
 declare var ActiveXObject: (type: string) => void;
 
@@ -25,9 +29,10 @@ declare var ActiveXObject: (type: string) => void;
 })
 
 export class EssTemplatesComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm) userForm: NgForm;
-  @ViewChild('myInput') myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm: NgForm;
+
+  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
   public tableWidget: any;
   public tableWidgetlv: any;
   isLoading: boolean = false;
@@ -51,7 +56,7 @@ export class EssTemplatesComponent implements OnInit {
   id:number;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: Http, private route: ActivatedRoute) { }
+    private http: HttpClient, private route: ActivatedRoute) { }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');

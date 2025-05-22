@@ -15,7 +15,8 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
-    @ViewChild(NgForm) calendarForm: NgForm;
+   @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+
     public tableWidget: any;
     selMonth: any;
     companyId:  number;

@@ -6,7 +6,7 @@ import { HttpService } from './../../shared/http-service';
 import { Component, OnInit } from '@angular/core';
 
 import { HttpClientModule } from '@angular/common/http';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 
@@ -56,7 +56,7 @@ export class GeneralreportComponent implements OnInit {
   recommDetailsList: any[] = [[]];
   projectList: any[] = [[]];
   designationList: any[] = [[]];
-  constructor(private appService: AppComponent, private httpService: HttpService, private http:Http,  private router: Router, private excelService:ExcelService) { }
+  constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient,  private router: Router, private excelService:ExcelService) { }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#assessment');

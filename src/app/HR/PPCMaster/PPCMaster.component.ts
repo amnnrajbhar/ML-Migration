@@ -20,7 +20,8 @@ export class actionItemModel {
 })
 export class PPCMasterComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-  @ViewChild(NgForm) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+
   public filteredItems = [];
 
   public tableWidget: any;

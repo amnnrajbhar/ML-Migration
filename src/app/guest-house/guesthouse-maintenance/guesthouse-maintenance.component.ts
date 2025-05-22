@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, NgForm, Validators } from '@angular/forms';
-import { Headers, RequestOptions } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+ 
 import swal from 'sweetalert';
 import { AppComponent } from '../../app.component';
 import { AuthData } from '../../auth/auth.model';
@@ -11,11 +11,11 @@ import { AppService } from '../../shared/app.service';
 import { HttpService } from '../../shared/http-service';
 import { GuestHouseInformation } from './GuestHouse.model';
 import { IfStmt } from '@angular/compiler';
-import { forEach } from '@angular/router/src/utils/collection';
+//import { forEach } from '@angular/router/src/utils/collection';
 import { RoomFacility } from '../../bookmeetingroom/roomfacilities-master/roomfacility.model';
 import { Facilities } from './facility.model';
 import { GuestHousePictures } from './guesthousepictures.model';
-import { isEmpty } from 'rxjs-compat/operator/isEmpty';
+//import { isEmpty } from 'rxjs-compat/operator/isEmpty';
 import { AuditLogChange } from '../../masters/auditlogchange.model';
 import { AuditLog } from '../../masters/auditlog.model';
 import * as _ from "lodash";
@@ -38,7 +38,8 @@ export class actionItemModel {
   styleUrls: ['./guesthouse-maintenance.component.css']
 })
 export class GuesthouseMaintenanceComponent implements OnInit {
-  @ViewChild(NgForm) meetingroomForm: NgForm;
+@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
+
   currentUser: AuthData;
   urlPath: string = '';
   isEdit: boolean = false;

@@ -17,7 +17,8 @@ declare var $: any;
   styleUrls: ['./book-cab.component.css']
 })
 export class BookCabComponent implements OnInit {
-  @ViewChild(NgForm) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+
   currentUser: AuthData;
   urlPath: string = '';
   errMsg: string = "";

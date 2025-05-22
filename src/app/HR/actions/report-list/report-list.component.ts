@@ -16,6 +16,7 @@ import { HttpClient } from '@angular/common/http';
 import { Util } from '../../Services/util.service';
 import { PERMISSIONS } from '../../../shared/permissions';
 
+
 @Component({
   selector: 'app-report-list',
   templateUrl: './report-list.component.html',
