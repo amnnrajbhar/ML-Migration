@@ -28,8 +28,7 @@ export class actionItemModel {
 })
 export class PackTypeComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) materialForm: NgForm;
-
+  @ViewChild(NgForm) materialForm: NgForm;
   public tableWidget: any;
   companyId: number;
   materialList: MaterialMaster[] = [];

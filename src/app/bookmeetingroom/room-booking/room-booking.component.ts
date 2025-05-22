@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 declare var jQuery: any;
 import * as _ from "lodash";
 import swal from 'sweetalert';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 
 import {
   addDays,
@@ -51,7 +51,7 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpService } from '../../shared/http-service';
 import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
 import { NgForm } from '@angular/forms';
-// import { PARAMETERS } from '@angular/core/src/util/decorators';
+import { PARAMETERS } from '@angular/core/src/util/decorators';
 import { APIURLS } from '../../shared/api-url';
 import { BookMeeting } from './bookmeeting.model';
 import { AuthData } from '../../auth/auth.model';
@@ -69,8 +69,7 @@ import { RoomInformation } from '../room-maintenance/room.model';
   }]
 })
 export class RoomBookingComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
-
+  @ViewChild(NgForm) calendarForm: NgForm;
   CalendarView = CalendarView;
 
   view: CalendarView = CalendarView.Week;

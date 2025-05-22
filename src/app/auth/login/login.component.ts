@@ -8,7 +8,6 @@ import { AuthService } from '../auth.service';
 import { Component, OnInit } from '@angular/core';
 import swal from 'sweetalert';
 import { HttpClient } from '@angular/common/http';
-
 declare var jQuery: any;
 
 @Component({

@@ -20,7 +20,6 @@ import { HttpClient } from '@angular/common/http';
 
 
 
-
 @Component({
   selector: 'app-geinregreport',
   templateUrl: './geinregreport.component.html',

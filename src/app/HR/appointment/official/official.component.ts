@@ -22,7 +22,8 @@ declare var toastr: any;
   providers: [AppointmentService, Util]
 })
 export class OfficialComponent implements OnInit {
-  @ViewChild('officialDetailsForm' , { static: false }) private officialDetailsForm: NgForm;
+  @ViewChild('officialDetailsForm')
+  private officialDetailsForm: NgForm;
   @Input() appointmentId: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();

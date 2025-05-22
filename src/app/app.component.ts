@@ -11,7 +11,6 @@ declare var jQuery: any;
 declare var $: any;
 import swal from 'sweetalert';
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

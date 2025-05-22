@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-// import { Lightbox } from 'ngx-lightbox';
+import { Lightbox } from 'ngx-lightbox';
 declare var jQuery: any;
 import { Chart } from 'chart.js';
 import { ChartDataLabels } from 'chartjs-plugin-datalabels';
@@ -10,7 +10,7 @@ import { HttpService } from '../shared/http-service';
 import { Router } from '@angular/router';
 import { APIURLS } from '../shared/api-url';
 import { MOMENT } from 'angular-calendar';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import { ExcelService } from '../shared/excel-service';
 declare var $: any;
 import swal from 'sweetalert';
@@ -83,7 +83,7 @@ export class GEDashboardComponent implements OnInit {
 
     public chartPlugins = [ChartDataLabels];
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, 
-        private http: HttpClient,private excelService: ExcelService) {
+        private http: Http,private excelService: ExcelService) {
 
     }
 
@@ -163,7 +163,7 @@ export class GEDashboardComponent implements OnInit {
             .then(
               res => { // Success
                 //   //console.log(res.json());
-                resolve(res);
+                resolve(res.json());
               },
               err => {
                 //  //console.log(err.json());
@@ -750,17 +750,15 @@ export class GEDashboardComponent implements OnInit {
 
 
 
-   getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+    getHeader(): any {
+        var headers = new Headers();
+        headers.append("Accept", 'application/json');
+        headers.append('Content-Type', 'application/json');
+        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+        headers.append("Authorization", "Bearer " + authData.token);
+        let options = new RequestOptions({ headers: headers });
+        return options;
+    }
     getTimeFormat(time) {
         return moment('1970-01-01 ' + time);
     }

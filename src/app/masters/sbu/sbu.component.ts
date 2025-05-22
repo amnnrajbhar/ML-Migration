@@ -6,7 +6,7 @@ import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { SBU } from './sbu.model';
 // import { HttpClientModule } from '@angular/common/http';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 import { Employee } from '../employee/employee.model';
@@ -27,8 +27,8 @@ declare var jQuery: any;
 })
 
 export class SbuComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
- @ViewChild(NgForm, { static: false }) sbuForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(NgForm) sbuForm: NgForm;
   searchTerm: FormControl = new FormControl();
   // private trigger: Subject<void> = new Subject<void>();
     public tableWidget: any;
@@ -56,7 +56,7 @@ export class SbuComponent implements OnInit {
     notFirst: boolean = true;
     public employeeList: any[]=[[]];
   locationList: Location[]=[];
-    constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient, private router: Router) { }
+    constructor(private appService: AppComponent, private httpService: HttpService, private http:Http, private router: Router) { }
 
     clearForm(){
       // console.log('form reset');
@@ -202,17 +202,15 @@ onItemSelect(item: any) {
       this.isLoadingPop = false;
       jQuery("#myModal").modal('show');
     }
-  getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+    getHeader(): any { 
+      var headers = new Headers();
+      headers.append("Accept", 'application/json');
+      headers.append('Content-Type', 'application/json');
+      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+      headers.append("Authorization", "Bearer " + authData.token);
+      let options = new RequestOptions({ headers: headers });
+      return options;
+    }
 
     getHeadSBUName(id: number){
       let temp: any;

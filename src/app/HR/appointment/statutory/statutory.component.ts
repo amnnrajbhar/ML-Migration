@@ -18,7 +18,8 @@ declare var toastr: any;
   providers: [AppointmentService, Util]
 })
 export class StatutoryComponent implements OnInit {
-  @ViewChild('statutoryDetailsForm' , { static: false }) private statutoryDetailsForm: NgForm;
+  @ViewChild('statutoryDetailsForm')
+  private statutoryDetailsForm: NgForm;
   @Input() appointmentId: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();

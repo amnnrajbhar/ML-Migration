@@ -10,8 +10,7 @@ declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { DatePipe } from '@angular/common';
@@ -25,10 +24,9 @@ import { DocTypeMaster } from './DocTypeMaster.model';
     styleUrls: ['./DocTypeMaster.component.css']
 })
 export class DocTypeMasterComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-
+    @ViewChild('myInput') myInputVariable: ElementRef;
 
     public tableWidget: any;
 

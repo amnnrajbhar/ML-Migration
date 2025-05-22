@@ -9,7 +9,8 @@ import { Util } from '../../Services/util.service';
 import { AppointmentService } from '../../Services/appointmentService.service';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { OfferDetails } from '../../models/offerdetails.model';
 import { PersonalComponent } from '../personal/personal.component';
 import { AddressesComponent } from '../addresses/addresses.component';
@@ -51,7 +52,7 @@ export class ViewComponent implements OnInit {
   tabsList: string[] = ["personal","addresses","family","education","work_experience","languages","nomination","bank", "attachments"];
   
   constructor(private httpService: HttpService,
-    private router: Router, private route: ActivatedRoute, private http: HttpClient,
+    private router: Router, private route: ActivatedRoute, private http: Http,
     private util: Util, private service: AppointmentService, private location: Location) { }
 
   ngOnInit() {

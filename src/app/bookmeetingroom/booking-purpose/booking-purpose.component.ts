@@ -23,8 +23,7 @@ export class actionItemModel {
   styleUrls: ['./booking-purpose.component.css']
 })
 export class BookingPurposeComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
-
+  @ViewChild(NgForm) meetingroomForm: NgForm;
   currentUser = {} as AuthData;
   urlPath: string = '';
   isEdit: boolean = false;

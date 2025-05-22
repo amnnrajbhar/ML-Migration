@@ -7,7 +7,7 @@ import { AppComponent } from '../../app.component';
 import { FormControl, NgForm } from '@angular/forms';
 import { AuthData } from '../../auth/auth.model';
 import swal from 'sweetalert';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import * as _ from "lodash";
 declare var jQuery: any;
 export class actionItemModel {
@@ -22,8 +22,7 @@ export class actionItemModel {
 })
 export class MarkAttendancecomponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
-
+  @ViewChild(NgForm) leaveForm: NgForm;
   public tableWidget: any;
   isLoading: boolean = false;
   errMsg: string = "";
@@ -48,7 +47,7 @@ export class MarkAttendancecomponent implements OnInit {
   filterYear: any;
 
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent,
-    private http: HttpClient) { }
+    private http: Http) { }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#LeaveReasonTable');
@@ -157,7 +156,7 @@ export class MarkAttendancecomponent implements OnInit {
         .toPromise()
         .then(
           res => {
-            resolve(res);
+            resolve(res.json());
           },
           err => {
             reject(err.json());
@@ -168,17 +167,15 @@ export class MarkAttendancecomponent implements OnInit {
     return promise;
   }
 
-getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+  getHeader(): any {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+    headers.append("Authorization", "Bearer " + authData.token);
+    let options = new RequestOptions({ headers: headers });
+    return options;
+  }
   
   Monthlist: any[] = [
     { id: 1, name: 'January' },

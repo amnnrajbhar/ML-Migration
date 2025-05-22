@@ -18,8 +18,7 @@ declare var jQuery: any;
 })
 export class TdVendorMasterComponent implements OnInit {
 
- @ViewChild(NgForm, { static: false }) TdVendorMasterForm: NgForm;
-
+  @ViewChild(NgForm) TdVendorMasterForm: NgForm;
   public tableWidget: any;
   id: number;
   TdVendorMasterList: TdVendorMaster[] = [];

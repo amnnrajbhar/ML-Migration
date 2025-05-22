@@ -23,8 +23,7 @@ declare var toastr: any;
 })
 
 export class UserAcknowledgementComponent implements OnInit {
-@ViewChild('filterForm', { static: false }) filterForm: any;
-
+  @ViewChild('filterForm') filterForm: any;
   searchTerm = new FormControl();
   currentUser: AuthData;
   public tableWidget: any;

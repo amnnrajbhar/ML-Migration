@@ -9,9 +9,7 @@ import { DepartmentMasterService } from "../../Services/departmentMaster.service
 import { APIURLS } from "../../shared/api-url";
 import { EmployeeMaster } from "../../Models/employeeMaster.model";
 import { NgForm } from "@angular/forms";
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import swal from 'sweetalert';
-
+import { RequestOptions, Headers, Http } from "@angular/http";
 import { UserMaster } from "../../Models/userMaster.model";
 import { EmployeeAddress } from "../../Models/employeeAddress.model";
 import { EmployeeOtherDetails } from "../../Models/employeeOtherDetails.model";
@@ -56,8 +54,7 @@ export class actionItemModel {
 
 })
 export class EmployeeMasterComponent implements OnInit {
-  @ViewChild(NgForm, { static: false }) userForm: NgForm;
-
+    @ViewChild(NgForm) userForm: NgForm;
     
     path: string = '';
     currentUser: AuthData = {} as AuthData;
@@ -108,7 +105,7 @@ export class EmployeeMasterComponent implements OnInit {
     lastReportingkeydown = 0;
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private locationMasterService: LocationMasterService, private employeeMasterService: EmployeeMasterService,
-        private departmentMasterService: DepartmentMasterService, private http: HttpClient) {}
+        private departmentMasterService: DepartmentMasterService, private http: Http) {}
 
     ngOnInit(): void {
         this.path = this.router.url;
@@ -1201,7 +1198,7 @@ export class EmployeeMasterComponent implements OnInit {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res);
+                        resolve(res.json());
                     },
                     err => {
                         //  //console.log(err.json());
@@ -1213,15 +1210,13 @@ export class EmployeeMasterComponent implements OnInit {
         return promise;
     }
 
-   getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+    getHeader(): any {
+        var headers = new Headers();
+        headers.append("Accept", 'application/json');
+        headers.append('Content-Type', 'application/json');
+        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+        headers.append("Authorization", "Bearer " + authData.token);
+        let options = new RequestOptions({ headers: headers });
+        return options;
+    }
 }

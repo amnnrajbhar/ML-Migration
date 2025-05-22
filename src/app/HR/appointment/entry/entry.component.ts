@@ -8,7 +8,8 @@ import { Util } from '../../Services/util.service';
 import { AppointmentService } from '../../Services/appointmentService.service';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { OfferDetails } from '../../models/offerdetails.model';
 import { PersonalComponent } from '../personal/personal.component';
 import { AddressesComponent } from '../addresses/addresses.component';
@@ -31,17 +32,15 @@ declare var toastr: any;
   providers: [Util, AppointmentService]
 })
 export class EntryComponent implements OnInit {
-@ViewChild(PersonalComponent, { static: false }) personalDetails: PersonalComponent;
-@ViewChild(AddressesComponent, { static: false }) addressDetails: AddressesComponent;
-@ViewChild(EducationComponent, { static: false }) educationDetails: EducationComponent;
-@ViewChild(FamilyComponent, { static: false }) familyDetails: FamilyComponent;
-@ViewChild(LanguagesComponent, { static: false }) languageDetails: LanguagesComponent;
-@ViewChild(WorkexperienceComponent, { static: false }) workDetails: WorkexperienceComponent;
-@ViewChild(BankDetailsComponent, { static: false }) bankDetails: BankDetailsComponent;
-@ViewChild(AttachmentsComponent, { static: false }) attachmentDetails: AttachmentsComponent;
-@ViewChild(NominationComponent, { static: false }) nominationComponent: NominationComponent;
-
-
+  @ViewChild(PersonalComponent) personalDetails: PersonalComponent;
+  @ViewChild(AddressesComponent) addressDetails: AddressesComponent;
+  @ViewChild(EducationComponent) educationDetails: EducationComponent;
+  @ViewChild(FamilyComponent) familyDetails: FamilyComponent;
+  @ViewChild(LanguagesComponent) languageDetails: LanguagesComponent;
+  @ViewChild(WorkexperienceComponent) workDetails: WorkexperienceComponent;
+  @ViewChild(BankDetailsComponent) bankDetails: BankDetailsComponent;
+  @ViewChild(AttachmentsComponent) attachmentDetails: AttachmentsComponent;
+  @ViewChild(NominationComponent) nominationComponent: NominationComponent;
   
   safeURL: SafeResourceUrl;
   offerId: any;
@@ -62,7 +61,7 @@ export class EntryComponent implements OnInit {
   tabsList: string[] = ["personal","addresses","family","education","work_experience","languages","nomination","bank", "attachments"];
 
   constructor(private httpService: HttpService,
-    private router: Router, private route: ActivatedRoute, private http: HttpClient,
+    private router: Router, private route: ActivatedRoute, private http: Http,
     private util: Util, private service: AppointmentService,
     private _sanitizer: DomSanitizer) { }
 

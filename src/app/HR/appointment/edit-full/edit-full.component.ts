@@ -7,7 +7,8 @@ import { HttpService } from '../../../shared/http-service';
 import { Util } from '../../Services/util.service';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { OfficialComponent } from '../official/official.component';
 import { StatutoryComponent } from '../statutory/statutory.component';
 import { SalaryComponent } from '../salary/salary.component';
@@ -33,22 +34,19 @@ declare var toastr: any;
   providers: [Util]
 })
 export class EditFullComponent implements OnInit {
-@ViewChild(OfficialComponent, { static: false }) officialDetails: OfficialComponent;
-@ViewChild(StatutoryComponent, { static: false }) statutoryDetails: StatutoryComponent;
-@ViewChild(SalaryComponent, { static: false }) salaryDetails: SalaryComponent;
-@ViewChild(AssetsComponent, { static: false }) assetsDetails: AssetsComponent;
-
-@ViewChild(PersonalComponent, { static: false }) personalDetails: PersonalComponent;
-@ViewChild(AddressesComponent, { static: false }) addressDetails: AddressesComponent;
-@ViewChild(EducationComponent, { static: false }) educationDetails: EducationComponent;
-@ViewChild(FamilyComponent, { static: false }) familyDetails: FamilyComponent;
-@ViewChild(LanguagesComponent, { static: false }) languageDetails: LanguagesComponent;
-@ViewChild(WorkexperienceComponent, { static: false }) workDetails: WorkexperienceComponent;
-@ViewChild(BankDetailsComponent, { static: false }) bankDetails: BankDetailsComponent;
-@ViewChild(AttachmentsComponent, { static: false }) attachmentDetails: AttachmentsComponent;
-@ViewChild(NominationComponent, { static: false }) nominationComponent: NominationComponent;
-
-
+  @ViewChild(OfficialComponent) officialDetails: OfficialComponent;
+  @ViewChild(StatutoryComponent) statutoryDetails: StatutoryComponent;
+  @ViewChild(SalaryComponent) salaryDetails: SalaryComponent;
+  @ViewChild(AssetsComponent) assetsDetails: AssetsComponent;
+  @ViewChild(PersonalComponent) personalDetails: PersonalComponent;
+  @ViewChild(AddressesComponent) addressDetails: AddressesComponent;
+  @ViewChild(EducationComponent) educationDetails: EducationComponent;
+  @ViewChild(FamilyComponent) familyDetails: FamilyComponent;
+  @ViewChild(LanguagesComponent) languageDetails: LanguagesComponent;
+  @ViewChild(WorkexperienceComponent) workDetails: WorkexperienceComponent;
+  @ViewChild(BankDetailsComponent) bankDetails: BankDetailsComponent;
+  @ViewChild(AttachmentsComponent) attachmentDetails: AttachmentsComponent;
+  @ViewChild(NominationComponent) nominationComponent: NominationComponent;
 
   appointmentId: any;
   appointmentDetails: any = {};
@@ -66,7 +64,7 @@ export class EditFullComponent implements OnInit {
   tabsList: string[] = ["initial", "statutory", "salary", "assets", "addresses","family","education","work_experience","languages","nomination","bank", "attachments"];
 
   constructor(private httpService: HttpService,
-    private router: Router, private route: ActivatedRoute, private http: HttpClient,
+    private router: Router, private route: ActivatedRoute, private http: Http,
     private util: Util) { }
 
   ngOnInit() {

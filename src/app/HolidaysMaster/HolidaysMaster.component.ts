@@ -11,14 +11,14 @@ import { AuditLogChange } from '../masters/auditlogchange.model';
 import { AuditLog } from '../masters/auditlog.model';
 import * as _ from "lodash";
 import { HolidayMaster } from './HolidaysMaster.model';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { HttpClient } from '@angular/common/http';
+import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
 import { ExcelService } from '../shared/excel-service';
 declare var jQuery: any;
 import { MatAccordion } from '@angular/material/expansion';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { error } from 'console';
-//import { filter } from 'rxjs-compat/operator/filter';
+import { filter } from 'rxjs-compat/operator/filter';
 
 
 
@@ -29,11 +29,9 @@ import { error } from 'console';
 })
 export class HolidaysMasterComponent implements OnInit {
     searchTerm: FormControl = new FormControl();
-  @ViewChild(NgForm, { static: false }) desigForm: NgForm;
+    @ViewChild(NgForm) desigForm: NgForm;
 
-
-@ViewChild(MatAccordion, { static: false }) accordion: MatAccordion;
-
+    @ViewChild(MatAccordion) accordion: MatAccordion;
 
     public filteredItems = [];
 
@@ -77,7 +75,7 @@ export class HolidaysMasterComponent implements OnInit {
     holidayList: any[] = [];
 
     constructor(private httpService: HttpService, private router: Router, private appService: AppComponent,
-        private http: HttpClient, private excelService: ExcelService) {
+        private http: Http, private excelService: ExcelService) {
     }
 
     ngAfterViewInit() {
@@ -678,7 +676,7 @@ export class HolidaysMasterComponent implements OnInit {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res);
+                        resolve(res.json());
                     },
                     err => {
                         //  //console.log(err.json());
@@ -690,17 +688,15 @@ export class HolidaysMasterComponent implements OnInit {
         return promise;
     }
 
-   getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+    getHeader(): any {
+        var headers = new Headers();
+        headers.append("Accept", 'application/json');
+        headers.append('Content-Type', 'application/json');
+        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+        headers.append("Authorization", "Bearer " + authData.token);
+        let options = new RequestOptions({ headers: headers });
+        return options;
+    }
 
     getDayName(per) {
         var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

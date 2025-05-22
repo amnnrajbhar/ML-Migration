@@ -8,7 +8,7 @@ import { AppComponent } from '../../app.component';
 import { FormControl, NgForm } from '@angular/forms';
 import { AuthData } from '../../auth/auth.model';
 import swal from 'sweetalert';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import * as _ from "lodash";
 declare var jQuery: any;
 declare var $: any;
@@ -26,8 +26,7 @@ export class actionItemModel {
 
 export class SpocDetailsComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
-
+  @ViewChild(NgForm) leaveForm: NgForm;
   public tableWidget: any;
   SpocDetailsItem: SpocDetails = new SpocDetails();
   isLoading: boolean = false;
@@ -50,7 +49,7 @@ export class SpocDetailsComponent implements OnInit {
   empListCon: any[] = [];
 
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent,
-    private http: HttpClient) { }
+    private http: Http) { }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#SpocDetailsTable');
@@ -314,7 +313,7 @@ export class SpocDetailsComponent implements OnInit {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res);
+            resolve(res.json());
           },
           err => {
             //  //console.log(err.json());
@@ -325,15 +324,13 @@ export class SpocDetailsComponent implements OnInit {
     return promise;
   }
 
-getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+  getHeader(): any {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+    headers.append("Authorization", "Bearer " + authData.token);
+    let options = new RequestOptions({ headers: headers });
+    return options;
+  }
 }

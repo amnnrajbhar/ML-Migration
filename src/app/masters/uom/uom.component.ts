@@ -21,8 +21,7 @@ export class actionItemModel {
   styleUrls: ['./uom.component.css']
 })
 export class UomComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) uomForm: NgForm;
-
+  @ViewChild(NgForm) uomForm: NgForm;
   errMsg: string = "";
   isLoadingPop: boolean = false;
   errMsgPop: string = "";

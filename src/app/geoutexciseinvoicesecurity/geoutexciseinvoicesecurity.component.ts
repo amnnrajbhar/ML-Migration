@@ -24,8 +24,7 @@ declare var $: any;
 })
 export class GeOutExciseInvoiceSecurityComponent implements OnInit {
 
- @ViewChild('userForm', { static: false }) userForm: any;
-
+  @ViewChild('userForm') userForm: any;
   searchTerm = new FormControl();
   currentUser: AuthData;
   tableWidget: any;

@@ -21,8 +21,7 @@ export class actionItemModel {
   styleUrls: ['./material.component.css']
 })
 export class MaterialComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) materialForm: NgForm;
-
+  @ViewChild(NgForm) materialForm: NgForm;
   public tableWidget: any;
   companyId: number;
   materialList: MaterialType[] = [];

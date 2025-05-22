@@ -27,9 +27,9 @@ declare var toastr: any;
   providers: [Util]
 })
 export class ApproveComponent implements OnInit {
- @ViewChild(ChecklistComponent, { static: false }) checklistDetails: ChecklistComponent;
-@ViewChild(OfferSalaryComponent, { static: false }) offerSalaryComponent: OfferSalaryComponent;
-@ViewChild(AdditionalInfoComponent, { static: false }) additionalInfoComponent: AdditionalInfoComponent;
+  @ViewChild(ChecklistComponent) checklistDetails: ChecklistComponent;
+  @ViewChild(OfferSalaryComponent) offerSalaryComponent: OfferSalaryComponent;
+  @ViewChild(AdditionalInfoComponent) additionalInfoComponent: AdditionalInfoComponent;
 
   offerId: any;
   objectType: string = "Offer Letter";

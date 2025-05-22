@@ -23,8 +23,7 @@ declare var toastr: any;
 })
 export class SignatoryComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
-
+  @ViewChild(NgForm) detailsForm: NgForm;
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
     private excelService: ExcelService, private masterDataService: MasterDataService, private util: Util) { }

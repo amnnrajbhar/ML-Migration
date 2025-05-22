@@ -4,7 +4,7 @@ import { APIURLS } from '../../shared/api-url';
 declare var toastr: any;
 import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
@@ -21,7 +21,7 @@ import { TourPlan } from './TourPlan.model';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import htmlToPdfmake from 'html-to-pdfmake';
-
+import { HttpClient } from '@angular/common/http';
 
 export class actionItemModel {
     CalenderYear: string = '';
@@ -36,7 +36,7 @@ export class actionItemModel {
 
 export class TourPlanComponent implements OnInit {
     public tableWidget: any;
-    @ViewChild(NgForm  , { static: false }) TourPlanForm: NgForm;
+    @ViewChild(NgForm) TourPlanForm: NgForm;
     isLoading: boolean = false;
     errMsg: string = "";
     path: string = '';
@@ -60,7 +60,7 @@ export class TourPlanComponent implements OnInit {
     Duration1: string = null;
     Duration2: string = null;
 
-    constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private http: HttpClient,
+    constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private http: Http,
         private datePipe: DatePipe, private https: HttpClient,) {
         pdfMake.vfs = pdfFonts.pdfMake.vfs;
     }
@@ -253,7 +253,7 @@ export class TourPlanComponent implements OnInit {
                 .toPromise()
                 .then(
                     res => {
-                        resolve(res);
+                        resolve(res.json());
                     },
                     err => {
                         reject(err.json());
@@ -272,17 +272,15 @@ export class TourPlanComponent implements OnInit {
         return formateddate;
     }
 
-   getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+    getHeader(): any {
+        var headers = new Headers();
+        headers.append("Accept", 'application/json');
+        headers.append('Content-Type', 'application/json');
+        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+        headers.append("Authorization", "Bearer " + authData.token);
+        let options = new RequestOptions({ headers: headers });
+        return options;
+    }
 
     dropdownList = [];
     selectedItems = [];

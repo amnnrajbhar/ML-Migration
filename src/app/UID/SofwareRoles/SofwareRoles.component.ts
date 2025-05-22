@@ -24,10 +24,9 @@ export class actionItemModel {
 })
 export class SoftwareRolesComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+  @ViewChild(NgForm) desigForm: NgForm;
 
-
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput') myInputVariable: ElementRef;
 
   public filteredItems = [];
 

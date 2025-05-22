@@ -18,8 +18,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class CtcformulaComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
-
+  @ViewChild(NgForm) detailsForm: NgForm;
   isLoading: boolean = false;
   currentUser: AuthData;
   filterModel: any = {};

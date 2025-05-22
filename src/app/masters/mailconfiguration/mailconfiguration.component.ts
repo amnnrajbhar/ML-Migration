@@ -23,7 +23,7 @@ export class actionItemModel {
 })
 export class MailconfigurationComponent implements OnInit {
   public tableWidget: any;
-  @ViewChild(NgForm  , { static: false }) locationMasterForm: NgForm;
+  @ViewChild(NgForm) locationMasterForm: NgForm;
   LocationMasterList: any[] = [[]];
   locationMasterItem: Location = new Location();
   isLoading: boolean = false;

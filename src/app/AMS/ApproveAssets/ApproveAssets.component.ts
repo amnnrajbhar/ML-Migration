@@ -16,7 +16,6 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
-
 declare var $: any;
 declare var toastr: any;
 
@@ -27,8 +26,7 @@ declare var toastr: any;
 })
 
 export class ApproveAssetsComponent implements OnInit {
-@ViewChild('filterForm', { static: false }) filterForm: any;
-
+  @ViewChild('filterForm') filterForm: any;
   searchTerm = new FormControl();
   currentUser: AuthData;
   public tableWidget: any;

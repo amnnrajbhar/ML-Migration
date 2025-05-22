@@ -24,10 +24,9 @@ declare var $: any;
   styleUrls: ['./geoutothermatApproval.component.css']
 })
 export class geoutothermatApprovalComponent implements OnInit {
- @ViewChild('userForm', { static: false }) userForm: any;
-@ViewChild('matForm', { static: false }) matForm: any;
-@ViewChild('userSAPForm', { static: false }) userSAPForm: any;
-
+  @ViewChild('userForm') userForm: any;
+  @ViewChild('matForm') matForm: any;
+  @ViewChild('userSAPForm') userSAPForm: any;
 
   searchTerm = new FormControl();
   currentUser: AuthData;

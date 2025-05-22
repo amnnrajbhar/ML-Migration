@@ -26,12 +26,11 @@ declare var require: any;
 })
 
 export class NewOfferComponent implements OnInit {
- @ViewChild(ChecklistComponent, { static: false }) checklistDetails: ChecklistComponent;
-@ViewChild(OfferSalaryComponent, { static: false }) offerSalaryComponent: OfferSalaryComponent;
-@ViewChild(AdditionalInfoComponent, { static: false }) additionalInfoComponent: AdditionalInfoComponent;
-@ViewChild('replacingEmployeeNo', { static: false }) replacingEmployeeNoEle: ElementRef;
-@ViewChild(AttachmentsComponent, { static: false }) attachmentDetails: AttachmentsComponent;
-
+  @ViewChild(ChecklistComponent) checklistDetails: ChecklistComponent;
+  @ViewChild(OfferSalaryComponent) offerSalaryComponent: OfferSalaryComponent;
+  @ViewChild(AdditionalInfoComponent) additionalInfoComponent: AdditionalInfoComponent;
+  @ViewChild('replacingEmployeeNo') replacingEmployeeNoEle: ElementRef;
+  @ViewChild(AttachmentsComponent) attachmentDetails:AttachmentsComponent
 
   currentUser: AuthData;
   urlPath: string = '';

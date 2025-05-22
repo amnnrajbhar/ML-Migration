@@ -28,8 +28,7 @@ export class actionItemModel {
 })
 export class StrengthComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) materialForm: NgForm;
-
+  @ViewChild(NgForm) materialForm: NgForm;
   public tableWidget: any;
   companyId: number;
   materialList: MaterialMaster[] = [];

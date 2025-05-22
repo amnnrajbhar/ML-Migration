@@ -24,8 +24,7 @@ export class actionItemModel {
 })
 export class GuesthouseFacilitiesComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
-
+  @ViewChild(NgForm) meetingroomForm: NgForm;
   currentUser = {} as AuthData;
   urlPath: string = '';
   isEdit: boolean = false;

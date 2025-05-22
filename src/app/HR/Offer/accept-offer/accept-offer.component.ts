@@ -6,7 +6,8 @@ import { APIURLS } from '../../../shared/api-url';
 import { HttpService } from '../../../shared/http-service';
 import { Util } from '../../Services/util.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert';
 import { AppointmentService } from '../../Services/appointmentService.service';
@@ -34,7 +35,7 @@ export class AcceptOfferComponent implements OnInit {
   acceptOffer = {} as AcceptRequest;
 
   constructor(private httpService: HttpService,
-    private router: Router, private route: ActivatedRoute, private http: HttpClient, private service: AppointmentService,
+    private router: Router, private route: ActivatedRoute, private http: Http, private service: AppointmentService,
     private util: Util) { }
 
   ngOnInit() {

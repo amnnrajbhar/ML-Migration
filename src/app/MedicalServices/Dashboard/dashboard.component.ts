@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-// import { Lightbox } from 'ngx-lightbox';
+import { Lightbox } from 'ngx-lightbox';
 declare var jQuery: any;
 import { Chart } from 'chart.js';
 import { ChartDataLabels } from 'chartjs-plugin-datalabels';
@@ -10,7 +10,7 @@ import { HttpService } from '../../shared/http-service';
 import { Router } from '@angular/router';
 import { APIURLS } from '../../shared/api-url';
 import { MOMENT } from 'angular-calendar';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import { ExcelService } from '../../shared/excel-service';
 declare var $: any;
 import swal from 'sweetalert';
@@ -357,17 +357,18 @@ export class DashboardComponent implements OnInit {
         this.excelService.exportAsExcelFile(this.exportList, 'MediService_Report');
     }
 
-  getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    getHeader(): any {
+        var headers = new Headers();
+        headers.append("Accept", 'application/json');
+        headers.append('Content-Type', 'application/json');
 
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
+        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+        headers.append("Authorization", "Bearer " + authData.token);
 
-  return { headers };
-}
+        let options = new RequestOptions({ headers: headers });
+
+        return options;
+    }
 
     getTimeFormat(time) {
         return moment('1970-01-01 ' + time);

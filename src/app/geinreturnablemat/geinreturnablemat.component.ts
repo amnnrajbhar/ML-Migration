@@ -21,10 +21,8 @@ declare var $: any;
   styleUrls: ['./geinreturnablemat.component.css']
 })
 export class GEInReturnableMatComponent implements OnInit {
- @ViewChild('userForm', { static: false }) userForm: any;
-@ViewChild('depForm', { static: false }) depForm: any;
-
- 
+  @ViewChild('userForm') userForm: any;
+  @ViewChild('depForm') depForm: any;
 
   searchTerm = new FormControl();
   currentUser: AuthData;

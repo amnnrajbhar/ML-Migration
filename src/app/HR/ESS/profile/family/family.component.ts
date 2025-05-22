@@ -23,7 +23,7 @@ declare var $: any;
   providers:[Util,AppointmentService]
 })
 export class FamilyComponent implements OnInit {
-  @ViewChild(NgForm , { static: false })  familyForm: NgForm;
+  @ViewChild(NgForm) familyForm: NgForm;
   @Input() employeeId: number;
   @Input() profileDetails: TemporaryProfile;
   @Input() editAllowed: boolean ;

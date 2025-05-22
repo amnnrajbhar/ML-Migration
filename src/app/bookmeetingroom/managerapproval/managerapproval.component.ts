@@ -15,8 +15,7 @@ declare var $: any;
   styleUrls: ['./managerapproval.component.css']
 })
 export class ManagerapprovalComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
-
+  @ViewChild(NgForm) calendarForm: NgForm;
   currentUser: AuthData;
   urlPath: string = '';
   errMsg: string = "";

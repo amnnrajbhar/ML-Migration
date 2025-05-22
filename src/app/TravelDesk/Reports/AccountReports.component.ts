@@ -3,19 +3,16 @@ import { APIURLS } from '../../shared/api-url';
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import { throwError as _observableThrow, of as _observableOf } from 'rxjs';
- 
-import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
-
-
+import 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import swal from 'sweetalert';
 import { ExcelService } from '../../shared/excel-service';
 import htmlToPdfmake from 'html-to-pdfmake';
@@ -54,12 +51,10 @@ export class actionItemModel {
 })
 export class AccountReportsComponent implements OnInit {
 
- @ViewChild(NgForm, { static: false }) accountReportForm: NgForm;
-
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-@ViewChild(NgForm, { static: false }) accsubForm: NgForm;
-
+  @ViewChild(NgForm) accountReportForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild('myInput') myInputVariable: ElementRef;
+  @ViewChild(NgForm) accsubForm: NgForm;
 
   accsubList: AccountReports[] = [];
   AccountSubmissionList: ExpenseUpdate[] = [];
@@ -145,7 +140,7 @@ export class AccountReportsComponent implements OnInit {
   
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private excelService: ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: Http, private https: HttpClient, private excelService: ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
 
 
   private initDatatable(): void {
@@ -666,7 +661,7 @@ export class AccountReportsComponent implements OnInit {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res);
+            resolve(res.json());
           },
           err => {
             // console.log(err.json());
@@ -863,17 +858,15 @@ export class AccountReportsComponent implements OnInit {
   }
 
 
-getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+  getHeader(): any {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+    headers.append("Authorization", "Bearer " + authData.token);
+    let options = new RequestOptions({ headers: headers });
+    return options;
+  }
 
   onItemSelect(item: any) {
   }

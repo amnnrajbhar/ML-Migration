@@ -23,8 +23,7 @@ export class actionItemModel {
   styleUrls: ['./roomfacilities-master.component.css']
 })
 export class RoomfacilitiesMasterComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
-
+  @ViewChild(NgForm) meetingroomForm: NgForm;
   currentUser = {} as AuthData;
   urlPath: string = '';
   isEdit: boolean = false;

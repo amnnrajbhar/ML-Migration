@@ -16,8 +16,7 @@ declare var $: any;
   styleUrls: ['./roomtype-master.component.css']
 })
 export class RoomtypeMasterComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
-
+  @ViewChild(NgForm) meetingroomForm: NgForm;
   currentUser = {} as AuthData;
   urlPath: string = '';
   isEdit: boolean = false;

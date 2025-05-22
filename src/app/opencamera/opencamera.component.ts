@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
+import {Subject} from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
 import {WebcamImage} from 'ngx-webcam';
 
 @Component({

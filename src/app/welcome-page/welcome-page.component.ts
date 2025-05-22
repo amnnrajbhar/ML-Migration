@@ -8,7 +8,7 @@ import { AuthData } from '../auth/auth.model';
 import { APIURLS } from '../shared/api-url';
 import { ExcelService } from '../shared/excel-service';
 import { HttpService } from '../shared/http-service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import * as moment from 'moment';
 
 declare var jQuery: any;
@@ -881,15 +881,13 @@ export class WelcomePageComponent implements OnInit {
       this.visitorTypeList = [];
     });
   }
-getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+  getHeader(): any {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+    headers.append("Authorization", "Bearer " + authData.token);
+    let options = new RequestOptions({ headers: headers });
+    return options;
+  }
 }

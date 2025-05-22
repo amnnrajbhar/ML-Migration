@@ -23,8 +23,7 @@ declare var $: any;
   providers: [Util, AppointmentService],
 })
 export class AssetsComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) assetForm: NgForm;
-
+  @ViewChild(NgForm) assetForm: NgForm;
   @Input() employeeId: number;
   @Input() profileDetails: TemporaryProfile;
   @Input() editAllowed: boolean ;

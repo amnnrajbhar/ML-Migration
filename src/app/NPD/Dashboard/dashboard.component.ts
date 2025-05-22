@@ -10,8 +10,7 @@ declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { stringify } from 'querystring';
@@ -52,10 +51,9 @@ import { HttpClient,HttpClientModule } from '@angular/common/http';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-
+    @ViewChild('myInput') myInputVariable: ElementRef;
 
     public tableWidget: any;
 

@@ -17,8 +17,7 @@ import { Router } from '@angular/router';
 import { debug } from 'util';
 import { FormControl, NgForm } from '@angular/forms';
 import { Location } from './location.model';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { AuditLog } from '../auditlog.model';
 import { AuditLogChange } from '../auditlogchange.model';
 import swal from 'sweetalert';
@@ -53,9 +52,8 @@ export class actionItemModel {
   styleUrls: ['./employee.component.css']
 })
 export class EmployeeComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
-
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(NgForm) userForm: NgForm;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();

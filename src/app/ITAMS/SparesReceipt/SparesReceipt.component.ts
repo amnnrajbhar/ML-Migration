@@ -9,8 +9,8 @@ import { AuthData } from '../../auth/auth.model';
 import { FormControl } from '@angular/forms';
 import { SparesReceipt } from './SparesReceipt.model';
 import swal from 'sweetalert';
-//import { forEach } from '@angular/router/src/utils/collection';
-//import { filter } from 'rxjs-compat/operator/filter';
+import { forEach } from '@angular/router/src/utils/collection';
+import { filter } from 'rxjs-compat/operator/filter';
 // import { FileSaver }  from 'angular-file-saver';
 // import { saveAs } from 'file-saver';
 declare var $: any;
@@ -22,8 +22,7 @@ declare var $: any;
 })
 export class SparesReceiptComponent implements OnInit {
 
-@ViewChild('filterForm', { static: false }) filterForm: any;
-
+  @ViewChild('filterForm') filterForm: any;
   searchTerm = new FormControl();
   currentUser: AuthData;
   public tableWidget: any;

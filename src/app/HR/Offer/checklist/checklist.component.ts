@@ -17,7 +17,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class ChecklistComponent implements OnInit {
-  @ViewChild(NgForm  , { static: false }) checklistForm: NgForm;
+  @ViewChild(NgForm) checklistForm: NgForm;
   @Input() offerId: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();

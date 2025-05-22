@@ -8,8 +8,7 @@ import swal from 'sweetalert';
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
@@ -30,10 +29,9 @@ import * as fs from 'file-saver';
     styleUrls: ['./DLSTransReports.component.css']
 })
 export class DLSTransReportsComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-
+    @ViewChild('myInput') myInputVariable: ElementRef;
 
     public tableWidget: any;
     public tableWidget1: any;

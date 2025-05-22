@@ -7,14 +7,14 @@ import { Router } from '@angular/router';
 import { UserMaster } from '../../masters/employee/user-master.model';
 import swal from 'sweetalert';
 import { NgForm } from '@angular/forms';
-//import { Http } from '@angular/http';
+import { Http } from '@angular/http';
 @Component({
   selector: 'app-changepassword',
   templateUrl: './changepassword.component.html',
   styleUrls: ['./changepassword.component.css']
 })
 export class ChangepasswordComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) sbuForm: NgForm;
+  @ViewChild(NgForm) sbuForm: NgForm;
   newPassword: string = "";
   confirmPassword: string = "";
   mismatch: boolean;
@@ -24,7 +24,7 @@ export class ChangepasswordComponent implements OnInit {
   isLoading: boolean;
   errMsgPop: string="";
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-           ) { }
+            private http:Http) { }
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));

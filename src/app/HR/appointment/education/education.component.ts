@@ -18,8 +18,7 @@ declare var $: any;
   styleUrls: ['./education.component.css']
 })
 export class EducationComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) educationForm: NgForm;
-
+  @ViewChild(NgForm) educationForm: NgForm;
   @Input() appointmentId: number;
   @Input() offerId: number;
   @Input() guid: string;

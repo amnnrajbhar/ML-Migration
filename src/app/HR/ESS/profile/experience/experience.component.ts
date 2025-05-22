@@ -23,7 +23,7 @@ declare var $: any;
   providers:[Util,AppointmentService]
 })
 export class ExperienceComponent implements OnInit {
-  @ViewChild(NgForm , { static: false })   workExperienceForm: NgForm;
+  @ViewChild(NgForm) workExperienceForm: NgForm;
   @Input() employeeId: number;
   @Input() profileDetails: TemporaryProfile;
   @Input() editAllowed: boolean ;

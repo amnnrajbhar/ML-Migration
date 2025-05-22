@@ -19,7 +19,7 @@ declare var $: any;
   styleUrls: ['./workexperience.component.css']
 })
 export class WorkexperienceComponent implements OnInit {
-  @ViewChild(NgForm  , { static: false }) workExperienceForm: NgForm;
+  @ViewChild(NgForm) workExperienceForm: NgForm;
   @Input() appointmentId: number;
   @Input() offerId: number;
   @Input() guid: string;

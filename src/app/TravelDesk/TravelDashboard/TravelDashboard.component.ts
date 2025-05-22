@@ -4,19 +4,16 @@ import { APIURLS } from '../../shared/api-url';
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import { throwError as _observableThrow, of as _observableOf } from 'rxjs';
- 
-import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
-
+import 'rxjs/Rx';
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { debug } from 'util';
 import { FormControl, NgForm } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { ExcelService } from '../../shared/excel-service';
 import { TravelDashboard } from './TravelDashboard.model';
 
@@ -27,10 +24,9 @@ import { TravelDashboard } from './TravelDashboard.model';
   styleUrls: ['./TravelDashboard.component.css']
 })
 export class TravelDashboardComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
-
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(NgForm) userForm: NgForm;
+  @ViewChild('myInput') myInputVariable: ElementRef;
 
   public tableWidget: any;
   // departmentList: any[] = [];
@@ -85,7 +81,7 @@ traveldashboard: TravelDashboard = new TravelDashboard();
      toDate: any = this.today;
     
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private excelService: ExcelService) { }
+    private http: Http, private excelService: ExcelService) { }
 
 
   clearFilter() {
@@ -302,7 +298,7 @@ traveldashboard: TravelDashboard = new TravelDashboard();
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res);
+            resolve(res.json());
           },
           err => {
             // console.log(err.json());
@@ -370,17 +366,15 @@ Dashlabels: any[] = [];
         });
       }
 
-getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+  getHeader(): any {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+    headers.append("Authorization", "Bearer " + authData.token);
+    let options = new RequestOptions({ headers: headers });
+    return options;
+  }
 
   showChart() {
     if (this.chart) this.chart.destroy();

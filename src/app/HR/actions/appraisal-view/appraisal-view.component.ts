@@ -23,8 +23,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class AppraisalViewComponent implements OnInit {
-@ViewChild(ReadonlyemployeeSalaryComponent, { static: false }) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
-
+  @ViewChild(ReadonlyemployeeSalaryComponent) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
   currentUser: AuthData;
   appraisalId: any;
   objectType: string = "Appraisal";

@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router'
 import { APIURLS } from './api-url';
 import { HttpService } from './http-service';
-
 declare var $: any;
 
 const CHECK_INTERVAL = 20000 // in ms

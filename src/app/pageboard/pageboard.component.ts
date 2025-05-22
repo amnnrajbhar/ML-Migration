@@ -5,7 +5,7 @@ import { AppComponent } from '../app.component';
 import { HttpService } from '../shared/http-service';
 import { Router } from '@angular/router';
 import { APIURLS } from '../shared/api-url';
-import { HttpHeaders } from '@angular/common/http';
+import { RequestOptions, Headers } from '@angular/http';
 declare var jQuery: any;
 declare var $: any;
 @Component({
@@ -92,15 +92,13 @@ export class PageboardComponent implements OnInit {
   // });
 
   // }
-getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+  getHeader(): any {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+    headers.append("Authorization", "Bearer " + authData.token);
+    let options = new RequestOptions({ headers: headers });
+    return options;
+  }
 }

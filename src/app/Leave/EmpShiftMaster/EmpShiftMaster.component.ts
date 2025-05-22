@@ -4,7 +4,7 @@ import { APIURLS } from '../../shared/api-url';
 declare var toastr: any;
 import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { EmpShiftMaster } from './EmpShiftMaster.model';
@@ -16,7 +16,7 @@ declare var $: any;
 import * as moment from 'moment';
 import { AuditLogChange } from '../../masters/auditlogchange.model';
 import { AuditLog } from '../../masters/auditlog.model';
-//import { L } from '@angular/core/src/render3';
+import { L } from '@angular/core/src/render3';
 import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
 import { ExcelService } from '../../shared/excel-service';
@@ -46,7 +46,7 @@ export class actionItemModel {
 
 export class EmpShiftMasterComponent implements OnInit {
   public tableWidget: any;
-  @ViewChild(NgForm  , { static: false }) EmpShiftMasterForm: NgForm;
+  @ViewChild(NgForm) EmpShiftMasterForm: NgForm;
   EmpShiftMasterList: any[] = [[]];
   EmpShiftMasterItem: EmpShiftMaster = new EmpShiftMaster();
   isLoading: boolean = false;

@@ -4,7 +4,7 @@ import { APIURLS } from './../../shared/api-url';
 import { HttpService } from './../../shared/http-service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Department } from './department.model';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { FormControl, NgForm } from '@angular/forms';
@@ -23,8 +23,7 @@ export class actionItemModel {
 })
 export class DepartmentComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) depForm: NgForm;
-
+  @ViewChild(NgForm) depForm: NgForm
   currentUser = {} as AuthData;
   public tableWidget: any;
   depList: any[];

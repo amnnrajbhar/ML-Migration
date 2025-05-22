@@ -22,8 +22,7 @@ export class actionItemModel {
 })
 export class SoftwareMasterComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
-
+  @ViewChild(NgForm) desigForm: NgForm;
   public filteredItems = [];
 
   public tableWidget: any;

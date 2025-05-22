@@ -4,23 +4,19 @@ import { APIURLS } from '../shared/api-url';
 import { AppComponent } from '../app.component';
 import { HttpService } from '../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
 import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
-
-import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
-
-
+import 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { ActivatedRoute, Router } from '@angular/router';
 import { debug } from 'util';
 import { FormControl, NgForm } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import swal from 'sweetalert';
-//import { filter } from 'rxjs-compat/operator/filter';
+import { filter } from 'rxjs-compat/operator/filter';
 import { error } from 'console';
 declare var require: any;
 declare var toastr: any;
@@ -52,12 +48,10 @@ export class actionItemModel {
   styleUrls: ['./ContractEmployee.component.css']
 })
 export class ContractEmployeeComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
-
-@ViewChild('native', { static: false }) native: ElementRef;
-
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(NgForm) userForm: NgForm;
+  @ViewChild('native') native: ElementRef;
+  @ViewChild('myInput') myInputVariable: ElementRef;
   public tableWidget: any;
   //designationList: any[] = [];
   roleList: any[] = [];
@@ -101,7 +95,7 @@ export class ContractEmployeeComponent implements OnInit {
 
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private route: ActivatedRoute) { }
+    private http: Http, private route: ActivatedRoute) { }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -766,7 +760,7 @@ export class ContractEmployeeComponent implements OnInit {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res);
+            resolve(res.json());
           },
           err => {
             //  //console.log(err.json());
@@ -778,17 +772,15 @@ export class ContractEmployeeComponent implements OnInit {
     return promise;
   }
 
-getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+  getHeader(): any {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+    headers.append("Authorization", "Bearer " + authData.token);
+    let options = new RequestOptions({ headers: headers });
+    return options;
+  }
 
   CalculateSalary() {
     if (this.userMasterItem.location == null) {

@@ -1,11 +1,10 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, NgForm, Validators } from '@angular/forms';
-import { HttpHeaders } from '@angular/common/http';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { Headers, RequestOptions } from '@angular/http';
+import { MatAutocompleteTrigger } from '@angular/material';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { WebcamImage, WebcamUtil } from 'ngx-webcam';
- 
+import { Observable, Subject } from 'rxjs';
 import swal from 'sweetalert';
 import { AppComponent } from '../app.component';
 import { AuthData } from '../auth/auth.model';
@@ -14,11 +13,10 @@ import { AppService } from '../shared/app.service';
 import { HttpService } from '../shared/http-service';
 import { Visitor } from '../visitorappointment/visitor.model';
 import { IfStmt } from '@angular/compiler';
-//import { forEach } from '@angular/router/src/utils/collection';
+import { forEach } from '@angular/router/src/utils/collection';
 import * as moment from 'moment';
 import { AdditionalVisitor } from './additionvisitor.model';
 import { User } from '../masters/user/user.model';
-import { Subject } from 'rxjs';
 // import { FileSaver }  from 'angular-file-saver';
 // import { saveAs } from 'file-saver';
 declare var $: any;
@@ -37,11 +35,9 @@ interface Belongings {
   encapsulation: ViewEncapsulation.None
 })
 export class VMSApprovalComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
-
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
-
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(NgForm) userForm: NgForm;
+  @ViewChild(NgForm) calendarForm: NgForm;
   // myForm = new FormGroup({}) // Instantiating our form
 
   belongings: Belongings[];
@@ -1041,17 +1037,15 @@ export class VMSApprovalComponent implements OnInit {
     }
 
   }
-getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+  getHeader(): any {
+    var headers = new Headers();
+    headers.append("Accept", 'application/json');
+    headers.append('Content-Type', 'application/json');
+    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+    headers.append("Authorization", "Bearer " + authData.token);
+    let options = new RequestOptions({ headers: headers });
+    return options;
+  }
   closemodal(): void {
     this.showWebcam = !this.showWebcam;
   }

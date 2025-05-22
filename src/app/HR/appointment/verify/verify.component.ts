@@ -7,7 +7,8 @@ import { HttpService } from '../../../shared/http-service';
 import { Util } from '../../Services/util.service';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { OfferDetails } from '../../models/offerdetails.model';
 import { PersonalComponent } from '../personal/personal.component';
 import { AddressesComponent } from '../addresses/addresses.component';
@@ -31,16 +32,15 @@ declare var toastr: any;
   providers: [Util]
 })
 export class VerifyComponent implements OnInit {
-@ViewChild(PersonalComponent, { static: false }) personalDetails: PersonalComponent;
-@ViewChild(AddressesComponent, { static: false }) addressDetails: AddressesComponent;
-@ViewChild(EducationComponent, { static: false }) educationDetails: EducationComponent;
-@ViewChild(FamilyComponent, { static: false }) familyDetails: FamilyComponent;
-@ViewChild(LanguagesComponent, { static: false }) languageDetails: LanguagesComponent;
-@ViewChild(BankDetailsComponent, { static: false }) bankDetails: BankDetailsComponent;
-@ViewChild(WorkexperienceComponent, { static: false }) workDetails: WorkexperienceComponent;
-@ViewChild(AttachmentsComponent, { static: false }) attachmentDetails: AttachmentsComponent;
-@ViewChild(NominationComponent, { static: false }) nominationComponent: NominationComponent;
-
+  @ViewChild(PersonalComponent) personalDetails: PersonalComponent;
+  @ViewChild(AddressesComponent) addressDetails: AddressesComponent;
+  @ViewChild(EducationComponent) educationDetails: EducationComponent;
+  @ViewChild(FamilyComponent) familyDetails: FamilyComponent;
+  @ViewChild(LanguagesComponent) languageDetails: LanguagesComponent;
+  @ViewChild(BankDetailsComponent) bankDetails: BankDetailsComponent;
+  @ViewChild(WorkexperienceComponent) workDetails: WorkexperienceComponent;
+  @ViewChild(AttachmentsComponent) attachmentDetails: AttachmentsComponent;
+  @ViewChild(NominationComponent) nominationComponent: NominationComponent;
 
   offerId: any;
   objectType: string = "Appointment Letter";

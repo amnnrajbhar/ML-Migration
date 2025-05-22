@@ -13,8 +13,7 @@ import { Payroll } from '../../masters/employee/employee-payroll.model';
 import { Role } from '../../profile/add-role/add-role.model';
 import { debug } from 'util';
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { ItemCodeExtension } from '../ItemCodeExtension/ItemCodeExtension.model';
@@ -43,7 +42,6 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
-
 declare var require: any;
 
 
@@ -53,21 +51,21 @@ declare var require: any;
   styleUrls: ['./VendorMaster.component.css']
 })
 export class VendorMasterComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput') myInputVariable: ElementRef;
 
-  // @ViewChild(NgForm  , { static: false })dataForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })FGNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })LCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })OSENGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PPCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMForm: NgForm;
+  // @ViewChild(NgForm) dataForm: NgForm;
+  // @ViewChild(NgForm) PMForm: NgForm;
+  // @ViewChild(NgForm) BULKForm: NgForm;
+  // @ViewChild(NgForm) RMNGXPForm: NgForm;
+  // @ViewChild(NgForm) PMNGXPForm: NgForm;
+  // @ViewChild(NgForm) BULKNGXPForm: NgForm;
+  // @ViewChild(NgForm) FGNGXPForm: NgForm;
+  // @ViewChild(NgForm) LCNGXPForm: NgForm;
+  // @ViewChild(NgForm) OSENGXPForm: NgForm;
+  // @ViewChild(NgForm) PPCNGXPForm: NgForm;
+  // @ViewChild(NgForm) RMForm: NgForm;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();

@@ -12,8 +12,7 @@ import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
 import { AuthData } from '../../auth/auth.model';
 import { FormControl, NgForm } from '@angular/forms';
 import { colors } from '../../shared/colors';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { UserIdRequest } from './UserIdRequest.model';
 import { Transactions } from '../../eMicro/ItemCodeCreation/transactions.model';
 import { WorkFlowApprovers } from '../../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -21,7 +20,7 @@ import { AppComponent } from '../../app.component';
 import { Router } from '@angular/router';
 
 import { saveAs } from 'file-saver';
-// import { element } from '@angular/core/src/render3/instructions';
+import { element } from '@angular/core/src/render3/instructions';
 declare var require: any;
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import * as pdfMake from "pdfmake/build/pdfmake";
@@ -52,9 +51,9 @@ interface UGrpsList { id: number, UserGroup: string, sid: number, UserSubGroups:
 
 })
 export class UserIdRequestComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput') myInputVariable: ElementRef;
 
   dict = new Dictionary();
 

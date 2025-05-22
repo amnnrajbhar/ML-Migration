@@ -17,8 +17,8 @@ declare var toastr: any;
   providers: [AppointmentService, Util]
 })
 export class BankDetailsComponent implements OnInit {
- @ViewChild('bankDetailsForm', { static: false }) private bankDetailsForm: NgForm;
-
+  @ViewChild('bankDetailsForm')
+  private bankDetailsForm: NgForm;
   @Input() appointmentId: number;
   @Input() offerId: number;
   @Input() guid: string;

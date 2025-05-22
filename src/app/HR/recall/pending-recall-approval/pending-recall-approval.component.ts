@@ -28,8 +28,7 @@ declare var require: any;
   providers: [Util]
 })
 export class PendingRecallApprovalComponent implements OnInit {
-@ViewChild(ReadonlyemployeeSalaryComponent, { static: false }) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
-
+  @ViewChild(ReadonlyemployeeSalaryComponent) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
   currentUser: AuthData;
   appraisalId: any;
   objectType: string = "Recall";

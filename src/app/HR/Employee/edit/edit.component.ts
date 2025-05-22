@@ -27,14 +27,13 @@ declare var $: any;
   styleUrls: ['./edit.component.css']
 })
 export class EditComponent implements OnInit {
-@ViewChild(AddressComponent, { static: false }) addressDetails: AddressComponent;
-@ViewChild(EducationComponent, { static: false }) educationDetails: EducationComponent;
-@ViewChild(ExperienceComponent, { static: false }) experienceDetails: ExperienceComponent;
-@ViewChild(FamilyComponent, { static: false }) familyDetails: FamilyComponent;
-@ViewChild(LanguagesComponent, { static: false }) languagesDetails: LanguagesComponent;
-@ViewChild(AssetsComponent, { static: false }) assetDetails: AssetsComponent;
-
-  @ViewChild(OfficialComponent, { static: false }) officialDetails: OfficialComponent;
+  @ViewChild(AddressComponent) addressDetails: AddressComponent;
+  @ViewChild(EducationComponent) educationDetails: EducationComponent;
+  @ViewChild(ExperienceComponent) experienceDetails: ExperienceComponent;
+  @ViewChild(FamilyComponent) familyDetails: FamilyComponent;
+  @ViewChild(LanguagesComponent) languagesDetails: LanguagesComponent;
+  @ViewChild(OfficialComponent) officialDetails: OfficialComponent;
+  @ViewChild(AssetsComponent) assetDetails: AssetsComponent;
   employeeId: any;
   details: any = {};
   objectType: string = "Employee";

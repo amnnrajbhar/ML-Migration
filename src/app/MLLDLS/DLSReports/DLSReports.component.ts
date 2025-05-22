@@ -8,8 +8,7 @@ import swal from 'sweetalert';
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
@@ -23,7 +22,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
 import * as fs from 'file-saver';
-//import { T } from '@angular/core/src/render3';
+import { T } from '@angular/core/src/render3';
 
 @Component({
     selector: 'app-DLSReports',
@@ -31,10 +30,9 @@ import * as fs from 'file-saver';
     styleUrls: ['./DLSReports.component.css']
 })
 export class DLSReportsComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-
+    @ViewChild('myInput') myInputVariable: ElementRef;
 
     public tableWidget: any;
     locListCon = [];

@@ -17,7 +17,7 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import htmlToPdfmake from 'html-to-pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { AuditLogAMS } from '../auditlogAMS.model';
-//import { b } from '@angular/core/src/render3';
+import { b } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-AssetExplorer',
@@ -27,8 +27,7 @@ import { AuditLogAMS } from '../auditlogAMS.model';
 })
 
 export class AssetExplorerComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
-
+  @ViewChild(NgForm) detailsForm: NgForm;
 
   public tableWidget: any;
   isLoading: boolean = false;

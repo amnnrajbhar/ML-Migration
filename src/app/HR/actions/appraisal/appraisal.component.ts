@@ -21,8 +21,7 @@ import swal from 'sweetalert';
   providers: [Util]
 })
 export class AppraisalComponent implements OnInit {
-@ViewChild(EmployeeSalaryComponent, { static: false }) employeeSalaryComponent: EmployeeSalaryComponent;
-
+  @ViewChild(EmployeeSalaryComponent) employeeSalaryComponent: EmployeeSalaryComponent;
   tenure: string = "";
   employeeId: any;
   employeeInitialAppraisalDetailId: any;

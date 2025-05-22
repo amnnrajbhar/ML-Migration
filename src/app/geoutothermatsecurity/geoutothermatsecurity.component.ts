@@ -20,8 +20,7 @@ declare var $: any;
 })
 export class GeOutOtherMaterialSecurityComponent implements OnInit {
 
- @ViewChild('userForm', { static: false }) userForm: any;
-
+  @ViewChild('userForm') userForm: any;
 
   searchTerm = new FormControl();
   currentUser: AuthData;

@@ -4,21 +4,17 @@ declare var toastr: any;
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
 import { Observable, throwError as _observableThrow, of as _observableOf, identity } from 'rxjs';
- 
-import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
-
-
+import 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { ActivatedRoute, Router } from '@angular/router';
 import { debug } from 'util';
 import { FormControl, NgForm } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import swal from 'sweetalert';
 // import Swal from 'sweetalert2';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
@@ -27,7 +23,7 @@ import * as moment from 'moment';
 import { EmpShiftMaster } from '../EmpShiftMaster/EmpShiftMaster.model';
 import { UserIdRequest } from '../../UID/UserIdRequest/UserIdRequest.model';
 import { ReachHRDetails } from '../ReachHR/ReachHR.model';
-// import { initNgModule } from '@angular/core/src/view/ng_module';
+import { initNgModule } from '@angular/core/src/view/ng_module';
 import { CompOffRequest } from '../CompOffRequest/CompOffRequest.model';
 import { HOURS_IN_DAY } from 'angular-calendar-scheduler/modules/scheduler/utils/calendar-scheduler-utils';
 
@@ -41,12 +37,10 @@ declare var ActiveXObject: (type: string) => void;
     styleUrls: ['./MyApprovals.component.css']
 })
 export class MyApprovalsComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm, { static: false }) userForm: NgForm;
+    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(NgForm) userForm: NgForm;
 
-
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-
+    @ViewChild('myInput') myInputVariable: ElementRef;
 
     public tableWidget: any;
     public tableWidgetlv: any;
@@ -122,7 +116,7 @@ export class MyApprovalsComponent implements OnInit {
     EmpPunchList: any[] = [];
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-        private http: HttpClient, private route: ActivatedRoute) { }
+        private http: Http, private route: ActivatedRoute) { }
 
     private initDatatable(): void {
         let exampleId: any = jQuery('#userTable');
@@ -1247,7 +1241,7 @@ export class MyApprovalsComponent implements OnInit {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res);
+                        resolve(res.json());
                     },
                     err => {
                         //  //console.log(err.json());
@@ -1259,17 +1253,15 @@ export class MyApprovalsComponent implements OnInit {
         return promise;
     }
 
-   getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-
-  const headers = new HttpHeaders({
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + authData.token
-  });
-
-  return { headers };
-}
+    getHeader(): any {
+        var headers = new Headers();
+        headers.append("Accept", 'application/json');
+        headers.append('Content-Type', 'application/json');
+        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+        headers.append("Authorization", "Bearer " + authData.token);
+        let options = new RequestOptions({ headers: headers });
+        return options;
+    }
 
     HrList: any[] = [
         { id: 1, name: 'Corporate HR' },

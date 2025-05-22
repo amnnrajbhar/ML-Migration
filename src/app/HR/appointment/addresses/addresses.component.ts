@@ -17,8 +17,7 @@ declare var toastr: any;
   providers: [AppointmentService]
 })
 export class AddressesComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) addressForm: NgForm;
-
+  @ViewChild(NgForm) addressForm: NgForm;
   @Input() appointmentId: number = 0;
   @Input() offerId: number;
   @Input() guid: string;  

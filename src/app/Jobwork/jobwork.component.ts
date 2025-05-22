@@ -22,15 +22,13 @@ import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
 import * as fs from 'file-saver';
 
-
 @Component({
   selector: 'app-jobwork',
   templateUrl: './jobwork.component.html',
   styleUrls: ['./jobwork.component.css']
 })
 export class JobWorkComponent implements OnInit {
- @ViewChild('userForm', { static: false }) userForm: any;
-
+  @ViewChild('userForm') userForm: any;
   searchTerm = new FormControl();
   currentUser: AuthData;
   tableWidget: any;

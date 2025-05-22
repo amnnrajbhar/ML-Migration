@@ -12,8 +12,7 @@ import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
 import { AuthData } from '../../auth/auth.model';
 import { FormControl, NgForm } from '@angular/forms';
 import { colors } from '../../shared/colors';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-
+import { MatAutocompleteTrigger } from '@angular/material';
 import { UserIdRequest } from '../../UID/UserIdRequest/UserIdRequest.model';
 import { Transactions } from '../../eMicro/ItemCodeCreation/transactions.model';
 import { WorkFlowApprovers } from '../../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -27,7 +26,6 @@ import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
 
 
-
 @Component({
     selector: 'app-UserReport',
     templateUrl: './UserReport.component.html',
@@ -35,10 +33,9 @@ import htmlToPdfmake from 'html-to-pdfmake';
 
 })
 export class UserReportComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-
+    @ViewChild('myInput') myInputVariable: ElementRef;
 
 
     path: any;

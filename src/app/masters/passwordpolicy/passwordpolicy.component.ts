@@ -18,8 +18,7 @@ declare var jQuery: any;
   styleUrls: ['./passwordpolicy.component.css']
 })
 export class PasswordpolicyComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) passwordPolicyForm: NgForm;
-
+  @ViewChild(NgForm) passwordPolicyForm: NgForm;
   policyItem: any = {};
   passwordPolicy: PasswordPolicy = new PasswordPolicy();
   isLoading: boolean = false;

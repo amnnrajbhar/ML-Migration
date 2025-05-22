@@ -18,8 +18,8 @@ declare var toastr: any;
   providers: [AppointmentService, Util]
 })
 export class PersonalComponent implements OnInit {
-@ViewChild('personalDetailsForm2', { static: false }) private personalDetailsForm2: NgForm;
-
+  @ViewChild('personalDetailsForm2')
+  private personalDetailsForm2: NgForm;
   @Input() appointmentId: number;
   @Input() offerId: number;
   @Input() guid: string;

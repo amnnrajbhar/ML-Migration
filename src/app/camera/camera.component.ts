@@ -1,6 +1,6 @@
 import {Component, OnInit, Output, EventEmitter} from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-
+import {Subject} from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
 
 @Component({
