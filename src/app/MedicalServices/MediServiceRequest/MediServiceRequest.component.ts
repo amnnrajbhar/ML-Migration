@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { AppComponent } from '../../app.component';
 import swal from 'sweetalert';
 import * as _ from "lodash";
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 declare var require: any;
 declare var jQuery: any;

@@ -9,7 +9,7 @@ import { AuthData } from '../../auth/auth.model';
 import { FormControl } from '@angular/forms';
 import { SparesRequest } from './SparesRequest.model';
 import swal from 'sweetalert';
-import { forEach } from '@angular/router/src/utils/collection';
+// import { forEach } from '@angular/router/src/utils/collection';
 import { filter } from 'rxjs-compat/operator/filter';
 // import { FileSaver }  from 'angular-file-saver';
 // import { saveAs } from 'file-saver';

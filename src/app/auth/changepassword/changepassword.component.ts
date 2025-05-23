@@ -7,7 +7,9 @@ import { Router } from '@angular/router';
 import { UserMaster } from '../../masters/employee/user-master.model';
 import swal from 'sweetalert';
 import { NgForm } from '@angular/forms';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
+
 @Component({
   selector: 'app-changepassword',
   templateUrl: './changepassword.component.html',
@@ -24,7 +26,7 @@ export class ChangepasswordComponent implements OnInit {
   isLoading: boolean;
   errMsgPop: string="";
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-            private http:Http) { }
+            private http: HttpClient) { }
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));

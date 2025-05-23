@@ -14,7 +14,7 @@ import swal from 'sweetalert';
 import { componentFactoryName } from '@angular/compiler';
 import { saveAs } from 'file-saver';
 declare var require: any;
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams,HttpClientModule } from '@angular/common/http';
 import * as moment from 'moment';
 
 
@@ -22,7 +22,7 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
-import { HttpClient,HttpClientModule } from '@angular/common/http';
+// import { HttpClient,HttpClientModule } from '@angular/common/http';
 import { Visitor } from '../visitorappointment/visitor.model';
 import { AmcvisitDetails } from '../UpdateAMCDetails/AMCDetails.model';
 
@@ -101,7 +101,8 @@ export class LocationreportComponent implements OnInit {
   isLoadingPop: boolean;
 
 
-  constructor(private appService: AppComponent, private httpService: HttpService, private http: Http, private router: Router, 
+  constructor(private appService: AppComponent, private httpService: HttpService, private http: HttpClient,
+ private router: Router, 
     private excelService: ExcelService,
     private https: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
 
@@ -875,15 +876,15 @@ export class LocationreportComponent implements OnInit {
       });
     }
   }
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+   getHeader(): any {
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
+}
 
   clearFilter() {
     this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), 1);

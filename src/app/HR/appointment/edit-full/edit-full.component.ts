@@ -7,8 +7,7 @@ import { HttpService } from '../../../shared/http-service';
 import { Util } from '../../Services/util.service';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
-import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { OfficialComponent } from '../official/official.component';
 import { StatutoryComponent } from '../statutory/statutory.component';
 import { SalaryComponent } from '../salary/salary.component';
@@ -64,7 +63,8 @@ export class EditFullComponent implements OnInit {
   tabsList: string[] = ["initial", "statutory", "salary", "assets", "addresses","family","education","work_experience","languages","nomination","bank", "attachments"];
 
   constructor(private httpService: HttpService,
-    private router: Router, private route: ActivatedRoute, private http: Http,
+    private router: Router, private route: ActivatedRoute, private http: HttpClient,
+
     private util: Util) { }
 
   ngOnInit() {

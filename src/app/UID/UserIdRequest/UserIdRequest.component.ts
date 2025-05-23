@@ -7,12 +7,13 @@ import { AppService } from '../../shared/app.service';
 import { HttpService } from '../../shared/http-service';
 import { APIURLS } from '../../shared/api-url';
 
-import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
+// import { MonthView, GetMonthViewArgs } from 'calendar-utils';
+import { MonthView, GetMonthViewArgs } from 'calendar-utils';
 //import { Visitor } from './visitor.model';
 import { AuthData } from '../../auth/auth.model';
 import { FormControl, NgForm } from '@angular/forms';
 import { colors } from '../../shared/colors';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { UserIdRequest } from './UserIdRequest.model';
 import { Transactions } from '../../eMicro/ItemCodeCreation/transactions.model';
 import { WorkFlowApprovers } from '../../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -20,7 +21,7 @@ import { AppComponent } from '../../app.component';
 import { Router } from '@angular/router';
 
 import { saveAs } from 'file-saver';
-import { element } from '@angular/core/src/render3/instructions';
+// import { element } from '@angular/core/src/render3/instructions';
 declare var require: any;
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import * as pdfMake from "pdfmake/build/pdfmake";

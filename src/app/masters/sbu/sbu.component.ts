@@ -6,13 +6,15 @@ import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { SBU } from './sbu.model';
 // import { HttpClientModule } from '@angular/common/http';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 import { Employee } from '../employee/employee.model';
 import { FormControl, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { throwMatDialogContentAlreadyAttachedError, MatAutocompleteTrigger } from '@angular/material';
+// import { throwMatDialogContentAlreadyAttachedError, MatAutocompleteTrigger } from '@angular/material';
+import { throwMatDialogContentAlreadyAttachedError } from '@angular/material/dialog';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Location } from '../employee/location.model';
 import { isUndefined } from 'util';
 declare var jQuery: any;
@@ -56,7 +58,8 @@ export class SbuComponent implements OnInit {
     notFirst: boolean = true;
     public employeeList: any[]=[[]];
   locationList: Location[]=[];
-    constructor(private appService: AppComponent, private httpService: HttpService, private http:Http, private router: Router) { }
+    constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient,
+ private router: Router) { }
 
     clearForm(){
       // console.log('form reset');
@@ -202,15 +205,15 @@ onItemSelect(item: any) {
       this.isLoadingPop = false;
       jQuery("#myModal").modal('show');
     }
-    getHeader(): any { 
-      var headers = new Headers();
-      headers.append("Accept", 'application/json');
-      headers.append('Content-Type', 'application/json');
-      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-      headers.append("Authorization", "Bearer " + authData.token);
-      let options = new RequestOptions({ headers: headers });
-      return options;
-    }
+     getHeader(): any {
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
+}
 
     getHeadSBUName(id: number){
       let temp: any;

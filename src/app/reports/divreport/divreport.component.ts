@@ -4,6 +4,7 @@ import { APIURLS } from './../../shared/api-url';
 import { HttpService } from '../../shared/http-service';
 import * as alaSQLSpace from 'alasql';
 import * as _ from "lodash";
+import * as alasql from 'alasql';
 declare var jQuery: any;
 
 @Component({

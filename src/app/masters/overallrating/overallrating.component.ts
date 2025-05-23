@@ -6,7 +6,7 @@ import { HttpService } from '../../shared/http-service';
 import { Component, OnInit } from '@angular/core';
 import { Overallrating } from './overallrating.model';
 import { HttpClientModule } from '@angular/common/http';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 import { Calendar } from '../calendar/calendar.model';
@@ -25,8 +25,10 @@ export class OverallRatingComponent implements OnInit {
     parentList: any[];
     selCalYr: any;
     calendarList: any[] = [[]];
-    calendarItem: Calendar= this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
-    overallRatingItem: Overallrating = this.overallRatingItem = new Overallrating(0, 0,0,0,'', '',true);
+    // calendarItem: Calendar= this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
+    // overallRatingItem: Overallrating = this.overallRatingItem = new Overallrating(0, 0,0,0,'', '',true);
+    overallRatingItem: Overallrating = new Overallrating(0, 0,0,0,'', '',true);
+    calendarItem: Calendar = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;
@@ -36,7 +38,8 @@ export class OverallRatingComponent implements OnInit {
     checkAll: boolean = false;
     calenderId: string = '';
     path: string = '';
-    constructor(private appService: AppComponent, private httpService: HttpService, private http:Http, private router: Router) { }
+    constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient,
+ private router: Router) { }
 
     private initDatatable(): void {
       let exampleId: any = jQuery('#ratingTable');
@@ -112,8 +115,7 @@ export class OverallRatingComponent implements OnInit {
       headers.append('Content-Type', 'application/json');
       let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
       headers.append("Authorization", "Bearer " + authData.token);
-      let options = new RequestOptions({ headers: headers });
-      return options;
+      return { headers: headers };
     }
   
     getRatingList() {

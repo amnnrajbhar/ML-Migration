@@ -14,8 +14,7 @@ declare var jQuery: any;
 declare var toastr: any;
 import { Subject } from 'rxjs';
 declare var jQuery: any;
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
-
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import {
     startOfMonth,
     endOfMonth,
@@ -50,7 +49,7 @@ import {
     CalendarMonthViewDay,
     CalendarUtils
 } from 'angular-calendar';
-import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
+import { MonthView, GetMonthViewArgs } from 'calendar-utils';
 import { colors } from '../shared/colors';
 import { ExcelService } from '../shared/excel-service';
 import { ThrowStmt } from '@angular/compiler';
@@ -174,7 +173,8 @@ export class WorkingCalendarComponent implements OnInit {
     }
 
     constructor(@Inject(LOCALE_ID) locale: string, private httpService: HttpService, private router: Router,
-        private appService: AppComponent, private http: Http, private excelService: ExcelService) {
+        private appService: AppComponent, private http: HttpClient,
+ private excelService: ExcelService) {
         this.locale = locale;
 
         this.dayModifier = ((day: SchedulerViewDay): void => {
@@ -855,7 +855,7 @@ export class WorkingCalendarComponent implements OnInit {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -867,14 +867,21 @@ export class WorkingCalendarComponent implements OnInit {
         return promise;
     }
 
-    getHeader(): any {
-        var headers = new Headers();
-        headers.append("Accept", 'application/json');
-        headers.append('Content-Type', 'application/json');
-        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-        headers.append("Authorization", "Bearer " + authData.token);
-        let options = new RequestOptions({ headers: headers });
-        return options;
+getHeader(): any {
+        // var headers = new Headers();
+        // headers.append("Accept", 'application/json');
+        // headers.append('Content-Type', 'application/json');
+        // let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+        // headers.append("Authorization", "Bearer " + authData.token);
+        // let options = new RequestOptions({ headers: headers });
+        // return options;
+         let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
     }
 
 

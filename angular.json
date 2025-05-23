@@ -21,6 +21,7 @@
               "src/favicon.ico"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/assets/bootstrap/css/bootstrap.min.css",
               "src/assets/dist/css/AdminLTE.min.css",
               "src/assets/dist/css/animate.css",              
@@ -40,6 +41,8 @@
               "src/styles.css"
             ],
             "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "src/assets/plugins/jQuery/jquery-2.2.3.min.js",
               "src/assets/plugins/jQueryUI/jquery-ui.min.js",
               "node_modules/angular/angular.min.js",
@@ -57,7 +60,6 @@
               "src/assets/plugins/select2/select2.full.min.js",
               "node_modules/alasql/dist/alasql.min.js",
               "node_modules/xlsx/dist/xlsx.core.min.js",
-              "node_modules/timepicker/jquery.timepicker.min.js",
               "node_modules/toastr/build/toastr.min.js",
               "src/assets/plugins/datepicker/bootstrap-datepicker.js"
             ]

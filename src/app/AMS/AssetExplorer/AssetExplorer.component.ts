@@ -12,11 +12,12 @@ import { AuthData } from '../../auth/auth.model';
 declare var $: any;
 declare var toastr: any;
 import { DatePipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import htmlToPdfmake from 'html-to-pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { AuditLogAMS } from '../auditlogAMS.model';
+import { HttpClient } from '@angular/common/http';
 //import { b } from '@angular/core/src/render3';
 
 @Component({

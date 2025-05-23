@@ -4,7 +4,7 @@ import { APIURLS } from './../../shared/api-url';
 import { HttpService } from './../../shared/http-service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Department } from './department.model';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { FormControl, NgForm } from '@angular/forms';

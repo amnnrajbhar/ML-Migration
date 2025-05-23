@@ -4,7 +4,7 @@ import { APIURLS } from '../../shared/api-url';
 declare var toastr: any;
 import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { RulesMaster } from './RulesMaster.model';
@@ -17,7 +17,7 @@ import * as moment from 'moment';
 import { AuditLogChange } from '../../masters/auditlogchange.model';
 import { AuditLog } from '../../masters/auditlog.model';
 import { EmpShiftMaster } from '../EmpShiftMaster/EmpShiftMaster.model';
-import { element, text } from '@angular/core/src/render3/instructions';
+// import { element, text } from '@angular/core/src/render3/instructions';
 import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
 import { ExcelService } from '../../shared/excel-service';
@@ -67,7 +67,8 @@ export class RulesMasterComponent implements OnInit {
 
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private datePipe: DatePipe, private http: Http, private excelService: ExcelService) { }
+    private datePipe: DatePipe, private http: HttpClient,
+ private excelService: ExcelService) { }
 
 
   clearForm() {
@@ -460,7 +461,7 @@ export class RulesMasterComponent implements OnInit {
         .then(
           res => { // Success
             //   //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //  //console.log(err.json());
@@ -472,15 +473,15 @@ export class RulesMasterComponent implements OnInit {
     return promise;
   }
 
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+   getHeader(): any {
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
+}
 
   setFormatedDate(date: any) {
     let dt = new Date(date);

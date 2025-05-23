@@ -2,7 +2,7 @@ import { ExcelService } from './shared/excel-service';
 import { HttpService } from './shared/http-service';
 import { AuthGuard } from './auth/auth-guard.service';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpModule } from '@angular/http';
+//import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './auth/auth.service';
 import { BrowserModule } from '@angular/platform-browser';
@@ -16,7 +16,14 @@ import { AppService } from './shared/app.service';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { SchedulerModule } from 'angular-calendar-scheduler';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
-import { MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatRadioModule, MatTooltipModule, MatSelectModule } from '@angular/material';
+// import { MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatRadioModule, MatTooltipModule, MatSelectModule } from '@angular/material';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
 
 // camera
 import { WebcamModule } from 'ngx-webcam';
@@ -25,12 +32,11 @@ import { OpencameraComponent } from './opencamera/opencamera.component';
 import { LightboxModule } from 'ngx-lightbox';
 import { PageboardComponent } from './pageboard/pageboard.component';
 import { SafePipe } from './shared/safe.pipe';
-import {
-  OwlDateTimeModule,
-  OwlNativeDateTimeModule,
-  OWL_DATE_TIME_FORMATS
-} from 'ng-pick-datetime';
-import { HttpClientModule } from '@angular/common/http';
+//import {
+//   OwlDateTimeModule,
+//   OwlNativeDateTimeModule,
+//   OWL_DATE_TIME_FORMATS
+// } from 'ng-pick-datetime';
 
 import { ESSModule } from './HR/ESS/ess.module';
 import { EmployeeModule } from './HR/Employee/employee.module';
@@ -54,13 +60,15 @@ import { DefineBudgetListComponent } from './HR/manpower/define-budget-list/defi
 import { JdtemplateCreateComponent } from './HR/manpower/jdtemplate-create/jdtemplate-create.component';
 import { JdtemplateEditComponent } from './HR/manpower/jdtemplate-edit/jdtemplate-edit.component';
 import { JdtemplateListComponent } from './HR/manpower/jdtemplate-list/jdtemplate-list.component';
-import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
+// import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
+// import { OWL_DATE_TIME_FORMATS } from 'ng-pick-datetime';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { PPCMasterComponent } from './HR/PPCMaster/PPCMaster.component';
 import { AllowanceMappingComponent } from './HR/AllowanceMapping/AllowanceMapping.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import { HttpClientModule } from '@angular/common/http';
 
 // Format custom
 export const MY_MOMENT_FORMATS = {
@@ -120,7 +128,6 @@ export const MY_MOMENT_FORMATS = {
     // FnFModule,
 
     FormsModule,
-    HttpModule,
     HttpClientModule,
     AppRoutingModule,
 
@@ -139,9 +146,9 @@ export const MY_MOMENT_FORMATS = {
     MatRadioModule,
     MatTooltipModule,
     //AngularMultiSelectModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
-    OwlMomentDateTimeModule,
+    // OwlDateTimeModule,
+    // OwlNativeDateTimeModule,
+    // OwlMomentDateTimeModule,
     NgMultiSelectDropDownModule.forRoot(),
 
 
@@ -154,7 +161,7 @@ export const MY_MOMENT_FORMATS = {
   ],
   providers: [AuthService, AuthGuard, HttpService, ExcelService, AppService,
     { provide: LOCALE_ID, useValue: 'en-US' },
-    { provide: OWL_DATE_TIME_FORMATS, useValue: MY_MOMENT_FORMATS }
+    // { provide: OWL_DATE_TIME_FORMATS, useValue: MY_MOMENT_FORMATS }
   ],
 
   bootstrap: [AppComponent]

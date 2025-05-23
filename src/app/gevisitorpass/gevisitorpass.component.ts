@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 declare var jQuery: any;
 import * as _ from "lodash";
 import { Router, ActivatedRoute } from '@angular/router';
@@ -13,7 +13,8 @@ import { AppComponent } from '../app.component';
 import { HttpService } from '../shared/http-service';
 import {WebcamImage} from 'ngx-webcam';
 import { Subject, Observable } from 'rxjs';
-import { throwMatDialogContentAlreadyAttachedError } from '@angular/material';
+// import { throwMatDialogContentAlreadyAttachedError } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Visitor } from '../visitorappointment/visitor.model';
 import { AppService } from '../shared/app.service';
 import * as FileSaver from 'file-saver';

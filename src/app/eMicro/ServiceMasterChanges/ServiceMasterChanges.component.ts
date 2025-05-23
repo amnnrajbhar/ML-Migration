@@ -11,9 +11,9 @@ declare var $: any;
 import * as _ from "lodash";
 import { Payroll } from '../../masters/employee/employee-payroll.model';
 import { Role } from '../../profile/add-role/add-role.model';
-import { debug } from 'util';
+//import { debug } from 'util';
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { ItemCodeExtension } from '../ItemCodeExtension/ItemCodeExtension.model';
@@ -36,12 +36,13 @@ import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { ServiceMasterChanges } from './ServiceMasterChanges.model';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { saveAs } from 'file-saver';
+import { HttpClient } from '@angular/common/http';
 declare var require: any;
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, NgForm, Validators } from '@angular/forms';
-import { Headers, RequestOptions } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import swal from 'sweetalert';
@@ -11,7 +11,7 @@ import { AppService } from '../../shared/app.service';
 import { HttpService } from '../../shared/http-service';
 import { RoomInformation } from './room.model';
 import { IfStmt } from '@angular/compiler';
-import { forEach } from '@angular/router/src/utils/collection';
+// import { forEach } from '@angular/router/src/utils/collection';
 import { RoomType } from '../roomtype-master/roomtype.model';
 import { RoomFacility } from '../roomfacilities-master/roomfacility.model';
 import { Facilities } from './facility.model';

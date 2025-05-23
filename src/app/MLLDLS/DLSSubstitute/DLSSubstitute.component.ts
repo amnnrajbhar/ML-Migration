@@ -8,7 +8,7 @@ import swal from 'sweetalert';
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';

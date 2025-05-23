@@ -4,25 +4,23 @@ declare var toastr: any;
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
-import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
 import 'rxjs/Rx';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
 import { ActivatedRoute, Router } from '@angular/router';
-import { debug } from 'util';
+//import { debug } from 'util';
 import { FormControl, NgForm } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
-import { MatAccordion } from '@angular/material';
+import { MatAccordion } from '@angular/material/expansion';
 import { CompOffRequest } from './CompOffRequest.model';
 import * as moment from 'moment';
 import { OnDutyDetails } from '../OnDutyRequest/OnDutyRequest.model';
 import { EmpShiftMaster } from '../EmpShiftMaster/EmpShiftMaster.model';
-import { modelGroupProvider } from '@angular/forms/src/directives/ng_model_group';
 // import { EmployeeRoutingModule } from 'src/app/masters/approval/employee-routing.module';
 
 declare var ActiveXObject: (type: string) => void;
@@ -104,7 +102,8 @@ export class CompOffRequestComponent implements OnInit {
   UserId: string;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: Http, private route: ActivatedRoute) { }
+    private http: HttpClient,
+ private route: ActivatedRoute) { }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -770,7 +769,7 @@ export class CompOffRequestComponent implements OnInit {
         .then(
           res => { // this.Success
             //console.log(res.json());
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             //console.log(err.json());
@@ -783,15 +782,15 @@ export class CompOffRequestComponent implements OnInit {
   }
 
 
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+   getHeader(): any {
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
+}
 
 
   formData: FormData = new FormData();

@@ -2,13 +2,20 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DatesuffixPipe } from '../datesuffix.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatTooltipModule, MatAutocompleteTrigger, MatRadioModule, MatProgressSpinnerModule, MatSelectModule } from '@angular/material';
+// import { MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatTooltipModule, MatAutocompleteTrigger, MatRadioModule, MatProgressSpinnerModule, MatSelectModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
-import { OwlDateTimeModule, OwlNativeDateTimeModule,OWL_DATE_TIME_FORMATS } from 'ng-pick-datetime';
-import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
+// import { OwlDateTimeModule, OwlNativeDateTimeModule,OWL_DATE_TIME_FORMATS } from 'ng-pick-datetime';
+// import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { NgxBarcodeModule } from 'ngx-barcode';
+// import { NgxBarcodeModule } from 'ngx-barcode';
 //Ramesh P added
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { WebcamModule } from 'ngx-webcam';
@@ -34,11 +41,11 @@ export const MY_MOMENT_FORMATS = {
     MatFormFieldModule,
     MatTooltipModule,
     MatRadioModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
-    OwlMomentDateTimeModule,
+    // OwlDateTimeModule,
+    // OwlNativeDateTimeModule,
+    // OwlMomentDateTimeModule,
     NgSelectModule,
-    NgxBarcodeModule,
+    // NgxBarcodeModule,
 
    //ramesh p added
     AngularMultiSelectModule,
@@ -61,16 +68,16 @@ export const MY_MOMENT_FORMATS = {
     MatTooltipModule,
     MatRadioModule,
     NgMultiSelectDropDownModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
+    // OwlDateTimeModule,
+    // OwlNativeDateTimeModule,
     NgSelectModule,
-    NgxBarcodeModule,
+    // NgxBarcodeModule,
     PdfViewerModule
 
 
   ],
   providers: [
-    { provide: OWL_DATE_TIME_FORMATS, useValue: MY_MOMENT_FORMATS}
+    // { provide: OWL_DATE_TIME_FORMATS, useValue: MY_MOMENT_FORMATS}
   ],
 })
 export class SharedmoduleModule { }

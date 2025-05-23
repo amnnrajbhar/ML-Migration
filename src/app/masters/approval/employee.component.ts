@@ -30,7 +30,8 @@ export class ApprovalEmployeeComponent implements OnInit {
     entitySelected=[];
     userList: Employee[];
     uid: number = 0;
-    userItem: Employee = this.userItem = new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true);
+    // userItem: Employee = this.userItem = new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true);
+    userItem: Employee = new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true);
     isLoading: boolean = false;
     errMsg: string = "";
     hideDivisionElement: boolean = true;

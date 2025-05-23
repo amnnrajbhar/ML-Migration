@@ -10,7 +10,7 @@ declare var $: any;
 import * as _ from "lodash";
 import { AuthData } from '../../auth/auth.model'
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
@@ -36,11 +36,12 @@ import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { MastersData } from './ItemCodeMasters.model';
 import { saveAs } from 'file-saver';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
+import { HttpClient } from '@angular/common/http';
 declare var require: any;
 
 

@@ -11,9 +11,9 @@ declare var $: any;
 import * as _ from "lodash";
 import { Payroll } from '../../masters/employee/employee-payroll.model';
 import { Role } from '../../profile/add-role/add-role.model';
-import { debug } from 'util';
+//import { debug } from 'util';
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { ItemCodeExtension} from '../ItemCodeExtension/ItemCodeExtension.model';
@@ -38,12 +38,14 @@ import * as FileSaver from 'file-saver';
 import { saveAs } from 'file-saver';
 declare var require: any;
 import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+// import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+import  ChartDataLabels from 'chartjs-plugin-datalabels';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-CodeCreatorsSummaryReportMail',

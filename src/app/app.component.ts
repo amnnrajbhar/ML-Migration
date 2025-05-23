@@ -6,10 +6,11 @@ import { APIURLS } from './shared/api-url';
 import { AutologoutService } from './shared/autologout.service';
 import { Component, OnInit } from '@angular/core';
 import * as _ from "lodash";
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 declare var jQuery: any;
 declare var $: any;
 import swal from 'sweetalert';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',

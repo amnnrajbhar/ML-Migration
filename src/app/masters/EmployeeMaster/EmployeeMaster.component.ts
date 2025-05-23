@@ -9,7 +9,8 @@ import { DepartmentMasterService } from "../../Services/departmentMaster.service
 import { APIURLS } from "../../shared/api-url";
 import { EmployeeMaster } from "../../Models/employeeMaster.model";
 import { NgForm } from "@angular/forms";
-import { RequestOptions, Headers, Http } from "@angular/http";
+// import { RequestOptions, Headers, Http } from "@angular/http";
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { UserMaster } from "../../Models/userMaster.model";
 import { EmployeeAddress } from "../../Models/employeeAddress.model";
 import { EmployeeOtherDetails } from "../../Models/employeeOtherDetails.model";
@@ -20,6 +21,7 @@ import * as _ from "lodash";
 import { AuditLog } from "../auditlog.model";
 import { EmployeeProfileConfig } from "../../Models/employeeProfileConfig.model";
 import { ProfileMaster } from "../../Models/profileMaster.model";
+import swal from 'sweetalert';
 
 declare var jQuery: any;
 declare var $: any;
@@ -105,7 +107,7 @@ export class EmployeeMasterComponent implements OnInit {
     lastReportingkeydown = 0;
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private locationMasterService: LocationMasterService, private employeeMasterService: EmployeeMasterService,
-        private departmentMasterService: DepartmentMasterService, private http: Http) {}
+        private departmentMasterService: DepartmentMasterService, private http: HttpClient) {}
 
     ngOnInit(): void {
         this.path = this.router.url;
@@ -1198,7 +1200,7 @@ export class EmployeeMasterComponent implements OnInit {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -1211,12 +1213,19 @@ export class EmployeeMasterComponent implements OnInit {
     }
 
     getHeader(): any {
-        var headers = new Headers();
-        headers.append("Accept", 'application/json');
-        headers.append('Content-Type', 'application/json');
-        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-        headers.append("Authorization", "Bearer " + authData.token);
-        let options = new RequestOptions({ headers: headers });
-        return options;
+        // var headers = new Headers();
+        // headers.append("Accept", 'application/json');
+        // headers.append('Content-Type', 'application/json');
+        // let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+        // headers.append("Authorization", "Bearer " + authData.token);
+        // let options = new RequestOptions({ headers: headers });
+        // return options;
+         let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
     }
 }

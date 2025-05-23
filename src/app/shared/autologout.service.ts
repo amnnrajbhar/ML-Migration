@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router'
 import { APIURLS } from './api-url';
 import { HttpService } from './http-service';
+import { HttpClient } from '@angular/common/http';
 declare var $: any;
 
 const CHECK_INTERVAL = 20000 // in ms

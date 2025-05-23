@@ -4,10 +4,12 @@ import {Observable} from 'rxjs';
 import {startWith, map} from 'rxjs/operators';
 import { AppComponent } from '../app.component';
 import { HttpService } from '../shared/http-service';
-import { Http } from '@angular/http';
+//import { HttpClient } from '@angular/common/http';
+
 import { Router } from '@angular/router';
 import { APIURLS } from '../shared/api-url';
 import { Employee } from '../masters/employee/employee.model';
+import { HttpClient } from '@angular/common/http';
 declare var jQuery: any;
 
 // import { AmazingTimePickerService } from 'amazing-time-picker';
@@ -26,7 +28,8 @@ export class TestpageComponent implements OnInit {
   depList: any;
   tableWidget: any;
   
-  constructor(private appService: AppComponent, private httpService: HttpService, private http:Http,  
+  constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient,
+  
     private router: Router,private fb: FormBuilder){ // Injecting the ReactiveForms FormBuilder.
     this.myForm = fb.group({
       // Adding the "myNum" input to our FormGroup along with its min-max Validators.

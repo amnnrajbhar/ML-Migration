@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, NgForm, Validators } from '@angular/forms';
-import { Headers, RequestOptions } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import swal from 'sweetalert';
@@ -9,9 +9,10 @@ import { AuthData } from '../../auth/auth.model';
 import { APIURLS } from '../../shared/api-url';
 import { AppService } from '../../shared/app.service';
 import { HttpService } from '../../shared/http-service';
-import { GuestHouseInformation } from './GuestHouse.model';
+// import { GuestHouseInformation } from './GuestHouse.model';
+import { GuestHouseInformation } from './guesthouse.model';
 import { IfStmt } from '@angular/compiler';
-import { forEach } from '@angular/router/src/utils/collection';
+// import { forEach } from '@angular/router/src/utils/collection';
 import { RoomFacility } from '../../bookmeetingroom/roomfacilities-master/roomfacility.model';
 import { Facilities } from './facility.model';
 import { GuestHousePictures } from './guesthousepictures.model';
@@ -448,7 +449,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
           let middleName = this.isEmpty(element.middleName.trim()) ? '-' : '-' + element.middleName + '-';
           let lastName = this.isEmpty(element.lastName.trim()) ? '' : element.lastName + '-';
           t.name = element.firstName + middleName + lastName + element.employeeId + '-' + element.designation;
-          this.empMListCon = [...this.empMListCon, t];
+          this.empMListCon.push(t);
         });
         //this.isLoading=false;
       }
