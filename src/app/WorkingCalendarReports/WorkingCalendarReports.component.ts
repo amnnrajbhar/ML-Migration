@@ -51,7 +51,7 @@ import {
     CalendarMonthViewDay,
     CalendarUtils
 } from 'angular-calendar';
-import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
+import {  MonthView, GetMonthViewArgs } from 'calendar-utils';
 import { colors } from '../shared/colors';
 import { ExcelService } from '../shared/excel-service';
 import { ThrowStmt } from '@angular/compiler';

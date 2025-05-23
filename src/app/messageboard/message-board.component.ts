@@ -19,7 +19,7 @@ export class MsgBoardComponent implements OnInit {
     divisionList: any[];
     selDiv: any;
     messageBoardList: MessageBoard[];
-    messageBoardItem: MessageBoard = this.messageBoardItem = new MessageBoard(0, '', '','', '', false);
+    messageBoardItem: MessageBoard = new MessageBoard(0, '', '','', '', false);
     isLoading: boolean = false;
     msgHeaderList: any[];
     errMsg: string = "";

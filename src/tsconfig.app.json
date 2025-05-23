@@ -1,3 +1,25 @@
+// {
+//   "extends": "../tsconfig.json",
+//   "compilerOptions": {
+//     "outDir": "../out-tsc/app",
+//     "experimentalDecorators": true,
+//     "module": "es2015",
+//     "baseUrl": "",
+//     "types": []
+//   },
+  
+//  "include": [
+//     "**/*.ts"
+//   ],
+
+//   "exclude": [
+//     "test.ts",
+//     "**/*.spec.ts"
+//   ],
+  
+
+
+// }
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
@@ -7,6 +29,11 @@
     "baseUrl": "",
     "types": []
   },
+  "include": [
+    "main.ts",
+    "polyfills.ts",
+    "app/**/*.ts"
+  ],
   "exclude": [
     "test.ts",
     "**/*.spec.ts"

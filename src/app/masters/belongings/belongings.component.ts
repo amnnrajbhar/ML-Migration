@@ -11,7 +11,7 @@ import { error } from '@angular/compiler/src/util';
 import { Employee } from '../employee/employee.model';
 import { FormControl, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { throwMatDialogContentAlreadyAttachedError, MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Belongings } from './belongings.model';
 declare var jQuery: any;
 import swal from 'sweetalert';

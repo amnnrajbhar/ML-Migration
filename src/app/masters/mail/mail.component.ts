@@ -30,7 +30,7 @@ export class MailComponent implements OnInit {
     employeeList: any[];
     selParentRole: any;
     selHeadEmpId: any;
-    mailItem: Mail = this.mailItem = new Mail(0,0,'','','','','','','','','','','','', '','', 0,'', 0, '',true);
+    mailItem: Mail= new Mail(0,0,'','','','','','','','','','','','', '','', 0,'', 0, '',true);
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;

@@ -17,7 +17,7 @@ export class StateComponent implements OnInit {
   public tableWidget: any;
   
   stateList: State[];
-  stateItem: State = this.stateItem = new State(0,	'',	'',	true);
+  stateItem: State  = new State(0,	'',	'',	true);
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;

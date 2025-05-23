@@ -12,7 +12,7 @@ import { error } from '@angular/compiler/src/util';
 import { Employee } from '../employee/employee.model';
 import { FormControl, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { throwMatDialogContentAlreadyAttachedError, MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Location } from '../employee/location.model';
 import { isUndefined } from 'util';
 declare var jQuery: any;

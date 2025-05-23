@@ -7,7 +7,7 @@ import { AppService } from '../../shared/app.service';
 import { HttpService } from '../../shared/http-service';
 import { APIURLS } from '../../shared/api-url';
 
-import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
+import {  MonthView, GetMonthViewArgs } from 'calendar-utils';
 //import { Visitor } from './visitor.model';
 import { AuthData } from '../../auth/auth.model';
 import { FormControl, NgForm } from '@angular/forms';

@@ -34,10 +34,10 @@ export class SoftSkillComponent implements OnInit {
     usrid: number;
     roleid:number;
     path: string = '';
-    softskillItem: SoftSkill = this.softskillItem = new SoftSkill(0, '','', 0, 0, 0,true);;
-    profileItem: Role = this.profileItem = new Role(0,'','',0,'','',true);
-    assessmentItem: Assessment = this.assessmentItem = new Assessment(0, '', '', 0,0,'',true, true, true, true, true, true,true, true, true,'',true , '');
-    calendarItem: Calendar = this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
+    softskillItem: SoftSkill = new SoftSkill(0, '','', 0, 0, 0,true);;
+    profileItem: Role = new Role(0,'','',0,'','',true);
+    assessmentItem: Assessment = new Assessment(0, '', '', 0,0,'',true, true, true, true, true, true,true, true, true,'',true , '');
+    calendarItem: Calendar = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;

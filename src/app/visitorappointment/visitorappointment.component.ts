@@ -43,7 +43,7 @@ import { AppService } from '../shared/app.service';
 import { HttpService } from '../shared/http-service';
 import { APIURLS } from '../shared/api-url';
 
-import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
+import {  MonthView, GetMonthViewArgs } from 'calendar-utils';
 import { Visitor } from './visitor.model';
 import { AuthData } from '../auth/auth.model';
 import { NgForm } from '@angular/forms';
@@ -154,7 +154,7 @@ export class VisitorappointmentComponent implements OnInit {
   isLoadingPop: boolean;
   isEdit: any = false;
   selectedId: any;
-  dayView: DayViewHour[];
+  dayView: SchedulerViewDay[];
   selectedDayViewDate: Date;
 
   NoOfPersons:any=1;
@@ -888,24 +888,38 @@ export class VisitorappointmentComponent implements OnInit {
     });
   }
 
-  beforeDayViewRender(dayView: DayViewHour[]) {
+  beforeDayViewRender(dayView: SchedulerViewDay[]) {
     this.dayView = dayView;
     this.addSelectedDayViewClass();
   }
 
-  private addSelectedDayViewClass() {
-    this.dayView.forEach(hourSegment => {
-      hourSegment.segments.forEach(segment => {
-        delete segment.cssClass;
-        if (
-          this.selectedDayViewDate &&
-          segment.date.getTime() === this.selectedDayViewDate.getTime()
-        ) {
-          segment.cssClass = 'cal-day-selected';
-        }
-      });
+  // private addSelectedDayViewClass() {
+  //   this.dayView.forEach(hourSegment => {
+  //     hourSegment.segments.forEach(segment => {
+  //       delete segment.cssClass;
+  //       if (
+  //         this.selectedDayViewDate &&
+  //         segment.date.getTime() === this.selectedDayViewDate.getTime()
+  //       ) {
+  //         segment.cssClass = 'cal-day-selected';
+  //       }
+  //     });
+  //   });
+  // }
+private addSelectedDayViewClass() {
+  this.dayView.forEach((hourSegment: any) => {
+    hourSegment.segments.forEach((segment: any) => {
+      delete segment.cssClass;
+      if (
+        this.selectedDayViewDate &&
+        segment.date.getTime() === this.selectedDayViewDate.getTime()
+      ) {
+        segment.cssClass = 'cal-day-selected';
+      }
     });
-  }
+  });
+}
+
 
   hourSegmentClicked(date: Date) {
     this.VisitorDetails=[];

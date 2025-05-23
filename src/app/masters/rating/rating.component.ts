@@ -25,8 +25,8 @@ export class RatingComponent implements OnInit {
     calendarList:any[]=[[]];
     parentList: any[];
     selParentRole: any;
-    ratingItem: Rating = this.ratingItem = new Rating(0, '','', '', 0, 0,'',true);;
-    calendarItem: Calendar = this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
+    ratingItem: Rating = new Rating(0, '','', '', 0, 0,'',true);;
+    calendarItem: Calendar  = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;

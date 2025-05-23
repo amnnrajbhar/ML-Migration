@@ -15,7 +15,7 @@ import { ExcelService } from '../shared/excel-service';
 declare var $: any;
 import swal from 'sweetalert';
 import * as moment from 'moment';
-import { debug } from 'util';
+//import { debug } from 'util';
 import { Visitor } from '../visitorappointment/visitor.model';
 import { AmcvisitDetails } from '../UpdateAMCDetails/AMCDetails.model';
 

@@ -33,8 +33,8 @@ export class BellcurveComponent implements OnInit {
     employeeList: any[];
     selParentRole: any;
     selHeadEmpId: any;
-    bellcurveItem: Bellcurve = this.bellcurveItem = new Bellcurve(0,0,'','',0,0,'', 0,'',true);
-    calendarItem: Calendar = this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
+    bellcurveItem: Bellcurve  = new Bellcurve(0,0,'','',0,0,'', 0,'',true);
+    calendarItem: Calendar  = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;

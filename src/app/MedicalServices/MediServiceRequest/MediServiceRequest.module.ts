@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 import { MediServiceRequestRoutingModule } from './MediServiceRequest-routing.module';
 import { MediServiceRequestComponent } from './MediServiceRequest.component';
-import { MatProgressBarModule } from '@angular/material';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
 
 @NgModule({
   imports: [

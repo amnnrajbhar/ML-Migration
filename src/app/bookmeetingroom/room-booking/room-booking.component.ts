@@ -49,7 +49,7 @@ import {
 import { AppService } from '../../shared/app.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpService } from '../../shared/http-service';
-import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
+import {  MonthView, GetMonthViewArgs } from 'calendar-utils';
 import { NgForm } from '@angular/forms';
 // import { PARAMETERS } from '@angular/core/src/util/decorators';
 import { APIURLS } from '../../shared/api-url';

@@ -22,7 +22,7 @@ export class SoftSkillComponent implements OnInit {
     depList: any[];
     parentList: any[];
     selParentRole: any;
-    depItem: Department = this.depItem = new Department(0, '','', '', 0, 0,'',true);;
+    depItem: Department = new Department(0, '','', '', 0, 0,'',true);;
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;

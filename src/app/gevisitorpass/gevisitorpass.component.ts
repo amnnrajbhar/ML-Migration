@@ -13,7 +13,8 @@ import { AppComponent } from '../app.component';
 import { HttpService } from '../shared/http-service';
 import {WebcamImage} from 'ngx-webcam';
 import { Subject, Observable } from 'rxjs';
-import { throwMatDialogContentAlreadyAttachedError } from '@angular/material';
+//import { throwMatDialogContentAlreadyAttachedError } from '@angular/material';
+
 import { Visitor } from '../visitorappointment/visitor.model';
 import { AppService } from '../shared/app.service';
 import * as FileSaver from 'file-saver';
