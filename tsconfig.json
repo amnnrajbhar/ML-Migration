@@ -29,6 +29,13 @@
       "ng-pick-datetime": ["./node_modules/ng-pick-datetime"]
     }
   },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "angularCompilerOptions": {
     "enableIvy": false,
     "fullTemplateTypeCheck": false,

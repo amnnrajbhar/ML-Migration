@@ -31,7 +31,8 @@ export class TemplateListComponent implements OnInit {
     templateList2: any[];
     templateItem: any;
     projectList:any[];
-    approvalItem: TemplateList = this.approvalItem = new TemplateList(0,"","","",0,0,"","");
+    // approvalItem: TemplateList = this.approvalItem = new TemplateList(0,"","","",0,0,"","");
+    approvalItem: TemplateList = new TemplateList(0,"","","",0,0,"","");
     sbuLst:any[];
     isLoading: boolean = false;
     tempHeaderList: any[];

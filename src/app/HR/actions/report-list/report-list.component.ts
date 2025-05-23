@@ -12,9 +12,10 @@ declare var toastr: any;
 import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import htmlToPdfmake from 'html-to-pdfmake';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 import { Util } from '../../Services/util.service';
 import { PERMISSIONS } from '../../../shared/permissions';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-report-list',

@@ -11,9 +11,8 @@ import { AuditLogChange } from '../masters/auditlogchange.model';
 import { AuditLog } from '../masters/auditlog.model';
 import * as _ from "lodash";
 import { HolidaysReports } from './HolidaysReports.model';
-import { HttpClient } from '@angular/common/http';
-import { Http, RequestOptions, Headers, ResponseContentType } from '@angular/http';
-import { ExcelService } from '../shared/excel-service';
+//import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';import { ExcelService } from '../shared/excel-service';
 declare var jQuery: any;
 import { MatAccordion } from '@angular/material/expansion';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
@@ -75,7 +74,8 @@ export class HolidaysReportsComponent implements OnInit {
     holidayList: any[] = [];
 
     constructor(private httpService: HttpService, private router: Router, private appService: AppComponent,
-        private http: Http, private excelService: ExcelService) {
+        private http: HttpClient,
+ private excelService: ExcelService) {
     }
 
     ngAfterViewInit() {
@@ -270,7 +270,7 @@ export class HolidaysReportsComponent implements OnInit {
                 .then(
                     res => { // Success
                         //   //console.log(res.json());
-                        resolve(res.json());
+                        resolve(res);
                     },
                     err => {
                         //  //console.log(err.json());
@@ -282,14 +282,21 @@ export class HolidaysReportsComponent implements OnInit {
         return promise;
     }
 
-    getHeader(): any {
-        var headers = new Headers();
-        headers.append("Accept", 'application/json');
-        headers.append('Content-Type', 'application/json');
-        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-        headers.append("Authorization", "Bearer " + authData.token);
-        let options = new RequestOptions({ headers: headers });
-        return options;
+getHeader(): any {
+        // var headers = new Headers();
+        // headers.append("Accept", 'application/json');
+        // headers.append('Content-Type', 'application/json');
+        // let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
+        // headers.append("Authorization", "Bearer " + authData.token);
+        // let options = new RequestOptions({ headers: headers });
+        // return options;
+         let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
     }
 
     setFormatedDateTime(date: any) {

@@ -11,9 +11,9 @@ declare var $: any;
 import * as _ from "lodash";
 import { Payroll } from '../../masters/employee/employee-payroll.model';
 import { Role } from '../../profile/add-role/add-role.model';
-import { debug } from 'util';
+//import { debug } from 'util';
 import { Location } from '../../masters/employee/location.model';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { ItemCodeExtension } from '../ItemCodeExtension/ItemCodeExtension.model';
@@ -44,7 +44,8 @@ import { ItemCodeCreationComponent } from '../ItemCodeCreation/ItemCodeCreation.
 import { Serialization } from '../ItemCodeCreation/Serialization.model';
 declare var require: any;
 import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+// import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ItemCodeModification } from '../ItemCodeModification/ItemCodeModification.model';
 
 @Component({
@@ -151,7 +152,7 @@ export class ReportsComponent implements OnInit {
   ngOnInit() {
     this.path = this.router.url;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    //  this.baseLocation = this.currentUser.baselocation;    
+    //  this.baseLocation = this.currentUser.baselocation;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     // if (chkaccess == true) {
 
@@ -519,7 +520,7 @@ export class ReportsComponent implements OnInit {
       let newSummary = { id: 0, type: 'Total', Pending: 0, Completed: 0, Total: 0 };
       this.CreSumList.push(newSummary);
     }
-    // this.gettotal1(this.summarylist1); 
+    // this.gettotal1(this.summarylist1);
   }
 
   totcre1: any;
@@ -1027,7 +1028,7 @@ export class ReportsComponent implements OnInit {
     this.materialList1 = [];
     //this.storagelocationlist = [];
     // this.storagelocationlist1 = [];
-    //this.ValuationClasslist1= []; 
+    //this.ValuationClasslist1= [];
     this.pharmagradelist = [];
     this.TherapeuticSegmentlist = [];
     this.GenericNamelist = [];
@@ -1206,7 +1207,7 @@ export class ReportsComponent implements OnInit {
     else {
       var keyvalue = loc.code + '~' + mat.type + '~' + this.ItemCodeRequestModel.storageLocationId + ',' + 1;
     }
-    // var matgrp=this.materialgroupList.find(x=>x.materialGroupId==this.ItemCodeRequestModel.materialGroupId);   
+    // var matgrp=this.materialgroupList.find(x=>x.materialGroupId==this.ItemCodeRequestModel.materialGroupId);
     this.httpService.getByParam(APIURLS.BR_ITEMCODE_APPROVERS_GETBY_PARAM_ALL, keyvalue).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {

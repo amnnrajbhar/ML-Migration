@@ -15,8 +15,9 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import htmlToPdfmake from 'html-to-pdfmake';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 import { DataSource } from '@angular/cdk/collections';
+import { HttpClient } from '@angular/common/http';
 declare var $: any;
 declare var toastr: any;
 

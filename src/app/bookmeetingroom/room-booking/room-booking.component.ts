@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 declare var jQuery: any;
 import * as _ from "lodash";
 import swal from 'sweetalert';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import {
   addDays,
@@ -49,9 +49,9 @@ import {
 import { AppService } from '../../shared/app.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpService } from '../../shared/http-service';
-import { DayViewHour, MonthView, GetMonthViewArgs } from 'calendar-utils';
+import { MonthView, GetMonthViewArgs } from 'calendar-utils';
 import { NgForm } from '@angular/forms';
-import { PARAMETERS } from '@angular/core/src/util/decorators';
+// import { PARAMETERS } from '@angular/core/src/util/decorators';
 import { APIURLS } from '../../shared/api-url';
 import { BookMeeting } from './bookmeeting.model';
 import { AuthData } from '../../auth/auth.model';

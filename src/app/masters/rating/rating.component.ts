@@ -7,7 +7,7 @@ import { HttpService } from '../../shared/http-service';
 import { Rating } from './rating.model';
 import { Calendar } from '../calendar/calendar.model';
 import { HttpClientModule } from '@angular/common/http';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 import { Router } from '@angular/router';
@@ -25,8 +25,10 @@ export class RatingComponent implements OnInit {
     calendarList:any[]=[[]];
     parentList: any[];
     selParentRole: any;
-    ratingItem: Rating = this.ratingItem = new Rating(0, '','', '', 0, 0,'',true);;
-    calendarItem: Calendar = this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
+    // ratingItem: Rating = this.ratingItem = new Rating(0, '','', '', 0, 0,'',true);;
+    // calendarItem: Calendar = this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
+    ratingItem: Rating = new Rating(0, '','', '', 0, 0,'',true);
+    calendarItem: Calendar = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;
@@ -35,7 +37,8 @@ export class RatingComponent implements OnInit {
     isEdit: boolean = false;
     checkAll: boolean = false;
     path: string = '';
-    constructor(private appService: AppComponent, private httpService: HttpService, private http:Http, private router: Router) { }
+    constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient,
+ private router: Router) { }
 
     private initDatatable(): void {
       let exampleId: any = jQuery('#rating');
@@ -89,13 +92,13 @@ export class RatingComponent implements OnInit {
       jQuery("#myModal").modal('show');
     }
     getHeader(): any { 
-      var headers = new Headers();
-      headers.append("Accept", 'application/json');
-      headers.append('Content-Type', 'application/json');
-      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-      headers.append("Authorization", "Bearer " + authData.token);
-      let options = new RequestOptions({ headers: headers });
-      return options;
+      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+      const headers = new HttpHeaders({
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + authData.token
+      });
+      return { headers: headers };
     }
 
     getCalendarList(){

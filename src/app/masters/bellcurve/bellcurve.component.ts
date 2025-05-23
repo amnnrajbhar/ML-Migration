@@ -6,7 +6,7 @@ import { HttpService } from '../../shared/http-service';
 import { Component, OnInit } from '@angular/core';
 import { Bellcurve } from './bellcurve.model';
 import { HttpClientModule } from '@angular/common/http';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 import { Calendar } from '../calendar/calendar.model';
@@ -33,8 +33,10 @@ export class BellcurveComponent implements OnInit {
     employeeList: any[];
     selParentRole: any;
     selHeadEmpId: any;
-    bellcurveItem: Bellcurve = this.bellcurveItem = new Bellcurve(0,0,'','',0,0,'', 0,'',true);
-    calendarItem: Calendar = this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
+  //bellcurveItem: Bellcurve = this.bellcurveItem = new Bellcurve(0,0,'','',0,0,'', 0,'',true);
+    //calendarItem: Calendar = this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
+     bellcurveItem: Bellcurve =  new Bellcurve(0,0,'','',0,0,'', 0,'',true);
+    calendarItem: Calendar =  new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;
@@ -45,7 +47,8 @@ export class BellcurveComponent implements OnInit {
     formData: FormData = new FormData();
     file: File;
     path: string = '';
-    constructor(private appService: AppComponent, private httpService: HttpService, private http:Http, private router: Router) { }
+    constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient,
+ private router: Router) { }
 
     private initDatatable(): void {
       let exampleId: any = jQuery('#department');
@@ -107,15 +110,15 @@ closeSaveModal() {
 
       jQuery("#myModal").modal('show');
     }
-    getHeader(): any { 
-      var headers = new Headers();
-      headers.append("Accept", 'application/json');
-      headers.append('Content-Type', 'application/json');
-      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-      headers.append("Authorization", "Bearer " + authData.token);
-      let options = new RequestOptions({ headers: headers });
-      return options;
-    }
+     getHeader(): any {
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
+}
   
     getBellcurveName(id: number){
       let temp: any;

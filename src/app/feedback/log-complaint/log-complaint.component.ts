@@ -21,7 +21,8 @@ export class LogComplaintComponent implements OnInit {
     employeeList: any[]=[[]];
     selDiv: any;
     feedbackList: Feedback[];
-    feedbackItem: Feedback = this.feedbackItem = new Feedback(0, 0, 0, '', '', '', '', '', false);;
+    // feedbackItem: Feedback = this.feedbackItem = new Feedback(0, 0, 0, '', '', '', '', '', false);
+    feedbackItem: Feedback = new Feedback(0, 0, 0, '', '', '', '', '', false);
     empItem: any;//Employee = this.empItem = new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true, 0,0);
     isLoading: boolean = false;
     comHeaderList: any[];

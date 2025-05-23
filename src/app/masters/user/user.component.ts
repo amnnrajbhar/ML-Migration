@@ -31,7 +31,8 @@ export class UserComponent implements OnInit {
     entitySelected=[];
     userList: User[];
     uid: number = 0;
-    userItem: User = this.userItem = new User(0, 0,'','','', 0, 0, 0, '', 0, '', '', '', '', '','', '', '', '', 0, 0, true, '', '', true);;
+    // userItem: User = this.userItem = new User(0, 0,'','','', 0, 0, 0, '', 0, '', '', '', '', '','', '', '', '', 0, 0, true, '', '', true);;
+    userItem: User = new User(0, 0,'','','', 0, 0, 0, '', 0, '', '', '', '', '','', '', '', '', 0, 0, true, '', '', true);
     isLoading: boolean = false;
     errMsg: string = "";
     hideDivisionElement: boolean = true;

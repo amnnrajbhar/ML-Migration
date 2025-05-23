@@ -6,7 +6,7 @@ import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Project } from './project.model';
 import { HttpClientModule } from '@angular/common/http';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 import { Employee } from '../approval/employee.model';
@@ -48,7 +48,8 @@ export class ProjectComponent implements OnInit {
     empListCon2: any=[];
     notFirst=true;
     notFirstMgr=true;
-    constructor(private appService: AppComponent, private httpService: HttpService, private http:Http, private router: Router) { }
+    constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient,
+ private router: Router) { }
 
     // clearForm(){
     //   console.log('form reset');
@@ -149,8 +150,7 @@ export class ProjectComponent implements OnInit {
       headers.append('Content-Type', 'application/json');
       let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
       headers.append("Authorization", "Bearer " + authData.token);
-      let options = new RequestOptions({ headers: headers });
-      return options;
+      return { headers: headers };
     }
     selectedItems = [];
     dropdownSettings  = {};

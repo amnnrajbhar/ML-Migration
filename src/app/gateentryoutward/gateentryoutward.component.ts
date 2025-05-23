@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 declare var jQuery: any;
 import * as _ from "lodash";
 import { Router, ActivatedRoute } from '@angular/router';

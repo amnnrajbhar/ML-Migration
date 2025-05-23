@@ -6,7 +6,7 @@ import { HttpService } from './/../shared/http-service';
 import { Component, OnInit } from '@angular/core';
 
 import { HttpClientModule } from '@angular/common/http';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from '@angular/compiler/src/util';
 
@@ -67,7 +67,8 @@ export class GatevisitorreportComponent implements OnInit {
   from_date ='';
   to_date ='';
   empId: any;
-  constructor(private appService: AppComponent, private httpService: HttpService, private http:Http,  private router: Router, private excelService:ExcelService) { }
+  constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient,
+  private router: Router, private excelService:ExcelService) { }
   
   ngAfterViewInit() {
     this.initDatatable();

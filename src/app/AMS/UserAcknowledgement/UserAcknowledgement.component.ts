@@ -10,8 +10,9 @@ import { UserAcknowledgement } from './UserAcknowledgement.model';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 import swal from 'sweetalert';
+import { HttpClient } from '@angular/common/http';
 declare var $: any;
 declare var toastr: any;
 

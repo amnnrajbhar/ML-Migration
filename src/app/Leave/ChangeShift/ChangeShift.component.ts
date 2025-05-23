@@ -4,7 +4,7 @@ import { APIURLS } from '../../shared/api-url';
 declare var toastr: any;
 import { HttpService } from '../../shared/http-service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as _ from "lodash";
 import { Router } from '@angular/router';
 import { ChangeShift } from './ChangeShift.model';
@@ -58,7 +58,8 @@ export class ChangeShiftComponent implements OnInit {
   empListCon = [];
   filterMonth: string = null;
 
-  constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private http: Http,
+  constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private http: HttpClient,
+
     private datePipe: DatePipe) { }
 
 
@@ -213,7 +214,7 @@ export class ChangeShiftComponent implements OnInit {
         .toPromise()
         .then(
           res => {
-            resolve(res.json());
+            resolve(res);
           },
           err => {
             reject(err.json());
@@ -224,15 +225,15 @@ export class ChangeShiftComponent implements OnInit {
     return promise;
   }
 
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+   getHeader(): any {
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
+}
 
   dropdownList = [];
   selectedItems = [];

@@ -27,7 +27,8 @@ export class ProfileComponent implements OnInit {
     selectedItems = [];
     SelValue: any[];
     userList: User[];
-    userItem: User = this.userItem = new User(0, 0,'','','',0,0,0, '', 0, '', '', '', '', '', '', '','', '', 0, 0, false, '', '', false);;
+    // userItem: User = this.userItem = new User(0, 0,'','','',0,0,0, '', 0, '', '', '', '', '', '', '','', '', 0, 0, false, '', '', false);;
+    userItem: User = new User(0, 0,'','','',0,0,0, '', 0, '', '', '', '', '', '', '','', '', 0, 0, false, '', '', false);
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;

@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, NgForm, Validators } from '@angular/forms';
-import { Headers, RequestOptions } from '@angular/http';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { WebcamImage, WebcamUtil } from 'ngx-webcam';
 import { Observable, Subject } from 'rxjs';
@@ -13,7 +13,7 @@ import { AppService } from '../shared/app.service';
 import { HttpService } from '../shared/http-service';
 import { Visitor } from '../visitorappointment/visitor.model';
 import { IfStmt } from '@angular/compiler';
-import { forEach } from '@angular/router/src/utils/collection';
+// import { forEach } from '@angular/router/src/utils/collection';
 import * as moment from 'moment';
 import { AdditionalVisitor } from './additionvisitor.model';
 import { User } from '../masters/user/user.model';
@@ -1923,15 +1923,15 @@ export class VisitorentryComponent implements OnInit {
     }
 
   }
-  getHeader(): any {
-    var headers = new Headers();
-    headers.append("Accept", 'application/json');
-    headers.append('Content-Type', 'application/json');
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'))
-    headers.append("Authorization", "Bearer " + authData.token);
-    let options = new RequestOptions({ headers: headers });
-    return options;
-  }
+   getHeader(): any {
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        const headers = new HttpHeaders({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authData.token
+        });
+        return { headers: headers };
+}
   closemodal(): void {
     this.showWebcam = !this.showWebcam;
   }
