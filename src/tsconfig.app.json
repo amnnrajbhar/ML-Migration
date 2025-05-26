@@ -6,19 +6,14 @@
 //     "module": "es2015",
 //     "baseUrl": "",
 //     "types": []
-//   },
-  
+//   }, 
 //  "include": [
 //     "**/*.ts"
 //   ],
-
 //   "exclude": [
 //     "test.ts",
 //     "**/*.spec.ts"
 //   ],
-  
-
-
 // }
 {
   "extends": "../tsconfig.json",
@@ -29,6 +24,12 @@
     "baseUrl": "",
     "types": []
   },
+  "files": [
+    "main.ts",
+    "polyfills.ts",
+    "app/eMicro/CodeCreatorsSummaryReport/CodeCreatorsSummaryReport-Routing.module.ts",
+    "app/eMicro/DashBoard/Dashboard-Routing.module.ts"
+  ],
   "include": [
     "main.ts",
     "polyfills.ts",
