@@ -189,6 +189,8 @@ export class ChecklistComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else  
+              return { label: item.employeeId, value: item.id };
             })
             $('#spocEmployeeName').autocomplete({
               source: list,

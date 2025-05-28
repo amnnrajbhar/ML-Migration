@@ -242,6 +242,8 @@ export class AdditionalInfoComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.employeeName + " ("+item.employeeId+")", value: item };
+            else  
+              return null;
             })
             $('#txtInterviewer_'+i).autocomplete({
               source: list,
@@ -305,6 +307,8 @@ export class AdditionalInfoComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.employeeName + " ("+item.employeeId+")", value: item };
+            else 
+              return null;
             })
             $('#txtFinalName').autocomplete({
               source: list,

@@ -141,7 +141,7 @@ export class StatutoryComponent implements OnInit {
     if(!this.statutoryDetailsForm.form.valid) 
     {
       toastr.error("Please enter all mandatory fields."); 
-      return;
+      return false;
     }
     if(this.officialDetails && this.officialDetails.stateId > 0 && this.officialDetails.stateId !=1649 && !this.util.isValidPAN(this.details.panNo)){
       toastr.error("Please enter PAN number in ABCDE1234F format only.");

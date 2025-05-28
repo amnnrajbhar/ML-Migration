@@ -4,7 +4,7 @@ import { APIURLS } from '../../../shared/api-url';
 import { Router, RouterModule } from '@angular/router';
 import { ExcelService } from '../../../shared/excel-service';
 import { AuthData } from '../../../auth/auth.model';
-import { ResignationListFilter } from '../resignation-list/ResignationListFilter.model';
+import { ResignationListFilter } from '../resignation-list/resignationlistfilter.model';
 import { ResignationUpdateRequest } from '../resignation-list/resignationupdaterequest.model';
 import { DataStorageService } from '../../Services/data-storage.service';
 declare var $: any;

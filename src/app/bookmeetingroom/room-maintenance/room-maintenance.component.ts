@@ -431,7 +431,7 @@ export class RoomMaintenanceComponent implements OnInit {
     });
 
   }
-  validateimageSelectedOnly(filesSelected: File[]) {
+  validateimageSelectedOnly(filesSelected: File[]): boolean {
     let maxSize = 2048;
     for (var i = 0; i < filesSelected.length; i++) {
       let fsize = filesSelected[i].size / 1024;
@@ -440,15 +440,13 @@ export class RoomMaintenanceComponent implements OnInit {
         return false;
       } else {
         let allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
-        if (allowedExtensions.exec(filesSelected[i].name)) {
-          return true;
-        }
-        else {
+        if (!allowedExtensions.exec(filesSelected[i].name)) {
           alert('Please select images files only!');
           return false;
         }
       }
     }
+    return true;
   }
   saveRoomPictures(isedit: boolean, rmid: number): void {
     let connection: any;

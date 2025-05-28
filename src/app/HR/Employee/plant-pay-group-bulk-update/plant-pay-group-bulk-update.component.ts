@@ -315,6 +315,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else return null;
             })
             $('#approvingManagerPlantPayGroup').autocomplete({
               source: list,
@@ -364,6 +365,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else return null;
             })
             $('#reportingManagerPlantPayGroup').autocomplete({
               source: list,

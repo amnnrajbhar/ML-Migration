@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm, FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Recall } from '../recall/recall.model';
-import { JobChangeDetails } from '../recall/jobChangeDetails.Model';
+import { JobChangeDetails } from '../recall/jobChangeDetails.model';
 import { EmployeeSalaryComponent } from '../employee-salary/employee-salary.component';
 import { HttpService } from '../../../shared/http-service';
 import { AppService } from '../../../shared/app.service';
@@ -318,6 +318,8 @@ export class EditRecallComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if (item.fullName != null)
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
+              else
+                return { label: item.employeeId, value: item.id };
             })
             $('#newReportingManager').autocomplete({
               source: list,
@@ -366,6 +368,8 @@ export class EditRecallComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if (item.fullName != null)
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
+              else
+                return { label: item.employeeId, value: item.id };
             })
             $('#newHOD').autocomplete({
               source: list,

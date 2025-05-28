@@ -243,8 +243,6 @@ export class ChangeAssetDetailsComponent implements OnInit {
         self.filtercomFloor = data[0].comFloor;
         self.filterinsName = data[0].instName;
         self.filterinsType = data[0].instType;
-
-        return false;
       }
     }).catch(error => {
     });

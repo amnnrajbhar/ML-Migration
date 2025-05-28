@@ -212,7 +212,7 @@ export class OfficialComponent implements OnInit {
     if(new Date(this.details.dateOfJoining) > this.today)
     {
         toastr.error("Joining date cannot be greater than today.");
-        return;
+        return false;
     } 
     this.details.approvingManagerId = $("#approvingManagerId").val();
     this.details.reportingManagerId = $("#reportingManagerId").val();
@@ -485,6 +485,7 @@ export class OfficialComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else return null;
             })
             $('#approvingManager').autocomplete({
               source: list,
