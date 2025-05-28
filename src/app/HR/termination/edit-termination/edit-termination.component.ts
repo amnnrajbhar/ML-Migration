@@ -24,7 +24,7 @@ declare var toastr: any;
   providers:[Util]
 })
 export class EditTerminationComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   terminationId: any;
   employeeId: any;
   urlPath: string = '';
@@ -44,9 +44,9 @@ export class EditTerminationComponent implements OnInit {
   tabsList: string[] = ["details", "attachments","checklist","exitinterview", "history"];
   objectType: string = "Termination";
   fileList: any[] = [];
-  noticePeriod: string;
-  action: string;
-  comments: string;
+  noticePeriod: string
+  action: string
+  comments: string
   reason = [{ type: "Misconduct" }, { type: "Terminated" }, { type: "Unauthorized Absenteeism" }, { type: "Data Integrity" }];  
   files: any[] = [];
 
@@ -58,14 +58,15 @@ export class EditTerminationComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.terminationId = this.route.snapshot.paramMap.get('id')!;  
       this.GetTerminationDetailsById(this.terminationId);    
       
     }
   }
 
-  GetTerminationDetailsById(id) {
+  GetTerminationDetailsById(id:any) {
     this.isLoading = true;
    
     this.httpService.HRget(APIURLS.TERMINATION_DETAILS_GET_BYID + "/" + id).then((data: any) => {
@@ -88,7 +89,7 @@ export class EditTerminationComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg= error;
     });
   }
@@ -137,7 +138,7 @@ onTabClick(index)
         } else
           toastr.error("Error occurred.");
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });
@@ -205,7 +206,7 @@ onTabClick(index)
         this.isLoading = false;
         toastr.error('Error occured while saving service withdrawn details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving service withdrawn details. Error:' + error);
       });
@@ -232,7 +233,7 @@ onTabClick(index)
       }else
         toastr.error("Error occurred.");
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });    

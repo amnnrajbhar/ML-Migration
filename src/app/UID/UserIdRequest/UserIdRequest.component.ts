@@ -20,30 +20,30 @@ import { WorkFlowApprovers } from '../../eMicro/Masters/WorkFlowApprovers/WorkFl
 import { AppComponent } from '../../app.component';
 import { Router } from '@angular/router';
 
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 // import { element } from '@angular/core/src/render3/instructions';
 declare var require: any;
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { Dictionary } from './Dictionary';
 
 
 
 interface task {
-  value: string;
-  viewValue: string;
+  value: string
+  viewValue: string
 }
 
 interface taskGroup {
   disabled?: boolean;
-  name: string;
+  name: string
   task: task[];
 }
 
-interface UGrpsList { id: number, UserGroup: string, sid: number, UserSubGroups: any[] }
+interface UGrpsList { id: number, UserGroup: string; sid: number, UserSubGroups: any[] }
 
 @Component({
   selector: 'app-UserIdRequest',
@@ -52,9 +52,9 @@ interface UGrpsList { id: number, UserGroup: string, sid: number, UserSubGroups:
 
 })
 export class UserIdRequestComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   dict = new Dictionary();
 
@@ -80,7 +80,7 @@ export class UserIdRequestComponent implements OnInit {
   isEdit: boolean = false;
 
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   selectedBaseLocation: any = [];
@@ -91,14 +91,14 @@ export class UserIdRequestComponent implements OnInit {
   userIdRequest = {} as UserIdRequest
   // ItemCodeExtensionlist:ItemCodeExtension[]=[];
   userIdRequestlist: UserIdRequest[] = [];
-  materialtype: string;
-  comments: string = null;
-  filterMaterialCode: string = null;
-  filterstatus: string = null;
-  filtersoftware: string = null;
-  filterrequest: string = null;
-  filterlocation: string = null;
-  filterType: string = null;
+  materialtype!: string
+  comments: string = ' ';
+  filterMaterialCode: string = ' ';
+  filterstatus: string = ' ';
+  filtersoftware: string = ' ';
+  filterrequest: string = ' ';
+  filterlocation: string = ' ';
+  filterType: string = ' ';
   today = new Date();
   from_date: any;
   to_date: any;
@@ -107,7 +107,8 @@ export class UserIdRequestComponent implements OnInit {
   UserIdRequestList: UserIdRequest[] = [];
   userIdRequestsearchlist: UserIdRequest[] = [];
 
-  emailid: string;
+  emailid!: string
+
   requestdate: any;
   Approver1: boolean = false;
   Approverid1: string = "";
@@ -116,30 +117,32 @@ export class UserIdRequestComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
+  userid: string
   UserIdRequestist: UserIdRequest[] = [];
 
   storeData: any;
   jsonData: any;
-  fileUploaded: File;
+  fileUploaded!: File;
   worksheet: any;
   requestfor: any;
   selectedSoftwares: any[] = [];
   Plantsassigned: any[] = [];
-  requestType: string;
-  onBehalfEmp: string;
+  requestType: string
+  onBehalfEmp: string
   //userIdRequestmodeldata = {} as ItemCodeExtension;
 
   //new Dev
-  softType: string;
-  locationCode: string;
+  softType: string
+  locationCode: string
   filteredSoftwareList: any[] = [];
-  Software: string = null;
-  filterEquipName: string = null;
+  Software: string = ' ';
+  filterEquipName: string = ' ';
 
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router
-    , private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    , private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -158,7 +161,8 @@ export class UserIdRequestComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //  this.baseLocation = this.currentUser.baselocation;
     this.emailid = this.currentUser.email;
     this.userid = this.currentUser.employeeId;
@@ -195,11 +199,11 @@ export class UserIdRequestComponent implements OnInit {
       this.router.navigate(["/unauthorized"]);
   }
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.code : '';
   }
-  getloc(loc) {
+  getloc(loc:any) {
     let loccode = loc.keyValue.split('~');
     return loccode ? loccode[0] : '';
   }
@@ -294,12 +298,12 @@ export class UserIdRequestComponent implements OnInit {
       code = 'ML00'
     }
     else {
-      code = this.locationList.find(x => x.id == this.locationCode).code;
+      code = this.locationList.find((x:any)  => x.id == this.locationCode).code;
     }
     let srcstr = code + '~' + this.softType;
     this.httpService.getByParam(APIURLS.BR_SOFTWARE_BYPARAM_API, srcstr).then((data: any) => {
       if (data.length > 0) {
-        this.softwareList = data.filter(x => x.isActive).sort((a, b) => {
+        this.softwareList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -307,7 +311,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareList = [];
     });
@@ -315,16 +319,16 @@ export class UserIdRequestComponent implements OnInit {
 
   //end
   plantAssignedList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
         this.plantAssignedList = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantAssignedList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantAssignedList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantAssignedList = [];
     });
@@ -343,7 +347,7 @@ export class UserIdRequestComponent implements OnInit {
   onDeSelectAll(items: any) {
 
   }
-  sid: number;
+  sid!: number;
   statuslist: any[] = [
     { id: 1, name: 'Created' },
     { id: 2, name: 'Submitted' },
@@ -392,14 +396,17 @@ export class UserIdRequestComponent implements OnInit {
     this.from_date = null;
     this.to_date = null;
     this.filtersoftware = null;
-    this.filterstatus = null;
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filterrequest = null;
-    this.filterType = null;
-    this.filterlocation = null;
+    //this.filterType = null;
+this.filterType = '';
+   // this.filterlocation = null;
+ this.filterlocation = '';
     this.filterEquipName = null;
   }
-  location(id) {
-    let loc = this.locationList.find(x => x.id == id);
+  location(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code : "";
   }
 
@@ -426,7 +433,7 @@ export class UserIdRequestComponent implements OnInit {
         }
         //  this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.UserIdRequestList = [];
       });
@@ -445,14 +452,14 @@ export class UserIdRequestComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locationId = this.locListCon.find(x => x.id == this.currentUser.baselocation).name1
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locationId = this.locListCon.find((x:any)  => x.id == this.currentUser.baselocation).name1
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -468,7 +475,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.RepositoryDomainsList = [];
     });
@@ -481,12 +488,12 @@ export class UserIdRequestComponent implements OnInit {
     //this.softwareList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_API).then((data: any) => {
       if (data.length > 0) {
-        this.AllsoftwareList = data.filter(x => x.isActive).sort((a, b) => {
+        this.AllsoftwareList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
-        this.softwareList = data.filter(x => x.isActive).sort((a, b) => {
+        this.softwareList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -494,7 +501,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareList = [];
     });
@@ -510,7 +517,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.SoftwareModulesList = [];
     });
@@ -522,7 +529,7 @@ export class UserIdRequestComponent implements OnInit {
     //this.softwareUserProfilesList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_USER_PROFILES_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareUserProfilesList = data.filter(x => x.isActive).sort((a, b) => {
+        this.softwareUserProfilesList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -530,7 +537,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareUserProfilesList = [];
     });
@@ -543,7 +550,7 @@ export class UserIdRequestComponent implements OnInit {
     //this.softwareRolesList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_ROLES_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareRolesList = data.filter(x => x.isActive).sort((a, b) => {
+        this.softwareRolesList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -551,7 +558,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareRolesList = [];
     });
@@ -569,7 +576,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UserGroupsList = [];
     });
@@ -588,11 +595,12 @@ export class UserIdRequestComponent implements OnInit {
       if (data.length > 0) {
         this.UserSubGroupsList = data;
 
-        this.UserGroupsList.forEach(element => {
+        this.UserGroupsList.forEach((element:any)=> {
+
           let groups = {} as UGrpsList;
           groups.UserGroup = element.name;
           groups.sid = element.fkSoftwareId;
-          let temp = this.UserSubGroupsList.filter(x => x.fkUserGroupId == element.id && x.fkSoftwareId == element.fkSoftwareId);
+          let temp = this.UserSubGroupsList.filter((x:any)  => x.fkUserGroupId == element.id && x.fkSoftwareId == element.fkSoftwareId);
           groups.UserSubGroups = temp;
           this.usergroupsList.push(groups);
         });
@@ -601,7 +609,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UserSubGroupsList = [];
     });
@@ -609,13 +617,13 @@ export class UserIdRequestComponent implements OnInit {
   others: boolean = false;
 
   checkothers(list) {
-    let temp = list.find(x => x.name == 'Others');
+    let temp = list.find((x:any)  => x.name == 'Others');
     return temp ? this.others = true : this.others = false;
   }
 
   fileToUpload: File | null = null;
   File: File | null = null;
-  name: string;
+  name: string
   files: File[] = []
   attachlist: any[] = [];
   handleFileInput(fileslist: FileList) {
@@ -651,7 +659,7 @@ export class UserIdRequestComponent implements OnInit {
 
   }
 
-  deletefile(item, name) {
+  deletefile(item:any, name:any) {
 
     if (item.attachmentsList.length > 0) {
       const index = item.attachmentsList.indexOf(name);
@@ -676,7 +684,7 @@ export class UserIdRequestComponent implements OnInit {
           buttons: [false, true]
         })
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error deleteing file..';
     });
@@ -719,7 +727,7 @@ export class UserIdRequestComponent implements OnInit {
       })
       .catch(err => this.errMsg1 = err);
   }
-  ReadAsBase64(file): Promise<any> {
+  ReadAsBase64(file:any): Promise<any> {
     const reader = new FileReader();
     const fileValue = new Promise((resolve, reject) => {
       reader.addEventListener('load', () => {
@@ -738,7 +746,7 @@ export class UserIdRequestComponent implements OnInit {
 
     return fileValue;
   }
-  id: string;
+  id: string
   uploadfile(list: any) {
     // debugger;ks
     // this.id='VM001';
@@ -757,7 +765,7 @@ export class UserIdRequestComponent implements OnInit {
         // console.log('copied file to server')
         //this.imageFlag = true;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
 
@@ -765,16 +773,16 @@ export class UserIdRequestComponent implements OnInit {
   }
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngAfterViewInit() {
     this.initDatatable();
   }
-  getsoft(id) {
-    let temp = this.softwareList.find(x => x.id == id);
+  getsoft(id:any) {
+    let temp = this.softwareList.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
-  getrole(id) {
-    let temp = this.softwareRolesList.find(x => x.id == id);
+  getrole(id:any) {
+    let temp = this.softwareRolesList.find((x:any)  => x.id == id);
     return temp ? temp.role : '';
   }
   resetForm() {
@@ -823,7 +831,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist = [];
     });
@@ -831,19 +839,19 @@ export class UserIdRequestComponent implements OnInit {
   }
   Approverslist: WorkFlowApprovers[] = [];
   accountGroupList: any[] = [];
-  Aprlpriority: number;
-  getroleslist(id) {
-    this.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == id);
+  Aprlpriority!: number;
+  getroleslist(id:any) {
+    this.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == id);
   }
-  getusergroups(id) {
-    this.UserGroupsList1 = this.UserGroupsList.filter(x => x.fkSoftwareId == id);
-    this.usergroupsList1 = this.usergroupsList.filter(x => x.sid == id);
+  getusergroups(id:any) {
+    this.UserGroupsList1 = this.UserGroupsList.filter((x:any)  => x.fkSoftwareId == id);
+    this.usergroupsList1 = this.usergroupsList.filter((x:any)  => x.sid == id);
   }
-  getusersubgroups(id) {
-    this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkUserGroupId == id);
+  getusersubgroups(id:any) {
+    this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkUserGroupId == id);
     this.userIdRequestlist.forEach(req => {
       if (req.userGroups == id) {
-        req.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkUserGroupId == id);
+        req.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkUserGroupId == id);
       }
     })
 
@@ -858,7 +866,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist1 = [];
     });
@@ -875,7 +883,7 @@ export class UserIdRequestComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionsHistory = data;
-        let temp = this.transactionsHistory.find(x => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
+        let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
           || x.parallelApprover2 == this.currentUser.employeeId || x.parallelApprover3 == this.currentUser.employeeId ||
           x.parallelApprover4 == this.currentUser.employeeId || x.parallelApprover5 == this.currentUser.employeeId) && x.transactionType == null);
 
@@ -919,7 +927,8 @@ export class UserIdRequestComponent implements OnInit {
           && this.userIdRequest.requestType != 'Password Reset/Clear Logoff Request'
           && this.userIdRequest.softwareType != 'Plant Level' && this.userIdRequest.sid != 11
           && this.userIdRequest.sid != 12 && this.userIdRequest.sid != 13) {
-          this.transactionsHistory.forEach(element => {
+          this.transactionsHistory.forEach((element:any)=> {
+
             if (element.role == "Closure") {
               element.approvalPriority = 3
             }
@@ -928,7 +937,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionsHistory = [];
     });
@@ -938,7 +947,7 @@ export class UserIdRequestComponent implements OnInit {
   KeyValue: any;
   ReviewerList: any[] = [];
   ApproverIdslist: any[] = [];
-  getApproversList(value) {
+  getApproversList(value:any) {
     this.getusergroups(value.sid);
     this.getroleslist(value.sid);
     this.ReviewerList = [];
@@ -950,8 +959,8 @@ export class UserIdRequestComponent implements OnInit {
     this.Closure = false;
     // let request:any;
     //request = Object.assign({}, value);
-    var loc = this.locationList.find(x => x.id == value.locationId);
-    var software = this.softwareList.find(x => x.id == value.sid);
+    var loc = this.locationList.find((x:any)  => x.id == value.locationId);
+    var software = this.softwareList.find((x:any)  => x.id == value.sid);
     if (software.name != 'SAP UserId') {
       var keyvalue = loc.code + '~' + software.name + ',' + 6;
       this.KeyValue = loc.code + '~' + software.name;
@@ -990,27 +999,28 @@ export class UserIdRequestComponent implements OnInit {
       if (data.length > 0) {
 
         if (this.requestType == "Modification" || this.requestType == "Activation/Inactivation") {
-          let apprs = data.filter(x => x.priority != 1 && x.closure != 1);
+          let apprs = data.filter((x:any)  => x.priority != 1 && x.closure != 1);
           let reviewer: any;
-          let dep = this.DepartmentList.find(x => x.name == this.userIdRequest.department && x.isActive == true)
-          reviewer = data.find(x => x.priority == 1 && x.dept == dep.id)
+          let dep = this.DepartmentList.find((x:any)  => x.name == this.userIdRequest.department && x.isActive == true)
+          reviewer = data.find((x:any)  => x.priority == 1 && x.dept == dep.id)
 
           this.Approverslist = apprs;
           if (reviewer != null || reviewer != undefined) {
             this.Approverslist.push(reviewer);
           }
-          // this.Approverslist = data.filter(x=>x.closure !=1);
-          this.Approverslist.forEach(element => {
+          // this.Approverslist = data.filter((x:any)=>x.closure !=1);
+          this.Approverslist.forEach((element:any)=> {
+
             element.role = element.role == "Creator" ? "Closure" : element.role;
           });
         }
         else if (this.softType != 'Plant Level' && this.requestType != "Password Reset/Unlocking"
           && this.requestType != 'Password Reset/Clear Logoff Request'
           && software.name != 'SAP UserId' && software.name != 'SAP Roles' && software.name != 'SAP Authorization') {
-          let apprs = data.filter(x => x.priority != 1);
+          let apprs = data.filter((x:any)  => x.priority != 1);
           let reviewer: any;
-          let dep = this.DepartmentList.find(x => x.name == this.userIdRequest.department && x.isActive == true)
-          reviewer = data.find(x => x.priority == 1 && x.dept == dep.id)
+          let dep = this.DepartmentList.find((x:any)  => x.name == this.userIdRequest.department && x.isActive == true)
+          reviewer = data.find((x:any)  => x.priority == 1 && x.dept == dep.id)
 
           this.Approverslist = apprs;
           if (reviewer != null || reviewer != undefined) {
@@ -1021,8 +1031,9 @@ export class UserIdRequestComponent implements OnInit {
         }
 
         if (this.requestType == "Password Reset/Unlocking" || this.requestType == 'Password Reset/Clear Logoff Request') {
-          this.Approverslist = data.filter(x => x.role == 'Creator');
-          this.Approverslist.forEach(element => {
+          this.Approverslist = data.filter((x:any)  => x.role == 'Creator');
+          this.Approverslist.forEach((element:any)=> {
+
             element.role = element.role == "Creator" ? "Closure" : element.role;
             element.priority = 1;
           });
@@ -1033,7 +1044,7 @@ export class UserIdRequestComponent implements OnInit {
             || software.name == 'Citrix ID' || software.name == 'Email ID' || software.name == 'O365 ID' || software.name == 'Ivanti User Access'
             || software.name == 'VPN Access' || software.name == 'FTP Access' || software.name == 'Static-Public IP') {
 
-            if (this.ApprovingManager[0].employeeId != data.find(x => x.priority == 2).approverId) {
+            if (this.ApprovingManager[0].employeeId != data.find((x:any)  => x.priority == 2).approverId) {
               let Approver: any = {};
               Approver.approverId = this.ApprovingManager[0].employeeId;
               Approver.approverName = this.ApprovingManager[0].fullName
@@ -1047,7 +1058,8 @@ export class UserIdRequestComponent implements OnInit {
 
             }
             else {
-              data.forEach(element => {
+              data.forEach((element:any)=> {
+
                 element.priority = element.priority - 1
               });
               this.Approverslist = data;
@@ -1057,10 +1069,10 @@ export class UserIdRequestComponent implements OnInit {
           else if (this.softType == 'Plant Level' || software.name == 'SAP Roles' || software.name == 'SAP Authorization') {
 
             if (this.softType == 'Plant Level') {
-              let apprs = data.filter(x => x.priority != 1);
+              let apprs = data.filter((x:any)  => x.priority != 1);
               let reviewer: any;
-              let dep = this.DepartmentList.find(x => x.name == this.userIdRequest.department && x.isActive == true)
-              reviewer = data.find(x => x.priority == 1 && x.dept == dep.id)
+              let dep = this.DepartmentList.find((x:any)  => x.name == this.userIdRequest.department && x.isActive == true)
+              reviewer = data.find((x:any)  => x.priority == 1 && x.dept == dep.id)
 
               this.Approverslist = apprs;
               if (reviewer != null || reviewer != undefined) {
@@ -1068,13 +1080,14 @@ export class UserIdRequestComponent implements OnInit {
               }
             }
             else {
-              this.Approverslist = data.filter(x => x.isActive == 1);
+              this.Approverslist = data.filter((x:any)  => x.isActive == 1);
             }
 
           }
           else {
             if (this.requestType != "Creation") {
-              this.Approverslist.forEach(element => {
+              this.Approverslist.forEach((element:any)=> {
+
                 element.role = element.role == "Creator" ? "Closure" : element.role;
               });
             }
@@ -1083,32 +1096,32 @@ export class UserIdRequestComponent implements OnInit {
         }
 
         //req.Approverslist=data;
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
 
-        this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+        this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
         let empid = this.currentUser.employeeId
         let empName = this.currentUser.fullName;
 
-        let Appr1 = this.Approverslist.find(x => x.approverId == empid ||
+        let Appr1 = this.Approverslist.find((x:any)  => x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid && x.role != 'Creator');
-        let Appr2 = this.Approverslist.find(x => x.approverId == empid ||
+        let Appr2 = this.Approverslist.find((x:any)  => x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid && x.role != 'Creator');
-        let Appr3 = this.Approverslist.find(x => (x.approverId == empid ||
+        let Appr3 = this.Approverslist.find((x:any)  => (x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid) && x.role == 'Creator');
-        let Appr4 = this.Approverslist.find(x => (x.approverId == empid ||
+        let Appr4 = this.Approverslist.find((x:any)  => (x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid) && x.role == 'Closure');
-        let clos = this.transactionslist.find(x => x.approvalPriority == 3 && x.transactionType == 1)
+        let clos = this.transactionslist.find((x:any)  => x.approvalPriority == 3 && x.transactionType == 1)
 
         if ((Appr1 != null || Appr1 != undefined) &&
-          (this.transactionslist1.find(x => x.approvalPriority == Appr1.priority && x.transactionType == null))) {
+          (this.transactionslist1.find((x:any)  => x.approvalPriority == Appr1.priority && x.transactionType == null))) {
           this.Approverid1 = Appr1.approverId;
           this.Approver1 = true;
           this.Review = true;
@@ -1116,7 +1129,7 @@ export class UserIdRequestComponent implements OnInit {
         }
 
         else if ((Appr2 != null || Appr2 != undefined) &&
-          (this.transactionslist1.find(x => x.approvalPriority == Appr2.priority && x.transactionType == null))) {
+          (this.transactionslist1.find((x:any)  => x.approvalPriority == Appr2.priority && x.transactionType == null))) {
           this.Approver1 = true;
           this.Approver2 = true;
           this.Approverid2 = Appr2.approverId;
@@ -1172,7 +1185,7 @@ export class UserIdRequestComponent implements OnInit {
 
           }
           let list = this.transactionslist.reverse();
-          let clorev = list.find(x => x.approvalPriority == 4 && x.transactionType == 3)
+          let clorev = list.find((x:any)  => x.approvalPriority == 4 && x.transactionType == 3)
           if (clorev != undefined && Appr3 != undefined) {
             this.Approver1 = true;
             this.Approver2 = true;
@@ -1186,7 +1199,7 @@ export class UserIdRequestComponent implements OnInit {
           }
         }
         this.transactionslist.forEach((ad) => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority);
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority);
           if (temp != undefined) {
             if (ad.transactionType == 1) {
               if (temp.role == 'Creator') {
@@ -1199,7 +1212,7 @@ export class UserIdRequestComponent implements OnInit {
                 ad.status = 'Approved'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 3 || ad.transactionType == 4) {
@@ -1215,7 +1228,7 @@ export class UserIdRequestComponent implements OnInit {
 
         });
         this.Approverslist.forEach((ad) => {
-          let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority && x.transactionType == 1);
+          let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority && x.transactionType == 1);
           if (temp1 == undefined) {
             let trans = {} as Transactions;
             trans.doneBy = ad.approverId;
@@ -1229,49 +1242,49 @@ export class UserIdRequestComponent implements OnInit {
 
         });
         if (this.requestType != "Password Reset/Unlocking" && this.requestType != 'Password Reset/Clear Logoff Request') {
-          let temp = this.Approverslist.find(x => x.priority == 1 && x.approverId != this.userIdRequest.onBehalfEmp);
+          let temp = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId != this.userIdRequest.onBehalfEmp);
           if (temp) {
             let model: any = {};
             model.approverId = temp.approverId;
             model.name = temp.approverName
             this.ReviewerList.push(model);
           }
-          let temp_p = this.Approverslist.find(x => x.priority == 1 && x.parllelApprover1 != this.userIdRequest.onBehalfEmp);
+          let temp_p = this.Approverslist.find((x:any)  => x.priority == 1 && x.parllelApprover1 != this.userIdRequest.onBehalfEmp);
           if (temp_p) {
             let model: any = {};
             model.approverId = temp_p.parllelApprover1;
             model.name = temp_p.pApproverName
             this.ReviewerList.push(model);
           }
-          let temp_p1 = this.Approverslist.find(x => x.priority == 1 && x.parllelApprover2 != this.userIdRequest.onBehalfEmp);
+          let temp_p1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.parllelApprover2 != this.userIdRequest.onBehalfEmp);
           if (temp_p1) {
             let model: any = {};
             model.approverId = temp_p1.parllelApprover2;
             model.name = temp_p1.pA1pproverName
             this.ReviewerList.push(model);
           }
-          let temp_p2 = this.Approverslist.find(x => x.priority == 1 && x.parllelApprover3 != this.userIdRequest.onBehalfEmp);
+          let temp_p2 = this.Approverslist.find((x:any)  => x.priority == 1 && x.parllelApprover3 != this.userIdRequest.onBehalfEmp);
           if (temp_p2) {
             let model: any = {};
             model.approverId = temp_p2.parllelApprover3;
             model.name = temp_p2.pA2pproverName
             this.ReviewerList.push(model);
           }
-          let temp_p3 = this.Approverslist.find(x => x.priority == 1 && x.parllelApprover4 != this.userIdRequest.onBehalfEmp);
+          let temp_p3 = this.Approverslist.find((x:any)  => x.priority == 1 && x.parllelApprover4 != this.userIdRequest.onBehalfEmp);
           if (temp_p3) {
             let model: any = {};
             model.approverId = temp_p3.parllelApprover4;
             model.name = temp_p3.pA3pproverName
             this.ReviewerList.push(model);
           }
-          let temp1 = this.Approverslist.find(x => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
+          let temp1 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
           if (temp1) {
             let model1: any = {};
             model1.approverId = temp1.approverId;
             model1.name = temp1.approverName
             this.ApproverIdslist.push(model1);
           }
-          let temp1_p = this.Approverslist.find(x => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
+          let temp1_p = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
           if (temp1_p) {
             let model1: any = {};
             model1 = {};
@@ -1279,7 +1292,7 @@ export class UserIdRequestComponent implements OnInit {
             model1.name = temp1_p.pApproverName
             this.ApproverIdslist.push(model1);
           }
-          let temp1_p1 = this.Approverslist.find(x => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
+          let temp1_p1 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
           if (temp1_p1) {
             let model1: any = {};
             model1 = {};
@@ -1287,7 +1300,7 @@ export class UserIdRequestComponent implements OnInit {
             model1.name = temp1_p1.pA1pproverName
             this.ApproverIdslist.push(model1);
           }
-          let temp1_p2 = this.Approverslist.find(x => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
+          let temp1_p2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
           if (temp1_p2) {
             let model1: any = {};
             model1 = {};
@@ -1295,7 +1308,7 @@ export class UserIdRequestComponent implements OnInit {
             model1.name = temp1_p2.pA2pproverName
             this.ApproverIdslist.push(model1);
           }
-          let temp1_p3 = this.Approverslist.find(x => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
+          let temp1_p3 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId != this.userIdRequest.onBehalfEmp);
           if (temp1_p3) {
             let model1: any = {};
             model1 = {};
@@ -1306,12 +1319,12 @@ export class UserIdRequestComponent implements OnInit {
         }
 
 
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.doneOn > b.doneOn) return 1;
           if (a.doneOn < b.doneOn) return -1;
           if (a.approvalPriority > b.approvalPriority) return 1;
@@ -1325,7 +1338,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -1333,16 +1346,16 @@ export class UserIdRequestComponent implements OnInit {
 
 
 
-  gettrackrole(id) {
+  gettrackrole(id:any) {
     let role: any[] = [];
     if (id != undefined || id != null) {
       var rolesList = id == '' ? [] : id.split(',');
       for (let i = 0; i < rolesList.length; i++) {
-        let temp = this.softwareRolesList.find(x => x.id == rolesList[i]);
+        let temp = this.softwareRolesList.find((x:any)  => x.id == rolesList[i]);
         role.push(temp);
       }
       if (role.length > 0) {
-        var val = role.map(x => x.role).join();
+        var val = role.map((x:any)  => x.role).join();
       }
 
     }
@@ -1358,7 +1371,8 @@ export class UserIdRequestComponent implements OnInit {
       if (data.employeeId > 0) {
         this.ApprovingManager.push(data);
         //   this.Approverslist.push(data);
-        //   this.Approverslist.forEach(element => {
+        //   this.Approverslist.forEach((element:any)=> {
+
         //     element.type="Approving Manager";
         //   });
         //   //this.transactionslist.reverse();
@@ -1369,7 +1383,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -1381,14 +1395,14 @@ export class UserIdRequestComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       this.isLoading = false;
       if (data.length > 0) {
-        this.DepartmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.DepartmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.DepartmentList = [];
     });
@@ -1398,8 +1412,8 @@ export class UserIdRequestComponent implements OnInit {
     jQuery("#searchModal").modal('show');
   }
 
-  getloc1(id) {
-    let loc = this.locationList.find(x => x.id == id);
+  getloc1(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code + '-' + loc.name : "";
   }
   currentUser1: AuthData;
@@ -1437,7 +1451,7 @@ export class UserIdRequestComponent implements OnInit {
       }
       // this.reInitDatatable();()
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.currentUser = {} as AuthData;
     });
@@ -1480,7 +1494,7 @@ export class UserIdRequestComponent implements OnInit {
 
       // this.reInitDatatable();()
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.currentUser = {} as AuthData;
     });
@@ -1488,9 +1502,9 @@ export class UserIdRequestComponent implements OnInit {
 
 
 
-  empId: string;
+  empId: string
   view: boolean = false;
-  locationName: string;
+  locationName: string
   attachments: any[] = [];
   plants: any[] = [];
   printplats: any;
@@ -1573,54 +1587,54 @@ export class UserIdRequestComponent implements OnInit {
       if (this.getsoft(userIdRequest.sid) == 'Trackwise') {
         var rolesList = userIdRequest.newRoleInQams ? userIdRequest.newRoleInQams.split(',') : [];
         for (let i = 0; i < rolesList.length; i++) {
-          let temp = this.softwareRolesList.find(x => x.id == rolesList[i]);
+          let temp = this.softwareRolesList.find((x:any)  => x.id == rolesList[i]);
           this.roles.push(temp);
         }
-        this.printRoles = this.roles.map(x => x.role).join();
+        this.printRoles = this.roles.map((x:any)  => x.role).join();
         var newroleslist = userIdRequest.newRoleUpdated ? userIdRequest.newRoleUpdated.split(',') : [];
         for (let i = 0; i < newroleslist.length; i++) {
-          let temp = this.softwareRolesList.find(x => x.id == newroleslist[i]);
+          let temp = this.softwareRolesList.find((x:any)  => x.id == newroleslist[i]);
           this.Newroles.push(temp);
         }
       }
       this.software = this.getsoft(userIdRequest.sid);
       var plantList = userIdRequest.assignedPlants ? userIdRequest.assignedPlants.split(',') : [];
       for (let i = 0; i < plantList.length; i++) {
-        let temp = this.locListCon.find(x => x.id == plantList[i]);
+        let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
         this.plants.push(temp);
       }
       var RepDom = userIdRequest.repositoryDomains ? userIdRequest.repositoryDomains.split(',') : [];
       for (let i = 0; i < RepDom.length; i++) {
-        let temp = this.RepositoryDomainsList.find(x => x.id == RepDom[i]);
+        let temp = this.RepositoryDomainsList.find((x:any)  => x.id == RepDom[i]);
         this.RepDomains.push(temp);
       }
-      this.printDomains = this.RepDomains.map(x => x.name).join();
+      this.printDomains = this.RepDomains.map((x:any)  => x.name).join();
 
       var mas = userIdRequest.masterAssignment ? userIdRequest.masterAssignment.split(',') : [];
       for (let i = 0; i < mas.length; i++) {
-        let temp = this.mastersList.find(x => x.id == mas[i]);
+        let temp = this.mastersList.find((x:any)  => x.id == mas[i]);
         this.masterList.push(temp);
       }
-      this.printMasters = this.masterList.map(x => x.name).join();
+      this.printMasters = this.masterList.map((x:any)  => x.name).join();
 
       var mod = userIdRequest.userModules ? userIdRequest.userModules.split(',') : [];
       for (let i = 0; i < mod.length; i++) {
-        let temp = this.SoftwareModulesList.find(x => x.id == mod[i]);
+        let temp = this.SoftwareModulesList.find((x:any)  => x.id == mod[i]);
         this.ModuleList.push(temp);
       }
-      this.printModules = this.ModuleList.map(x => x.name).join();
+      this.printModules = this.ModuleList.map((x:any)  => x.name).join();
 
       var pro = userIdRequest.userProfiles ? userIdRequest.userProfiles.split(',') : [];
       for (let i = 0; i < pro.length; i++) {
-        let temp = this.softwareUserProfilesList.find(x => x.id == pro[i]);
+        let temp = this.softwareUserProfilesList.find((x:any)  => x.id == pro[i]);
         this.ProfileList.push(temp);
       }
-      this.printProfiles = this.ProfileList.map(x => x.name).join();
+      this.printProfiles = this.ProfileList.map((x:any)  => x.name).join();
 
       if (this.getsoft(userIdRequest.sid) != 'Trackwise') {
         if (userIdRequest.newRoleInQams) {
           if (userIdRequest.newRoleInQams != '') {
-            this.softwarerole = this.softwareRolesList.find(x => x.id == userIdRequest.newRoleInQams).role;
+            this.softwarerole = this.softwareRolesList.find((x:any)  => x.id == userIdRequest.newRoleInQams).role;
           }
         }
       }
@@ -1634,10 +1648,10 @@ export class UserIdRequestComponent implements OnInit {
       userIdRequest.Plantsassigned = this.plants;
       this.softType = userIdRequest.softwareType;
       // userIdRequest.sid=this.selectedSoftwares[0].id;
-      this.printplats = this.plants.map(x => x.code).join();
+      this.printplats = this.plants.map((x:any)  => x.code).join();
       var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-      userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
-      this.printgroups = userIdRequest.usergroupsList.map(x => x.name).join();
+      userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
+      this.printgroups = userIdRequest.usergroupsList.map((x:any)  => x.name).join();
       var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
       let subList: number[]
       // subList=USGList;
@@ -1646,21 +1660,21 @@ export class UserIdRequestComponent implements OnInit {
       });
       userIdRequest.activity = userIdRequest.isActive ? 'true' : 'false';
       // userIdRequest.usersubgroupsList=subList;
-      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
-      let temp1 = userIdRequest.usersubgroupsList.find(x => x.name == 'Others');
+      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
+      let temp1 = userIdRequest.usersubgroupsList.find((x:any)  => x.name == 'Others');
       temp1 ? this.others = true : this.others = false;
-      this.printsubgroups = userIdRequest.usersubgroupsList.map(x => x.name).join();
+      this.printsubgroups = userIdRequest.usersubgroupsList.map((x:any)  => x.name).join();
       var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-      userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
+      userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
       var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
-      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
+      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
       if (userIdRequest.attachments != null || userIdRequest.attachments != null) {
         userIdRequest.attachmentsList = userIdRequest.attachments.split(',');
       }
-      this.usergroupsList1 = this.usergroupsList.filter(x => x.sid == userIdRequest.sid);
-      userIdRequest.UserGroupsList1 = this.UserGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
-      userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid);
-      this.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid);
+      this.usergroupsList1 = this.usergroupsList.filter((x:any)  => x.sid == userIdRequest.sid);
+      userIdRequest.UserGroupsList1 = this.UserGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
+      userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid);
+      this.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid);
       this.userIdRequest = Object.assign({}, userIdRequest);
       // }
 
@@ -1678,47 +1692,47 @@ export class UserIdRequestComponent implements OnInit {
         if (this.getsoft(userIdRequest.sid) == 'Trackwise') {
           var rolesList = userIdRequest.newRoleInQams ? userIdRequest.newRoleInQams.split(',') : [];
           for (let i = 0; i < rolesList.length; i++) {
-            let temp = this.softwareRolesList.find(x => x.id == rolesList[i]);
+            let temp = this.softwareRolesList.find((x:any)  => x.id == rolesList[i]);
             this.roles.push(temp);
           }
-          this.printRoles = this.roles.map(x => x.role).join();
+          this.printRoles = this.roles.map((x:any)  => x.role).join();
           var newroleslist = userIdRequest.newRoleUpdated ? userIdRequest.newRoleUpdated.split(',') : [];
           for (let i = 0; i < newroleslist.length; i++) {
-            let temp = this.softwareRolesList.find(x => x.id == newroleslist[i]);
+            let temp = this.softwareRolesList.find((x:any)  => x.id == newroleslist[i]);
             this.Newroles.push(temp);
           }
         }
 
         var plantList = userIdRequest.assignedPlants ? userIdRequest.assignedPlants.split(',') : [];
         for (let i = 0; i < plantList.length; i++) {
-          let temp = this.locListCon.find(x => x.id == plantList[i]);
+          let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
           this.plants.push(temp);
         }
         var RepDom = userIdRequest.repositoryDomains ? userIdRequest.repositoryDomains.split(',') : [];
         for (let i = 0; i < RepDom.length; i++) {
-          let temp = this.RepositoryDomainsList.find(x => x.id == RepDom[i]);
+          let temp = this.RepositoryDomainsList.find((x:any)  => x.id == RepDom[i]);
           this.RepDomains.push(temp);
         }
         var mas = userIdRequest.masterAssignment ? userIdRequest.masterAssignment.split(',') : [];
         for (let i = 0; i < mas.length; i++) {
-          let temp = this.mastersList.find(x => x.id == mas[i]);
+          let temp = this.mastersList.find((x:any)  => x.id == mas[i]);
           this.masterList.push(temp);
         }
-        this.printMasters = this.masterList.map(x => x.name).join();
+        this.printMasters = this.masterList.map((x:any)  => x.name).join();
 
         var mod = userIdRequest.userModules ? userIdRequest.userModules.split(',') : [];
         for (let i = 0; i < mod.length; i++) {
-          let temp = this.SoftwareModulesList.find(x => x.id == mod[i]);
+          let temp = this.SoftwareModulesList.find((x:any)  => x.id == mod[i]);
           this.ModuleList.push(temp);
         }
-        this.printModules = this.ModuleList.map(x => x.name).join();
+        this.printModules = this.ModuleList.map((x:any)  => x.name).join();
 
         var pro = userIdRequest.userProfiles ? userIdRequest.userProfiles.split(',') : [];
         for (let i = 0; i < pro.length; i++) {
-          let temp = this.softwareUserProfilesList.find(x => x.id == pro[i]);
+          let temp = this.softwareUserProfilesList.find((x:any)  => x.id == pro[i]);
           this.ProfileList.push(temp);
         }
-        this.printProfiles = this.ProfileList.map(x => x.name).join();
+        this.printProfiles = this.ProfileList.map((x:any)  => x.name).join();
         userIdRequest.selMasters = this.masterList;
         userIdRequest.selModules = this.ModuleList;
         userIdRequest.selProfiles = this.ProfileList;
@@ -1728,17 +1742,17 @@ export class UserIdRequestComponent implements OnInit {
         userIdRequest.Plantsassigned = this.plants;
         // userIdRequest.sid=this.selectedSoftwares[0].id;
         var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-        userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
+        userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
         var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
-        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
+        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
 
-        this.usergroupsList1 = this.usergroupsList.filter(x => x.sid == userIdRequest.sid);
-        userIdRequest.UserGroupsList1 = this.UserGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
-        userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid);
+        this.usergroupsList1 = this.usergroupsList.filter((x:any)  => x.sid == userIdRequest.sid);
+        userIdRequest.UserGroupsList1 = this.UserGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
+        userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid);
 
       }
       else {
-        userIdRequest.UserGroupsList1 = this.UserGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
+        userIdRequest.UserGroupsList1 = this.UserGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
         userIdRequest.sid = +this.Software;
         if (this.locationCode != null || this.locationCode != undefined) {
           userIdRequest.locationId = +this.locationCode;
@@ -1750,7 +1764,7 @@ export class UserIdRequestComponent implements OnInit {
       }
 
       this.submit = true;
-      var selectedSoftwares = this.softwareList.find(x => x.id == this.Software);
+      var selectedSoftwares = this.softwareList.find((x:any)  => x.id == this.Software);
       userIdRequest.name = selectedSoftwares.name;
       // this.getApproversList(userIdRequest);
       if (userIdRequest.status == 'Reverted to initiator') {
@@ -1767,32 +1781,32 @@ export class UserIdRequestComponent implements OnInit {
         this.getEmpDetails(this.currentUser.employeeId);
         this.getApprovingManager(this.currentUser.employeeId);
       }
-      this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
+      this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
       // this.userIdRequest = Object.assign({}, userIdRequest);
 
       // var plantList = userIdRequest.assignedPlants ? userIdRequest.assignedPlants.split(',') : [];
       // for (let i = 0; i < plantList.length; i++) {
-      //   let temp = this.locListCon.find(x => x.id == plantList[i]);
+      //   let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
       //   this.plants.push(temp);
       // }
       // userIdRequest.Plantsassigned = this.plants;
       // var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-      // userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
+      // userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
       // var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
-      // userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
+      // userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
       if (userIdRequest.attachments != null || userIdRequest.attachments != null) {
         userIdRequest.attachmentsList = userIdRequest.attachments.split(',');
       }
 
-      userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == this.Software);
-      userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid);
-      let loc = this.locationList.find(x => x.id == userIdRequest.locationId)
+      userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == this.Software);
+      userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid);
+      let loc = this.locationList.find((x:any)  => x.id == userIdRequest.locationId)
       if (this.softType == 'Plant Level') {
-        this.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid && x.location == loc.code);
+        this.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid && x.location == loc.code);
       }
       this.getApproversList(userIdRequest);
-      userIdRequest.UserGroupsList1 = this.UserGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
-      this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
+      userIdRequest.UserGroupsList1 = this.UserGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
+      this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
       this.userIdRequest = Object.assign({}, userIdRequest);
       // }
     }
@@ -1802,7 +1816,7 @@ export class UserIdRequestComponent implements OnInit {
     }
     // if(this.Error == null)
     // {
-    let soft = this.softwareList.find(x => x.id == userIdRequest.sid);
+    let soft = this.softwareList.find((x:any)  => x.id == userIdRequest.sid);
 
 
 
@@ -1931,19 +1945,19 @@ export class UserIdRequestComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_USERID_MASTERS_GET_BY_PARAM_API, value).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == data[0].sid);
+        this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == data[0].sid);
         var plantList = data[0].assignedPlants ? data[0].assignedPlants.split(',') : [];
         for (let i = 0; i < plantList.length; i++) {
-          let temp = this.locListCon.find(x => x.id == plantList[i]);
+          let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
           this.plants.push(temp);
         }
         userIdRequest.Plantsassigned = this.plants;
         var UGList = data[0].userGroups ? data[0].userGroups.split(',') : [];
-        userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
+        userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
         var USGList = data[0].userSubGroups ? data[0].userSubGroups.split(',') : [];
 
-        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes((s.id.toString())));
-        let temp1 = userIdRequest.usersubgroupsList.find(x => x.name == 'Others');
+        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes((s.id.toString())));
+        let temp1 = userIdRequest.usersubgroupsList.find((x:any)  => x.name == 'Others');
         temp1 ? this.others = true : this.others = false;
         userIdRequest.otherSubGroups = data[0].otherSubGroups;
         userIdRequest.newRoleInQams = data[0].softwareRole;
@@ -1959,19 +1973,19 @@ export class UserIdRequestComponent implements OnInit {
         userIdRequest.sid = data[0].sid;
         var RepDom = data[0].repositoryDomains ? data[0].repositoryDomains.split(',') : [];
         for (let i = 0; i < RepDom.length; i++) {
-          let temp = this.RepositoryDomainsList.find(x => x.id == RepDom[i]);
+          let temp = this.RepositoryDomainsList.find((x:any)  => x.id == RepDom[i]);
           this.RepDomains.push(temp);
         }
         userIdRequest.selectedRepoDomains = this.RepDomains;
-        userIdRequest.locationId = this.locationList.find(x => x.id == this.currentUser.baselocation).id;
-        userIdRequest.UserGroupsList1 = this.UserGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
-        userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == data[0].sid);
-        userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == data[0].sid);
+        userIdRequest.locationId = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).id;
+        userIdRequest.UserGroupsList1 = this.UserGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
+        userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == data[0].sid);
+        userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == data[0].sid);
         userIdRequest.requestDate = data[0].createdDate;
         this.getApproversList(userIdRequest);
 
 
-        this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == data[0].sid);
+        this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == data[0].sid);
         this.userIdRequest = Object.assign({}, userIdRequest);
 
         if (this.softType == 'Plant Level') {
@@ -2000,18 +2014,18 @@ export class UserIdRequestComponent implements OnInit {
       }
       // else {
       //   userIdRequest.sid = +this.Software;
-      //   var selectedSoftwares = this.softwareList.find(x => x.id == this.Software);
+      //   var selectedSoftwares = this.softwareList.find((x:any)  => x.id == this.Software);
       //   userIdRequest.name = selectedSoftwares.name;
       //   userIdRequest.requestType = this.requestType;
-      //   userIdRequest.locationId = this.locationList.find(x => x.id == this.currentUser.baselocation).id;
-      //   userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == this.Software);
-      //   userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == this.Software);
+      //   userIdRequest.locationId = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).id;
+      //   userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == this.Software);
+      //   userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == this.Software);
       //   this.getApproversList(userIdRequest);
-      //   this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == this.Software);
+      //   this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == this.Software);
       //   this.userIdRequest = Object.assign({}, userIdRequest);
       // }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -2029,7 +2043,7 @@ export class UserIdRequestComponent implements OnInit {
 
   RequestNo: any;
   ApproverId: any;
-  onSaveEntry(status) {
+  onSaveEntry(status:any) {
     this.errMsg = "";
     this.isLoading = true;
     let connection: any;
@@ -2047,7 +2061,7 @@ export class UserIdRequestComponent implements OnInit {
           buttons: [false, true]
         });
       }
-      else if (((this.Approverslist.find(x => x.priority == 1)) == undefined)
+      else if (((this.Approverslist.find((x:any)  => x.priority == 1)) == undefined)
         && (this.requestType != 'Password Reset/Unlocking' && this.requestType != 'Password Reset/Clear Logoff Request')) {
         swal({
           title: "Message",
@@ -2064,7 +2078,7 @@ export class UserIdRequestComponent implements OnInit {
           this.userIdRequest.modifiedBy = null;
           this.userIdRequest.modifiedDate = null;
           this.userIdRequest.requestDate = null;
-          soft = this.softwareList.find(x => x.id == this.userIdRequest.sid).name;
+          soft = this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid).name;
           if (this.requestfor == 'on-Behalf') {
             this.userIdRequest.requestfor = 'on-Behalf';
             this.userIdRequest.onBehalfEmp = this.onBehalfEmp;
@@ -2079,35 +2093,35 @@ export class UserIdRequestComponent implements OnInit {
 
 
           if (this.userIdRequest.Plantsassigned != undefined && this.userIdRequest.Plantsassigned.length > 0) {
-            this.userIdRequest.assignedPlants = this.userIdRequest.Plantsassigned.map(x => x.id).join();
+            this.userIdRequest.assignedPlants = this.userIdRequest.Plantsassigned.map((x:any)  => x.id).join();
           }
           if (this.userIdRequest.selectedRoles != undefined && this.userIdRequest.selectedRoles.length > 0) {
-            this.userIdRequest.newRoleInQams = this.userIdRequest.selectedRoles.map(x => x.id).join();
+            this.userIdRequest.newRoleInQams = this.userIdRequest.selectedRoles.map((x:any)  => x.id).join();
           }
           if (this.userIdRequest.selectedNewRoles != undefined && this.userIdRequest.selectedNewRoles.length > 0) {
-            this.userIdRequest.newRoleUpdated = this.userIdRequest.selectedNewRoles.map(x => x.id).join();
+            this.userIdRequest.newRoleUpdated = this.userIdRequest.selectedNewRoles.map((x:any)  => x.id).join();
           }
           if (this.userIdRequest.usergroupsList != undefined && this.userIdRequest.usergroupsList.length > 0) {
-            this.userIdRequest.userGroups = this.userIdRequest.usergroupsList.map(x => x.id).join();
+            this.userIdRequest.userGroups = this.userIdRequest.usergroupsList.map((x:any)  => x.id).join();
           }
           if (this.userIdRequest.usersubgroupsList != undefined && this.userIdRequest.usersubgroupsList.length > 0) {
-            // this.userIdRequest.userSubGroups = this.userIdRequest.usersubgroupsList.map(x => x.id).join();
+            // this.userIdRequest.userSubGroups = this.userIdRequest.usersubgroupsList.map((x:any)  => x.id).join();
             var list = this.userIdRequest.usersubgroupsList.map(item => item.fkUserGroupId)
               .filter((value, index, self) => self.indexOf(value) === index)
-            this.userIdRequest.userGroups = list.map(x => x).join();
-            this.userIdRequest.userSubGroups = this.userIdRequest.usersubgroupsList.map(x => x.id).join();
+            this.userIdRequest.userGroups = list.map((x:any)  => x).join();
+            this.userIdRequest.userSubGroups = this.userIdRequest.usersubgroupsList.map((x:any)  => x.id).join();
           }
           if (this.userIdRequest.selectedRepoDomains != undefined && this.userIdRequest.selectedRepoDomains.length > 0) {
-            this.userIdRequest.repositoryDomains = this.userIdRequest.selectedRepoDomains.map(x => x.id).join();
+            this.userIdRequest.repositoryDomains = this.userIdRequest.selectedRepoDomains.map((x:any)  => x.id).join();
           }
           if (this.userIdRequest.selMasters != undefined && this.userIdRequest.selMasters.length > 0) {
-            this.userIdRequest.masterAssignment = this.userIdRequest.selMasters.map(x => x.id).join();
+            this.userIdRequest.masterAssignment = this.userIdRequest.selMasters.map((x:any)  => x.id).join();
           }
           if (this.userIdRequest.selProfiles != undefined && this.userIdRequest.selProfiles.length > 0) {
-            this.userIdRequest.userProfiles = this.userIdRequest.selProfiles.map(x => x.id).join();
+            this.userIdRequest.userProfiles = this.userIdRequest.selProfiles.map((x:any)  => x.id).join();
           }
           if (this.userIdRequest.selModules != undefined && this.userIdRequest.selModules.length > 0) {
-            this.userIdRequest.userModules = this.userIdRequest.selModules.map(x => x.id).join();
+            this.userIdRequest.userModules = this.userIdRequest.selModules.map((x:any)  => x.id).join();
           }
 
           //this.userIdRequest.requestfor = this.currentUser.baselocation;
@@ -2140,9 +2154,9 @@ export class UserIdRequestComponent implements OnInit {
           // this.userIdRequest.requestDate = new Date().toLocaleString();
           //this.userIdRequest.createdDate = new Date().toLocaleString();
           if (this.userIdRequest.requestType != 'Password Reset/Unlocking' && this.userIdRequest.requestType != 'Password Reset/Clear Logoff Request') {
-            this.ApproverId = this.userIdRequest.approverId ? this.userIdRequest.approverId : this.Approverslist.find(x => x.priority == 2).approverId;
+            this.ApproverId = this.userIdRequest.approverId ? this.userIdRequest.approverId : this.Approverslist.find((x:any)  => x.priority == 2).approverId;
           }
-          this.userIdRequest.pendingApprover = this.userIdRequest.pendingApprover ? this.userIdRequest.pendingApprover : this.Approverslist.find(x => x.priority == 1).approverId;
+          this.userIdRequest.pendingApprover = this.userIdRequest.pendingApprover ? this.userIdRequest.pendingApprover : this.Approverslist.find((x:any)  => x.priority == 1).approverId;
           this.userIdRequest.lastApprover = 'No';
           this.userIdRequest.softwareType = this.softType;
           this.userIdRequest.status = status == "Submit" ? "Submitted" : "Created";
@@ -2179,7 +2193,7 @@ export class UserIdRequestComponent implements OnInit {
             this.errMsgPop1 = status == 'Save' ? 'Request ' + this.RequestNo + ' saved successfully!' : 'Request ' + this.RequestNo + ' Submitted Successfully!';
             jQuery("#saveModal").modal('show');
             if (status != 'Save') {
-              data.approverId = this.Approverslist.find(x => x.priority == 1).approverId;
+              data.approverId = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
               this.priority = 0;
               this.sendPendingMail(data);
             }
@@ -2197,7 +2211,7 @@ export class UserIdRequestComponent implements OnInit {
             this.isLoading = false;
             swal(err);
           })
-          .catch(error => {
+          .catch((error)=> {
             this.isLoadingPop = false;
             this.isLoading = false;
             this.errMsgPop = 'Error saving Request..';
@@ -2225,7 +2239,7 @@ export class UserIdRequestComponent implements OnInit {
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -2234,8 +2248,8 @@ export class UserIdRequestComponent implements OnInit {
       let connection: any;
       this.isLoading = true;
       this.userIdRequest = {} as UserIdRequest;
-      let soft = this.softwareList.find(x => x.id == userIdRequest.sid).name;
-      // let temp = this.userIdRequestlist.find(x => x.requestNo == userIdRequest.requestNo);
+      let soft = this.softwareList.find((x:any)  => x.id == userIdRequest.sid).name;
+      // let temp = this.userIdRequestlist.find((x:any)  => x.requestNo == userIdRequest.requestNo);
       if (!this.submit) {
         this.userIdRequest = Object.assign({}, userIdRequest);
         this.userIdRequest.status = "Submitted";
@@ -2257,7 +2271,7 @@ export class UserIdRequestComponent implements OnInit {
         }
         if (this.userIdRequest.attachmentsList != undefined) {
           if (this.userIdRequest.attachmentsList.length > 0) {
-            this.userIdRequest.attachments = this.userIdRequest.attachmentsList.map(x => x).join();
+            this.userIdRequest.attachments = this.userIdRequest.attachmentsList.map((x:any)  => x).join();
           }
         }
 
@@ -2270,10 +2284,10 @@ export class UserIdRequestComponent implements OnInit {
 
         }
         if (this.userIdRequest.selectedRoles != undefined && this.userIdRequest.selectedRoles.length > 0) {
-          this.userIdRequest.newRoleInQams = this.userIdRequest.selectedRoles.map(x => x.id).join();
+          this.userIdRequest.newRoleInQams = this.userIdRequest.selectedRoles.map((x:any)  => x.id).join();
         }
         if (this.userIdRequest.selectedNewRoles != undefined && this.userIdRequest.selectedNewRoles.length > 0) {
-          this.userIdRequest.newRoleUpdated = this.userIdRequest.selectedNewRoles.map(x => x.id).join();
+          this.userIdRequest.newRoleUpdated = this.userIdRequest.selectedNewRoles.map((x:any)  => x.id).join();
         }
         if (this.requestType == 'Activation/Inactivation') {
           this.userIdRequest.isActive = this.userIdRequest.activity == 'false' ? false : true;
@@ -2283,42 +2297,42 @@ export class UserIdRequestComponent implements OnInit {
         }
         // if(this.userIdRequest.usergroupsList != undefined && this.userIdRequest.usergroupsList.length>0)
         // {
-        //   this.userIdRequest.userGroups = this.userIdRequest.usergroupsList.map(x => x.id).join();
+        //   this.userIdRequest.userGroups = this.userIdRequest.usergroupsList.map((x:any)  => x.id).join();
         // } 
         if (this.userIdRequest.requestType != 'Activation/Inactivation') {
-          //this.userIdRequest.userGroups=this.userIdRequest.usergroupsList.map(x => x.id).join();
-          //this.userIdRequest.userSubGroups=userIdRequest.usersubgroupsList.map(x => x.id).join();
-          // req.userSubGroups = req.usersubgroupsList.map(x => x.id).join();
+          //this.userIdRequest.userGroups=this.userIdRequest.usergroupsList.map((x:any)  => x.id).join();
+          //this.userIdRequest.userSubGroups=userIdRequest.usersubgroupsList.map((x:any)  => x.id).join();
+          // req.userSubGroups = req.usersubgroupsList.map((x:any)  => x.id).join();
           if (this.userIdRequest.usergroupsList != undefined && this.userIdRequest.usergroupsList.length > 0) {
-            this.userIdRequest.userGroups = this.userIdRequest.usergroupsList.map(x => x.id).join();
+            this.userIdRequest.userGroups = this.userIdRequest.usergroupsList.map((x:any)  => x.id).join();
           }
           if (this.userIdRequest.usersubgroupsList != undefined && this.userIdRequest.usersubgroupsList.length > 0) {
-            // req.userSubGroups = req.usersubgroupsList.map(x => x.id).join();
+            // req.userSubGroups = req.usersubgroupsList.map((x:any)  => x.id).join();
             var list = this.userIdRequest.usersubgroupsList.map(item => item.fkUserGroupId)
               .filter((value, index, self) => self.indexOf(value) === index)
-            this.userIdRequest.userGroups = list.map(x => x).join();
-            this.userIdRequest.userSubGroups = this.userIdRequest.usersubgroupsList.map(x => x.id).join();
+            this.userIdRequest.userGroups = list.map((x:any)  => x).join();
+            this.userIdRequest.userSubGroups = this.userIdRequest.usersubgroupsList.map((x:any)  => x.id).join();
           }
-          this.userIdRequest.assignedPlants = this.userIdRequest.Plantsassigned.map(x => x.id).join();
-          // this.userIdRequest.approverId=this.Approverslist.find(x => x.priority == 1).approverId;
+          this.userIdRequest.assignedPlants = this.userIdRequest.Plantsassigned.map((x:any)  => x.id).join();
+          // this.userIdRequest.approverId=this.Approverslist.find((x:any)  => x.priority == 1).approverId;
         }
         if (this.userIdRequest.selectedRepoDomains != null || this.userIdRequest.selectedRepoDomains != undefined) {
-          this.userIdRequest.repositoryDomains = this.userIdRequest.selectedRepoDomains.map(x => x.id).join();
+          this.userIdRequest.repositoryDomains = this.userIdRequest.selectedRepoDomains.map((x:any)  => x.id).join();
         }
         if (this.userIdRequest.selMasters != null || this.userIdRequest.selMasters != undefined) {
-          this.userIdRequest.masterAssignment = this.userIdRequest.selMasters.map(x => x.id).join();
+          this.userIdRequest.masterAssignment = this.userIdRequest.selMasters.map((x:any)  => x.id).join();
         }
         if (this.userIdRequest.selProfiles != null || this.userIdRequest.selProfiles != undefined) {
-          this.userIdRequest.userProfiles = this.userIdRequest.selProfiles.map(x => x.id).join();
+          this.userIdRequest.userProfiles = this.userIdRequest.selProfiles.map((x:any)  => x.id).join();
         }
         if (this.userIdRequest.selModules != null || this.userIdRequest.selModules != undefined) {
-          this.userIdRequest.userModules = this.userIdRequest.selModules.map(x => x.id).join();
+          this.userIdRequest.userModules = this.userIdRequest.selModules.map((x:any)  => x.id).join();
         }
-        //  this.userIdRequest.approverId = this.Approverslist.find(x => x.priority == 1).approverId;
-        //this.ApproverId = this.transactionsHistory.find(x => x.approvalPriority == 2).doneBy;
-        let app = this.transactionsHistory.find(x => x.approvalPriority == 1);
+        //  this.userIdRequest.approverId = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
+        //this.ApproverId = this.transactionsHistory.find((x:any)  => x.approvalPriority == 2).doneBy;
+        let app = this.transactionsHistory.find((x:any)  => x.approvalPriority == 1);
         this.userIdRequest.pendingApprover = app ? app.doneBy :
-          this.Approverslist.find(x => x.priority == 1).approverId;
+          this.Approverslist.find((x:any)  => x.priority == 1).approverId;
         this.userIdRequest.modifiedBy = this.currentUser.employeeId;
         this.userIdRequest.validFrom = this.userIdRequest.validFrom ? this.getDateFormate(this.userIdRequest.validFrom) : null;
         //  this.userIdRequest.modifiedDate = new Date().toLocaleString();
@@ -2329,7 +2343,7 @@ export class UserIdRequestComponent implements OnInit {
         if (data == 200 || data.id > 0) {
           this.id = this.userIdRequest.requestNo;
           this.uploadfile(this.userIdRequest);
-          let softwr = this.softwareList.find(x => x.id == this.userIdRequest.sid).name;
+          let softwr = this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid).name;
           if (this.userIdRequest.requestType == 'Activation/Inactivation') {
             jQuery("#inactiveModal").modal('hide');
           }
@@ -2360,7 +2374,7 @@ export class UserIdRequestComponent implements OnInit {
           this.reset();
           this.isLoading = false;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.isLoadingPop = false;
         this.errMsgPop = 'Error Submitting Request' + '' + this.userIdRequest.requestNo;
@@ -2373,23 +2387,23 @@ export class UserIdRequestComponent implements OnInit {
     }
   }
   Role: any;
-  onreview(status) {
+  onreview(status:any) {
     this.errMsg = "";
     this.isLoading = true;
     let connection: any;
     let uid = this.currentUser.employeeId;
-    let soft = this.softwareList.find(x => x.id == this.userIdRequest.sid).name;
+    let soft = this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid).name;
     if (status == "Rejected") {
-      let user = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let user = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid || x.parallelApprover5 == uid) && x.transactionType == null);
       this.userIdRequest.pendingApprover = 'No';
     }
     else {
-      let user = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let user = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid || x.parallelApprover5 == uid) && x.transactionType == null);
       this.Role = user.role;
-      this.userIdRequest.pendingApprover = this.transactionsHistory.find(x => x.approvalPriority == user.approvalPriority + 1).doneBy;
-      // this.userIdRequest.approverId = this.transactionsHistory.find(x => x.approvalPriority == user.approvalPriority + 1).doneBy;
+      this.userIdRequest.pendingApprover = this.transactionsHistory.find((x:any)  => x.approvalPriority == user.approvalPriority + 1).doneBy;
+      // this.userIdRequest.approverId = this.transactionsHistory.find((x:any)  => x.approvalPriority == user.approvalPriority + 1).doneBy;
     }
 
 
@@ -2441,34 +2455,34 @@ export class UserIdRequestComponent implements OnInit {
         this.getAllEntries();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.isLoading = false;
       this.errMsgPop = status == "Rejected" ? "Error Rejecting Request.." + '' + this.userIdRequest.requestNo : "Error Reviewing Request" + '' + this.userIdRequest.requestNo;
     });
   }
 
-  onRevertRequest(status) {
+ onRevertRequest(status:any) {
     this.errMsg = "";
     let connection: any;
     this.isLoading = true;
-    let soft = this.softwareList.find(x => x.id == this.userIdRequest.sid).name;
+    let soft = this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid).name;
     if (status == "ReverttoInitiator") {
       let uid = this.currentUser.employeeId;
-      let user = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let user = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid || x.parallelApprover5 == uid) && x.transactionType == null);
 
-      this.userIdRequest.pendingApprover = this.transactionsHistory.find(x => x.transactionType == 0).doneBy;
+      this.userIdRequest.pendingApprover = this.transactionsHistory.find((x:any)  => x.transactionType == 0).doneBy;
       this.userIdRequest.status = "Reverted to initiator";
-      //this.userIdRequest.approverId = this.transactionsHistory.find(x => x.transactionType == 0).doneBy;
+      //this.userIdRequest.approverId = this.transactionsHistory.find((x:any)  => x.transactionType == 0).doneBy;
     }
     else {
       let uid = this.userIdRequest.modifiedBy;
-      let user = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let user = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid || x.parallelApprover5 == uid) && x.transactionType == null);
 
-      this.userIdRequest.pendingApprover = this.transactionsHistory.find(x => x.approvalPriority == user.approvalPriority).doneBy;
-      // this.userIdRequest.approverId = this.transactionsHistory.find(x => x.approvalPriority == user.approvalPriority).doneBy;
+      this.userIdRequest.pendingApprover = this.transactionsHistory.find((x:any)  => x.approvalPriority == user.approvalPriority).doneBy;
+      // this.userIdRequest.approverId = this.transactionsHistory.find((x:any)  => x.approvalPriority == user.approvalPriority).doneBy;
       this.userIdRequest.status = "Reverted";
     }
 
@@ -2480,7 +2494,7 @@ export class UserIdRequestComponent implements OnInit {
     connection.then((data: any) => {
       this.isLoadingPop = false;
       if (data == 200 || data.id > 0) {
-        let softwr = this.softwareList.find(x => x.id == this.userIdRequest.sid).name;
+        let softwr = this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid).name;
         if (this.userIdRequest.requestType == 'Activation/Inactivation') {
           jQuery("#inactiveModal").modal('hide');
         }
@@ -2510,7 +2524,7 @@ export class UserIdRequestComponent implements OnInit {
         this.getAllEntries();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.isLoading = false;
       this.errMsgPop = "Error Reverting Request" + '' + this.userIdRequest.requestNo;
@@ -2522,12 +2536,12 @@ export class UserIdRequestComponent implements OnInit {
     let connection: any;
     this.isLoading = true;
     let uid = this.currentUser.employeeId;
-    let soft = this.softwareList.find(x => x.id == this.userIdRequest.sid).name;
+    let soft = this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid).name;
 
-    let user = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+    let user = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
       || x.parallelApprover3 == uid || x.parallelApprover4 == uid || x.parallelApprover5 == uid) && x.transactionType == null);
 
-    let temp = this.transactionsHistory.find(x => x.approvalPriority == user.approvalPriority + 1);
+    let temp = this.transactionsHistory.find((x:any)  => x.approvalPriority == user.approvalPriority + 1);
     if (temp != null || temp != undefined) {
       this.userIdRequest.pendingApprover = temp.doneBy;
       this.userIdRequest.status = 'InProcess';
@@ -2546,7 +2560,7 @@ export class UserIdRequestComponent implements OnInit {
     connection.then((data: any) => {
       this.isLoadingPop = false;
       if (data == 200 || data.id > 0) {
-        let softwr = this.softwareList.find(x => x.id == this.userIdRequest.sid).name;
+        let softwr = this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid).name;
         if (this.userIdRequest.requestType == 'Activation/Inactivation') {
           jQuery("#inactiveModal").modal('hide');
         }
@@ -2591,14 +2605,14 @@ export class UserIdRequestComponent implements OnInit {
       (err: any) => {
         this.isLoading = false;
         swal(err);
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.isLoading = false;
         this.errMsgPop = "Error Creating user Id..";
       });
 
   }
-  priority: number;
+  priority!: number;
   oncloserequest(status) {
     this.errMsg = "";
     let connection: any;
@@ -2614,7 +2628,7 @@ export class UserIdRequestComponent implements OnInit {
     connection.then((data: any) => {
       this.isLoadingPop = false;
       if (data == 200 || data.id > 0) {
-        let softwr = this.softwareList.find(x => x.id == this.userIdRequest.sid).name;
+        let softwr = this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid).name;
         if (this.userIdRequest.requestType == 'Activation/Inactivation') {
           jQuery("#inactiveModal").modal('hide');
         }
@@ -2635,7 +2649,7 @@ export class UserIdRequestComponent implements OnInit {
         this.getAllEntries();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.isLoading = false;
       this.errMsgPop = "Error Closing Request" + '' + this.userIdRequest.requestNo;
@@ -2660,23 +2674,23 @@ export class UserIdRequestComponent implements OnInit {
   Updatetransactions(data, id) {
     this.errMsg = "";
     let connection: any;
-    let temp = this.transactionsHistory.find(x => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
+    let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
       || x.parallelApprover2 == this.currentUser.employeeId || x.parallelApprover3 == this.currentUser.employeeId ||
       x.parallelApprover4 == this.currentUser.employeeId || x.parallelApprover5 == this.currentUser.employeeId) && x.transactionType == null);
     temp.comments = this.comments;
     temp.doneBy = this.currentUser.employeeId;
     temp.transactionType = id;
     connection = this.httpService.put(APIURLS.BR_ITEMCODE_APPROVAL_TRANSACTIONS_POST_API, temp.id, temp);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data == 200) {
         if (id == '4') {
           if (this.isEdit) {
-            var loc = this.locationList.find(x => x.id == this.userIdRequest.locationId);
+            var loc = this.locationList.find((x:any)  => x.id == this.userIdRequest.locationId);
           }
           else {
-            var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+            var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
           }
-          var software = this.softwareList.find(x => x.id == this.userIdRequest.sid);
+          var software = this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid);
           if (software.name != 'SAP UserId') {
             var keyvalue = loc.code + '~' + software.name;
           }
@@ -2710,7 +2724,7 @@ export class UserIdRequestComponent implements OnInit {
           }
           this.KeyValue = keyvalue;
           this.RequestNo = this.userIdRequest.requestNo;
-          this.ApproverId = this.transactionsHistory.find(x => x.approvalPriority == 2).doneBy;
+          this.ApproverId = this.transactionsHistory.find((x:any)  => x.approvalPriority == 2).doneBy;
           this.InsertHistory();
         }
       }
@@ -2724,7 +2738,7 @@ export class UserIdRequestComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error in sending mail..';
     });
 
@@ -2737,7 +2751,7 @@ export class UserIdRequestComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error in sending mail..';
     });
 
@@ -2749,7 +2763,7 @@ export class UserIdRequestComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error in sending mail..';
     });
 
@@ -2761,7 +2775,7 @@ export class UserIdRequestComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error in sending mail..';
     });
 
@@ -2772,16 +2786,16 @@ export class UserIdRequestComponent implements OnInit {
     if (value.length > 0) {
       this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, id, value).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], value, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
 
 
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
 
@@ -2800,14 +2814,14 @@ export class UserIdRequestComponent implements OnInit {
     }
   }
   downloadFile1(id, name) {
-    let temp = this.userIdRequestlist.find(x => x.sid == id);
+    let temp = this.userIdRequestlist.find((x:any)  => x.sid == id);
     // console.log(filename);
     if (temp.filesList.length > 0) {
-      var data = temp.filesList.find(x => x.name == name.name);
-      var FileSaver = require('file-saver');
+      var data = temp.filesList.find((x:any)  => x.name == name.name);
+     // var FileSaver = require('file-saver');
       const imageFile = new File([data], name.name, { type: 'application/doc' });
       // console.log(imageFile);
-      FileSaver.saveAs(imageFile);
+  //      FileSaver.saveAs(imageFile);
 
 
 
@@ -2871,7 +2885,7 @@ export class UserIdRequestComponent implements OnInit {
     this.printModel = Object.assign({}, data);
     jQuery("#printReasonModal").modal('show');
   }
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -2901,7 +2915,7 @@ export class UserIdRequestComponent implements OnInit {
       ("00" + dt.getSeconds()).slice(-2);
     return formateddate;
   }
-  locationname: string;
+  locationname!: string
   downloadPdf() {
     this.InsertPrintLog();
     jQuery("#printModal").modal('hide');
@@ -2926,10 +2940,10 @@ export class UserIdRequestComponent implements OnInit {
       printContents = document.getElementById('Password').innerHTML;
     }
 
-    var temp1 = this.locationList.find(x => x.id == this.userIdRequest.locationId);
+    var temp1 = this.locationList.find((x:any)  => x.id == this.userIdRequest.locationId);
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + temp1.code + '-' + temp1.name;
 
-    if ((this.softwareList.find(x => x.id == this.userIdRequest.sid).name) == 'SAP UserId') {
+    if ((this.softwareList.find((x:any)  => x.id == this.userIdRequest.sid).name) == 'SAP UserId') {
       var ReportName = 'SAP USER ID REQUEST FORM';
     }
     else {
@@ -2941,7 +2955,7 @@ export class UserIdRequestComponent implements OnInit {
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -2954,14 +2968,14 @@ export class UserIdRequestComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'User Id Form',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -2979,7 +2993,7 @@ export class UserIdRequestComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -3034,7 +3048,7 @@ export class UserIdRequestComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
@@ -3090,56 +3104,56 @@ export class UserIdRequestComponent implements OnInit {
     if (isedit) {
       this.getApprovingManager(userIdRequest.onBehalfEmp);
       this.getApproversList(userIdRequest);
-      let soft1 = this.softwareList.find(x => x.id == userIdRequest.sid);
-      this.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid);
+      let soft1 = this.softwareList.find((x:any)  => x.id == userIdRequest.sid);
+      this.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid);
       if (this.softType != 'Plant Level') {
         this.requestType = userIdRequest.requestType;
         var plantList = userIdRequest.assignedPlants ? userIdRequest.assignedPlants.split(',') : [];
         for (let i = 0; i < plantList.length; i++) {
-          let temp = this.locListCon.find(x => x.id == plantList[i]);
+          let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
           this.plants.push(temp);
         }
         if (this.getsoft(userIdRequest.sid) == 'Trackwise') {
           var rolesList = userIdRequest.newRoleInQams ? userIdRequest.newRoleInQams.split(',') : [];
           for (let i = 0; i < rolesList.length; i++) {
-            let temp = this.softwareRolesList1.find(x => x.id == rolesList[i]);
+            let temp = this.softwareRolesList1.find((x:any)  => x.id == rolesList[i]);
             this.roles.push(temp);
           }
-          this.printRoles = this.roles.map(x => x.role).join();
+          this.printRoles = this.roles.map((x:any)  => x.role).join();
           var newroleslist = userIdRequest.newRoleUpdated ? userIdRequest.newRoleUpdated.split(',') : [];
           for (let i = 0; i < newroleslist.length; i++) {
-            let temp = this.softwareRolesList1.find(x => x.id == newroleslist[i]);
+            let temp = this.softwareRolesList1.find((x:any)  => x.id == newroleslist[i]);
             this.Newroles.push(temp);
           }
         }
-        this.printNewRoles = this.Newroles.map(x => x.role).join();
+        this.printNewRoles = this.Newroles.map((x:any)  => x.role).join();
         var RepDom = userIdRequest.repositoryDomains ? userIdRequest.repositoryDomains.split(',') : [];
         for (let i = 0; i < RepDom.length; i++) {
-          let temp = this.RepositoryDomainsList.find(x => x.id == RepDom[i]);
+          let temp = this.RepositoryDomainsList.find((x:any)  => x.id == RepDom[i]);
           this.RepDomains.push(temp);
         }
-        this.printDomains = this.RepDomains.map(x => x.name).join();
+        this.printDomains = this.RepDomains.map((x:any)  => x.name).join();
 
         var mas = userIdRequest.masterAssignment ? userIdRequest.masterAssignment.split(',') : [];
         for (let i = 0; i < mas.length; i++) {
-          let temp = this.mastersList.find(x => x.id == mas[i]);
+          let temp = this.mastersList.find((x:any)  => x.id == mas[i]);
           this.masterList.push(temp);
         }
-        this.printMasters = this.masterList.map(x => x.name).join();
+        this.printMasters = this.masterList.map((x:any)  => x.name).join();
 
         var mod = userIdRequest.userModules ? userIdRequest.userModules.split(',') : [];
         for (let i = 0; i < mod.length; i++) {
-          let temp = this.SoftwareModulesList.find(x => x.id == mod[i]);
+          let temp = this.SoftwareModulesList.find((x:any)  => x.id == mod[i]);
           this.ModuleList.push(temp);
         }
-        this.printModules = this.ModuleList.map(x => x.name).join();
+        this.printModules = this.ModuleList.map((x:any)  => x.name).join();
 
         var pro = userIdRequest.userProfiles ? userIdRequest.userProfiles.split(',') : [];
         for (let i = 0; i < pro.length; i++) {
-          let temp = this.softwareUserProfilesList.find(x => x.id == pro[i]);
+          let temp = this.softwareUserProfilesList.find((x:any)  => x.id == pro[i]);
           this.ProfileList.push(temp);
         }
-        this.printProfiles = this.ProfileList.map(x => x.name).join();
+        this.printProfiles = this.ProfileList.map((x:any)  => x.name).join();
         userIdRequest.selMasters = this.masterList;
         userIdRequest.selModules = this.ModuleList;
         userIdRequest.selProfiles = this.ProfileList;
@@ -3147,10 +3161,10 @@ export class UserIdRequestComponent implements OnInit {
         userIdRequest.Plantsassigned = this.plants;
         userIdRequest.selectedRoles = this.roles;
         userIdRequest.selectedNewRoles = this.Newroles;
-        this.printplats = this.plants.map(x => x.code).join();
+        this.printplats = this.plants.map((x:any)  => x.code).join();
         var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-        userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
-        this.printgroups = userIdRequest.usergroupsList.map(x => x.name).join();
+        userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
+        this.printgroups = userIdRequest.usergroupsList.map((x:any)  => x.name).join();
         var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
         let subList: number[]
         // subList=USGList;
@@ -3159,14 +3173,14 @@ export class UserIdRequestComponent implements OnInit {
         });
         userIdRequest.activity = userIdRequest.isActive ? 'true' : 'false';
         // userIdRequest.usersubgroupsList=subList;
-        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
-        let temp1 = userIdRequest.usersubgroupsList.find(x => x.name == 'Others');
+        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
+        let temp1 = userIdRequest.usersubgroupsList.find((x:any)  => x.name == 'Others');
         temp1 ? this.others = true : this.others = false;
-        this.printsubgroups = userIdRequest.usersubgroupsList.map(x => x.name).join();
+        this.printsubgroups = userIdRequest.usersubgroupsList.map((x:any)  => x.name).join();
         if (this.getsoft(userIdRequest.sid) != 'Trackwise') {
           if (userIdRequest.newRoleInQams) {
             if (userIdRequest.newRoleInQams != '') {
-              this.softwarerole = this.softwareRolesList.find(x => x.id == userIdRequest.newRoleInQams).role;
+              this.softwarerole = this.softwareRolesList.find((x:any)  => x.id == userIdRequest.newRoleInQams).role;
             }
           }
         }
@@ -3177,25 +3191,25 @@ export class UserIdRequestComponent implements OnInit {
       if (userIdRequest.attachments != undefined || userIdRequest.attachments != null) {
         userIdRequest.attachmentsList = userIdRequest.attachments.split(',');
       }
-      this.software = this.softwareList.find(x => x.id == userIdRequest.sid).name;
+      this.software = this.softwareList.find((x:any)  => x.id == userIdRequest.sid).name;
 
-      this.selectedSoftwares = this.softwareList.filter(x => x.id == userIdRequest.sid);
+      this.selectedSoftwares = this.softwareList.filter((x:any)  => x.id == userIdRequest.sid);
       this.selectedSoftwares.forEach(soft => {
         let userId = {} as UserIdRequest;
         userId.sid = soft.id;
         userIdRequest.name = soft.name;
-        userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == soft.id);
+        userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == soft.id);
         userId.requestDate = userIdRequest.createdDate;
         userId = userIdRequest;
         // userId.software=soft.name;
-        //userId.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == soft.id);
+        //userId.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == soft.id);
         //userId.role=this.softwareRolesList1.find(x=>x.id==userIdRequest.newRoleInQams).name;
         this.userIdRequestlist.push(userId);
       })
       this.room = this.userIdRequestlist[0];
-      // userIdRequest.Plantsassigned=this.locListCon.filter(x=>x.id==userIdRequest.assignedPlants);
-      this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
-      let loc = this.locationList.find(x => x.id == userIdRequest.locationId);
+      // userIdRequest.Plantsassigned=this.locListCon.filter((x:any)=>x.id==userIdRequest.assignedPlants);
+      this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
+      let loc = this.locationList.find((x:any)  => x.id == userIdRequest.locationId);
       userIdRequest.plant = loc.code + '-' + loc.name;
       this.userIdRequest = Object.assign({}, userIdRequest);
     }
@@ -3227,7 +3241,7 @@ export class UserIdRequestComponent implements OnInit {
         userIdRequest.sid = this.selectedSoftwares[0].id;
         this.getApprovingManager(this.currentUser.employeeId);
       }
-      this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
+      this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
       // this.userIdRequest = Object.assign({}, userIdRequest);
       if (userIdRequest.requestNo != null) {
         this.selectedSoftwares = [];
@@ -3238,47 +3252,47 @@ export class UserIdRequestComponent implements OnInit {
       if (this.getsoft(userIdRequest.sid) == 'Trackwise') {
         var rolesList = userIdRequest.newRoleInQams ? userIdRequest.newRoleInQams.split(',') : [];
         for (let i = 0; i < rolesList.length; i++) {
-          let temp = this.softwareRolesList.find(x => x.id == rolesList[i]);
+          let temp = this.softwareRolesList.find((x:any)  => x.id == rolesList[i]);
           this.roles.push(temp);
         }
-        this.printRoles = this.roles.map(x => x.role).join();
+        this.printRoles = this.roles.map((x:any)  => x.role).join();
         var newroleslist = userIdRequest.newRoleUpdated ? userIdRequest.newRoleUpdated.split(',') : [];
         for (let i = 0; i < newroleslist.length; i++) {
-          let temp = this.softwareRolesList.find(x => x.id == newroleslist[i]);
+          let temp = this.softwareRolesList.find((x:any)  => x.id == newroleslist[i]);
           this.Newroles.push(temp);
         }
       }
 
       var plantList = userIdRequest.assignedPlants ? userIdRequest.assignedPlants.split(',') : [];
       for (let i = 0; i < plantList.length; i++) {
-        let temp = this.locListCon.find(x => x.id == plantList[i]);
+        let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
         this.plants.push(temp);
       }
       var RepDom = userIdRequest.repositoryDomains ? userIdRequest.repositoryDomains.split(',') : [];
       for (let i = 0; i < RepDom.length; i++) {
-        let temp = this.RepositoryDomainsList.find(x => x.id == RepDom[i]);
+        let temp = this.RepositoryDomainsList.find((x:any)  => x.id == RepDom[i]);
         this.RepDomains.push(temp);
       }
       var mas = userIdRequest.masterAssignment ? userIdRequest.masterAssignment.split(',') : [];
       for (let i = 0; i < mas.length; i++) {
-        let temp = this.mastersList.find(x => x.id == mas[i]);
+        let temp = this.mastersList.find((x:any)  => x.id == mas[i]);
         this.masterList.push(temp);
       }
-      this.printMasters = this.masterList.map(x => x.name).join();
+      this.printMasters = this.masterList.map((x:any)  => x.name).join();
 
       var mod = userIdRequest.userModules ? userIdRequest.userModules.split(',') : [];
       for (let i = 0; i < mod.length; i++) {
-        let temp = this.SoftwareModulesList.find(x => x.id == mod[i]);
+        let temp = this.SoftwareModulesList.find((x:any)  => x.id == mod[i]);
         this.ModuleList.push(temp);
       }
-      this.printModules = this.ModuleList.map(x => x.name).join();
+      this.printModules = this.ModuleList.map((x:any)  => x.name).join();
 
       var pro = userIdRequest.userProfiles ? userIdRequest.userProfiles.split(',') : [];
       for (let i = 0; i < pro.length; i++) {
-        let temp = this.softwareUserProfilesList.find(x => x.id == pro[i]);
+        let temp = this.softwareUserProfilesList.find((x:any)  => x.id == pro[i]);
         this.ProfileList.push(temp);
       }
-      this.printProfiles = this.ProfileList.map(x => x.name).join();
+      this.printProfiles = this.ProfileList.map((x:any)  => x.name).join();
       userIdRequest.selMasters = this.masterList;
       userIdRequest.selModules = this.ModuleList;
       userIdRequest.selProfiles = this.ProfileList;
@@ -3288,23 +3302,23 @@ export class UserIdRequestComponent implements OnInit {
       userIdRequest.Plantsassigned = this.plants;
       // userIdRequest.sid=this.selectedSoftwares[0].id;
       var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-      userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
+      userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
       var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
-      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
+      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
       if (userIdRequest.attachments != null || userIdRequest.attachments != null) {
         userIdRequest.attachmentsList = userIdRequest.attachments.split(',');
       }
 
       if (this.selectedSoftwares.length == 0) {
-        this.selectedSoftwares = this.softwareList.filter(x => x.id == userIdRequest.sid);
+        this.selectedSoftwares = this.softwareList.filter((x:any)  => x.id == userIdRequest.sid);
         this.selectedSoftwares.forEach(soft => {
           let userId = {} as UserIdRequest;
           userId = userIdRequest;
           userId.sid = soft.id;
           userId.name = soft.name;
-          userId.locationId = this.locationList.find(x => x.id == this.currentUser.baselocation).id;
-          userId.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == soft.id);
-          //      userId.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == soft.id);
+          userId.locationId = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).id;
+          userId.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == soft.id);
+          //      userId.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == soft.id);
           this.userIdRequestlist.push(userId);
           this.getApproversList(userId);
         })
@@ -3315,9 +3329,9 @@ export class UserIdRequestComponent implements OnInit {
           //userId=userIdRequest;
           userId.sid = soft.id;
           userId.name = soft.name;
-          userId.locationId = this.locationList.find(x => x.id == this.currentUser.baselocation).id;
-          userId.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == soft.id);
-          //    userId.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == soft.id);
+          userId.locationId = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).id;
+          userId.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == soft.id);
+          //    userId.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == soft.id);
           this.userIdRequestlist.push(userId);
           this.getApproversList(userId);
         })
@@ -3327,13 +3341,13 @@ export class UserIdRequestComponent implements OnInit {
       // let plant=userIdRequest.assignedPlants.split(',');
       // for(let i=0;i<plant.length;i++)
       // {
-      //   let temp=this.locListCon.filter(x=>x.id==plant[i]);
+      //   let temp=this.locListCon.filter((x:any)=>x.id==plant[i]);
       //   userIdRequest.Plantsassigned.push(temp);
       // }
       //this.getApproversList(userIdRequest);
       // this.Creator=false;
 
-      this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
+      this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
       this.userIdRequest = Object.assign({}, userIdRequest);
     }
     if (value == 'View') {
@@ -3341,7 +3355,7 @@ export class UserIdRequestComponent implements OnInit {
     }
     // if(this.Error == null)
     // {
-    let soft = this.softwareList.find(x => x.id == this.userIdRequestlist[0].sid);
+    let soft = this.softwareList.find((x:any)  => x.id == this.userIdRequestlist[0].sid);
 
 
 
@@ -3447,21 +3461,21 @@ export class UserIdRequestComponent implements OnInit {
       if (data.length > 0) {
         //  this.ApprovingManager.push(data);
         // userIdRequest=Object.assign({},data[0]);
-        this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == data[0].sid);
+        this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == data[0].sid);
         // this.userIdRequest = Object.assign({}, userIdRequest);
-        this.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == data[0].sid);
+        this.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == data[0].sid);
         if (data[0].requestNo != null) {
           this.selectedSoftwares = [];
         }
         var plantList = data[0].assignedPlants ? data[0].assignedPlants.split(',') : [];
         for (let i = 0; i < plantList.length; i++) {
-          let temp = this.locListCon.find(x => x.id == plantList[i]);
+          let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
           this.plants.push(temp);
         }
         if (data[0].sid == 14) {
           var rolesList = data[0].newRoleInQams ? data[0].newRoleInQams.split(',') : [];
           for (let i = 0; i < rolesList.length; i++) {
-            let temp = this.softwareRolesList1.find(x => x.id == rolesList[i]);
+            let temp = this.softwareRolesList1.find((x:any)  => x.id == rolesList[i]);
             temp ? this.roles.push(temp) : null;
           }
           userIdRequest.selectedRoles = this.roles;
@@ -3469,7 +3483,7 @@ export class UserIdRequestComponent implements OnInit {
         if (data[0].sid == 14) {
           var newroleslist = data[0].newRoleUpdated ? data[0].newRoleUpdated.split(',') : [];
           for (let i = 0; i < newroleslist.length; i++) {
-            let temp = this.softwareRolesList1.find(x => x.id == newroleslist[i]);
+            let temp = this.softwareRolesList1.find((x:any)  => x.id == newroleslist[i]);
             this.Newroles.push(temp);
           }
         }
@@ -3477,20 +3491,20 @@ export class UserIdRequestComponent implements OnInit {
         userIdRequest.Plantsassigned = this.plants;
         var RepDom = userIdRequest.repositoryDomains ? userIdRequest.repositoryDomains.split(',') : [];
         for (let i = 0; i < RepDom.length; i++) {
-          let temp = this.RepositoryDomainsList.find(x => x.id == RepDom[i]);
+          let temp = this.RepositoryDomainsList.find((x:any)  => x.id == RepDom[i]);
           this.RepDomains.push(temp);
         }
         userIdRequest.selectedRepoDomains = this.RepDomains;
         var UGList = data[0].userGroups ? data[0].userGroups.split(',') : [];
-        userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
+        userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
         var USGList = data[0].userSubGroups ? data[0].userSubGroups.split(',') : [];
 
-        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes((s.id.toString())));
+        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes((s.id.toString())));
         //  if(userIdRequest.attachments != null || userIdRequest.attachments != null  )
         //  {
         //    userIdRequest.attachmentsList=userIdRequest.attachments.split(',');
         //  }
-        let temp1 = userIdRequest.usersubgroupsList.find(x => x.name == 'Others');
+        let temp1 = userIdRequest.usersubgroupsList.find((x:any)  => x.name == 'Others');
         temp1 ? this.others = true : this.others = false;
         userIdRequest.otherSubGroups = data[0].otherSubGroups;
         userIdRequest.newRoleInQams = data[0].newRoleInQams;
@@ -3517,15 +3531,15 @@ export class UserIdRequestComponent implements OnInit {
         userIdRequest.reportingManager = this.userIdRequest.reportingManager;
         userIdRequest.joiningDate = this.userIdRequest.joiningDate;
         if (this.selectedSoftwares.length == 0) {
-          this.selectedSoftwares = this.softwareList.filter(x => x.id == data[0].sid);
+          this.selectedSoftwares = this.softwareList.filter((x:any)  => x.id == data[0].sid);
           this.selectedSoftwares.forEach(soft => {
             let userId = {} as UserIdRequest;
             //userId=data[0];
             userIdRequest.sid = soft.id;
             userIdRequest.name = soft.name;
-            userIdRequest.locationId = this.locationList.find(x => x.id == this.currentUser.baselocation).id;
-            userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == soft.id);
-            userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == soft.id);
+            userIdRequest.locationId = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).id;
+            userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == soft.id);
+            userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == soft.id);
             this.userIdRequestlist.push(userIdRequest);
             this.getApproversList(userIdRequest);
           })
@@ -3537,9 +3551,9 @@ export class UserIdRequestComponent implements OnInit {
             userIdRequest.sid = soft.id;
             userIdRequest.name = soft.name;
 
-            userIdRequest.locationId = this.locationList.find(x => x.id == this.currentUser.baselocation).id;
-            userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == soft.id);
-            userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == soft.id);
+            userIdRequest.locationId = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).id;
+            userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == soft.id);
+            userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == soft.id);
             this.userIdRequestlist.push(userIdRequest);
             this.getApproversList(userIdRequest);
           })
@@ -3549,12 +3563,12 @@ export class UserIdRequestComponent implements OnInit {
         // let plant=userIdRequest.assignedPlants.split(',');
         // for(let i=0;i<plant.length;i++)
         // {
-        //   let temp=this.locListCon.filter(x=>x.id==plant[i]);
+        //   let temp=this.locListCon.filter((x:any)=>x.id==plant[i]);
         //   userIdRequest.Plantsassigned.push(temp);
         // }
         //this.getApproversList(userIdRequest);
         // this.Creator=false;
-        this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == data[0].sid);
+        this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == data[0].sid);
         this.userIdRequest = Object.assign({}, userIdRequest);
 
 
@@ -3566,16 +3580,16 @@ export class UserIdRequestComponent implements OnInit {
           userIdRequest.sid = soft.id;
           userIdRequest.name = soft.name;
           userId.requestType = this.requestType;
-          userIdRequest.locationId = this.locationList.find(x => x.id == this.currentUser.baselocation).id;
-          userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == soft.id);
+          userIdRequest.locationId = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).id;
+          userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == soft.id);
           this.userIdRequestlist.push(userIdRequest);
           this.getApproversList(userIdRequest);
         })
       }
-      // this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == data[0].sid);
+      // this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == data[0].sid);
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -3603,7 +3617,7 @@ export class UserIdRequestComponent implements OnInit {
   //filterModel: PageFilter = {} as PageFilter;
   pageSize: any = 10;
   pageNo: any;
-  totalCount: number;
+  totalCount!: number;
   totalPages: number
   gotoPage(no) {
     if (this.pageNo == no) return;
@@ -3630,7 +3644,7 @@ export class UserIdRequestComponent implements OnInit {
     this.isLoading = false;
   }
 
-  RemoveLine(no, id) {
+  RemoveLine(no:any, id:any) {
     this.isLoading = true;
     this.EquipmentDetails.splice(no, 1);
     // console.log(this.departmentList);
@@ -3651,7 +3665,7 @@ export class UserIdRequestComponent implements OnInit {
       equip.areaorLocation = element.area;
       equip.createdBy = this.currentUser.employeeId;
       connection = this.httpService.post(APIURLS.USERID_EQUIPDETAILS_INSERT, equip);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
 
         }
@@ -3676,7 +3690,7 @@ export class UserIdRequestComponent implements OnInit {
       equip.areaorLocation = element.area;
       equip.createdBy = this.currentUser.employeeId;
       connection = this.httpService.put(APIURLS.USERID_EQUIPDETAILS_INSERT, equip.id, equip);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
 
         }
@@ -3688,11 +3702,11 @@ export class UserIdRequestComponent implements OnInit {
 
   }
 
-  GetEquipDetailsById(id) {
+  GetEquipDetailsById(id:any) {
     this.isLoading = true;
     let connection: any;
     connection = this.httpService.getById(APIURLS.USERID_EQUIPDETAILS_GETBYID, id);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data.length > 0) {
         data.forEach((element) => {
           let equip: any = {};

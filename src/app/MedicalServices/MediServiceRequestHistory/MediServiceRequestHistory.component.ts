@@ -18,10 +18,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { stringify } from 'querystring';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { MediServiceRequestHistory } from './MediServiceRequestHistory.model';
 // import { Transactions } from '../eMicro/ItemCodeCreation/transactions.model';
 // import { WorkFlowApprovers } from '../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -33,9 +33,9 @@ import { ExcelService } from '../../shared/excel-service';
   styleUrls: ['./MediServiceRequestHistory.component.css']
 })
 export class MediServiceRequestHistoryComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-   @ViewChild(NgForm  , { static: false })dataForm: NgForm;
-   @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+   @ViewChild(NgForm  , { static: false })dataForm!: NgForm;
+   @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();
@@ -57,25 +57,26 @@ export class MediServiceRequestHistoryComponent implements OnInit {
   isEdit: boolean = false;
 
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   locationList1: any[] = [[]];
   selectedBaseLocation: any = [];
   baseLocationnotfirst = true;
 
-  materialtype: string;
-  comments: string;
-  filterAPI: string = null;
-  filterstatus: string = null;
-  filterlocation: string = null;
-  filterrequest: string = null;
+  materialtype!: string
+  comments: string
+  filterAPI: string = ' ';
+  filterstatus: string = ' ';
+  filterlocation: string = ' ';
+  filterrequest: string = ' ';
   today = new Date();
   today1: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(),0,0,0);
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
-  emailid: string;
-  requestdate: Date;
+  emailid!: string
+
+  requestdate!: Date;
   Approver1: boolean = false;
   Approverid1: string = "";
   Approverid2: string = "";
@@ -83,12 +84,12 @@ export class MediServiceRequestHistoryComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
+  userid: string
 
   Request = {} as MediServiceRequestHistory;
   storeData: any;
   jsonData: any;
-  fileUploaded: File;
+  fileUploaded!: File;
   worksheet: any;
   selectedDocuments:any[]=[];
   providedDocuments:any[]=[];
@@ -102,7 +103,7 @@ export class MediServiceRequestHistoryComponent implements OnInit {
   ];
   approver:any;
   user:any;
-  currentUser:AuthData;
+    currentUser!:AuthData;
 
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router
@@ -125,7 +126,8 @@ export class MediServiceRequestHistoryComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //  this.baseLocation = this.currentUser.baselocation;
     this.emailid = this.currentUser.email;
     this.userid = this.currentUser.employeeId;

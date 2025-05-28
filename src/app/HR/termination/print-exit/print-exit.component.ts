@@ -10,10 +10,10 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 declare var $: any;
 declare var toastr: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Termination } from '../termination/termination.model';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
@@ -28,7 +28,7 @@ import { Util } from '../../Services/util.service';
 })
 export class PrintExitComponent implements OnInit {
   terminationId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -47,13 +47,16 @@ export class PrintExitComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
-    private http: HttpClient, private util: Util) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private util: Util) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.terminationId = this.route.snapshot.paramMap.get('id')!;      
       this.canPrint = this.util.hasPermission(PERMISSIONS.HR_PRINT_LETTERS);
       this.canEmail = this.util.hasPermission(PERMISSIONS.HR_EMAIL_LETTERS);
@@ -71,7 +74,7 @@ export class PrintExitComponent implements OnInit {
         this.terminationDetails = data;   
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -89,7 +92,7 @@ export class PrintExitComponent implements OnInit {
         this.GetSignatoryDetails();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -113,9 +116,9 @@ export class PrintExitComponent implements OnInit {
     //console.log(event.target.value);
     this.httpService.HRget(APIURLS.TERMINATION_GET_PRINT_TEMPLATES+"/"+event.target.value).then((data: any) => {
       if (data.length > 0) {
-        this.printTemplates = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
+        this.printTemplates = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.printTemplates = [];
     });
   }
@@ -133,7 +136,7 @@ export class PrintExitComponent implements OnInit {
     //$("#print-me").empty();
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -164,7 +167,7 @@ export class PrintExitComponent implements OnInit {
   }
 
   download() {
-    this.createPDF().open();
+   // this.createPDF().open();
     this.saveLetterActivity("Downloaded");
   }
 
@@ -182,7 +185,7 @@ export class PrintExitComponent implements OnInit {
     //     bolditalics: 'Times-BoldItalic'
     //   }
     // };
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -195,14 +198,14 @@ export class PrintExitComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    });
+    })*/;
     var docDefinition = {
       info: {
         title: 'termination Letter',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -229,7 +232,7 @@ export class PrintExitComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 130, 40, 10],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           columns: [
             {
@@ -258,7 +261,7 @@ export class PrintExitComponent implements OnInit {
       }
     };
     
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
   sendEmail() {
@@ -275,27 +278,27 @@ export class PrintExitComponent implements OnInit {
       request.letterType = this.printTemplates.find(x=>x.printTemplateId==this.selectedTemplateId).templateName;
 
       this.isLoading = true;
-      this.createPDF().getBase64((encodedString) => {
-        if (encodedString) {
-          request.attachment = encodedString;
-          toastr.info("Sending email...");
-          this.isLoading = true;
-          this.httpService.HRpost(APIURLS.TERMINATION_DETAILS_SEND_EMAIL, request).then((data: any) => {
-            if (data == 200 || data.success) {
-              toastr.success("Successfully emailed the service withdrawn letter to the candidate.");
-              this.saveLetterActivity("Emailed");
-            } else if (!data.success) {
-              toastr.error(data.message);
-            } else
-            toastr.error("Error occurred.");
-            this.isLoading = false;
-          }
-          ).catch(error => {
-            toastr.error(error);
-            this.isLoading = false;
-          });
-        }
-      });
+      // this.createPDF().getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     request.attachment = encodedString;
+      //     toastr.info("Sending email...");
+      //     this.isLoading = true;
+      //     this.httpService.HRpost(APIURLS.TERMINATION_DETAILS_SEND_EMAIL, request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         toastr.success("Successfully emailed the service withdrawn letter to the candidate.");
+      //         this.saveLetterActivity("Emailed");
+      //       } else if (!data.success) {
+      //         toastr.error(data.message);
+      //       } else
+      //       toastr.error("Error occurred.");
+      //       this.isLoading = false;
+      //     }
+      //     ).catch((error)=> {
+      //       toastr.error(error);
+      //       this.isLoading = false;
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -349,19 +352,19 @@ export class PrintExitComponent implements OnInit {
   }
 
   saveLetter(){
-    this.createPDF().getBase64((encodedString) => {
-      if (encodedString) {
-        var request: any = {};
-        request.attachment = encodedString;   
-        request.employeeId = this.terminationDetails.employeeId;   
-        request.objectId = this.terminationId;
-        request.objectType = "Termination";
-        request.letterType = this.selectedTemplateType;
-        request.submittedById = this.currentUser.uid;
-        request.submittedByName = this.currentUser.fullName;
-        this.util.saveLetter(request);
-      }
-    });
+    // this.createPDF().getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     var request: any = {};
+    //     request.attachment = encodedString;   
+    //     request.employeeId = this.terminationDetails.employeeId;   
+    //     request.objectId = this.terminationId;
+    //     request.objectType = "Termination";
+    //     request.letterType = this.selectedTemplateType;
+    //     request.submittedById = this.currentUser.uid;
+    //     request.submittedByName = this.currentUser.fullName;
+    //     this.util.saveLetter(request);
+    //   }
+    // });
   }
 
   saveLetterActivity(activity: string){

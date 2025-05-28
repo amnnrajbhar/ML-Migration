@@ -16,7 +16,7 @@ declare var toastr: any;
 })
 export class HomepageComponent implements OnInit {
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   announcements: any[] = [];
   yesterdayBirthdays: any[] = [];
   todayBirthdays: any[] = [];
@@ -26,7 +26,7 @@ export class HomepageComponent implements OnInit {
   moreLinks: any[] = [];
   socialLinks: any[] = [];
   today = new Date();
-  reloadflag: number;
+  reloadflag!: number;
   tomorrow = new Date(Date.now() + (60 * 60 * 24 * 1000));
   yesterday = new Date(Date.now() - (60 * 60 * 24 * 1000));
   PendingCount: any = 0;
@@ -45,11 +45,13 @@ export class HomepageComponent implements OnInit {
       localStorage.removeItem('foo')
       this.reloadflag = 1;
     }
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     if (this.reloadflag == 1) {
       $('#calendar').datepicker();
-      this.getTopAnnouncements();
-      this.getBirthdaysAndAnniversaries();
+      //v10
+      // this.getTopAnnouncements();
+      // this.getBirthdaysAndAnniversaries();
       this.getNewJoiners();
       this.getMoreLinks();
       this.getSocialLinks();
@@ -68,7 +70,7 @@ export class HomepageComponent implements OnInit {
       }
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the announcements. Error: " + error);
       this.isLoading = false;
     });
@@ -80,7 +82,7 @@ export class HomepageComponent implements OnInit {
     this.httpService.get(APIURLS.EMPLOYEE_GET_BIRTHDAYS_ANNIVERSARY_LIST_HR_EMPLOYEE + "/" + this.currentUser.employeeId).then((data: any) => {
       if (data && data.length > 0) {
 
-        data.forEach(x => {
+        data.forEach((x:any)  => {
           if ((new Date(x.dob).getDate() == this.today.getDate() && new Date(x.dob).getMonth() == this.today.getMonth())
             || (new Date(x.dob).getDate() == this.yesterday.getDate() && new Date(x.dob).getMonth() == this.yesterday.getMonth())
             || (new Date(x.dob).getDate() == this.tomorrow.getDate() && new Date(x.dob).getMonth() == this.tomorrow.getMonth())) {
@@ -95,18 +97,18 @@ export class HomepageComponent implements OnInit {
             x.years = x.tenure.substring(0, 2);
           }
         });
-        this.todayBirthdays = data.filter(x => (new Date(x.dob).getDate() == this.today.getDate() && new Date(x.dob).getMonth() == this.today.getMonth())
+        this.todayBirthdays = data.filter((x:any)  => (new Date(x.dob).getDate() == this.today.getDate() && new Date(x.dob).getMonth() == this.today.getMonth())
           || (new Date(x.joiningDate).getDate() == this.today.getDate() && new Date(x.joiningDate).getMonth() == this.today.getMonth()));
 
-        this.yesterdayBirthdays = data.filter(x => (new Date(x.dob).getDate() == this.yesterday.getDate() && new Date(x.dob).getMonth() == this.yesterday.getMonth())
+        this.yesterdayBirthdays = data.filter((x:any)  => (new Date(x.dob).getDate() == this.yesterday.getDate() && new Date(x.dob).getMonth() == this.yesterday.getMonth())
           || (new Date(x.joiningDate).getDate() == this.yesterday.getDate() && new Date(x.joiningDate).getMonth() == this.yesterday.getMonth()));
 
-        this.tomorrowBirthdays = data.filter(x => (new Date(x.dob).getDate() == this.tomorrow.getDate() && new Date(x.dob).getMonth() == this.tomorrow.getMonth())
+        this.tomorrowBirthdays = data.filter((x:any)  => (new Date(x.dob).getDate() == this.tomorrow.getDate() && new Date(x.dob).getMonth() == this.tomorrow.getMonth())
           || (new Date(x.joiningDate).getDate() == this.tomorrow.getDate() && new Date(x.joiningDate).getMonth() == this.tomorrow.getMonth()));
       }
       $('#calendar').datepicker();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the birthdays list. Error: " + error);
       this.isLoading = false;
     });
@@ -130,7 +132,7 @@ export class HomepageComponent implements OnInit {
   //         this.viewloginAnnouncementDetails(data.list[0]);
   //       }
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     // this.plant = '';
   //   });
   // }
@@ -155,11 +157,11 @@ export class HomepageComponent implements OnInit {
       if (data && data.length > 0) {
         var thisMonth = new Date();
         var lastMonth = new Date(Date.now() - (60 * 60 * 24 * 1000 * 31));
-        this.thisMonthJoiners = data.filter(x => new Date(x.joiningDate).getMonth() == thisMonth.getMonth());
-        this.lastMonthJoiners = data.filter(x => new Date(x.joiningDate).getMonth() == lastMonth.getMonth());
+        this.thisMonthJoiners = data.filter((x:any)  => new Date(x.joiningDate).getMonth() == thisMonth.getMonth());
+        this.lastMonthJoiners = data.filter((x:any)  => new Date(x.joiningDate).getMonth() == lastMonth.getMonth());
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the new joiners list. Error: " + error);
       this.isLoading = false;
     });
@@ -172,7 +174,7 @@ export class HomepageComponent implements OnInit {
         this.moreLinks = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the more links. Error: " + error);
       this.isLoading = false;
     });
@@ -185,7 +187,7 @@ export class HomepageComponent implements OnInit {
         this.socialLinks = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the social links. Error: " + error);
       this.isLoading = false;
     });
@@ -223,7 +225,7 @@ export class HomepageComponent implements OnInit {
         }
         //  this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
 
       });

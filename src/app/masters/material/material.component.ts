@@ -12,8 +12,8 @@ import { AuthData } from '../../auth/auth.model';
 import { AuditLogChange } from '../auditlogchange.model';
 import { AuditLog } from '../auditlog.model';
 export class actionItemModel {
-  type: string;
-  description: string;
+  type: string
+  description: string
 }
 @Component({
   selector: 'app-material',
@@ -21,15 +21,15 @@ export class actionItemModel {
   styleUrls: ['./material.component.css']
 })
 export class MaterialComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) materialForm: NgForm;
+@ViewChild(NgForm, { static: false }) materialForm!: NgForm;
 
   public tableWidget: any;
-  companyId: number;
+  companyId!: number;
   materialList: MaterialType[] = [];
   companyItem: any;
   materialItem: MaterialType = new MaterialType();
   isLoading: boolean = false;
-  entityTabHeader: string;
+  entityTabHeader: string
   errMsg: string = "";
   isLoadingPop: boolean = false;
   errMsgPop: string = "";
@@ -38,8 +38,8 @@ export class MaterialComponent implements OnInit {
   path: string = '';
   currentUser = {} as AuthData;
   oldmaterialItem: MaterialType = new MaterialType();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
   private initDatatable(): void {
@@ -61,7 +61,8 @@ export class MaterialComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getMaterialMasterList();
     }
     else
@@ -98,11 +99,11 @@ export class MaterialComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_MATERIALTYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.materialList = data.filter(x => x.isActive);
+        this.materialList = data.filter((x:any)  => x.isActive);
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -113,7 +114,7 @@ export class MaterialComponent implements OnInit {
     this.errMsgPop = "";
 
     let connection: any;
-    if (!this.materialList.some(s => s.type.trim().toLowerCase() === this.materialItem.type.trim().toLowerCase() && s.id != this.materialItem.id)) {
+    if (!this.materialList.some((s:any) => s.type.trim().toLowerCase() === this.materialItem.type.trim().toLowerCase() && s.id != this.materialItem.id)) {
       if (!this.isEdit) {
         this.auditType = "Create";
         this.materialItem.isActive = true;
@@ -137,7 +138,7 @@ export class MaterialComponent implements OnInit {
           this.insertAuditLog(this.oldmaterialItem, this.materialItem, Id);
           this.getMaterialMasterList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving material type data..';
       });
@@ -173,7 +174,7 @@ export class MaterialComponent implements OnInit {
             this.insertAuditLog(this.materialItem, this.oldmaterialItem, this.materialItem.id);
             this.getMaterialMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting material type..';
         });
@@ -242,12 +243,12 @@ export class MaterialComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -256,7 +257,7 @@ export class MaterialComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

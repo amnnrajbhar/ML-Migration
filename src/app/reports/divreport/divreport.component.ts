@@ -2,7 +2,7 @@
 import { AppComponent } from './../../app.component';
 import { APIURLS } from './../../shared/api-url';
 import { HttpService } from '../../shared/http-service';
-import * as alaSQLSpace from 'alasql';
+import alasql, * as alaSQLSpace from 'alasql';
 import * as _ from "lodash";
 declare var jQuery: any;
 
@@ -13,10 +13,10 @@ declare var jQuery: any;
 })
 export class DivreportComponent implements OnInit {
   public tableWidget: any;
-  dddivisionList: any[];
-  divSelectedItem: string;
-  revSelectedItem: number;
-  divid: number;
+  dddivisionList!: any[];
+  divSelectedItem: string
+  revSelectedItem!: number;
+  divid!: number;
   invoice: any;
   division: any;
   startDate: Date;
@@ -30,7 +30,7 @@ export class DivreportComponent implements OnInit {
   errMsgEnd: string = "";
   isLoading: boolean = false;
   isValidate: boolean = true;
-  invRepHeaderList: any[];
+  invRepHeaderList!: any[];
   constructor(private appService: AppComponent, private httpService: HttpService,) { }
 
   ngOnInit() {
@@ -136,7 +136,7 @@ export class DivreportComponent implements OnInit {
 
                       this.reportAsExcelExport();
                   }
-              }).catch(error => {
+              }).catch((error)=> {
                   this.isLoading = false;
                   this.report.invoice_list = [];
               });
@@ -189,7 +189,7 @@ export class DivreportComponent implements OnInit {
               this.dddivisionList = data.divisionList;
              // this.reInitDatatable();
           }
-      }).catch(error => {
+      }).catch((error)=> {
           this.dddivisionList = [];
       });
   }
@@ -197,9 +197,9 @@ export class DivreportComponent implements OnInit {
         this.httpService.get(APIURLS.BR_FORM_DATA_API).then((data: any) => {
             if (data.status == 'SUCCESS') {
                 this.invRepHeaderList = data.formDataList;
-                this.invRepHeaderList = data.formDataList.find(s => s.subMenuId == '11'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
+                this.invRepHeaderList = data.formDataList.find((s:any) => s.subMenuId == '11'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.invRepHeaderList = null;
         });
     }

@@ -17,9 +17,9 @@ declare var jQuery: any;
 export class AddRoleComponent implements OnInit {
     
     public tableWidget: any;
-    roleList: any[];
-    roleList1: any[];
-    parentList: any[];
+    roleList!: any[];
+    roleList1!: any[];
+    parentList!: any[];
     selParentRole: any;
     roleItem: Role = new Role(0, '', '', 0,'','',true);;
     isLoading: boolean = false;
@@ -72,11 +72,11 @@ export class AddRoleComponent implements OnInit {
       this.isLoadingPop = false;
       if (this.isEdit) {
         this.roleItem = data;
-        this.parentList = this.roleList.filter(s => s.isActive != false);
-        this.selParentRole = this.roleList.find(s => s.role === this.roleItem.role);
+        this.parentList = this.roleList.filter((s:any) => s.isActive != false);
+        this.selParentRole = this.roleList.find((s:any) => s.role === this.roleItem.role);
       }
       else {
-        this.parentList = this.roleList.filter(s => s.isActive != false);
+        this.parentList = this.roleList.filter((s:any) => s.isActive != false);
         this.roleItem = new Role(0, '', '', 0, '', '', true);
         this.selParentRole = null;
       }
@@ -95,20 +95,20 @@ export class AddRoleComponent implements OnInit {
            });  
           }
           //this.parentList = data.roleList;
-          //this.roleList.forEach(item => { item.isChecked = false; });
+          //this.roleList.forEach((item :any) => { item.isChecked = false; });
           this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.roleList = [];
       });
     }
     getRoleName(id:number){
       var temp: any;
-      temp = this.roleList.find(s => s.id == id);
+      temp = this.roleList.find((s:any) => s.id == id);
       var fiscalname = (typeof temp != 'undefined')? temp.role : '';
       return fiscalname;
-      // this.roleList.find(s => s.fkSuperRoleId === this.roleItem.id)['fkSuperRoleId'] = this.roleItem.role;
+      // this.roleList.find((s:any) => s.fkSuperRoleId === this.roleItem.id)['fkSuperRoleId'] = this.roleItem.role;
     }
     onSaveRole() {
       this.errMsg = "";
@@ -149,7 +149,7 @@ export class AddRoleComponent implements OnInit {
         // else {
         //   this.errMsgPop = data;
         // }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving role data..';
       });

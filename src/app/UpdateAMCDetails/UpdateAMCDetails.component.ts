@@ -22,7 +22,7 @@ export class UpdateAMCDetailsComponent implements OnInit {
 
   VisitorId: any;
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -39,7 +39,8 @@ export class UpdateAMCDetailsComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.VisitorId = this.route.snapshot.paramMap.get('id');
       this.getVisitorDetails();
       this.getDepartList();
@@ -50,7 +51,7 @@ export class UpdateAMCDetailsComponent implements OnInit {
     this.isLoading = true;
     let connection: any;
     connection = this.httpService.getById(APIURLS.BR_MASTER_VISITOR_POST_API, this.VisitorId);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
         this.VisitorDetails = data;
         this.getAMCDetailsById();
@@ -65,10 +66,11 @@ export class UpdateAMCDetailsComponent implements OnInit {
     this.isLoading = true;
     let connection: any;
     connection = this.httpService.getById(APIURLS.GET_AMC_VISIT_DETAILS_BY_ID, this.VisitorId);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data.length > 0) {
         this.amcdetailsmodel = Object.assign({}, data[0])
-        data.forEach(element => {
+        data.forEach((element:any)=> {
+
           let equip = new AmcvisitDetails();
           equip.equipmentId = element.equipmentId;
           equip.equipmentName = element.equipmentName;
@@ -119,7 +121,7 @@ export class UpdateAMCDetailsComponent implements OnInit {
       });
     }
 
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data == 200 || data.id > 0) {
         swal({
           title: "Message",
@@ -164,7 +166,7 @@ export class UpdateAMCDetailsComponent implements OnInit {
     this.isLoading = false;
   }
 
-  RemoveLine(no, id) {
+  RemoveLine(no:any, id:any) {
     this.isLoading = true;
     this.EquipmentList.splice(no, 1);
     // console.log(this.departmentList);
@@ -181,24 +183,24 @@ export class UpdateAMCDetailsComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       this.isLoading = false;
       if (data.length > 0) {
-        this.DepartmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.DepartmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.DepartmentList = [];
     });
   }
-  deleteEntry(id) {
+  deleteEntry(id:any) {
     this.isLoading = true;
     let connection: any;
 
     connection = this.httpService.delete(APIURLS.UPDATE_AMC_VISIT_DETAILS, id);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data == 200 || data.id > 0) {
       }
       this.isLoading = false;

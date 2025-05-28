@@ -12,10 +12,10 @@ declare var jQuery: any;
 declare var $: any;
 
 import swal from 'sweetalert';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient,HttpClientModule } from '@angular/common/http';
 
 @Component({
@@ -24,21 +24,24 @@ import { HttpClient,HttpClientModule } from '@angular/common/http';
   styleUrls: ['./geoutregreport.component.css']
 })
 export class GEOutRegComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
+  path!: string
   errMsg: string = "";
-  isLoading: boolean;
+  isLoading!: boolean;
   gateOutwardMList: GateOutwardMaster[]=[];
   gateOutwardDList: any;
-  exportList: any[];
+  exportList!: any[];
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,private excelService:ExcelService,
-    private http: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+    private http: HttpClient) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
   ngOnInit() {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getFinacialYears();
       this.getLocationList();
       this.getbase64image();
@@ -123,14 +126,14 @@ export class GEOutRegComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data) {
-        this.locationList = data.filter(x=>{ return x.isActive;}).map((i) => { i.location = i.code + '-' + i.name; return i; });
+        this.locationList = data.filter((x:any)=>{ return x.isActive;}).map((i:any) => { i.location = i.code + '-' + i.name; return i; });
         let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-        this.locationList.sort((a,b)=>{return collator.compare(a.code,b.code)});
+        this.locationList.sort((a:any,b:any)=>{return collator.compare(a.code,b.code)});
         let temp=data.find(x=>x.id== this.currentUser.baselocation);
         this.locationname=temp.code +'-'+temp.name;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -202,9 +205,9 @@ export class GEOutRegComponent implements OnInit {
   to_date: any = this.today;
   delete: boolean = false;
   pendingbysecurity:boolean=false;
-  fltrGONO: string;
-  fltrInvoiceNo: string;
-  fltrDCNO: string;
+  fltrGONO: string
+  fltrInvoiceNo: string
+  fltrDCNO: string
   loadGateOutwardList() {
     this.isLoading = true;
     var genericGateEntryM = {} as GenericGateEntryM;
@@ -253,7 +256,7 @@ export class GEOutRegComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.gateOutwardMList = [];
     });
@@ -270,16 +273,16 @@ export class GEOutRegComponent implements OnInit {
       if (data.length > 0) {
         this.employeeList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.employeeList = [];
     });
   }
   showEmployeeName(empid) {
-    return this.employeeList.find(x => x.employeeId == empid)?this.employeeList.find(x => x.employeeId == empid).fullName:empid;
+    return this.employeeList.find((x:any)  => x.employeeId == empid)?this.employeeList.find((x:any)  => x.employeeId == empid).fullName:empid;
   }
   showGoType(type) {
-    let temp = this.goTypeList.find(x => x.type == type);
+    let temp = this.goTypeList.find((x:any)  => x.type == type);
 
     if (!temp) {
       return null;
@@ -295,7 +298,7 @@ export class GEOutRegComponent implements OnInit {
         if (data) {
           this.gateOutwardDList = data;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.gateOutwardDList = [];
       });
       jQuery("#MaterialModal").modal('show');
@@ -317,7 +320,7 @@ export class GEOutRegComponent implements OnInit {
   exportAsXLSX(): void {
     this.exportList=[];
     let index=0;
-    this.gateOutwardMList.forEach(item => {
+    this.gateOutwardMList.forEach((item :any) => {
       index=index+1;
       let exportItem={
         "SNo":index,
@@ -373,14 +376,14 @@ export class GEOutRegComponent implements OnInit {
   }
   downloadPdf()
   {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICROLABS LIMITED"+','+this.locationname;
     var ReportName = "GATE OUTWARD REGISTRY REPORT"
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate =this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -393,14 +396,14 @@ export class GEOutRegComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:'OutRegister Report',
         },
       
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -418,7 +421,7 @@ export class GEOutRegComponent implements OnInit {
       pageSize: 'A3',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -460,6 +463,6 @@ export class GEOutRegComponent implements OnInit {
       },
   
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 }

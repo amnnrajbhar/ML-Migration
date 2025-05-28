@@ -9,10 +9,10 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 declare var $: any;
 declare var toastr: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
 import { Pipe, PipeTransform } from "@angular/core";
@@ -29,7 +29,7 @@ import { Util } from '../../Services/util.service';
 export class ResignationPrintComponent implements OnInit {
 
   resignationId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -57,13 +57,16 @@ export class ResignationPrintComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
-    private http: HttpClient, private location: Location) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private location: Location) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.resignationId = this.route.snapshot.paramMap.get('id')!;
       this.GetResignationDetailsById(this.resignationId);
       this.getbase64image();
@@ -71,7 +74,7 @@ export class ResignationPrintComponent implements OnInit {
   }
 
 
-  GetResignationDetailsById(id) {
+  GetResignationDetailsById(id:any) {
     this.isLoading = true;
    
     this.httpService.HRget(APIURLS.RESIGNATION_DETAILS_GET_BYID + "/" + id).then((data: any) => {
@@ -82,12 +85,12 @@ export class ResignationPrintComponent implements OnInit {
          this.GetEmployeeDetails(data.employeeId);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg= error;
     });
   }
 
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     if(id > 0){
       this.isLoading = true;
       this.httpService.getById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -96,7 +99,7 @@ export class ResignationPrintComponent implements OnInit {
           this.employeeDetails.fullName = this.employeeDetails.firstName + ' ' + this.employeeDetails.middleName + ' ' + this.employeeDetails.lastName;          
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
 
       });
@@ -105,7 +108,7 @@ export class ResignationPrintComponent implements OnInit {
  
 
   print() {
-    this.createPDF(true).print(); return;
+   // this.createPDF(true).print(); return;
 
     let printContents, popupWin;
     printContents = document.getElementById('printable').innerHTML;
@@ -149,7 +152,7 @@ export class ResignationPrintComponent implements OnInit {
     popupWin.document.close();
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -180,7 +183,7 @@ export class ResignationPrintComponent implements OnInit {
   }
 
   download() {
-    this.createPDF(false).open();
+   // this.createPDF(false).open();
   }
 
   createPDF(forPrinting: boolean) {
@@ -218,34 +221,34 @@ export class ResignationPrintComponent implements OnInit {
       printContents = "<div style='margin-top:120px;'>&nbsp;</div>"+printContents; 
       //pageMarginsConfig =  [40, 40, 40, 50];
     }
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div>     
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-      defaultStyles: {      
-        td: {         
-         border: undefined
-         },
-         img: undefined,
-         p: undefined       
-       }
-    });
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div>     
+  // </div>
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //     defaultStyles: {      
+  //       td: {         
+  //        border: undefined
+  //        },
+  //        img: undefined,
+  //        p: undefined       
+  //      }
+  //   });
     var docDefinition = {
       info: {
         title: 'Resignation Letter',
       },
       content: [
         header,
-        htmnikhitml,
+      //  htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -325,7 +328,7 @@ export class ResignationPrintComponent implements OnInit {
       }
     };
 
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
   sendEmail() {
@@ -342,23 +345,23 @@ export class ResignationPrintComponent implements OnInit {
       this.request.letterType = "Resignation Letter";
       this.request.templateType = "Resignation Letter";
       
-      this.createPDF(false).getBase64((encodedString) => {
-        if (encodedString) {
-          this.request.attachment = encodedString;
-          swal("Sending email...");
-          this.httpService.HRpost(APIURLS.RESIGNATION_DETAILS_SEND_EMAIL, this.request).then((data: any) => {
-            if (data == 200 || data.success) {
-              swal("Successfully emailed the Resignation letter.");
-            } else if (!data.success) {
-              swal(data.message);
-            } else
-              swal("Error occurred.");
-          }
-          ).catch(error => {
-            swal(error);
-          });
-        }
-      });
+      // this.createPDF(false).getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     this.request.attachment = encodedString;
+      //     swal("Sending email...");
+      //     this.httpService.HRpost(APIURLS.RESIGNATION_DETAILS_SEND_EMAIL, this.request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         swal("Successfully emailed the Resignation letter.");
+      //       } else if (!data.success) {
+      //         swal(data.message);
+      //       } else
+      //         swal("Error occurred.");
+      //     }
+      //     ).catch((error)=> {
+      //       swal(error);
+      //     });
+      //   }
+      // });
     }
   }
 

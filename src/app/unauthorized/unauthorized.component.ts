@@ -16,7 +16,7 @@ declare var jQuery: any;
 })
 export class UnauthorizedComponent implements OnInit {
   public tableWidget: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any;
   selCompetencyHead: any;
   selSbu: any;
@@ -46,7 +46,9 @@ private reInitDatatable(): void {
     
   }
 getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

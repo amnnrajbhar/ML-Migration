@@ -10,7 +10,7 @@ import { ChangeAssetDetails } from './ChangeAssetDetails.model';
 import { AuthData } from '../../auth/auth.model';
 declare var toastr: any;
 // import { FileSaver }  from 'angular-file-saver';
-// import { saveAs } from 'file-saver';
+// //import { saveAs } from 'file-saver';
 declare var $: any;
 
 @Component({
@@ -22,7 +22,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
 
   public tableWidget: any;
   dashboard: any = {};
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -93,10 +93,10 @@ export class ChangeAssetDetailsComponent implements OnInit {
   departmentList: any;
   filtercurrstate: any;
   monType: any;
-  filterpoNumber: string;
-  filterpoDate: string;
-  filterinvNumber: string;
-  filterinvDate: string;
+  filterpoNumber: string
+  filterpoDate: string
+  filterinvNumber: string
+  filterinvDate: string
   filterdesg: any;
   filterdept: any;
   filtercomDept1: any;
@@ -118,7 +118,8 @@ export class ChangeAssetDetailsComponent implements OnInit {
     this.path = this.router.url;
     this.filterassetNo1 = this.route.snapshot.paramMap.get('assetNo')!;
     console.log(this.path);
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     this.getCatList();
     this.getAssetStateList();
@@ -135,7 +136,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
       if (data.length > 0) {
         this.catList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.catList = [];
     });
@@ -147,7 +148,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
       if (data.length > 0) {
         this.assStateList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.assStateList = [];
     });
@@ -156,13 +157,13 @@ export class ChangeAssetDetailsComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -175,7 +176,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
       if (data.length > 0) {
         this.softType = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.softType = [];
     });
@@ -187,18 +188,18 @@ export class ChangeAssetDetailsComponent implements OnInit {
       if (data.length > 0) {
         this.licType = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.licType = [];
     });
   }
 
-  getstatus(id) {
-    let temp = this.statuslist.find(x => x.id == id);
+  getstatus(id:any) {
+    let temp = this.statuslist.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
 
-  setList(asset) {
+  setList(asset:any) {
     var self = this;
     var filterModel: any = {};
     filterModel.input = asset;
@@ -246,7 +247,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
 
         return false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
     });
   }
 
@@ -258,14 +259,14 @@ export class ChangeAssetDetailsComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_EMPLOYEEMASTER_ACTIVE_API_GET_BY_ID, id).then((data: any) => {
       if (data.length > 0) {
         this.userList = data;
-        this.empListCon = data.map((i) => {
+        this.empListCon = data.map((i:any) => {
           i.name = i.firstName + '' + i.middleName + '' + i.lastName + '-' + i.employeeId + '-' + i.department +
             '-' + i.designation; return i;
         });
         this.initDatatable();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userList = [];
     });
@@ -282,15 +283,15 @@ export class ChangeAssetDetailsComponent implements OnInit {
     }
     var data = this.empListCon;
     $('#empNo1').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.employeeId.includes(mtrl));
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.employeeId.includes(mtrl));
+        response(result.map((i:any) => {
           i.label = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation + '-' + i.department,
             i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName, i.empNo = i.employeeId, i.designation = i.designation,
             i.department = i.department; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterempNo1 = ui.item.empNo;
         self.filterempAd1 = ui.item.name;
         self.filterdesg = ui.item.designation;
@@ -301,7 +302,8 @@ export class ChangeAssetDetailsComponent implements OnInit {
   }
 
   clearFilter() {
-    this.filterstatus = null;
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filternature = null;
     this.filterram = null;
     this.filtersize = null;
@@ -388,14 +390,14 @@ export class ChangeAssetDetailsComponent implements OnInit {
       if (data.length > 0) {
         this.sizeList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.sizeList = [];
     });
   }
 
-  getStorageSize(id) {
-    let temp = this.sizeList.find(x => x.storId == id);
+  getStorageSize(id:any) {
+    let temp = this.sizeList.find((x:any)  => x.storId == id);
     return temp ? temp.storTxt : '';
   }
 
@@ -405,13 +407,13 @@ export class ChangeAssetDetailsComponent implements OnInit {
       if (data.length > 0) {
         this.monType = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.monType = [];
     });
   }
 
-  getMonitorType(id) {
-    let temp = this.monType.find(x => x.id == id);
+  getMonitorType(id:any) {
+    let temp = this.monType.find((x:any)  => x.id == id);
     return temp ? temp.type : '';
   }
 
@@ -451,10 +453,10 @@ export class ChangeAssetDetailsComponent implements OnInit {
       this.errMsg = "";
       let connection: any;
       if (!this.isEdit) {
-        let value = this.assetList.find(x => x.assetId == this.filterassetId1);
+        let value = this.assetList.find((x:any)  => x.assetId == this.filterassetId1);
         this.ChangeAssetmodel = Object.assign({}, value);
         this.ChangeAssetmodel.changeType = 'CAS';
-        this.ChangeAssetmodel.assetState = this.statuslist.find(x => x.name == this.filterstatus).id;
+        this.ChangeAssetmodel.assetState = this.statuslist.find((x:any)  => x.name == this.filterstatus).id;
         this.ChangeAssetmodel.natureofActivities = this.filternature;
         this.ChangeAssetmodel.modifiedBy = this.currentUser.employeeId;
         connection = this.httpService.amspost1(APIURLS.BR_AMS_UPDATE_ASSET_DATA, this.ChangeAssetmodel);
@@ -471,7 +473,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
           });
           this.clearFilter();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Request..';
       });
@@ -488,7 +490,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
     this.errMsg = "";
     let connection: any;
     if (!this.isEdit) {
-      let value = this.assetList.find(x => x.assetId == this.filterassetId1);
+      let value = this.assetList.find((x:any)  => x.assetId == this.filterassetId1);
       this.ChangeAssetmodel = Object.assign({}, value);
       this.ChangeAssetmodel.changeType = 'CACR';
       this.ChangeAssetmodel.ram = this.filterram;
@@ -510,11 +512,11 @@ export class ChangeAssetDetailsComponent implements OnInit {
           buttons: [false, true]
 
         });
-        //this.assetList.find(x => x.assetId == this.filterassetId1).ramSize = this.filterram;
+        //this.assetList.find((x:any)  => x.assetId == this.filterassetId1).ramSize = this.filterram;
 
         this.clearFilter();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });
@@ -530,7 +532,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
     this.errMsg = "";
     let connection: any;
     if (!this.isEdit) {
-      let value = this.assetList.find(x => x.assetId == this.filterassetId1);
+      let value = this.assetList.find((x:any)  => x.assetId == this.filterassetId1);
       this.ChangeAssetmodel = Object.assign({}, value);
       this.ChangeAssetmodel.changeType = 'CACH';
       this.ChangeAssetmodel.hdd = this.filterhdd;
@@ -551,7 +553,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
         });
         this.clearFilter();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });
@@ -567,7 +569,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
     this.errMsg = "";
     let connection: any;
     if (!this.isEdit) {
-      let value = this.assetList.find(x => x.assetId == this.filterassetId1);
+      let value = this.assetList.find((x:any)  => x.assetId == this.filterassetId1);
       this.ChangeAssetmodel = Object.assign({}, value);
       this.ChangeAssetmodel.changeType = 'CAP';
       this.ChangeAssetmodel.ponumber = this.filterpoNumber;
@@ -597,7 +599,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
         });
         this.clearFilter();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });
@@ -613,7 +615,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
     this.errMsg = "";
     let connection: any;
     if (!this.isEdit) {
-      let value = this.assetList.find(x => x.assetId == this.filterassetId1);
+      let value = this.assetList.find((x:any)  => x.assetId == this.filterassetId1);
       this.ChangeAssetmodel = Object.assign({}, value);
       this.ChangeAssetmodel.changeType = 'CAD';
       this.ChangeAssetmodel.assetNo = this.filterassetNo;
@@ -639,7 +641,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
         });
         this.clearFilter();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });
@@ -659,7 +661,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
     this.errMsg = "";
     let connection: any;
     if (!this.isEdit) {
-      let value = this.assetList.find(x => x.assetId == this.filterassetId1);
+      let value = this.assetList.find((x:any)  => x.assetId == this.filterassetId1);
       this.ChangeAssetmodel = Object.assign({}, value);
       this.ChangeAssetmodel.changeType = 'CUD';
       if (this.filterusageType1 == 'User' || this.filterusageType1 == 'Field Staff') {
@@ -711,7 +713,7 @@ export class ChangeAssetDetailsComponent implements OnInit {
         });
         this.clearFilter();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });

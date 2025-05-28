@@ -28,24 +28,24 @@ declare var $: any;
 declare var toastr: any;
 
 export class actionItemModel {
-    employeeId: string;
-    firstName: string;
+    employeeId: string
+    firstName: string
     middleName: string
-    lastName: string;
-    email: string;
-    baseLocation: string;
-    department: string;
-    profile: string;
-    designation: string;
-    employee_type: string;
-    role: string;
-    manager: string;
-    permanent_Address: string;
-    phone_Number: string;
-    current_Address: string;
-    emergency_Contact_Name: string;
-    emergency_Contact_Number: string;
-    isActive: boolean;
+    lastName: string
+    email: string
+    baseLocation: string
+    department: string
+    profile: string
+    designation: string
+    employee_type: string
+    role: string
+    manager: string
+    permanent_Address: string
+    phone_Number: string
+    current_Address: string
+    emergency_Contact_Name: string
+    emergency_Contact_Number: string
+    isActive!: boolean;
     TeherapeuticSegmentDesc: any;
 }
 
@@ -56,12 +56,12 @@ export class actionItemModel {
 
 })
 export class EmployeeMasterComponent implements OnInit {
-  @ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
     
     path: string = '';
     currentUser: AuthData = {} as AuthData;
-    checkAccess: boolean;
+    checkAccess!: boolean;
     today: Date = new Date();
     public auditTableWidget: any;
 
@@ -81,16 +81,16 @@ export class EmployeeMasterComponent implements OnInit {
 
     isEdit: boolean = false;
 
-    lastManager: string;
+    lastManager: string
     managerWarning: boolean = false;
 
     managerID: number = null;
-    managerEmployeeID: string = null;
-    managerName: string = null;
+    managerEmployeeID: string = ' ';
+    managerName: string = ' ';
     selectedJoiningDate: Date = null;
-    auditReason: string = null;
+    auditReason: string = ' ';
 
-    auditType: string = null;
+    auditType: string = ' ';
     auditLogList: AuditLog[] = [];
     masterName: string = "Employee Master";
     
@@ -112,7 +112,8 @@ export class EmployeeMasterComponent implements OnInit {
 
     ngOnInit(): void {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         this.checkAccess = this.appService.validateUrlBasedAccess(this.path);
 
         if (!this.checkAccess) {
@@ -147,7 +148,7 @@ export class EmployeeMasterComponent implements OnInit {
 
         this.httpService.getByParam(APIURLS.BR_EMPLOYEEMASTER_GETEMPLOYEES, param).then((data: EmployeeMaster[]) => {
             if (data.length > 0) {
-                this.employees = data.sort((a, b) => { if (a.employeeId > b.employeeId) { return 1; } else if (a.employeeId < b.employeeId) { return -1; } return 0; });
+                this.employees = data.sort((a:any, b:any) => { if (a.employeeId > b.employeeId) { return 1; } else if (a.employeeId < b.employeeId) { return -1; } return 0; });
                 console.log(this.employees);
                 
                 this.employeeMasterService.totalCount = data[0].totalCount;
@@ -155,9 +156,9 @@ export class EmployeeMasterComponent implements OnInit {
             }
 
             this.isGOLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             swal("Error", "Error fetching employees. Please check the console for error details.", "error");
-            console.log(error);
+            //console.log(error);
             this.isGOLoading = false;
         });
     }
@@ -203,7 +204,7 @@ export class EmployeeMasterComponent implements OnInit {
         }
 
         if (profileIDs.length > 0) {
-            this.selectedProfiles = this.employeeMasterService.profiles.filter(x => profileIDs.includes(x.id.toString()));
+            this.selectedProfiles = this.employeeMasterService.profiles.filter((x:any)  => profileIDs.includes(x.id.toString()));
         } else {
             this.selectedProfiles = [];
         }
@@ -225,8 +226,8 @@ export class EmployeeMasterComponent implements OnInit {
 
                             // this.httpService.getByParam(APIURLS.BR_EMPLOYEEPROFILECONFIG_GETBYPARAM, this.currentEmployeeMaster.employeeId).then((epcData: EmployeeProfileConfig[]) => {
                             //     if (epcData.length > 0) {
-                            //         const profileIDs: number[] = epcData.map(x => x.profileID);
-                            //         this.selectedProfiles = this.employeeMasterService.profiles.filter(x => profileIDs.includes(x.id));
+                            //         const profileIDs: number[] = epcData.map((x:any)  => x.profileID);
+                            //         this.selectedProfiles = this.employeeMasterService.profiles.filter((x:any)  => profileIDs.includes(x.id));
 
                             //         console.log(this.selectedProfiles);
                                 
@@ -238,15 +239,15 @@ export class EmployeeMasterComponent implements OnInit {
                             //         this.isUserMasterLoading = false;
                             //         this.showEmployeeModal();
                             //     }
-                            // }).catch(error => {
+                            // }).catch((error)=> {
                             //     swal("Error", "Error fetching employee profile config data. Please check the console for error details.", "error");
-                            //     console.log(error);
+                            //     //console.log(error);
                             //     this.isUserMasterLoading = false;
                             //     this.selectedProfiles = [];
                             // });
-                        }).catch(error => {
+                        }).catch((error)=> {
                             swal("Error", "Error fetching employee other details. Please check the console for error details.", "error");
-                            console.log(error);
+                            //console.log(error);
                             this.isUserMasterLoading = false;
                             this.currentEmployeeOtherDetails = null;
                         });
@@ -255,9 +256,9 @@ export class EmployeeMasterComponent implements OnInit {
                         console.log("No Employee Address Details found: ");
                         console.log(employeeAddressData);
                     }
-                }).catch(error => {
+                }).catch((error)=> {
                     swal("Error", "Error fetching employee address details. Please check the console for error details.", "error");
-                    console.log(error);
+                    //console.log(error);
                     this.isUserMasterLoading = false;
                     this.currentEmployeeAddress = null;
                 });
@@ -266,9 +267,9 @@ export class EmployeeMasterComponent implements OnInit {
                 console.log("No User Master Details found: ");
                 console.log(userMasterData);
             }
-        }).catch(error => {
+        }).catch((error)=> {
             swal("Error", "Error fetching user master details. Please check the console for error details.", "error");
-            console.log(error);
+            //console.log(error);
             this.isUserMasterLoading = false;
             this.currentUserMaster = null;
         });
@@ -437,9 +438,9 @@ export class EmployeeMasterComponent implements OnInit {
             }
 
             this.reinitPOUPDatatable();
-        }).catch(error => {
+        }).catch((error)=> {
             swal("Error", "Error fetching audit logs. Please check the console for error details.", "error");
-            console.log(error);
+            //console.log(error);
         });
     }
 
@@ -541,19 +542,19 @@ export class EmployeeMasterComponent implements OnInit {
         this.isSaveLoading = true;
         let returnFlag = false;
 
-        if (this.selectedProfiles.find(x => x.id == 1) != undefined && this.currentEmployeeMaster.isActive == false && this.isEdit) {
+        if (this.selectedProfiles.find((x:any)  => x.id == 1) != undefined && this.currentEmployeeMaster.isActive == false && this.isEdit) {
             let params = "GetAdmins,,,,,,";
 
             this.httpService.getByParam(APIURLS.BR_EMPLOYEEMASTER_GETEMPLOYEES, params).then((data: EmployeeMaster[]) => {
-                data = data.filter(x => x.employeeId != this.currentEmployeeMaster.employeeId);
+                data = data.filter((x:any)  => x.employeeId != this.currentEmployeeMaster.employeeId);
 
                 if (data.length == 0) {
                     swal("Message", "Please nominate another user for this role before making them inactive.", "warning");
                     returnFlag = true;
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isSaveLoading = false;
-                console.log(error);
+                //console.log(error);
             });
         }
 
@@ -568,7 +569,8 @@ export class EmployeeMasterComponent implements OnInit {
             if (data.length > 0) {
                 let employeesList = "";
 
-                data.forEach(element => {
+                data.forEach((element:any)=> {
+
                     employeesList += "\n" + element.firstName + " " + element.lastName + "(" + element.employeeId + ")";
                 });
 
@@ -586,14 +588,14 @@ export class EmployeeMasterComponent implements OnInit {
             } else {
                 this.saveUser();
             }            
-        }).catch(error => {
+        }).catch((error)=> {
             this.isSaveLoading = false;
-            console.log(error);
+            //console.log(error);
         });
     }
 
     saveUser() {
-        let designation = this.employeeMasterService.designations.find(x => x.id == this.currentEmployeeMaster.fkDesignation);
+        let designation = this.employeeMasterService.designations.find((x:any)  => x.id == this.currentEmployeeMaster.fkDesignation);
 
         if (designation) {
             this.currentEmployeeMaster.designation = designation.name;
@@ -607,7 +609,7 @@ export class EmployeeMasterComponent implements OnInit {
         this.currentEmployeeMaster.fkReportingManager = this.managerID;
         this.currentEmployeeMaster.fkManager = this.currentEmployeeMaster.fkManager ? this.currentEmployeeMaster.fkManager : this.managerID;
         this.currentEmployeeMaster.fkParentId = this.currentEmployeeMaster.fkParentId ? this.currentEmployeeMaster.fkParentId : this.managerID;
-        // this.currentEmployeeMaster.designation = this.employeeMasterService.designations.find(x => x.id == this.currentEmployeeMaster.fkDesignation).name;
+        // this.currentEmployeeMaster.designation = this.employeeMasterService.designations.find((x:any)  => x.id == this.currentEmployeeMaster.fkDesignation).name;
         this.currentEmployeeMaster.fkParentIdCount = 1;
         this.currentEmployeeMaster.fkProjectId = 1;
         this.currentEmployeeMaster.fkSbuId = 1;
@@ -653,7 +655,7 @@ export class EmployeeMasterComponent implements OnInit {
                                 this.assignFKProfileIDs();
         
                                 // Add profileIDs
-                                this.currentEmployeeMaster.profileIDs = this.selectedProfiles.map(x => x.id).join();
+                                this.currentEmployeeMaster.profileIDs = this.selectedProfiles.map((x:any)  => x.id).join();
                                 console.log(this.currentEmployeeMaster.profileIDs);
         
                                 this.httpService.post(APIURLS.BR_EMPLOYEEMASTER_API, this.currentEmployeeMaster).then((employeeMasterData: EmployeeMaster) => {
@@ -706,9 +708,9 @@ export class EmployeeMasterComponent implements OnInit {
                                                     //                 console.log("Error updating employee other details ID: ");
                                                     //                 console.log(otherDetailsData);
                                                     //             }
-                                                    //         }).catch(error => {
+                                                    //         }).catch((error)=> {
                                                     //             console.log("Error updating employee other details ID: ");
-                                                    //             console.log(error);
+                                                    //             //console.log(error);
                                                     //         });
                                                     //     } else {
                                                     //         console.log("Error updating employee address ID: ");
@@ -716,53 +718,53 @@ export class EmployeeMasterComponent implements OnInit {
                                                     //     }
                                                     // }).catch(error=> {
                                                     //         console.log("Error updating employee address ID: ");
-                                                    //         console.log(error);
+                                                    //         //console.log(error);
                                                     // });
-                                                }).catch(error => {
+                                                }).catch((error)=> {
                                                     this.isSaveLoading = false;
-                                                    console.log(error);
+                                                    //console.log(error);
                                                     swal("Error", "Error saving the lockout master details. Please check the console for error details.", "error");
                                                 });
                                             } else {
                                                 console.log(userMasterData);
                                                 this.isSaveLoading = false;
                                             }
-                                        }).catch(error => {
+                                        }).catch((error)=> {
                                             this.isSaveLoading = false;
-                                            console.log(error);
+                                            //console.log(error);
                                             swal("Error", "Error saving the user master details. Please check the console for error details.", "error");
                                         });
                                     } else {
                                         console.log(employeeMasterData);
                                         this.isSaveLoading = false;
                                     }
-                                }).catch(error => {
+                                }).catch((error)=> {
                                     this.isSaveLoading = false;
-                                    console.log(error);
+                                    //console.log(error);
                                     swal("Error", "Error saving the employee master details. Please check the console for error details.", "error");
                                 });
                             } else {
                                 console.log(otherDetailsData);
                                 this.isSaveLoading = false;
                             }
-                        }).catch(error => {
+                        }).catch((error)=> {
                             this.isSaveLoading = false;
-                            console.log(error);
+                            //console.log(error);
                             swal("Error", "Error saving the employee other details. Please check the console for error details.", "error");
                         });
                     } else {
                         console.log(addressData);
                         this.isSaveLoading = false;
                     }
-                }).catch(error => {
+                }).catch((error)=> {
                     this.isSaveLoading = false;
-                    console.log(error);
+                    //console.log(error);
                     swal("Error", "Error saving the employee address details. Please check the console for error details.", "error");
                 });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             swal("Error", "Error fetching employee ID from employee master. Please check the console for error details.", "error");
-            console.log(error);
+            //console.log(error);
             this.isSaveLoading = false;
         });
     }
@@ -782,7 +784,7 @@ export class EmployeeMasterComponent implements OnInit {
                         this.assignFKProfileIDs();
 
                         // Add profileIDs
-                        this.currentEmployeeMaster.profileIDs = this.selectedProfiles.map(x => x.id).join();
+                        this.currentEmployeeMaster.profileIDs = this.selectedProfiles.map((x:any)  => x.id).join();
                         console.log(this.currentEmployeeMaster.profileIDs);
 
                         this.httpService.put(APIURLS.BR_EMPLOYEEMASTER_API, this.currentEmployeeMaster.id, this.currentEmployeeMaster).then((employeeMasterData: any) => {
@@ -814,121 +816,121 @@ export class EmployeeMasterComponent implements OnInit {
                                         console.log(userMasterData);
                                         this.isSaveLoading = false;
                                     }
-                                }).catch(error => {
+                                }).catch((error)=> {
                                     this.isSaveLoading = false;
-                                    console.log(error);
+                                    //console.log(error);
                                     swal("Error", "Error saving the user master details. Please check the console for error details.", "error");
                                 });
                             } else {
                                 console.log(employeeMasterData);
                                 this.isSaveLoading = false;
                             }
-                        }).catch(error => {
+                        }).catch((error)=> {
                             this.isSaveLoading = false;
-                            console.log(error);
+                            //console.log(error);
                             swal("Error", "Error saving the employee master details. Please check the console for error details.", "error");
                         });
                     } else {
                         console.log(otherDetailsData);
                         this.isSaveLoading = false;
                     }
-                }).catch(error => {
+                }).catch((error)=> {
                     this.isSaveLoading = false;
-                    console.log(error);
+                    //console.log(error);
                     swal("Error", "Error saving the employee other details. Please check the console for error details.", "error");
                 });
             } else {
                 console.log(addressData);
                 this.isSaveLoading = false;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isSaveLoading = false;
-            console.log(error);
+            //console.log(error);
             swal("Error", "Error saving the employee address details. Please check the console for error details.", "error");
         });
     }
 
     assignFKProfileIDs() {
-        let employeeProfile = this.employeeMasterService.profiles.find(x => x.name == "Employee");
-        let managerProfile = this.employeeMasterService.profiles.find(x => x.name == "Manager");
-        let raProviderProfile = this.employeeMasterService.profiles.find(x => x.name == "RA_Provider");
-        let medServicesProfile = this.employeeMasterService.profiles.find(x => x.name == "Med_Servives");
-        let medServicesReviewerProfile = this.employeeMasterService.profiles.find(x => x.name == "Med_Servives_Reviewer");
-        let medServicesMedHeadProfile = this.employeeMasterService.profiles.find(x => x.name == "Med_Servives_MedHead");
-        let medicalServiceProfile = this.employeeMasterService.profiles.find(x => x.name == "Medical Service");
-        let ml15JWApproverProfile = this.employeeMasterService.profiles.find(x => x.name == "ML15_JW_Approver");
-        let securityProfile = this.employeeMasterService.profiles.find(x => x.name == "Security");
-        let adminProfile = this.employeeMasterService.profiles.find(x => x.name == "Admin");
-        let developerProfile = this.employeeMasterService.profiles.find(x => x.name == "Developer");
+        let employeeProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "Employee");
+        let managerProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "Manager");
+        let raProviderProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "RA_Provider");
+        let medServicesProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "Med_Servives");
+        let medServicesReviewerProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "Med_Servives_Reviewer");
+        let medServicesMedHeadProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "Med_Servives_MedHead");
+        let medicalServiceProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "Medical Service");
+        let ml15JWApproverProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "ML15_JW_Approver");
+        let securityProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "Security");
+        let adminProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "Admin");
+        let developerProfile = this.employeeMasterService.profiles.find((x:any)  => x.name == "Developer");
 
         if (employeeProfile) {
-            if (this.selectedProfiles.find(x => x.id == employeeProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == employeeProfile.id)) {
                 // 4 - Same in PROD
                 this.currentEmployeeMaster.fkProfileId = employeeProfile.id;
             }
         }
         if (managerProfile) {
-            if (this.selectedProfiles.find(x => x.id == managerProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == managerProfile.id)) {
                 // 3 - Same in PROD
                 this.currentEmployeeMaster.fkProfileId = managerProfile.id;
             }
         }
 
-        // if (this.selectedProfiles.find(x => x.id == this.employeeMasterService.profiles.find(x => x.name == "Office Admin").id)) {
+        // if (this.selectedProfiles.find((x:any)  => x.id == this.employeeMasterService.profiles.find((x:any)  => x.name == "Office Admin").id)) {
         //     // 1004 (DISABLED) - Same in PROD
-        //     this.currentEmployeeMaster.fkProfileId = this.employeeMasterService.profiles.find(x => x.name == "Office Admin").id;
+        //     this.currentEmployeeMaster.fkProfileId = this.employeeMasterService.profiles.find((x:any)  => x.name == "Office Admin").id;
         // }
         if (raProviderProfile) {
-            if (this.selectedProfiles.find(x => x.id == raProviderProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == raProviderProfile.id)) {
                 // 1008 - Same in PROD
                 this.currentEmployeeMaster.fkProfileId = raProviderProfile.id;
             }
         }
         if (medServicesProfile) {
-            if (this.selectedProfiles.find(x => x.id == medServicesProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == medServicesProfile.id)) {
                 // 1009 - PROD Only
                 this.currentEmployeeMaster.fkProfileId = medServicesProfile.id;
             }
         }
         if (medServicesReviewerProfile) {
-            if (this.selectedProfiles.find(x => x.id == medServicesReviewerProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == medServicesReviewerProfile.id)) {
                 // 1010 - PROD Only
                 this.currentEmployeeMaster.fkProfileId = medServicesReviewerProfile.id;
             }
         }
         if (medServicesMedHeadProfile) {
-            if (this.selectedProfiles.find(x => x.id == medServicesMedHeadProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == medServicesMedHeadProfile.id)) {
                 // 1011 - PROD Only
                 this.currentEmployeeMaster.fkProfileId = medServicesMedHeadProfile.id;
             }
         }
         if (medicalServiceProfile) {
-            if (this.selectedProfiles.find(x => x.id == medicalServiceProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == medicalServiceProfile.id)) {
                 // 1010 - DEV Only
                 this.currentEmployeeMaster.fkProfileId = medicalServiceProfile.id;
             }
         }
         if (ml15JWApproverProfile) {
-            if (this.selectedProfiles.find(x => x.id == ml15JWApproverProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == ml15JWApproverProfile.id)) {
                 // 1017 - Same in PROD
                 this.currentEmployeeMaster.fkProfileId = ml15JWApproverProfile.id;
             }
         }
         
         if (securityProfile) {
-            if (this.selectedProfiles.find(x => x.id == securityProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == securityProfile.id)) {
                 // 1002 - Same in PROD
                 this.currentEmployeeMaster.fkProfileId = securityProfile.id;
             }
         }
         if (adminProfile) {
-            if (this.selectedProfiles.find(x => x.id == adminProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == adminProfile.id)) {
                 // 1 - Same in PROD
                 this.currentEmployeeMaster.fkProfileId = adminProfile.id;
             }
         }
         if (developerProfile) {
-            if (this.selectedProfiles.find(x => x.id == developerProfile.id)) {
+            if (this.selectedProfiles.find((x:any)  => x.id == developerProfile.id)) {
                 // 1014 in DEV, 1020 in PROD
                 this.currentEmployeeMaster.fkProfileId = developerProfile.id;
             }
@@ -945,9 +947,9 @@ export class EmployeeMasterComponent implements OnInit {
         let oldLocation = this.locationMasterService.findLocationByID(Number.parseInt(oldObj.baseLocation));
         let newLocation = this.locationMasterService.findLocationByID(Number.parseInt(newObj.baseLocation));
 
-        let oldDepartment = this.departmentMasterService.departments.find(s => s.id === oldObj.fkDepartment);
-        let oldDesignation = this.employeeMasterService.designations.find(s => s.id === oldObj.fkDesignation);
-        let oldCompetency = this.employeeMasterService.competencies.find(s => s.id === oldObj.fkCompetency);
+        let oldDepartment = this.departmentMasterService.departments.find((s:any) => s.id === oldObj.fkDepartment);
+        let oldDesignation = this.employeeMasterService.designations.find((s:any) => s.id === oldObj.fkDesignation);
+        let oldCompetency = this.employeeMasterService.competencies.find((s:any) => s.id === oldObj.fkCompetency);
         let oldRole = this.employeeMasterService.roles.find(e => e.id == oldObj.fkRoleId);
 
         oldObject.employeeId = oldObj.employeeId;
@@ -958,7 +960,7 @@ export class EmployeeMasterComponent implements OnInit {
         oldObject.baseLocation = oldObj.baseLocation ? oldLocation.code + " - " + oldLocation.name : null;
         oldObject.department = oldObj.fkDepartment ? (oldDepartment ? oldDepartment.name : null) : null;
         oldObject.designation = oldObj.fkDesignation ? (oldDesignation ? oldDesignation.name : null) : null;
-        // oldObject.profile = oldObj.fkProfileId ? this.employeeMasterService.profiles.find(s => s.id === oldObj.fkProfileId).name : null;
+        // oldObject.profile = oldObj.fkProfileId ? this.employeeMasterService.profiles.find((s:any) => s.id === oldObj.fkProfileId).name : null;
         oldObject.employee_type = oldObj.fkCompetency ? (oldCompetency ? oldCompetency.name : null) : null;
         oldObject.role = oldObj.fkRoleId ? (oldRole ? oldRole.role : null) : null;
         oldObject.manager = oldObj.fkManager ? oldObj.reportingManagerName : null;
@@ -972,8 +974,9 @@ export class EmployeeMasterComponent implements OnInit {
         if (oldObj.profileIDs) {
             let oldProfilesIDs: string[] = oldObj.profileIDs.split(",");
             let oldProfiles: string[] = [];
-            oldProfilesIDs.forEach(element => {
-                let oldProfile = this.employeeMasterService.profiles.find(x => x.id.toString() == element);
+            oldProfilesIDs.forEach((element:any)=> {
+
+                let oldProfile = this.employeeMasterService.profiles.find((x:any)  => x.id.toString() == element);
 
                 if (oldProfile) {
                     oldProfiles.push(oldProfile.name);
@@ -985,9 +988,9 @@ export class EmployeeMasterComponent implements OnInit {
             oldObject.profile = null;
         }
 
-        let newDepartment = this.departmentMasterService.departments.find(s => s.id === newObj.fkDepartment);
-        let newDesignation = this.employeeMasterService.designations.find(s => s.id === newObj.fkDesignation);
-        let newCompetency = this.employeeMasterService.competencies.find(s => s.id === newObj.fkCompetency);
+        let newDepartment = this.departmentMasterService.departments.find((s:any) => s.id === newObj.fkDepartment);
+        let newDesignation = this.employeeMasterService.designations.find((s:any) => s.id === newObj.fkDesignation);
+        let newCompetency = this.employeeMasterService.competencies.find((s:any) => s.id === newObj.fkCompetency);
         let newRole = this.employeeMasterService.roles.find(e => e.id == newObj.fkRoleId);
 
         newObject.employeeId = newObj.employeeId;
@@ -998,7 +1001,7 @@ export class EmployeeMasterComponent implements OnInit {
         newObject.baseLocation = newObj.baseLocation ? newLocation.code + " - " + newLocation.name : null;
         newObject.department = newObj.fkDepartment ? (newDepartment ? newDepartment.name : null) : null;
         newObject.designation = newObj.fkDesignation ? (newDesignation ? newDesignation.name : null) : null;
-        // newObject.profile = newObj.fkProfileId ? this.employeeMasterService.profiles.find(s => s.id === newObj.fkProfileId).name : null;
+        // newObject.profile = newObj.fkProfileId ? this.employeeMasterService.profiles.find((s:any) => s.id === newObj.fkProfileId).name : null;
         newObject.employee_type = newObj.fkCompetency ? (newCompetency ? newCompetency.name : null) : null;
         newObject.role = newObj.fkRoleId ? (newRole ? newRole.role : null) : null;
         newObject.manager = newObj.fkManager ? newObj.reportingManagerName : null;
@@ -1012,8 +1015,9 @@ export class EmployeeMasterComponent implements OnInit {
         if (newObj.profileIDs) {
             let newProfilesIDs: string[] = newObj.profileIDs.split(",");
             let newProfiles: string[] = [];
-            newProfilesIDs.forEach(element => {
-                let newProfile = this.employeeMasterService.profiles.find(x => x.id.toString() == element);
+            newProfilesIDs.forEach((element:any)=> {
+
+                let newProfile = this.employeeMasterService.profiles.find((x:any)  => x.id.toString() == element);
 
                 if (newProfile) {
                     newProfiles.push(newProfile.name);
@@ -1067,9 +1071,9 @@ export class EmployeeMasterComponent implements OnInit {
         auditlog.newValues = JSON.stringify(newObj);
         auditlog.purpose = this.auditReason;
 
-        this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog).catch(error => {
+        this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog).catch((error)=> {
             console.log("Error saving audit logs: ");
-            console.log(error);
+            //console.log(error);
         });
     }
 
@@ -1105,12 +1109,12 @@ export class EmployeeMasterComponent implements OnInit {
     // Tab Functions
     openTab(event, tabName) {
         let tabContent = Array.from(document.getElementsByClassName("tabContent") as HTMLCollectionOf<HTMLElement>);
-        tabContent.forEach((value, index) => {
+        tabContent.forEach((value:any, index:any) => {
             tabContent[index].style.display = "none";
         });
 
         let tabLinks = Array.from(document.getElementsByClassName("tabLinks") as HTMLCollectionOf<HTMLElement>);
-        tabLinks.forEach((value, index) => {
+        tabLinks.forEach((value:any, index:any) => {
             tabLinks[index].className = tabLinks[index].className.replace(" active", "");
         });
 
@@ -1134,7 +1138,7 @@ export class EmployeeMasterComponent implements OnInit {
             this.get(text).then((data: any) => {
                 if (data.length > 0) {
                     const self = this;
-                    var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+                    var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
                     var list = $.map(sortedList, function (item) {
                         return { 
                             label: item.fullName + " (" + item.employeeId + ")", 
@@ -1151,7 +1155,7 @@ export class EmployeeMasterComponent implements OnInit {
                             "ui-autocomplete": "highlight",
                             "ui-menu-item": "list-group-item"
                         },
-                        change: function (event, ui) {
+                        change: function (event:any, ui:any) {
                             if (ui.item) {
                                 $(dropdownID).val(ui.item.value);
                                 $(elementID).val(ui.item.value);
@@ -1162,7 +1166,7 @@ export class EmployeeMasterComponent implements OnInit {
                                 $(elementID).val('');
                             }
                         },
-                        select: function (event, ui) {
+                        select: function (event:any, ui:any) {
                             if (ui.item) {
                                 $(dropdownID).val(ui.item.value);
                                 $(elementID).val(ui.item.value);
@@ -1214,7 +1218,9 @@ export class EmployeeMasterComponent implements OnInit {
     }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

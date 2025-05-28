@@ -8,9 +8,9 @@ import { ExcelService } from '../../../shared/excel-service';
 import swal from 'sweetalert';
 import { DataStorageService } from '../../Services/data-storage.service';
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import htmlToPdfmake from 'html-to-pdfmake';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
 import { Util } from '../../Services/util.service';
 import { PERMISSIONS } from '../../../shared/permissions';
@@ -29,9 +29,11 @@ export class ReportListComponent implements OnInit {
 
   constructor(private masterService: MasterDataService, private httpService: HttpService,
     private router: Router, private excelService: ExcelService, private dataStore: DataStorageService, private http: HttpClient, private util: Util) 
-    { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+    { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   plantList: any[] = [];
   payGroupList: any[] = [];
   employeeCategoryList: any[] = [];
@@ -91,7 +93,8 @@ export class ReportListComponent implements OnInit {
     { type: "Predefined Initiators" },
   ]
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.pageNo = 1;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -164,7 +167,7 @@ export class ReportListComponent implements OnInit {
   getSubDepartmentList(){
     this.filterModel.SubDepartmentId = "";
     if(this.filterModel.DepartmentId > 0)
-      this.subDepartmentList = this.subDepartmentFullList.filter(x=>x.departmentId == this.filterModel.DepartmentId);
+      this.subDepartmentList = this.subDepartmentFullList.filter((x:any)=>x.departmentId == this.filterModel.DepartmentId);
     else 
       this.subDepartmentList = [];    
   }
@@ -173,8 +176,8 @@ export class ReportListComponent implements OnInit {
     this.filterModel.LocationId = "";
     if(this.filterModel.StateId > 0)
     {
-    var selectedState = this.stateList.find(x => x.id == this.filterModel.StateId);
-      this.locationList = this.locationFullList.filter(x=>x.stateId == selectedState.bland);
+    var selectedState = this.stateList.find((x:any)  => x.id == this.filterModel.StateId);
+      this.locationList = this.locationFullList.filter((x:any)=>x.stateId == selectedState.bland);
       }
     else 
       this.locationList = [];    
@@ -207,7 +210,7 @@ export class ReportListComponent implements OnInit {
         if(statusData)
           item.statusColor = statusData.color;
 
-        var empStatusData = this.empStatusList.find(x => x.type == item.employeeStatus);
+        var empStatusData = this.empStatusList.find((x:any)  => x.type == item.employeeStatus);
         if (empStatusData)
           item.employeeStatusColor = empStatusData.color;
           
@@ -215,7 +218,7 @@ export class ReportListComponent implements OnInit {
         this.dataStore.SetData("ConfirmationListReport", this.filterModel);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -226,7 +229,7 @@ export class ReportListComponent implements OnInit {
     this.router.navigate([route]);
   }
 
-  view(id) {
+  view(id:any) {
     let route = 'HR/confirmation/view/' + id;
     this.router.navigate([route]);
   }
@@ -255,7 +258,7 @@ export class ReportListComponent implements OnInit {
   
   request: any = {};
   sendEmail() {
-    var selectedList = this.filterData.list.filter(x => x.selected && (x.status == "Extension Approved" || x.status == "Confirmation Approved" || x.status == "Email Sent"));
+    var selectedList = this.filterData.list.filter((x:any)  => x.selected && (x.status == "Extension Approved" || x.status == "Confirmation Approved" || x.status == "Email Sent"));
     if (selectedList.length <= 0) {
       swal("Please select at least one Approved record to send letter.");
       return;
@@ -272,7 +275,7 @@ export class ReportListComponent implements OnInit {
       return;
     }
     this.getbase64image();
-    this.selectedList = this.filterData.list.filter(x => x.selected && (x.status == "Extension Approved" || x.status == "Confirmation Approved" || x.status == "Email Sent"));
+    this.selectedList = this.filterData.list.filter((x:any)  => x.selected && (x.status == "Extension Approved" || x.status == "Confirmation Approved" || x.status == "Email Sent"));
     this.errorCount = 0;
     if (confirm("Are you sure you want to send bulk confirmation letter email?")) {
       this.sending = true;
@@ -331,7 +334,7 @@ export class ReportListComponent implements OnInit {
             this.index++;
             this.sendLetterEmail();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.index++;
           this.sendLetterEmail();
           this.errorCount++;
@@ -344,34 +347,34 @@ export class ReportListComponent implements OnInit {
     this.request.submittedById = this.currentUser.uid;
     this.request.submittedByName = this.currentUser.fullName;
 
-    this.createPDF(pdfContent, salaryChanged, false).getBase64((encodedString) => {
-      if (encodedString) {
-        this.request.attachment = encodedString;
-        swal("Sending email for " + name);
-        this.httpService.HRpost(APIURLS.CONFIRMATION_SEND_LETTER_EMAIL, this.request).then((data: any) => {
-          if (data == 200 || data.success) {
-            swal("Successfully emailed the Confirmation letter for " + name);
-          } else if (!data.success) {
-            swal(data.message); this.errorCount++;
-          } else { swal("Error occurred."); this.errorCount++; }
-          // send next letter email
-          this.index++;
-          this.sendLetterEmail();
-        }
-        ).catch(error => {
-          this.index++;
-          this.sendLetterEmail();
-          swal(error);
-          this.errorCount++;
-        });
-      } else {
-        this.index++;
-        this.sendLetterEmail();
-      }
-    });
+    // this.createPDF(pdfContent, salaryChanged, false).getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     this.request.attachment = encodedString;
+    //     swal("Sending email for " + name);
+    //     this.httpService.HRpost(APIURLS.CONFIRMATION_SEND_LETTER_EMAIL, this.request).then((data: any) => {
+    //       if (data == 200 || data.success) {
+    //         swal("Successfully emailed the Confirmation letter for " + name);
+    //       } else if (!data.success) {
+    //         swal(data.message); this.errorCount++;
+    //       } else { swal("Error occurred."); this.errorCount++; }
+    //       // send next letter email
+    //       this.index++;
+    //       this.sendLetterEmail();
+    //     }
+    //     ).catch((error)=> {
+    //       this.index++;
+    //       this.sendLetterEmail();
+    //       swal(error);
+    //       this.errorCount++;
+    //     });
+    //   } else {
+    //     this.index++;
+    //     this.sendLetterEmail();
+    //   }
+    // });
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -398,34 +401,34 @@ export class ReportListComponent implements OnInit {
       //$(html).find(".imgSign").replaceWith('<br/><br/><br/>');      
       //printContents = $(html).html();
     }
-    var htmnikhitml = htmlToPdfmake(`<html>
-<head>
-</head>
-<body>
-${printContents}
-<div>     
-</div>
-</body>  
-</html>`, {
-      tableAutoSize: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-      defaultStyles: {
-        td: {
-          border: undefined
-        },
-        img: undefined,
-        p: undefined
-      }
-    });
+//     var htmnikhitml = htmlToPdfmake(`<html>
+// <head>
+// </head>
+// <body>
+// ${printContents}
+// <div>     
+// </div>
+// </body>  
+// </html>`, {
+//       tableAutoSize: true,
+//       headerRows: 1,
+//       dontBreakRows: true,
+//       keepWithHeaderRows: true,
+//       defaultStyles: {
+//         td: {
+//           border: undefined
+//         },
+//         img: undefined,
+//         p: undefined
+//       }
+//     });
 
     var docDefinition = {
       info: {
         title: 'Confirmation Letter',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -487,7 +490,7 @@ ${printContents}
       pageSize: 'A4',
       pageMargins: [40, 140, 40, 40],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         if (forPrinting == true) return { height: 120, text: "" };
         return {
           alignment: 'center',
@@ -531,12 +534,12 @@ ${printContents}
       }
     };
 
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
   selectedList: any[] = [];
   BulkPrint() {
-    this.selectedList = this.filterData.list.filter(x => x.selected && (x.status == "Extension Approved" || x.status == "Confirmation Approved" || x.status == "Email Sent"));
+    this.selectedList = this.filterData.list.filter((x:any)  => x.selected && (x.status == "Extension Approved" || x.status == "Confirmation Approved" || x.status == "Email Sent"));
     if (this.selectedList.length <= 0) {
       swal("Please select at least one confirmation record to print letters.");
       return;
@@ -557,7 +560,7 @@ ${printContents}
   getLetterContentForPrinting() {
 
     if (this.index >= this.selectedList.length) {
-      this.createPDF(this.letterContent, true, true).print();
+     // this.createPDF(this.letterContent, true, true).print();
       swal("Opening letters for printing...");
       if (this.errorCount > 0)
         swal("Error occurred while generating the letter for " + this.errorCount + " employees.");
@@ -585,7 +588,7 @@ ${printContents}
           this.index++;
           this.getLetterContentForPrinting();
           this.sending = false;
-        }).catch(error => {
+        }).catch((error)=> {
           this.index++;
           this.getLetterContentForPrinting();
           this.errorCount++;
@@ -608,7 +611,7 @@ ${printContents}
         for (var details of item.salaryHeads) {
           if (details.salaryType == "I") {
             console.log('Inside 01');
-            if (!this.earningHeads.some(x => x.salaryHeadId == details.salaryHeadId)) {
+            if (!this.earningHeads.some((x:any)  => x.salaryHeadId == details.salaryHeadId)) {
               console.log('Inside 001');
               this.earningHeads.push(
                 {
@@ -622,7 +625,7 @@ ${printContents}
           }
           else if (details.salaryType == "D") {
             console.log('Inside 02');
-            if (!this.deductionHeads.some(x => x.salaryHeadId == details.salaryHeadId)) {
+            if (!this.deductionHeads.some((x:any)  => x.salaryHeadId == details.salaryHeadId)) {
               console.log('Inside 002');
               this.deductionHeads.push(
                 {
@@ -636,7 +639,7 @@ ${printContents}
           }
           else if (details.salaryType == "R") {
             console.log('Inside 03');
-            if (!this.reimbursementHeads.some(x => x.salaryHeadId == details.salaryHeadId)) {
+            if (!this.reimbursementHeads.some((x:any)  => x.salaryHeadId == details.salaryHeadId)) {
               console.log('Inside 003');
               this.reimbursementHeads.push(
                 {
@@ -650,7 +653,7 @@ ${printContents}
           }
           else if (details.salaryType == "B") {
             console.log('Inside 04');
-            if (!this.benefitHeads.some(x => x.salaryHeadId == details.salaryHeadId)) {
+            if (!this.benefitHeads.some((x:any)  => x.salaryHeadId == details.salaryHeadId)) {
               console.log('Inside 004');
               this.benefitHeads.push(
                 {
@@ -667,7 +670,7 @@ ${printContents}
       console.log('Inside 2');
       var exportList = [];
       let index = 0;
-      data.forEach(item => {
+      data.forEach((item :any) => {
         index = index + 1;
         let exportItem = {
           "Sl No": index,
@@ -686,36 +689,36 @@ ${printContents}
         var reimbursementsTotal = 0;
         var benefitsTotal = 0;
         for (var head of this.earningHeads) {
-          if (item.salaryHeads.some(x => x.salaryHeadId == head.salaryHeadId)) {
-            exportItem[head.salaryHeadName] = item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
-            earningsTotal += item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
+          if (item.salaryHeads.some((x:any)  => x.salaryHeadId == head.salaryHeadId)) {
+            exportItem[head.salaryHeadName] = item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
+            earningsTotal += item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
           }
           else
             exportItem[head.salaryHeadName] = "";
         }
         exportItem["Total Earnings"] = earningsTotal;
         for (var head of this.deductionHeads) {
-          if (item.salaryHeads.some(x => x.salaryHeadId == head.salaryHeadId)) {
-            exportItem[head.salaryHeadName] = item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
-            deductionsTotal += item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
+          if (item.salaryHeads.some((x:any)  => x.salaryHeadId == head.salaryHeadId)) {
+            exportItem[head.salaryHeadName] = item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
+            deductionsTotal += item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
           }
           else
             exportItem[head.salaryHeadName] = "";
         }
         exportItem["Total Deductions"] = deductionsTotal;
         for (var head of this.reimbursementHeads) {
-          if (item.salaryHeads.some(x => x.salaryHeadId == head.salaryHeadId)) {
-            exportItem[head.salaryHeadName] = item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
-            reimbursementsTotal += item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
+          if (item.salaryHeads.some((x:any)  => x.salaryHeadId == head.salaryHeadId)) {
+            exportItem[head.salaryHeadName] = item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
+            reimbursementsTotal += item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
           }
           else
             exportItem[head.salaryHeadName] = "";
         }
         exportItem["Total Reimbursements"] = reimbursementsTotal;
         for (var head of this.benefitHeads) {
-          if (item.salaryHeads.some(x => x.salaryHeadId == head.salaryHeadId)) {
-            exportItem[head.salaryHeadName] = item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
-            benefitsTotal += item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
+          if (item.salaryHeads.some((x:any)  => x.salaryHeadId == head.salaryHeadId)) {
+            exportItem[head.salaryHeadName] = item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
+            benefitsTotal += item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
           }
           else
             exportItem[head.salaryHeadName] = "";
@@ -725,7 +728,7 @@ ${printContents}
       });
       this.excelService.exportAsExcelFile(exportList, 'Confirmation_CTC_Report');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -740,7 +743,7 @@ ${printContents}
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No": index,
@@ -783,7 +786,7 @@ ${printContents}
       });
       this.excelService.exportAsExcelFile(exportList, 'Confirmation_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');   
@@ -798,7 +801,7 @@ ${printContents}
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No": index,
@@ -844,7 +847,7 @@ ${printContents}
       });
       this.excelService.exportAsExcelFile(exportList, 'Confirmation_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');   
@@ -866,7 +869,7 @@ ${printContents}
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No": index,
@@ -933,7 +936,7 @@ ${printContents}
       });
       this.excelService.exportAsExcelFile(exportList, 'Recommendation_List_Report'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');   

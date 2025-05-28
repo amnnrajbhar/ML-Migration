@@ -1,5 +1,5 @@
 export class VendorMasterChanges {
-    id: number;
+    id!: number;
     address:string;
     requestedBy:string;
     requestedDate:string;
@@ -18,14 +18,14 @@ export class VendorMasterChanges {
     modifiedBy:string;
     plant:string;
     status:string;
-    typeOfVendor: string;
-    gstinNumber: string;
+    typeOfVendor: string
+    gstinNumber: string
     sapCodeNumber:string;
-    sapCodeNo: string;
-    locationId: string;
-    modifiedDate: string;
-    requestNo: string;
-    vendorCat: string;
-    vendorSubCat: string;
+    sapCodeNo: string
+    locationId: string
+    modifiedDate: string
+    requestNo: string
+    vendorCat: string
+    vendorSubCat: string
 
 }

@@ -27,18 +27,18 @@ declare var jQuery: any;
 })
 
 export class SbuComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
- @ViewChild(NgForm, { static: false }) sbuForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+ @ViewChild(NgForm, { static: false }) sbuForm!: NgForm;
   searchTerm: FormControl = new FormControl();
   // private trigger: Subject<void> = new Subject<void>();
     public tableWidget: any;
     indexI: number = 0;
-    sbuList: any[];
+    sbuList!: any[];
     empMList: any[]=[[]];
     empMListCon: any=[];
     empMListCon1: any=[];
-    parentList: any[];
-    // employeeList: any[];
+    parentList!: any[];
+    // employeeList!: any[];
     selParentRole: any;
     selHeadEmpId: any=[];
     sbuItem: SBU = new SBU(0, '','', '', 0, 0,'',true);
@@ -126,7 +126,7 @@ getLocationMaster(){
       // this.employeeList = data;
       // console.log(this.locationList);      
     }
-  }).catch(error => {
+  }).catch((error)=> {
     // this.isLoading = false;
     this.locationList = [];
   });
@@ -181,19 +181,19 @@ onItemSelect(item: any) {
       // debugger;
       if (this.isEdit) {
         this.sbuItem = data;
-        this.parentList = this.sbuList.filter(s => s.isActive != false);
-        // this.employeeList = this.empMList.filter(s => s.isActive != false);
+        this.parentList = this.sbuList.filter((s:any) => s.isActive != false);
+        // this.employeeList = this.empMList.filter((s:any) => s.isActive != false);
 
-        this.selParentRole = this.sbuList.find(s => s.id === this.sbuItem.fkParentId);
+        this.selParentRole = this.sbuList.find((s:any) => s.id === this.sbuItem.fkParentId);
         ////// console.log(this.sbuItem.headEmpId);
-        // this.selHeadEmpId = this.empMList.find(s => s.id === this.sbuItem.headEmpId);
-        this.selHeadEmpId = this.empMListCon1.filter(s => s.id === this.sbuItem.headEmpId);
+        // this.selHeadEmpId = this.empMList.find((s:any) => s.id === this.sbuItem.headEmpId);
+        this.selHeadEmpId = this.empMListCon1.filter((s:any) => s.id === this.sbuItem.headEmpId);
         let selectedPerson = this.empMList.find(s=>s.id==this.sbuItem.headEmpId);
         this.searchTerm.setValue(selectedPerson);
       }
       else {
         this.searchTerm.setValue('');
-        this.parentList = this.sbuList.filter(s => s.isActive != false);;
+        this.parentList = this.sbuList.filter((s:any) => s.isActive != false);;
         this.sbuItem = new SBU(0, '','', '', 0, 0, '', true);
         this.empItem = new  Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true,0,0,0);
         this.selParentRole = null;
@@ -216,7 +216,7 @@ onItemSelect(item: any) {
 
     getHeadSBUName(id: number){
       let temp: any;
-      temp = this.empMList.find(s => s.id == id);
+      temp = this.empMList.find((s:any) => s.id == id);
       var name = (typeof temp != 'undefined')? temp.firstName + ' ' + temp.lastName: '';
       return name;
     }
@@ -251,7 +251,7 @@ onItemSelect(item: any) {
             allowSearchFilter: true
           };
         }
-      }).catch(error => {
+      }).catch((error)=> {
         // this.isLoading = false;
         this.empMList = [];
         this.employeeList = [];
@@ -265,7 +265,7 @@ onItemSelect(item: any) {
           this.sbuList = data;
         }
         this.reInitDatatable();
-      }).catch(error => {
+      }).catch((error)=> {
         // this.isLoading = false;
         this.sbuList = [];
       });
@@ -277,8 +277,8 @@ onItemSelect(item: any) {
 // debugger;
 //   this.errMsgPop = '';
 //   this.validatedForm = true;
-//   let validName = this.sbuList.some(s => s.name == this.sbuItem.name && s.id != this.sbuItem.id);
-//   let validCode = this.sbuList.some(s => s.code == this.sbuItem.code && s.id != this.sbuItem.id);
+//   let validName = this.sbuList.some((s:any) => s.name == this.sbuItem.name && s.id != this.sbuItem.id);
+//   let validCode = this.sbuList.some((s:any) => s.code == this.sbuItem.code && s.id != this.sbuItem.id);
 //   if(validName){
 //     this.isLoadingPop = false;
 //     this.validatedForm = false;
@@ -313,8 +313,8 @@ closeSaveModal() {
       this.sbuItem.headEmpId = this.selHeadEmpId[0].id;
       let connection: any;
       this.validatedForm = true;
-  let validName = this.sbuList.some(s => s.name.trim().toLowerCase() == this.sbuItem.name.toLowerCase() && s.id != this.sbuItem.id);
-  let validCode = this.sbuList.some(s => s.code.trim().toLowerCase() == this.sbuItem.code.toLowerCase() && s.id != this.sbuItem.id);
+  let validName = this.sbuList.some((s:any) => s.name.trim().toLowerCase() == this.sbuItem.name.toLowerCase() && s.id != this.sbuItem.id);
+  let validCode = this.sbuList.some((s:any) => s.code.trim().toLowerCase() == this.sbuItem.code.toLowerCase() && s.id != this.sbuItem.id);
   let blankName = (this.sbuItem.name.trim()=='' || this.sbuItem.name.trim()==null)
   let blankCode = (this.sbuItem.code.trim()=='' || this.sbuItem.code.trim()==null)
   if(validName){
@@ -365,7 +365,7 @@ closeSaveModal() {
           jQuery("#saveModal").modal('show');
           this.getSBUList();
         }
-        }).catch(error => {
+        }).catch((error)=> {
          this.isLoadingPop = false;
          this.errMsgPop = 'Error saving sbu data..';
         });

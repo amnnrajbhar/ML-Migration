@@ -5,10 +5,10 @@ import { HttpService } from "../shared/http-service";
     providedIn: 'root'
 })
 export class MSService {
-    filterRequest: string = null;
-    filterProduct: string = null;
-    filterStatus: string = null;
-    filterBrand: string = null;
+    filterRequest: string = ' ';
+    filterProduct: string = ' ';
+    filterStatus: string = ' ';
+    filterBrand: string = ' ';
     
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 60);
@@ -22,8 +22,8 @@ export class MSService {
 
     // pageSize: any = 10;
 	// pageNumber: any = 1;
-	// totalCount: number;
-	// totalPages: number;
+	// totalCount!: number;
+	// totalPages!: number;
 
     constructor (private httpService: HttpService) { }
 

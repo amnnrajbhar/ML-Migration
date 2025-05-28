@@ -10,10 +10,10 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 declare var $: any;
 declare var toastr: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
 import { Pipe, PipeTransform } from "@angular/core";
@@ -30,7 +30,7 @@ import { Util } from '../../Services/util.service';
 export class PrintComponent implements OnInit {
 
   transferId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -50,13 +50,16 @@ export class PrintComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
-    private http: HttpClient, private location: Location, private util: Util) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private location: Location, private util: Util) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.transferId = this.route.snapshot.paramMap.get('id')!;
       this.canPrint = this.util.hasPermission(PERMISSIONS.HR_PRINT_LETTERS);
       this.canEmail = this.util.hasPermission(PERMISSIONS.HR_EMAIL_LETTERS);
@@ -70,10 +73,10 @@ export class PrintComponent implements OnInit {
   getPrintTemplates(){
     this.httpService.HRget(APIURLS.HR_TRANSFER_GET_PRINT_TEMPLATES).then((data: any) => {
       if (data.length > 0) {
-        this.printTemplates = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
+        this.printTemplates = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
         //this.selectedTemplateId = this.printTemplates.find(x=>x.templateName.contains("Without CTC")).printTemplateId;
       }
-    }).catch(error => {      
+    }).catch(()=> {      
     });
   }
 
@@ -94,7 +97,7 @@ export class PrintComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -109,7 +112,7 @@ export class PrintComponent implements OnInit {
         this.request.EmailId = data.officialEmailId;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -174,7 +177,7 @@ export class PrintComponent implements OnInit {
     this.saveLetterActivity("Printed");   
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -189,7 +192,7 @@ export class PrintComponent implements OnInit {
   }
 
   download() {
-    this.createPDF().open();
+   // this.createPDF().open();
     this.saveLetterActivity("Downloaded");
   }
 
@@ -207,7 +210,7 @@ export class PrintComponent implements OnInit {
     //     bolditalics: 'Times-BoldItalic'
     //   }
     // };
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -220,14 +223,14 @@ export class PrintComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    });
+    })*/;
     var docDefinition = {
       info: {
         title: 'Transfer Letter',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -255,7 +258,7 @@ export class PrintComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 130, 40, 10],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           columns: [
             {
@@ -284,7 +287,7 @@ export class PrintComponent implements OnInit {
       }
     };
 
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
   sendEmail() {
@@ -299,24 +302,24 @@ export class PrintComponent implements OnInit {
       this.request.submittedById = this.currentUser.uid;
       this.request.submittedByName = this.currentUser.fullName;
 
-      this.createPDF().getBase64((encodedString) => {
-        if (encodedString) {
-          this.request.attachment = encodedString;
-          swal("Sending email...");
-          this.httpService.HRpost(APIURLS.HR_TRANSFER_SEND_LETTER_EMAIL, this.request).then((data: any) => {
-            if (data == 200 || data.success) {
-              swal("Successfully sent the letter to email.");
-              this.saveLetterActivity("Emailed");
-            } else if (!data.success) {
-              swal(data.message);
-            } else
-              swal("Error occurred.");
-          }
-          ).catch(error => {
-            swal(error);
-          });
-        }
-      });
+      // this.createPDF().getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     this.request.attachment = encodedString;
+      //     swal("Sending email...");
+      //     this.httpService.HRpost(APIURLS.HR_TRANSFER_SEND_LETTER_EMAIL, this.request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         swal("Successfully sent the letter to email.");
+      //         this.saveLetterActivity("Emailed");
+      //       } else if (!data.success) {
+      //         swal(data.message);
+      //       } else
+      //         swal("Error occurred.");
+      //     }
+      //     ).catch((error)=> {
+      //       swal(error);
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -326,19 +329,19 @@ export class PrintComponent implements OnInit {
 
   
   saveLetter(){
-    this.createPDF().getBase64((encodedString) => {
-      if (encodedString) {
-        var request: any = {};
-        request.attachment = encodedString;   
-        request.employeeId = this.transferDetails.employeeId;   
-        request.objectId = this.transferId;
-        request.objectType = "Transfer";
-        request.letterType = "Transfer Letter";
-        request.submittedById = this.currentUser.uid;
-        request.submittedByName = this.currentUser.fullName;
-        this.util.saveLetter(request);
-      }
-    });
+    // this.createPDF().getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     var request: any = {};
+    //     request.attachment = encodedString;   
+    //     request.employeeId = this.transferDetails.employeeId;   
+    //     request.objectId = this.transferId;
+    //     request.objectType = "Transfer";
+    //     request.letterType = "Transfer Letter";
+    //     request.submittedById = this.currentUser.uid;
+    //     request.submittedByName = this.currentUser.fullName;
+    //     this.util.saveLetter(request);
+    //   }
+    // });
   }
 
   

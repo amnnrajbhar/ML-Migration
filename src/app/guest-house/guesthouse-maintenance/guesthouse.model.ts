@@ -1,7 +1,7 @@
 export interface GuestHouseInformation {
     id: number;
-    name: string;
-    description: string;
+    name: string
+    description: string
     no_Of_Room: number;
     no_Of_Bed: number;
     fk_Location: number;
@@ -11,8 +11,8 @@ export interface GuestHouseInformation {
     manager_Approval: boolean;
     admin_Approval: boolean;
     createdBy: number;
-    createdDate: string;
+    createdDate: string
     modifiedBy: number;
-    modifiedDate: string;
+    modifiedDate: string
     isActive: boolean
 }

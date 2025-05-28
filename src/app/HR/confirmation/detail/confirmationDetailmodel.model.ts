@@ -1,17 +1,17 @@
 export interface confirmationDetailmodel{
-    rating: string;
+    rating: string
     oldresponsibilities: string[];
     newresponsibilities: string[];
-    achievement: string;
+    achievement: string
     nextyearkra: string[];
     recommendeddesignationid: number;
     recommendedRoleid: number;
     recommendedSalary: number;
-    status: string;
+    status: string
     employeeid: number;
-    salaryType: string;
+    salaryType: string
     isPromotionRecommended: boolean;
-    promotionComment: string;
+    promotionComment: string
     employeeConfirmationId: number;
     employeeId: number;
     sales: number;

@@ -22,15 +22,15 @@ export class BellcurveComponent implements OnInit {
     
     public tableWidget: any;
     indexI: number = 0;
-    bellcurveList: any[];
+    bellcurveList!: any[];
     empList: any;
     calendarList: any[] = [[]];
     selCalYr: any;
     dispErrTable: boolean = false;
-    empMList: any[];
+    empMList!: any[];
     successMsg: string = "";
-    parentList: any[];
-    employeeList: any[];
+    parentList!: any[];
+    employeeList!: any[];
     selParentRole: any;
     selHeadEmpId: any;
     bellcurveItem: Bellcurve  = new Bellcurve(0,0,'','',0,0,'', 0,'',true);
@@ -43,7 +43,7 @@ export class BellcurveComponent implements OnInit {
     isEdit: boolean = false;
     checkAll: boolean = false;
     formData: FormData = new FormData();
-    file: File;
+    file!: File;
     path: string = '';
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
@@ -95,14 +95,14 @@ closeSaveModal() {
       if (this.isEdit) {
         
         this.bellcurveItem =data;
-        this.selCalYr = this.calendarList.find(s => s.id === this.bellcurveItem.fkCalanderId);
-        // this.bellcurveList = this.bellcurveList.filter(s => s.isActive != false);
+        this.selCalYr = this.calendarList.find((s:any) => s.id === this.bellcurveItem.fkCalanderId);
+        // this.bellcurveList = this.bellcurveList.filter((s:any) => s.isActive != false);
      
       }
       else {
         this.selCalYr = null;
         //this.bellcurveItem =data;
-        // this.bellcurveList = this.bellcurveList.filter(s => s.isActive != false);
+        // this.bellcurveList = this.bellcurveList.filter((s:any) => s.isActive != false);
       }
 
       jQuery("#myModal").modal('show');
@@ -121,7 +121,7 @@ closeSaveModal() {
   
     getBellcurveName(id: number){
       let temp: any;
-      temp = this.calendarList.find(s => s.id == id);
+      temp = this.calendarList.find((s:any) => s.id == id);
       var name = (typeof temp != 'undefined')? temp.fiscalYear : '';
       return name;
     }
@@ -136,13 +136,13 @@ closeSaveModal() {
               // ////console.log('datam');
               // ////console.log(datam);
             this.calendarItem = datam;
-            // this.bellcurveList.find(s => s.fkCalanderId === this.calendarItem.id)['fkCalanderId'] = this.calendarItem.fiscalYear;
+            // this.bellcurveList.find((s:any) => s.fkCalanderId === this.calendarItem.id)['fkCalanderId'] = this.calendarItem.fiscalYear;
            });  
           }
          
         this.reInitDatatable();
       }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.bellcurveList = [];
       });
@@ -176,7 +176,7 @@ closeSaveModal() {
         else {
            this.errMsgPop = 'Error saving sbu data..';
         }
-        }).catch(error => {
+        }).catch((error)=> {
          this.isLoadingPop = false;
          this.errMsgPop = 'Error saving sbu data..';
         });

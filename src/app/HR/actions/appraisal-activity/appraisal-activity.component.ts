@@ -15,10 +15,10 @@ declare var $: any;
   styleUrls: ['./appraisal-activity.component.css']
 })
 export class AppraisalActivityComponent implements OnInit {
-  @Input() objectId: number;
-  @Input() objectType: string;
-  @Input() ctType: string;
-  currentUser: AuthData;
+  @Input() objectId!: number;
+  @Input() objectType: string
+  @Input() ctType: string
+  currentUser!: AuthData;
   isLoading: boolean = false;
   activityList: any[] = [];
 
@@ -28,7 +28,8 @@ export class AppraisalActivityComponent implements OnInit {
   ngOnInit() {
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       
      // this.getActivityList();
     }    
@@ -43,7 +44,7 @@ export class AppraisalActivityComponent implements OnInit {
   //       this.activityList = data;
   //     }
   //     this.isLoading = false;
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.isLoading = false;
   //     this.activityList = [];
   //   });

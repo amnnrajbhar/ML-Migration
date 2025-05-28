@@ -27,7 +27,7 @@ import swal from 'sweetalert';
 export class RecallComponent implements OnInit {
 @ViewChild(EmployeeSalaryComponent, { static: false }) employeeSalaryComponent: EmployeeSalaryComponent;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   resignationId: any;
   isLoading: boolean = false;
@@ -70,8 +70,8 @@ export class RecallComponent implements OnInit {
   resignationDetails = {} as Resignation;
   lastWorkingDate: any;
   offerDetails: any = {};
-  replacementStatus: string;
-  replacementId: string;
+  replacementStatus: string
+  replacementId: string
   item: any = {};
   isDraftSaved: boolean = false;
   files: any[] = [];
@@ -87,7 +87,8 @@ export class RecallComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;
       this.recallDetails.hodApproval = true;
       this.recallDetails.reportingManagerApproval = true;
@@ -115,7 +116,7 @@ export class RecallComponent implements OnInit {
 
   }
 
-  GetResignationDetails(id) {
+  GetResignationDetails(id:any) {
     this.isLoading = true;
     // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.RESIGNATION_DATE_GET_BYEMPID, id).then((data: any) => {
@@ -124,12 +125,12 @@ export class RecallComponent implements OnInit {
         //this.lastWorkingDate = this.getDateFormate(this.resignationDetails.lastWorkingDate);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
 
-  GetemployeeDetails(id) {
+  GetemployeeDetails(id:any) {
     this.isLoading = true;
     // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -141,14 +142,14 @@ export class RecallComponent implements OnInit {
         this.getRecallDetails(id);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
   }
 
 
-  getRecallDetails(id) {
+  getRecallDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.RECALL_GET_STATUS_BY_ID, id).then((data: any) => {
@@ -162,12 +163,12 @@ export class RecallComponent implements OnInit {
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
 
-  GetReplacementOfferDetails(id) {
+  GetReplacementOfferDetails(id:any) {
     this.isLoading = true;
     // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.RECALL_OFFER_REPLACEMENTID, id).then((data: any) => {
@@ -179,7 +180,7 @@ export class RecallComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -201,7 +202,7 @@ export class RecallComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if (item.fullName != null)
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
@@ -212,7 +213,7 @@ export class RecallComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#newReportingManagerId").val(ui.item.value);
                   $("#newReportingManager").val(ui.item.label);
@@ -222,7 +223,7 @@ export class RecallComponent implements OnInit {
                   $("#newReportingManager").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#newReportingManagerId").val(ui.item.value);
                   $("#newReportingManager").val(ui.item.label);
@@ -249,7 +250,7 @@ export class RecallComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if (item.fullName != null)
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
@@ -260,7 +261,7 @@ export class RecallComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#newHODId").val(ui.item.value);
                   $("#newHOD").val(ui.item.label);
@@ -270,7 +271,7 @@ export class RecallComponent implements OnInit {
                   $("#newHOD").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#newHODId").val(ui.item.value);
                   $("#newHOD").val(ui.item.label);
@@ -293,9 +294,9 @@ export class RecallComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -309,9 +310,9 @@ export class RecallComponent implements OnInit {
     if (this.employeeDetails.plantId > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.employeeDetails.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -326,9 +327,9 @@ export class RecallComponent implements OnInit {
       this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/" + this.employeeDetails.plantId + "/" + this.employeeDetails.payGroupId)
         .then((data: any) => {
           if (data.length > 0) {
-            this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+            this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.employeeCategoryList = [];
         });
     }
@@ -342,9 +343,9 @@ export class RecallComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -354,9 +355,9 @@ export class RecallComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -366,9 +367,9 @@ export class RecallComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -377,9 +378,9 @@ export class RecallComponent implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -388,9 +389,9 @@ export class RecallComponent implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -400,9 +401,9 @@ export class RecallComponent implements OnInit {
   getSubDepartments() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        this.subDepartmentFullList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        this.subDepartmentFullList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.subDepartmentFullList = [];
     });
   }
@@ -504,7 +505,7 @@ export class RecallComponent implements OnInit {
             else
               toastr.error(data.message);
           })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while uploading attachments. Error:' + error);
         });
@@ -662,7 +663,7 @@ export class RecallComponent implements OnInit {
         this.errMsgModalPop = 'Error occured while saving Recall Details. Error:' + err;
         toastr.error(this.errMsgModalPop);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         this.errMsgModalPop = 'Error occured while saving Recall Details. Error:' + error;
         toastr.error(this.errMsgModalPop);
@@ -670,14 +671,14 @@ export class RecallComponent implements OnInit {
   }
   onStateChanged(event: any) {
     this.selectedStateText = event.target.options[event.target.options.selectedIndex].text;
-    var selectedState = this.stateList.find(x => x.id == this.employeeDetails.stateId);
+    var selectedState = this.stateList.find((x:any)  => x.id == this.employeeDetails.stateId);
     if (selectedState)
-      this.locationList = this.locationFullList.filter(x => x.stateId == selectedState.bland);
+      this.locationList = this.locationFullList.filter((x:any)  => x.stateId == selectedState.bland);
   }
   onDepartmentChanged(event: any) {
     this.selectedDepartmentText = event.target.options[event.target.options.selectedIndex].text;
 
-    this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.employeeDetails.departmentId);
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.employeeDetails.departmentId);
   }
   onDataSaved(result) {
     if (result == 200 || result.success) {
@@ -695,7 +696,7 @@ export class RecallComponent implements OnInit {
       this.submitForApproval(this.recallDetails.recallId);
   }
 
-  submitForApproval(id) {
+  submitForApproval(id:any) {
     var request: any = {};
     request.employeeRecallId = id;
     request.submittedById = this.currentUser.uid;
@@ -709,7 +710,7 @@ export class RecallComponent implements OnInit {
           toastr.error(data.message);
         } else
           toastr.error("Error occurred while submitting.");
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
       });
   }

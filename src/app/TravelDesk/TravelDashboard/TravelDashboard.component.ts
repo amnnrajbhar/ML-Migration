@@ -1,5 +1,5 @@
 import { AuthData } from '../../auth/auth.model';
-import { Chart } from 'chart.js';
+//import { Chart } from 'chart.js';
 import { APIURLS } from '../../shared/api-url';
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
@@ -27,10 +27,10 @@ import { TravelDashboard } from './TravelDashboard.model';
   styleUrls: ['./TravelDashboard.component.css']
 })
 export class TravelDashboardComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   // departmentList: any[] = [];
@@ -42,26 +42,26 @@ traveldashboard: TravelDashboard = new TravelDashboard();
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
-  path: string;
-  filterEmployeeId: string = null;
+  path!: string
+  filterEmployeeId: string = ' ';
   filterPurpose: any;
   typeOfGuestList: any;
-  filterPayGroup: string = null;
-  filterVendorName: string = null;
-  Amount: number = null;
-  // filterDepartment: string = null;
-  filterTypeOfGuest: string = null;
+  filterPayGroup: string = ' ';
+  filterVendorName: string = ' ';
+  Amount: number = 0;
+  // filterDepartment: string = ' ';
+  filterTypeOfGuest: string = ' ';
   filterFromDate:any=0;
   filterToDate:any=0;
-  filtertypeOfEvent: string = null;
+  filtertypeOfEvent: string = ' ';
   filterStatus: number = 1;
   filterType: any = null;
   VendorMasterList: any;
-  filterEventDate: string;
-  filterInvoiceDate: string;
+  filterEventDate!: string
+  filterInvoiceDate!: string
   ExpenseUpdate: any;
   CreatedBy: any;
-  isSubmitting: boolean;
+  isSubmitting!: boolean;
   reset: any;
     empListCon: any;
     userList: any;
@@ -70,11 +70,11 @@ traveldashboard: TravelDashboard = new TravelDashboard();
     chart1: any;
     purposeList: any[] = [[]];
     [x: string]: any;
-    public tableWidget1;
+   public tableWidget1:any;
     chart: any;
 
   
-     empData: AuthData;
+     empData!: AuthData;
      label: any[] = [];
      today = new Date();
      fromDate: any = new Date(
@@ -97,7 +97,8 @@ traveldashboard: TravelDashboard = new TravelDashboard();
     this.filterInvoiceDate;
     this.filterEventDate = '';
     this.filterVendorName = '';
-    this.Amount = null;
+    // this.Amount = null;
+      this.Amount = 0;
     this.filterDashboard = '';
 
   }
@@ -127,7 +128,7 @@ traveldashboard: TravelDashboard = new TravelDashboard();
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -140,17 +141,17 @@ traveldashboard: TravelDashboard = new TravelDashboard();
     this.httpService.get(APIURLS.BR_GET_TDVENDOR_DETAILS_API).then((data: any) => {
       if (data.length > 0) {
         this.VendorMasterList = data;
-        this.vendorListCon = data.map((i) => {
+        this.vendorListCon = data.map((i:any) => {
           i.name = i.name; return i;
         });
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.VendorMasterList = [];
     });
   }
-  setDe(mtr) {
+  setDe(mtr:any) {
     this.isLoading = true;
 
   }
@@ -178,14 +179,14 @@ traveldashboard: TravelDashboard = new TravelDashboard();
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -195,13 +196,13 @@ traveldashboard: TravelDashboard = new TravelDashboard();
   //   this.errMsg = "";
   //   this.get("DepartmentMaster/GetAll").then((data: any) => {
   //     if (data.length > 0) {
-  //       this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+  //       this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
   //         if (a.name > b.name) return 1;
   //         if (a.name < b.name) return -1;
   //         return 0;
   //       });
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.departmentList = [];
   //     this.isLoading = false;
 
@@ -244,7 +245,7 @@ traveldashboard: TravelDashboard = new TravelDashboard();
           }
         }
         this.clearFilter();
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error saving Expense Update ..';
       });
     }
@@ -260,7 +261,8 @@ traveldashboard: TravelDashboard = new TravelDashboard();
       this.getpayGroupList();
       this.getVendorMasterList()
       this.filterDashboard;
-       let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+       //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
        this.roleId = authData.roleId;
        this.usrid = authData.uid;
        this.employeeId = authData.userName;
@@ -351,7 +353,8 @@ Dashlabels: any[] = [];
              this.checkedRequestList=data;
              this.Dashlabels = [];
              this.Dashamount = [];
-             this.checkedRequestList.forEach(element => {
+             this.checkedRequestList.forEach((element:any)=> {
+
               this.Dashlabels.push(element.labels);
     this.Dashamount.push(element.amount);
               });
@@ -365,13 +368,14 @@ Dashlabels: any[] = [];
           this.reInitDatatable();
           this.clearFilter();
 
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error saving Payment Details..';
         });
       }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -383,51 +387,51 @@ getHeader(): { headers: HttpHeaders } {
 }
 
   showChart() {
-    if (this.chart) this.chart.destroy();
-    this.chart = new Chart('lineCharts', {
-      type: 'bar',
-      data: {
-      labels: this.Dashlabels, // your labels array
-      datasets: [
-        {
-          label: '# Expense',
-          data: this.Dashamount, // your data array
-          backgroundColor: [
-           'rgba(54, 162, 235, 1)',
-           'rgba(255, 99, 132, 1)',
-           'rgba(255, 206, 86, 1)',
-           'rgba(75, 192, 192, 1)',
-           'rgba(153, 102, 255, 1)',
-           'rgba(230, 25, 75, 1)',
-           'rgba(60, 180, 75, 1)',
-           'rgba(245, 130, 48, 1)',
-           'rgba(145, 30, 180, 1)',
-           'rgba(210, 245, 60, 1)',
-           'rgba(0, 128, 128, 1)',
-           'rgba(128, 0, 0, 1)'
+    // if (this.chart) this.chart.destroy();
+    // this.chart = new Chart('lineCharts', {
+    //   type: 'bar',
+    //   data: {
+    //   labels: this.Dashlabels, // your labels array
+    //   datasets: [
+    //     {
+    //       label: '# Expense',
+    //       data: this.Dashamount, // your data array
+    //       backgroundColor: [
+    //        'rgba(54, 162, 235, 1)',
+    //        'rgba(255, 99, 132, 1)',
+    //        'rgba(255, 206, 86, 1)',
+    //        'rgba(75, 192, 192, 1)',
+    //        'rgba(153, 102, 255, 1)',
+    //        'rgba(230, 25, 75, 1)',
+    //        'rgba(60, 180, 75, 1)',
+    //        'rgba(245, 130, 48, 1)',
+    //        'rgba(145, 30, 180, 1)',
+    //        'rgba(210, 245, 60, 1)',
+    //        'rgba(0, 128, 128, 1)',
+    //        'rgba(128, 0, 0, 1)'
 
-          ],
-          fill:true,
-          lineTension:0.2,
-          borderWidth: 0.5
-        }
-      ]
-      },
-      options: {
-        responsive: true,
-        title: {
-        text:this.filterDashboard + " wise graph from " + this.getFormatedDate(this.fromDate)  + " to " + this.getFormatedDate(this.toDate) + ".",
-        display:true
-        },
-        scales: {
-          yAxes:[{
-            ticks:{
-              beginAtZero:true
-            }
-          }]
-        }
-      }
-    });
+    //       ],
+    //       fill:true,
+    //       lineTension:0.2,
+    //       borderWidth: 0.5
+    //     }
+    //   ]
+    //   },
+    //   options: {
+    //     responsive: true,
+    //     title: {
+    //     text:this.filterDashboard + " wise graph from " + this.getFormatedDate(this.fromDate)  + " to " + this.getFormatedDate(this.toDate) + ".",
+    //     display:true
+    //     },
+    //     scales: {
+    //       yAxes:[{
+    //         ticks:{
+    //           beginAtZero:true
+    //         }
+    //       }]
+    //     }
+    //   }
+    // });
   }
 
   onItemDeSelect(item: any) {

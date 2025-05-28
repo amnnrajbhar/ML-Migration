@@ -35,14 +35,14 @@ import { parse, stringify } from 'querystring';
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { CustomerMasterChanges } from './CustomerMasterChanges.model';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 import { HttpClient } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { CustomerMaster } from '../CustomerMaster/CustomerMaster.model';
 
 declare var require: any;
@@ -53,8 +53,8 @@ declare var require: any;
     styleUrls: ['./CustomerMasterChanges.component.css']
 })
 export class CustomerMasterChangesComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     searchTermBaseLoc = new FormControl();
@@ -78,7 +78,7 @@ export class CustomerMasterChangesComponent implements OnInit {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File; successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
@@ -87,23 +87,24 @@ export class CustomerMasterChangesComponent implements OnInit {
     CustomerMastermodel = {} as CustomerMaster;
     CustomerMasterChangesmodel = {} as CustomerMasterChanges
     customermasterchangeslist: CustomerMasterChanges[] = [];
-    comments: string;
-    customercode: string;
-    customername: string = null;
-    address: string = null;
-    status: string;
-    country: string = null;
-    state: string = null;
-    requestno: string = null;
-    city: string = null;
-    gstno: string = null;
+    comments: string
+    customercode: string
+    customername: string = ' ';
+    address: string = ' ';
+    status: string
+    country: string = ' ';
+    state: string = ' ';
+    requestno: string = ' ';
+    city: string = ' ';
+    gstno: string = ' ';
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     to_date: any = this.today;
     CustomerMasterChangessearchlist: CustomerMasterChanges[] = [];
     CustomerMasterFilter: CustomerMaster[] = [];
-    emailid: string;
-    requestdate: Date;
+    emailid!: string
+
+    requestdate!: Date;
     Approver1: boolean = false;
     Approverid1: string = "";
     Approverid2: string = "";
@@ -111,25 +112,28 @@ export class CustomerMasterChangesComponent implements OnInit {
     Creator: boolean = false;
     Review: boolean = false;
     Closure: boolean = false;
-    userid: string;
+    userid!: string
+
     storeData: any;
     jsonData: any;
-    fileUploaded: File;
+    fileUploaded!: File;
     worksheet: any;
-    priority: number;
-    filterlocation: string;
-    gstinnumber: string;
+    priority!: number;
+    filterlocation: string
+    gstinnumber: string
     sapCodeNo: any;
-    Role: string;
+    Role: string
     filterrequest: any;
     filterplace: any;
-    filterstatus: string;
-    CustomerMastersearchlist: any[];
+    filterstatus: string
+    CustomerMastersearchlist!: any[];
     customerName: any;
 
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router
-        , private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+        , private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
     private initDatatable(): void {
         let exampleId: any = jQuery('#userTable');
@@ -149,7 +153,8 @@ export class CustomerMasterChangesComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //  this.baseLocation = this.currentUser.baselocation;
         this.status = 'Pending';
         this.filterlocation = this.currentUser.baselocation.toString();
@@ -182,7 +187,7 @@ export class CustomerMasterChangesComponent implements OnInit {
     }
 
 
-    ReadAsBase64(file): Promise<any> {
+    ReadAsBase64(file:any): Promise<any> {
         const reader = new FileReader();
         const fileValue = new Promise((resolve, reject) => {
             reader.addEventListener('load', () => {
@@ -201,7 +206,7 @@ export class CustomerMasterChangesComponent implements OnInit {
 
         return fileValue;
     }
-    id: string;
+    id: string
     uploadfile() {
         // debugger;
         // this.id='VM001';
@@ -218,17 +223,17 @@ export class CustomerMasterChangesComponent implements OnInit {
                 // console.log('copied file to server')
                 //this.imageFlag = true;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error uploading file ..';
         });
 
     }
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationAllList.find(e => e.id == id);
         return temp ? temp.name : '';
     }
-    getloc(loc) {
+    getloc(loc:any) {
         let loccode = loc.keyValue.split('~');
         return loccode ? loccode[0] : '';
     }
@@ -278,8 +283,8 @@ export class CustomerMasterChangesComponent implements OnInit {
         this.requestno = null;
     }
 
-    location(id) {
-        let loc = this.locationList.find(x => x.id == id);
+    location(id:any) {
+        let loc = this.locationList.find((x:any)  => x.id == id);
         return loc ? loc.code : "";
     }
 
@@ -290,7 +295,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                 this.CustomerGroupList = data;
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CustomerGroupList = [];
         });
@@ -305,7 +310,7 @@ export class CustomerMasterChangesComponent implements OnInit {
             }
             // this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.countrylist = [];
         });
@@ -319,22 +324,22 @@ export class CustomerMasterChangesComponent implements OnInit {
                 this.stateList = data;
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.stateList = [];
         });
     }
 
-    getstatelist(id) {
-        this.stateList1 = this.stateList.filter(x => x.land1 == id);
+    getstatelist(id:any) {
+        this.stateList1 = this.stateList.filter((x:any)  => x.land1 == id);
     }
 
 
     getAllEntries() {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         if (this.from_date == '' || this.from_date == null) {
             formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -372,7 +377,7 @@ export class CustomerMasterChangesComponent implements OnInit {
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CustomerMasterChangessearchlist = [];
         });
@@ -386,13 +391,13 @@ export class CustomerMasterChangesComponent implements OnInit {
         this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
@@ -400,7 +405,7 @@ export class CustomerMasterChangesComponent implements OnInit {
 
 
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
         this.initDatatable();
     }
@@ -413,16 +418,16 @@ export class CustomerMasterChangesComponent implements OnInit {
 
 
     transactionslist: Transactions[] = [];
-    gettransactions(reqNo) {
+    gettransactions(reqNo:any) {
         this.httpService.getByParam(APIURLS.BR_ITEMCODE_APPROVAL_TRANSACTIONS_GETBY_PARAM_API, reqNo).then((data: any) => {
             this.isLoading = true;
             if (data.length > 0) {
-                this.transactionslist = data.filter(x=>x.processType=='Customer Master Changes');;
+                this.transactionslist = data.filter((x:any)=>x.processType=='Customer Master Changes');;
                 // this.transactionslist.reverse();
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.transactionslist = [];
         });
@@ -430,9 +435,9 @@ export class CustomerMasterChangesComponent implements OnInit {
 
     Approverslist: WorkFlowApprovers[] = [];
 
-    Aprlpriority: number;
+    Aprlpriority!: number;
 
-    getApproversList(value) {
+    getApproversList(value:any) {
 
         // this.Approver1 = false;
         // this.Approver2 = false;
@@ -440,7 +445,7 @@ export class CustomerMasterChangesComponent implements OnInit {
         // this.Review = false;
         // this.Closure = false;
 
-        //var mat = this.materialList.find(x => x.id == +this.ItemCodeRequestModel.materialTypeId);
+        //var mat = this.materialList.find((x:any)  => x.id == +this.ItemCodeRequestModel.materialTypeId);
         // var matgrp=this.materialgroupList.find(x=>x.materialGroupId==this.ItemCodeRequestModel.materialGroupId);
 
         var keyvalue = this.CustomerMasterChangesmodel.plant + '~' + this.CustomerMasterChangesmodel.customerType + ',' + 4;
@@ -448,10 +453,10 @@ export class CustomerMasterChangesComponent implements OnInit {
             this.isLoading = true;
             if (data.length > 0) {
                 this.Approverslist = data;
-                this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+                this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
                 let empid = this.currentUser.employeeId
                 let empName = this.currentUser.fullName;
-                let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+                let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
                     x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
                     x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -461,7 +466,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                     this.Review = true;
                     this.Aprlpriority = Appr1.priority;
                 }
-                let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+                let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
                     x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
                     x.parllelApprover3 == empid || x.parllelApprover4 == empid);
                 if (Appr2 != null || Appr2 != undefined) {
@@ -471,7 +476,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                     this.Review = true;
                     this.Aprlpriority = Appr2.priority;
                 }
-                let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+                let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
                     x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
                     x.parllelApprover3 == empid || x.parllelApprover4 == empid);
                 if (Appr3 != null || Appr3 != undefined) {
@@ -491,7 +496,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                     }
                 }
                 this.transactionslist.forEach((ad) => {
-                    let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority &&
+                    let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority &&
                         (ad.doneBy == x.approverId || ad.doneBy == x.parllelApprover1 || ad.doneBy == x.parllelApprover2));
                     if (temp != undefined) {
                         if (ad.transactionType == 1) {
@@ -505,7 +510,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                                 ad.status = 'Approved'
                             }
                             else {
-                                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
                             }
                         }
                         else if (ad.transactionType == 0) {
@@ -525,7 +530,7 @@ export class CustomerMasterChangesComponent implements OnInit {
 
                 });
                 this.Approverslist.forEach((ad) => {
-                    let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority &&
+                    let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority &&
                         (x.doneBy == ad.approverId || x.doneBy == ad.parllelApprover1 || x.doneBy == ad.parllelApprover2));
                     if (temp1 == undefined) {
                         let trans = {} as Transactions;
@@ -538,12 +543,12 @@ export class CustomerMasterChangesComponent implements OnInit {
                     }
 
                 });
-                this.Approverslist = this.Approverslist.sort((a, b) => {
+                this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
                     if (a.priority > b.priority) return 1;
                     if (a.priority < b.priority) return -1;
                     return 0;
                 });
-                this.transactionslist = this.transactionslist.sort((a, b) => {
+                this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
                     if (a.doneOn > b.doneOn) return 1;
                     if (a.doneOn < b.doneOn) return -1;
                     if (a.approvalPriority > b.approvalPriority) return 1;
@@ -557,7 +562,7 @@ export class CustomerMasterChangesComponent implements OnInit {
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.Approverslist = [];
         });
@@ -634,22 +639,22 @@ export class CustomerMasterChangesComponent implements OnInit {
     }
 
 
-    downloadFile(reqNo, value) {
+    downloadFile(reqNo:any, value:any) {
 
         // console.log(filename);
         if (value.length > 0) {
             this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
                 // console.log(data);
-                // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+                // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
                 if (data != undefined) {
-                    var FileSaver = require('file-saver');
+                   // var FileSaver = require('file-saver');
                     const imageFile = new File([data], value, { type: 'application/doc' });
                     // console.log(imageFile);
-                    FileSaver.saveAs(imageFile);
+                //      FileSaver.saveAs(imageFile);
 
 
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
             });
 
@@ -669,7 +674,7 @@ export class CustomerMasterChangesComponent implements OnInit {
     }
 
 
-    deletefile(item, name) {
+    deletefile(item:any, name:any) {
 
         if (this.attachments.length > 1) {
             const index = this.attachments.indexOf(name);
@@ -693,13 +698,13 @@ export class CustomerMasterChangesComponent implements OnInit {
                     buttons: [false, true]
                 })
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error deleteing file..';
         });
     }
 
-    removefile(name) {
+    removefile(name:any) {
         const index = this.fileslist.indexOf(name);
         this.fileslist.splice(index, 1);
     }
@@ -752,7 +757,7 @@ export class CustomerMasterChangesComponent implements OnInit {
         this.printModel = Object.assign({}, data);
         jQuery("#printReasonModal").modal('show');
     }
-    image: string;
+    image!: string
     getbase64image() {
         this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
             .subscribe(blob => {
@@ -779,7 +784,7 @@ export class CustomerMasterChangesComponent implements OnInit {
         this.InsertPrintLog();
         jQuery("#printModal").modal('hide');
         jQuery("#printReasonModal").modal('hide');
-        let locid = this.locationList.find(x => x.code == value.plantCode);
+        let locid = this.locationList.find((x:any)  => x.code == value.plantCode);
         // var temp=this.materialList.find(x=>x.id==this.filtermaterialtype);
         var printContents = document.getElementById('print-section').innerHTML;
         // var temp1=this.locationList.find(x=>x.id==this.currentUser.baselocation);
@@ -791,7 +796,7 @@ export class CustomerMasterChangesComponent implements OnInit {
         var now = new Date();
         var jsDate = this.setFormatedDateTime(now);
         var logo = this.image;
-        var htmnikhitml = htmlToPdfmake(`<html>
+        /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -804,14 +809,14 @@ export class CustomerMasterChangesComponent implements OnInit {
             headerRows: 1,
             dontBreakRows: true,
             keepWithHeaderRows: true,
-        })
+        })*/
         var docDefinition = {
             info: {
                 title: 'Customer Master request form',
             },
 
             content: [
-                htmnikhitml,
+                //htmnikhitml,
             ],
             defaultStyle: {
                 fontSize: 9,
@@ -829,7 +834,7 @@ export class CustomerMasterChangesComponent implements OnInit {
             pageSize: 'A4',
             pageMargins: [40, 80, 40, 60],
             pageOrientation: 'portrait',
-            header: function (currentPage, pageCount) {
+            header: function (currentPage:any, pageCount:any) {
                 return {
 
                     columns: [
@@ -884,7 +889,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                 }
             },
         };
-        pdfMake.createPdf(docDefinition).open();
+        //pdfMake.createPdf(docDefinition).open();
     }
 
     onSubmitEntry(customermasterchanges: CustomerMasterChanges) {
@@ -921,7 +926,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                 this.getAllEntries();
                 this.reset();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error Submitting Request ';
         });
@@ -949,10 +954,10 @@ export class CustomerMasterChangesComponent implements OnInit {
         if (this.CustomerMasterChangesmodel.country == null || this.CustomerMasterChangesmodel.country == '' || this.CustomerMasterChangesmodel.country == undefined) this.notFirst = false;
     }
 
-    empId: string;
+    empId: string
     view: boolean = false;
     attachments: any[] = [];
-    locationname: string;
+    locationname!: string
     onUserActions(isedit: boolean, customermasterchanges: CustomerMasterChanges, isprint: boolean, value: string) {
         this.isEdit = isedit;
         this.continue = false;
@@ -980,11 +985,11 @@ export class CustomerMasterChangesComponent implements OnInit {
             //   this.getApproversList(ItemCodeExtension);
             this.getApproversList(customermasterchanges);
 
-            this.stateList1 = this.stateList.filter(x => x.land1 == customermasterchanges.country);
+            this.stateList1 = this.stateList.filter((x:any)  => x.land1 == customermasterchanges.country);
             if (customermasterchanges.attachments != null || customermasterchanges.attachments != undefined) {
                 this.attachments = customermasterchanges.attachments.split(',');
             }
-            this.attachments.filter(x => x.name != null || undefined)
+            this.attachments.filter((x:any)  => x.name != null || undefined)
             this.CustomerMasterChangesmodel = Object.assign({}, customermasterchanges);
             this.customercode = this.CustomerMasterChangesmodel.customerCode;
             this.CustomerMasterChangesmodel.reasonForrequisition = this.CustomerMasterChangesmodel.reason;
@@ -1005,14 +1010,14 @@ export class CustomerMasterChangesComponent implements OnInit {
         if (customermasterchanges.attachments != null || customermasterchanges.attachments != undefined) {
             this.attachments = customermasterchanges.attachments.split(',');
         }
-        this.stateList1 = this.stateList.filter(x => x.land1 == customermasterchanges.country);
+        this.stateList1 = this.stateList.filter((x:any)  => x.land1 == customermasterchanges.country);
         this.CustomerMasterChangesmodel = Object.assign({}, customermasterchanges);
         this.getApproversList(customermasterchanges);
         if (isprint) {
-            let ln = this.locationList.find(x => x.code == this.CustomerMasterChangesmodel.plantCode);
+            let ln = this.locationList.find((x:any)  => x.code == this.CustomerMasterChangesmodel.plantCode);
             this.locationname = ln.code + '-' + ln.name;
-            this.CustomerMasterChangesmodel.country = this.countrylist.find(x => x.land1 == this.CustomerMasterChangesmodel.country).landx;
-            this.CustomerMasterChangesmodel.state = this.stateList.find(x => x.id == this.CustomerMastermodel.state).bezei;
+            this.CustomerMasterChangesmodel.country = this.countrylist.find((x:any)  => x.land1 == this.CustomerMasterChangesmodel.country).landx;
+            this.CustomerMasterChangesmodel.state = this.stateList.find((x:any)  => x.id == this.CustomerMastermodel.state).bezei;
             jQuery("#printModal").modal('show');
         }
         else {
@@ -1025,7 +1030,7 @@ export class CustomerMasterChangesComponent implements OnInit {
         let connection: any;
         this.isLoading = true;
         connection = this.httpService.getByParam(APIURLS.BR_CUSTOMERMASTERCHANGES_APPROVERS_GETBY_PARAM_ALL, this.customercode)
-        connection.then((data) => {
+        connection.then((data:any) => {
 
             if (data.length > 0) {
                 this.CustomerMasterChangesmodel.customerCode = data[0].sapCodeNo
@@ -1050,7 +1055,7 @@ export class CustomerMasterChangesComponent implements OnInit {
 
     isValid: boolean = false;
     validatedForm: boolean = true;
-    onSaveEntry(status) {
+    onSaveEntry(status:any) {
 
         this.errMsg = "";
         let connection: any;
@@ -1081,7 +1086,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                 }
                 //this.CustomerMastermodel.attachments=file;
                 this.CustomerMasterChangesmodel.lastApprover = 'No';
-                this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+                this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
                 this.CustomerMasterChangesmodel.status = status == "Submit" ? "Submitted" : "Created";
 
                 connection = this.httpService.post(APIURLS.BR_CUSTOMER_MASTER_CHANGES_POST_API, this.CustomerMasterChangesmodel);
@@ -1102,7 +1107,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                     this.getAllEntries();
                     this.reset();
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
                 this.errMsgPop = 'Error Saving Request..';
             });
@@ -1110,22 +1115,22 @@ export class CustomerMasterChangesComponent implements OnInit {
 
     }
 
-    onreview(status) {
+    onreview(status:any) {
         this.errMsg = "";
         let connection: any;
         let uid = this.currentUser.employeeId;
         if (status == "Rejected") {
-            let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+            let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
                 || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
             this.CustomerMasterChangesmodel.pendingApprover = '';
-            this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         }
         else {
-            let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+            let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
                 || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-            this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == user.priority + 1).approverId;
-            this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+            this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).approverId;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         }
 
         this.CustomerMasterChangesmodel.lastApprover = this.currentUser.fullName;
@@ -1154,31 +1159,31 @@ export class CustomerMasterChangesComponent implements OnInit {
                 this.Inserttransactions(this.CustomerMasterChangesmodel, id)
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = status == "Rejected" ? "Error Rejecting Request" + '' + this.CustomerMasterChangesmodel.id : "Error Reviewing Request" + '' + this.CustomerMasterChangesmodel.id;
         });
     }
 
-    onRevertRequest(status) {
+   onRevertRequest(status:any) {
         this.errMsg = "";
         let connection: any;
         if (status == "ReverttoInitiator") {
             let usid = this.currentUser.employeeId;
-            let user = this.Approverslist.find(x => x.approverId == usid || x.parllelApprover1 == usid || x.parllelApprover2 == usid
+            let user = this.Approverslist.find((x:any)  => x.approverId == usid || x.parllelApprover1 == usid || x.parllelApprover2 == usid
                 || x.parllelApprover3 == usid || x.parllelApprover4 == usid);
 
-            this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+            this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
             this.CustomerMasterChangesmodel.status = "Reverted to initiator";
-            this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         }
         else {
             let uid = this.CustomerMasterChangesmodel.modifiedBy;
-            let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+            let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
                 || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-            this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == user.priority).approverId;
-            this.priority = this.Approverslist.find(x => x.priority == user.priority + 1).priority;
+            this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == user.priority).approverId;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).priority;
             this.CustomerMasterChangesmodel.status = "Reverted";
         }
 
@@ -1202,7 +1207,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                 this.Inserttransactions(this.CustomerMasterChangesmodel, id)
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = "Error Reverting Request " + '' + this.CustomerMasterChangesmodel.id;
         });
@@ -1213,10 +1218,10 @@ export class CustomerMasterChangesComponent implements OnInit {
         let connection: any;
         let uid = this.currentUser.employeeId;
 
-        let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+        let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
             || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-        let temp = this.Approverslist.find(x => x.priority == user.priority + 1);
+        let temp = this.Approverslist.find((x:any)  => x.priority == user.priority + 1);
         if (temp != null || temp != undefined) {
             this.CustomerMasterChangesmodel.pendingApprover = temp.approverId;
             this.CustomerMasterChangesmodel.status = 'InProcess';
@@ -1225,7 +1230,7 @@ export class CustomerMasterChangesComponent implements OnInit {
             this.CustomerMasterChangesmodel.pendingApprover = 'No';
             this.CustomerMasterChangesmodel.status = 'Completed';
         }
-      //  this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+      //  this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         this.CustomerMasterChangesmodel.lastApprover = this.currentUser.fullName;
         this.CustomerMasterChangesmodel.modifiedBy = this.currentUser.employeeId;
         //this.CustomerMastermodel.modifiedDate = new Date().toLocaleString();
@@ -1245,24 +1250,24 @@ export class CustomerMasterChangesComponent implements OnInit {
                 this.Inserttransactions(this.CustomerMasterChangesmodel, 1)
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = "Error Creating Customer Code " + '' + this.CustomerMasterChangesmodel.sapCodeNo;
         });
 
     }
-    //   priority: number;
+    //   priority!: number;
     oncloserequest(status) {
         this.errMsg = "";
         let connection: any;
 
         if (status == 'Completed') {
             let uid = this.currentUser.employeeId;
-            let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+            let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
                 || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-            this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == user.priority + 1).approverId;
-            this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+            this.CustomerMasterChangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).approverId;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         }
         this.CustomerMasterChangesmodel.lastApprover = this.currentUser.fullName;
         this.CustomerMasterChangesmodel.modifiedBy = this.currentUser.employeeId;
@@ -1281,7 +1286,7 @@ export class CustomerMasterChangesComponent implements OnInit {
                 // this.sendMail('Created', this.ItemCodeRequestModel)
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = "Error Closing Request " + '' + this.CustomerMasterChangesmodel.sapCodeNo;
         });
@@ -1294,7 +1299,7 @@ export class CustomerMasterChangesComponent implements OnInit {
         connection.then((data: any) => {
             if (data == 200) {
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error in sending mail..';
         });
     
@@ -1307,7 +1312,7 @@ export class CustomerMasterChangesComponent implements OnInit {
         connection.then((data: any) => {
             if (data == 200) {
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error in sending mail..';
         });
 

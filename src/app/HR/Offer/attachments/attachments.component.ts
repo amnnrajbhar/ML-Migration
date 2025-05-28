@@ -20,7 +20,7 @@ declare var require: any;
 export class AttachmentsComponent implements OnInit {
 
   @Input() offerDetails: any;
-  @Input() offerId: number;
+  @Input() offerId!: number;
   @Input() editAllowed: boolean = false;  
   @Input() deleteAllowed: boolean = false;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();  
@@ -50,7 +50,7 @@ export class AttachmentsComponent implements OnInit {
         if (data) 
             this.fileList = data;
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;      
       });
     }
@@ -108,7 +108,7 @@ export class AttachmentsComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while deleting the file. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while deleting the file. Error:' + error);
       });
@@ -120,13 +120,13 @@ export class AttachmentsComponent implements OnInit {
      
       this.fileList=data;
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -169,7 +169,7 @@ export class AttachmentsComponent implements OnInit {
         else
           toastr.error(data.message);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         this.errMsgModalPop = 'Error occured while uploading attachments. Error:' + error;
         toastr.error(this.errMsgModalPop);
@@ -218,15 +218,15 @@ export class AttachmentsComponent implements OnInit {
           this.showPdfInViewer(data);
         }
         else{
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }        
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

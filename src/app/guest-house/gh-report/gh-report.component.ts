@@ -10,10 +10,10 @@ import { GenericBookingFilters } from '../genericbookingfilters.model';
 import { ExcelService } from '../../shared/excel-service';
 declare var $: any;
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -22,7 +22,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./gh-report.component.css']
 })
 export class GhReportComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   isLoading: boolean = false;
@@ -30,13 +30,15 @@ export class GhReportComponent implements OnInit {
   myMeetings: BookGuestHouse[] = [];
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private appServiceDate: AppService, private route: ActivatedRoute,private excelService:ExcelService,
-    private http: HttpClient) {pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient) {// pdfMake.vfs = pdfFonts.pdfMake.vfs; 
+      }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationList();
       this.getAllroomsTypes();
       this.getPurposeList();      
@@ -110,7 +112,7 @@ export class GhReportComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.myMeetings = [];
     });
@@ -141,13 +143,13 @@ export class GhReportComponent implements OnInit {
     this.httpService.post(APIURLS.BR_GUESTHOUSE_MASTER_BY_FILTER_API, genericBookingFilters).then((data: any) => {
       this.isLoading = true;
       if (data) {
-        this.locationList = data.map((i) => { i.location = i.name + '-' + i.guestHouseLocation; return i; }).sort((a,b)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1;  return 0;});
+        this.locationList = data.map((i:any) => { i.location = i.name + '-' + i.guestHouseLocation; return i; }).sort((a:any,b:any)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1;  return 0;});
 
         let temp=data.find(x=>x.id== this.currentUser.baselocation);
         this.locationname=temp.code +'-'+temp.name;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -159,15 +161,15 @@ export class GhReportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data) {
-        this.LocationList = data.filter(x=>{return x.isActive}).map((i) => { i.location = i.code + '-' + i.name; return i; });
+        this.LocationList = data.filter((x:any)=>{return x.isActive}).map((i:any) => { i.location = i.code + '-' + i.name; return i; });
         let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-        this.LocationList.sort((a,b)=>{return collator.compare(a.code,b.code)});
+        this.LocationList.sort((a:any,b:any)=>{return collator.compare(a.code,b.code)});
 
         let temp=data.find(x=>x.id== this.currentUser.baselocation);
         this.locationname=temp.code +'-'+temp.name;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -196,9 +198,9 @@ export class GhReportComponent implements OnInit {
   getAllroomsTypes() {
     this.httpService.get(APIURLS.BR_MASTER_ROOMTYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roomTypeList = data.sort((a,b)=>{if(a.type > b.type) return 1; if(a.type < b.type) return -1;  return 0;});
+        this.roomTypeList = data.sort((a:any,b:any)=>{if(a.type > b.type) return 1; if(a.type < b.type) return -1;  return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomTypeList = [];
     });
   }
@@ -224,9 +226,9 @@ export class GhReportComponent implements OnInit {
   getPurposeList() {
     this.httpService.get(APIURLS.BR_BOOK_PURPOSE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.purposeList = data.filter(x=>x.type=="Guest House").sort((a,b)=>{if(a.purpose > b.purpose) return 1; if(a.purpose < b.purpose) return -1;  return 0;});
+        this.purposeList = data.filter((x:any)=>x.type=="Guest House").sort((a:any,b:any)=>{if(a.purpose > b.purpose) return 1; if(a.purpose < b.purpose) return -1;  return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.purposeList = [];
     });
   }
@@ -285,11 +287,11 @@ export class GhReportComponent implements OnInit {
     return ("00" + d1.getDate()).slice(-2) + "-" + ("00" + (d1.getMonth() + 1)).slice(-2) + "-" +
       d1.getFullYear();
   }
-  exportList: any[];
+  exportList!: any[];
   exportAsXLSX(): void {
     this.exportList=[];
     let index=0;
-    this.myMeetings.forEach(item => {
+    this.myMeetings.forEach((item :any) => {
       index=index+1;
       let exportItem={
         "SNo":index,
@@ -342,14 +344,14 @@ export class GhReportComponent implements OnInit {
   }
   downloadPdf()
   {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICROLABS LIMITED"+','+this.locationname;
     var ReportName = "GUESTHOUSE BOOKING REPORT"
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -362,14 +364,14 @@ export class GhReportComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:'GuestHouseBooking Report',
         },
      
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -387,7 +389,7 @@ export class GhReportComponent implements OnInit {
       pageSize: 'A3',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -429,7 +431,7 @@ export class GhReportComponent implements OnInit {
       },
   
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 }

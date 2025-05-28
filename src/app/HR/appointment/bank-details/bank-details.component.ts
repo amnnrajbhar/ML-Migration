@@ -17,11 +17,11 @@ declare var toastr: any;
   providers: [AppointmentService, Util]
 })
 export class BankDetailsComponent implements OnInit {
- @ViewChild('bankDetailsForm', { static: false }) private bankDetailsForm: NgForm;
+ @ViewChild('bankDetailsForm', { static: false }) private bankDetailsForm!: NgForm;
 
-  @Input() appointmentId: number;
-  @Input() offerId: number;
-  @Input() guid: string;
+  @Input() appointmentId!: number;
+  @Input() offerId!: number;
+  @Input() guid: string
   @Input() editAllowed: boolean = true;
   @Input() showSalaryAccountDetails: boolean = false;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
@@ -37,7 +37,7 @@ export class BankDetailsComponent implements OnInit {
     private service: AppointmentService, private util: Util) { }
 
   ngOnInit() {
-    this.service.getAccountTypes().then((data:any)=>{this.accountTypeList = data.filter(x=>x.account == "Savings");});    
+    this.service.getAccountTypes().then((data:any)=>{this.accountTypeList = data.filter((x:any)=>x.account == "Savings");});    
     if(this.showSalaryAccountDetails)
     {  
       this.getCurrencies();
@@ -66,7 +66,7 @@ export class BankDetailsComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       this.details = {};
@@ -110,7 +110,7 @@ export class BankDetailsComponent implements OnInit {
         //this.isLoading = false;
         toastr.error('Error occured while saving bank details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         toastr.error('Error occured while saving bank details. Error:' + error);
       });
@@ -120,9 +120,9 @@ export class BankDetailsComponent implements OnInit {
   getCurrencies() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_CURRENCIES).then((data: any) => {
       if (data.length > 0) {
-        this.currencyList = data.sort((a,b)=>{if(a.waers > b.waers) return 1; if(a.waers < b.waers) return -1; return 0;});
+        this.currencyList = data.sort((a:any,b:any)=>{if(a.waers > b.waers) return 1; if(a.waers < b.waers) return -1; return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.currencyList = [];
     });
   }
@@ -130,10 +130,10 @@ export class BankDetailsComponent implements OnInit {
   getBanksList() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_BANK_LIST).then((data: any) => {
       if (data.length > 0) {
-        data = data.filter(x=>x.bankCountry == "IN");
-        this.banksList = data.sort((a,b)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1; return 0;});
+        data = data.filter((x:any)=>x.bankCountry == "IN");
+        this.banksList = data.sort((a:any,b:any)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1; return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.banksList = [];
     });
   }

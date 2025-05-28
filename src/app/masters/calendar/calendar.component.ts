@@ -15,7 +15,7 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
-   @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+   @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
     public tableWidget: any;
     selMonth: any;
@@ -24,10 +24,10 @@ export class CalendarComponent implements OnInit {
     companyItem: any;
     calendarItem: Calendar = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
     isLoading: boolean = false;
-    entityTabHeader: string;
+    entityTabHeader: string
     errMsg: string = "";
-    startDate: string;
-    endDate: string;
+    startDate: string
+    endDate: string
     isLoadingPop: boolean = false;
     errMsgPop: string = "";
     errMsgPop1: string = "";
@@ -107,8 +107,8 @@ export class CalendarComponent implements OnInit {
         
         if (this.isEdit) {
             this.calendarItem = data;
-            this.calSelMonth = this.fullMonths.find(s => s.id == this.calendarItem.month);
-            this.calSelFiscalYear = this.fillFiscalYear.find(s => s.name === this.calendarItem.fiscalYear);
+            this.calSelMonth = this.fullMonths.find((s:any) => s.id == this.calendarItem.month);
+            this.calSelFiscalYear = this.fillFiscalYear.find((s:any) => s.name === this.calendarItem.fiscalYear);
             this.startDate = this.calendarItem.startDate; 
             this.endDate = this.calendarItem.endDate;
         }
@@ -147,7 +147,7 @@ export class CalendarComponent implements OnInit {
                 });}
               this.reInitDatatable();
             }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoading = false;
             this.calendarList = [];
           });
@@ -195,7 +195,7 @@ export class CalendarComponent implements OnInit {
             this.calendarItem.month = this.calSelMonth.id;
             this.calendarItem.fiscalYear = this.calSelFiscalYear.name;
             let connection: any;
-            if(!this.calendarList.some(s => s.fiscalYear === this.calendarItem.fiscalYear && s.id != this.calendarItem.id)){
+            if(!this.calendarList.some((s:any) => s.fiscalYear === this.calendarItem.fiscalYear && s.id != this.calendarItem.id)){
             if (!this.isEdit) 
                     connection = this.httpService.post(APIURLS.BR_MASTER_CALENDAR_INSERT_API, this.calendarItem);
             else 
@@ -209,7 +209,7 @@ export class CalendarComponent implements OnInit {
                     jQuery("#saveModal").modal('show');
                     this.getCalendarMasterList();
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
                 this.errMsgPop = 'Error saving calendar data..';
             });

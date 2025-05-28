@@ -11,7 +11,7 @@ import { setActionValue } from 'sweetalert/typings/modules/state';
 import { Resignation } from '../../separation/resignation/resignation.model';
 import { AuthData } from '../../../auth/auth.model';
 import { MOMENT } from 'angular-calendar';
-import * as moment from 'moment';
+import moment from 'moment'
 declare var $: any;
 declare var toastr: any;
 
@@ -22,7 +22,7 @@ declare var toastr: any;
   providers:[Util],
 })
 export class AddPaymentComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   resignationId: any;
   urlPath: string = '';
@@ -48,13 +48,14 @@ export class AddPaymentComponent implements OnInit {
 
   ngOnInit() {
     this.DateToday=new Date();
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.resignationId = this.route.snapshot.paramMap.get('id')!; 
     this.employeeId = this.route.snapshot.paramMap.get('id1')!; 
     this.GetResignationDetailsById(this.resignationId);
   }
 
-  GetResignationDetailsById(id) {
+  GetResignationDetailsById(id:any) {
     this.isLoading = true;
    
     this.httpService.HRget(APIURLS.RESIGNATION_DETAILS_GET_BYID + "/" + id).then((data: any) => {
@@ -72,7 +73,7 @@ export class AddPaymentComponent implements OnInit {
           this.resignationDetails.receiptDate = this.DateToday;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg= error;
     });
   }
@@ -128,7 +129,7 @@ export class AddPaymentComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while editing resignation details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while editing resignation details. Error:' + error);
       });
@@ -156,7 +157,7 @@ export class AddPaymentComponent implements OnInit {
           else
           toastr.error(data.message);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while uploading attachments. Error:' + error);
         });

@@ -23,13 +23,13 @@ import swal from 'sweetalert';
 // import Swal from 'sweetalert2';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
-import * as moment from 'moment';
+import moment from 'moment'
 import { EmpShiftMaster } from '../EmpShiftMaster/EmpShiftMaster.model';
 import { UserIdRequest } from '../../UID/UserIdRequest/UserIdRequest.model';
 import { ReachHRDetails } from '../ReachHR/ReachHR.model';
 // import { initNgModule } from '@angular/core/src/view/ng_module';
 import { CompOffRequest } from '../CompOffRequest/CompOffRequest.model';
-import { HOURS_IN_DAY } from 'angular-calendar-scheduler/modules/scheduler/utils/calendar-scheduler-utils';
+//import { HOURS_IN_DAY } from 'angular-calendar-scheduler/modules/scheduler/utils/calendar-scheduler-utils';
 
 declare var ActiveXObject: (type: string) => void;
 
@@ -41,11 +41,11 @@ declare var ActiveXObject: (type: string) => void;
     styleUrls: ['./MyApprovals.component.css']
 })
 export class MyApprovalsComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm, { static: false }) userForm: NgForm;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     public tableWidget: any;
@@ -62,9 +62,9 @@ export class MyApprovalsComponent implements OnInit {
     locListCon1 = [];
     genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
     titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-    addressList: any[];
-    empOtherDetailList: any[];
-    employeePayrollList: any[];
+    addressList!: any[];
+    empOtherDetailList!: any[];
+    employeePayrollList!: any[];
     isLoading: boolean = false;
     errMsg: string = "";
     isLoadingPop: boolean = false;
@@ -73,9 +73,9 @@ export class MyApprovalsComponent implements OnInit {
     errMsgPop1: string = "";
     isEdit: boolean = false;
     locationList: any[] = [[]];
-    auditType: string;// set ActionTypes: Create,Update,Delete
-    aduitpurpose: string;
-    path: string;
+    auditType: string// set ActionTypes: Create,Update,Delete
+    aduitpurpose: string
+    path!: string
     selectedBaseLocation: any[] = [];
     employeeId: any = null;
     userMasterItem: any = {};
@@ -83,17 +83,17 @@ export class MyApprovalsComponent implements OnInit {
 
     CalenderYear: string = '';
     CalYear: any;
-    OnDutyType: string = null;
-    OnDutyAddress: string = null;
-    OnDutyContactNo: string = null;
-    StartDate: string = null;
-    EndDate: string = null;
-    Duration1: string = null;
-    Duration2: string = null;
-    typeOfWork: string = null;
-    details: string = null;
+    OnDutyType: string = ' ';
+    OnDutyAddress: string = ' ';
+    OnDutyContactNo: string = ' ';
+    StartDate: string = ' ';
+    EndDate: string = ' ';
+    Duration1: string = ' ';
+    Duration2: string = ' ';
+    typeOfWork: string = ' ';
+    details: string = ' ';
     NoOfDays: number = 0;
-    LvReason: string = null;
+    LvReason: string = ' ';
     personResponsible: any;
     personName: any;
     DetailedReason: string = '';
@@ -146,7 +146,7 @@ export class MyApprovalsComponent implements OnInit {
         allowSearchFilter: true
     };
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationAllList.find(e => e.id == id);
         return temp ? temp.name : '';
     }
@@ -154,28 +154,29 @@ export class MyApprovalsComponent implements OnInit {
         this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
-    getLocationName(id) {
-        let t = this.locationList.find(s => s.id == id);
+    getLocationName(id:any) {
+        let t = this.locationList.find((s:any) => s.id == id);
         return t.code + ' - ' + t.name;
     }
 
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //this.baseLocation = this.currentUser.baselocation;
         this.employeeId = this.currentUser.employeeId;
         let today = new Date();
@@ -204,31 +205,31 @@ export class MyApprovalsComponent implements OnInit {
     HolidayDate: any;
     holidayname: any = null;
     holidaysList: HolidayMaster[] = [];
-    getholidaysList(id) {
+    getholidaysList(id:any) {
         this.errMsg = "";
         let srchstr = this.currentUser.baselocation + ',,' + this.year + ',' + ',,'
         this.httpService.LAgetByParam(APIURLS.GET_HOLIDAYS_LIST, srchstr).then((data: any) => {
             if (data.length > 0) {
                 this.holidaysList = data;
-                this.holidaysList = this.holidaysList.filter(x => x.isActive == true).sort((a, b) => {
+                this.holidaysList = this.holidaysList.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => {
                     if (a.date > b.date) return 1;
                     if (a.date < b.date) return -1;
                     return 0;
 
                 });
-                let temp = this.holidaysList.find(x => new Date(x.date) > new Date());
+                let temp = this.holidaysList.find((x:any)  => new Date(x.date) > new Date());
                 this.Holiday = temp ? temp.holidayName : 'No Holidays.'
                 this.HolidayDate = temp ? temp.date : null;
                 //this.reInitDatatable();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.holidaysList = [];
         });
     }
 
     ApproversList: any[] = [];
-    getApproversList(id) {
+    getApproversList(id:any) {
         this.errMsg = "";
         this.httpService.LAgetByParam(APIURLS.GET_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
             if (data) {
@@ -242,14 +243,14 @@ export class MyApprovalsComponent implements OnInit {
 
                 //this.reInitDatatable();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ApproversList = [];
         });
     }
 
     ApproversListForPM: any[] = [];
-    getApproversListForPM(id) {
+    getApproversListForPM(id:any) {
       this.errMsg = "";
       this.httpService.LAgetByParam(APIURLS.GET_PERMISSION_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
         if (data) {
@@ -270,14 +271,14 @@ export class MyApprovalsComponent implements OnInit {
   
           //this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.ApproversList = [];
       });
     }
 
     PlantHeadList: any[] = [];
-    getPlantHeadList(id) {
+    getPlantHeadList(id:any) {
         this.errMsg = "";
         this.httpService.LAgetByParam(APIURLS.GET_PLANT_HEADS_FOR_EMPLOYEE, this.currentUser.baselocation.toString()).then((data: any) => {
             if (data) {
@@ -291,7 +292,7 @@ export class MyApprovalsComponent implements OnInit {
 
                 //this.reInitDatatable();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ApproversList = [];
         });
@@ -302,21 +303,21 @@ export class MyApprovalsComponent implements OnInit {
       this.errMsg = "";
       this.get("RoleMaster/GetAll").then((data: any) => {
         if (data.length > 0) {
-          this.Rolelist = data.filter(x => x.isActive);
+          this.Rolelist = data.filter((x:any)  => x.isActive);
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.Rolelist = [];
       });
     }
   
-    getRole(id) {
-      let temp = this.Rolelist.find(x => x.id == id);
+    getRole(id:any) {
+      let temp = this.Rolelist.find((x:any)  => x.id == id);
       return temp ? temp.role_Stxt : '';
     }
 
     COApproversList: any[] = [];
-    getCOApproversList(id) {
+    getCOApproversList(id:any) {
         this.errMsg = "";
         this.httpService.LAgetByParam(APIURLS.GET_PLANT_HEADS_FOR_EMPLOYEE, id).then((data: any) => {
             if (data) {
@@ -334,7 +335,7 @@ export class MyApprovalsComponent implements OnInit {
                 }
                 //this.reInitDatatable();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.COApproversList = [];
         });
@@ -353,20 +354,22 @@ export class MyApprovalsComponent implements OnInit {
         this.EndTime = null;
         this.personName = null;
         this.personResponsible = null;
-        this.Comments = null;
+        
+//this.Comments = null;
+  this.Comments = '';
     }
 
 
     ReasonList: any[] = [];
-    getLvReasonList(id) {
+    getLvReasonList(id:any) {
         this.errMsg = "";
         this.LvReason = null;
         this.ReasonList = [];
         this.httpService.LAget(APIURLS.BR_GET_ALL_REASONS_LIST).then((data: any) => {
             if (data.length > 0) {
-                this.ReasonList = data.filter(x => x.isActive);
+                this.ReasonList = data.filter((x:any)  => x.isActive);
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ReasonList = [];
         });
@@ -378,9 +381,9 @@ export class MyApprovalsComponent implements OnInit {
         this.ReasonListOD = [];
         this.httpService.LAget(APIURLS.BR_GET_ALL_ONDUTY_REASONS_LIST).then((data: any) => {
             if (data.length > 0) {
-                this.ReasonListOD = data.filter(x => x.isActive && x.leavType == 100);
+                this.ReasonListOD = data.filter((x:any)  => x.isActive && x.leavType == 100);
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ReasonListOD = [];
         });
@@ -431,7 +434,7 @@ export class MyApprovalsComponent implements OnInit {
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.MyApprovalsList = [];
         });
@@ -482,7 +485,7 @@ export class MyApprovalsComponent implements OnInit {
                 this.lvTypeList = data;
                 // this.getUsersList(this.employeeId);
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.lvTypeList = [];
         });
@@ -502,7 +505,7 @@ export class MyApprovalsComponent implements OnInit {
         if (this.isEdit) {
             //   let data=Object.assign({},value)
             // this.getEmpleaveRequests(data.userId);
-            this.lvType = this.lvTypeList.find(x => x.lvType == data.leaveType).lvTypeid;
+            this.lvType = this.lvTypeList.find((x:any)  => x.lvType == data.leaveType).lvTypeid;
             this.getLvReasonList(this.lvType);
             this.userid = data.userId;
             this.reqNo = data.reqId;
@@ -561,7 +564,8 @@ export class MyApprovalsComponent implements OnInit {
             this.LeaveAddress = data.addressDuringLeave;
             this.LeaveContactNo = data.contactNo;
             let docs = data.documents ? data.documents.split(",") : [];
-            docs.forEach(element => {
+            docs.forEach((element:any)=> {
+
                 this.fileslist.push(element);
             });
         }
@@ -651,7 +655,7 @@ export class MyApprovalsComponent implements OnInit {
                 this.ApproversList = data;
             }
 
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ApproversList = [];
         });
@@ -728,7 +732,7 @@ export class MyApprovalsComponent implements OnInit {
         this.newDynamic = { id: this.rowcount, empNo: null, Name: null, Dept: null, Desig: null, DOJ: null, NoHrs: null, applicable: null, stored: "0" };
         this.dynamicArray.push(this.newDynamic);
     }
-    removeRows(item) {
+    removeRows(item:any) {
         if (this.dynamicArray.length > 1) {
             const index = this.dynamicArray.indexOf(item);
             this.dynamicArray.splice(index, 1);
@@ -839,7 +843,7 @@ export class MyApprovalsComponent implements OnInit {
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
         });
     }
@@ -957,7 +961,7 @@ export class MyApprovalsComponent implements OnInit {
             if (data.employeeId > 0) {
                 // this.currentUser = data;
                 // this.userIdRequest.requestDate=this.requestdate;
-                let temp = this.locationList.find(x => x.id == this.currentUser.baselocation)
+                let temp = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation)
                 this.userIdRequest.plant = temp.code + "-" + temp.name;
                 this.userIdRequest.employeeId = data.employeeId;
                 this.userIdRequest.firstName = data.firstName;
@@ -979,7 +983,7 @@ export class MyApprovalsComponent implements OnInit {
             }
             // this.reInitDatatable();()
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.currentUser = {} as AuthData;
         });
@@ -988,19 +992,19 @@ export class MyApprovalsComponent implements OnInit {
 
     ShiftList: EmpShiftMaster[] = [];
     ShiftList1: EmpShiftMaster[] = [];
-    loccode: string;
+    loccode: string
 
     GetShift() {
-        let temp = this.locationList.find(x => x.id == this.currentUser.baselocation)
-        this.ShiftList1 = this.ShiftList.filter(x => x.loc.includes(temp.code));
+        let temp = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation)
+        this.ShiftList1 = this.ShiftList.filter((x:any)  => x.loc.includes(temp.code));
     }
     getShiftMasterList() {
         this.httpService.LAget(APIURLS.BR_GET_ALL_SHIFTS).then((data: any) => {
             if (data.length > 0) {
-                this.ShiftList = data.filter(x => x.isActive == true);
+                this.ShiftList = data.filter((x:any)  => x.isActive == true);
 
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ShiftList = [];
         });
@@ -1017,32 +1021,32 @@ export class MyApprovalsComponent implements OnInit {
         this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LEAVE_REQUESTS, srchstr).then((data: any) => {
             if (data) {
                 this.LeaveRequestList = data;
-                this.upcomingLeaves = this.LeaveRequestList.filter(x => x.approvelStatus == 'Approved');
+                this.upcomingLeaves = this.LeaveRequestList.filter((x:any)  => x.approvelStatus == 'Approved');
             }
             jQuery('#PreviousLeavesModal').modal("show")
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.LeaveRequestList = [];
         });
     }
 
     lvbalaneList: any[] = [];
-    getUsersList(id) {
+    getUsersList(id:any) {
         this.errMsg = "";
         this.lvbalaneList = [];
         let srcstr = id + "," + this.CalYear;
         this.httpService.LAgetByParam(APIURLS.GET_LEAVE_DATA_BY_EMPLOYEE, srcstr).then((data: any) => {
             if (data.length > 0) {
-                this.lvbalaneList = data.sort((a, b) => {
+                this.lvbalaneList = data.sort((a:any, b:any) => {
                     if (a.lvTypeid > b.lvTypeid) return 1;
                     if (a.lvTypeid < b.lvTypeid) return -1;
                     return 0;
                 });
             }
             this.reInitDatatable();
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.lvbalaneList = [];
         });
@@ -1071,7 +1075,7 @@ export class MyApprovalsComponent implements OnInit {
         ApproveModel.type = this.filterRequest;
         ApproveModel.comments = this.Comments;
         let connection = this.httpService.LApost(APIURLS.BR_APPROVE_PENDING_REQUEST, ApproveModel);
-        connection.then((data) => {
+        connection.then((data:any) => {
             if (data) {
                 // toastr.success(data);
                 swal({
@@ -1114,7 +1118,7 @@ export class MyApprovalsComponent implements OnInit {
                 }
             }
             this.GetRequests();
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error Approving Request.'
         })
     }
@@ -1139,7 +1143,7 @@ export class MyApprovalsComponent implements OnInit {
         HRApproveModel.Type = this.filterRequest;
         HRApproveModel.comments = this.Comments;
         let connection = this.httpService.LApost(APIURLS.BR_APPROVE_PENDING_REQUEST, HRApproveModel);
-        connection.then((data) => {
+        connection.then((data:any) => {
             if (data) {
                 swal({
                     title: "Message",
@@ -1152,7 +1156,7 @@ export class MyApprovalsComponent implements OnInit {
                 jQuery("#HRQModal").modal('hide');
             }
             this.GetRequests();
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error Approving Request.'
         })
 
@@ -1199,29 +1203,29 @@ export class MyApprovalsComponent implements OnInit {
         });
         let ApproveModel: any = {};
         if (this.filterRequest == 'Leave' || this.filterRequest == 'Cancel Leave') {
-            ApproveModel.reqId = this.checkedRequestList.map(x => x.reqId).join();
+            ApproveModel.reqId = this.checkedRequestList.map((x:any)  => x.reqId).join();
         }
         else if (this.filterRequest == 'OnDuty' || this.filterRequest == 'Cancel OnDuty' || this.filterRequest == 'Permission') {
-            ApproveModel.reqId = this.checkedRequestList.map(x => x.requestNo).join();
+            ApproveModel.reqId = this.checkedRequestList.map((x:any)  => x.requestNo).join();
         }
         else if (this.filterRequest == 'Tour Plan') {
-            ApproveModel.reqId = this.checkedRequestList.map(x => x.id).join();
+            ApproveModel.reqId = this.checkedRequestList.map((x:any)  => x.id).join();
         }
         else if (this.filterRequest == 'Regularization') {
-            ApproveModel.reqId = this.checkedRequestList.map(x => x.requestNo).join();
+            ApproveModel.reqId = this.checkedRequestList.map((x:any)  => x.requestNo).join();
         }
         else if (this.filterRequest == 'Payroll Regularization') {
-            ApproveModel.reqId = this.checkedRequestList.map(x => x.requestNo).join();
+            ApproveModel.reqId = this.checkedRequestList.map((x:any)  => x.requestNo).join();
         }
         else {
-            ApproveModel.reqId = this.checkedRequestList.map(x => x.reqNo).join();
+            ApproveModel.reqId = this.checkedRequestList.map((x:any)  => x.reqNo).join();
         }
         ApproveModel.empCode = this.currentUser.employeeId;
         ApproveModel.status = status;
         ApproveModel.type = this.filterRequest;
         ApproveModel.comments = 'Mass ' + status;
         let connection = this.httpService.LApost(APIURLS.BR_APPROVE_PENDING_REQUEST, ApproveModel);
-        connection.then((data) => {
+        connection.then((data:any) => {
             if (data) {
                 // toastr.success(data);
                 swal({
@@ -1235,7 +1239,7 @@ export class MyApprovalsComponent implements OnInit {
             this.isLoadingPop = false;
             this.checkUncheckAll();
             this.GetRequests();
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error Approving Request.'
         })
     }
@@ -1260,7 +1264,9 @@ export class MyApprovalsComponent implements OnInit {
     }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -1279,16 +1285,16 @@ export class MyApprovalsComponent implements OnInit {
     ];
 
     catList: any[] = [];
-    CategoryList: any[];
+    CategoryList!: any[];
     getCatList() {
         this.httpService.LAget(APIURLS.BR_GET_QUERY_CATEGORY).then((data: any) => {
             // this.isLoading = false;
             if (data.length > 0) {
                 this.catList = data;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.catList.sort((a, b) => { return collator.compare(a.name, b.name) });
+                this.catList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.catList = [];
         });
     }
@@ -1300,16 +1306,16 @@ export class MyApprovalsComponent implements OnInit {
         if (value.length > 0) {
             this.httpService.LAgetFile(APIURLS.BR_LEAVE_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
                 // console.log(data);
-                // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+                // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
                 if (data != undefined) {
-                    var FileSaver = require('file-saver');
+                   // var FileSaver = require('file-saver');
                     const imageFile = new File([data], value, { type: 'application/doc' });
                     // console.log(imageFile);
-                    FileSaver.saveAs(imageFile);
+                //      FileSaver.saveAs(imageFile);
 
 
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
             });
 
@@ -1334,16 +1340,16 @@ export class MyApprovalsComponent implements OnInit {
         if (value.length > 0) {
             this.httpService.LAgetFile(APIURLS.BR_ONDUTY_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
                 // console.log(data);
-                // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+                // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
                 if (data != undefined) {
-                    var FileSaver = require('file-saver');
+                   // var FileSaver = require('file-saver');
                     const imageFile = new File([data], value, { type: 'application/doc' });
                     // console.log(imageFile);
-                    FileSaver.saveAs(imageFile);
+                //      FileSaver.saveAs(imageFile);
 
 
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
             });
 

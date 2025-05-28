@@ -23,10 +23,10 @@ import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { PermissionDetails } from './PermissionRequest.model';
-import * as moment from 'moment';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import htmlToPdfmake from 'html-to-pdfmake';
+import moment from 'moment'
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 declare var ActiveXObject: (type: string) => void;
 
@@ -38,11 +38,11 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./PermissionRequest.component.css']
 })
 export class PermissionRequestComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -58,9 +58,9 @@ export class PermissionRequestComponent implements OnInit {
   locListCon1 = [];
   genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -69,9 +69,9 @@ export class PermissionRequestComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   userMasterItem: any = {};
@@ -79,19 +79,19 @@ export class PermissionRequestComponent implements OnInit {
 
   CalenderYear: string = '';
   CalYear: any;
-  OnDutyType: string = null;
-  StartDate: string = null;
-  EndDate: string = null;
-  Duration1: string = null;
-  Duration2: string = null;
+  OnDutyType: string = ' ';
+  StartDate: string = ' ';
+  EndDate: string = ' ';
+  Duration1: string = ' ';
+  Duration2: string = ' ';
   NoOfDays: number = 0;
-  LvReason: string = null;
+  LvReason: string = ' ';
   personResponsible: any;
   personName: any;
   DetailedReason: string = '';
   PermissionRequestList: any[] = [];
-  approverStatus: string = null;
-  approvedDate: string = null;
+  approverStatus: string = ' ';
+  approvedDate: string = ' ';
   Starttime: any;
   EndTime: any;
   fromDate: any;
@@ -111,7 +111,9 @@ export class PermissionRequestComponent implements OnInit {
   perReason: any;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -144,7 +146,7 @@ export class PermissionRequestComponent implements OnInit {
 
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -153,30 +155,31 @@ export class PermissionRequestComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.loccode = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.loccode = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
         this.getLvRulesList();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
@@ -207,16 +210,16 @@ export class PermissionRequestComponent implements OnInit {
     this.errMsg = "";
     this.get("RoleMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.Rolelist = data.filter(x => x.isActive);
+        this.Rolelist = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Rolelist = [];
     });
   }
 
-  getRole(id) {
-    let temp = this.Rolelist.find(x => x.id == id);
+  getRole(id:any) {
+    let temp = this.Rolelist.find((x:any)  => x.id == id);
     return temp ? temp.role_Stxt : '';
   }
 
@@ -224,31 +227,31 @@ export class PermissionRequestComponent implements OnInit {
   HolidayDate: any;
   holidayname: any = null;
   holidaysList: HolidayMaster[] = [];
-  getholidaysList(id) {
+  getholidaysList(id:any) {
     this.errMsg = "";
     let srchstr = this.currentUser.baselocation + ',,' + this.year + ',' + ',,'
     this.httpService.LAgetByParam(APIURLS.GET_HOLIDAYS_LIST, srchstr).then((data: any) => {
       if (data.length > 0) {
         this.holidaysList = data;
-        this.holidaysList = this.holidaysList.filter(x => x.isActive == true).sort((a, b) => {
+        this.holidaysList = this.holidaysList.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => {
           if (a.date > b.date) return 1;
           if (a.date < b.date) return -1;
           return 0;
 
         });
-        let temp = this.holidaysList.find(x => new Date(x.date) > new Date());
+        let temp = this.holidaysList.find((x:any)  => new Date(x.date) > new Date());
         this.Holiday = temp ? temp.holidayName : 'No Holidays.'
         this.HolidayDate = temp ? temp.date : null;
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.holidaysList = [];
     });
   }
 
   ApproversList: any[] = [];
-  getApproversList(id) {
+  getApproversList(id:any) {
     if(this.ApplyFor == "Others" && (this.userId == null || this.userId == '')) {
       toastr.error("Please enter Employee no...!");
       return;
@@ -273,14 +276,14 @@ export class PermissionRequestComponent implements OnInit {
 
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
   }
 
   // ApproversList1: any[] = [];
-  // getApproversListforPM(id) {
+  // getApproversListforPM(id:any) {
   //   this.errMsg = "";
   //   this.httpService.LAgetByParam(APIURLS.GET_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
   //     if (data) {
@@ -294,7 +297,7 @@ export class PermissionRequestComponent implements OnInit {
 
   //       //this.reInitDatatable();
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.isLoading = false;
   //     this.ApproversList = [];
   //   });
@@ -311,7 +314,7 @@ export class PermissionRequestComponent implements OnInit {
 
   fileToUpload: File | null = null;
   File: File | null = null;
-  name: string;
+  name: string
   files: File[] = []
   handleFileInput(files: FileList) {
 
@@ -343,7 +346,7 @@ export class PermissionRequestComponent implements OnInit {
   }
 
 
-  id: string;
+  id: string
   formData = new FormData();
   fileslist1: any[] = [];
   errMsg1: string = '';
@@ -362,7 +365,7 @@ export class PermissionRequestComponent implements OnInit {
         // console.log('copied file to server')
         //this.imageFlag = true;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
 
@@ -375,9 +378,9 @@ export class PermissionRequestComponent implements OnInit {
     this.ReasonList = [];
     this.httpService.LAget(APIURLS.BR_GET_ALL_REASONS_LIST).then((data: any) => {
       if (data.length > 0) {
-        this.ReasonList = data.filter(x => x.isActive);
+        this.ReasonList = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReasonList = [];
     });
@@ -389,7 +392,7 @@ export class PermissionRequestComponent implements OnInit {
     this.errMsg = "";
     this.httpService.LAget(APIURLS.GET_ALL_RULES_DATA_GETALL).then((data: any) => {
       if (data.length > 0) {
-        this.LvRulesList = data.filter(x => x.locationCode == this.loccode);
+        this.LvRulesList = data.filter((x:any)  => x.locationCode == this.loccode);
 
         if (this.LvRulesList[0].permissionType == 'COUNT WISE') {
           this.totalCount = this.LvRulesList[0].permissionCountYearly;
@@ -401,7 +404,7 @@ export class PermissionRequestComponent implements OnInit {
         }
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReasonList = [];
     });
@@ -415,7 +418,7 @@ export class PermissionRequestComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -425,7 +428,7 @@ export class PermissionRequestComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -435,7 +438,7 @@ export class PermissionRequestComponent implements OnInit {
                   $("#personName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -470,11 +473,11 @@ export class PermissionRequestComponent implements OnInit {
       if (data) {
         this.PermissionRequestList = data;
         this.PermissionRequestList.reverse();
-        this.PermissionCount = this.PermissionRequestList.filter(x => x.approverStatus == 'Approved' || x.approverStatus == 'Pending').length + 1;
+        this.PermissionCount = this.PermissionRequestList.filter((x:any)  => x.approverStatus == 'Approved' || x.approverStatus == 'Pending').length + 1;
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PermissionRequestList = [];
     });
@@ -556,7 +559,7 @@ export class PermissionRequestComponent implements OnInit {
 
       //this.getEmpleaveRequests();
       this.reset();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Failure Sending Mail ..';
     });
   }
@@ -601,7 +604,7 @@ export class PermissionRequestComponent implements OnInit {
           }
           this.getEmpPermissionRequests();
           this.reset();
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error Cancelling Permission ..';
         });
 
@@ -644,7 +647,7 @@ export class PermissionRequestComponent implements OnInit {
           this.attendanceDetails.push(data);
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.attendanceDetails = [];
       });
@@ -653,7 +656,7 @@ export class PermissionRequestComponent implements OnInit {
   }
 
   ApplyFor: any = null;
-  userId: string = null;
+  userId: string = ' ';
   lastReportingkeydown1 = 0;
   getEmployee($event) {
     let text = $('#userId').val();
@@ -662,7 +665,7 @@ export class PermissionRequestComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -672,7 +675,7 @@ export class PermissionRequestComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#userId").val(ui.item.value);
                   $("#userId").val(ui.item.value);
@@ -682,7 +685,7 @@ export class PermissionRequestComponent implements OnInit {
                   $("#userId").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#userId").val(ui.item.value);
                   $("#userId").val(ui.item.value);
@@ -777,7 +780,7 @@ export class PermissionRequestComponent implements OnInit {
         })
       }
       this.getEmpPermissionRequests();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error Applying Permission ..';
     });
   }
@@ -803,7 +806,8 @@ export class PermissionRequestComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -833,7 +837,7 @@ getHeader(): { headers: HttpHeaders } {
     return formateddate;
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -858,7 +862,7 @@ getHeader(): { headers: HttpHeaders } {
     let connection = this.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, val);
     connection.then((data: any) => {
       if (data) {
-        let result = data.filter(x => { return x.employeeId != null });
+        let result = data.filter((x:any)  => { return x.employeeId != null });
         this.Department = result[0].department;
         this.Designation = result[0].designation;
         this.FullName = result[0].fullName;
@@ -866,7 +870,7 @@ getHeader(): { headers: HttpHeaders } {
         this.JoiningDate = result[0].joiningDate;
         this.RoleId = result[0].roleId;
       }
-    }).catch(error => {
+    }).catch((error)=> {
     });
   }
 
@@ -900,7 +904,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -913,14 +917,14 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Permission Detail',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -938,7 +942,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -993,7 +997,7 @@ getHeader(): { headers: HttpHeaders } {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 

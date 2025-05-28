@@ -11,9 +11,9 @@ import { AuditLogChange } from '../auditlogchange.model';
 import { AuditLog } from '../auditlog.model';
 declare var jQuery: any;
 export class actionItemModel {
-  inwardMail: string;
-  outwardMail: string;
-  visitorMail: string;
+  inwardMail: string
+  outwardMail: string
+  visitorMail: string
 }
 
 @Component({
@@ -23,7 +23,7 @@ export class actionItemModel {
 })
 export class MailconfigurationComponent implements OnInit {
   public tableWidget: any;
-  @ViewChild(NgForm  , { static: false }) locationMasterForm: NgForm;
+  @ViewChild(NgForm  , { static: false }) locationMasterForm!: NgForm;
   LocationMasterList: any[] = [[]];
   locationMasterItem: Location = new Location();
   isLoading: boolean = false;
@@ -34,10 +34,10 @@ export class MailconfigurationComponent implements OnInit {
   isEdit: boolean = false;
   checkAll: boolean = false;
   path: string = '';
-  currentUser: AuthData;
+  currentUser!: AuthData;
   oldlocationMasterItem: Location = new Location();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) {
 
   }
@@ -62,7 +62,8 @@ export class MailconfigurationComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationMasterList();
     }
     else
@@ -102,7 +103,7 @@ export class MailconfigurationComponent implements OnInit {
       }
       this.isLoading = false;
       this.reInitDatatable();
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.LocationMasterList = [];
     });
@@ -131,7 +132,7 @@ export class MailconfigurationComponent implements OnInit {
         this.insertAuditLog(this.oldlocationMasterItem, this.locationMasterItem, this.locationMasterItem.id);
         this.getLocationMasterList();
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Location..';
     });
@@ -198,12 +199,12 @@ export class MailconfigurationComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -212,7 +213,7 @@ export class MailconfigurationComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

@@ -2,44 +2,44 @@ import { WorkFlowApprovers } from "../../eMicro/Masters/WorkFlowApprovers/WorkFl
 
 export class UserIdRequest{
    
-  id: number;
-  requestNo: string;
-  requestType: string;
-  requestDate: string;
-  locationId: number;
-  sid: number;
-  requesterId: string;
-  onBehalfEmp: string;
-  comments: string;
-  releivedDate: string;
-  isWorkItemsAssignedPending: number;
-  isPendingWorkTransferred: number;
-  catogery: string;
-  presentRoleInQams: string;
-  newRoleInQams: string;
-  isInductionTrainingRequired: number;
-  trainingRecordPath: string;
-  dateOfTraining: string;
-  jddocument: string;
-  validFrom: string;
-  temporaryPasswordConveyed: boolean;
-  temporaryPassword: string;
-  userActivated: boolean;
-  userAddedToRequestedGroup: boolean;
-  unlocking: boolean;
-  discontinuation: boolean;
-  userAddedToRequestedPlants: number;
-  userAddedToSubGroup: number;
-  userAddedToTheRequestedRepositoryDomain: number;
-  jdIntiated: number;
-  jdApproved: number;
-  jdAcceptedByUser: number;
-  emailIdUpdate: string;
-  resetPassword: number;
-  reasonForReset: string;
-  userIdUnlock: boolean;
-  reasonForUnlock: string;
-  allottedUserId: string;
+  id!: number;
+  requestNo: string
+  requestType: string
+  requestDate: string
+  locationId!: number;
+  sid!: number;
+  requesterId: string
+  onBehalfEmp: string
+  comments: string
+  releivedDate: string
+  isWorkItemsAssignedPending!: number;
+  isPendingWorkTransferred!: number;
+  catogery: string
+  presentRoleInQams: string
+  newRoleInQams: string
+  isInductionTrainingRequired!: number;
+  trainingRecordPath: string
+  dateOfTraining: string
+  jddocument: string
+  validFrom: string
+  temporaryPasswordConveyed!: boolean;
+  temporaryPassword: string
+  userActivated!: boolean;
+  userAddedToRequestedGroup!: boolean;
+  unlocking!: boolean;
+  discontinuation!: boolean;
+  userAddedToRequestedPlants!: number;
+  userAddedToSubGroup!: number;
+  userAddedToTheRequestedRepositoryDomain!: number;
+  jdIntiated!: number;
+  jdApproved!: number;
+  jdAcceptedByUser!: number;
+  emailIdUpdate: string
+  resetPassword!: number;
+  reasonForReset: string
+  userIdUnlock!: boolean;
+  reasonForUnlock: string
+  allottedUserId: string
 
   requestfor:string;
   pendingApprover:string;
@@ -66,8 +66,8 @@ export class UserIdRequest{
   remarks:string;
   userIdModification:number;
   configuredCommunication:number;
-  roleUpdated: number;
-  passwordReset: number;
+  roleUpdated!: number;
+  passwordReset!: number;
   selectedRoles:any[]=[];;
   selectedNewRoles:any[]=[];;
 
@@ -112,37 +112,37 @@ export class UserIdRequest{
   role:string;
   salutation:string;
   updatedDesignation:string;
-  updatedReporting: string;
-  softwareType: string;
+  updatedReporting: string
+  softwareType: string
 
 
-  adId: string;
-  assetDetails: string;
-  hostname: string;
-  ipAddress: string;
-  requiredSoftwares: string;
-  email: string;
-  mobileNo: string;
-  reportingManagerEmail: string;
-  prefferedEmail: string;
-  allowOutsideComm: string;
-  commonOrIndividualId: string;
-  accessOnMobile: string;
-  empType: string;
-  emailBackup: string;
-  accessType: string;
-  folderAccessPath: string;
-  accessDurtion: string;
-  fileservername: string;
-  licenseType: string;
-  officeSuite: string;
-  mailandTeamsAccess: string;
-  vendorName: string;
-  applicationName: string;
-  serverList: string;
-  ipType: string;
-  noOfIps: string;
-  usbFromDate: string;
-  usbTodate: string;
+  adId: string
+  assetDetails: string
+  hostname: string
+  ipAddress: string
+  requiredSoftwares: string
+  email: string
+  mobileNo: string
+  reportingManagerEmail: string
+  prefferedEmail: string
+  allowOutsideComm: string
+  commonOrIndividualId: string
+  accessOnMobile: string
+  empType: string
+  emailBackup: string
+  accessType: string
+  folderAccessPath: string
+  accessDurtion: string
+  fileservername: string
+  licenseType: string
+  officeSuite: string
+  mailandTeamsAccess: string
+  vendorName: string
+  applicationName: string
+  serverList: string
+  ipType: string
+  noOfIps: string
+  usbFromDate: string
+  usbTodate: string
   
 }

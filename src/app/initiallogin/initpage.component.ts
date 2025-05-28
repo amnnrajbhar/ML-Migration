@@ -14,16 +14,17 @@ declare var jQuery: any;
 })
 export class InitPageComponent implements OnInit {
   title = 'app';
-  dshbrdRouteList: any[];
-  dshbrdV1: any[];
-  dshbrdV2: any[];
-  dshbrdV3: any[];
-  currentUser: AuthData;
+  dshbrdRouteList!: any[];
+  dshbrdV1!: any[];
+  dshbrdV2!: any[];
+  dshbrdV3!: any[];
+  currentUser!: AuthData;
 
   constructor(private appService: AppComponent, private router: Router, private httpService: HttpService) { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.title = 'Loading';
     this.routetoDashboard();
     //this.router.navigate(["/dashboard"]);
@@ -55,8 +56,8 @@ export class InitPageComponent implements OnInit {
         //     //location.reload();
         // }
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.dshbrdRouteList = [];
     });
   }

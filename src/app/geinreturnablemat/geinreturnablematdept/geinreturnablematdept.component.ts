@@ -20,35 +20,35 @@ declare var jQuery: any;
   styleUrls: ['./geinreturnablematdept.component.css']
 })
 export class GeinreturnablematdeptComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) depForm: NgForm;
+@ViewChild(NgForm, { static: false }) depForm!: NgForm;
 ;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
-  fiscalYear: string;
+  path!: string
+  fiscalYear: string
   errMsg: string = "";
   errMsgPop: string = "";
   errMsgModalPop: string = "";
-  isEdit: boolean;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  isLoadingBAPI: boolean;
+  isEdit!: boolean;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  isLoadingBAPI!: boolean;
   gateEntryMModel = {} as GateEntryM;
   gateEntryMList: GateEntryM[] = [];
   gateEntryDList: GateEntryD[] = [];
   gateOutwardMModel = {} as GateOutwardMaster;
   gateOutwardMList: GateOutwardMaster[] = [];
-  pO_No: string;
+  pO_No: string
   qtY_RCVD: any;
   entryDateTime: Date = new Date();
-  userName: string;
+  userName: string
   iN_TIME: any;
-  reason: string;
-  gateNo: string;
-  gONo: string;
-  sendingPersonName: string;
+  reason: string
+  gateNo: string
+  gONo: string
+  sendingPersonName: string
 
   elementtype:string;
 
@@ -71,7 +71,8 @@ export class GeinreturnablematdeptComponent implements OnInit {
     this.fiscalYear = this.getCurrentFinancialYear();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.userName = this.currentUser.fullName;
       this.getGateList();
     //  this.getPlantsassigned(this.currentUser.fkEmpId);
@@ -91,7 +92,7 @@ export class GeinreturnablematdeptComponent implements OnInit {
         this.selGateLocation = null;
       }
       this.isLoading = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.locationGateList = [];
     });
@@ -102,9 +103,9 @@ export class GeinreturnablematdeptComponent implements OnInit {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_GETBY_ANY_API,this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
-        this.employeeList = data.map((i) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
+        this.employeeList = data.map((i:any) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.employeeList = [];
     });
@@ -128,8 +129,8 @@ export class GeinreturnablematdeptComponent implements OnInit {
     }
     setTimeout(() => this.initDatatable(), 0)
   }
-  locationName: string;
-  plant: string;
+  locationName: string
+  plant!: string
   plantList:any[]=[];
   location:any[]=[];
   getLocationById(lId: number) {
@@ -143,14 +144,14 @@ export class GeinreturnablematdeptComponent implements OnInit {
         this.getAllGateEntries("load");  
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plant = '';
       this.locationName = '';
     });
   }
   baseloc={fkPlantId:0,code:'',name:''}
-  getPlantsassigned(id)
+  getPlantsassigned(id:any)
   {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
@@ -159,7 +160,8 @@ export class GeinreturnablematdeptComponent implements OnInit {
         let temp=this.plantList.find(x=>x.fkPlantId == this.currentUser.baselocation);
         if(temp == null || temp == undefined)
         {
-          this.location.forEach(element => {
+          this.location.forEach((element:any)=> {
+
             this.baseloc.fkPlantId=element.id;
             this.baseloc.code=element.code;
             this.baseloc.name=element.name;
@@ -170,7 +172,7 @@ export class GeinreturnablematdeptComponent implements OnInit {
       // this.getAllGateEntries("load"); 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -236,8 +238,8 @@ export class GeinreturnablematdeptComponent implements OnInit {
   to_date: any = this.today;
   acknowledge: boolean = false;
   delete: boolean = false;
-  fltrGINO: string;
-  fltrInvoice: string;
+  fltrGINO: string
+  fltrInvoice: string
   gIacknowledge: any = null;
   getAllGateEntries(msg) {
     this.isLoading = true;
@@ -267,7 +269,7 @@ export class GeinreturnablematdeptComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.gateEntryMList = [];
     });
@@ -275,7 +277,7 @@ export class GeinreturnablematdeptComponent implements OnInit {
       this.onGateEntryActions(true,this.gateEntryMModel,'print');
     }
   }
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {
@@ -305,12 +307,12 @@ export class GeinreturnablematdeptComponent implements OnInit {
         if (data) {
           // this.gateOutwardMModel = data[0];
           Object.assign(this.gateOutwardMModel,data[0]);
-          this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
+          this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
           this.sendingPersonName = this.sendingPERSON.firstName + ' ' + this.sendingPERSON.middleName + ' ' + this.sendingPERSON.lastName;
        
           this.intime=this.getFormatedInTime(this.gateEntryMModel.iN_TIME);
         }
-      }).catch(() => {
+      }).catch((error) => {
         this.gateOutwardMModel = {} as GateOutwardMaster;
       });
       this.userName =  gateEntryM.persoN_NAME;
@@ -319,7 +321,7 @@ export class GeinreturnablematdeptComponent implements OnInit {
         if (data.length > 0) {
           this.gateEntryDList = data;
         }
-      }).catch(() => {
+      }).catch((error) => {
         this.gateEntryDList = [];
       });
     }
@@ -374,7 +376,7 @@ export class GeinreturnablematdeptComponent implements OnInit {
               });
               this.isLoadingPop = false;
             }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error Acknowledge Return Materials...';
           });
@@ -438,7 +440,7 @@ export class GeinreturnablematdeptComponent implements OnInit {
         });
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Could not connect to SAP.Please try after sometime or contact to administrator';
       this.isLoadingPop = false;
     });
@@ -452,7 +454,7 @@ export class GeinreturnablematdeptComponent implements OnInit {
         this. onUpdateOutwardSTO();
         this.isLoadingPop = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Delete Returnable Materials...';
     });
@@ -467,7 +469,7 @@ export class GeinreturnablematdeptComponent implements OnInit {
       this.isLoadingPop = true;
       if (data == 200 || data.id > 0) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error in Gate Outward Header';
     });

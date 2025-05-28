@@ -30,7 +30,7 @@ export class EditConfirmationComponent  implements OnInit {
   currentTab: string = "details";
   tabIndex: number = 0;
   tabsList: string[] = ["details", "salarychange", "history"];
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   urlPath: string = '';
   errMsg: string = "";
@@ -83,9 +83,9 @@ export class EditConfirmationComponent  implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_PLANT_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -97,9 +97,9 @@ export class EditConfirmationComponent  implements OnInit {
     if (this.payGroupFullList.length <= 0) {
       this.httpService.HRget(APIURLS.OFFER_PAYGROUP_MASTER_ALL_API).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupFullList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupFullList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupFullList = [];
       });
     }  
@@ -111,7 +111,7 @@ export class EditConfirmationComponent  implements OnInit {
     }
     if(this.filterModel.plantId > 0){
       let plant = this.plantList.find(x=>x.id == this.filterModel.plantId);
-      this.payGroupList = this.payGroupFullList.filter(x=>x.plant == plant.code);
+      this.payGroupList = this.payGroupFullList.filter((x:any)=>x.plant == plant.code);
     }else{
       this.payGroupList = [];
       this.filterModel.payGroupId = "";
@@ -128,9 +128,9 @@ export class EditConfirmationComponent  implements OnInit {
       this.httpService.HRget(APIURLS.OFFER_EMPLOYEE_CATEGORY_ALL_API)
         .then((data: any) => {
           if (data.length > 0) {
-            this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+            this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.employeeCategoryList = [];
         });
     }
@@ -142,9 +142,9 @@ export class EditConfirmationComponent  implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -154,9 +154,9 @@ export class EditConfirmationComponent  implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -165,9 +165,9 @@ export class EditConfirmationComponent  implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -176,9 +176,9 @@ export class EditConfirmationComponent  implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -187,9 +187,9 @@ export class EditConfirmationComponent  implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -198,9 +198,9 @@ export class EditConfirmationComponent  implements OnInit {
   getQualifications() {
     this.httpService.HRget(APIURLS.EDUCATION_C_M_API_GETALL).then((data: any) => {
       if (data.length > 0) {
-        this.qualificationList = data.sort((a, b) => { if (a.educationCourse > b.educationCourse) return 1; if (a.educationCourse < b.educationCourse) return -1; return 0; });
+        this.qualificationList = data.sort((a:any, b:any) => { if (a.educationCourse > b.educationCourse) return 1; if (a.educationCourse < b.educationCourse) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.qualificationList = [];
     });
   }
@@ -210,9 +210,9 @@ export class EditConfirmationComponent  implements OnInit {
   getSubDepartments() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        this.subDepartmentFullList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        this.subDepartmentFullList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.subDepartmentFullList = [];
     });
   }
@@ -224,9 +224,9 @@ getSignatories(){
     this.httpService.HRget(APIURLS.CONFIRMATION_GET_SIGNATORIES + "/" + this.employeeDetail.plantId + "/" + this.employeeDetail.payGroupId +"/"+this.employeeDetail.employeeCategoryId)
     .then((data: any) => {
       if (data.length > 0 && this.signatoryList.length == 0) {
-        this.signatoryList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.signatoryList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.signatoryList = [];
     });
   }
@@ -249,7 +249,8 @@ getSignatories(){
     if (chkaccess == true) {
       this.employeeId = this.route.snapshot.paramMap.get('id2')!;
       this.employeeConfirmationId = this.route.snapshot.paramMap.get('id')!;
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.isLoading = true;
       this.loadDetails();
       this.getAllDropDownValues();
@@ -287,7 +288,7 @@ getSignatories(){
         this.loadOldDetails();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -346,7 +347,7 @@ getSignatories(){
           this.onPayGroupChange(null);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -364,7 +365,7 @@ getSignatories(){
       if ($event.timeStamp - this.lastAppraiseeEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -374,7 +375,7 @@ getSignatories(){
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#appraisedBYEmployeeId").val(ui.item.value);
                   $("#appraisedBYEmployeeName").val(ui.item.label);
@@ -384,7 +385,7 @@ getSignatories(){
                   $("#appraisedBYEmployeeName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#appraisedBYEmployeeId").val(ui.item.value);
                   $("#appraisedBYEmployeeName").val(ui.item.label);
@@ -411,7 +412,7 @@ getSignatories(){
       if ($event.timeStamp - this.lastApproverEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -421,7 +422,7 @@ getSignatories(){
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvedBYEmployeeId").val(ui.item.value);
                   $("#approvedBYEmployeeName").val(ui.item.label);
@@ -431,7 +432,7 @@ getSignatories(){
                   $("#approvedBYEmployeeName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvedBYEmployeeId").val(ui.item.value);
                   $("#approvedBYEmployeeName").val(ui.item.label);
@@ -488,13 +489,13 @@ getSignatories(){
     this.selectedStateText = event.target.options[event.target.options.selectedIndex].text;
     var selectedState = this.stateList.find(x=>x.id == this.filterModel.stateId);
     if(selectedState)
-      this.locationList = this.locationFullList.filter(x => x.stateId == selectedState.bland);
+      this.locationList = this.locationFullList.filter((x:any)  => x.stateId == selectedState.bland);
   }
 
   onDepartmentChange(event: any) {
     this.selectedDepartmentText = event.target.options[event.target.options.selectedIndex].text;
 
-    this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.filterModel.departmentId);
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.filterModel.departmentId);
   }
 
   onRoleSelected(event: any) {
@@ -504,7 +505,7 @@ getSignatories(){
     this.selectedDesignationText = event.target.options[event.target.options.selectedIndex].text;
   }
   onSubDepartmentSelected(event: any) {
-    // this.selectedSubDepartmentText = this.subDepartmentList.find(x => x.id == this.filterModel.subDepartmentId).sdptidLtxt;
+    // this.selectedSubDepartmentText = this.subDepartmentList.find((x:any)  => x.id == this.filterModel.subDepartmentId).sdptidLtxt;
 
     this.selectedSubDepartmentText = event.target.options[event.target.options.selectedIndex].text;
   }
@@ -575,7 +576,7 @@ getSignatories(){
         this.jobChangeDetailsList.push(jobChangeDetail);
       }
       if(this.filterModel.subDepartmentId > 0 ){
-        this.selectedSubDepartmentText = this.subDepartmentList.find(x => x.id == this.filterModel.subDepartmentId).sdptidLtxt;
+        this.selectedSubDepartmentText = this.subDepartmentList.find((x:any)  => x.id == this.filterModel.subDepartmentId).sdptidLtxt;
         jobChangeDetail = {} as JobChangeDetails;
         jobChangeDetail.type = "SubDepartment";
         jobChangeDetail.oldValueText = this.employeeDetail.subDepartmentName;
@@ -646,7 +647,7 @@ getSignatories(){
         this.isLoading = false;
         toastr.error('Error occured while saving Appraisal Details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving Appraisal Details. Error:' + error);
       });
@@ -705,7 +706,7 @@ getSignatories(){
         this.isLoading = false;
         toastr.error('Error occured while saving Appraisal Details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving Appraisal Details. Error:' + error);
       });
@@ -734,7 +735,7 @@ getSignatories(){
           toastr.error(data.message);
         } else
           toastr.error("Error occurred while submitting.");
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
       });
   }
@@ -753,7 +754,7 @@ getSignatories(){
   
   setEffectiveDate()
   {
-    var effectiveMonth = this.salaryProcessingMonths.find(x => x.type == this.newConfirmation.effectiveDateMonth);
+    var effectiveMonth = this.salaryProcessingMonths.find((x:any)  => x.type == this.newConfirmation.effectiveDateMonth);
     this.selectedEffectiveText = effectiveMonth.no + "/" + "1/" +  this.newConfirmation.effectiveDateYear;
     console.log(this.selectedEffectiveText);
     this.employeeSalaryComponent.LoadData();

@@ -1,5 +1,5 @@
 export interface CompleteEmployeeProfileTaskRequest{
     flowTaskId: number;
-    comments: string;
+    comments: string
     completedById: number;
 }

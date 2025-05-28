@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Chart } from 'chart.js';
+//import { Chart } from 'chart.js';
 import { AppComponent } from '../app.component';
 import { HttpService } from '../shared/http-service';
 import { Router } from '@angular/router';
@@ -12,16 +12,16 @@ declare var $: any;
 import { ExcelService } from '../shared/excel-service';
 import swal from 'sweetalert';
 import { componentFactoryName } from '@angular/compiler';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import * as moment from 'moment';
+import moment from 'moment'
 
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 import { Visitor } from '../visitorappointment/visitor.model';
 import { AmcvisitDetails } from '../UpdateAMCDetails/AMCDetails.model';
@@ -35,14 +35,14 @@ import { AmcvisitDetails } from '../UpdateAMCDetails/AMCDetails.model';
 export class LocationreportComponent implements OnInit {
   today: Date = new Date();
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
 
   imageStore = [];
   chart: any;
-  usrid: number;
+  usrid!: number;
   tableWidget: any;
-  errMsg: string;
-  isLoading: boolean;
+  errMsg: string
+  isLoading!: boolean;
   BellCurveManagerRatingList: any;
   EmployeeList: any[] = [[]];
   EmployeeList1: any[] = [[]];
@@ -98,17 +98,21 @@ export class LocationreportComponent implements OnInit {
   ];
   imageData: any;
 
-  isLoadingPop: boolean;
+  isLoadingPop!: boolean;
 
 
   constructor(private appService: AppComponent, private httpService: HttpService, private http: HttpClient, private router: Router, 
     private excelService: ExcelService,
-    private https: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+    private https: HttpClient) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
 
   ngOnInit() {
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+    //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
     this.usrid = authData.uid;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     // console.log(authData);
     this.isLoading = true;
     let d = new Date();
@@ -171,8 +175,8 @@ export class LocationreportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       // this.isLoading = false;
       if (data.length > 0) {
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locationList = data.filter(x=>x.isActive).sort((a,b)=>{
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locationList = data.filter((x:any)=>x.isActive).sort((a:any,b:any)=>{
           if(a.name > b.name) return 1;
           if(a.name < b.name) return -1;
           return 0;
@@ -180,7 +184,7 @@ export class LocationreportComponent implements OnInit {
         });        
         let temp=data.find(x=>x.id== this.currentUser.baselocation);
         this.locationname=temp.code +'-'+temp.name;
-        this.filterLocation=this.locListCon.filter(x=>x.id== this.currentUser.baselocation);
+        this.filterLocation=this.locListCon.filter((x:any)=>x.id== this.currentUser.baselocation);
         this.getFilteredDbData();
         // console.log(this.empMList);
         // this.employeeList = data;
@@ -197,14 +201,14 @@ export class LocationreportComponent implements OnInit {
 
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.locationList = [];
     });
   }
 
-  getLocationName(id) {
-    let temp = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let temp = this.locationList.find((s:any) => s.id == id);
     return temp ? temp.name : '';
   }
 
@@ -224,7 +228,7 @@ export class LocationreportComponent implements OnInit {
           allowSearchFilter: true
         };
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.purposeList = [];
     });
@@ -237,7 +241,7 @@ export class LocationreportComponent implements OnInit {
       // this.isLoading = false;
       if (data.length > 0) {
 
-        this.visitorTypeList = data.filter(x=>x.isActive).sort((a,b)=>{
+        this.visitorTypeList = data.filter((x:any)=>x.isActive).sort((a:any,b:any)=>{
           if(a.visitor_Type > b.visitor_Type) return 1;
           if(a.visitor_Type < b.visitor_Type) return -1;
           return 0;
@@ -250,7 +254,7 @@ export class LocationreportComponent implements OnInit {
           allowSearchFilter: true
         };
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.visitorTypeList = [];
     });
@@ -282,7 +286,7 @@ export class LocationreportComponent implements OnInit {
 
   dropdownSettingsE = {};
 
-  getEmployeeList(id) {
+  getEmployeeList(id:any) {
     // debugger;
     this.errMsg = "";
     this.isLoading = true;
@@ -294,13 +298,14 @@ export class LocationreportComponent implements OnInit {
 
 
 
-        this.location = this.EmployeeList1.find(s => s.id == this.usrid).baseLocation;
-        this.locationName = this.locationList.find(s => s.id == this.location).name;
-        this.EmployeeList = this.EmployeeList1.filter(s => s.baseLocation == this.location);
+        this.location = this.EmployeeList1.find((s:any) => s.id == this.usrid).baseLocation;
+        this.locationName = this.locationList.find((s:any) => s.id == this.location).name;
+        this.EmployeeList = this.EmployeeList1.filter((s:any) => s.baseLocation == this.location);
         //  this.EmployeeList = data;
         this.generateChart();
         this.empMList.slice(0);
-        this.EmployeeList.forEach(element => {
+        this.EmployeeList.forEach((element:any)=> {
+
           if (element.isActive) {
             var t = { 'id': 0, 'name': '' };
             t.id = element.employeeId;
@@ -320,7 +325,7 @@ export class LocationreportComponent implements OnInit {
 
         // this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList1 = [];
     });
@@ -372,17 +377,17 @@ export class LocationreportComponent implements OnInit {
 
   
 
-  getVisitorCount(id) {
-    return this.visitorsList1.find(s => s.fkEmployeeId == id) ? this.visitorsList1.filter(s => s.fkEmployeeId == id).length : 0;
+  getVisitorCount(id:any) {
+    return this.visitorsList1.find((s:any) => s.fkEmployeeId == id) ? this.visitorsList1.filter((s:any) => s.fkEmployeeId == id).length : 0;
   }
 
-  getVisitorType(id) {
-    let t = this.visitorTypeList.find(s => s.id == id);
+  getVisitorType(id:any) {
+    let t = this.visitorTypeList.find((s:any) => s.id == id);
     return t ? t.visitor_Type : '';
   }
 
-  getPurpose(id) {
-    let t = this.purposeList.find(s => s.id == id);
+  getPurpose(id:any) {
+    let t = this.purposeList.find((s:any) => s.id == id);
     return t ? t.purpose : '';
   }
 
@@ -407,7 +412,7 @@ export class LocationreportComponent implements OnInit {
       let dateCheck = temp.getFullYear() + "-" + ("00" + (temp.getMonth() + 1)).slice(-2) + "-" +
         ("00" + temp.getDate()).slice(-2);
 
-      let abc: any[] = this.visitorsListChart.filter(e => (new Date(e.date).getFullYear() + "-" + ("00" + (new Date(e.date).getMonth() + 1)).slice(-2) + "-" +
+      let abc: any[] = this.visitorsListChart.filter((e:any) => (new Date(e.date).getFullYear() + "-" + ("00" + (new Date(e.date).getMonth() + 1)).slice(-2) + "-" +
         ("00" + new Date(e.date).getDate()).slice(-2)) == dateCheck);
       // console.log(abc?abc.length:0);
       this.datas.push(abc ? abc.length : 0);
@@ -451,11 +456,11 @@ export class LocationreportComponent implements OnInit {
 
   onSelectAll() {
   }
-  additionalVisitorsDetails(id) {
+  additionalVisitorsDetails(id:any) {
     // console.log(id);
     this.avDetailsFlag = false;
     this.additionalVisitorItem = [];
-    this.additionalVisitorItem = this.additionalVisitors.filter(s => s.fkId == id);
+    this.additionalVisitorItem = this.additionalVisitors.filter((s:any) => s.fkId == id);
     // this.avDetailsFlag = this.additionalVisitorItem.length>0?true:false;
     // console.log(this.additionalVisitorItem);
     jQuery("#additionalVisitorModal").modal('show');
@@ -468,13 +473,13 @@ export class LocationreportComponent implements OnInit {
         this.additionalVisitors = data;
        
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.additionalVisitors = [];
     });
   }
-  getAdditionalCount(id) {
-    return this.additionalVisitors.filter(s => s.fkId == id).length;
+  getAdditionalCount(id:any) {
+    return this.additionalVisitors.filter((s:any) => s.fkId == id).length;
   }
   exportAsXLSX(): void {
     this.exportList = [];
@@ -559,14 +564,14 @@ export class LocationreportComponent implements OnInit {
   }
   downloadPdf()
   {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICROLABS LIMITED"+','+this.locationname;
     var ReportName = "VISITOR REPORT"
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate =this.setFormatedDateTime(now);
     var logo = this.userimage;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -579,14 +584,14 @@ export class LocationreportComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:'Visitor Report',
         },
       
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -604,7 +609,7 @@ export class LocationreportComponent implements OnInit {
       pageSize: 'A3',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -646,7 +651,7 @@ export class LocationreportComponent implements OnInit {
       },
   
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
@@ -669,8 +674,8 @@ export class LocationreportComponent implements OnInit {
         this.visitorsFilteredList1 = data;
         // console.log(this.visitorsFilteredList1);
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
 
         // console.log(formatedFROMdate+'::'+formatedTOdate);
         if (this.from_date == '' || this.from_date == null) {
@@ -718,7 +723,7 @@ export class LocationreportComponent implements OnInit {
         this.isLoading = false;
         // this.reInitVisitorDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.visitorsFilteredList = [];
       this.visitorsFilteredList1 = [];
@@ -726,7 +731,7 @@ export class LocationreportComponent implements OnInit {
 
   }
 
-  getFormatedDate(d) {
+  getFormatedDate(d:any) {
     let fd = new Date(d);
     let formateddate = fd.getFullYear() + "-" + ("00" + (fd.getMonth() + 1)).slice(-2) + "-" +
       ("00" + fd.getDate()).slice(-2);
@@ -742,8 +747,8 @@ export class LocationreportComponent implements OnInit {
     this.visitorsList1.splice(0);
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
 
     // console.log(formatedFROMdate+'::'+formatedTOdate);
     if (this.from_date == '' || this.from_date == null) {
@@ -791,10 +796,11 @@ export class LocationreportComponent implements OnInit {
       if (data.length > 0) {
         this.visitorsList1 = data;
         // console.log(this.visitorsList1);
-        this.visitorsList = this.visitorsList1.filter(s => s.numberOfPerson > 0);
+        this.visitorsList = this.visitorsList1.filter((s:any) => s.numberOfPerson > 0);
         // console.log(this.visitorsList.length);
 
-        this.visitorsList.forEach(element => {
+        this.visitorsList.forEach((element:any)=> {
+
           let im = { id: 0, imgpath: '' };
           im.id = element.id;
           im.imgpath = element.temp;
@@ -816,7 +822,7 @@ export class LocationreportComponent implements OnInit {
       this.isLoading = false;
       this.isGoLoading = false;
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isGoLoading = false;
       this.isLoading = false;
       this.visitorsList1 = [];
@@ -826,14 +832,14 @@ export class LocationreportComponent implements OnInit {
   }
 
   image:any;
-  downloadImage(id) {
+  downloadImage(id:any) {
     debugger;
-    let filename = this.imageStore.find(s => s.id == id).imgpath;
+    let filename = this.imageStore.find((s:any) => s.id == id).imgpath;
     // console.log(filename);
     if (filename.length > 0) {
       this.httpService.getImageFile(APIURLS.BR_VMS_FILEDOWNLOAD_API, id, filename).then((data: any) => {
         // console.log(data);
-        let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         // if (data.length > 0) {
         // this.imageData = data;
         // console.log(data);
@@ -857,7 +863,7 @@ export class LocationreportComponent implements OnInit {
 
 
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
 
@@ -876,7 +882,8 @@ export class LocationreportComponent implements OnInit {
     }
   }
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -899,7 +906,7 @@ getHeader(): { headers: HttpHeaders } {
     this.filterStatus=[];
     this.filterEmployee=[];
   }
-  getTimeFormat(time) {
+  getTimeFormat(time:any) {
     return moment('1970-01-01 '+time);
   }
 
@@ -913,7 +920,7 @@ getHeader(): { headers: HttpHeaders } {
   getAMCDetailsById(id: number) {
     this.isLoading = true;
 
-    this.httpService.getById(APIURLS.GET_AMC_VISIT_DETAILS_BY_ID, id).then((data) => {
+    this.httpService.getById(APIURLS.GET_AMC_VISIT_DETAILS_BY_ID, id).then((data:any) => {
       if (data.length > 0) {
         this.printAMCItems = data;
       }

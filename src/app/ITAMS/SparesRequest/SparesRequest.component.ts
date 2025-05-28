@@ -12,7 +12,7 @@ import swal from 'sweetalert';
 //import { forEach } from '@angular/router/src/utils/collection';
 //import { filter } from 'rxjs-compat/operator/filter';
 // import { FileSaver }  from 'angular-file-saver';
-// import { saveAs } from 'file-saver';
+// //import { saveAs } from 'file-saver';
 declare var $: any;
 
 @Component({
@@ -25,7 +25,7 @@ export class SparesRequestComponent implements OnInit {
 @ViewChild('filterForm', { static: false }) filterForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   public tableWidget: any;
   dashboard: any = {};
   isLoading: boolean = false;
@@ -41,7 +41,7 @@ export class SparesRequestComponent implements OnInit {
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   requestList: any;
-  newDynamic: {};
+  newDynamic!: {};
   materialList: any[] = [];
   filtermaterialCode: any;
   filtermaterialDesc: any;
@@ -75,7 +75,8 @@ export class SparesRequestComponent implements OnInit {
     // this.path = this.router.url;
     // console.log(this.path);
     // var chkaccess = this.appService.validateUrlBasedAccess(this.path);
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getUserMasterList();
     this.getAssetList();
   }
@@ -104,28 +105,28 @@ export class SparesRequestComponent implements OnInit {
     this.httpService.get(APIURLS.BR_EMPLOYEEMASTER_ACTIVE_API_GET).then((data: any) => {
       if (data.length > 0) {
         this.userList = data;
-        this.empListCon = data.map((i) => { i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.department + '-' + i.designation; return i; });
+        this.empListCon = data.map((i:any) => { i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.department + '-' + i.designation; return i; });
         this.initDatatable();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userList = [];
     });
   }
 
-  setDet(mtrl) {
+  setDet(mtrl:any) {
     var self = this;
     var data = this.empListCon;
     $('#empNo').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.employeeId.includes(mtrl));;
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.employeeId.includes(mtrl));;
+        response(result.map((i:any) => {
           i.label = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation,
             i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName, i.empNo = i.employeeId, i.designation = i.designation; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterempNo = ui.item.empNo;
         self.filterempAd = ui.item.name;
         self.filterdesg = ui.item.designation;
@@ -140,7 +141,7 @@ export class SparesRequestComponent implements OnInit {
     this.newDynamic = { id: this.rowcount, filtermaterialCode: null, filtermaterialDesc: null, filterquantity: null };
     this.materialList.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.materialList.length > 1) {
       const index = this.materialList.indexOf(item);
       this.materialList.splice(index, 1);
@@ -180,8 +181,8 @@ export class SparesRequestComponent implements OnInit {
   getAllEntries() {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -214,7 +215,7 @@ export class SparesRequestComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -238,23 +239,23 @@ export class SparesRequestComponent implements OnInit {
         this.initDatatable();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.assetList = [];
     });
   }
 
-  setList(asset) {
+  setList(asset:any) {
     var self = this;
     var data = this.assetList;
     $('#assetNo1').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.assetNo.includes(asset));
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.assetNo.includes(asset));
+        response(result.map((i:any) => {
           i.label = i.assetNo; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterassetId1 = ui.item.assetId;
         self.filterlocation1 = ui.item.location;
         self.filtercategory1 = ui.item.category;
@@ -270,13 +271,13 @@ export class SparesRequestComponent implements OnInit {
     this.filterreqType = null;
   }
 
-  onSaveEntry(status) {
+  onSaveEntry(status:any) {
     this.errMsg = "";
     let connection: any;
 
     if (!this.isEdit) {
      
-      this.materialList.forEach(mtrl => {
+      this.materialList.forEach((mtrl:any) => {
         let filtermodel: any = {};
         filtermodel.materialCode = mtrl.filtermaterialCode;
         filtermodel.materialDesc = mtrl.filtermaterialDesc;
@@ -309,7 +310,7 @@ export class SparesRequestComponent implements OnInit {
           buttons: [false, true]
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });
@@ -318,8 +319,9 @@ export class SparesRequestComponent implements OnInit {
   approveRequest() {
     this.errMsg = "";
     let connection: any;
-    this.checkedRequestList.forEach(element => {
-      let value = this.requestList.find(x => x.requestNo == element.requestNo);
+    this.checkedRequestList.forEach((element:any)=> {
+
+      let value = this.requestList.find((x:any)  => x.requestNo == element.requestNo);
       this.SparesRequestmodel = Object.assign({}, value);
       this.SparesRequestmodel.approvedBy = this.currentUser.employeeId;
       connection = this.httpService.amsput(APIURLS.BR_GET_AMS_REQUEST_APPROVE, this.SparesRequestmodel.requestNo, this.SparesRequestmodel);
@@ -336,7 +338,7 @@ export class SparesRequestComponent implements OnInit {
           });
           this.clearFilter();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Request..';
       });

@@ -19,9 +19,9 @@ import swal from 'sweetalert';
 })
 export class AppComponent implements OnInit {
   title = 'app';
-  messageBoardList: any[];
+  messageBoardList!: any[];
   tasksList: any[] = [];
-  urlList: any[];
+  urlList!: any[];
   usrList: any;
   greetMessage: string = '';
   menuListData: any[] = [];
@@ -29,23 +29,23 @@ export class AppComponent implements OnInit {
   uimgList: string = "";
   cmpimg: string = "";
   cmp_name: string = "";
-  masterList: any[];
-  //msgBoard: any[];
-  reportList: any[];
-  gstr1List: any[];
-  gstr2List: any[];
-  //purchaseList: any[];
-  dashboardV1: any[];
-  dashboardV2: any[];
-  dashboardV3: any[];
-  searchList: any[];
-  adminList: any[];
-  doclist: any[];
-  drcr: any[];
-  feedback: any[];
-  account: any[];
-  urlfilter: any[];
-  urlAccess: any[];
+  masterList!: any[];
+  //msgBoard!: any[];
+  reportList!: any[];
+  gstr1List!: any[];
+  gstr2List!: any[];
+  //purchaseList!: any[];
+  dashboardV1!: any[];
+  dashboardV2!: any[];
+  dashboardV3!: any[];
+  searchList!: any[];
+  adminList!: any[];
+  doclist!: any[];
+  drcr!: any[];
+  feedback!: any[];
+  account!: any[];
+  urlfilter!: any[];
+  urlAccess!: any[];
   url: string = "";
   dashboard1: boolean = false;
   dashboard2: boolean = true;
@@ -61,7 +61,7 @@ export class AppComponent implements OnInit {
   lastlogin: any;
   tokenExp;
   expired: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   hrModulesList :string[] = ["Recruitment","Emp. Services","Separation","Appraisal","ESS"];
 
 
@@ -72,7 +72,8 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     localStorage.setItem('lastAction', Date.now().toString());
     this.authdata = JSON.parse(localStorage.getItem('currentUser'));
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //console.log(this.authdata);
     // console.log(this.authService.authData.isAuth);
     // console.log(this.authService);
@@ -171,12 +172,15 @@ export class AppComponent implements OnInit {
 
       // this.httpService.get(APIURLS.BR_MASTER_PROFILEFORMMAIN_API).then((data: any) => {
         this.httpService.getByParam(APIURLS.BR_MASTER_GETFORMSFROMPROFILES, param).then((data: any) => {
-        if (data.length > 0) {
+       console.log(data)
+          if (data.length > 0) {
+          debugger;
+          console.log(data)
           let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-          this.urlList = data.sort((a, b) => { return collator.compare(a.subMenuId, b.subMenuId) });
-          this.urlList.sort((a, b) => { return collator.compare(a.menuId, b.menuId)});
-          // this.urlList = data.sort((a, b) => { return (+a.subMenuId - +b.subMenuId) });
-          // this.urlList.sort((a, b) => { return (+a.menuId - +b.menuId) });
+          this.urlList = data.sort((a:any, b:any) => { return collator.compare(a.subMenuId, b.subMenuId) });
+          this.urlList.sort((a:any, b:any) => { return collator.compare(a.menuId, b.menuId)});
+          // this.urlList = data.sort((a:any, b:any) => { return (+a.subMenuId - +b.subMenuId) });
+          // this.urlList.sort((a:any, b:any) => { return (+a.menuId - +b.menuId) });
           // this.urlList.sort((a, b) => a.id.localeCompare(b.id));
           //this.urlList.sort((a, b) => +a.menuId !== +b.menuId ? +a.menuId < +b.menuId ? -1 : 1 : 0);
           //this.urlList.sort((a, b) => +a.subMenuId !== +b.subMenuId ? +a.subMenuId < +b.subMenuId ? -1 : 1 : 0);
@@ -197,7 +201,7 @@ export class AppComponent implements OnInit {
           // // console.log(this.settingsMenuList);
           this.updateMenuCounts();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.urlList = [];
       });
     }
@@ -220,8 +224,8 @@ export class AppComponent implements OnInit {
         this.cmp_name = "Micro Labs";
 
 
-      }).catch(error => {
-        this.uimgList = null;
+      }).catch((error) => {
+        this.uimgList = '';
       });
     }
   }
@@ -268,7 +272,7 @@ export class AppComponent implements OnInit {
           // this.messageBoardList = this.messageBoardList.filter(s=>s.IsActive !=false)
 
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.messageBoardList = [];
       });
     }
@@ -310,7 +314,7 @@ export class AppComponent implements OnInit {
     }
   }
   validateUrlAccess(subMenu: string) {
-    this.urlAccess = _.filter(this.urlList, function (obj) { if (obj.subMenuId == subMenu) return obj; });//this.appService.urlList.find(s => s.name == "Entity");
+    this.urlAccess = _.filter(this.urlList, function (obj) { if (obj.subMenuId == subMenu) return obj; });//this.appService.urlList.find((s:any) => s.name == "Entity");
 
     if (this.urlAccess.length > 0) {
 
@@ -331,7 +335,7 @@ export class AppComponent implements OnInit {
     }
   }
   validateApprovalUrlAccess(menu: string, subMenu: string) {
-    this.urlAccess = _.filter(this.urlList, function (obj) { if (obj.menuId == menu && obj.subMenuId == subMenu) return obj; });//this.appService.urlList.find(s => s.name == "Entity");
+    this.urlAccess = _.filter(this.urlList, function (obj) { if (obj.menuId == menu && obj.subMenuId == subMenu) return obj; });//this.appService.urlList.find((s:any) => s.name == "Entity");
     if (this.urlAccess.length > 0) {
       return true;
     }
@@ -339,7 +343,7 @@ export class AppComponent implements OnInit {
       return false;
     }
   }
-  plant: string;
+  plant!: string
   getLocationById(lId: number) {
     this.httpService.getById(APIURLS.BR_MASTER_LOCATION_MASTER_API, lId).then((data: any) => {
       if (data) {
@@ -358,7 +362,7 @@ export class AppComponent implements OnInit {
             }
           });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plant = '';
     });
   }
@@ -409,7 +413,7 @@ export class AppComponent implements OnInit {
           });
           this.updateMenuCounts();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.tasksList = [];
       });
     }
@@ -429,7 +433,7 @@ export class AppComponent implements OnInit {
           if(this.menuListData != null && this.menuListData.length > 0){
             let essMenu = this.menuListData.find(x=>x.Parent.moduleName == "ESS");
             if(essMenu != null && essMenu.Children != null && essMenu.Children.length > 0 && essMenu.Children[0] != null && essMenu.Children[0].length > 0){
-              var menuItem = essMenu.Children[0].find(x => x.name == flow.menu);
+              var menuItem = essMenu.Children[0].find((x:any) => x.name == flow.menu);
               if(menuItem != null){
                 if(menuItem.count == null)
                   menuItem.count = 0;
@@ -468,7 +472,7 @@ export class AppComponent implements OnInit {
         this.getPendingcount();
         //  this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
 
       });
@@ -488,7 +492,8 @@ export class AppComponent implements OnInit {
       if(data.result.length>0)
       {
         let res=data.result;
-        res.forEach(element => {
+        res.forEach((element:any)=> {
+
           let links:any={};
           this.totalPendingTasks += element.count;
           links.link =element.link;

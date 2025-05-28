@@ -19,8 +19,8 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import swal from 'sweetalert';
 import { ExcelService } from '../../shared/excel-service';
 import { PaymentDetails } from './PaymentDetails.model';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 
 
 @Component({
@@ -29,11 +29,11 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
   styleUrls: ['./PaymentDetails.component.css']
 })
 export class PaymentDetailsComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-@ViewChild(NgForm, { static: false }) accsubForm: NgForm;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
+@ViewChild(NgForm, { static: false }) accsubForm!: NgForm;
 
 
   accsubList: PaymentDetails[] = [];
@@ -48,38 +48,40 @@ export class PaymentDetailsComponent implements OnInit {
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
-  path: string;
-  filterPurpose: string = null;
-  filterPayGroup: string = null;
+  path!: string
+  filterPurpose: string = ' ';
+  filterPayGroup: string = ' ';
   filterInvoiceNo: number = null;
-  filterVendorName: string = null;
-  // filterDepartment: string = null;
-  filterTypeOfGuest: string = null;
-  filtertypeOfEvent: string = null;
-  Amount: number;
-  filterEmployeeNo: string;
+  filterVendorName: string = ' ';
+  // filterDepartment: string = ' ';
+  filterTypeOfGuest: string = ' ';
+  filtertypeOfEvent: string = ' ';
+  Amount!: number;
+  filterEmployeeNo: string
   VendorMasterList: any;
   vendorListCon: any;
   filterInvoiceDate: any;
   AccountSubmission: any;
   filterCreatedDate: any;
   reset: any;
-  filterNoOfPax: string = null;
+  filterNoOfPax: string = ' ';
   Remarks:string;
   Supportings:string=null;
   AccSubmittedReferenceNoId:number=null;
   advanceChequeNo: number=null;
   supportings: any;
   remarks: any;
-  chequeNo: number;
+  chequeNo!: number;
   chequeDate: any;
   chequeIssuedDate:any;
   chequeAmount: any;
   chequeIssueDate: any;
-  chequeIssuedTo: string;
+  chequeIssuedTo: string
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient,private https: HttpClient, private excelService: ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient,private https: HttpClient, private excelService: ExcelService) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
 
   private initDatatable(): void {
@@ -118,7 +120,8 @@ export class PaymentDetailsComponent implements OnInit {
   currentUser = {} as AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
       this.getTypeOfGuestList();
@@ -167,7 +170,7 @@ export class PaymentDetailsComponent implements OnInit {
       }
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -179,13 +182,13 @@ export class PaymentDetailsComponent implements OnInit {
     this.httpService.get(APIURLS.BR_GET_TDVENDOR_DETAILS_API).then((data: any) => {
       if (data.length > 0) {
         this.VendorMasterList = data;
-        this.vendorListCon = data.map((i) => {
+        this.vendorListCon = data.map((i:any) => {
           i.name = i.name; return i;
         });
        this.isLoading = false;
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.VendorMasterList = [];
     });
@@ -216,7 +219,7 @@ export class PaymentDetailsComponent implements OnInit {
         this.PurposeList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PurposeList = [];
     });
@@ -228,13 +231,13 @@ export class PaymentDetailsComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.long_Desc > b.long_Desc) return 1;
           if (a.long_Desc < b.long_Desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -242,7 +245,7 @@ export class PaymentDetailsComponent implements OnInit {
 
  
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -317,7 +320,7 @@ export class PaymentDetailsComponent implements OnInit {
       }
       this.reInitDatatable();
       // this.clearFilter();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error saving Account Submission Details..';
     });
   }
@@ -340,7 +343,8 @@ export class PaymentDetailsComponent implements OnInit {
       this.errMsgPop = "";
       this.isLoading = false;
       if (this.isEdit) {
-        this.AccountSubmissionList.forEach(element => {
+        this.AccountSubmissionList.forEach((element:any)=> {
+
         
 
           });
@@ -371,7 +375,7 @@ export class PaymentDetailsComponent implements OnInit {
         Model.chequeAmount = this.chequeAmount;
         Model.chequeIssuedDate = this.chequeIssuedDate ? this.setFormatedDateTime1(this.chequeIssuedDate) : null;;
         Model.chequeIssuedTo = this.chequeIssuedTo;
-        Model.refIds = this.checkedRequestList.map(x => x.id).join();
+        Model.refIds = this.checkedRequestList.map((x:any)  => x.id).join();
         let connection = this.httpService.post(APIURLS.BR_POST_TRAVEL_PAYMENT, Model);
         connection.then((data: any) => {
           if (data) {
@@ -398,7 +402,7 @@ export class PaymentDetailsComponent implements OnInit {
           this.reInitDatatable();
           this.clearFilter();
 
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error saving Payment Details..';
         });
       }
@@ -450,7 +454,8 @@ export class PaymentDetailsComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

@@ -12,15 +12,15 @@ import swal from 'sweetalert';
 import { DatePipe } from '@angular/common';
 declare var jQuery: any;
 declare var $: any;
-import * as moment from 'moment';
+import moment from 'moment'
 import { AuditLogChange } from '../../masters/auditlogchange.model';
 import { AuditLog } from '../../masters/auditlog.model';
 import { EmpShiftMaster } from '../EmpShiftMaster/EmpShiftMaster.model';
 import { ChangeShift } from '../ChangeShift/ChangeShift.model';
 import { TourPlan } from './TourPlan.model';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import htmlToPdfmake from 'html-to-pdfmake';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 
 export class actionItemModel {
@@ -36,18 +36,18 @@ export class actionItemModel {
 
 export class TourPlanComponent implements OnInit {
     public tableWidget: any;
-    @ViewChild(NgForm  , { static: false }) TourPlanForm: NgForm;
+    @ViewChild(NgForm  , { static: false }) TourPlanForm!: NgForm;
     isLoading: boolean = false;
     errMsg: string = "";
     path: string = '';
-    currentUser: AuthData;
+    currentUser!: AuthData;
     CalenderYear: string = '';
     CalYear: any;
     year: any;
     isEdit: boolean = false;
-    FromDateforTP: string = null;
-    ToDateforTP: string = null;
-    DetailsforTP: string = null;
+    FromDateforTP: string = ' ';
+    ToDateforTP: string = ' ';
+    DetailsforTP: string = ' ';
     errMsgPop: string = "";
     isLoadingPop: boolean = false;
     selectedEmployee: any[] = [];
@@ -56,13 +56,13 @@ export class TourPlanComponent implements OnInit {
     EmployeeList: any[] = [];
     empListCon = [];
     filterMonth: any = null;
-    typrWrk: string = null;
-    Duration1: string = null;
-    Duration2: string = null;
+    typrWrk: string = ' ';
+    Duration1: string = ' ';
+    Duration2: string = ' ';
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private http: HttpClient,
         private datePipe: DatePipe, private https: HttpClient,) {
-        pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    //    pdfMake.vfs = pdfFonts.pdfMake.vfs;
     }
 
 
@@ -88,7 +88,8 @@ export class TourPlanComponent implements OnInit {
         this.path = this.router.url;
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         if (chkaccess == true) {
-            this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+         const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
             let today = new Date();
             this.year = today.getFullYear();
             this.CalenderYear = new Date().getFullYear().toString();
@@ -110,21 +111,21 @@ export class TourPlanComponent implements OnInit {
     locationList: any[] = [[]];
     ShiftList: EmpShiftMaster[] = [];
     ShiftList1: EmpShiftMaster[] = [];
-    loccode: string;
+    loccode: string
 
     GetShift() {
-        let temp = this.locationList.find(x => x.id == this.currentUser.baselocation)
-        this.ShiftList1 = this.ShiftList.filter(x => x.loc.includes(temp.code));
+        let temp = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation)
+        this.ShiftList1 = this.ShiftList.filter((x:any)  => x.loc.includes(temp.code));
     }
     getShiftMasterList() {
         this.httpService.LAget(APIURLS.BR_GET_ALL_SHIFTS).then((data: any) => {
             if (data.length > 0) {
-                this.ShiftList = data.filter(x => x.loc != null);
-                this.loccode = this.locationList.find(x => x.id == this.currentUser.baselocation).code.toString();
-                this.ShiftList1 = this.ShiftList.filter(x => x.loc.includes(this.loccode));
+                this.ShiftList = data.filter((x:any)  => x.loc != null);
+                this.loccode = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code.toString();
+                this.ShiftList1 = this.ShiftList.filter((x:any)  => x.loc.includes(this.loccode));
 
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ShiftList = [];
         });
@@ -138,7 +139,7 @@ export class TourPlanComponent implements OnInit {
             if ($event.timeStamp - this.lastReportingkeydown > 400) {
                 this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
                     if (data.length > 0) {
-                        var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+                        var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
                         var list = $.map(sortedList, function (item) {
                             return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId, name: item.fullName };
                         })
@@ -148,7 +149,7 @@ export class TourPlanComponent implements OnInit {
                                 "ui-autocomplete": "highlight",
                                 "ui-menu-item": "list-group-item"
                             },
-                            change: function (event, ui) {
+                            change: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#empNo").val(ui.item.value);
                                     $("#empNo").val(ui.item.value);
@@ -159,7 +160,7 @@ export class TourPlanComponent implements OnInit {
                                     $("#empNo").val('');
                                 }
                             },
-                            select: function (event, ui) {
+                            select: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#empNo").val(ui.item.value);
                                     $("#empNo").val(ui.item.value);
@@ -187,7 +188,7 @@ export class TourPlanComponent implements OnInit {
             if ($event.timeStamp - this.lastReportingkeydown1 > 400) {
                 this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
                     if (data.length > 0) {
-                        var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+                        var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
                         var list = $.map(sortedList, function (item) {
                             return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId, name: item.fullName };
                         })
@@ -197,7 +198,7 @@ export class TourPlanComponent implements OnInit {
                                 "ui-autocomplete": "highlight",
                                 "ui-menu-item": "list-group-item"
                             },
-                            change: function (event, ui) {
+                            change: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#userId").val(ui.item.value);
                                     $("#userId").val(ui.item.value);
@@ -208,7 +209,7 @@ export class TourPlanComponent implements OnInit {
                                     $("#userId").val('');
                                 }
                             },
-                            select: function (event, ui) {
+                            select: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#userId").val(ui.item.value);
                                     $("#userId").val(ui.item.value);
@@ -273,7 +274,9 @@ export class TourPlanComponent implements OnInit {
     }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -323,7 +326,7 @@ export class TourPlanComponent implements OnInit {
     }
 
 
-    empName: string;
+    empName: string
     getEmpTPRequests() {
         this.errMsg = "";
         this.isLoading = true;
@@ -335,7 +338,7 @@ export class TourPlanComponent implements OnInit {
             }
             else {
                 srchstr.reqBy = this.selectedEmployee[0].id;
-                this.empName = this.EmployeeList.find(x => x.employeeId == this.selectedEmployee[0].id).fullName;
+                this.empName = this.EmployeeList.find((x:any)  => x.employeeId == this.selectedEmployee[0].id).fullName;
             }
         }
         else {
@@ -352,11 +355,11 @@ export class TourPlanComponent implements OnInit {
         this.httpService.LApost(APIURLS.GET_EMP_TP_DATA, srchstr).then((data: any) => {
             if (data) {
                 this.EmpTPList = data;
-                //this.upcomingShift = this.ChangeShiftList.filter(x => new Date(x.startDate) > new Date());
+                //this.upcomingShift = this.ChangeShiftList.filter((x:any)  => new Date(x.startDate) > new Date());
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.EmpTPList = [];
         });
@@ -372,14 +375,14 @@ export class TourPlanComponent implements OnInit {
         let connection = this.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, val);
         connection.then((data: any) => {
             if (data) {
-                let result = data.filter(x => { return x.employeeId != null });
+                let result = data.filter((x:any)  => { return x.employeeId != null });
                 this.EmployeeNo = result[0].employeeId;
                 this.Department = result[0].department;
                 this.Designation = result[0].designation;
                 this.FullName = result[0].fullName;
                 this.empName = this.FullName;
             }
-        }).catch(error => {
+        }).catch((error)=> {
         });
     }
 
@@ -387,8 +390,8 @@ export class TourPlanComponent implements OnInit {
         this.httpService.LAgetByParam(APIURLS.GET_EMP_OF_REPORTING, this.currentUser.employeeId).then((data: any) => {
             if (data.length > 0) {
                 this.EmployeeList = data;
-                this.empListCon = data.map((i) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
-                this.EmployeeList.sort((a, b) => {
+                this.empListCon = data.map((i:any) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
+                this.EmployeeList.sort((a:any, b:any) => {
                     if (a.fullName > b.fullName) return 1;
                     if (a.fullName < b.fullName) return -1;
                     return 0;
@@ -398,7 +401,7 @@ export class TourPlanComponent implements OnInit {
             else {
                 this.EmployeeList = [];
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.EmployeeList = [];
         });
@@ -410,7 +413,7 @@ export class TourPlanComponent implements OnInit {
     upcomingShift: any[] = [];
 
     ApproversList: any[] = [];
-    getApproversList(id) {
+    getApproversList(id:any) {
         this.errMsg = "";
         this.httpService.LAgetByParam(APIURLS.GET_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
             if (data) {
@@ -421,7 +424,7 @@ export class TourPlanComponent implements OnInit {
                     this.ApproversList = data;
                 }
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ApproversList = [];
         });
@@ -467,7 +470,7 @@ export class TourPlanComponent implements OnInit {
         this.newDynamic = { id: this.rowcount, FromDateforTP: null, ToDateforTP: null, typrWrk: null, Duration1: null, Duration2: null, DetailsforTP: null };
         this.TourPlanList.push(this.newDynamic);
     }
-    removeRows(item) {
+    removeRows(item:any) {
         if (this.TourPlanList.length > 1) {
             const index = this.TourPlanList.indexOf(item);
             this.TourPlanList.splice(index, 1);
@@ -477,14 +480,15 @@ export class TourPlanComponent implements OnInit {
     TourPlanList: any = [];
     newDynamic: any = {};
     TourPlanTp = {} as TourPlan;
-    userId: string = null;
+    userId: string = ' ';
     ApplyFor: any = null;
 
 
     OnSubmit() {
         this.errMsg = "";
         let connection: any;
-        this.TourPlanList.forEach(element => {
+        this.TourPlanList.forEach((element:any)=> {
+
             this.TourPlanTp = {} as TourPlan;
             if (this.ApplyFor == "Others") {
                 this.TourPlanTp.reqBy = this.userId;
@@ -531,7 +535,7 @@ export class TourPlanComponent implements OnInit {
                 this.FromDateforTP = null;
                 this.Duration1 = null;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving Request..';
         });
@@ -564,13 +568,13 @@ export class TourPlanComponent implements OnInit {
                 this.getEmpTPRequests();
             }
 
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving Request..';
         });
     }
 
-    image: string;
+    image!: string
     getbase64image() {
         this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
             .subscribe(blob => {
@@ -640,34 +644,34 @@ export class TourPlanComponent implements OnInit {
     }
 
     Print() {
-        var printContents = document.getElementById('pdf').innerHTML;
+        var printContents = document.getElementById('pdf')!.innerHTML;
         var OrganisationName = "MICRO LABS LIMITED";
         var ReportName = "EMPLOYEE TOUR PLAN";
         var printedBy = this.currentUser.fullName;
         var now = new Date();
         //   var jsDate = this.setFormatedDateTime(now);
         var logo = this.image;
-        var htmnikhitml = htmlToPdfmake(`<html>
-      <head>
-      </head>
-      <body>
-      ${printContents}
-      <div>     
-      </div>
-      </body>  
-      </html>`, {
-            tableAutoSize: true,
-            headerRows: 1,
-            dontBreakRows: true,
-            keepWithHeaderRows: true,
-        })
+    //     var htmnikhitml = htmlToPdfmake(`<html>
+    //   <head>
+    //   </head>
+    //   <body>
+    //   ${printContents}
+    //   <div>     
+    //   </div>
+    //   </body>  
+    //   </html>`, {
+    //         tableAutoSize: true,
+    //         headerRows: 1,
+    //         dontBreakRows: true,
+    //         keepWithHeaderRows: true,
+    //     })
         var docDefinition = {
             info: {
                 title: 'Tour Plan',
             },
 
             content: [
-                htmnikhitml,
+                //htmnikhitml,
             ],
             defaultStyle: {
                 fontSize: 9,
@@ -685,7 +689,7 @@ export class TourPlanComponent implements OnInit {
             pageSize: 'A4',
             pageMargins: [40, 90, 40, 60],
             pageOrientation: 'portrait',
-            header: function (currentPage, pageCount) {
+            header: function (currentPage:any, pageCount:any) {
                 return {
 
                     columns: [
@@ -740,7 +744,7 @@ export class TourPlanComponent implements OnInit {
                 }
             },
         };
-        pdfMake.createPdf(docDefinition).open();
+        //pdfMake.createPdf(docDefinition).open();
     }
 
 

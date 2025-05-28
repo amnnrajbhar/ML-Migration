@@ -22,14 +22,14 @@ import * as _ from "lodash";
 declare var jQuery: any;
 declare var $: any;
 export class actionItemModel {
-  name: string;
-  description: string;
-  no_Of_Room: number;
-  no_Of_Bed: number;
+  name: string
+  description: string
+  no_Of_Room!: number;
+  no_Of_Bed!: number;
   address:string;
   admin:string;
   location:string;
-  facilities: string;
+  facilities: string
 }
 
 @Component({
@@ -38,9 +38,9 @@ export class actionItemModel {
   styleUrls: ['./guesthouse-maintenance.component.css']
 })
 export class GuesthouseMaintenanceComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
+@ViewChild(NgForm, { static: false }) meetingroomForm!: NgForm;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isEdit: boolean = false;
   errMsg: string = "";
@@ -52,12 +52,12 @@ export class GuesthouseMaintenanceComponent implements OnInit {
   locationList = [];
   empMListCon: any = [];
   roomsInfoList: GuestHouseInformation[] = [];
-  currentLocation: string;
+  currentLocation: string
   tableWidget: any;
   type: string = "GuestHouse";
   oldroomInfoModel = {} as GuestHouseInformation;;// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private appServiceDate: AppService, private route: ActivatedRoute) { }
 
@@ -65,7 +65,8 @@ export class GuesthouseMaintenanceComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getEmpList();
       //this.getLocationList();
       this.getRoomfacilities();
@@ -80,12 +81,12 @@ export class GuesthouseMaintenanceComponent implements OnInit {
         this.locationList = data;
         // this.currentLocation = this.getLocationName(this.currentUser.baselocation);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
   getLocationName(locId: number) {
-    let temp = this.ghlocationList.find(s => s.id == locId);
+    let temp = this.ghlocationList.find((s:any) => s.id == locId);
     return temp ? temp.name : '';
   }
 
@@ -115,12 +116,12 @@ export class GuesthouseMaintenanceComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_GUESTHOUSE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roomsInfoList = data.filter(x => x.fk_Location == this.currentUser.baselocation && x.isActive);
+        this.roomsInfoList = data.filter((x:any)  => x.fk_Location == this.currentUser.baselocation && x.isActive);
         this.isLoading = false;
       }
       this.isLoading = false;
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.roomsInfoList = [];
     });
@@ -139,7 +140,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
       this.roomInfoModel = Object.assign({}, roomInformation);
       // this.currentLocation = this.getLocationName(this.roomInfoModel.fk_Location);
       this.selParentRole = this.roomInfoModel.adminId ? this.empMList.find(e => e.id == this.roomInfoModel.adminId).id : null;
-      this.sltghlocation = this.ghlocationList.find(x => x.id == roomInformation.location);
+      this.sltghlocation = this.ghlocationList.find((x:any)  => x.id == roomInformation.location);
       this.getSelectedfacilitiesById(this.roomInfoModel.id);
       this.getSelectedPicturesById(this.roomInfoModel.id);
     }
@@ -170,12 +171,12 @@ export class GuesthouseMaintenanceComponent implements OnInit {
         this.selectedFacilities = data;
         for (let index = 0; index < this.selectedFacilities.length; index++) {
           let element = this.selectedFacilities[index];
-          let facility = this.roomsFacilityList.find(x => x.id == element.fk_FacilityId);
+          let facility = this.roomsFacilityList.find((x:any)  => x.id == element.fk_FacilityId);
           rmFacilities.push(facility);
         }
         this.selectedItems = rmFacilities;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }
@@ -198,7 +199,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
           this.images.push(image);
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }
@@ -211,9 +212,9 @@ export class GuesthouseMaintenanceComponent implements OnInit {
   getRoomfacilities() {
     this.httpService.get(APIURLS.BR_MASTER_ROOM_FACILITY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roomsFacilityList = data.filter(x => x.type == this.type && x.isActive).sort((a,b)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1; return 0;});
+        this.roomsFacilityList = data.filter((x:any)  => x.type == this.type && x.isActive).sort((a:any,b:any)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1; return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomsFacilityList = [];
     });
     this.dropdownSettings = {
@@ -239,7 +240,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
 
   //Save and Update here
   onSaveRoomDetails(): void {
-    let roomId: number;
+    let roomId!: number;
     let connection: any;
     this.roomInfoModel.isActive = true;
     this.roomInfoModel.location = this.sltghlocation.id;
@@ -283,7 +284,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
           this.insertAuditLog(this.oldroomInfoModel, this.roomInfoModel, Id);
           this.getAllrooms();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving ...';
       });
@@ -299,7 +300,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
         connection.then((data: any) => {
           if (data == 200 || data.id > 0) {
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error delete ...';
         });
       }
@@ -315,7 +316,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200 || data.id > 0) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error saving ...';
       });
     }
@@ -370,8 +371,8 @@ export class GuesthouseMaintenanceComponent implements OnInit {
       if (data == 200 || data.id > 0) {
         //console.log(data);
       }
-    }).catch(error => {
-      //console.log(error);
+    }).catch((error)=> {
+      ////console.log(error);
       this.errMsgPop = 'Error saving Images...';
     });
 
@@ -404,7 +405,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
         connection.then((data: any) => {
           if (data == 200 || data.id > 0) {
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error delete Pictures...';
         });
       }
@@ -422,13 +423,13 @@ export class GuesthouseMaintenanceComponent implements OnInit {
         connection.then((data: any) => {
           if (data == 200 || data.id > 0) {
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error saving Pictures...';
         });
       }
     }
   }
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {
@@ -442,8 +443,9 @@ export class GuesthouseMaintenanceComponent implements OnInit {
     let searchStr = this.currentUser.baselocation.toString() + ',' + '1004';//Room Location Admin
     this.httpService.getByParam(APIURLS.BR_EMPLOYEEMASTER_BYPARAM_API, searchStr).then((data: any) => {
         if (data.length > 0) {
-        this.empMList = data.filter(x => x.fkProfileId == "1004");
-        this.empMList.forEach(element => {
+        this.empMList = data.filter((x:any)  => x.fkProfileId == "1004");
+        this.empMList.forEach((element:any)=> {
+
           var t = { 'id': 0, 'name': '' };
           t.id = element.id;
           let middleName = this.isEmpty(element.middleName.trim()) ? '-' : '-' + element.middleName + '-';
@@ -453,7 +455,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
         });
         //this.isLoading=false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -471,9 +473,9 @@ export class GuesthouseMaintenanceComponent implements OnInit {
   getGHLocationList() {
     this.httpService.get(APIURLS.BR_GUESTHOUSE_LOCATION_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.ghlocationList = data.sort((a,b)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1;  return 0;});
+        this.ghlocationList = data.sort((a:any,b:any)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1;  return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.ghlocationList = [];
     });
   }
@@ -502,7 +504,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
             this.insertAuditLog(this.roomInfoModel, this.oldroomInfoModel, this.roomInfoModel.id);
             this.getAllrooms();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting ...';
         });
@@ -523,7 +525,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
     oldObject.admin = oldObj.adminId?this.empMListCon.find(e => e.id == oldObj.adminId).name:'';
     let oldfacilities = '';
     this.selectedFacilities.forEach(c => {
-      oldfacilities += this.roomsFacilityList.find(x => x.id == c.fk_FacilityId).name + ',';
+      oldfacilities += this.roomsFacilityList.find((x:any)  => x.id == c.fk_FacilityId).name + ',';
     });
     oldObject.facilities =  oldObj.location ? oldfacilities.slice(0, -1) : '';
     newObject.name = newObj.name;
@@ -535,7 +537,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
     newObject.admin = newObj.adminId?this.empMListCon.find(e => e.id == newObj.adminId).name:'';
     let newfacilities = '';
     this.selectedItems.forEach(c => {
-      newfacilities += this.roomsFacilityList.find(x => x.id == c.id).name + ',';
+      newfacilities += this.roomsFacilityList.find((x:any)  => x.id == c.id).name + ',';
     });
     newObject.facilities = newObj.location ? newfacilities.slice(0, -1) : '';
 
@@ -587,12 +589,12 @@ export class GuesthouseMaintenanceComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -601,7 +603,7 @@ export class GuesthouseMaintenanceComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

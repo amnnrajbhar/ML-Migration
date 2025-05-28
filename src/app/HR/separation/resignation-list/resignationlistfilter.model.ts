@@ -3,14 +3,14 @@ export class ResignationListFilter {
     selectedEmployeeCategoryId: any;
     selectedPayGroupId: any;
     departmentId: any;
-    selectedStatus: string;
-    selectedFromdate: string;
-    selectedTodate: string;
-    selectedShortFallDays: string;
+    selectedStatus: string
+    selectedFromdate: string
+    selectedTodate: string
+    selectedShortFallDays: string
     selectedSettlementType:string;
-    hodId: number;
-    name: string;
-    employeeId: number;
+    hodId!: number;
+    name: string
+    employeeId!: number;
     pageNo:number;
     pageSize:number;
     export:boolean;

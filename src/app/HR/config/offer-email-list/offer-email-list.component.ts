@@ -19,14 +19,14 @@ declare var toastr: any;
 })
 export class OfferEmailListComponent implements OnInit {
   id: number = 0;
-  action: string;
+  action: string
   isLoading: boolean = false;
   plantList: any[] = [];
   payGroupList: any[] = [];
   payGroupFullList: any[] = [];
   employeeCategoryList: any[] = [];
   filterData: any = {};
-  currentUser: AuthData;
+  currentUser!: AuthData;
   emailNotificationDetails= {} as EmailNotification;
   emailTypeList = [
     { type: "Offer Letter", color:"info" },    
@@ -47,7 +47,8 @@ export class OfferEmailListComponent implements OnInit {
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.selectedPlantId = "";
     this.filterModel.selectedPayGroupId = "";
@@ -67,9 +68,9 @@ export class OfferEmailListComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -98,7 +99,7 @@ export class OfferEmailListComponent implements OnInit {
      console.log(this.filterData.list);
       
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -127,7 +128,7 @@ export class OfferEmailListComponent implements OnInit {
       var exportList=[];
       let index=0;
       console.log(this.emailList);
-      this.emailList.forEach(item => {
+      this.emailList.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No":index,
@@ -145,7 +146,7 @@ export class OfferEmailListComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Email_Notification_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       toastr.error('Error occurred while fetching data.');   
@@ -185,7 +186,7 @@ performTask(offerEmailNotificationId: any)
         this.isLoading = false;
         toastr.error('Error occured while saving email details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving email details. Error:' + error);
       });
@@ -196,7 +197,7 @@ performTask(offerEmailNotificationId: any)
 onPlantChange(){
   if(this.filterModel.selectedPlantId > 0){
     let plant = this.plantList.find(x=>x.id == this.filterModel.selectedPlantId)
-    this.payGroupList = this.payGroupFullList.filter(x=>x.plant == plant.code);
+    this.payGroupList = this.payGroupFullList.filter((x:any)=>x.plant == plant.code);
   }
   else
     this.payGroupList = [];

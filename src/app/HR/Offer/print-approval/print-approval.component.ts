@@ -9,10 +9,10 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert';
 declare var $: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { OfferDetails } from '../../models/offerdetails.model';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
@@ -28,7 +28,7 @@ export class PrintApprovalComponent implements OnInit {
   
   editAllowed: boolean = false;
   offerId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading: boolean = false;
   offerDetails: any = {};
@@ -47,13 +47,16 @@ export class PrintApprovalComponent implements OnInit {
   
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
-    private http: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.offerId = this.route.snapshot.paramMap.get('id')!;      
       this.LoadOfferDetails();
       this.GetAdditionalInfo();
@@ -69,7 +72,7 @@ export class PrintApprovalComponent implements OnInit {
         this.offerDetails = data;   
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -98,7 +101,7 @@ export class PrintApprovalComponent implements OnInit {
         }
         
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
       });
@@ -150,7 +153,7 @@ print1(): void {
   }
   
   download() {
-    this.createPDF().open();
+   // this.createPDF().open();
   }
 
   createPDF() {
@@ -167,7 +170,7 @@ print1(): void {
     //     bolditalics: 'Times-BoldItalic'
     //   }
     // };
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -180,14 +183,14 @@ print1(): void {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    });
+    })*/;
     var docDefinition = {
       info: {
         title: 'Recruitment Approval Form',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -214,7 +217,7 @@ print1(): void {
       pageSize: 'A4',
       pageMargins: [40, 30, 40, 10],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           columns: [
             {
@@ -232,7 +235,7 @@ print1(): void {
       },
     };
     
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
 }

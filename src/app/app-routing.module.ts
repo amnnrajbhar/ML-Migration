@@ -26,21 +26,16 @@ import { HomepageComponent } from './homepage/homepage.component';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent },
-
     { path: 'forgotpassword', loadChildren: './auth/forgotpassword/forgotpassword.module#ForgotpasswordModule' },
-
     { path: '', canActivate: [AuthGuard], pathMatch: 'full', redirectTo: 'initpage' },
     { path: 'initpage', component: InitPageComponent, canActivate: [AuthGuard] },
-
     { path: 'msgBoard', loadChildren: './messageboard/messageboard.module#MessageboardModule' },
-    // { path: 'employee', loadChildren: './masters/employee/employee.module#EmployeeModule' },
     { path: 'employee', loadChildren: './masters/EmployeeMaster/EmployeeMaster.module#EmployeeMasterModule' },
     { path: 'addprofile', loadChildren: './profile/add-profile/add-profile.module#AddProfileModule' },
     { path: 'addrole', loadChildren: './profile/add-role/add-role.module#AddRoleModule' },
     { path: 'department', loadChildren: './profile/department/department.module#DepartmentModule' },
     { path: 'profile', loadChildren: './profile/profile.module#ProfileModule' },
     { path: 'company', loadChildren: './company/company.module#CompanyModule' },
-
     { path: 'calendar', loadChildren: './masters/calendar/calendar.module#CalendarModule' },
     { path: 'visitortype', loadChildren: './masters/visitortype/visitortype.module#VisitorTypeModule' },
     { path: 'purpose', loadChildren: './masters/purpose/purpose.module#PurposeModule' },
@@ -48,20 +43,16 @@ const appRoutes: Routes = [
     { path: 'locationmaster', loadChildren: './masters/locationmaster/locationmaster.module#LocationMasterModule' },
     { path: 'mailconfig', loadChildren: './masters/mailconfiguration/mailconfiguration.module#MailconfigurationModule' },
     { path: 'passwordpolicy', loadChildren: './masters/passwordpolicy/passwordpolicy.module#PasswordpolicyModule' },
-
     { path: 'reports', loadChildren: './reports/reports.module#ReportsModule' },
     { path: 'divreports', loadChildren: './reports/divreport/divreport.module#DivreportModule' },
     { path: 'logcomplaint', loadChildren: './feedback/feedback.module#FeedbackModule' },
     { path: 'resolvecomplaint', loadChildren: './feedback/resolve-complaint/resolve-complaint.module#ResolveComplaintModule' },
-
     //GateEntry
-
     { path: 'gesentry', loadChildren: './gateentry/gateentry.module#GateentryModule' },
     { path: 'gesentrywithoutpo', loadChildren: './gateentrywithoutpo/gateentrywithoutpo.module#GateentryWithoutPOModule' },
     { path: 'geinreturnmat', loadChildren: './geinreturnablemat/geinreturnablemat.module#GEInReturnableMatModule' },
     { path: 'geinstocktransfer', loadChildren: './geinstocktransfer/geinstocktransfer.module#GEInStockTransferModule' },
     { path: 'geinsubcontracting', loadChildren: './geinsubcontracting/geinsubcontracting.module#GEInSubContractingModule' },
-
     { path: 'geoutothermat', loadChildren: './geoutothermat/geoutothermat.module#GEOutOtherMaterialModule' },
     { path: 'geoutothermatsecurity', loadChildren: './geoutothermatsecurity/geoutothermatsecurity.module#GeOutOtherMaterialSecurityModule' },
     { path: 'geoutexciseinvoice', loadChildren: './geoutexciseinvoice/geoutexciseinvoice.module#GEOutExciseInvoiceModule' },
@@ -71,18 +62,14 @@ const appRoutes: Routes = [
     { path: 'geoutstocktransfer', loadChildren: './geoutstocktransfer/geoutstocktransfer.module#GEOutStockTransferModule' },
     { path: 'geoutstocktransfersecurity', loadChildren: './geoutstocktransfersecurity/geoutstocktransfersecurity.module#GeoutstocktransfersecurityModule' },
     { path: 'geoutreturnablematclosure', loadChildren: './geoutreturnablematclosure/geoutreturnablematclosure.module#GEOutRetMatClosureModule' },
-
     { path: 'geinregreport', loadChildren: './geinregreport/geinregreport.module#GEInwardRegReportModule' },
     { path: 'geoutregreport', loadChildren: './geoutregreport/geoutregreport.module#GEOutRegModule' },
     { path: 'gereturnclosurereport', loadChildren: './gereturnableclosurereport/gereturnableclosurereport.module#GereturnableclosurereportModule' },
     { path: 'gesubcontractreport', loadChildren: './gesubcontractreport/gesubcontractreport.module#GesubcontractreportModule' },
-
     { path: 'gesentryoutward', loadChildren: './gateentryoutward/gateentryoutward.module#GateentryOutwardModule' },
     { path: 'gesentrysearch', loadChildren: './gateentrysearch/gateentrysearch.module#GESearchModule' },
     { path: 'gevisitorpass', loadChildren: './gevisitorpass/gevisitorpass.module#GEVisiorPassModule' },
     { path: 'gesvisitorreport', loadChildren: './gatevisitorreport/gatevisitorreport.module#GateVisitorModule' },
-
-    //Nagaraj B Changes
     { path: 'room-maintenance', loadChildren: './bookmeetingroom/room-maintenance/room-maintenance.module#RoomMaintenanceModule' },
     { path: 'book-room/:id', loadChildren: './bookmeetingroom/room-booking/room-booking.module#RoomBookingModule' },
     { path: 'roomfacilities-master', loadChildren: './bookmeetingroom/roomfacilities-master/roomfacilities.module#RoomfacilitiesModule' },
@@ -110,26 +97,20 @@ const appRoutes: Routes = [
     { path: 'locationwiseReport', loadChildren: './locationreport/locationreport.module#LocationreportModule' },
     { path: 'dashboard-emp', loadChildren: './dashboard/dashboard.module#DashboardModule' },
     { path: 'visitorappointment', loadChildren: './visitorappointment/visitorappointment.module#VisitorappointmentModule' },
-    // { path: 'visitorentry',  loadChildren: './visitorentry/visitorentry.module#VisitorentryModule'},
     { path: 'resetpassword', loadChildren: './auth/resetpassword/resetpassword.module#ResetPasswordModule' },
     { path: 'testpage', loadChildren: './testpage/testpage.module#TestpageModule' },
     { path: 'assessmentReport', loadChildren: './editing/assessmentmasterreport/assessmentmasterreport.module#AssessmentmasterreportModule' },
     { path: 'generalReport', loadChildren: './editing/generalreport/generalreport.module#GeneralreportModule' },
     { path: 'noduepage', loadChildren: './noduepage/noduepage.module#NoduepageModule' },
     { path: 'autoComplete', loadChildren: './autocomplete/autocomplete.module#AutocompleteModule' },
-
     { path: 'UserplantMaint', loadChildren: './UserPlantAssignment/UserPlantAssignment.module#UserPlantAssignmentModule' },
-
     //RA
     { path: 'Rarequest', loadChildren: './RaRequest/RaRequest.module#RaRequestModule' },
-
     { path: 'visitorentry', loadChildren: './visitorentry/visitorentry.module#VisitorentryModule' },
-     //{ path: 'vms-homepage', component: PageboardComponent, canActivate: [AuthGuard] },
    { path: 'vms-homepage', component: HomepageComponent, canActivate: [AuthGuard] },
     { path: 'profile-page', loadChildren: './profile-page/profile-page.module#ProfilePageModule' },
     { path: 'welcome-page', loadChildren: './welcome-page/welcome-page.module#WelcomePageModule' },
     { path: 'welcome-page/:type', loadChildren: './visitorentry/visitorentry.module#VisitorentryModule' },
-
     { path: 'competency', loadChildren: './masters/competency/competency.module#CompetencyModule' },
     { path: 'designation', loadChildren: './masters/designation/designation.module#DesignationModule' },
     { path: 'sbu', loadChildren: './masters/sbu/sbu.module#SbuModule' },
@@ -141,22 +122,16 @@ const appRoutes: Routes = [
     { path: 'project', loadChildren: './masters/project/project.module#ProjectModule' },
     { path: 'rating', loadChildren: './masters/rating/rating.module#RatingModule' },
     { path: 'softskill', loadChildren: './masters/softskill/softskill.module#SoftSkillModule' },
-
     //JobWork
     { path: 'JWDC', loadChildren: './Jobwork/jobwork.module#JobWorkModule' },
-
     { path: 'passwordreset', loadChildren: './auth/PasswordReset/PasswordReset.module#PasswordResetModule' },
     //Medical&NPD
-
     { path: 'MediRequest', loadChildren: './MedicalServices/MediServiceRequest/MediServiceRequest.module#MediServiceRequestModule' },
     { path: 'NPDRequest', loadChildren: './NPD/NPDRequest/NPDRequest.module#NPDRequestModule' },
     { path: 'MediDashboard', loadChildren: './MedicalServices/Dashboard/dashboard.module#DashboardModule' },
     { path: 'NPDDashboard', loadChildren: './NPD/Dashboard/dashboard.module#DashboardModule' },
-
-
     //lockout
     { path: 'Lockout', loadChildren: './auth/Unlockuser/Unlockuser.module#UnlockuserModule' },
-
     //eMicroModules
     { path: 'materialgroup', loadChildren: './eMicro/Masters/MaterialGroup/MaterialGroup.module#MaterialGroupModule' },
     { path: 'storagelocation', loadChildren: './eMicro/Masters/StorageLocation/StorageLocation.module#StorageLocationModule' },
@@ -175,7 +150,6 @@ const appRoutes: Routes = [
     { path: 'packtype', loadChildren: './eMicro/Masters/packtype/packtype.module#PackTypeModule' },
     { path: 'valuationclass', loadChildren: './eMicro/Masters/valuationclass/valuationclass.module#ValuationClassModule' },
     { path: 'approvers', loadChildren: './eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.module#WorkFlowApproversModule' },
-
     { path: 'itemcodeextension', loadChildren: './eMicro/ItemCodeExtension/ItemCodeExtension.module#ItemCodeExtensionModule' },
     { path: 'servicemaster', loadChildren: './eMicro/ServiceMasterCreation/ServiceMasterCreation.module#ServiceMasterModule' },
     { path: 'customermaster', loadChildren: './eMicro/CustomerMaster/CustomerMaster.module#CustomerMasterModule' },
@@ -185,11 +159,8 @@ const appRoutes: Routes = [
     { path: 'Dashboard', loadChildren: './eMicro/DashBoard/Dashboard.module#DashboardModule' },
     { path: 'DetailedReport', loadChildren: './eMicro/DetailedReport/DetailedReport.module#DetailedReportModule' },
     { path: 'Modification', loadChildren: './eMicro/ItemCodeModification/ItemCodeModification.module#ItemCodeModificationModule' },
-
-
     // PrintLogReport
     { path: 'PrintLogReport', loadChildren: './eMicro/PrintLogReport/PrintLogReport.module#PrintLogReportModule' },
-
     //UID
     { path: 'userIdRequest', loadChildren: './UID/UserIdRequest/UserIdRequest.module#UserIdRequestModule' },
     { path: 'softwaremaster', loadChildren: './UID/Softwaremaster/Softwaremaster.module#SoftwareMasterModule' },
@@ -201,8 +172,6 @@ const appRoutes: Routes = [
     { path: 'RepositoryDomains', loadChildren: './UID/RepositoryDomains/RepositoryDomains.module#RepositoryDomainsModule' },
     { path: 'UserplantMaint', loadChildren: './UserPlantAssignment/UserPlantAssignment.module#UserPlantAssignmentModule' },
     { path: 'userIdRequestReport', loadChildren: './UID/UserIdRequestReport/UserIdRequestReport.module#UserIdRequestReportModule' },
-
-
     { path: 'creatorSummary', loadChildren: './eMicro/CodeCreatorsSummaryReport/CodeCreatorsSummaryReport.module#CodeCreatorsSummaryReportModule' },
     { path: 'creatorSummaryMail', loadChildren: './eMicro/CodeCreatorsSummaryReportMail/CodeCreatorsSummaryReportMail.module#CodeCreatorsSummaryReportMailModule' },
   { path: 'ContractEmployee', loadChildren: './ContractEmployee/ContractEmployee.module#ContractEmployeeModule' },
@@ -232,10 +201,7 @@ const appRoutes: Routes = [
   { path: 'PermissionEss', loadChildren: './Leave/PermissionRequest/PermissionRequest.module#PermissionRequestModule' },
   { path: 'ManpowerReport', loadChildren: './Leave/ManpowerReport/ManpowerReport.module#ManpowerReportModule' },
   { path: 'attendanceEss', loadChildren: './Leave/Attendance/Attendance.module#AttendanceModule' },
-  // { path:'MarkAttendance' , loadChildren:'./Leave/MarkAttendance/MarkAttendance.module#MarkAttendanceModule'},
   { path: 'AttendanceDashBoards', loadChildren: './Leave/AttendanceDashboards/AttendanceDashboards.module#AttendanceDashboardsModule' },
-
-
   { path: 'ContractEmployee', loadChildren: './ContractEmployee/ContractEmployee.module#ContractEmployeeModule' },
   { path: 'ContractEmployeeList', loadChildren: './ContractEmployeeList/ContractEmployeeList.module#ContractEmployeeListModule' },
   { path: 'ContractEmployeeApproval', loadChildren: './ContractEmployeeApproval/ContractEmployeeApproval.module#ContractEmployeeApprovalModule' },
@@ -297,16 +263,10 @@ const appRoutes: Routes = [
   { path: 'LOPReimbursementEss', loadChildren: './Leave/LOPReimbursement/LOPReimbursement.module#LOPReimbursementModule' },
   { path: 'LOPReimbursement', loadChildren: './Leave/LOPReimbursement/LOPReimbursement.module#LOPReimbursementModule' },
   { path: 'PayrollProcessing', loadChildren: './Leave/PayrollProcessing/PayrollProcessing.module#PayrollProcessingModule' },
-  // { path: 'RotationalShifts' , loadChildren:'./Leave/RotationalShift/RotationalShift.module#RotationalShiftModule'},
-  //{ path: 'EsicsickleaveEss', loadChildren: './Leave/ESICSickLeave/EsicSickLeave.module#EsicSickLeaveModule' },
-  // { path: 'Esicsickleave', loadChildren: './Leave/ESICSickLeave/EsicSickLeave.module#EsicSickLeaveModule' },
   { path: 'TourPlanEss', loadChildren: './Leave/TourPlan/TourPlan.module#TourPlanModule' },
   { path: 'TourPlan', loadChildren: './Leave/TourPlan/TourPlan.module#TourPlanModule' },
-  // { path: 'AllertBox', loadChildren: './Allertbox/Allertbox.module#AllertboxModule' },
   { path: 'PlantHead', loadChildren: './Leave/PlantHead/PlantHead.module#PlantHeadModule' },
   { path: 'PayRollRegularizationRequest', loadChildren: './Leave/PayRollRegularizationRequest/PayRollRegularizationRequest.module#PayRollRegularizationRequestModule' },
-
-
   //LA Reports
   { path: 'AddAttr', loadChildren: './Leave/Reports/AdditionandAttrition/AdditionandAttrition.module#AdditionandAttritionModule' },
   { path: 'AttendanceMustorSummary', loadChildren: './Leave/Reports/AttendanceMusterorSummary/AttendanceMusterorSummary.module#AttendanceMusterorSummaryModule' },
@@ -323,7 +283,6 @@ const appRoutes: Routes = [
   { path: 'Intimation', loadChildren: './Leave/Reports/LeaveandODintimation/LeaveandODintimation.module#LeaveandODintimationModule' },
   { path: 'HolidayReport', loadChildren: './HolidaysReports/HolidaysReports.module#HolidaysReportsModule' },
   { path: 'WorkingCalendarReport', loadChildren: './WorkingCalendarReports/WorkingCalendarReports.module#WorkingCalendarReportsModule' },
-   
   //ITAMS
     { path: 'AssetDashboard', loadChildren: './ITAMS/AssetDashboard/Assetdashboard.module#DashboardModule' },
     { path: 'AssetExplorer', loadChildren: './ITAMS/AssetExplorer/AssetExplorer.module#AssetExplorerModule' },
@@ -336,29 +295,14 @@ const appRoutes: Routes = [
     { path: 'SparesRequest', loadChildren: './ITAMS/SparesRequest/SparesRequest.module#SparesRequestModule' },
     { path: 'AssetLabelPrint', loadChildren: './ITAMS/AssetLabelPrint/AssetLabelPrint.module#AssetLabelPrintModule' },
     { path: 'ApproveAsset', loadChildren: './ITAMS/ApproveAsset/ApproveAsset.module#ApproveAssetModule' },
-
     //AMS
     { path: 'AssetSummary', loadChildren: './AMS/AssetSummary/AssetSummary.module#AssetSummaryModule' },
     { path: 'AssetExplorers', loadChildren: './AMS/AssetExplorer/AssetExplorer.module#AssetExplorerModule' },
     { path: 'AssetLabelPrint/:assetNo', loadChildren: './AMS/AssetLabelPrint/AssetLabelPrint.module#AssetLabelPrintModule' },
     { path: 'ChangeAssetDetails/:assetNo', loadChildren: './AMS/ChangeAssetDetails/ChangeAssetDetails.module#ChangeAssetDetailsModule' },
-    //{ path: 'AssetLabelPrint/:asset_No', component: AssetLabelPrintComponent, canActivate: [AuthGuard] },
-    //{path: 'AssetDetails', loadChildren:'./AMS/AssetDetails/AssetDetails.module#AssetDetailsModule' },
     { path: 'ApproveAssets', loadChildren: './AMS/ApproveAssets/ApproveAssets.module#ApproveAssetsModule' },
-
     { path: 'UserAcknowledgement', loadChildren: './AMS/UserAcknowledgement/UserAcknowledgement.module#UserAcknowledgementModule' },
-    //{path: 'SpocDetails', loadChildren: './AMS/SpocDetails/SpocDetails.module#SpocDetailsModule' },
-    //{path: 'UserAcknowledgement', loadChildren: './AMS/UserAcknowledgement/UserAcknowledgement.module#UserAcknowledgementModule' },
     { path: 'AMSReports', loadChildren: './AMS/AMSReports/AMSReports.module#AMSReportsModule' },
-
-    // {path: 'HardSummary', loadChildren: './AMS/HardSummary/HardSummary.module#HardSummaryModule' },
-    // {path: 'HardDetailed', loadChildren: './AMS/HardDetailed/HardDetailed.module#HardDetailedModule' },
-    // {path: 'SoftSummary', loadChildren: './AMS/SoftSummary/SoftSummary.module#SoftSummaryModule' },
-    // {path: 'SoftDetailed', loadChildren: './AMS/SoftDetailed/SoftDetailed.module#SoftDetailedModule' },
-
-
-
-
     //MLLDLS
     { path: 'DocCreate', loadChildren: './MLLDLS/DocCreate/DocCreate.module#DocCreateModule' },
     { path: 'DocBorrow', loadChildren: './MLLDLS/DocBorrow/DocBorrow.module#DocBorrowModule' },
@@ -370,8 +314,6 @@ const appRoutes: Routes = [
     { path: 'AssignApprover', loadChildren: './MLLDLS/AssignApprovers/AssignApprover.module#AssignApproversModule' },
     { path: 'TypeMaster', loadChildren: './MLLDLS/DocTypeMaster/DocTypeMaster.module#DocTypeMasterModule' },
     { path: 'DLSSubstitute', loadChildren: './MLLDLS/DLSSubstitute/DLSSubstitute.module#DLSSubstituteModule' },
-
-
     //HR 
     { path: 'HR/offer', loadChildren: () => OffersModule },
     { path: 'HR/appointment', loadChildren: () => AppointmentModule },
@@ -399,7 +341,6 @@ const appRoutes: Routes = [
     { path: 'TdVendorMaster', loadChildren: './TravelDesk/TdVendorMaster/TdVendorMaster.module#TdVendorMasterModule' },
     { path: 'TdTypeOfEvent', loadChildren: './TravelDesk/TdTypeOfEventMaster/TdTypeOfEventMaster.module#TdTypeOfEventMasterModule' },
     { path: 'FinancialReport', loadChildren: './TravelDesk/FinancialReport/FinancialReport.module#FinancialReportModule' },
-
     //WMTS
     { path: 'MIGO', loadChildren: './WMTS/MIGOPosting/MIGOPosting.module#MIGOPostingModule' },
     { path: 'DC', loadChildren: './WMTS/DCPosting/DCPosting.module#DCPostingModule' },
@@ -412,11 +353,6 @@ const appRoutes: Routes = [
     { path: 'DCVerificationReport', loadChildren: './WMTS/DCVerificationReport/DCVerificationReport.module#DCVerificationReportModule' },
     { path: 'SamplingReport', loadChildren: './WMTS/SamplingReport/SamplingReport.module#SamplingReportModule' },
     { path: 'MonthEndDCApproval', loadChildren: './WMTS/MonthEndDCApproval/MonthEndDCApproval.module#MonthEndDCApprovalModule' },
-    // { path: 'StockReport', loadChildren: './WMTS/StockReport/StockReport.module#StockReportModule' },
-
-
-    //Phase II
-
      //Phase -II changes
    { path: 'vmsapproval', loadChildren: './VMSApproval/VMSApproval.module#VMSApprovalModule'},
    { path: 'GeApproval', loadChildren: './geoutothermatApproval/geoutothermatApproval.module#geoutothermatApprovalModule'},
@@ -429,25 +365,17 @@ const appRoutes: Routes = [
    { path: 'UIDDetailedReport', loadChildren: './UID/UserIDDetailedReport/UserIDDetailedReport.module#UserIDDetailedReportModule'},
    { path: 'DetailedReport/:id/:id2/:ReqType',loadChildren: './UID/UserIDDetailedReport/UserIDDetailedReport.module#UserIDDetailedReportModule'},
    { path: 'DetailedReport/:id/:id2/:id3/:ReqType',loadChildren: './UID/UserIDDetailedReport/UserIDDetailedReport.module#UserIDDetailedReportModule'},
-
    //SAP Masters Changes
    { path: 'CustomerMasterChanges', loadChildren:'./eMicro/CustomerMasterChanges/CustomerMasterChanges.module#CustomerMasterChangesModule'},
    { path: 'VendorMasterChanges', loadChildren:'./eMicro/VendorMasterChanges/VendorMasterChanges.module#VendorMasterChangesModule'},
    { path: 'ServiceMasterChanges', loadChildren:'./eMicro/ServiceMasterChanges/ServiceMasterChanges.module#ServiceMasterChangesModule'},
    { path: 'FinanceApproval' ,loadChildren: './eMicro/FinanceApproval/FinanceApproval.module#FinanceApprovalModule' },
-
     //IT
     { path: 'ITTicket', loadChildren: './IT/ITTicket/itticket.module#itticketModule' },
-
-
-
     { path: 'formmaster', loadChildren: './masters/form-master/form-master.module#FormMasterModule' },
     { path: 'unauthorized', loadChildren: './unauthorized/unauthorized.module#UnauthorizedModule' },
-    // { path: 'department', loadChildren: './masters/department/department.module#DepartmentModule' },
-    // { path: 'state', loadChildren: './masters/state/state.module#StateModule' },
     { path: 'template', loadChildren: './masters/template/template.module#TemplateModule' },
     { path: 'templatelist', loadChildren: './masters/templatelist/templatelist.module#TemplatelistModule' },
-    //{ path: '**', redirectTo: 'dashboard' }
     { path: '**', redirectTo: 'initpage' }
 ];
 

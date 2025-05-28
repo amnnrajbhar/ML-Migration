@@ -9,13 +9,13 @@ import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
 import { ExcelService } from '../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+//import * as fs from 'file-saver';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 
 @Component({
@@ -29,50 +29,53 @@ export class LooseDCLabelSummaryComponent implements OnInit {
 
 
   public tableWidget: any;
-  DCLabel: string;
+  DCLabel: string
   ItemList: LineItem[] = [];
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  filterplant: string;
-  path: string;
-  currentUser: AuthData;
-  filteruser: string;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  filterplant!: string
+  path!: string
+  currentUser!: AuthData;
+  filteruser: string
   locationList: any[] = [];
   filteredModel: any[] = [];
   materialstatusmodel: any[] = [];
   errMsg: string = "";
   date: any;
   today = new Date();
-  filtermatType: string;
-  Barcode: string;
-  ItemDesc: string;
-  BatchNo: string;
-  ItemCode: string;
-  filterPONo: string;
-  DCNo: string;
-  TotalQty: number;
-  plant: string;
-  locationname: string;
-  image: string;
-  CustomerName: string;
-  City: string;
-  DoneBy: string;
+  filtermatType: string
+  Barcode: string
+  ItemDesc: string
+  BatchNo: string
+  ItemCode: string
+  filterPONo: string
+  DCNo: string
+  TotalQty!: number;
+  plant!: string
+  locationname!: string
+  image!: string
+  CustomerName: string
+  City: string
+  DoneBy: string
   groupbydclabelforsum;
   summary: any[] = [];
   userwisesummary: any[] = [];
-  TotalLoose: number;
-  TotalFull: number;
-  TotalShippers: number;
+  TotalLoose!: number;
+  TotalFull!: number;
+  TotalShippers!: number;
   CustomerModel: any[] = [];
 
   dtOptions = {};
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private datePipe: DatePipe
-    , private http: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    , private http: HttpClient) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getLocationMaster();
     this.getbase64image();
   }
@@ -109,13 +112,13 @@ export class LooseDCLabelSummaryComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         // this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
-        this.plant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        this.locationname = this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.locationList = data.filter((x:any)  => x.isActive);
+        this.plant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        this.locationname = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
 
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -155,7 +158,8 @@ export class LooseDCLabelSummaryComponent implements OnInit {
           this.TotalShippers = this.TotalFull+ +this.TotalLoose;
           this.userwisesummary = data.table2;
 
-          this.filteredModel.forEach(element => {
+          this.filteredModel.forEach((element:any)=> {
+
           this.TotalQty = this.TotalQty+ +element.qty});
 
           this.filteredModel.reverse();
@@ -166,7 +170,7 @@ export class LooseDCLabelSummaryComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.filteredModel = [];
     });
@@ -178,13 +182,13 @@ export class LooseDCLabelSummaryComponent implements OnInit {
     const labelchecked = {};
 
     this.dataTable = this.filteredModel
-      .sort((a, b) => {
+      .sort((a:any, b:any) => {
         const taskComparator = a.dcLabel.localeCompare(b.dcLabel);
         return taskComparator
           ? taskComparator
           : a.dcLabel.localeCompare(b.dcLabel);
       })
-      .map((x) => {
+      .map((x:any) => {
         const taskColumnSpan = labelchecked[x.dcLabel]
           ? 0
           : this.filteredModel.filter((y) => y.dcLabel === x.dcLabel).length;
@@ -212,7 +216,7 @@ export class LooseDCLabelSummaryComponent implements OnInit {
   }
 
   downloadPDF() {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.plant + ' - ' + this.locationname;
     var ReportName = "LOOSE SHIPPER DETAILS"
     var printedBy = this.currentUser.fullName;
@@ -221,27 +225,27 @@ export class LooseDCLabelSummaryComponent implements OnInit {
     var date = pipe.transform(now, 'dd/MM/yyyy HH:mm');
     var logo = this.image;
     var CheckedBy = this.DoneBy;
-    var htmnikhitml = htmlToPdfmake(`<html>
-    <head>
-    </head>
-    <body>
-    ${printContents}
-    <div> 
-    </div>
-    </body>  
-    </html>`, {
-      tableAutoSize: true,
-      tablebordered: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-    })
+    // var htmnikhitml = htmlToPdfmake(`<html>
+    // <head>
+    // </head>
+    // <body>
+    // ${printContents}
+    // <div> 
+    // </div>
+    // </body>  
+    // </html>`, {
+    //   tableAutoSize: true,
+    //   tablebordered: true,
+    //   headerRows: 1,
+    //   dontBreakRows: true,
+    //   keepWithHeaderRows: true,
+    // })
     var docDefinition = {
       info: {
         title: 'Loose Summary Slip',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -259,7 +263,7 @@ export class LooseDCLabelSummaryComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -330,7 +334,7 @@ export class LooseDCLabelSummaryComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 }
 

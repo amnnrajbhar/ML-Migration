@@ -1,74 +1,74 @@
 export interface OfferDetails {
     offerId: number;
-    offerNo: string;
-    guid: string;
+    offerNo: string
+    guid: string
     isConfidential: boolean;
-    pfApplicable: string;
-    esiApplicable: string;
-    epsApplicable: string;
-    preJoiningInitiation: string;
+    pfApplicable: string
+    esiApplicable: string
+    epsApplicable: string
+    preJoiningInitiation: string
     plantId: number;
-    plantName: string;
+    plantName: string
     payGroupId: number;
-    payGroupName: string;
+    payGroupName: string
     employeeCategoryId: number;
-    employeeCategoryName: string;
-    title: string;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    initial: string;
-    gender: string;
-    personalEmailId: string;
-    mobileNo: string;
-    dateOfBirth: string;
+    employeeCategoryName: string
+    title: string
+    firstName: string
+    middleName: string
+    lastName: string
+    initial: string
+    gender: string
+    personalEmailId: string
+    mobileNo: string
+    dateOfBirth: string
     age: number;
-    addressLine1: string;
-    addressLine2: string;
-    addressLine3: string;
-    city: string;
+    addressLine1: string
+    addressLine2: string
+    addressLine3: string
+    city: string
     stateId: number;
-    state: string;
+    state: string
     pinCode: number;
-    qualification: string;
+    qualification: string
     locationId: number;
-    location: string;
+    location: string
     locationStateId: number;
-    locationState: string;
+    locationState: string
     designationId: number;
-    designation: string;
-    grade: string;
+    designation: string
+    grade: string
     roleId: number;
-    role: string;
+    role: string
     departmentId:number;
     department:string;
-    interviewedBy: string;
+    interviewedBy: string
     assesmentReport: boolean;
     matTest: boolean;
     sendEmailNotification: boolean;
-    otherEmails: string;
-    presentEmployer: string;
+    otherEmails: string
+    presentEmployer: string
     salesAmount: number;
     totalExperience: number;
     presentCTC: number;
     offeredSalary: number;
-    salaryType: string;
-    packageType: string;
-    referenceThru: string;
-    refEmployeeNo: string;
-    refDetails: string;
-    recruitmentType: string;
-    replacingEmployeeNumber: string;
-    additionalDetails: string;
-    status: string;
-    joiningDate: string;
-    createdDate: string;
+    salaryType: string
+    packageType: string
+    referenceThru: string
+    refEmployeeNo: string
+    refDetails: string
+    recruitmentType: string
+    replacingEmployeeNumber: string
+    additionalDetails: string
+    status: string
+    joiningDate: string
+    createdDate: string
     createdById: number;
-    createdByName: string;
-    modifiedDate: string;
+    createdByName: string
+    modifiedDate: string
     modifiedById: number;
-    modifiedByName: string;
-    emailSentDate: string;
+    modifiedByName: string
+    emailSentDate: string
     reportingManagerName:string;
     approvingManagerName:string;
     reportingManagerId:number;

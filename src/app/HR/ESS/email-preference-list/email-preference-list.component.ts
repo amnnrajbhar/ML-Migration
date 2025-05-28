@@ -21,8 +21,8 @@ export class EmailPreferenceListComponent implements OnInit {
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute, private excelService: ExcelService) { }
   // @Input() editAllowed: boolean = true;
-  employeeId: number;
-  currentUser: AuthData;
+  employeeId!: number;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   emailtypes: any[] = [];
   errorCount = 0;
@@ -32,7 +32,8 @@ export class EmailPreferenceListComponent implements OnInit {
 
   ngOnInit() {
     debugger;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.employeeId = this.currentUser.hrEmployeeId;
     this.emailtypes = [
       // { emailtype: "Offer Approval", enabled: true },
@@ -58,13 +59,13 @@ export class EmailPreferenceListComponent implements OnInit {
     this.isLoading = true;
     this.httpService.HRgetById(APIURLS.EMAILPREFERENCE_GET_ALL_EMAILPREFERENCE, this.employeeId).then((data: any) => {
       for (var result of data) {
-        var existingEmailType = this.emailtypes.find(x => x.emailtype == result.emailType);
+        var existingEmailType = this.emailtypes.find((x:any)  => x.emailtype == result.emailType);
         if (existingEmailType != null) {
-          this.emailtypes.find(x => x.emailtype == result.emailType).enabled = result.enabled;
+          this.emailtypes.find((x:any)  => x.emailtype == result.emailType).enabled = result.enabled;
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -92,7 +93,7 @@ export class EmailPreferenceListComponent implements OnInit {
         } else
           toastr.error("Error occurred while Updating.");
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
         this.isLoading = false;
       });

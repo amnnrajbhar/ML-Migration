@@ -18,7 +18,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class SmsTemplatesComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   urlPath: string = '';
   isLoading: boolean = false;
@@ -36,7 +36,8 @@ export class SmsTemplatesComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.currentUser.uid;
       this.GetTemplatesList();
     }
@@ -53,21 +54,21 @@ export class SmsTemplatesComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });
   }
   
-  edit(id) {
+  edit(id:any) {
     this.action = "edit";
-    this.details = Object.assign({}, this.templatesList.find(x => x.smsTemplateId == id));
+    this.details = Object.assign({}, this.templatesList.find((x:any)  => x.smsTemplateId == id));
   }
 
-  delete(id) {
+  delete(id:any) {
     if (confirm("Are you sure you want to Inactivate this?")) {
       this.action = "edit";
-      this.details = Object.assign({}, this.templatesList.find(x => x.smsTemplateId == id));
+      this.details = Object.assign({}, this.templatesList.find((x:any)  => x.smsTemplateId == id));
       this.details.active = false;
       this.submit();
     }
@@ -98,7 +99,7 @@ export class SmsTemplatesComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while saving details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving details. Error:' + error);
       });

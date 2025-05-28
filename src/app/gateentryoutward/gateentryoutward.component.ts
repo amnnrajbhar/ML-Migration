@@ -24,29 +24,29 @@ export class GateentryOutwardComponent implements OnInit {
   today: Date = new Date();
   isPO: boolean = false;
   addressId: number = 0;
-  competencyList: any[];
+  competencyList!: any[];
   person: any[]=[];
-  entityList: any[];
-  designationList: any[];
+  entityList!: any[];
+  designationList!: any[];
   selParentRole: any;
   selDepartment: any;
   selApprovalTemp: any;
   selProfile: any; selManager: any;selReportingManager: any;
-  roleList: any[];
-  departmentList: any[];
-  AapprovalTempList: any[];
-  profileList: any[]; managerList: any; reporting_managerList: any;
-  projectList: any[];
-  userDivisionList: any[];
-  FilteredDivList: any[];
-  divSelectedItem: any[];
-  entitySelectedItem: any[];
-  userEntityList: any[];
+  roleList!: any[];
+  departmentList!: any[];
+  AapprovalTempList!: any[];
+  profileList!: any[]; managerList: any; reporting_managerList: any;
+  projectList!: any[];
+  userDivisionList!: any[];
+  FilteredDivList!: any[];
+  divSelectedItem!: any[];
+  entitySelectedItem!: any[];
+  userEntityList!: any[];
   entitySelected=[];
   userList:any[] = [] ;
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   uid: number = 0;
   geItem: Employee = new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true,0,0,0);
   addressItem: EmployeeAddress = new EmployeeAddress(0,0,	'',	'',	'',	'',	'',	'',	'',	'',	'',	'',	'',	'',	'', true,0);
@@ -69,9 +69,9 @@ export class GateentryOutwardComponent implements OnInit {
   payrollNtest: any;
   employeeId:string ="";
   formData: FormData = new FormData();
-  file: File;successMsg: string = "";
+  file!: File;successMsg: string = "";
   path:string = '';
-  recCount: number;
+  recCount!: number;
   deletedPersonIds: any;
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
@@ -147,7 +147,7 @@ export class GateentryOutwardComponent implements OnInit {
             this.reInitDatatable();
       this.isLoading = false;
           }
-      }).catch(error => {
+      }).catch((error)=> {
           this.isLoading = false;
           this.userList = [];
       });
@@ -161,17 +161,17 @@ export class GateentryOutwardComponent implements OnInit {
       this.isLoadingPop = false;
       if (this.isEdit) {
           this.geItem = data;
-          this.SelempDesignation = this.designationList.find(s => s.id === this.geItem.fkDesignation);
-          this.SelempSBUList = this.entityList.find(s => s.id === this.geItem.fkSbuId);
-          this.selProfile = this.profileList.find(s => s.id == this.geItem.fkProfileId);
-          this.selManager = this.managerList.find(s => s.id == this.geItem.fkManager);
+          this.SelempDesignation = this.designationList.find((s:any) => s.id === this.geItem.fkDesignation);
+          this.SelempSBUList = this.entityList.find((s:any) => s.id === this.geItem.fkSbuId);
+          this.selProfile = this.profileList.find((s:any) => s.id == this.geItem.fkProfileId);
+          this.selManager = this.managerList.find((s:any) => s.id == this.geItem.fkManager);
           this.selReportingManager = this.reporting_managerList.find(s=> s.id == this.geItem.fkReportingManager);
           // this.selReportingManager = this.selManager;
           this.selParentRole = this.roleList.find(s=>s.id == this.geItem.fkRoleId);
-          this.selDepartment = this.geItem.fkDepartment!=0?(this.departmentList.find(s => s.id === this.geItem.fkDepartment)):null;
-          this.selApprovalTemp = this.geItem.fkApprovalTemplateId!=0?(this.AapprovalTempList.find(s => s.id === this.geItem.fkApprovalTemplateId)):null;
-          this.SelCompetency = this.competencyList.find(s => s.id === this.geItem.fkCompetency);
-          this.SelProject = this.projectList.find(s => s.id === this.geItem.fkProjectId);
+          this.selDepartment = this.geItem.fkDepartment!=0?(this.departmentList.find((s:any) => s.id === this.geItem.fkDepartment)):null;
+          this.selApprovalTemp = this.geItem.fkApprovalTemplateId!=0?(this.AapprovalTempList.find((s:any) => s.id === this.geItem.fkApprovalTemplateId)):null;
+          this.SelCompetency = this.competencyList.find((s:any) => s.id === this.geItem.fkCompetency);
+          this.SelProject = this.projectList.find((s:any) => s.id === this.geItem.fkProjectId);
           this.geItem.id = data.id;
           this.employeeId = this.geItem.employeeId;
           this.httpService.getById(APIURLS.BR_MASTER_EMPLOYEEADDRESS_API, this.geItem.fkAddressId).then((data: any) => {
@@ -179,7 +179,7 @@ export class GateentryOutwardComponent implements OnInit {
             if (data.id > 0) {
                 this.addressItem = data;
             }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
                 this.addressItem = null;
             });
@@ -189,7 +189,7 @@ export class GateentryOutwardComponent implements OnInit {
               if (data.id > 0) {
                   this.empOtherDetailsItem = data;
               }
-              }).catch(error => {
+              }).catch((error)=> {
                   this.isLoading = false;
                   this.empOtherDetailsItem = null;
               });
@@ -200,7 +200,7 @@ export class GateentryOutwardComponent implements OnInit {
                     // this.userMasterItem.id = data.id;
                     ////console.log(this.userMasterItem.password);
                 }
-                }).catch(error => {
+                }).catch((error)=> {
                     this.isLoading = false;
                     this.userMasterItem = null;
                 });
@@ -210,7 +210,7 @@ export class GateentryOutwardComponent implements OnInit {
                       this.employeePayrollItem = data;
                       // this.userMasterItem.id = data.id;
                   }
-                  }).catch(error => {
+                  }).catch((error)=> {
                       this.isLoading = false;
                       this.employeePayrollList = null;
                   });
@@ -237,8 +237,8 @@ validatedForm: boolean = true;
 validateForm(){
 // debugger;
 this.validatedForm = true;
-let validId = this.userList.some(s => s.employeeId == this.geItem.employeeId && s.id != this.geItem.id);
-let validEmail = this.userList.some(s => s.email == this.geItem.email && s.id != this.geItem.id )
+let validId = this.userList.some((s:any) => s.employeeId == this.geItem.employeeId && s.id != this.geItem.id);
+let validEmail = this.userList.some((s:any) => s.email == this.geItem.email && s.id != this.geItem.id )
 if(validId){
   this.isLoadingPop = false;
   this.validatedForm = false;
@@ -326,7 +326,7 @@ this.geItem.fkParentIdCount = 1;
 this.geItem.interviwer = 1;
 this.geItem.fkProfileId = this.selProfile.id;
 this.geItem.fkRoleId = this.selParentRole.id;
-this.geItem.designation = this.designationList.find(s => s.id === this.geItem.fkDesignation)['name'];
+this.geItem.designation = this.designationList.find((s:any) => s.id === this.geItem.fkDesignation)['name'];
 this.userMasterItem.fkCompanyId = 1;
 let connection: any;
 // debugger;
@@ -379,7 +379,7 @@ if(this.validatedForm){
     // else {
     //     this.errMsgPop = data;
     // }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving user master data..';
     });
@@ -391,7 +391,7 @@ if(this.validatedForm){
       // else {
       //   this.errMsgPop = data_emp.message;
       // }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving user master data..';
     });
@@ -401,7 +401,7 @@ if(this.validatedForm){
             // else {
             //   this.errMsgPop = datapayroll.message;
             // }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving payroll details data..';
           });
@@ -411,7 +411,7 @@ if(this.validatedForm){
             // else {
             //   this.errMsgPop = dataother.message;
             // }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving user other details data..';
           });
@@ -421,7 +421,7 @@ if(this.validatedForm){
       // else {
       //   this.errMsgPop = dataaddress.message;
       // }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving user address data..';
     });
@@ -465,7 +465,7 @@ if(this.validatedForm){
         // else {
         //   this.errMsgPop = data;
         // }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving user master data..';
       });
@@ -473,7 +473,7 @@ if(this.validatedForm){
         // else {
         //   this.errMsgPop = data;
         // }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving user master data..';
       });
@@ -481,7 +481,7 @@ if(this.validatedForm){
         // else {
         //   this.errMsgPop = data;
         // }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving user data..';
       });
@@ -489,7 +489,7 @@ if(this.validatedForm){
             // else {
             //   this.errMsgPop = data;
             // }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving user details data..';
           });
@@ -497,7 +497,7 @@ if(this.validatedForm){
         // else {
         //   this.errMsgPop = data;
         // }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving user master put data..';
       });
@@ -542,7 +542,7 @@ uploadCustInv() {
       if (data==200) {
         
       }
-  }).catch(error => {
+  }).catch((error)=> {
      
        this.errMsg = 'Error uploading file ..';
   });

@@ -16,16 +16,16 @@ export class ProfileComponent implements OnInit {
     
     public tableWidget: any;
     name: string = '';
-    usrid: number;
+    usrid!: number;
     selParentRole: any;
     selDepartment: any;
     selProfile: any;
-    roleList: any[];
-    departmentList: any[];
-    profileList: any[];
-    dddivisionList: any[];
+    roleList!: any[];
+    departmentList!: any[];
+    profileList!: any[];
+    dddivisionList!: any[];
     selectedItems = [];
-    SelValue: any[];
+    SelValue!: any[];
     userList: User[];
     userItem: User = new User(0, 0,'','','',0,0,0, '', 0, '', '', '', '', '', '', '','', '', 0, 0, false, '', '', false);;
     isLoading: boolean = false;
@@ -57,7 +57,8 @@ export class ProfileComponent implements OnInit {
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         if(chkaccess == true){
           ////console.log(chkaccess);
-        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
         this.usrid = authData.uid;
         this.getRoleList();
         this.getDepartList();
@@ -85,12 +86,12 @@ export class ProfileComponent implements OnInit {
             this.isLoading = false;
             if (data.length >0) {
               this.userItem = data.user;
-              this.selParentRole = this.userItem.roleId != 0 ? this.roleList.find(s => s.id === this.userItem.roleId) : null;
-              this.selDepartment = this.userItem.departmentId != 0 ? (this.departmentList.find(s => s.id === this.userItem.departmentId)) : null;
-              this.selProfile = this.userItem.profileId != 0 ? this.profileList.find(s => s.id === this.userItem.profileId) : null;
+              this.selParentRole = this.userItem.roleId != 0 ? this.roleList.find((s:any) => s.id === this.userItem.roleId) : null;
+              this.selDepartment = this.userItem.departmentId != 0 ? (this.departmentList.find((s:any) => s.id === this.userItem.departmentId)) : null;
+              this.selProfile = this.userItem.profileId != 0 ? this.profileList.find((s:any) => s.id === this.userItem.profileId) : null;
                 this.reInitDatatable();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.userList = [];
         });
@@ -102,10 +103,10 @@ export class ProfileComponent implements OnInit {
         if (data.length >0) {
           this.roleList = data.roleList;
           //this.parentList = data.roleList;
-          //this.roleList.forEach(item => { item.isChecked = false; });
+          //this.roleList.forEach((item :any) => { item.isChecked = false; });
           // this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         //this.isLoading = false;
         this.roleList = [];
       });
@@ -117,10 +118,10 @@ export class ProfileComponent implements OnInit {
         if (data.length >0) {
           this.departmentList = data.departmentList;
           //this.parentList = data.roleList;
-          //this.roleList.forEach(item => { item.isChecked = false; });
+          //this.roleList.forEach((item :any) => { item.isChecked = false; });
           //this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         // this.isLoading = false;
         this.departmentList = [];
       });
@@ -133,10 +134,10 @@ export class ProfileComponent implements OnInit {
           this.profileList = data.profileList;
           // this.formMainList = data.profileList.pro_formMainList.formMaintenanceList;
           //this.parentList = data.roleList;
-          //this.roleList.forEach(item => { item.isChecked = false; });
+          //this.roleList.forEach((item :any) => { item.isChecked = false; });
           // this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         //this.isLoading = false;
         this.profileList = [];
       });
@@ -151,9 +152,9 @@ export class ProfileComponent implements OnInit {
             this.userItem = data;
             this.selectedItems = (this.userItem.usr_div.split(","));
             this.SelValue = this.selectedItems;
-            this.selParentRole = this.userItem.roleId != 0 ? this.roleList.find(s => s.id === this.userItem.roleId) : null;
-            this.selDepartment = this.userItem.departmentId != 0 ? (this.departmentList.find(s => s.id === this.userItem.departmentId)) : null;
-            this.selProfile = this.userItem.profileId != 0 ? this.profileList.find(s => s.id === this.userItem.profileId) : null;
+            this.selParentRole = this.userItem.roleId != 0 ? this.roleList.find((s:any) => s.id === this.userItem.roleId) : null;
+            this.selDepartment = this.userItem.departmentId != 0 ? (this.departmentList.find((s:any) => s.id === this.userItem.departmentId)) : null;
+            this.selProfile = this.userItem.profileId != 0 ? this.profileList.find((s:any) => s.id === this.userItem.profileId) : null;
             //this.initialSelect();
         }
         else {
@@ -178,7 +179,7 @@ export class ProfileComponent implements OnInit {
         this.httpService.get(APIURLS.BR_DD_DIVISION_API).then((data: any) => {
             if (data.length >0)
                 this.dddivisionList = data.dddivisionList;
-        }).catch(error => {
+        }).catch((error)=> {
             this.dddivisionList = [];
         });
     }
@@ -205,7 +206,7 @@ export class ProfileComponent implements OnInit {
             else {
                 this.errMsgPop = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving user data..';
         });
@@ -237,7 +238,7 @@ export class ProfileComponent implements OnInit {
             else {
                 this.errMsg = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.errMsg = 'Error saving user data..';
         });

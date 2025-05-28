@@ -23,11 +23,11 @@ declare var $: any;
   providers:[Util,AppointmentService]
 })
 export class EducationComponent implements OnInit {
-  @ViewChild(NgForm, { static: false })  educationForm: NgForm;
-  @Input() employeeId: number;
+  @ViewChild(NgForm, { static: false })  educationForm!: NgForm;
+  @Input() employeeId!: number;
   @Input() profileDetails: TemporaryProfile;  
   @Input() editAllowed: boolean ;
-  @Input() profileId: number;
+  @Input() profileId!: number;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   isLoading = false;
@@ -42,7 +42,7 @@ export class EducationComponent implements OnInit {
   selectedEducationLevel: any =null;
   selectedState: any = null;
   selectedCountry: any = null;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -71,7 +71,8 @@ export class EducationComponent implements OnInit {
     this.service.getCourses().then((data:any)=>{this.courseFullList = data;});
       var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
       if (chkaccess == true) {
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         this.getData(this.employeeId);
       }
       if (this.profileId>0)
@@ -87,7 +88,7 @@ export class EducationComponent implements OnInit {
    this.profileDetails.educationDetails = this.educationLists;
    return this.profileDetails;
  }
-  getData(id) {
+  getData(id:any) {
     this.isLoading = true;
     
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_GET_EDUCATION, id).then((data: any) => {
@@ -96,7 +97,7 @@ export class EducationComponent implements OnInit {
         this.educationLists = this.educationList;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -109,13 +110,13 @@ export class EducationComponent implements OnInit {
     this.httpService.HRget(APIURLS.TEMPORARY_EMPLOYEE_PROFILE_GET_DETAILS + "/" + id).then((data: any) => {
       if (data) {
         this.profileDetailsList = data;
-        this.profileDetailsList.educationDetails = this.profileDetailsList.educationDetails.filter(x => x.action!="None");
+        this.profileDetailsList.educationDetails = this.profileDetailsList.educationDetails.filter((x:any)  => x.action!="None");
         for(var item of this.profileDetailsList.educationDetails){
           item.statusColor = this.statusList.find(x=>x.type == item.action).color;
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -124,7 +125,7 @@ export class EducationComponent implements OnInit {
   onLevelChange(){
     if(this.selectedEducationLevel){
       // filter course list based on level
-      this.courseList = this.courseFullList.filter(x=>x.educationLId == this.selectedEducationLevel.id);
+      this.courseList = this.courseFullList.filter((x:any)=>x.educationLId == this.selectedEducationLevel.id);
   
       if(this.selectedEducationLevel.id == 1){  // School
         this.selectedCourse = this.courseFullList.find(x=>x.courseId==57);  //Matriculation/Secondary
@@ -151,13 +152,13 @@ export class EducationComponent implements OnInit {
       conn.then((data: any) => {
   
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     }
@@ -301,7 +302,7 @@ export class EducationComponent implements OnInit {
             else
             toastr.error(data.message);
           })
-          .catch(error => {
+          .catch((error)=> {
             this.isLoading = false;
             toastr.error('Error occured while uploading attachments. Error:' + error);
           });

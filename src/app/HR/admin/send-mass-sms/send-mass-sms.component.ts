@@ -23,7 +23,7 @@ export class SendMassSmsComponent implements OnInit {
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
     private dataStore: DataStorageService, private excelService: ExcelService, private masterDataService: MasterDataService) { }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   filterData: any = {};
   filterModel: any = {};
@@ -51,7 +51,8 @@ export class SendMassSmsComponent implements OnInit {
   ]
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageNo = 1;
     this.filterModel.pageSize = 10;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -88,10 +89,10 @@ export class SendMassSmsComponent implements OnInit {
     this.httpService.HRpost(APIURLS.EMPLOYEE_GET_EMPLOYEELIST, this.filterModel).then((data: any) => {
       this.filterData = data;
       for (var item of this.filterData.list) {
-        item.statusColor = this.statusList.find(x => x.type == item.status).color;
+        item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -119,7 +120,7 @@ export class SendMassSmsComponent implements OnInit {
           toastr.error(data.message);
 
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     }
@@ -129,7 +130,7 @@ export class SendMassSmsComponent implements OnInit {
     if(!this.selectedTemplate || this.selectedTemplate.smsTemplateId == undefined || this.selectedTemplate.smsTemplateId <= 0){
       toastr.error("please select SMS template."); return;
     }
-    var selectedList = this.filterData.list.filter(x => x.selected);
+    var selectedList = this.filterData.list.filter((x:any)  => x.selected);
     if (selectedList.length <= 0) {
       toastr.error("Please select at least one employee to send SMS.");
       return;
@@ -141,7 +142,7 @@ export class SendMassSmsComponent implements OnInit {
       request.smsTemplateId = this.selectedTemplate.smsTemplateId;
       request.message = this.selectedTemplate.body;
       request.selectedEmployeeIds = [];
-      var selectedEmployees = this.filterData.list.filter(x => x.selected);
+      var selectedEmployees = this.filterData.list.filter((x:any)  => x.selected);
       for (var item of selectedEmployees) {
         request.selectedEmployeeIds.push(item.employeeId);
       }
@@ -154,7 +155,7 @@ export class SendMassSmsComponent implements OnInit {
           toastr.error(data.message);
 
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     }
@@ -164,9 +165,9 @@ export class SendMassSmsComponent implements OnInit {
     this.httpService.HRget(APIURLS.SMS_TEMPLATES_API + "/GetActiveTemplates")
       .then((data: any) => {
         if (data.length > 0) {
-          this.smsTemplatesList = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });;
+          this.smsTemplatesList = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.smsTemplatesList = [];
       });
   }
@@ -179,7 +180,7 @@ export class SendMassSmsComponent implements OnInit {
 
   onStateChange() {
     this.filterModel.locationId = "";
-    this.locationList = this.locationFullList.filter(x => x.stateId == this.filterModel.stateId);
+    this.locationList = this.locationFullList.filter((x:any)  => x.stateId == this.filterModel.stateId);
   }
 
   onPlantChange() {
@@ -190,9 +191,9 @@ export class SendMassSmsComponent implements OnInit {
     if (this.filterModel.plantId) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.filterModel.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }

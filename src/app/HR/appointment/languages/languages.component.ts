@@ -15,9 +15,9 @@ declare var toastr: any;
   providers: [AppointmentService]
 })
 export class LanguagesComponent implements OnInit {
-  @Input() appointmentId: number;
-  @Input() offerId: number;
-  @Input() guid: string;  
+  @Input() appointmentId!: number;
+  @Input() offerId!: number;
+  @Input() guid: string  
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
@@ -50,7 +50,7 @@ export class LanguagesComponent implements OnInit {
         this.dataLoaded.emit("loaded");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       this.languageList = [];
@@ -87,7 +87,7 @@ export class LanguagesComponent implements OnInit {
         //this.isLoading = false;
         toastr.error('Error occured while saving address details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         toastr.error('Error occured while saving address details. Error:' + error);
       });

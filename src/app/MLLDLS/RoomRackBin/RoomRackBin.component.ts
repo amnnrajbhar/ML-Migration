@@ -13,11 +13,11 @@ import { AuditLog } from '../../masters/auditlog.model';
 import { DocCreate } from '../DocCreate/DocCreate.model';
 declare var jQuery: any;
 export class actionItemModel {
-  location: string;
-  category: string;
-  room: string;
-  rack: string;
-  bin: string;
+  location: string
+  category: string
+  room: string
+  rack: string
+  bin: string
 }
 @Component({
   selector: 'app-RoomRackBin',
@@ -26,7 +26,7 @@ export class actionItemModel {
 })
 export class RoomRackBinComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
@@ -34,10 +34,10 @@ export class RoomRackBinComponent implements OnInit {
   public tableWidget1: any;
 
   selParentId: any;
-  RoomRackBinList: any[];
+  RoomRackBinList!: any[];
   RoomRackBinList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -53,12 +53,12 @@ export class RoomRackBinComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldRoomRackBinItem: RoomRackBin = new RoomRackBin();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   locListCon = [];
   locListCon1 = [];
-  Barcode: string;
-  DOCNO: string;
+  Barcode: string
+  DOCNO: string
 
   filterLocation: string = '';
   filterBarcode: string = '';
@@ -99,7 +99,8 @@ export class RoomRackBinComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationMaster();
     }
     else
@@ -122,23 +123,23 @@ export class RoomRackBinComponent implements OnInit {
 
   locationAllList: any[] = [[]];
   locationList: any[] = [[]];
-  locationCode: string;
+  locationCode: string
   getLocationMaster() {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locationCode = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        let temp = this.locationList.find(x => x.id == this.currentUser.baselocation);
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locationCode = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        let temp = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
         this.filterLocation = temp.code + ' - ' + temp.name;
         //this.getBoxBarcodeMasterList();
         this.getLocRackList();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -154,12 +155,12 @@ export class RoomRackBinComponent implements OnInit {
 
         this.LocRackList = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.LocRackList.sort((a, b) => { return collator.compare(a.name, b.name) });
-        // this.CategoryList.filter(x=>x.location==this.locationCode);
+        this.LocRackList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
+        // this.CategoryList.filter((x:any)=>x.location==this.locationCode);
         this.RoomList = this.LocRackList.filter((item, i, arr) => arr.findIndex((t) => t.room === item.room) === i);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.LocRackList = [];
     });
@@ -173,17 +174,17 @@ export class RoomRackBinComponent implements OnInit {
     this.newDynamic = { id: this.rowcount, room: null, rack: "", bin: null, prefix: "", stored: "0" };
     this.dynamicArray.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.dynamicArray.length > 1) {
       const index = this.dynamicArray.indexOf(item);
       this.dynamicArray.splice(index, 1);
     }
   }
   GetRacMasterkList(room) {
-    this.RackList = this.LocRackList.filter(x => x.room == room  ).filter((item, i, arr) => arr.findIndex((t) => t.rack === item.rack) === i);
+    this.RackList = this.LocRackList.filter((x:any)  => x.room == room  ).filter((item, i, arr) => arr.findIndex((t) => t.rack === item.rack) === i);
   }
   GetBins(item) {
-    this.BinList = this.LocRackList.filter(x => x.room == item.room && x.rack == item.rack && x.bin != null && x.bin != '');
+    this.BinList = this.LocRackList.filter((x:any)  => x.room == item.room && x.rack == item.rack && x.bin != null && x.bin != '');
   }
 
   Type: string = '';
@@ -224,9 +225,10 @@ export class RoomRackBinComponent implements OnInit {
     this.isLoadingPop = true;
     let connection: any;
 
-    this.dynamicArray.forEach(element => {
+    this.dynamicArray.forEach((element:any)=> {
+
       if (this.Type == 'Bin') {
-        if (!this.LocRackList.some(s => s.room.toLowerCase() == element.room.toLowerCase() && s.rack.toLowerCase() == element.rack.toLowerCase() &&
+        if (!this.LocRackList.some((s:any) => s.room.toLowerCase() == element.room.toLowerCase() && s.rack.toLowerCase() == element.rack.toLowerCase() &&
           s.location.toLowerCase() == this.locationCode.toLowerCase() 
           && s.bin == element.bin)) {
           if (!this.isEdit) {
@@ -269,7 +271,7 @@ export class RoomRackBinComponent implements OnInit {
             else
               this.errMsgPop1 = ' Room/Rack/Bin ' + this.RoomRackBinItem.room + ' created successfully!';;
 
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             if (this.Type != 'Bin') {
               this.errMsgPop1 = 'Error saving ' + this.RoomRackBinItem.room + ',' + this.RoomRackBinItem.rack + ',' + this.RoomRackBinItem.bin;
@@ -291,7 +293,7 @@ export class RoomRackBinComponent implements OnInit {
         }
       }
       else {
-        if (!this.LocRackList.some(s => s.room.toLowerCase() == element.room.toLowerCase() && s.rack.toLowerCase() == element.rack.toLowerCase() &&
+        if (!this.LocRackList.some((s:any) => s.room.toLowerCase() == element.room.toLowerCase() && s.rack.toLowerCase() == element.rack.toLowerCase() &&
           s.location.toLowerCase() == this.locationCode.toLowerCase())) {
           if (!this.isEdit) {
             this.auditType = "Create";
@@ -332,7 +334,7 @@ export class RoomRackBinComponent implements OnInit {
             else
               this.errMsgPop1 = ' Room/Rack/Bin ' + this.RoomRackBinItem.room + ' created successfully!';;
 
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             if (this.Type == 'Bin') {
               this.errMsgPop1 = 'Error saving ' + this.RoomRackBinItem.room + ',' + this.RoomRackBinItem.rack + ',' + this.RoomRackBinItem.bin;
@@ -385,7 +387,7 @@ export class RoomRackBinComponent implements OnInit {
             this.insertAuditLog(this.RoomRackBinItem, this.oldRoomRackBinItem, this.RoomRackBinItem.id);
             this.getLocRackList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting RoomRackBin..';
         });
@@ -458,12 +460,12 @@ export class RoomRackBinComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -472,7 +474,7 @@ export class RoomRackBinComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

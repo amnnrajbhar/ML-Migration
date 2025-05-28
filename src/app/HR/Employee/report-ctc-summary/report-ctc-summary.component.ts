@@ -20,7 +20,7 @@ export class ReportCtcSummaryComponent implements OnInit {
   constructor(private masterService: MasterDataService, private httpService: HttpService,
     private router: Router, private excelService: ExcelService, private dataStore: DataStorageService) { }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   plantList: any[] = [];
   payGroupList: any[] = [];
   employeeCategoryList: any[] = [];
@@ -53,7 +53,8 @@ export class ReportCtcSummaryComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.pageNo = 1;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -103,7 +104,7 @@ export class ReportCtcSummaryComponent implements OnInit {
   getSubDepartmentList(){
     this.filterModel.SubDepartmentId = "";
     if(this.filterModel.DepartmentId > 0)
-      this.subDepartmentList = this.subDepartmentFullList.filter(x=>x.departmentId == this.filterModel.DepartmentId);
+      this.subDepartmentList = this.subDepartmentFullList.filter((x:any)=>x.departmentId == this.filterModel.DepartmentId);
     else 
       this.subDepartmentList = [];    
   }
@@ -112,8 +113,8 @@ export class ReportCtcSummaryComponent implements OnInit {
     this.filterModel.LocationId = "";
     if(this.filterModel.StateId > 0)
     {
-    var selectedState = this.stateList.find(x => x.id == this.filterModel.StateId);
-      this.locationList = this.locationFullList.filter(x=>x.stateId == selectedState.bland);
+    var selectedState = this.stateList.find((x:any)  => x.id == this.filterModel.StateId);
+      this.locationList = this.locationFullList.filter((x:any)=>x.stateId == selectedState.bland);
       }
     else 
       this.locationList = [];    
@@ -222,7 +223,7 @@ export class ReportCtcSummaryComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -249,7 +250,7 @@ export class ReportCtcSummaryComponent implements OnInit {
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No":index,
@@ -279,7 +280,7 @@ export class ReportCtcSummaryComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'CTC_Summary_Report'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');   
@@ -352,7 +353,7 @@ export class ReportCtcSummaryComponent implements OnInit {
 
       var exportList=[];
       let index=0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No":index,
@@ -410,7 +411,7 @@ export class ReportCtcSummaryComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'CTC_Breakup_Report'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');   

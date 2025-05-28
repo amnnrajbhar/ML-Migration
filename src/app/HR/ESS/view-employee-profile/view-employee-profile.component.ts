@@ -24,7 +24,7 @@ export class ViewEmployeeProfileComponent implements OnInit {
   details:any={};
   objectType: string = "Employee";
   objectTypeProfile: string = "Employee Profile";
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   isLoading: boolean = false;
@@ -50,7 +50,8 @@ export class ViewEmployeeProfileComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.profileId = this.route.snapshot.paramMap.get('id')!;
       this.employeeId = this.route.snapshot.paramMap.get('id1')!;
     // this.employeeId = this.currentUser.hrEmployeeId;      
@@ -61,7 +62,7 @@ export class ViewEmployeeProfileComponent implements OnInit {
     this.getData(this.employeeId);
   }
 
-  LoadEmployeeDetails(id) {
+  LoadEmployeeDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -69,12 +70,12 @@ export class ViewEmployeeProfileComponent implements OnInit {
         this.details = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
 
-  getData(id) {
+  getData(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_GET_ADDRESS, id).then((data: any) => {
@@ -83,7 +84,7 @@ export class ViewEmployeeProfileComponent implements OnInit {
         //console.log(this.addressList);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -99,7 +100,7 @@ export class ViewEmployeeProfileComponent implements OnInit {
         console.log(this.profileDetails);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -142,7 +143,7 @@ getFiles() {
       this.documentsList = data;
     }
     this.isLoading = false;
-  }).catch(error => {
+  }).catch((error)=> {
     this.isLoading = false;
     swal("Error occurred while fetching details, please check the link.");
   });
@@ -157,7 +158,7 @@ viewFile(id, fileName){
 
   connection.then((data: any) => {
     // console.log(data);
-    // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+    // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
     // if(data){
     //   var downloadURL = URL.createObjectURL(data);
     //   window.open(downloadURL);
@@ -171,15 +172,15 @@ viewFile(id, fileName){
         this.showPdfInViewer(data);
       }
       else{
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }        
     }      
     this.isLoading = false;
-  }).catch(error => {
+  }).catch((error)=> {
     this.isLoading = false;
   });
 }
@@ -195,14 +196,14 @@ downloadFile(id, fileName){
   connection.then((data: any) => {
           
     if (data != undefined) {        
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
     }      
     this.isLoading = false;
-  }).catch(error => {
+  }).catch((error)=> {
     this.isLoading = false;
   });
 }

@@ -18,7 +18,7 @@ declare var $: any;
 export class AssetLabelPrintComponent implements OnInit {
 
   public tableWidget: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   dashboard: any = {};
   isLoading: boolean = false;
   errMsg: string = "";
@@ -46,7 +46,8 @@ export class AssetLabelPrintComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     console.log(this.path);
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     this.getPrinterMaster();
@@ -59,7 +60,7 @@ export class AssetLabelPrintComponent implements OnInit {
       if (data.length > 0) {
         this.printerList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.printerList = [];
     });
@@ -107,7 +108,7 @@ export class AssetLabelPrintComponent implements OnInit {
               printLabel = {};
               this.clearFilter();
             }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error printing Barcode..';
           });

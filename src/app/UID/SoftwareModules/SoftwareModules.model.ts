@@ -1,12 +1,12 @@
 export class SoftwareModules{
    
-  id: number;
-  name: string;
-  description: string;
+  id!: number;
+  name: string
+  description: string
   fkSoftwareId:number;
-  isActive: boolean;
-  createdBy: string;
-  createdDate: string;
-  modifiedBy: string;
+  isActive!: boolean;
+  createdBy: string
+  createdDate: string
+  modifiedBy: string
   modifiedDate: string
 }

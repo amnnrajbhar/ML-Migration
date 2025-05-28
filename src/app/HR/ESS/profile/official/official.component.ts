@@ -23,14 +23,14 @@ declare var $: any;
   providers: [Util,AppointmentService],
 })
 export class OfficialComponent implements OnInit {
-  @ViewChild(NgForm , { static: false })  educationForm: NgForm;
-  @Input() employeeId: number;
+  @ViewChild(NgForm , { static: false })  educationForm!: NgForm;
+  @Input() employeeId!: number;
   @Input() editAllowed: boolean ;
   @Input() profileId: number = 0;
   @Input() profileDetails: TemporaryProfile;  
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -53,7 +53,8 @@ export class OfficialComponent implements OnInit {
       var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
       
       if (chkaccess == true) {
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         this.LoadEmployeeDetails(this.employeeId);
       }
       if (this.currentUser.hrEmployeeId == this.employeeId && this.editAllowed)
@@ -82,7 +83,7 @@ export class OfficialComponent implements OnInit {
      
     }
   
-  LoadEmployeeDetails(id) {
+  LoadEmployeeDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -92,7 +93,7 @@ export class OfficialComponent implements OnInit {
         //this.dataLoaded.emit("Hello");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -115,18 +116,18 @@ export class OfficialComponent implements OnInit {
       if (data) {
         this.profileDetailsList = data;
         //this.details = data.officialDetails;
-        this.profileDetailsList.officialDetails = this.profileDetailsList.officialDetails.filter(x => x.action!="None");
+        this.profileDetailsList.officialDetails = this.profileDetailsList.officialDetails.filter((x:any)  => x.action!="None");
         for(var item of this.profileDetailsList.officialDetails){
           item.statusColor = this.statusList.find(x=>x.type == item.action).color;
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
 
-  getProfileDataByEmpId(id) {
+  getProfileDataByEmpId(id:any) {
     this.isLoading = true;
 
     this.httpService.HRget(APIURLS.TEMPORARY_EMPLOYEE_PROFILE_GET_BY_EMPLOYEE_ID + "/" + id).then((data: any) => {
@@ -136,15 +137,15 @@ export class OfficialComponent implements OnInit {
           //this.profileUpdate = true;
           //this.profileId = data.profileId;
           this.profileDetailsList = data;
-          this.profileDetailsList.officialDetails = this.profileDetailsList.officialDetails.filter(x => x.action != "None");
+          this.profileDetailsList.officialDetails = this.profileDetailsList.officialDetails.filter((x:any)  => x.action != "None");
         
           for (var item of this.profileDetailsList.officialDetails) {
-            item.statusColor = this.statusList.find(x => x.type == item.action).color;
+            item.statusColor = this.statusList.find((x:any)  => x.type == item.action).color;
           }
         }        
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -178,7 +179,7 @@ export class OfficialComponent implements OnInit {
        this.isLoading = false;
        toastr.error('Error occured while saving  etails. Error:' + err);
      })
-     .catch(error => {
+     .catch((error)=> {
        this.isLoading = false;
        toastr.error('Error occured while saving details. Error:' + error);
      });

@@ -33,7 +33,7 @@ export class ApproveComponent implements OnInit {
 
   offerId: any;
   objectType: string = "Offer Letter";
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -60,7 +60,8 @@ export class ApproveComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.offerId = this.route.snapshot.paramMap.get('id')!;      
       this.taskId = this.route.snapshot.paramMap.get('id2')!;      
       this.util.canApproveTask(this.taskId, this.currentUser.uid);
@@ -68,7 +69,7 @@ export class ApproveComponent implements OnInit {
     }
   }
 
-  LoadOfferDetails(id) {
+  LoadOfferDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.OFFER_DETAILS_API, id).then((data: any) => {
@@ -81,7 +82,7 @@ export class ApproveComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.offerDetails = {} as OfferDetails;
     });
@@ -91,20 +92,20 @@ export class ApproveComponent implements OnInit {
     if(id <= 0) return;
     this.httpService.HRdownloadFile(APIURLS.OFFER_DETAILS_GET_ATTACHMENT_FILE+ "/" + this.offerId + "/"+ id).then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
       // }
   
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -128,7 +129,7 @@ export class ApproveComponent implements OnInit {
             this.router.navigate(['HR/offer/pending-tasks']);
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error("Error occured.");
       });
     }
@@ -158,7 +159,7 @@ export class ApproveComponent implements OnInit {
             this.router.navigate(['HR/offer/pending-tasks']);
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
       });
     }
@@ -195,7 +196,7 @@ export class ApproveComponent implements OnInit {
       this.errMsgModalPop = 'Error occured while saving Details. Error:'+ err;
       toastr.error(this.errMsgModalPop);
     })
-    .catch(error => {
+    .catch((error)=> {
       this.isLoading = false;
       this.errMsgModalPop = 'Error occured while saving Details. Error:'+ error;
       toastr.error(this.errMsgModalPop);

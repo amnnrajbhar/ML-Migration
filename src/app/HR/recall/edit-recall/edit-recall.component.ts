@@ -27,7 +27,7 @@ import swal from 'sweetalert';
 export class EditRecallComponent implements OnInit {
 @ViewChild(EmployeeSalaryComponent, { static: false }) employeeSalaryComponent: EmployeeSalaryComponent;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   employeeRecallId: any;
   resignationId: any;
@@ -72,8 +72,8 @@ export class EditRecallComponent implements OnInit {
   resignationDetails = {} as Resignation;
   lastWorkingDate: any;
   offerDetails: any = {};
-  replacementStatus: string;
-  replacementId: string;
+  replacementStatus: string
+  replacementId: string
   item: any = {};
   isDraftSaved: boolean = false;
   recallDetail: any = {};
@@ -134,7 +134,8 @@ export class EditRecallComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeRecallId = this.route.snapshot.paramMap.get('id')!;
       this.employeeId = this.route.snapshot.paramMap.get('id2')!;
       this.recallDetails.hodApproval = true;
@@ -161,7 +162,7 @@ export class EditRecallComponent implements OnInit {
       ("00" + d1.getDate()).slice(-2);
 
   }
-  getRecallDetails(id) {
+  getRecallDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.RECALL_GET_DETAILS_BY_ID, id).then((data: any) => {
@@ -171,82 +172,82 @@ export class EditRecallComponent implements OnInit {
         console.log(data);
         if (this.recallDetail.recallSalaryHeadDetails.length > 0) {
           for (var item of this.recallDetail.recallSalaryHeadDetails) {
-            item.salaryTypeName = this.headTypes.find(x => x.type == item.salaryType).value;
-            item.frequencyName = this.frequency.find(x => x.type == item.frequency).value;
+            item.salaryTypeName = this.headTypes.find((x:any)  => x.type == item.salaryType).value;
+            item.frequencyName = this.frequency.find((x:any)  => x.type == item.frequency).value;
           }
-          this.monthlyComponents = this.recallDetail.recallSalaryHeadDetails.filter(x => x.salaryType == "I" && x.frequency == "M");
-          this.annualComponents = this.recallDetail.recallSalaryHeadDetails.filter(x => x.salaryType != "V" && x.frequency == "A");
-          this.variableComponents = this.recallDetail.recallSalaryHeadDetails.filter(x => x.salaryType == "V");
+          this.monthlyComponents = this.recallDetail.recallSalaryHeadDetails.filter((x:any)  => x.salaryType == "I" && x.frequency == "M");
+          this.annualComponents = this.recallDetail.recallSalaryHeadDetails.filter((x:any)  => x.salaryType != "V" && x.frequency == "A");
+          this.variableComponents = this.recallDetail.recallSalaryHeadDetails.filter((x:any)  => x.salaryType == "V");
           this.calculateTotals();
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "Role") != null) {
-          this.oldRole = this.recallDetail.jobChangeDetails.find(x => x.type == "Role").oldValueText
-          this.newRole = this.recallDetail.jobChangeDetails.find(x => x.type == "Role").newValueText
-          this.newRoleId = this.recallDetail.jobChangeDetails.find(x => x.type == "Role").newValueId
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Role") != null) {
+          this.oldRole = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Role").oldValueText
+          this.newRole = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Role").newValueText
+          this.newRoleId = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Role").newValueId
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "StaffCategory") != null) {
-          this.oldCategory = this.recallDetail.jobChangeDetails.find(x => x.type == "StaffCategory").oldValueText
-          this.newCategory = this.recallDetail.jobChangeDetails.find(x => x.type == "StaffCategory").newValueText
-          this.newCategoryId = this.recallDetail.jobChangeDetails.find(x => x.type == "StaffCategory").newValueId
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "StaffCategory") != null) {
+          this.oldCategory = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "StaffCategory").oldValueText
+          this.newCategory = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "StaffCategory").newValueText
+          this.newCategoryId = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "StaffCategory").newValueId
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "State") != null) {
-          this.oldState = this.recallDetail.jobChangeDetails.find(x => x.type == "State").oldValueText
-          this.newState = this.recallDetail.jobChangeDetails.find(x => x.type == "State").newValueText
-          this.newStateId = this.recallDetail.jobChangeDetails.find(x => x.type == "State").newValueId
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "State") != null) {
+          this.oldState = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "State").oldValueText
+          this.newState = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "State").newValueText
+          this.newStateId = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "State").newValueId
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "Department") != null) {
-          this.oldDepartment = this.recallDetail.jobChangeDetails.find(x => x.type == "Department").oldValueText
-          this.newDepartment = this.recallDetail.jobChangeDetails.find(x => x.type == "Department").newValueText
-          this.newDepartmentId = this.recallDetail.jobChangeDetails.find(x => x.type == "Department").newValueId
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Department") != null) {
+          this.oldDepartment = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Department").oldValueText
+          this.newDepartment = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Department").newValueText
+          this.newDepartmentId = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Department").newValueId
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "Designation") != null) {
-          this.oldDesignation = this.recallDetail.jobChangeDetails.find(x => x.type == "Designation").oldValueText
-          this.newDesignation = this.recallDetail.jobChangeDetails.find(x => x.type == "Designation").newValueText
-          this.newDesignationId = this.recallDetail.jobChangeDetails.find(x => x.type == "Designation").newValueId
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Designation") != null) {
+          this.oldDesignation = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Designation").oldValueText
+          this.newDesignation = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Designation").newValueText
+          this.newDesignationId = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Designation").newValueId
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "PayGroup") != null) {
-          this.oldPayGroup = this.recallDetail.jobChangeDetails.find(x => x.type == "PayGroup").oldValueText
-          this.newPayGroup = this.recallDetail.jobChangeDetails.find(x => x.type == "PayGroup").newValueText
-          this.newPayGroupId = this.recallDetail.jobChangeDetails.find(x => x.type == "PayGroup").newValueId
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "PayGroup") != null) {
+          this.oldPayGroup = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "PayGroup").oldValueText
+          this.newPayGroup = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "PayGroup").newValueText
+          this.newPayGroupId = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "PayGroup").newValueId
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "Location") != null) {
-          this.oldLocation = this.recallDetail.jobChangeDetails.find(x => x.type == "Location").oldValueText
-          this.newLocation = this.recallDetail.jobChangeDetails.find(x => x.type == "Location").newValueText
-          this.newLocationId = this.recallDetail.jobChangeDetails.find(x => x.type == "Location").newValueId
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Location") != null) {
+          this.oldLocation = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Location").oldValueText
+          this.newLocation = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Location").newValueText
+          this.newLocationId = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Location").newValueId
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "SubDepartment") != null) {
-          this.oldSubDepartment = this.recallDetail.jobChangeDetails.find(x => x.type == "SubDepartment").oldValueText
-          this.newSubDepartment = this.recallDetail.jobChangeDetails.find(x => x.type == "SubDepartment").newValueText
-          this.newSubDepartmentId = this.recallDetail.jobChangeDetails.find(x => x.type == "SubDepartMent").newValueId
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "SubDepartment") != null) {
+          this.oldSubDepartment = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "SubDepartment").oldValueText
+          this.newSubDepartment = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "SubDepartment").newValueText
+          this.newSubDepartmentId = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "SubDepartMent").newValueId
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "Plant") != null) {
-          this.oldPlant = this.recallDetail.jobChangeDetails.find(x => x.type == "Plant").oldValueText
-          this.newPlant = this.recallDetail.jobChangeDetails.find(x => x.type == "Plant").newValueText
-          this.newPlantId = this.recallDetail.jobChangeDetails.find(x => x.type == "Plant").newValueId
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Plant") != null) {
+          this.oldPlant = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Plant").oldValueText
+          this.newPlant = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Plant").newValueText
+          this.newPlantId = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Plant").newValueId
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "HOD") != null) {
-          this.oldHOD = this.recallDetail.jobChangeDetails.find(x => x.type == "HOD").oldValueText
-          this.newHOD = this.recallDetail.jobChangeDetails.find(x => x.type == "HOD").newValueText
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "HOD") != null) {
+          this.oldHOD = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "HOD").oldValueText
+          this.newHOD = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "HOD").newValueText
           this.isJobDetailsChanged = true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "ReportingManager") != null) {
-          this.oldRM = this.recallDetail.jobChangeDetails.find(x => x.type == "ReportingManager").oldValueText
-          this.newRM = this.recallDetail.jobChangeDetails.find(x => x.type == "ReportingManager").newValueText
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "ReportingManager") != null) {
+          this.oldRM = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "ReportingManager").oldValueText
+          this.newRM = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "ReportingManager").newValueText
           this.isJobDetailsChanged = true;
         }
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -255,7 +256,7 @@ export class EditRecallComponent implements OnInit {
     this.location.back();
   }
 
-  GetResignationDetails(id) {
+  GetResignationDetails(id:any) {
     this.isLoading = true;
     // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.RESIGNATION_DATE_GET_BYEMPID, id).then((data: any) => {
@@ -264,12 +265,12 @@ export class EditRecallComponent implements OnInit {
         //this.lastWorkingDate = this.getDateFormate(this.resignationDetails.lastWorkingDate);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
 
-  GetemployeeDetails(id) {
+  GetemployeeDetails(id:any) {
     this.isLoading = true;
     // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -279,13 +280,13 @@ export class EditRecallComponent implements OnInit {
         this.GetReplacementOfferDetails(this.employeeDetails.employeeNo);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
   }
 
-  GetReplacementOfferDetails(id) {
+  GetReplacementOfferDetails(id:any) {
     this.isLoading = true;
     // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.RECALL_OFFER_REPLACEMENTID, id).then((data: any) => {
@@ -297,7 +298,7 @@ export class EditRecallComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -315,7 +316,7 @@ export class EditRecallComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if (item.fullName != null)
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
@@ -326,7 +327,7 @@ export class EditRecallComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#newReportingManagerId").val(ui.item.value);
                   $("#newReportingManager").val(ui.item.label);
@@ -336,7 +337,7 @@ export class EditRecallComponent implements OnInit {
                   $("#newReportingManager").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#newReportingManagerId").val(ui.item.value);
                   $("#newReportingManager").val(ui.item.label);
@@ -363,7 +364,7 @@ export class EditRecallComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if (item.fullName != null)
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
@@ -374,7 +375,7 @@ export class EditRecallComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#newHODId").val(ui.item.value);
                   $("#newHOD").val(ui.item.label);
@@ -384,7 +385,7 @@ export class EditRecallComponent implements OnInit {
                   $("#newHOD").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#newHODId").val(ui.item.value);
                   $("#newHOD").val(ui.item.label);
@@ -407,9 +408,9 @@ export class EditRecallComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -423,9 +424,9 @@ export class EditRecallComponent implements OnInit {
     if (this.selectedPlant.id > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.selectedPlant.id).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -440,9 +441,9 @@ export class EditRecallComponent implements OnInit {
       this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/" + this.selectedPlant.id + "/" + this.employeeDetails.payGroupId)
         .then((data: any) => {
           if (data.length > 0) {
-            this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+            this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.employeeCategoryList = [];
         });
     }
@@ -456,9 +457,9 @@ export class EditRecallComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -468,9 +469,9 @@ export class EditRecallComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -480,9 +481,9 @@ export class EditRecallComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -491,9 +492,9 @@ export class EditRecallComponent implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -502,9 +503,9 @@ export class EditRecallComponent implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -514,9 +515,9 @@ export class EditRecallComponent implements OnInit {
   getSubDepartments() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        this.subDepartmentFullList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        this.subDepartmentFullList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.subDepartmentFullList = [];
     });
   }
@@ -740,7 +741,7 @@ export class EditRecallComponent implements OnInit {
         this.errMsgModalPop = 'Error occured while saving Recall Details. Error:' + err;
         toastr.error(this.errMsgModalPop);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         this.errMsgModalPop = 'Error occured while saving Recall Details. Error:' + error;
         toastr.error(this.errMsgModalPop);
@@ -748,14 +749,14 @@ export class EditRecallComponent implements OnInit {
   }
   onStateChanged(event: any) {
     this.selectedStateText = event.target.options[event.target.options.selectedIndex].text;
-    var selectedState = this.stateList.find(x => x.id == this.employeeDetails.stateId);
+    var selectedState = this.stateList.find((x:any)  => x.id == this.employeeDetails.stateId);
     if (selectedState)
-      this.locationList = this.locationFullList.filter(x => x.stateId == selectedState.bland);
+      this.locationList = this.locationFullList.filter((x:any)  => x.stateId == selectedState.bland);
   }
   onDepartmentChanged(event: any) {
     this.selectedDepartmentText = event.target.options[event.target.options.selectedIndex].text;
 
-    this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.employeeDetails.departmentId);
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.employeeDetails.departmentId);
   }
   onDataSaved(result) {
     if (result == 200 || result.success) {
@@ -772,7 +773,7 @@ export class EditRecallComponent implements OnInit {
       this.submitForApproval(this.recallDetails.recallId);
   }
 
-  submitForApproval(id) {
+  submitForApproval(id:any) {
     var request: any = {};
     request.employeeRecallId = this.employeeRecallId;
     request.submittedById = this.currentUser.uid;
@@ -786,7 +787,7 @@ export class EditRecallComponent implements OnInit {
           toastr.error(data.message);
         } else
           toastr.error("Error occurred while submitting.");
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
       });
   }

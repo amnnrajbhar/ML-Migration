@@ -12,8 +12,8 @@ import * as _ from "lodash";
 import { UserGroupsMaster } from './UserGroups.model';
 declare var jQuery: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
   softwareid:number;
 }
 @Component({
@@ -23,7 +23,7 @@ export class actionItemModel {
 })
 export class UserGroupsComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
@@ -32,7 +32,7 @@ export class UserGroupsComponent implements OnInit {
   UserGroupsList: any[]=[];
   UserGroupsList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -48,8 +48,8 @@ export class UserGroupsComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldUserGroups: UserGroupsMaster = new UserGroupsMaster();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent) { }
 
   private initDatatable(): void {
@@ -70,7 +70,8 @@ export class UserGroupsComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getUserGroupsMasterList();
     this.getsoftwareMasterList();
     }
@@ -95,7 +96,7 @@ export class UserGroupsComponent implements OnInit {
       }
      // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareList = [];
     });
@@ -112,7 +113,7 @@ export class UserGroupsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UserGroupsList = [];
     });
@@ -149,7 +150,7 @@ export class UserGroupsComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-   // if (!this.UserGroupsList.some(s => s.name.toLowerCase() == this.UserGroups.name.toLowerCase() && s.id != this.UserGroups.id)) {
+   // if (!this.UserGroupsList.some((s:any) => s.name.toLowerCase() == this.UserGroups.name.toLowerCase() && s.id != this.UserGroups.id)) {
       if (!this.isEdit) {
         this.auditType="Create";
         this.UserGroups.isActive = true;
@@ -176,7 +177,7 @@ export class UserGroupsComponent implements OnInit {
           this.isLoadingPop = false;
         }       
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving department data..';
       });
@@ -214,7 +215,7 @@ export class UserGroupsComponent implements OnInit {
             this.insertAuditLog(this.UserGroups,this.oldUserGroups,this.UserGroups.id);
             this.getUserGroupsMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Designation..';
         });
@@ -284,12 +285,12 @@ export class UserGroupsComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -298,7 +299,7 @@ export class UserGroupsComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

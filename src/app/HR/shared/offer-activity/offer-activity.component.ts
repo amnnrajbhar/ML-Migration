@@ -16,9 +16,9 @@ declare var $: any;
   providers: [MasterDataService]
 })
 export class OfferActivityComponent implements OnInit {
-  @Input() objectId: number;
-  @Input() objectType: string;
-  currentUser: AuthData;
+  @Input() objectId!: number;
+  @Input() objectType: string
+  currentUser!: AuthData;
   isLoading: boolean = false;
   activityList: any[] = [];
 
@@ -28,7 +28,8 @@ export class OfferActivityComponent implements OnInit {
   ngOnInit() {    
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getActivityList();
     }    
   }
@@ -42,7 +43,7 @@ export class OfferActivityComponent implements OnInit {
         this.activityList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.activityList = [];
     });

@@ -18,7 +18,7 @@ import { Util } from '../../Services/util.service';
 })
 
 export class NoEmailToCandidateConfigComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
   isEdit: boolean = false;
   editIndex: number = -1;
@@ -32,7 +32,7 @@ export class NoEmailToCandidateConfigComponent implements OnInit {
   employeeCategoryList: any[] = [];
   stateList: any[] = [];
   filterData: any = {};
-  currentUser: AuthData;
+  currentUser!: AuthData;
   item: any = {};
   filterModel: any = {};
 
@@ -42,7 +42,8 @@ export class NoEmailToCandidateConfigComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.selectedPlantId = "";
     this.filterModel.selectedPayGroupId = "";
@@ -79,7 +80,7 @@ export class NoEmailToCandidateConfigComponent implements OnInit {
       console.log(this.filterData.list);
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -108,7 +109,7 @@ export class NoEmailToCandidateConfigComponent implements OnInit {
       var exportList = [];
       let index = 0;
       console.log(this.emailList);
-      this.emailList.forEach(item => {
+      this.emailList.forEach((item :any) => {
         index = index + 1;
         let exportItem = {
           "Sl No": index,
@@ -126,7 +127,7 @@ export class NoEmailToCandidateConfigComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Email_Notification_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       toastr.error('Error occurred while fetching data.');
@@ -174,7 +175,7 @@ export class NoEmailToCandidateConfigComponent implements OnInit {
         else
           toastr.error(data.message);
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error adding details...' + error);
       })
@@ -201,7 +202,7 @@ export class NoEmailToCandidateConfigComponent implements OnInit {
           this.isLoading = false;
           toastr.error('Error occured while deleting details. Error:' + err);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while deleting details. Error:' + error);
         });
@@ -211,8 +212,8 @@ export class NoEmailToCandidateConfigComponent implements OnInit {
 
   onPlantChange() {
     if (this.item.plantId > 0) {
-      let plant = this.plantList.find(x => x.id == this.item.plantId)
-      this.payGroupList = this.payGroupFullList.filter(x => x.plant == plant.code);
+      let plant = this.plantList.find((x:any)  => x.id == this.item.plantId)
+      this.payGroupList = this.payGroupFullList.filter((x:any)  => x.plant == plant.code);
     }
     else
       this.payGroupList = [];
@@ -220,8 +221,8 @@ export class NoEmailToCandidateConfigComponent implements OnInit {
 
   onFilterPlantChange() {
     if (this.filterModel.selectedPlantId > 0) {
-      let plant = this.plantList.find(x => x.id == this.filterModel.selectedPlantId)
-      this.filterPayGroupList = this.payGroupFullList.filter(x => x.plant == plant.code);
+      let plant = this.plantList.find((x:any)  => x.id == this.filterModel.selectedPlantId)
+      this.filterPayGroupList = this.payGroupFullList.filter((x:any)  => x.plant == plant.code);
     }
     else
       this.filterPayGroupList = [];

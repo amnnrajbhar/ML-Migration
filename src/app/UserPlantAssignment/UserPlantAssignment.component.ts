@@ -18,13 +18,13 @@ declare var jQuery: any;
 export class UserPlantAssignmentComponent implements OnInit {
 
   public tableWidget: any;
-  EmpList: any[];
+  EmpList!: any[];
   formData: FormData = new FormData();
-  file: File;
-  LocationList: any[];
+  file!: File;
+  LocationList!: any[];
   selectedformItems = [];
   deletedformItems = [];
-  formMainList: any[];
+  formMainList!: any[];
   selectedformIds=[];
   selectedOldList=[];
   isLoading: boolean = false;
@@ -86,7 +86,7 @@ export class UserPlantAssignmentComponent implements OnInit {
     this.isLoading = true;
     this.httpService.getByParam(APIURLS.BR_MASTER_LOCKOUT_BY_PARAM_API,this.EmployeeID).then((data: any) => {
       if (data.length > 0) {
-        this.UnlockuserList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.UnlockuserList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
                                     if(a.name > b.name) return 1;
                                     if(a.name < b.name) return -1;
                                     return 0;
@@ -102,7 +102,7 @@ export class UserPlantAssignmentComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UnlockuserList = [];
     });
@@ -147,8 +147,8 @@ export class UserPlantAssignmentComponent implements OnInit {
       this.isLoading = false;
       if (data.length>0) {
         this.LocationList = data;
-        this.LocationList=this.LocationList.filter(x=>x.code !=null);
-        this.LocationList.forEach(item => { item.isChecked = false; });
+        this.LocationList=this.LocationList.filter((x:any)=>x.code !=null);
+        this.LocationList.forEach((item :any) => { item.isChecked = false; });
         this.formMainList = this.LocationList;
         if(this.isEdit){
           this.getProMainListtoFilter(this.proItem.id);
@@ -156,7 +156,7 @@ export class UserPlantAssignmentComponent implements OnInit {
         }
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.LocationList = [];
     });
@@ -169,7 +169,7 @@ export class UserPlantAssignmentComponent implements OnInit {
         this.EmpList = data;
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmpList = [];
     });
@@ -183,7 +183,7 @@ export class UserPlantAssignmentComponent implements OnInit {
         this.EmpList = data;
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmpList = [];
     });
@@ -210,7 +210,7 @@ export class UserPlantAssignmentComponent implements OnInit {
   //           item.isChecked = false;
   //       });
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.LocationList = [];
   //   });
   // }
@@ -226,13 +226,13 @@ export class UserPlantAssignmentComponent implements OnInit {
        // this.LocationList.find(item => item.id == this.locid).isChecked = true;
        // this.DisplayFormsAssigned();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.LocationList = [];
     });
   }
 
   checkAllForm(check: boolean) {
-    this.LocationList.forEach(item => { item.isChecked = this.checkAll; });
+    this.LocationList.forEach((item :any) => { item.isChecked = this.checkAll; });
   }
 
   onSaveProfile() {
@@ -284,7 +284,7 @@ export class UserPlantAssignmentComponent implements OnInit {
           else {
             this.errMsgPop = 'Error adding form data...';
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error adding form data..';
         });
@@ -312,7 +312,7 @@ export class UserPlantAssignmentComponent implements OnInit {
         else {
           this.errMsgPop = 'Error adding form data...';
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error adding form data..';
       });
@@ -324,8 +324,8 @@ export class UserPlantAssignmentComponent implements OnInit {
     var delId=this.selectedformIds.find(item => item.fkPlantId == form.id);
     if (delId!=undefined && !isChecked) {
       this.deletedformItems.push(delId.id);
-      //if (this.selectedformIds.find(x => x.id == delId)) {
-        this.selectedformIds.splice(this.selectedformIds.findIndex(x => x.id == delId.id), 1);
+      //if (this.selectedformIds.find((x:any)  => x.id == delId)) {
+        this.selectedformIds.splice(this.selectedformIds.findIndex((x:any)  => x.id == delId.id), 1);
       //}
       //this.selectedformIds.reduce (delId);
       //this.deleteProfileMaintList(delId);

@@ -1,7 +1,7 @@
 export class DesignationMaster {
-    id: number;
+    id!: number;
     dsgid: number | null;
-    name: string;
+    name: string
     atemId: number | null;
     cooff: boolean | null;
     ot: boolean | null;
@@ -13,5 +13,5 @@ export class DesignationMaster {
     modifiedBy: number | null;
     modifiedDate: string | null;
     isActive: boolean | null;
-    description: string;
+    description: string
 }

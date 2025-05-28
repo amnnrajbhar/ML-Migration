@@ -1,8 +1,8 @@
 export interface UpdateSelectedEmployee{
     employeeIds:any[];
-    CategoryType: string;
+    CategoryType: string
     CategoryTypeId:number;
-    CategoryTypeName: string;
+    CategoryTypeName: string
     EmployeeFilterModel:any;
     UpdateSelected:boolean;
     updatedById : number;

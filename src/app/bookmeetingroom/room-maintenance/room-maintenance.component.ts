@@ -23,14 +23,14 @@ declare var jQuery: any;
 declare var $: any;
 
 export class actionItemModel {
-  name: string;
-  description: string;
-  capacity: number;
-  location: string;
-  type: string;
-  manager_Approval: boolean;
-  admin_Approval: boolean;
-  facilities: string;
+  name: string
+  description: string
+  capacity!: number;
+  location: string
+  type: string
+  manager_Approval!: boolean;
+  admin_Approval!: boolean;
+  facilities: string
 }
 
 @Component({
@@ -39,9 +39,9 @@ export class actionItemModel {
   styleUrls: ['./room-maintenance.component.css']
 })
 export class RoomMaintenanceComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
+@ViewChild(NgForm, { static: false }) meetingroomForm!: NgForm;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isEdit: boolean = false;
   errMsg: string = "";
@@ -53,12 +53,12 @@ export class RoomMaintenanceComponent implements OnInit {
   locationList = [];
   loadroomTypes: RoomType[] = [];
   roomsInfoList: RoomInformation[] = [];
-  currentLocation: string;
+  currentLocation: string
   tableWidget: any;
   type: string = "RoomBooking";
   oldroomInfoModel = {} as RoomInformation;;// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private appServiceDate: AppService, private route: ActivatedRoute) { }
 
@@ -66,7 +66,8 @@ export class RoomMaintenanceComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationList();
       this.getRoomsTypes();
       this.getRoomfacilities();
@@ -80,12 +81,12 @@ export class RoomMaintenanceComponent implements OnInit {
         this.locationList = data;
         // this.currentLocation = this.getLocationName(this.currentUser.baselocation);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
   getLocationName(locId: number) {
-    let temp = this.locationList.find(s => s.id == locId);
+    let temp = this.locationList.find((s:any) => s.id == locId);
     return temp ? temp.code + '-' + temp.name : '';
   }
   getRoomsTypes() {
@@ -93,12 +94,12 @@ export class RoomMaintenanceComponent implements OnInit {
       if (data.length > 0) {
         this.loadroomTypes = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.loadroomTypes = [];
     });
   }
   getRoomType(rId: number) {
-    let type = this.loadroomTypes.find(s => s.id == rId);
+    let type = this.loadroomTypes.find((s:any) => s.id == rId);
     return type ? type.type : '';
   }
   //get All Rooms and Apply filters and paging to table..
@@ -127,12 +128,12 @@ export class RoomMaintenanceComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_ROOM_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        // this.roomsInfoList = data.filter(x=>x.fk_Type==1 || x.fk_Location==this.currentUser.baselocation);
-        this.roomsInfoList = data.filter(x => x.fk_Location == this.currentUser.baselocation && x.isActive);
+        // this.roomsInfoList = data.filter((x:any)=>x.fk_Type==1 || x.fk_Location==this.currentUser.baselocation);
+        this.roomsInfoList = data.filter((x:any)  => x.fk_Location == this.currentUser.baselocation && x.isActive);
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.roomsInfoList = [];
     });
@@ -178,7 +179,7 @@ export class RoomMaintenanceComponent implements OnInit {
       if (data) {
         this.selectedRoomType = [data];
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }
@@ -190,12 +191,12 @@ export class RoomMaintenanceComponent implements OnInit {
         this.selectedFacilities = data;
         for (let index = 0; index < this.selectedFacilities.length; index++) {
           let element = this.selectedFacilities[index];
-          let facility = this.roomsFacilityList.find(x => x.id == element.fk_FacilityId);
+          let facility = this.roomsFacilityList.find((x:any)  => x.id == element.fk_FacilityId);
           rmFacilities.push(facility);
         }
         this.selectedItems = rmFacilities;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }
@@ -218,7 +219,7 @@ export class RoomMaintenanceComponent implements OnInit {
           this.images.push(image);
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }
@@ -231,14 +232,14 @@ export class RoomMaintenanceComponent implements OnInit {
   getRoomfacilities() {
     this.httpService.get(APIURLS.BR_MASTER_ROOM_FACILITY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roomsFacilityList = data.filter(x => x.type == this.type && x.isActive).sort((a,b)=>
+        this.roomsFacilityList = data.filter((x:any)  => x.type == this.type && x.isActive).sort((a:any,b:any)=>
                                                                                       {
                                                                                         if(a.name > b.name) return 1;
                                                                                         if(a.name < b.name) return -1;
                                                                                         return 0;
                                                                                       });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomsFacilityList = [];
     });
     this.dropdownSettings = {
@@ -269,14 +270,14 @@ export class RoomMaintenanceComponent implements OnInit {
   getAllroomsTypes() {
     this.httpService.get(APIURLS.BR_MASTER_ROOMTYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roomTypeList = data.sort((a,b)=>
+        this.roomTypeList = data.sort((a:any,b:any)=>
                                   {
                                     if(a.type > b.type) return 1;
                                     if(a.type < b.type) return -1;
                                     return 0;
                                   });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomTypeList = [];
     });
 
@@ -299,7 +300,7 @@ export class RoomMaintenanceComponent implements OnInit {
   }
   //Save and Update here
   onSaveRoomDetails(): void {
-    let roomId: number;
+    let roomId!: number;
     let connection: any;
     this.roomInfoModel.isActive = true;
 
@@ -339,7 +340,7 @@ export class RoomMaintenanceComponent implements OnInit {
           this.insertAuditLog(this.oldroomInfoModel, this.roomInfoModel, Id);
           this.getAllrooms();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Room...';
       });
@@ -355,7 +356,7 @@ export class RoomMaintenanceComponent implements OnInit {
         connection.then((data: any) => {
           if (data == 200 || data.id > 0) {
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error delete Room...';
         });
       }
@@ -371,7 +372,7 @@ export class RoomMaintenanceComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200 || data.id > 0) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error saving Room...';
       });
     }
@@ -426,8 +427,8 @@ export class RoomMaintenanceComponent implements OnInit {
       if (data == 200 || data.id > 0) {
         //console.log(data);
       }
-    }).catch(error => {
-      //console.log(error);
+    }).catch((error)=> {
+      ////console.log(error);
       this.errMsgPop = 'Error saving Images...';
     });
 
@@ -460,7 +461,7 @@ export class RoomMaintenanceComponent implements OnInit {
         connection.then((data: any) => {
           if (data == 200 || data.id > 0) {
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error delete Room Pictures...';
         });
       }
@@ -478,7 +479,7 @@ export class RoomMaintenanceComponent implements OnInit {
         connection.then((data: any) => {
           if (data == 200 || data.id > 0) {
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error saving Room Pictures...';
         });
       }
@@ -510,7 +511,7 @@ export class RoomMaintenanceComponent implements OnInit {
             this.insertAuditLog(this.roomInfoModel, this.oldroomInfoModel, this.roomInfoModel.id);
             this.getAllrooms();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error delete Room...';
         });
@@ -528,10 +529,10 @@ export class RoomMaintenanceComponent implements OnInit {
     oldObject.manager_Approval = oldObj.manager_Approval;
     oldObject.admin_Approval = oldObj.admin_Approval;
     oldObject.location = oldObj.fk_Location?this.getLocationName(oldObj.fk_Location):'';
-    oldObject.type = oldObj.fk_Type?this.loadroomTypes.find(x => x.id == oldObj.fk_Type).type:'';
+    oldObject.type = oldObj.fk_Type?this.loadroomTypes.find((x:any)  => x.id == oldObj.fk_Type).type:'';
     let oldfacilities = '';
     this.selectedFacilities.forEach(c => {
-      oldfacilities += this.roomsFacilityList.find(x => x.id == c.fk_FacilityId).name + ',';
+      oldfacilities += this.roomsFacilityList.find((x:any)  => x.id == c.fk_FacilityId).name + ',';
     });
     oldObject.facilities = oldObj.fk_Type ? oldfacilities.slice(0, -1) : '';
     newObject.name = newObj.name;
@@ -540,10 +541,10 @@ export class RoomMaintenanceComponent implements OnInit {
     newObject.manager_Approval = newObj.manager_Approval;
     newObject.admin_Approval = newObj.admin_Approval;
     newObject.location = newObj.fk_Location?this.getLocationName(newObj.fk_Location):'';
-    newObject.type = newObj.fk_Type?this.loadroomTypes.find(x => x.id == newObj.fk_Type).type:'';
+    newObject.type = newObj.fk_Type?this.loadroomTypes.find((x:any)  => x.id == newObj.fk_Type).type:'';
     let newfacilities = '';
     this.selectedItems.forEach(c => {
-      newfacilities += this.roomsFacilityList.find(x => x.id == c.id).name + ',';
+      newfacilities += this.roomsFacilityList.find((x:any)  => x.id == c.id).name + ',';
     });
     newObject.facilities = newObj.fk_Type ? newfacilities.slice(0, -1) : '';
 
@@ -595,12 +596,12 @@ export class RoomMaintenanceComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -609,7 +610,7 @@ export class RoomMaintenanceComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

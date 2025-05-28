@@ -9,13 +9,13 @@ import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
 import { ExcelService } from '../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+//import * as fs from 'file-saver';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 // import { filter } from "rxjs-compat/operator/filter";
 
@@ -30,40 +30,43 @@ export class SecurityVerificationReportComponent implements OnInit {
 
 
   public tableWidget: any;
-  Invoice: string;
+  Invoice!: string;
   ItemList: LineItem[] = [];
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  filterplant: string;
-  path: string;
-  currentUser: AuthData;
-  filteruser: string;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  filterplant!: string;
+  path!: string;
+  currentUser!: AuthData;
+  filteruser!: string;
   locationList: any[] = [];
   filteredModel: any;
   VerifiedModel: any[] = [];
   InvoiceModel: any[] = [];
   BarcodeModel: any[] = [];
   materialstatusmodel: any[] = [];
-  errMsg: string = "";
+  errMsg: string= "";
   date: any;
   today = new Date();
   summary: any[] = [];
   userwisesummary: any[] = [];
-  vehicleno: string;
+  vehicleno!: string;
   dtOptions = {};
   image: any;
-  plant: string;
-  locationname: string;
-  transportername: string;
-  transportdate: string;
-  groupbyinvoiceforsum;
+  plant!: string;
+  locationname!: string;
+  transportername!: string;
+  transportdate!: string;
+  groupbyinvoiceforsum: any;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private datePipe: DatePipe
-    , private http: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    , private http: HttpClient) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getLocationMaster();
     this.getbase64image();
   }
@@ -86,14 +89,14 @@ export class SecurityVerificationReportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
        // this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         this.plant='ML54';
         this.locationname=this.locationList.find(x=>x.code==this.plant).name;
        
       }
       this.reInitDatatable();
         //this.reInitDatatable1();
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.locationList = [];
       });
@@ -114,7 +117,7 @@ export class SecurityVerificationReportComponent implements OnInit {
     setTimeout(() => this.initDatatable(), 0)
   }
 
-  inv1: string;
+  inv1!: string;
   Total: number =0;
   getReport(inv: string)
   {
@@ -166,13 +169,13 @@ export class SecurityVerificationReportComponent implements OnInit {
     const labelchecked = {};
 
     this.dataTable = this.InvoiceModel
-      .sort((a, b) => {
+      .sort((a:any, b:any) => {
         const taskComparator = a.invoiceNo.localeCompare(b.invoiceNo);
         return taskComparator
           ? taskComparator
           : a.invoiceNo.localeCompare(b.invoiceNo);
       })
-      .map((x) => {
+      .map((x:any) => {
         const taskColumnSpan = labelchecked[x.invoiceNo]
           ? 0
           : this.InvoiceModel.filter((y) => y.invoiceNo === x.invoiceNo).length;
@@ -202,7 +205,7 @@ export class SecurityVerificationReportComponent implements OnInit {
 
   downloadPDF()
   {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICRO LABS LIMITED"+', '+this.plant+' - '+this.locationname;
     var ReportName = "SECURITY LOADING REPORT"
     var printedBy = this.currentUser.fullName;
@@ -211,27 +214,27 @@ export class SecurityVerificationReportComponent implements OnInit {
     var logo = this.image;
     //var now = new Date('dd-MM-yyyy h:mm a');
     var date = pipe.transform(now, 'short');
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div> 
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      tablebordered:true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-    })
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div> 
+  // </div>
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     tablebordered:true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //   })
     var docDefinition = {
       info: {
         title: 'Security Loading Report',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -249,7 +252,7 @@ export class SecurityVerificationReportComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 40],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
         // pageMargins: [40, 80, 40, 60],
          style: 'tableExample',
@@ -298,7 +301,7 @@ export class SecurityVerificationReportComponent implements OnInit {
       },
      
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 }

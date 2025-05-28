@@ -24,31 +24,31 @@ export class GEOutRetMatClosureComponent implements OnInit {
 
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
-  fiscalYear: string;
+  path!: string
+  fiscalYear: string
   errMsg: string = "";
   errMsgPop: string = "";
   errMsgModalPop: string = "";
   errMsgMatPop: string = "";
-  isEdit: boolean;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  isLoadingBAPI: boolean;
-  isLoadingMatPop: boolean;
+  isEdit!: boolean;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  isLoadingBAPI!: boolean;
+  isLoadingMatPop!: boolean;
   gateOutwardMModel = {} as GateOutwardMaster;
   gateOutwardDModel = {} as GateOutwardD;
   gateOutwardMList: GateOutwardMaster[] = [];
   gateOutwardDList: GateOutwardD[] = [];
-  pO_No: string;
+  pO_No: string
   qtY_RCVD: any;
   entryDateTime: Date = new Date();
-  userName: string;
+  userName: string
   OUT_TIME: any;
-  reason: string;
-  gONo: string;
-  sendingPersonName: string;
+  reason: string
+  gONo: string
+  sendingPersonName: string
 
   elementtype:string;
 
@@ -59,7 +59,8 @@ export class GEOutRetMatClosureComponent implements OnInit {
     this.elementtype="svg";
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.userName = this.currentUser.firstName;
       this.getLocationById(this.currentUser.baselocation);
       this.getGateList();
@@ -90,8 +91,8 @@ export class GEOutRetMatClosureComponent implements OnInit {
     }
     setTimeout(() => this.initDatatable(), 0)
   }
-  locationName: string;
-  plant: string;
+  locationName: string
+  plant!: string
   getLocationById(lId: number) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_LOCATION_MASTER_API, lId).then((data: any) => {
@@ -101,7 +102,7 @@ export class GEOutRetMatClosureComponent implements OnInit {
         this.loadGateOutwardList();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plant = '';
       this.locationName = '';
@@ -114,12 +115,12 @@ export class GEOutRetMatClosureComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_MASTER_LOCATIONGATE_MASTER_ANY_API, this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
         this.locationGateList = data;
-        this.selGateLocation = this.locationGateList.find(x => x.gateNo == '1');
-        // this.selGateLocation = this.locationGateList.find(x => x.gateNo == 'G1');
+        this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == '1');
+        // this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == 'G1');
         // this.gateNo = this.selGateLocation.id;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationGateList = [];
     });
@@ -133,7 +134,7 @@ export class GEOutRetMatClosureComponent implements OnInit {
         this.locationList = data;
        // this.selDestination = null;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -144,9 +145,9 @@ export class GEOutRetMatClosureComponent implements OnInit {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_GETBY_ANY_API,this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
-        this.employeeList = data.map((i) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
+        this.employeeList = data.map((i:any) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.employeeList = [];
     });
@@ -159,7 +160,7 @@ export class GEOutRetMatClosureComponent implements OnInit {
       if (data.length > 0) {
         this.departmentList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.departmentList = [];
     });
@@ -201,9 +202,9 @@ export class GEOutRetMatClosureComponent implements OnInit {
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   delete: boolean = false;
-  fltrGONO: string;
-  fltrInvoiceNo: string;
-  fltrDCNO: string;
+  fltrGONO: string
+  fltrInvoiceNo: string
+  fltrDCNO: string
   // 2:Returnable, N:Non-Returnable
   loadGateOutwardList() {
     this.isLoading = true;
@@ -234,7 +235,7 @@ export class GEOutRetMatClosureComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.gateOutwardMList = [];
     });
@@ -262,13 +263,13 @@ export class GEOutRetMatClosureComponent implements OnInit {
       if (data) {
         this.exReturnMaterialsList = data;
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.exReturnMaterialsList = [];
     });
   }
   remainingQTY(mat) {
     if (this.exReturnMaterialsList.length>0) {
-      return this.exReturnMaterialsList.find(x => x.iteM_NO == mat.iteM_NO)?this.exReturnMaterialsList.find(x => x.iteM_NO == mat.iteM_NO).qtY_RCVD:0;
+      return this.exReturnMaterialsList.find((x:any)  => x.iteM_NO == mat.iteM_NO)?this.exReturnMaterialsList.find((x:any)  => x.iteM_NO == mat.iteM_NO).qtY_RCVD:0;
     }
     return 0;
   }
@@ -281,20 +282,20 @@ export class GEOutRetMatClosureComponent implements OnInit {
     if (isedit) {
       this.gateOutwardMModel = Object.assign({},gateOutwardM) ;
       this.getInwardReturnMaterials(this.gateOutwardMModel.gO_NO);
-      let postedlocation = this.locationList.find(x => x.code == this.gateOutwardMModel.planT_ID);
+      let postedlocation = this.locationList.find((x:any)  => x.code == this.gateOutwardMModel.planT_ID);
       this.locationName = postedlocation ? postedlocation.code + '-' + postedlocation.name : '';
-      this.selGateLocation = this.locationGateList.find(x => x.gateNo == this.gateOutwardMModel.gO_GATENO);
-      this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
+      this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == this.gateOutwardMModel.gO_GATENO);
+      this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
       this.sendingPersonName = this.gateOutwardMModel.sendingPersonName;
       // this.sendingPersonName=this.sendingPERSON.firstName +' '+this.sendingPERSON.middleName +' '+ this.sendingPERSON.lastName;
-      this.sendingDEPTNAME = this.departmentList.find(x => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
+      this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
       this.fiscalYear = this.gateOutwardMModel.fiN_YEAR;
       this.OUT_TIME=this.gateOutwardMModel.ouT_TIME;
       this.httpService.getById(APIURLS.BR_MASTER_GATEOUTWARDD_ANY_API, gateOutwardM.id).then((data: any) => {
         if (data) {
           this.gateOutwardDList=data;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.gateOutwardDList = [];
       });
     }
@@ -347,7 +348,7 @@ export class GEOutRetMatClosureComponent implements OnInit {
             });
             this.isLoadingPop = false;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error Gate Entry...';
         });

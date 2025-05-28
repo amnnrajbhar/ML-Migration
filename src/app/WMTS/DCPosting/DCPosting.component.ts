@@ -8,10 +8,10 @@ import { LineItem } from "../Lineitem.model";
 import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 
 @Component({
@@ -26,15 +26,15 @@ export class DCPostingComponent implements OnInit {
 
   public tableWidget: any;
   public tableWidget1: any;
-  DCNo: string;
+  DCNo: string
   pimdatalist: any[] = [];
   HeaderList: Header[] = [];
   ItemList: LineItem[] = [];
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  plant: string;
-  path: string;
-  currentUser: AuthData;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  plant!: string
+  path!: string
+  currentUser!: AuthData;
   locationList: any[] = []
   filteredModel: any[] = [];
   pickingModel: any[] = [];
@@ -44,12 +44,14 @@ export class DCPostingComponent implements OnInit {
   customerModel: any[] = [];
   materialstatusmodel: any[] = [];
   errMsg: string = "";
-  totalqty: number;
-  City: string;
-  CustomerName: string;
+  totalqty!: number;
+  City: string
+  CustomerName: string
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
 
 
@@ -74,7 +76,8 @@ export class DCPostingComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getLocationMaster();
     this.getbase64image();
   }
@@ -83,14 +86,14 @@ export class DCPostingComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         // this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         this.plant = 'ML54';
-        this.locationname = this.locationList.find(x => x.code == this.plant).name;
+        this.locationname = this.locationList.find((x:any)  => x.code == this.plant).name;
 
       }
       this.reInitDatatable();
       //this.reInitDatatable1();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -131,17 +134,18 @@ export class DCPostingComponent implements OnInit {
         }
         
         
-        this.filteredModel.forEach(element => {
+        this.filteredModel.forEach((element:any)=> {
+
           this.totalqty = this.totalqty + +element.quantity
         });
-        let temp = this.filteredModel.find(x => x.status == true);
+        let temp = this.filteredModel.find((x:any)  => x.status == true);
         temp ? this.post = true : this.post = false;
 
         this.filteredModel.reverse();
         this.groupbydcforsum = this.groupBy(this.filteredModel, 'dcno');
         this.processData();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filteredModel = [];
     });
@@ -156,13 +160,13 @@ export class DCPostingComponent implements OnInit {
     const labelchecked = {};
 
     this.dataTable = this.filteredModel
-      .sort((a, b) => {
+      .sort((a:any, b:any) => {
         const taskComparator = a.dcno.localeCompare(b.dcno);
         return taskComparator
           ? taskComparator
           : a.dcno.localeCompare(b.dcno);
       })
-      .map((x) => {
+      .map((x:any) => {
         const taskColumnSpan = labelchecked[x.dcno]
           ? 0
           : this.filteredModel.filter((y) => y.dcno === x.dcno).length;
@@ -190,7 +194,7 @@ export class DCPostingComponent implements OnInit {
 
     var filterModel: any = {};
     filterModel.Dcno = this.DCNo;
-    filterModel.plant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+    filterModel.plant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
     filterModel.generatedBy = this.currentUser.employeeId;
     this.httpService.postMIGO(APIURLS.BR_GET_PIM_POST_DC_DATA, filterModel).then((data: any) => {
       if (data.length > 0 || data != null) {
@@ -220,7 +224,7 @@ export class DCPostingComponent implements OnInit {
       }
       //this.getDcData(this.DCNo);
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.pimdatalist = [];
     });
@@ -231,7 +235,7 @@ export class DCPostingComponent implements OnInit {
   detailedList: any[] = [];
   showDetailedView(item) {
     this.detailedList = [];
-    this.detailedList = this.materialstatusmodel.filter(x => x.lineItemNo == item.lineItemNo);
+    this.detailedList = this.materialstatusmodel.filter((x:any)  => x.lineItemNo == item.lineItemNo);
     jQuery('#DetailedModal').modal('show');
   }
 
@@ -268,7 +272,7 @@ export class DCPostingComponent implements OnInit {
 
   downloadPdf() {
 
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.plant + ' - ' + this.locationname;
     var ReportName = "DC POSTING SUMMARY REPORT"
     var printedBy = this.currentUser.fullName;
@@ -277,7 +281,7 @@ export class DCPostingComponent implements OnInit {
     var logo = this.image;
     //var now = new Date('dd-MM-yyyy h:mm a');
     var date = pipe.transform(now, 'short');
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -291,13 +295,13 @@ export class DCPostingComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'DC Posting Report',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -315,7 +319,7 @@ export class DCPostingComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 40],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -368,12 +372,12 @@ export class DCPostingComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {

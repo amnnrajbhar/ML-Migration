@@ -19,12 +19,12 @@ declare var toastr: any;
 })
 export class AttachmentsComponent implements OnInit {
   @Input() objectId: any;
-  @Input() objectType: string;
+  @Input() objectType: string
   @Input() employeeId: any;
-  @Input() editAllowed: boolean;
-  @Input() deleteAllowed: boolean;
+  @Input() editAllowed!: boolean;
+  @Input() deleteAllowed!: boolean;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading: boolean = false;
   attachmentsList: any[] = [];
@@ -40,7 +40,8 @@ export class AttachmentsComponent implements OnInit {
     if(this.objectType == undefined) this.objectType = "";
     if(this.employeeId == undefined) this.employeeId = "";
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.LoadAttachments();
     }    
   }
@@ -54,7 +55,7 @@ export class AttachmentsComponent implements OnInit {
           this.attachmentsList = data;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     } 
@@ -98,7 +99,7 @@ export class AttachmentsComponent implements OnInit {
           else
           toastr.error(data.message);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while uploading attachments. Error:' + error);
       });
@@ -113,7 +114,7 @@ export class AttachmentsComponent implements OnInit {
 
     connection.then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
@@ -127,15 +128,15 @@ export class AttachmentsComponent implements OnInit {
           this.showPdfInViewer(fileName, data);
         }
         else{
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }        
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -150,14 +151,14 @@ export class AttachmentsComponent implements OnInit {
     connection.then((data: any) => {
             
       if (data != undefined) {        
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -248,7 +249,7 @@ showPdfInViewer(fileName:any, file: Blob) {
         this.isLoading = false;
         toastr.error('Error occured while deleting the file. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while deleting the file. Error:' + error);
       });

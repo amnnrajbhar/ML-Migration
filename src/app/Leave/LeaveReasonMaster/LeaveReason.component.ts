@@ -11,16 +11,16 @@ import swal from 'sweetalert';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 //import { C } from '@angular/core/src/render3';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
 import { ExcelService } from '../../shared/excel-service';
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 
 declare var jQuery: any;
 export class actionItemModel {
-  description: string;
-  id: number;
-  uname: string;
+  description: string
+  id!: number;
+  uname: string
 }
 @Component({
   selector: 'app-LeaveReason',
@@ -29,7 +29,7 @@ export class actionItemModel {
 })
 export class LeaveReasoncomponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
+@ViewChild(NgForm, { static: false }) leaveForm!: NgForm;
 
   public filteredItems = [];
 
@@ -46,8 +46,8 @@ export class LeaveReasoncomponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldleavereasonItem: LeaveReason = new LeaveReason();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   plantList: any[] = [[]];
   id: any;
   locationAllList: any;
@@ -78,7 +78,8 @@ export class LeaveReasoncomponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLeaveReasonList();
       this.getLeaveTypeList();
     }
@@ -98,7 +99,7 @@ export class LeaveReasoncomponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.leaveReasonList = [];
     });
@@ -146,7 +147,7 @@ export class LeaveReasoncomponent implements OnInit {
       if (data.length > 0) {
         this.leaveTypeList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.leaveTypeList = [];
     });
@@ -156,13 +157,13 @@ export class LeaveReasoncomponent implements OnInit {
     { lvTypeid: 100, lvType: 'ON DUTY' }
   ]
 
-  getTypeslist(id) {
+  getTypeslist(id:any) {
     if (id == 100) {
-      let temp = this.onDutyList.find(x => x.lvTypeid == id);
+      let temp = this.onDutyList.find((x:any)  => x.lvTypeid == id);
       return temp ? temp.lvType : '';
     }
     else {
-      let temp = this.leaveTypeList.find(x => x.lvTypeid == id);
+      let temp = this.leaveTypeList.find((x:any)  => x.lvTypeid == id);
       return temp ? temp.lvType : '';
     }
   }
@@ -195,7 +196,7 @@ export class LeaveReasoncomponent implements OnInit {
     let connection: any;
     if (!this.isEdit) {
       this.auditType = "Create";
-      this.checkdup = this.leaveReasonList.find(x => x.leavType == this.leavereasonItem.leavType && x.reason == this.leavereasonItem.reason
+      this.checkdup = this.leaveReasonList.find((x:any)  => x.leavType == this.leavereasonItem.leavType && x.reason == this.leavereasonItem.reason
         && x.isActive == true)
       if (this.checkdup != null) {
         this.isLoadingPop = false;
@@ -229,7 +230,7 @@ export class LeaveReasoncomponent implements OnInit {
       else
         this.errMsgPop = data;
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Leave Reason data..';
     });
@@ -255,7 +256,8 @@ export class LeaveReasoncomponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -272,82 +274,83 @@ getHeader(): { headers: HttpHeaders } {
     return formateddate;
   }
 
-  exportLeaveReaosn() {
-    const title = 'Leave Reason Masters';
-    const header = ["SNo", "Type", "Reason", "Detailed Reason", "Active", "Created By", "Created Date"]
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.leaveReasonList.forEach(item => {
-      index = index + 1;
-      ts = {};
-      ts.slno = index;
-      ts.leavType = this.getTypeslist(item.leavType);
-      ts.reason = item.reason;
-      ts.detailedReason = item.detailedReason;
-      if (item.isActive == true) {
-        ts.isActive = "YES";
-      }
-      else {
-        ts.isActive = "NO";
-      }
-      if (item.createdBy == null) {
-        ts.createdBy = '130299';
-      }
-      else {
-        ts.createdBy = +item.createdBy;
-      }
-      if (item.createdOn == null) {
-        ts.createdOn = '';
-      }
-      else {
-        ts.createdOn = this.setFormatedDate(item.createdOn);
-      }
-      exportList.push(ts);
-    });
-    var OrganisationName = "MICRO LABS LIMITED";
-    const data = exportList;
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Leave Reason Masters');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:G1');
-    worksheet.mergeCells('A2:G2');
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+   //v10
+  // exportLeaveReaosn() {
+  //   const title = 'Leave Reason Masters';
+  //   const header = ["SNo", "Type", "Reason", "Detailed Reason", "Active", "Created By", "Created Date"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.leaveReasonList.forEach((item :any) => {
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slno = index;
+  //     ts.leavType = this.getTypeslist(item.leavType);
+  //     ts.reason = item.reason;
+  //     ts.detailedReason = item.detailedReason;
+  //     if (item.isActive == true) {
+  //       ts.isActive = "YES";
+  //     }
+  //     else {
+  //       ts.isActive = "NO";
+  //     }
+  //     if (item.createdBy == null) {
+  //       ts.createdBy = '130299';
+  //     }
+  //     else {
+  //       ts.createdBy = +item.createdBy;
+  //     }
+  //     if (item.createdOn == null) {
+  //       ts.createdOn = '';
+  //     }
+  //     else {
+  //       ts.createdOn = this.setFormatedDate(item.createdOn);
+  //     }
+  //     exportList.push(ts);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED";
+  //   const data = exportList;
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Leave Reason Masters');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:G1');
+  //   worksheet.mergeCells('A2:G2');
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'LeaveReason_Master.xlsx');
-    });
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'LeaveReason_Master.xlsx');
+  //   });
+  // }
 
 }

@@ -45,7 +45,7 @@
     requestAnimationFrame = function(fn) {
       return setTimeout(fn, 50);
     };
-    cancelAnimationFrame = function(id) {
+    cancelAnimationFrame = function(id:any) {
       return clearTimeout(id);
     };
   }

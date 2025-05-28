@@ -31,10 +31,10 @@ declare var $: any;
   styleUrls: ['./ShiftRegister.component.css']
 })
 export class ShiftRegisterComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
   public tableWidget: any;
@@ -51,16 +51,16 @@ export class ShiftRegisterComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  path: string;
-  filterEmployeeName: string = null;
-  filterEmployeeId: string = null;
-  filterLocation: string = null;
+  path!: string
+  filterEmployeeName: string = ' ';
+  filterEmployeeId: string = ' ';
+  filterLocation: string = ' ';
   EmployeeNo: any = null;
-  filterPayGroup: string = null;
-  filterDepartment: string = null;
-  filterSubDepartment: string = null;
-  filterReportingGroup: string = null;
-  filterCategory: string = null;
+  filterPayGroup: string = ' ';
+  filterDepartment: string = ' ';
+  filterSubDepartment: string = ' ';
+  filterReportingGroup: string = ' ';
+  filterCategory: string = ' ';
   filterStatus: boolean = null;
   filterType: any = null;
   ShiftAssignmentList: any[] = [];
@@ -91,7 +91,7 @@ export class ShiftRegisterComponent implements OnInit {
   }
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -100,15 +100,15 @@ export class ShiftRegisterComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        //this.filterLocation = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        //this.filterLocation = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
         // this.getpayGroupList();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -125,11 +125,12 @@ export class ShiftRegisterComponent implements OnInit {
     this.filterCategory = '';
     this.month = null;
     this.filterStatus = null;
-    this.filterType = null;
+    //this.filterType = null;
+this.filterType = '';
   }
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
@@ -177,10 +178,11 @@ export class ShiftRegisterComponent implements OnInit {
     filterModel.reportingGroup = this.filterReportingGroup;
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LIST_FOR_REPORT, filterModel).then((data: any) => {
       this.empListCon = data.table;
-      this.empListCon.forEach(element => {
+      this.empListCon.forEach((element:any)=> {
+
         element.name = element.employeeNo + ' - ' + element.name;
       });
-    }).catch(error => {
+    }).catch((error)=> {
       this.empListCon = [];
       this.isLoading = false;
 
@@ -190,10 +192,11 @@ export class ShiftRegisterComponent implements OnInit {
 
   BloodGroupList: any[] = [];
   selectedEmployee: any[] = [];
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.calYear = new Date().getFullYear().toString();
     this.filterLocation = this.currentUser.baselocation.toString();
 
@@ -218,17 +221,17 @@ export class ShiftRegisterComponent implements OnInit {
 
   }
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.plantList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         this.getpayGroupList();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -238,7 +241,7 @@ export class ShiftRegisterComponent implements OnInit {
       if (data.length > 0) {
         this.ShiftList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ShiftList = [];
     });
@@ -250,26 +253,28 @@ export class ShiftRegisterComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
-        let temp = this.locationList.find(x => x.id == this.filterLocation);
-        this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+        let temp = this.locationList.find((x:any)  => x.id == this.filterLocation);
+        this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
 
       }
       //this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
   }
   payGroupList1: any[] = [];
   onplantchange() {
-    this.filterPayGroup = null;
-    let temp = this.plantList.find(x => x.fkPlantId == this.filterLocation);
-    this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.plantList.find((x:any)  => x.fkPlantId == this.filterLocation);
+    this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
   }
   empCatList: any[] = [];
   getempCatList() {
@@ -278,7 +283,7 @@ export class ShiftRegisterComponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
@@ -291,7 +296,7 @@ export class ShiftRegisterComponent implements OnInit {
       if (data.length > 0) {
         this.subDeptList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.subDeptList = [];
     });
@@ -304,7 +309,7 @@ export class ShiftRegisterComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -314,9 +319,9 @@ export class ShiftRegisterComponent implements OnInit {
     this.httpService.LAgetByParam(APIURLS.GET_EMP_OF_REPORTING, this.currentUser.employeeId).then((data: any) => {
       if (data.length > 0) {
         this.EmployeeList = data;
-        this.empListCon = data.map((i) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
+        this.empListCon = data.map((i:any) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
 
-        this.EmployeeList.sort((a, b) => {
+        this.EmployeeList.sort((a:any, b:any) => {
           if (a.fullName > b.fullName) return 1;
           if (a.fullName < b.fullName) return -1;
           return 0;
@@ -326,7 +331,7 @@ export class ShiftRegisterComponent implements OnInit {
       else {
         this.EmployeeList = [];
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList = [];
     });
@@ -342,14 +347,14 @@ export class ShiftRegisterComponent implements OnInit {
     let connection = this.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, val);
     connection.then((data: any) => {
       if (data) {
-        let result = data.filter(x => { return x.employeeId != null });
+        let result = data.filter((x:any)  => { return x.employeeId != null });
         this.Department = result[0].department;
         this.Designation = result[0].designation;
         this.FullName = result[0].fullName;
         this.EmployeeId = result[0].employeeId;
         this.JoiningDate = result[0].joiningDate;
       }
-    }).catch(error => {
+    }).catch((error)=> {
     });
   }
 
@@ -358,13 +363,13 @@ export class ShiftRegisterComponent implements OnInit {
     this.errMsg = "";
     this.get("DesignationMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.filter(x => x.isActive).sort((a, b) => {
+        this.designationList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.designationList = [];
     });
@@ -373,13 +378,13 @@ export class ShiftRegisterComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -394,7 +399,7 @@ export class ShiftRegisterComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -404,7 +409,7 @@ export class ShiftRegisterComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -414,7 +419,7 @@ export class ShiftRegisterComponent implements OnInit {
                   $("#reportingManager").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -457,7 +462,7 @@ export class ShiftRegisterComponent implements OnInit {
       filterModel.empCat = this.filterCategory;
       filterModel.department = this.filterDepartment;
       filterModel.subDept = this.filterSubDepartment;
-      filterModel.employeeId = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.employeeNo).join(',') : null;
+      filterModel.employeeId = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.employeeNo).join(',') : null;
       filterModel.month = this.month;
       filterModel.rotational = this.filterStatus;
       filterModel.Year = this.calYear;
@@ -476,7 +481,7 @@ export class ShiftRegisterComponent implements OnInit {
           });
         }
         this.reInitDatatable();
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error uploading file ..';
         this.ShiftAssignmentList = [];
       });
@@ -501,7 +506,7 @@ export class ShiftRegisterComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -511,7 +516,7 @@ export class ShiftRegisterComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -521,7 +526,7 @@ export class ShiftRegisterComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -582,7 +587,7 @@ export class ShiftRegisterComponent implements OnInit {
     return ("00" + d1.getDate()).slice(-2) + "-" + ("00" + (d1.getMonth() + 1)).slice(-2) + "-" +
       d1.getFullYear();
   }
-  exportList: any[];
+  exportList!: any[];
   exportExcel() {
     let filterModel: any = {};
     filterModel.plant = this.filterLocation;
@@ -590,7 +595,7 @@ export class ShiftRegisterComponent implements OnInit {
     filterModel.empCat = this.filterCategory;
     filterModel.department = this.filterDepartment
     filterModel.subDept = this.filterSubDepartment;
-    filterModel.employeeId = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.employeeNo).join(',') : null;
+    filterModel.employeeId = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.employeeNo).join(',') : null;
     filterModel.month = this.month;
     filterModel.status = this.filterStatus;
     filterModel.Year = this.calYear;
@@ -600,7 +605,7 @@ export class ShiftRegisterComponent implements OnInit {
         this.ShiftAssignmentList1 = data;
         this.exportList = [];
         let index = 0;
-        this.ShiftAssignmentList1.forEach(item => {
+        this.ShiftAssignmentList1.forEach((item :any) => {
           index = index + 1;
           let exportItem = {
             "SNo": index,
@@ -634,7 +639,7 @@ export class ShiftRegisterComponent implements OnInit {
         });
       }
       //this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error exporting to excel..';
     });
   }
@@ -678,7 +683,8 @@ export class ShiftRegisterComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

@@ -17,16 +17,16 @@ declare var toastr: any;
   providers: [Util]
 })
 export class AdditionalInfoComponent implements OnInit {
-  @ViewChild(NgForm  , { static: false }) checklistForm: NgForm;
-  @Input() offerId: number;
-  @Input() employeeCategoryId: number;
-  @Input() totalExperience: number;
+  @ViewChild(NgForm  , { static: false }) checklistForm!: NgForm;
+  @Input() offerId!: number;
+  @Input() employeeCategoryId!: number;
+  @Input() totalExperience!: number;
   @Input() editAllowed: boolean = true;
   @Input() isMandatoryToFill: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading = false;
   previousExpList: any[] = [];
@@ -51,7 +51,8 @@ export class AdditionalInfoComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.GetData();
     }
   }
@@ -83,7 +84,7 @@ export class AdditionalInfoComponent implements OnInit {
         }
         
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
       });
@@ -159,7 +160,7 @@ export class AdditionalInfoComponent implements OnInit {
         toastr.error("Minimum three Job Description details required."); return;
       }
       
-      if(this.interviewRemarksList.filter(x=>x.rating == "" || x.rating == null).length > 0){
+      if(this.interviewRemarksList.filter((x:any)=>x.rating == "" || x.rating == null).length > 0){
         toastr.error("Please provide rating for all criteria's mentioned."); return;
       }
       if($("#txtFinalName").val() == "" || $("#txtFinalDesignation").val() == ""){
@@ -198,7 +199,7 @@ export class AdditionalInfoComponent implements OnInit {
         //this.isLoading = false;
         toastr.error('Error occured while saving details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         toastr.error('Error occured while saving details. Error:' + error);
       });
@@ -238,7 +239,7 @@ export class AdditionalInfoComponent implements OnInit {
       if ($event.timeStamp - this.lastkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.employeeName + " ("+item.employeeId+")", value: item };
@@ -249,7 +250,7 @@ export class AdditionalInfoComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#txtInterviewer_"+i).val(ui.item.label);
                   $("#txInterviewerDesignation_"+i).val(ui.item.value.designation);
@@ -267,7 +268,7 @@ export class AdditionalInfoComponent implements OnInit {
                   //this.interviewerList[i].employeeId = '';
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#txtInterviewer_"+i).val(ui.item.label);
                   $("#txInterviewerDesignation_"+i).val(ui.item.value.designation);
@@ -301,7 +302,7 @@ export class AdditionalInfoComponent implements OnInit {
       if ($event.timeStamp - this.lastkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.employeeName + " ("+item.employeeId+")", value: item };
@@ -312,7 +313,7 @@ export class AdditionalInfoComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#txtFinalName").val(ui.item.label);
                   $("#txtFinalDesignation").val(ui.item.value.designation);
@@ -326,7 +327,7 @@ export class AdditionalInfoComponent implements OnInit {
                   $("#hdnFinalEmpId").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#txtFinalName").val(ui.item.label);
                   $("#txtFinalDesignation").val(ui.item.value.designation);

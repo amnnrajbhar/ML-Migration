@@ -20,9 +20,9 @@ declare var toastr: any;
   providers: [Util]
 })
 export class AnnouncementsComponent implements OnInit {
-  @ViewChild(NgForm , { static: false })  announcementForm: NgForm;
+  @ViewChild(NgForm , { static: false })  announcementForm!: NgForm;
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   filterData: any = {};
   filterModel:any = {};
   item: any = {};
@@ -43,7 +43,8 @@ export class AnnouncementsComponent implements OnInit {
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     
     this.filterModel.pageSize = 10;
     this.filterModel.export = false;
@@ -82,7 +83,7 @@ export class AnnouncementsComponent implements OnInit {
     this.httpService.HRpost(APIURLS.HR_ANNOUNCEMENT_GET_BY_FILTER, this.filterModel).then((data: any) => {
       this.filterData = data;     
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -134,7 +135,7 @@ export class AnnouncementsComponent implements OnInit {
         $("#detailsModal").modal("hide");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error('Error adding details...'+ error);
     })
@@ -188,7 +189,7 @@ export class AnnouncementsComponent implements OnInit {
         $("#detailsModal").modal("hide");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error('Error updating details...'+ error);
     })
@@ -219,7 +220,7 @@ export class AnnouncementsComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + error);
       });
@@ -285,9 +286,9 @@ export class AnnouncementsComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_PLANT_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -296,9 +297,9 @@ export class AnnouncementsComponent implements OnInit {
     this.payGroupList = [];
     this.httpService.HRget(APIURLS.OFFER_PAYGROUP_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+        this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.payGroupList = [];
     });
   }
@@ -306,9 +307,9 @@ export class AnnouncementsComponent implements OnInit {
   getEmployeeCategoryList() {
     this.httpService.HRget(APIURLS.OFFER_EMPLOYEE_CATEGORY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+        this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.employeeCategoryList = [];
     });   
   }
@@ -316,9 +317,9 @@ export class AnnouncementsComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -326,9 +327,9 @@ export class AnnouncementsComponent implements OnInit {
   getDepartments(){
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }

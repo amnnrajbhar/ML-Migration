@@ -7,14 +7,14 @@ import { HttpService } from '../../shared/http-service';
 import { AuthData } from '../../auth/auth.model';
 import { FormControl } from '@angular/forms';
 import { ApproveAssets } from './ApproveAssets.model';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import swal from 'sweetalert';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
 
 declare var $: any;
@@ -30,7 +30,7 @@ export class ApproveAssetsComponent implements OnInit {
 @ViewChild('filterForm', { static: false }) filterForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   public tableWidget: any;
   dashboard: any = {};
   isLoading: boolean = false;
@@ -52,7 +52,7 @@ export class ApproveAssetsComponent implements OnInit {
   locationAllList: any;
   locListCon: any;
   ApproveAssets = {} as ApproveAssets;
-  catCode: any[];
+  catCode!: any[];
   departmentList: any;
   dashboardcatCode: any;
   filteredModel: any;
@@ -71,11 +71,14 @@ export class ApproveAssetsComponent implements OnInit {
   filterassetState : any;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getCatList();
     this.getAssetStateList();
     this.getPlantsassigned(this.currentUser.fkEmpId);
@@ -87,16 +90,16 @@ export class ApproveAssetsComponent implements OnInit {
     this.getMonType();
   }
 
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -175,10 +178,10 @@ export class ApproveAssetsComponent implements OnInit {
       if (data.length > 0) {
         this.catList = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.catList.sort((a, b) => { return collator.compare(a.name, b.name) });
+        this.catList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
         this.catList1 = this.catList.filter((item, i, arr) => arr.findIndex((t) => t.catCode === item.catCode) === i);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.catList = [];
     });
   }
@@ -186,13 +189,13 @@ export class ApproveAssetsComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -204,7 +207,7 @@ export class ApproveAssetsComponent implements OnInit {
       if (data.length > 0) {
         this.assStateList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.assStateList = [];
     });
   }
@@ -214,18 +217,19 @@ export class ApproveAssetsComponent implements OnInit {
       if (data.length > 0) {
         this.assStateList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.assStateList = [];
     });
   }
 
-  getAssetState(id) {
-    let temp = this.assStateList.find(x => x.id == id);
+  getAssetState(id:any) {
+    let temp = this.assStateList.find((x:any)  => x.id == id);
     return temp ? temp.status : '';
   }
 
   clearFilter() {
-    this.filterlocation = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
     this.dashboardcatName = null;
     this.dashboardassetstate = null;
     this.dashboardcatCode = null;
@@ -243,14 +247,14 @@ export class ApproveAssetsComponent implements OnInit {
         this.sizeList = data;
         console.log(this.sizeList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.sizeList = [];
     });
   }
 
-  getStorageSize(id) {
-    let temp = this.sizeList.find(x => x.storId == id);
+  getStorageSize(id:any) {
+    let temp = this.sizeList.find((x:any)  => x.storId == id);
     return temp ? temp.storTxt : '';
   }
 
@@ -261,19 +265,19 @@ export class ApproveAssetsComponent implements OnInit {
         this.monType = data;
         console.log(this.monType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.monType = [];
     });
   }
 
-  getMonitorType(id) {
-    let temp = this.monType.find(x => x.id == id);
+  getMonitorType(id:any) {
+    let temp = this.monType.find((x:any)  => x.id == id);
     return temp ? temp.type : '';
   }
 
   subCategorylist: any[] = []
   GetSubCategory(type) {
-    this.subCategorylist = this.catList.filter(x => x.catCode == type);
+    this.subCategorylist = this.catList.filter((x:any)  => x.catCode == type);
   }
 
   getSoftType() {
@@ -283,13 +287,13 @@ export class ApproveAssetsComponent implements OnInit {
         this.softType = data;
         console.log(this.softType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.softType = [];
     });
   }
 
-  getSoftTypename(id) {
-    let temp = this.softType.find(x => x.softId == id);
+  getSoftTypename(id:any) {
+    let temp = this.softType.find((x:any)  => x.softId == id);
     return temp ? temp.softStxt : '';
   }
 
@@ -300,17 +304,17 @@ export class ApproveAssetsComponent implements OnInit {
         this.licType = data;
         console.log(this.licType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.licType = [];
     });
   }
 
-  getLicTypename(id) {
-    let temp = this.licType.find(x => x.licId == id);
+  getLicTypename(id:any) {
+    let temp = this.licType.find((x:any)  => x.licId == id);
     return temp ? temp.licStxt : '';
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -349,7 +353,7 @@ export class ApproveAssetsComponent implements OnInit {
     }
     this.isLoading = true;
     var filterModel: any = {};
-    filterModel.location = this.filterlocation.map(x => x.code).join();
+    filterModel.location = this.filterlocation.map((x:any)  => x.code).join();
     filterModel.assetState = this.filterassetState;
     filterModel.assetType = this.dashboardcatCode;
     filterModel.category = this.dashboardcatName;
@@ -361,7 +365,7 @@ export class ApproveAssetsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.assetList = [];
       this.reInitDatatable();
@@ -375,17 +379,18 @@ export class ApproveAssetsComponent implements OnInit {
     }
     this.errMsg = "";
     let connection: any;
-    this.checkedRequestList.forEach(element => {
-      let value = this.assetList.find(x => x.assetId == element.assetId);
+    this.checkedRequestList.forEach((element:any)=> {
+
+      let value = this.assetList.find((x:any)  => x.assetId == element.assetId);
       this.ApproveAssets = Object.assign({}, value);
       this.ApproveAssets.viewStatusApprover = this.currentUser.employeeId;
       this.ApproveAssets.reportViewStatus = 1;
       this.ApproveAssets.softwares = null;
-      this.ApproveAssets.sizeType = this.ApproveAssets.sizeType ? this.sizeList.find(x => x.storTxt == this.ApproveAssets.sizeType).storId : '';
-      this.ApproveAssets.ramSize = this.ApproveAssets.ramSize ? this.sizeList.find(x => x.storTxt == this.ApproveAssets.ramSize).storId : '';
-      this.ApproveAssets.assetState = this.ApproveAssets.assetState ? this.assStateList.find(x => x.status == this.ApproveAssets.assetState).id : '';
-      this.ApproveAssets.comDept = this.ApproveAssets.comDept ? this.departmentList.find(x => x.name == this.ApproveAssets.comDept).id : '';
-      this.ApproveAssets.monitorType = this.ApproveAssets.monitorType ? this.monType.find(x => x.type == this.ApproveAssets.monitorType).id : '';
+      this.ApproveAssets.sizeType = this.ApproveAssets.sizeType ? this.sizeList.find((x:any)  => x.storTxt == this.ApproveAssets.sizeType).storId : '';
+      this.ApproveAssets.ramSize = this.ApproveAssets.ramSize ? this.sizeList.find((x:any)  => x.storTxt == this.ApproveAssets.ramSize).storId : '';
+      this.ApproveAssets.assetState = this.ApproveAssets.assetState ? this.assStateList.find((x:any)  => x.status == this.ApproveAssets.assetState).id : '';
+      this.ApproveAssets.comDept = this.ApproveAssets.comDept ? this.departmentList.find((x:any)  => x.name == this.ApproveAssets.comDept).id : '';
+      this.ApproveAssets.monitorType = this.ApproveAssets.monitorType ? this.monType.find((x:any)  => x.type == this.ApproveAssets.monitorType).id : '';
       this.ApproveAssets.statusApprovedDate = new Date();
       connection = this.httpService.amsput(APIURLS.GET_AMS_APPROVE_ASSET, this.ApproveAssets.assetId, this.ApproveAssets);
     }),
@@ -403,7 +408,7 @@ export class ApproveAssetsComponent implements OnInit {
           this.isMasterSel = false;
           this.clearFilter();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error approving Asset..';
       });
@@ -416,8 +421,9 @@ export class ApproveAssetsComponent implements OnInit {
     }
     this.errMsg = "";
     let connection: any;
-    this.checkedRequestList.forEach(element => {
-      let value = this.assetList.find(x => x.assetId == element.assetId);
+    this.checkedRequestList.forEach((element:any)=> {
+
+      let value = this.assetList.find((x:any)  => x.assetId == element.assetId);
       this.ApproveAssets = Object.assign({}, value);
       this.ApproveAssets.viewStatusApprover = this.currentUser.employeeId;
       this.ApproveAssets.reportViewStatus = 1;
@@ -437,7 +443,7 @@ export class ApproveAssetsComponent implements OnInit {
           this.isMasterSel = false;
           this.clearFilter();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error approving Asset..';
       });

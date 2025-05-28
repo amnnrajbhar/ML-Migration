@@ -17,9 +17,9 @@ declare var toastr: any;
   styleUrls: ['./appraisal-history.component.css']
 })
 export class AppraisalHistoryComponent implements OnInit {
-  @Input() employeeId: number;
+  @Input() employeeId!: number;
   
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading = false;
   itemList: any[] = [];
@@ -44,7 +44,8 @@ export class AppraisalHistoryComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       
       this.GetData();
     }
@@ -62,7 +63,7 @@ console.log("history called");
           } 
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
       });
@@ -81,7 +82,7 @@ console.log("history called");
       //this.filterModel.export = false;
       var exportList = [];
       let index = 0;
-      data.forEach(item => {
+      data.forEach((item :any) => {
         index = index + 1;
         let exportItem = {
           "SNo": index,
@@ -104,7 +105,7 @@ console.log("history called");
       });
       this.excelService.exportAsExcelFile(exportList, 'Employee_AppraisalHistory');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
      // this.filterModel.export = false;
       swal('Error occurred while fetching data.');

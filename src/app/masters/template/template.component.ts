@@ -17,24 +17,24 @@ export class TemplateComponent implements OnInit {
 
     public tableWidget: any;
     country_name: string = "";
-    stateList: any[];
+    stateList!: any[];
     SelState: any;
     ApprovalTemplateName ="";
     isDispHide: boolean = true;
     selectedtempVal1: string="";
     selectedtempVal2: string="";
     templateList1: any[] =[];
-    templateListSel1: any[];
-    templateListSel2: any[];
+    templateListSel1!: any[];
+    templateListSel2!: any[];
     hdrMappedList1: any[]=[];
     hdrMappedList2: any[]=[];
-    templateList2: any[];
+    templateList2!: any[];
     templateItem: any;
     projectList:any[];
     approvalItem: Template  = new Template(0,"","","",0,0,"","");
     sbuLst:any[];
     isLoading: boolean = false;
-    tempHeaderList: any[];
+    tempHeaderList!: any[];
     errMsg: string = "";
     errMsgPAN: string = "";
     errMsgGSTIN: string = "";
@@ -103,7 +103,7 @@ export class TemplateComponent implements OnInit {
              //   this.templateList2 = data.templateList2;
                 //this.reInitDatatable();
          
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.templateList1 = [];
             this.templateList2 = [];
@@ -115,7 +115,7 @@ export class TemplateComponent implements OnInit {
                 this.templateList2 = data;
                 //this.reInitDatatable();
             
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.templateList1 = [];
             this.templateList2 = [];
@@ -130,7 +130,7 @@ export class TemplateComponent implements OnInit {
                 this.projectList = data;
                // this.reInitDatatable();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.projectList = [];
         });
@@ -141,10 +141,10 @@ export class TemplateComponent implements OnInit {
           if (data.length>0) {
             this.sbuLst = data;
             //this.parentList = data.roleList;
-            //this.roleList.forEach(item => { item.isChecked = false; });
+            //this.roleList.forEach((item :any) => { item.isChecked = false; });
            // this.reInitDatatable();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           //this.isLoading = false;
           this.sbuLst = [];
         });
@@ -171,7 +171,7 @@ clearselection(){
             if (data.lenght>0) {
                 this.stateList = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.stateList = [];
         });
     }
@@ -200,7 +200,7 @@ clearselection(){
     //        else {
     //            this.errMsgPop = data;
     //        }
-    //    }).catch(error => {
+    //    }).catch((error)=> {
     //        this.isLoadingPop = false;
     //        this.errMsgPop = 'Error saving customer data..';
     //    });
@@ -217,7 +217,7 @@ clearselection(){
             else {
                 this.errMsg = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.errMsg = 'Error saving customer data..';
         });
@@ -232,9 +232,9 @@ clearselection(){
     //    this.httpService.get(APIURLS.BR_FORM_DATA_API).then((data: any) => {
     //        if (data.status == 'SUCCESS') {
     //            this.cusHeaderList = data.formDataList;
-    //            this.cusHeaderList = data.formDataList.find(s => s.subMenuId == '5'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
+    //            this.cusHeaderList = data.formDataList.find((s:any) => s.subMenuId == '5'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
     //        }
-    //    }).catch(error => {
+    //    }).catch((error)=> {
     //        this.cusHeaderList = null;
     //    });
     //}

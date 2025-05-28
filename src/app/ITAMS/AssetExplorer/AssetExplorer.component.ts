@@ -18,7 +18,7 @@ declare var $: any;
 })
 
 export class AssetExplorerComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
   public tableWidget: any;
   isLoading: boolean = false;
@@ -34,30 +34,30 @@ export class AssetExplorerComponent implements OnInit {
   assStateList: any;
   locationList: any;
   filterlocation: any;
-  filterassettype: string;
+  filterassettype: string
   location: any;
   locationAllList: any;
   locListCon: any;
-  designationList: any[];
+  designationList!: any[];
   userList: any;
   empListCon: any;
-  baseLocation: number;
+  baseLocation!: number;
   departmentList: any;
   filterdesg: any;
   filterdept: any;
-  filterassetNo: string;
-  filterassetNo1: string;
-  filtercategory1: string;
-  filtersubCategory1: string;
-  filterbarcode1: string;
-  filtermodel1: string;
-  filterpartNo1: string;
-  filtermanufacturer1: string;
-  filterserialNo1: string;
-  filterprocessor1: string;
-  filterram1: number;
-  filtersize: string;
-  filterhdd1: number;
+  filterassetNo: string
+  filterassetNo1: string
+  filtercategory1: string
+  filtersubCategory1: string
+  filterbarcode1: string
+  filtermodel1: string
+  filterpartNo1: string
+  filtermanufacturer1: string
+  filterserialNo1: string
+  filterprocessor1: string
+  filterram1!: number;
+  filtersize: string
+  filterhdd1!: number;
   assetList: any;
   filteripNo1: any;
   filtergxp1: any;
@@ -67,14 +67,14 @@ export class AssetExplorerComponent implements OnInit {
   softType: any;
   licType: any;
   isSubmitted = false;
-  filterchoice: string;
+  filterchoice: string
   filterassetId1: any;
   filterlocation1: any;
   filtercondition: any;
-  dataSource: any[];
-  newDynamic: {};
+  dataSource!: any[];
+  newDynamic!: {};
   dynamicArray: any[] = [];
-  catList1: any[];
+  catList1!: any[];
   monType: any;
   filterempNo1: any;
   filterempName1: any;
@@ -90,7 +90,8 @@ export class AssetExplorerComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     this.getCatList();
     this.getAssetStateList();
@@ -106,17 +107,17 @@ export class AssetExplorerComponent implements OnInit {
     // this.addRow();
   }
 
-  CategoryList: any[];
+  CategoryList!: any[];
   getCatList() {
     this.httpService.amsget(APIURLS.BR_GET_AMS_CAT_MASTER).then((data: any) => {
       // this.isLoading = false;
       if (data.length > 0) {
         this.catList = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.catList.sort((a, b) => { return collator.compare(a.name, b.name) });
+        this.catList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
         this.catList1 = this.catList.filter((item, i, arr) => arr.findIndex((t) => t.catCode === item.catCode) === i);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.catList = [];
     });
   }
@@ -128,7 +129,7 @@ export class AssetExplorerComponent implements OnInit {
         this.sizeList = data;
         console.log(this.sizeList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.sizeList = [];
     });
@@ -141,7 +142,7 @@ export class AssetExplorerComponent implements OnInit {
         this.softType = data;
         console.log(this.softType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.softType = [];
     });
@@ -154,7 +155,7 @@ export class AssetExplorerComponent implements OnInit {
         this.licType = data;
         console.log(this.licType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.licType = [];
     });
@@ -167,7 +168,7 @@ export class AssetExplorerComponent implements OnInit {
         this.monType = data;
         console.log(this.monType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.monType = [];
     });
@@ -180,7 +181,7 @@ export class AssetExplorerComponent implements OnInit {
         this.assStateList = data;
         console.log(this.assStateList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.assStateList = [];
     });
@@ -190,30 +191,30 @@ export class AssetExplorerComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList:any[]=[];
-  getPlantsassigned(id)
+  getPlantsassigned(id:any)
   {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x=>{ return x.isActive;}).map((i) => { i.location = i.code + '-' + i.name; return i; });
+        this.plantList = data.filter((x:any)=>{ return x.isActive;}).map((i:any) => { i.location = i.code + '-' + i.name; return i; });
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });          
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -225,32 +226,32 @@ export class AssetExplorerComponent implements OnInit {
     this.httpService.get(APIURLS.BR_EMPLOYEEMASTER_ACTIVE_API_GET).then((data: any) => {
       if (data.length > 0) {
         this.userList = data;
-        this.empListCon = data.map((i) => {
+        this.empListCon = data.map((i:any) => {
           i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.department +
             '-' + i.designation; return i;
         });
         this.initDatatable();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userList = [];
     });
   }
 
-  setDet(mtrl) {
+  setDet(mtrl:any) {
     var self = this;
     var data = this.empListCon;
     $('#empNo').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.employeeId.includes(mtrl));;
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.employeeId.includes(mtrl));;
+        response(result.map((i:any) => {
           i.label = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation + '-' + i.department,
             i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName, i.empNo = i.employeeId, i.designation = i.designation,
             i.department = i.department; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.AddAssetmodel.empNo = ui.item.empNo;
         self.AddAssetmodel.empAd = ui.item.name;
         self.filterdesg = ui.item.designation;
@@ -269,23 +270,23 @@ export class AssetExplorerComponent implements OnInit {
         this.initDatatable();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.assetList = [];
     });
   }
 
-  setList(asset) {
+  setList(asset:any) {
     var self = this;
     var data = this.assetList;
     $('#assetNo1').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.assetNo.includes(asset));
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.assetNo.includes(asset));
+        response(result.map((i:any) => {
           i.label = i.assetNo; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterassetId1 = ui.item.assetId;
         self.filterlocation1 = ui.item.location;
         self.filtercategory1 = ui.item.category;
@@ -311,21 +312,21 @@ export class AssetExplorerComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
     });
   }
 
-  getDept(id) {
-    let temp = this.departmentList.find(x => x.id == id);
+  getDept(id:any) {
+    let temp = this.departmentList.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
 
@@ -335,7 +336,7 @@ export class AssetExplorerComponent implements OnInit {
     this.newDynamic = { id: this.rowcount, filtersoftType: null, filtersoftName: "", filterlicType: null, filterprodKey: "", filterversion: "", filterexpDate: null };
     this.dynamicArray.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.dynamicArray.length > 1) {
       const index = this.dynamicArray.indexOf(item);
       this.dynamicArray.splice(index, 1);
@@ -355,10 +356,10 @@ export class AssetExplorerComponent implements OnInit {
 
   subCategorylist: any[] = []
   GetSubCategory(type) {
-    this.subCategorylist = this.catList.filter(x => x.catCode == type);
+    this.subCategorylist = this.catList.filter((x:any)  => x.catCode == type);
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   AddAssetmodel = {} as AssetExplorer;
   RepAssetmodel = {} as AssetExplorer;
   softwareList: any[] = [];
@@ -379,7 +380,7 @@ export class AssetExplorerComponent implements OnInit {
       this.AddAssetmodel.warrantyExpiration = this.AddAssetmodel.warrantyExpiration ? this.setFormatedDate(this.AddAssetmodel.warrantyExpiration):null;
       this.AddAssetmodel.hostName = this.AddAssetmodel.assetNo;
       this.AddAssetmodel.installationType = this.AddAssetmodel.replacementType;
-      this.dynamicArray.forEach(mtrl => {
+      this.dynamicArray.forEach((mtrl:any) => {
         let filtermodel: any = {};
         filtermodel.otherSoftwareName = mtrl.filtersoftName;
         filtermodel.softwareType = mtrl.filtersoftType;
@@ -407,7 +408,7 @@ export class AssetExplorerComponent implements OnInit {
         this.clearAllEntries();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.isLoading = false;
       this.errMsgPop = 'Error saving Request..';
@@ -419,7 +420,7 @@ export class AssetExplorerComponent implements OnInit {
     this.errMsg = "";
     let connection: any;
     if (!this.isEdit) {
-      let value = this.assetList.find(x => x.assetId == this.filterassetId1);
+      let value = this.assetList.find((x:any)  => x.assetId == this.filterassetId1);
       this.RepAssetmodel = Object.assign({}, value);
       this.RepAssetmodel.assetId = this.filterassetId1;
       this.RepAssetmodel.assetNo = this.AddAssetmodel.assetNo;
@@ -495,7 +496,7 @@ export class AssetExplorerComponent implements OnInit {
         this.RepAssetmodel.empNo = '';
         this.RepAssetmodel.empAd = '';
       }
-      this.dynamicArray.forEach(mtrl => {
+      this.dynamicArray.forEach((mtrl:any) => {
         let filtermodel: any = {};
         filtermodel.otherSoftwareName = mtrl.filtersoftName;
         filtermodel.softwareType = mtrl.filtersoftType;
@@ -520,7 +521,7 @@ export class AssetExplorerComponent implements OnInit {
         });
         this.clearAllEntries();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });

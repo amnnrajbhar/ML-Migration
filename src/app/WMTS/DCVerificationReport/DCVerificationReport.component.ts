@@ -8,10 +8,10 @@ import { LineItem } from "../Lineitem.model";
 import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe, Time } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 import { toBase64String } from "@angular/compiler/src/output/source_map";
 declare var toastr: any;
@@ -28,39 +28,41 @@ export class DCVerificationReportComponent implements OnInit {
 
   public tableWidget: any;
   public tableWidget1: any;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  plant: string;
-  path: string;
-  currentUser: AuthData;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  plant!: string
+  path!: string
+  currentUser!: AuthData;
   filteredModel: any[] = [];
   errMsg: string = "";
   DCList: any[] = [];
   isMasterSel: boolean = false;
-  CancelType: string;
+  CancelType!: string
   PickedfilteredModel: any[] = [];
-  Total: number;
-  TotalLoose: number;
-  TotalFull: number;
-  RemQty: number;
-  TotalQty: number;
+  Total!: number;
+  TotalLoose!: number;
+  TotalFull!: number;
+  RemQty!: number;
+  TotalQty!: number;
   locationList: any[] = [];
-  locationname: string;
-  image: string;
-  Vehicle: string;
-  transporter: string;
-  gtime: string;
-  slno: number;
+  locationname!: string
+  image!: string
+  Vehicle!: string
+  transporter!: string
+  gtime!: string
+  slno!: number;
   VerifiedModel: any[] = [];
   CustomerModel: any[] = [];
   BarcodeModel: any[] = [];
   summary: any[] = [];
   userwisesummary: any[] = [];
-  City: string;
-  CustomerName: string;
+  City: string
+  CustomerName: string
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#datatable1');
@@ -112,7 +114,8 @@ export class DCVerificationReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getLocationMaster();
     this.getbase64image();
   }
@@ -133,13 +136,13 @@ export class DCVerificationReportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         // this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
-        this.plant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        this.locationname = this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.locationList = data.filter((x:any)  => x.isActive);
+        this.plant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        this.locationname = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
 
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -172,8 +175,9 @@ export class DCVerificationReportComponent implements OnInit {
         this.VerifiedModel.forEach((element: { qty: string | number; }) => {
           this.Total = this.Total + +element.qty;
         });
-        var loosemodel = this.VerifiedModel.filter(x => x.looseShippers == 1);
-        loosemodel.forEach(element => {
+        var loosemodel = this.VerifiedModel.filter((x:any)  => x.looseShippers == 1);
+        loosemodel.forEach((element:any)=> {
+
           this.TotalLoose = this.TotalLoose+ +element.qty;
         });
         this.TotalFull = this.Total - this.TotalLoose;
@@ -208,7 +212,7 @@ export class DCVerificationReportComponent implements OnInit {
   }
 
   downloadPDF() {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.plant + ' - ' + this.locationname;
     var ReportName = "DC VERIFICATION REPORT"
     var printedBy = this.currentUser.fullName;
@@ -217,7 +221,7 @@ export class DCVerificationReportComponent implements OnInit {
     var logo = this.image;
     //var now = new Date('dd-MM-yyyy h:mm a');
     var date = pipe.transform(now, 'short');
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -231,13 +235,13 @@ export class DCVerificationReportComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'DC Verification Report',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -255,7 +259,7 @@ export class DCVerificationReportComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 40],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -308,7 +312,7 @@ export class DCVerificationReportComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 }

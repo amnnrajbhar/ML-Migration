@@ -17,13 +17,13 @@ declare var toastr: any;
   providers: [Util]
 })
 export class ChecklistComponent implements OnInit {
-  @ViewChild(NgForm  , { static: false }) checklistForm: NgForm;
-  @Input() offerId: number;
+  @ViewChild(NgForm  , { static: false }) checklistForm!: NgForm;
+  @Input() offerId!: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading = false;
   checklistItemList: any[] = [];
@@ -51,7 +51,8 @@ export class ChecklistComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getDepartments();
       this.GetChecklistItems();
     }
@@ -83,7 +84,7 @@ export class ChecklistComponent implements OnInit {
         //this.isLoading = false;
         toastr.error('Error occured while saving checklist details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         toastr.error('Error occured while saving checklist details. Error:' + error);
       });
@@ -105,7 +106,7 @@ export class ChecklistComponent implements OnInit {
           this.errMsg = "Checklist config not found.";
 
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.errMsg = "Error occurred while fetching details, please check the link.";
         this.offerDetails = {};
@@ -116,9 +117,9 @@ export class ChecklistComponent implements OnInit {
   getDepartments(){
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -185,7 +186,7 @@ export class ChecklistComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
@@ -196,7 +197,7 @@ export class ChecklistComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#spocEmployeeId").val(ui.item.value);
                   $("#spocEmployeeName").val(ui.item.label);
@@ -206,7 +207,7 @@ export class ChecklistComponent implements OnInit {
                   $("#spocEmployeeName").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#spocEmployeeId").val(ui.item.value);
                   $("#spocEmployeeName").val(ui.item.label);                  

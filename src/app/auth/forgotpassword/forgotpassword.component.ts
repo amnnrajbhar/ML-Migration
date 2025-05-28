@@ -13,7 +13,7 @@ import { SelectMultipleControlValueAccessor } from '@angular/forms';
 })
 
 export class ForgotpasswordComponent implements OnInit {
-    //returnUrl: string;
+    //returnUrl: string
     passwordData = { employeeId: ''};
     public errMsg: string = '';
   public errMsg1: string = '';
@@ -30,7 +30,7 @@ export class ForgotpasswordComponent implements OnInit {
     }
     newpassword:string='';
     confirmpassword:string='';
-    mismatch: boolean;
+    mismatch!: boolean;
     forgotpassword(){
       if (this.newpassword != this.confirmpassword)
       swal('', 'New password and confirm password does not match', 'warning');    
@@ -60,8 +60,8 @@ export class ForgotpasswordComponent implements OnInit {
           this.errMsg1 = "Please Enter a Valid employee ID";
           this.emailMsg1 = '';
         }
-      }).catch(error => {
-        //console.log(error);
+      }).catch((error)=> {
+        ////console.log(error);
         this.isLoading = false;
         this.emailMsg1 = '';
         swal("", error.Message, "error");

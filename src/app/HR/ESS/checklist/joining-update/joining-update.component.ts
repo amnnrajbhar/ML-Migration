@@ -22,7 +22,7 @@ declare var require: any;
 export class JoiningUpdateComponent implements OnInit {
   @Input() offerId: any;
   objectType: string = "Offer Letter";
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -32,8 +32,8 @@ export class JoiningUpdateComponent implements OnInit {
   checklistItems: any[] = [];
 
   checklistItemId: number = 0;
-  comments: string;
-  action: string;
+  comments: string
+  action: string
 
   statusList = [
     { type: "Pending", color:"warning" },
@@ -50,7 +50,8 @@ export class JoiningUpdateComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.offerId = this.route.snapshot.paramMap.get('id')!;      
       this.LoadOfferDetails();
     }
@@ -65,7 +66,7 @@ export class JoiningUpdateComponent implements OnInit {
         this.getChecklistData();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.offerDetails = {} as OfferDetails;
     });
@@ -81,7 +82,7 @@ export class JoiningUpdateComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.offerDetails = {} as OfferDetails;
     });
@@ -123,7 +124,7 @@ export class JoiningUpdateComponent implements OnInit {
           swal(data.message);
         } else
           swal("Error occurred.");
-      }).catch(error => {
+      }).catch((error)=> {
         swal(error);
       });
   }

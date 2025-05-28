@@ -22,10 +22,10 @@
 })
 
 export class EmployeeRejoinExecptionComponent implements OnInit {
-  @ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+  @ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
     isLoading: boolean = false;
-    currentUser: AuthData;
+    currentUser!: AuthData;
     filterModel: any = {};
     filterData: any = {}
     item: any = {};
@@ -43,7 +43,8 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
        }
   
     ngOnInit() {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.masterService.getPlantList().then((data:any)=>{this.plantList = data;});
       this.masterService.getPayGroupList().then((data:any)=>{this.payGroupFullList = data;});
       this.masterService.getEmployeeCategoryList().then((data:any)=>{this.employeeCategoryList = data;});
@@ -72,7 +73,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
       this.httpService.HRpost(APIURLS.HR_EMPLOYEE_REJOIN_EXECPTION_GET_BY_FILTER, this.filterModel).then((data: any) => {
         this.filterData = data;      
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error("Error while fetching the list. Error: "+ error);
         this.isLoading = false;      
       });
@@ -98,7 +99,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
         if ($event.timeStamp - this.lastEmployeekeydown > 400) {
           this.httpService.HRget(APIURLS.HR_EMPLOYEE_GET_EXITED_LIST + "/" + text).then((data: any) => {
             if (data.length > 0) {
-              var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+              var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
               var list = $.map(sortedList, function (item) {
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
               })
@@ -108,7 +109,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
                   "ui-autocomplete": "highlight",
                   "ui-menu-item": "list-group-item"
                 },
-                change: function (event, ui) {
+                change: function (event:any, ui:any) {
                   if (ui.item) {
                     $("#employeeId").val(ui.item.value);
                     $("#employeeName").val(ui.item.label);
@@ -118,7 +119,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
                     $("#employeeName").val('');
                   }
                 },
-                select: function (event, ui) {
+                select: function (event:any, ui:any) {
                   if (ui.item) {
                     $("#employeeId").val(ui.item.value);
                     $("#employeeName").val(ui.item.label);
@@ -156,7 +157,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
         else
           toastr.error(data.message);
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error adding details...'+ error);
       })
@@ -179,7 +180,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
           this.getData();    
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error updating details...'+ error);
       })
@@ -208,7 +209,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
           this.isLoading = false;
           toastr.error('Error occured while deleting the details. Error:' + err);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while deleting the details. Error:' + error);
         });
@@ -264,7 +265,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
         this.filterModel.export = false;
         var exportList = [];
         let index = 0;
-        data.list.forEach(item => {
+        data.list.forEach((item :any) => {
           index = index + 1;
           let exportItem = {
             
@@ -285,7 +286,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
         });
         this.excelService.exportAsExcelFile(exportList, 'SalaryHead_List');
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.filterModel.export = false;
         swal('Error occurred while fetching data.');
@@ -296,7 +297,7 @@ export class EmployeeRejoinExecptionComponent implements OnInit {
     onPlantChange(){
       if(this.filterModel.plantId > 0){
         let plant = this.plantList.find(x=>x.id == this.filterModel.plantId)
-        this.filterPayGroupList = this.payGroupFullList.filter(x=>x.plant == plant.code);
+        this.filterPayGroupList = this.payGroupFullList.filter((x:any)=>x.plant == plant.code);
       }
       else
         this.filterPayGroupList = [];

@@ -13,7 +13,7 @@ import { setActionValue } from 'sweetalert/typings/modules/state';
 import { Resignation } from '../../separation/resignation/resignation.model';
 import { AuthData } from '../../../auth/auth.model';
 import { MOMENT } from 'angular-calendar';
-import * as moment from 'moment';
+import moment from 'moment'
 declare var $: any;
 declare var toastr: any;
 
@@ -25,7 +25,7 @@ declare var toastr: any;
   providers:[Util]
 })
 export class ViewFnfComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   fnfId: any;
   urlPath: string = '';
@@ -78,7 +78,8 @@ export class ViewFnfComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;  
       this.fnfId = this.route.snapshot.paramMap.get('id2')!;  
       if (!this.employeeId || this.employeeId <= 0 || this.fnfId <= 0)
@@ -98,7 +99,7 @@ export class ViewFnfComponent implements OnInit {
     }
   }
 
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     this.isLoading = true;
    // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -106,7 +107,7 @@ export class ViewFnfComponent implements OnInit {
         this.employeeDetails = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -114,7 +115,7 @@ export class ViewFnfComponent implements OnInit {
 
 
   settlementDetails: any[] = [];
-  GetFNFDetailsById(id) {
+  GetFNFDetailsById(id:any) {
     this.isVisible=true;
     this.httpService.HRget(APIURLS.FNF_GET_DETAILS_BY_ID+"/"+id).then((data: any) => {
       if (data) {
@@ -150,7 +151,7 @@ export class ViewFnfComponent implements OnInit {
          this.fnfStatus= this.fnfDetails.status;         
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }
@@ -163,17 +164,17 @@ export class ViewFnfComponent implements OnInit {
         this.salarydetails = data;
         if(this.salarydetails.headDetails && this.salarydetails.headDetails.length > 0){
           for(var item of this.salarydetails.headDetails){            
-            item.salaryTypeName = this.headTypes.find(x => x.type == item.salaryType).value;
-            item.frequencyName = this.frequency.find(x => x.type == item.frequency).value;
+            item.salaryTypeName = this.headTypes.find((x:any)  => x.type == item.salaryType).value;
+            item.frequencyName = this.frequency.find((x:any)  => x.type == item.frequency).value;
           }
-          this.monthlyComponents = this.salarydetails.headDetails.filter(x=>x.salaryType=="I" && x.frequency == "M");
-          this.annualComponents = this.salarydetails.headDetails.filter(x=>x.salaryType!="V" && x.frequency == "A");
-          this.variableComponents = this.salarydetails.headDetails.filter(x=>x.salaryType =="V");
+          this.monthlyComponents = this.salarydetails.headDetails.filter((x:any)=>x.salaryType=="I" && x.frequency == "M");
+          this.annualComponents = this.salarydetails.headDetails.filter((x:any)=>x.salaryType!="V" && x.frequency == "A");
+          this.variableComponents = this.salarydetails.headDetails.filter((x:any)=>x.salaryType =="V");
           this.calculateGrossTotals();
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
     });
@@ -225,7 +226,7 @@ export class ViewFnfComponent implements OnInit {
         this.diffDays=this.calculateDiff(this.lastWorkingDate,this.actualLastDate);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

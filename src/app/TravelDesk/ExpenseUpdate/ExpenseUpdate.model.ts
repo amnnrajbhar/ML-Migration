@@ -18,16 +18,16 @@ export class ExpenseUpdate{
     noOfPax:number;
     checkInFavourOf:string;
     remarks:string;
-  createdBy: number;
-  modifiedBy: string;
-  id: number;
+  createdBy!: number;
+  modifiedBy: string
+  id!: number;
   name:string;
   typeOfEvent:string;
   supportings:string;
-  isActive: boolean;
+  isActive!: boolean;
   payGroup:string;
   createdOn:string;
-  accSubmittedReferenceNo : string;
+  accSubmittedReferenceNo : string
   accountStatus:number;
 
 }

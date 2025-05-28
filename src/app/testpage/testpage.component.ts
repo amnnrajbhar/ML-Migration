@@ -22,7 +22,7 @@ export class TestpageComponent implements OnInit {
   control = new FormControl();
   streets: string[] = ['Champs-Élysées', 'Lombard Street', 'Abbey Road', 'Fifth Avenue'];
   filteredStreets: Observable<string[]>;
-  isLoading: boolean;
+  isLoading!: boolean;
   depList: any;
   tableWidget: any;
   
@@ -58,7 +58,7 @@ export class TestpageComponent implements OnInit {
           allowSearchFilter: true
         };
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empMList = [];
     });
@@ -94,14 +94,15 @@ export class TestpageComponent implements OnInit {
       if (data.length >0) {
         this.depList = data;
         
-        // this.depList.forEach(element => {
+        // this.depList.forEach((element:any)=> {
+
         //   element.parentName = '';
-        //   element.parentName = this.depList.find(x => x.id == element.fkParentId)['name'];
+        //   element.parentName = this.depList.find((x:any)  => x.id == element.fkParentId)['name'];
         // });
 
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.depList = [];
     });

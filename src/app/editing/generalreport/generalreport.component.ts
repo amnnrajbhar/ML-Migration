@@ -160,7 +160,8 @@ export class GeneralreportComponent implements OnInit {
     // debugger;
     if(this.filteredEmployee)
      this.filteredEmployee.pop();
-    this.employeeList.forEach(element => {
+    this.employeeList.forEach((element:any)=> {
+
       this.filteredEmployee.push(element);
       this.reInitDatatable();
     });
@@ -170,8 +171,8 @@ export class GeneralreportComponent implements OnInit {
     var temp1: any;
     var temp2: any;
     temp = this.employeeList.find(s=>s.id==id);
-    temp1 = (typeof temp != 'undefined')?this.competencyList.find(s => s.id == temp.fkCompetency):'';
-    temp2 = (typeof temp1 != 'undefined')?this.employeeList.find(s => s.id == temp1.fkHeadEmpId):'';
+    temp1 = (typeof temp != 'undefined')?this.competencyList.find((s:any) => s.id == temp.fkCompetency):'';
+    temp2 = (typeof temp1 != 'undefined')?this.employeeList.find((s:any) => s.id == temp1.fkHeadEmpId):'';
     var name = (typeof temp2 != 'undefined')? temp2.email : '';
     return name;
   }
@@ -180,84 +181,84 @@ export class GeneralreportComponent implements OnInit {
     var temp1: any;
     var temp2: any;
     temp = this.employeeList.find(s=>s.id==id);
-    temp1 = (typeof temp != 'undefined')?this.sbuList.find(s => s.id == temp.fkSbuId):'';
-    temp2 = (typeof temp1 != 'undefined')?this.employeeList.find(s => s.id == temp1.headEmpId):'';
+    temp1 = (typeof temp != 'undefined')?this.sbuList.find((s:any) => s.id == temp.fkSbuId):'';
+    temp2 = (typeof temp1 != 'undefined')?this.employeeList.find((s:any) => s.id == temp1.headEmpId):'';
     var name = (typeof temp2 != 'undefined')? temp2.email : '';
     return name;
   }
    getLocation(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
+    temp = this.employeeList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.baseLocation: '';
     return name;
   }
   getCompetencyHead(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
-    var temp2 = (typeof temp != 'undefined')? this.competencyList.find(s => s.id == temp.fkCompetency): '';
+    temp = this.employeeList.find((s:any) => s.id == id);
+    var temp2 = (typeof temp != 'undefined')? this.competencyList.find((s:any) => s.id == temp.fkCompetency): '';
     var temp1 = (typeof temp2!= 'undefined')? this.employeeList.find(s=>s.id == temp2.fkHeadEmpId):'';
     var name = (typeof temp1!= 'undefined')? temp1.firstName+ ' '+temp1.lastName : '';
     return name;
   }
   getCompetency(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
-    var temp2 = (typeof temp != 'undefined')? this.competencyList.find(s => s.id == temp.fkCompetency): '';
+    temp = this.employeeList.find((s:any) => s.id == id);
+    var temp2 = (typeof temp != 'undefined')? this.competencyList.find((s:any) => s.id == temp.fkCompetency): '';
     // var temp1 = (typeof temp2!= 'undefined')? this.employeeList.find(s=>s.id == temp2.fkHeadEmpId):'';
     var name = (typeof temp2!= 'undefined')? temp2.name : '';
     return name;
   }
   getSBU(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
-    var temp2 = (typeof temp != 'undefined')? this.sbuList.find(s => s.id == temp.fkSbuId): '';
+    temp = this.employeeList.find((s:any) => s.id == id);
+    var temp2 = (typeof temp != 'undefined')? this.sbuList.find((s:any) => s.id == temp.fkSbuId): '';
     // var temp1 = (typeof temp2!= 'undefined')? this.employeeList.find(s=>s.id == temp2.fkHeadEmpId):'';
     var name = (typeof temp2!= 'undefined')? temp2.name : '';
     return name;
   }
   getPrevAppDue(id: number){
     var temp: any;
-    var temp1 = this.employeeList.find(s => s.id == id);
-    temp = (typeof temp1 != 'undefined')? this.employeePayroll.find(s => s.employeeId == temp1.employeeId):'';
+    var temp1 = this.employeeList.find((s:any) => s.id == id);
+    temp = (typeof temp1 != 'undefined')? this.employeePayroll.find((s:any) => s.employeeId == temp1.employeeId):'';
     var name = (typeof temp != 'undefined')? temp.previousAppraisalDate: '';
     return name;
   }
     
   getCurrentProject(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
+    temp = this.employeeList.find((s:any) => s.id == id);
     var temp1 = (typeof temp != 'undefined')? this.projectList.find(s=>s.id == temp.fkProjectId): '';
     var name = (typeof temp1 != 'undefined')? temp1.name: '';
     return name;
   }
   getRemarks(id: number){
     var temp: any;
-    temp = this.recommDetailsList.find(s => s.id == id);
+    temp = this.recommDetailsList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.comments: '';
     return name;
   }
   getSecRemarks(id: number){
     var temp: any;
-    temp = this.recommDetailsList.find(s => s.id == id);
+    temp = this.recommDetailsList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.managerComments: '';
     return name;
   }
   getSubSbuRemarks(id: number){
     var temp: any;
-    temp = this.recommDetailsList.find(s => s.id == id);
+    temp = this.recommDetailsList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.compentcyComments: '';
     return name;
   }
   getSbuRemarks(id: number){
     var temp: any;
-    temp = this.recommDetailsList.find(s => s.id == id);
+    temp = this.recommDetailsList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.sbuComments: '';
     return name;
   }
   getSBUHead(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
-    var temp2 = (typeof temp != 'undefined')? this.sbuList.find(s => s.id == temp.fkSbuId): '';
+    temp = this.employeeList.find((s:any) => s.id == id);
+    var temp2 = (typeof temp != 'undefined')? this.sbuList.find((s:any) => s.id == temp.fkSbuId): '';
     var temp1 = (typeof temp2!= 'undefined')? this.employeeList.find(s=>s.id == temp2.headEmpId):'';
     var name = (typeof temp1!= 'undefined')? temp1.firstName+ ' '+temp1.lastName : '';
     return name;
@@ -265,78 +266,78 @@ export class GeneralreportComponent implements OnInit {
 
   getTotalRelExp(id: number){
     var temp: any;
-    temp = this.employeeOtherList.find(s => s.fkEmpId == id);
+    temp = this.employeeOtherList.find((s:any) => s.fkEmpId == id);
     var name = (typeof temp != 'undefined')? temp.relativeExp: '';
     return name;
   }
   getQual(id: number){
     var temp: any;
-    temp = this.employeeOtherList.find(s => s.fkEmpId == id);
+    temp = this.employeeOtherList.find((s:any) => s.fkEmpId == id);
     var name = (typeof temp != 'undefined')? temp.qualification: '';
     return name;
   }
   getYOP(id: number){
     var temp: any;
-    temp = this.employeeOtherList.find(s => s.fkEmpId == id);
+    temp = this.employeeOtherList.find((s:any) => s.fkEmpId == id);
     var name = (typeof temp != 'undefined')? temp.yearOfPassing: '';
     return name;
   }
   getSkills(id: number){
     var temp: any;
-    temp = this.employeeOtherList.find(s => s.fkEmpId == id);
+    temp = this.employeeOtherList.find((s:any) => s.fkEmpId == id);
     var name = (typeof temp != 'undefined')? temp.softSkill: '';
     return name;
   }
   getPerfBonus(id: number){
     var temp: any;
-    temp = this.recommDetailsList.find(s => s.fkEmpId == id);
+    temp = this.recommDetailsList.find((s:any) => s.fkEmpId == id);
     var name = (typeof temp != 'undefined')? temp.variableHike: '';
     return name;
   }
   getvarInc(id: number){
     var temp: any;
-    temp = this.recommDetailsList.find(s => s.fkEmpId == id);
+    temp = this.recommDetailsList.find((s:any) => s.fkEmpId == id);
     var name = (typeof temp != 'undefined')? temp.variableIncentive: '';
     return name;
   }
 
   getTotalHike(id: number){
     var temp: any;
-    temp = this.recommDetailsList.find(s => s.fkEmpId == id);
+    temp = this.recommDetailsList.find((s:any) => s.fkEmpId == id);
     var name = (typeof temp != 'undefined')? temp.recommendationHike : '';
     return name;
   }
   getFixedHike(id: number){
     var temp: any;
-    temp = this.recommDetailsList.find(s => s.fkEmpId == id);
+    temp = this.recommDetailsList.find((s:any) => s.fkEmpId == id);
     var name = (typeof temp != 'undefined')? temp.fixedHike: '';
     return name;
   }
   getPromotion(id: number){
     var temp: any;
-    temp = this.recommDetailsList.find(s => s.fkEmpId == id);
-    var temp1 = (typeof temp != 'undefined')?  this.designationList.find(s => s.id == temp.fkRecommendationDesignation):'';
+    temp = this.recommDetailsList.find((s:any) => s.fkEmpId == id);
+    var temp1 = (typeof temp != 'undefined')?  this.designationList.find((s:any) => s.id == temp.fkRecommendationDesignation):'';
     var name = (typeof temp1 != 'undefined')? temp1.name: '';
     return name;
   }
   getCurrentStatus(id: number){
     var temp: any;
-    var temp1 = this.employeeList.find(s => s.id == id);
-    temp = (typeof temp1 != 'undefined')? this.employeePayroll.find(s => s.employeeId == temp1.employeeId):'';
+    var temp1 = this.employeeList.find((s:any) => s.id == id);
+    temp = (typeof temp1 != 'undefined')? this.employeePayroll.find((s:any) => s.employeeId == temp1.employeeId):'';
     var name = (typeof temp != 'undefined')? temp.currentWorkStatus: '';
     return name;
   }
   getBillingRate(id: number){
     var temp: any;
-    var temp1 = this.employeeList.find(s => s.id == id);
-    temp = (typeof temp1 != 'undefined')? this.employeePayroll.find(s => s.employeeId == temp1.employeeId):'';
+    var temp1 = this.employeeList.find((s:any) => s.id == id);
+    temp = (typeof temp1 != 'undefined')? this.employeePayroll.find((s:any) => s.employeeId == temp1.employeeId):'';
     var name = (typeof temp != 'undefined')? temp.billingRate: '';
     return name;
   }
   getAppDue(id: number){
     var temp: any;
-    var temp1 = this.employeeList.find(s => s.id == id);
-    temp = (typeof temp1 != 'undefined')? this.employeePayroll.find(s => s.employeeId == temp1.employeeId):'';
+    var temp1 = this.employeeList.find((s:any) => s.id == id);
+    temp = (typeof temp1 != 'undefined')? this.employeePayroll.find((s:any) => s.employeeId == temp1.employeeId):'';
     var name = (typeof temp != 'undefined')? temp.appraisalDueDate: '';
     return name;
   }
@@ -344,7 +345,7 @@ export class GeneralreportComponent implements OnInit {
     var temp: any;
     var temp2: any;
     temp2 = this.employeeList.find(s=> s.id == id);
-    temp = (typeof temp2 != 'undefined')?this.employeePayroll.find(s => s.employeeId == temp2.employeeId):'';
+    temp = (typeof temp2 != 'undefined')?this.employeePayroll.find((s:any) => s.employeeId == temp2.employeeId):'';
     // let totalCTC=+temp.currentAnnualCtc+ +temp.fixedCtc+ +temp.veriablePay;
     var name = (typeof temp != 'undefined')? temp.fixedCtc: '';
     return name;
@@ -353,7 +354,7 @@ export class GeneralreportComponent implements OnInit {
     var temp: any;
     var temp2: any;
     temp2 = this.employeeList.find(s=> s.id == id);
-    temp = (typeof temp2 != 'undefined')?this.employeePayroll.find(s => s.employeeId == temp2.employeeId):'';
+    temp = (typeof temp2 != 'undefined')?this.employeePayroll.find((s:any) => s.employeeId == temp2.employeeId):'';
     // let totalCTC=+temp.currentAnnualCtc+ +temp.fixedCtc+ +temp.veriablePay;
     var name = (typeof temp != 'undefined')? temp.veriablePay: '';
     return name;
@@ -362,26 +363,26 @@ export class GeneralreportComponent implements OnInit {
     var temp: any;
     var temp2: any;
     temp2 = this.employeeList.find(s=> s.id == id);
-    temp = (typeof temp2 != 'undefined')?this.employeePayroll.find(s => s.employeeId == temp2.employeeId):'';
+    temp = (typeof temp2 != 'undefined')?this.employeePayroll.find((s:any) => s.employeeId == temp2.employeeId):'';
     // let totalCTC=+temp.currentAnnualCtc+ +temp.fixedCtc+ +temp.veriablePay;
     var name = (typeof temp != 'undefined')?  +temp.fixedCtc+ +temp.veriablePay : '';
     return name;
   }
   getAvgScore(id: number){
     var temp: any;
-    temp = this.overallRatingList.find(s => s.fkAssesmentId == id);
+    temp = this.overallRatingList.find((s:any) => s.fkAssesmentId == id);
     var name = (typeof temp != 'undefined')? +temp.rating : '';
     return name;
   }
   getSelfScore(id: number){
     var temp: any;
-    temp = this.overallRatingList.find(s => s.fkAssesmentId == id);
+    temp = this.overallRatingList.find((s:any) => s.fkAssesmentId == id);
     var name = (typeof temp != 'undefined')? +temp.ratingEmp : '';
     return name;
   }
   getSMART(id: number){
     var temp: any;
-    temp = this.overallRatingList.find(s => s.fkAssesmentId == id);
+    temp = this.overallRatingList.find((s:any) => s.fkAssesmentId == id);
     var te = (typeof temp != 'undefined')? +temp.rating : '';
     var name='';
     if(te>4 && te<=5)
@@ -398,14 +399,14 @@ export class GeneralreportComponent implements OnInit {
   }
   getCurrentDesignation(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
-    var temp1 = (typeof temp != 'undefined')? this.designationList.find(s => s.id == temp.fkDesignation): '';
+    temp = this.employeeList.find((s:any) => s.id == id);
+    var temp1 = (typeof temp != 'undefined')? this.designationList.find((s:any) => s.id == temp.fkDesignation): '';
     var name = (typeof temp1 != 'undefined')? temp1.name: '';
     return name;
   }
   getTotalExp(id: number){
     var temp: any;
-    temp = this.employeeOtherList.find(s => s.fkEmpId == id);
+    temp = this.employeeOtherList.find((s:any) => s.fkEmpId == id);
     var name = (typeof temp != 'undefined')? temp.yearExp: '';
     return name;
   }
@@ -434,25 +435,25 @@ export class GeneralreportComponent implements OnInit {
   
   getEmpName(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
+    temp = this.employeeList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.firstName+ ' '+temp.lastName : '';
     return name;
   }
   getEmpId(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
+    temp = this.employeeList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.employeeId: '';
     return name;
   }
   getEmpDoj(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
+    temp = this.employeeList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.joiningDate: '';
     return name;
   }
   getEmpEmail(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
+    temp = this.employeeList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.email: '';
     return name;
   }
@@ -488,7 +489,7 @@ getEmpManager(id: number){
   var temp: any;
   var temp1: any;
   temp = this.employeeList.find(s=>s.id==id);
-  temp1 = (typeof temp != 'undefined')?this.managerList.find(s => s.id == temp.fkManager):'';
+  temp1 = (typeof temp != 'undefined')?this.managerList.find((s:any) => s.id == temp.fkManager):'';
   var name = (typeof temp1 != 'undefined')? temp1.email : '';
   return name;
 }
@@ -496,7 +497,7 @@ getEmpReportingMgr(id: number){
   var temp: any;
   var temp1: any;
   temp = this.employeeList.find(s=>s.id==id);
-  temp1 = (typeof temp != 'undefined')?this.repmanagerList.find(s => s.id == temp.fkReportingManager):'';
+  temp1 = (typeof temp != 'undefined')?this.repmanagerList.find((s:any) => s.id == temp.fkReportingManager):'';
   var name = (typeof temp1 != 'undefined')? temp1.email : '';
   return name;
 }
@@ -504,7 +505,7 @@ getEmpReportingMgr(id: number){
 //   var temp: any;
 //   var temp1: any;
 //   temp = this.employeeList.find(s=>s.id==id);
-//   temp1 = this.competencyList.find(s => s.id == temp.fkCompetency);
+//   temp1 = this.competencyList.find((s:any) => s.id == temp.fkCompetency);
 //   var name = (typeof temp1 != 'undefined')? temp1.email : '';
 //   return name;
 // }
@@ -512,14 +513,14 @@ getEmpReportingMgr(id: number){
 //   var temp: any;
 //   var temp1: any;
 //   temp = this.employeeList.find(s=>s.id==id);
-//   temp1 = this.sbuList.find(s => s.id == temp.fkSbuId);
+//   temp1 = this.sbuList.find((s:any) => s.id == temp.fkSbuId);
 //   var name = (typeof temp1 != 'undefined')? temp1.email : '';
 //   return name;
 // }
 
   getCalName(id: number){
     var temp: any;
-    temp = this.calendarList.find(s => s.id == id);
+    temp = this.calendarList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.fiscalYear : '';
     return name;
   }
@@ -532,20 +533,20 @@ getEmpReportingMgr(id: number){
     // for(let des of this.assessList) {
     //   this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_API,des.fkEmpId).then((datam:any) => {
     //   this.empItem = datam;
-    //   this.assessList.find(s => s.fkEmpId === this.empItem.id)['fkEmpId'] = this.empItem.firstName;
+    //   this.assessList.find((s:any) => s.fkEmpId === this.empItem.id)['fkEmpId'] = this.empItem.firstName;
     //  });  
     // }
 
     // for(let des of this.assessList) {
     //   this.httpService.getById(APIURLS.BR_MASTER_CALENDAR_INSERT_API,des.fkCalendarId).then((datam:any) => {
     //   this.calendarItem = datam;
-    //   this.assessList.find(s => s.fkCalendarId === this.calendarItem.id)['fkCalendarId'] = this.calendarItem.fiscalYear;
+    //   this.assessList.find((s:any) => s.fkCalendarId === this.calendarItem.id)['fkCalendarId'] = this.calendarItem.fiscalYear;
     //  });  
     // }
 
     this.reInitDatatable();
   }
-}).catch(error => {
+}).catch((error)=> {
   this.isLoading = false;
   this.assessList = [];
 });

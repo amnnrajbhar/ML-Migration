@@ -22,10 +22,10 @@ import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe, DecimalPipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 declare var ActiveXObject: (type: string) => void;
 
@@ -37,11 +37,11 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./Attendance.component.css']
 })
 export class AttendanceComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -57,9 +57,9 @@ export class AttendanceComponent implements OnInit {
   locListCon1 = [];
   genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -68,7 +68,7 @@ export class AttendanceComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  path: string;
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   userMasterItem: any = {};
@@ -88,7 +88,9 @@ export class AttendanceComponent implements OnInit {
 
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -114,7 +116,7 @@ export class AttendanceComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -122,28 +124,29 @@ export class AttendanceComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
@@ -175,14 +178,14 @@ export class AttendanceComponent implements OnInit {
     this.httpService.LApost(APIURLS.GET_HOLIDAYS_LIST_BASED_ON_EMPLOYEES, filterModel).then((data: any) => {
       if (data.length > 0) {
         this.holidaysList = data;
-        this.holidaysList = this.holidaysList.sort((a, b) => {
+        this.holidaysList = this.holidaysList.sort((a:any, b:any) => {
           if (a.date > b.date) return 1;
           if (a.date < b.date) return -1;
           return 0;
 
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.holidaysList = [];
     });
@@ -267,7 +270,7 @@ export class AttendanceComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId, name: item.fullName };
             })
@@ -277,7 +280,7 @@ export class AttendanceComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -288,7 +291,7 @@ export class AttendanceComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -314,7 +317,7 @@ export class AttendanceComponent implements OnInit {
   Lopdays: any = 0;
   LeaveDays: any = 0;
 
-  empName: string;
+  empName: string
   GetAttendance() {
     this.errMsg = "";
     this.TotalDays = 0;
@@ -331,7 +334,7 @@ export class AttendanceComponent implements OnInit {
       }
       else {
         srchstr.pernr = this.selectedEmployee[0].id;
-        this.empName = this.EmployeeList.find(x => x.employeeId == this.selectedEmployee[0].id).fullName;
+        this.empName = this.EmployeeList.find((x:any)  => x.employeeId == this.selectedEmployee[0].id).fullName;
       }
     }
     else {
@@ -352,8 +355,9 @@ export class AttendanceComponent implements OnInit {
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_ATTENDANCE, srchstr).then((data: any) => {
       if (data) {
         this.AttendanceList = data;
-        this.AttendanceList.forEach(element => {
-          let temp = this.holidaysList.find(x => this.getDateFormate(x.date) == this.getDateFormate(element.date1));
+        this.AttendanceList.forEach((element:any)=> {
+
+          let temp = this.holidaysList.find((x:any)  => this.getDateFormate(x.date) == this.getDateFormate(element.date1));
           if (element.leaveApprvStatus != null && element.leaveApprvStatus == 'Approved') {
             element.note = element.leaveReason
           }
@@ -379,7 +383,7 @@ export class AttendanceComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.AttendanceList = [];
     });
@@ -401,7 +405,7 @@ export class AttendanceComponent implements OnInit {
       }
       else {
         srchstr.pernr = this.selectedEmployee[0].id;
-        this.empName = this.EmployeeList.find(x => x.employeeId == this.selectedEmployee[0].id).fullName;
+        this.empName = this.EmployeeList.find((x:any)  => x.employeeId == this.selectedEmployee[0].id).fullName;
       }
     }
     else {
@@ -432,14 +436,14 @@ export class AttendanceComponent implements OnInit {
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
 
 
   ApproversList: any[] = [];
-  getApproversList(id) {
+  getApproversList(id:any) {
     this.errMsg = "";
     this.httpService.LAgetByParam(APIURLS.GET_PERMISSION_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
       if (data) {
@@ -450,7 +454,7 @@ export class AttendanceComponent implements OnInit {
           this.ApproversList = data;
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -469,7 +473,7 @@ export class AttendanceComponent implements OnInit {
       }
       else {
         model.userId = this.selectedEmployee[0].id;
-        this.empName = this.EmployeeList.find(x => x.employeeId == this.selectedEmployee[0].id).fullName;
+        this.empName = this.EmployeeList.find((x:any)  => x.employeeId == this.selectedEmployee[0].id).fullName;
       }
     }
     else {
@@ -498,7 +502,7 @@ export class AttendanceComponent implements OnInit {
           buttons: [true, true]
         })
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.holidaysList = [];
     });
@@ -509,8 +513,8 @@ export class AttendanceComponent implements OnInit {
     this.httpService.LAgetByParam(APIURLS.GET_EMP_OF_REPORTING, this.currentUser.employeeId).then((data: any) => {
       if (data.length > 0) {
         this.EmployeeList = data;
-        this.empListCon = data.map((i) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
-        this.EmployeeList.sort((a, b) => {
+        this.empListCon = data.map((i:any) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
+        this.EmployeeList.sort((a:any, b:any) => {
           if (a.fullName > b.fullName) return 1;
           if (a.fullName < b.fullName) return -1;
           return 0;
@@ -520,7 +524,7 @@ export class AttendanceComponent implements OnInit {
       else {
         this.EmployeeList = [];
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList = [];
     });
@@ -583,7 +587,8 @@ export class AttendanceComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -600,16 +605,16 @@ getHeader(): { headers: HttpHeaders } {
     this.errMsg = "";
     this.get("RoleMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.Rolelist = data.filter(x => x.isActive);
+        this.Rolelist = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Rolelist = [];
     });
   }
 
-  getRole(id) {
-    let temp = this.Rolelist.find(x => x.id == id);
+  getRole(id:any) {
+    let temp = this.Rolelist.find((x:any)  => x.id == id);
     return temp ? temp.role_Stxt : '';
   }
 
@@ -623,7 +628,7 @@ getHeader(): { headers: HttpHeaders } {
     let connection = this.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, val);
     connection.then((data: any) => {
       if (data) {
-        let result = data.filter(x => { return x.employeeId != null });
+        let result = data.filter((x:any)  => { return x.employeeId != null });
         this.EmployeeNo = result[0].employeeId;
         this.Department = result[0].department;
         this.Designation = result[0].designation;
@@ -631,13 +636,13 @@ getHeader(): { headers: HttpHeaders } {
         this.empName = this.FullName;
         this.RoleId = result[0].roleId;
       }
-    }).catch(error => {
+    }).catch((error)=> {
     });
   }
 
 
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -669,14 +674,14 @@ getHeader(): { headers: HttpHeaders } {
   }
 
   Print() {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED";
     var ReportName = "ATTENDANCE CARD";
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -689,14 +694,14 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Attendance card',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -714,7 +719,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -769,7 +774,7 @@ getHeader(): { headers: HttpHeaders } {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
   checkedRequestList: any[] = [];
   checkedlist: any[] = [];
@@ -803,7 +808,7 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.userId = this.EmployeeNo;
     }
     else {
-      filterModel.userId = this.selectedEmployee.map(x => x.employeeId).join();;
+      filterModel.userId = this.selectedEmployee.map((x:any)  => x.employeeId).join();;
     }
     filterModel.requestedBy = this.currentUser.employeeId;
     filterModel.date = this.getDateFormate1(this.selecteddate);
@@ -823,7 +828,7 @@ getHeader(): { headers: HttpHeaders } {
       else {
         toastr.error(data.message);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error submitting request ..';
     });
 

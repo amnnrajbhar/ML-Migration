@@ -22,10 +22,10 @@ export class AppointmentService{
     let list: any[] = [];
     return this.getData(APIURLS.APPOINTMENT_GET_ADDRESS_TYPES).then((data: any) => {
       if (data.length > 0) {
-        list = data.sort((a, b) => { if (a.addressType > b.addressType) return 1; if (a.addressType < b.addressType) return -1; return 0; });
+        list = data.sort((a:any, b:any) => { if (a.addressType > b.addressType) return 1; if (a.addressType < b.addressType) return -1; return 0; });
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
   }
@@ -37,7 +37,7 @@ export class AppointmentService{
         list = data;
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -47,10 +47,10 @@ export class AppointmentService{
     let list: [] = [];
     return this.getData(APIURLS.APPOINTMENT_GET_LANGUAGES).then((data: any) => {
       if (data.length > 0) {
-        list = data.sort((a, b) => { if (a.language > b.language) return 1; if (a.language < b.language) return -1; return 0; });
+        list = data.sort((a:any, b:any) => { if (a.language > b.language) return 1; if (a.language < b.language) return -1; return 0; });
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -59,10 +59,10 @@ export class AppointmentService{
     let list: [] = [];
     return this.getData(APIURLS.APPOINTMENT_GET_STATES).then((data: any) => {
       if (data.length > 0) {
-        list = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        list = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -71,10 +71,10 @@ export class AppointmentService{
     let list: [] = [];
     return this.getData(APIURLS.APPOINTMENT_GET_COUNTRIES).then((data: any) => {
       if (data.length > 0) {
-        list = data.sort((a, b) => { if (a.landx > b.landx) return 1; if (a.landx < b.landx) return -1; return 0; });
+        list = data.sort((a:any, b:any) => { if (a.landx > b.landx) return 1; if (a.landx < b.landx) return -1; return 0; });
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -86,7 +86,7 @@ export class AppointmentService{
         list = data;
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -95,10 +95,10 @@ export class AppointmentService{
     let list: [] = [];
     return this.getData(APIURLS.APPOINTMENT_GET_COURSES).then((data: any) => {
       if (data.length > 0) {
-        list = data.sort((a, b) => { if (a.educationCourse > b.educationCourse) return 1; if (a.educationCourse < b.educationCourse) return -1; return 0; });
+        list = data.sort((a:any, b:any) => { if (a.educationCourse > b.educationCourse) return 1; if (a.educationCourse < b.educationCourse) return -1; return 0; });
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -111,7 +111,7 @@ export class AppointmentService{
         list = data;
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -121,10 +121,10 @@ export class AppointmentService{
     let list: [] = [];
     return this.getData(APIURLS.APPOINTMENT_GET_NATIONALITY).then((data: any) => {
       if (data.length > 0) {
-        list = data.sort((a, b) => { if (a.nationality > b.nationality) return 1; if (a.nationality < b.nationality) return -1; return 0; });
+        list = data.sort((a:any, b:any) => { if (a.nationality > b.nationality) return 1; if (a.nationality < b.nationality) return -1; return 0; });
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -133,10 +133,10 @@ export class AppointmentService{
     let list: [] = [];
     return this.getData(APIURLS.APPOINTMENT_GET_INDUSTRIES).then((data: any) => {
       if (data.length > 0) {
-        list = data.sort((a, b) => { if (a.indDesc > b.indDesc) return 1; if (a.indDesc < b.indDesc) return -1; return 0; });
+        list = data.sort((a:any, b:any) => { if (a.indDesc > b.indDesc) return 1; if (a.indDesc < b.indDesc) return -1; return 0; });
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -149,7 +149,7 @@ export class AppointmentService{
         list = data;
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -161,7 +161,7 @@ export class AppointmentService{
         list = data;
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -174,7 +174,7 @@ export class AppointmentService{
         list=data;
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -219,7 +219,7 @@ export class AppointmentService{
     return promise;
   }
 
-  postAttachmentFiles(apiKey: string, file): any {
+  postAttachmentFiles(apiKey: string,file): any {
 
     const promise = new Promise((resolve, reject) => {
         this.http.post(APIURLS.BR_BASE_HR_URL + apiKey , file)

@@ -10,15 +10,15 @@ import { RoleMaster } from "../Models/roleMaster.model";
     providedIn: 'root'
 })
 export class EmployeeMasterService {
-    selectedLocation: string = null;
-    selectedDepartment: string = null;
-    selectedEmployeeID: string = null;
-    selectedStaffCategory: string = null;
+    selectedLocation: string = ' ';
+    selectedDepartment: string = ' ';
+    selectedEmployeeID: string = ' ';
+    selectedStaffCategory: string = ' ';
 
     pageSize: any = 10;
 	pageNumber: any;
-	totalCount: number;
-	totalPages: number;
+	totalCount!: number;
+	totalPages!: number;
     
     profiles: ProfileMaster[] = [];
     designations: DesignationMaster[] = [];
@@ -30,38 +30,38 @@ export class EmployeeMasterService {
     getProfiles() {
         this.httpService.get(APIURLS.BR_MASTER_PROFILE_API).then((data: ProfileMaster[]) => {
             if (data.length > 0) {
-                this.profiles = data.filter(x => x.isActive == true).sort((a, b) => { if (a.name > b.name) { return 1; } else if (a.name < b.name) { return -1; } return 0; });
+                this.profiles = data.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => { if (a.name > b.name) { return 1; } else if (a.name < b.name) { return -1; } return 0; });
             }
-        }).catch(error => {
-            console.log(error);
+        }).catch((error)=> {
+            //console.log(error);
         });
     }
 
     getDesignations() {
         this.httpService.get(APIURLS.BR_DESIGNATION_API).then((data: DesignationMaster[]) => {
             if (data.length > 0) {
-                this.designations = data.filter(x => x.isActive == true).sort((a, b) => { if (a.name > b.name) { return 1 } else if (a.name < b.name) { return -1 } return 0; });
+                this.designations = data.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => { if (a.name > b.name) { return 1 } else if (a.name < b.name) { return -1 } return 0; });
             }
-        }).catch(error => {
-            console.log(error);
+        }).catch((error)=> {
+            //console.log(error);
         });
     }
 
     getCompetency() {
         this.httpService.get(APIURLS.BR_COMPETENCY).then((data: CompetencyMaster[]) => {
-            this.competencies = data.filter(x => x.isActive == true).sort((a, b) => { if (a.name > b.name) { return 1; } else if (a.name < b.name) { return -1; } return 0 });
-        }).catch(error => {
-            console.log(error);
+            this.competencies = data.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => { if (a.name > b.name) { return 1; } else if (a.name < b.name) { return -1; } return 0 });
+        }).catch((error)=> {
+            //console.log(error);
         });
     }
 
     getRoles() {
         this.httpService.get(APIURLS.BR_MASTER_ROLE_API).then((data: RoleMaster[]) => {
             if (data.length > 0) {
-                this.roles = data.filter(x => x.isActive == true).sort((a, b) => { if (a.role > b.role) { return 1; } else if (a.role < b.role) { return -1; } return 0; });
+                this.roles = data.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => { if (a.role > b.role) { return 1; } else if (a.role < b.role) { return -1; } return 0; });
             }
-        }).catch(error => {
-            console.log(error);
+        }).catch((error)=> {
+            //console.log(error);
         });
     }
 

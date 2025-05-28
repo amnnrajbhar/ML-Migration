@@ -16,7 +16,7 @@ import { DataStorageService } from '../../Services/data-storage.service';
   styleUrls: ['./appraisal-pendingtasks.component.css']
 })
 export class AppraisalPendingtasksComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   //myTasks: AppraisalPendingTask[] = [];
   myTasks: any = {};
@@ -29,7 +29,7 @@ export class AppraisalPendingtasksComponent implements OnInit {
   selectedStatus: any = "";
   selectedName: any = "";
   taskId: number = 0;
-  comments: string;
+  comments: string
   types = [{ type: "Offer Approval" }, { type: "Appointment Verification" }, { type: "Appointment Approval" }];
   plantList: any[] = [];
   payGroupList: any[] = [];
@@ -61,7 +61,8 @@ export class AppraisalPendingtasksComponent implements OnInit {
     this.filterModel.empCategoryId = "";
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.LoadDropDowns();
       
       // get filter model from the in memory data store
@@ -84,9 +85,9 @@ export class AppraisalPendingtasksComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_PLANT_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.filter(x => x.isActive).sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.plantList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -94,9 +95,9 @@ export class AppraisalPendingtasksComponent implements OnInit {
   getPayGroupList() {
     this.httpService.HRget(APIURLS.OFFER_PAYGROUP_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });
+        this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.payGroupList = [];
     });
   }
@@ -104,9 +105,9 @@ export class AppraisalPendingtasksComponent implements OnInit {
   getEmployeeCategoryList() {
     this.httpService.HRget(APIURLS.OFFER_EMPLOYEE_CATEGORY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.empCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });
+        this.empCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.empCategoryList = [];
     });
   }
@@ -115,9 +116,9 @@ export class AppraisalPendingtasksComponent implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -137,8 +138,8 @@ export class AppraisalPendingtasksComponent implements OnInit {
           this.myTasks = data;
     
           for (var item of this.myTasks.list) {
-            if(this.statusList.find(x => x.type == item.status) != null)
-            item.statusColor = this.statusList.find(x => x.type == item.status).color;
+            if(this.statusList.find((x:any)  => x.type == item.status) != null)
+            item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
           }
           // store the filter model
           this.dataStore.SetData("AppraisalPendingList", this.filterModel);
@@ -146,7 +147,7 @@ export class AppraisalPendingtasksComponent implements OnInit {
         }
         //this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.myTasks = [];
       });
@@ -158,7 +159,7 @@ export class AppraisalPendingtasksComponent implements OnInit {
   }
 
   // approveBulk() {
-  //   var selectedList = this.myTasks.filter(x => x.selected);
+  //   var selectedList = this.myTasks.filter((x:any)  => x.selected);
   //   if (selectedList.length <= 0) {
   //     swal("Please select at least one task to approve.");
   //     return;
@@ -176,7 +177,7 @@ export class AppraisalPendingtasksComponent implements OnInit {
   //           this.errorCount++;
   //         }
   //       }
-  //     }).catch(error => {
+  //     }).catch((error)=> {
   //       this.errorCount++;
   //     });
   //   }
@@ -196,7 +197,7 @@ export class AppraisalPendingtasksComponent implements OnInit {
     this.router.navigate([route]);
   }
 
-  approve(id) {
+  approve(id:any) {
     this.taskId = id;
     if (confirm("Are you sure you want to approve this?")) {
       var request = {} as InitialAppraisalCompleteTaskRequest;
@@ -213,13 +214,13 @@ export class AppraisalPendingtasksComponent implements OnInit {
             this.LoadMyPendingTasks();
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         swal("Error occured.");
       });
     }
   }
 
-  reject(id) {
+  reject(id:any) {
     this.taskId = id;
     this.comments = "";
   }
@@ -243,7 +244,7 @@ export class AppraisalPendingtasksComponent implements OnInit {
           this.LoadMyPendingTasks();
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       swal(error);
     });
   }

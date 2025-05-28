@@ -9,21 +9,21 @@ export interface FNFDetails{
     netAmt:number;
     submittedDate: Date;
 	submittedToId: number;
-	submittedToName: string;
+	submittedToName: string
 	receiptDate: Date;
-	modeOfPayment: string;
+	modeOfPayment: string
 	bankName:string;	
 	chequeDate: Date;
 	chequeNo:string;	
 	amount: number;
-	modeOfIssue: string;
+	modeOfIssue: string
 	issueDate: Date;
-	issuingPersonName: string;
-	issuingPersonMobile: string;
-	issuingPersonEmail: string;
-	personalEmailId: string;
-	carrierName: string;
-	docketno: string;
+	issuingPersonName: string
+	issuingPersonMobile: string
+	issuingPersonEmail: string
+	personalEmailId: string
+	carrierName: string
+	docketno: string
 	dispatchDate: Date;
 	createdById: number;
 	createdDate: Date;
@@ -33,6 +33,6 @@ export interface FNFDetails{
 	ml: number;
 	el: number;
 	waivedOffDays: number;
-	reason: string;
+	reason: string
 	fnfSettlement: FNFSettlement[];
     }

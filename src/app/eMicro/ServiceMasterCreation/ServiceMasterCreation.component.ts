@@ -35,14 +35,14 @@ import { stringify } from 'querystring';
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { ServiceMaster } from './ServiceMasterCreation.model';
 import { HttpClient } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
-import { saveAs } from 'file-saver';
+// import htmlToPdfmake from 'html-to-pdfmake';
+//import { saveAs } from 'file-saver';
 
 declare var require: any;
 
@@ -52,18 +52,18 @@ declare var require: any;
   styleUrls: ['./ServiceMasterCreation.component.css']
 })
 export class ServiceMasterCreationComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  // @ViewChild(NgForm  , { static: false })dataForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })FGNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })LCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })OSENGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PPCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  // @ViewChild(NgForm  , { static: false })dataForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })FGNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })LCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })OSENGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PPCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMForm!: NgForm;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();
@@ -85,7 +85,7 @@ export class ServiceMasterCreationComponent implements OnInit {
   isEdit: boolean = false;
 
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   selectedBaseLocation: any = [];
@@ -94,17 +94,17 @@ export class ServiceMasterCreationComponent implements OnInit {
   //servicemastermodel = {} as ItemCodeExtension;
   // ItemCodeRequestModel = {} as ItemCodeRequest;
   // ItemCodeRequestModelList: ItemCodeRequest[] = [];
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   servicemastermodel = {} as ServiceMaster
   servicemasterliist: ServiceMaster[] = [];
   //  ItemCodeExtensionlist: ItemCodeExtension[] = [];
-  materialtype: string;
-  comments: string;
-  filterMaterialCode: string = null;
-  filterstatus: string = null;
-  filterlocation: string = null;
-  filterrequest: string = null;
+  materialtype!: string
+  comments: string
+  filterMaterialCode: string = ' ';
+  filterstatus: string = ' ';
+  filterlocation: string = ' ';
+  filterrequest: string = ' ';
   today = new Date();
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
@@ -112,8 +112,9 @@ export class ServiceMasterCreationComponent implements OnInit {
 
   ServiceMastersearchlist: ServiceMaster[] = [];
   ServiceMasterFilter: ServiceMaster[] = [];
-  emailid: string;
-  requestdate: Date;
+  emailid!: string
+
+  requestdate!: Date;
   Approver1: boolean = false;
   Approverid1: string = "";
   Approverid2: string = "";
@@ -121,18 +122,20 @@ export class ServiceMasterCreationComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
-  loc_code: string;
+  userid: string
+  loc_code: string
 
   storeData: any;
   jsonData: any;
-  fileUploaded: File;
+  fileUploaded!: File;
   worksheet: any;
 
   // ItemCodeExtensionModeldata = {} as ItemCodeExtension;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router
-    , private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    , private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
     this.tableWidget = exampleId.DataTable({
@@ -150,7 +153,8 @@ export class ServiceMasterCreationComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //  this.baseLocation = this.currentUser.baselocation;
     this.emailid = this.currentUser.email;
     this.filterstatus = 'Pending';
@@ -200,11 +204,11 @@ export class ServiceMasterCreationComponent implements OnInit {
 
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
-  getloc(loc) {
+  getloc(loc:any) {
     let loccode = loc.keyValue.split('~');
     return loccode ? loccode[0] : '';
   }
@@ -249,23 +253,25 @@ export class ServiceMasterCreationComponent implements OnInit {
   clearFilter() {
     this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     this.to_date = this.today;
-    this.filterlocation = null;
-    this.filterstatus = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filterrequest = null;
 
   }
 
 
-  location(id) {
-    let loc = this.locationList.find(x => x.id == id);
+  location(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code : "";
   }
 
   getAllEntries() {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -291,7 +297,7 @@ export class ServiceMasterCreationComponent implements OnInit {
       this.to_date = new Date(ed.getFullYear(), ed.getMonth(), +("00" + ed.getDate()).slice(-2), 23, 59);
 
     }
-    filterModel.location = this.filterlocation == null ? '' : this.locationList.find(x => x.id == this.filterlocation).code;
+    filterModel.location = this.filterlocation == null ? '' : this.locationList.find((x:any)  => x.id == this.filterlocation).code;
     filterModel.requestNo = this.filterrequest;
     filterModel.status = this.filterstatus == 'Pending' ? 'Created,InProcess,Submitted,ReSubmitted,Reverted,Reverted to initiator' : this.filterstatus;
     filterModel.fromDate = this.getFormatedDateTime(this.from_date);
@@ -299,7 +305,7 @@ export class ServiceMasterCreationComponent implements OnInit {
     this.httpService.post(APIURLS.BR_SERVICE_MASTER_FILTER_API, filterModel).then((data: any) => {
       if (data) {
         if (this.filterstatus == 'Pending') {
-          this.ServiceMasterFilter = data.filter(x => x.pendingApprover == this.currentUser.fullName || x.requestedBy == this.currentUser.employeeId);
+          this.ServiceMasterFilter = data.filter((x:any)  => x.pendingApprover == this.currentUser.fullName || x.requestedBy == this.currentUser.employeeId);
           this.ServiceMasterFilter.reverse();
         }
         else {
@@ -309,8 +315,8 @@ export class ServiceMasterCreationComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.ServiceMasterFilter = [];
     });
@@ -320,8 +326,8 @@ export class ServiceMasterCreationComponent implements OnInit {
   getSearchResult() {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -360,8 +366,8 @@ export class ServiceMasterCreationComponent implements OnInit {
       this.continue = true;
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.ServiceMastersearchlist = [];
     });
@@ -373,13 +379,13 @@ export class ServiceMasterCreationComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
-        let code = this.locationList.find(x => x.id == this.currentUser.baselocation);
+        this.locationList = data.filter((x:any)  => x.isActive);
+        let code = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
         this.loc_code = code.code;
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.locationList = [];
     });
@@ -394,8 +400,8 @@ export class ServiceMasterCreationComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.servicegrouplist = [];
     });
@@ -409,8 +415,8 @@ export class ServiceMasterCreationComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.serviceCategorylist = [];
     });
@@ -424,8 +430,8 @@ export class ServiceMasterCreationComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.purchasegrouplist = [];
     });
@@ -435,12 +441,12 @@ export class ServiceMasterCreationComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_UOM_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        this.uomMasterList = data.filter(x => x.isActive);
+        this.uomMasterList = data.filter((x:any)  => x.isActive);
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.uomMasterList = [];
     });
@@ -454,13 +460,13 @@ export class ServiceMasterCreationComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.ValuationClasslist = [];
     });
   }
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngAfterViewInit() {
     this.initDatatable();
   }
@@ -483,18 +489,18 @@ export class ServiceMasterCreationComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.transactionslist = [];
     });
 
   }
   Approverslist: WorkFlowApprovers[] = [];
-  Aprlpriority: number;
+  Aprlpriority!: number;
 
   view: boolean = false;
-  getApproversList(value) {
+  getApproversList(value:any) {
 
     this.Approver1 = false;
     this.Approver2 = false;
@@ -502,8 +508,8 @@ export class ServiceMasterCreationComponent implements OnInit {
     this.Review = false;
     this.Closure = false;
     this.servicemastermodel = Object.assign({}, value);
-    //var loc = this.locationList.find(x => x.code == this.servicemastermodel.plantCode);
-    //var mat = this.materialList.find(x => x.id == +this.ItemCodeRequestModel.materialTypeId);
+    //var loc = this.locationList.find((x:any)  => x.code == this.servicemastermodel.plantCode);
+    //var mat = this.materialList.find((x:any)  => x.id == +this.ItemCodeRequestModel.materialTypeId);
     // var matgrp=this.materialgroupList.find(x=>x.materialGroupId==this.ItemCodeRequestModel.materialGroupId);
 
     var keyvalue = this.servicemastermodel.plantCode + ',' + 5;
@@ -512,11 +518,11 @@ export class ServiceMasterCreationComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.Approverslist = data;
-        this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+        this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
         let empid = this.currentUser.employeeId
         let empName = this.currentUser.fullName;
 
-        let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+        let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -526,7 +532,7 @@ export class ServiceMasterCreationComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr1.priority;
         }
-        let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+        let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr2 != null || Appr2 != undefined) {
@@ -536,7 +542,7 @@ export class ServiceMasterCreationComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr2.priority;
         }
-        let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+        let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr3 != null || Appr3 != undefined) {
@@ -557,7 +563,7 @@ export class ServiceMasterCreationComponent implements OnInit {
           }
         }
         this.transactionslist.forEach((ad) => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority &&
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority &&
             (ad.doneBy == x.approverId || ad.doneBy == x.parllelApprover1 || ad.doneBy == x.parllelApprover2));
           if (temp != undefined) {
             if (ad.transactionType == 1) {
@@ -571,7 +577,7 @@ export class ServiceMasterCreationComponent implements OnInit {
                 ad.status = 'Approved'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 0) {
@@ -591,7 +597,7 @@ export class ServiceMasterCreationComponent implements OnInit {
 
         });
         this.Approverslist.forEach((ad) => {
-          let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority &&
+          let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority &&
             (x.doneBy == ad.approverId || x.doneBy == ad.parllelApprover1 || x.doneBy == ad.parllelApprover2));
           if (temp1 == undefined) {
             let trans = {} as Transactions;
@@ -604,12 +610,12 @@ export class ServiceMasterCreationComponent implements OnInit {
           }
 
         });
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.doneOn > b.doneOn) return 1;
           if (a.doneOn < b.doneOn) return -1;
           if (a.approvalPriority > b.approvalPriority) return 1;
@@ -623,8 +629,8 @@ export class ServiceMasterCreationComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -683,15 +689,15 @@ export class ServiceMasterCreationComponent implements OnInit {
       .catch(err => this.errMsg1 = err);
   }
 
-  removefile(name) {
+  removefile(name:any) {
     const index = this.fileslist.indexOf(name);
     this.fileslist.splice(index, 1);
   }
-  empId: string;
-  valuationClass: string;
-  Uom: string;
-  purchaseGroup: string;
-  locationName: string;
+  empId: string
+  valuationClass: string
+  Uom: string
+  purchaseGroup: string
+  locationName: string
   attachments: any[] = [];
   onUserActions(isedit: boolean, servicemaster: ServiceMaster, isprint: boolean, value: string) {
     this.isEdit = isedit;
@@ -744,13 +750,13 @@ export class ServiceMasterCreationComponent implements OnInit {
     }
 
     if (isprint) {
-      let vc = this.ValuationClasslist.find(x => x.valuationId == this.servicemastermodel.valuationClass);
+      let vc = this.ValuationClasslist.find((x:any)  => x.valuationId == this.servicemastermodel.valuationClass);
       this.valuationClass = vc.valuationId + '-' + vc.valuationDesc;
-      let um = this.uomMasterList.find(x => x.uom == this.servicemastermodel.uom);
+      let um = this.uomMasterList.find((x:any)  => x.uom == this.servicemastermodel.uom);
       this.Uom = um.uom + '-' + um.description;
-      let pg = this.purchasegrouplist.find(x => x.purchaseGroupId == this.servicemastermodel.purchaseGroup);
+      let pg = this.purchasegrouplist.find((x:any)  => x.purchaseGroupId == this.servicemastermodel.purchaseGroup);
       this.purchaseGroup = pg.purchaseGroupId + '-' + pg.purchaseGroupDesc;
-      let ln = this.locationList.find(x => x.code == this.servicemastermodel.plantCode)
+      let ln = this.locationList.find((x:any)  => x.code == this.servicemastermodel.plantCode)
       this.locationName = ln.code + '-' + ln.name;
       jQuery("#printModal").modal('show');
     }
@@ -764,7 +770,7 @@ export class ServiceMasterCreationComponent implements OnInit {
   isValid: boolean = false;
   validatedForm: boolean = true;
 
-  onSaveEntry(status) {
+  onSaveEntry(status:any) {
     this.errMsg = "";
     let connection: any;
     if (this.Approverslist.length == 0) {
@@ -802,7 +808,7 @@ export class ServiceMasterCreationComponent implements OnInit {
 
         }
         this.servicemastermodel.lastApprover = this.servicemastermodel.appSatus == "Reverted to initiator" ? this.servicemastermodel.lastApprover : "No";
-        this.servicemastermodel.pendingApprover = status == "Submit" ? this.Approverslist.find(x => x.priority == 1).approverId : this.currentUser.employeeId;
+        this.servicemastermodel.pendingApprover = status == "Submit" ? this.Approverslist.find((x:any)  => x.priority == 1).approverId : this.currentUser.employeeId;
         this.servicemastermodel.appSatus = status == "Submit" ? "Submitted" : "Created";
 
         connection = this.httpService.post(APIURLS.BR_SERVICE_MASTER_POST_API, this.servicemastermodel);
@@ -823,8 +829,8 @@ export class ServiceMasterCreationComponent implements OnInit {
           this.getAllEntries();
           this.reset();
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoadingPop = false;
         this.errMsgPop = 'Error Saving Request: ' + error;
       });
@@ -855,7 +861,7 @@ export class ServiceMasterCreationComponent implements OnInit {
     }
     this.servicemastermodel.modifiedBy = this.currentUser.employeeId;
 
-    this.servicemastermodel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+    this.servicemastermodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
     this.servicemastermodel.approvers = this.Approverslist;
 
     connection = this.httpService.put(APIURLS.BR_SERVICE_MASTER_CREATESAVEDENTRY, this.servicemastermodel.id, this.servicemastermodel);
@@ -872,29 +878,29 @@ export class ServiceMasterCreationComponent implements OnInit {
         this.getAllEntries();
         this.reset();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Submitting Request ' + this.servicemastermodel.requestNo + ": " + error;
     });
   }
   Role: any;
-  onreview(status) {
+  onreview(status:any) {
     this.errMsg = "";
     let connection: any;
     let uid = this.currentUser.employeeId;
     if (status == "Rejected") {
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
       this.servicemastermodel.pendingApprover = '';
-      //  this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+      //  this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     }
     else {
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
       //  this.Role=user.role;
       this.servicemastermodel.pendingApprover = temp.doneBy;
-      //  this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+      //  this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     }
 
     this.servicemastermodel.lastApprover = this.currentUser.fullName;
@@ -923,32 +929,32 @@ export class ServiceMasterCreationComponent implements OnInit {
         this.Updatetransactions(this.servicemastermodel, id)
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = status == "Rejected" ? "Error Rejecting Request " + this.servicemastermodel.requestNo + ": " + error : "Error Reviewing Request " + this.servicemastermodel.requestNo + ": " + error;
     });
   }
 
-  onRevertRequest(status) {
+ onRevertRequest(status:any) {
     this.errMsg = "";
     let connection: any;
     if (status == "ReverttoInitiator") {
       let uid = this.currentUser.employeeId;
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
 
       this.servicemastermodel.pendingApprover = temp.doneBy;
       this.servicemastermodel.appSatus = "Reverted to initiator";
-      // this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+      // this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     }
     else {
       let uid = this.servicemastermodel.modifiedBy;
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
 
       this.servicemastermodel.pendingApprover = temp.doneBy;
-      // this.priority = this.Approverslist.find(x => x.priority == user.priority + 1).priority;
+      // this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).priority;
       this.servicemastermodel.appSatus = "Reverted";
     }
 
@@ -971,8 +977,8 @@ export class ServiceMasterCreationComponent implements OnInit {
         this.sendMail(status, this.servicemastermodel);
         this.Updatetransactions(this.servicemastermodel, id);
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Reverting Request " + this.servicemastermodel.requestNo + ": " + error;
     });
@@ -983,12 +989,12 @@ export class ServiceMasterCreationComponent implements OnInit {
     let connection: any;
     let uid = this.currentUser.employeeId;
 
-    let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+    let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
       || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
 
-    // let temp = this.Approverslist.find(x => x.priority == user.priority + 1);
+    // let temp = this.Approverslist.find((x:any)  => x.priority == user.priority + 1);
     if (temp != null || temp != undefined) {
-      let appr = this.transactionsHistory.find(x => x.approvalPriority == temp.approvalPriority + 1);
+      let appr = this.transactionsHistory.find((x:any)  => x.approvalPriority == temp.approvalPriority + 1);
       if (appr != null || appr != undefined) {
         this.servicemastermodel.pendingApprover = appr.doneBy;
       }
@@ -1004,7 +1010,7 @@ export class ServiceMasterCreationComponent implements OnInit {
     //   this.servicemastermodel.appSatus = 'Completed';
     // }
 
-    // this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+    // this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     this.servicemastermodel.lastApprover = this.currentUser.fullName;
     this.servicemastermodel.modifiedBy = this.currentUser.employeeId;
     //this.servicemastermodel.modifiedDate = new Date().toLocaleString();
@@ -1024,24 +1030,24 @@ export class ServiceMasterCreationComponent implements OnInit {
         this.sendMail('Created', this.servicemastermodel);
         this.Updatetransactions(this.servicemastermodel, 1);
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Creating Service Code: " + error;
     });
   }
-  priority: number;
+  priority!: number;
   oncloserequest(status) {
     this.errMsg = "";
     let connection: any;
 
     if (status == 'Completed') {
       let uid = this.currentUser.employeeId;
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
 
       this.servicemastermodel.pendingApprover = temp.doneBy;
-      //  this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+      //  this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     }
     this.servicemastermodel.lastApprover = this.currentUser.fullName;
     this.servicemastermodel.modifiedBy = this.currentUser.employeeId;
@@ -1060,8 +1066,8 @@ export class ServiceMasterCreationComponent implements OnInit {
         this.Updatetransactions(this.servicemastermodel, 1);
         // this.sendMail('Created', this.ItemCodeRequestModel) 
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Closing Request " + this.servicemastermodel.requestNo + ": " + error;
     });
@@ -1087,8 +1093,8 @@ export class ServiceMasterCreationComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error in sending mail: ' + error;
     });
   }
@@ -1100,8 +1106,8 @@ export class ServiceMasterCreationComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error in sending mail: ' + error;
     });
   }
@@ -1123,7 +1129,7 @@ export class ServiceMasterCreationComponent implements OnInit {
   }
 
 
-  ReadAsBase64(file): Promise<any> {
+  ReadAsBase64(file:any): Promise<any> {
     const reader = new FileReader();
     const fileValue = new Promise((resolve, reject) => {
       reader.addEventListener('load', () => {
@@ -1142,7 +1148,7 @@ export class ServiceMasterCreationComponent implements OnInit {
 
     return fileValue;
   }
-  id: string;
+  id: string
   uploadfile() {
     // debugger;
     // this.id='VM001';
@@ -1159,26 +1165,26 @@ export class ServiceMasterCreationComponent implements OnInit {
         // console.log('copied file to server')
         //this.imageFlag = true;
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error uploading file: ' + error;
     });
   }
 
-  downloadFile(reqNo, value) {
+  downloadFile(reqNo:any, value:any) {
     // console.log(filename);
     if (value.length > 0) {
       this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], value, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoading = false;
       });
 
@@ -1196,7 +1202,7 @@ export class ServiceMasterCreationComponent implements OnInit {
       });
     }
   }
-  deletefile(item, name) {
+  deletefile(item:any, name:any) {
     //let attach:any='';
     if (this.attachments.length > 1) {
       const index = this.attachments.indexOf(name);
@@ -1220,8 +1226,8 @@ export class ServiceMasterCreationComponent implements OnInit {
           buttons: [false, true]
         });
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = 'Error deleting file: ' + error;
     });
@@ -1275,7 +1281,7 @@ export class ServiceMasterCreationComponent implements OnInit {
     this.printModel = Object.assign({}, data);
     jQuery("#printReasonModal").modal('show');
   }
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -1300,7 +1306,7 @@ export class ServiceMasterCreationComponent implements OnInit {
     jQuery("#printModal").modal('hide');
     jQuery("#printReasonModal").modal('hide');
     this.InsertPrintLog();
-    let locid = this.locationList.find(x => x.code == value.plantCode);
+    let locid = this.locationList.find((x:any)  => x.code == value.plantCode);
     // var temp=this.materialList.find(x=>x.id==this.filtermaterialtype);
     var printContents = document.getElementById('print-section').innerHTML;
     // var temp1=this.locationList.find(x=>x.id==this.currentUser.baselocation);
@@ -1312,7 +1318,7 @@ export class ServiceMasterCreationComponent implements OnInit {
     var reason = this.printReason;
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
       <head>
       </head>
       <body>
@@ -1325,13 +1331,13 @@ export class ServiceMasterCreationComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Service Master request form',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1349,7 +1355,7 @@ export class ServiceMasterCreationComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           columns: [
             {
@@ -1400,7 +1406,7 @@ export class ServiceMasterCreationComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
   InsertPrintLog() {
@@ -1441,8 +1447,8 @@ export class ServiceMasterCreationComponent implements OnInit {
     if (this.servicemastermodel.serviceGroup == null || this.servicemastermodel.serviceGroup == '' || this.servicemastermodel.serviceGroup == undefined) this.notFirst = false;
   }
 
-  isSubmitting: boolean;
-  errorlist: string;
+  isSubmitting!: boolean;
+  errorlist: string
   uploadfiles(files: File) {
     // this.id='VM001';
     this.file = files[0];
@@ -1463,7 +1469,8 @@ export class ServiceMasterCreationComponent implements OnInit {
           this.isLoading = false;
           this.errorlist = 'Error List';
 
-          data.forEach(element => {
+          data.forEach((element:any)=> {
+
             this.errorlist = this.errorlist + '\n' + element.message;
           });
 
@@ -1477,10 +1484,11 @@ export class ServiceMasterCreationComponent implements OnInit {
           let reqnumber: string = '';
 
           if (data.length > 0) {
-            reqNoList = data.filter(x => x.id > 0);
+            reqNoList = data.filter((x:any)  => x.id > 0);
           }
 
-          reqNoList.forEach(element => {
+          reqNoList.forEach((element:any)=> {
+
             reqnumber = reqnumber + "\n" + element.requestNo;
           });
 
@@ -1497,8 +1505,8 @@ export class ServiceMasterCreationComponent implements OnInit {
         this.reset();
       }
 
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.errMsgPop = 'Error uploading file: ' + error;
     });
@@ -1533,7 +1541,8 @@ export class ServiceMasterCreationComponent implements OnInit {
   bulkApprove(status) {
     this.errMsg = "";
     let dt: any;
-    this.checkedRequestList.forEach(element => {
+    this.checkedRequestList.forEach((element:any)=> {
+
       element.approveStatus = status;
       let connection = this.httpService.post(APIURLS.BR_UPDATE_BULKSR, element);
       connection.then((data: any) => {
@@ -1541,14 +1550,14 @@ export class ServiceMasterCreationComponent implements OnInit {
         if (data == 200 || data.id > 0) {
           dt = data;
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoadingPop = false;
         this.errMsgPop = 'Error: ' + error;
       });
     });
     if (dt == 200) {
-      var req = this.checkedRequestList.map(x => x.requestNo).join();
+      var req = this.checkedRequestList.map((x:any)  => x.requestNo).join();
       this.errMsgPop1 = "Requests " + req + " approved successfully."
     }
   }
@@ -1561,8 +1570,8 @@ export class ServiceMasterCreationComponent implements OnInit {
 
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
     });
   }
@@ -1570,21 +1579,21 @@ export class ServiceMasterCreationComponent implements OnInit {
   Updatetransactions(data, id) {
     this.errMsg = "";
     let connection: any;
-    let temp = this.transactionsHistory.find(x => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
+    let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
       || x.parallelApprover2 == this.currentUser.employeeId || x.parallelApprover3 == this.currentUser.employeeId ||
       x.parallelApprover4 == this.currentUser.employeeId) && x.transactionType == null);
     temp.comments = this.comments;
     temp.doneBy = this.currentUser.employeeId;
     temp.transactionType = id;
     connection = this.httpService.put(APIURLS.BR_ITEMCODE_APPROVAL_TRANSACTIONS_POST_API, temp.id, temp);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data == 200) {
         if (id == '4') {
           if (this.isEdit) {
-            var loc = this.locationList.find(x => x.code == this.servicemastermodel.plantCode);
+            var loc = this.locationList.find((x:any)  => x.code == this.servicemastermodel.plantCode);
           }
           else {
-            var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+            var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
           }
 
           var keyvalue = loc.code + ',' + 5;
@@ -1607,7 +1616,7 @@ export class ServiceMasterCreationComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionsHistory = data;
-        let temp = this.transactionsHistory.find(x => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
+        let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
           || x.parallelApprover2 == this.currentUser.employeeId || x.parallelApprover3 == this.currentUser.employeeId ||
           x.parallelApprover4 == this.currentUser.employeeId) && x.transactionType == null);
 
@@ -1653,8 +1662,8 @@ export class ServiceMasterCreationComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.transactionsHistory = [];
     });

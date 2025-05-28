@@ -14,8 +14,8 @@ declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash"
 export class actionItemModel {
-  type: string;
-  purpose: string;
+  type: string
+  purpose: string
 }
 @Component({
   selector: 'app-booking-purpose',
@@ -23,7 +23,7 @@ export class actionItemModel {
   styleUrls: ['./booking-purpose.component.css']
 })
 export class BookingPurposeComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
+@ViewChild(NgForm, { static: false }) meetingroomForm!: NgForm;
 
   currentUser = {} as AuthData;
   urlPath: string = '';
@@ -33,14 +33,14 @@ export class BookingPurposeComponent implements OnInit {
   errMsgModalPop: string = "";
   isLoadingPop: boolean = false;
 
-  isLoading: boolean;
+  isLoading!: boolean;
   
   purposeModel = {} as BookPurpose;
   purposeList: BookPurpose[] = [];
   tableWidget: any;
   oldpurposeModel: BookPurpose = new BookPurpose();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private appServiceDate: AppService, private route: ActivatedRoute) { }
 
@@ -48,7 +48,8 @@ export class BookingPurposeComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getAllpurpose();
     }
   }
@@ -71,10 +72,10 @@ export class BookingPurposeComponent implements OnInit {
   getAllpurpose() {
     this.httpService.get(APIURLS.BR_BOOK_PURPOSE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.purposeList = data.filter(x => x.isActive);
+        this.purposeList = data.filter((x:any)  => x.isActive);
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.purposeList = [];
     });
   }
@@ -97,7 +98,7 @@ export class BookingPurposeComponent implements OnInit {
     if (isedit) {
       this.oldpurposeModel = Object.assign({}, purpose);
       this.purposeModel = Object.assign({}, purpose);
-      this.selectedService = this.serviceTypeList.find(x => x.type == purpose.type);
+      this.selectedService = this.serviceTypeList.find((x:any)  => x.type == purpose.type);
     }
     jQuery("#myModal").modal('show');
   }
@@ -136,7 +137,7 @@ export class BookingPurposeComponent implements OnInit {
           this.insertAuditLog(this.oldpurposeModel, this.purposeModel, Id);
           this.getAllpurpose();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Purpose..';
       });
@@ -167,7 +168,7 @@ export class BookingPurposeComponent implements OnInit {
             this.insertAuditLog(this.purposeModel, this.oldpurposeModel, this.purposeModel.id);
             this.getAllpurpose();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Purpose..';
         });
@@ -234,12 +235,12 @@ export class BookingPurposeComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -248,7 +249,7 @@ export class BookingPurposeComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

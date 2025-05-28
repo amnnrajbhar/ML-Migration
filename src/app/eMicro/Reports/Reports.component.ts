@@ -36,16 +36,16 @@ import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 import { ExcelService } from '../../shared/excel-service';
 
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { ServiceMaster } from '../ServiceMasterCreation/ServiceMasterCreation.model';
 import { VendorMaster } from '../VendorMaster/VendorMaster.model';
 import { CustomerMaster } from '../CustomerMaster/CustomerMaster.model';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 import { ItemCodeCreationComponent } from '../ItemCodeCreation/ItemCodeCreation.component';
 import { Serialization } from '../ItemCodeCreation/Serialization.model';
 declare var require: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
 import { ItemCodeModification } from '../ItemCodeModification/ItemCodeModification.model';
 
 @Component({
@@ -54,7 +54,7 @@ import { ItemCodeModification } from '../ItemCodeModification/ItemCodeModificati
   styleUrls: ['./Reports.component.css',]
 })
 export class ReportsComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
@@ -79,12 +79,12 @@ export class ReportsComponent implements OnInit {
   path: string = '';
   locationList: any[] = [[]];
 
-  exportList: any[];
-  filterstatus: string = null;
-  filterlocation: string = null;
-  filterrequest: string = null;
-  filtercreator: string = null;
-  filtermaterialtype: string = null;
+  exportList!: any[];
+  filterstatus: string = ' ';
+  filterlocation: string = ' ';
+  filterrequest: string = ' ';
+  filtercreator: string = ' ';
+  filtermaterialtype: string = ' ';
   PWS: boolean = false;
   CCS: boolean = false;
 
@@ -94,7 +94,7 @@ export class ReportsComponent implements OnInit {
   to_date: any = this.today;
   SAP_from_date: any = null;
   SAP_to_date: any = null;
-  filtertype: string = null;
+  filtertype: string = ' ';
   reportdata: any[] = [];
   comments: any;
   tdseligible: any;
@@ -105,7 +105,7 @@ export class ReportsComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
+  userid: string
   emailid: any;
 
   servicegrouplist: any[] = [];
@@ -128,7 +128,7 @@ export class ReportsComponent implements OnInit {
   taxclassList: any[] = [];
   serviceCategorylist: any[] = [];
 
-  filterRequestedBy: string = null;
+  filterRequestedBy: string = ' ';
 
   // ItemCodeExtensionModeldata = {} as ItemCodeExtension;
 
@@ -151,7 +151,8 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //  this.baseLocation = this.currentUser.baselocation;    
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     // if (chkaccess == true) {
@@ -195,11 +196,11 @@ export class ReportsComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_MATERIALTYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.materialList = data.filter(x => x.isActive);
+        this.materialList = data.filter((x:any)  => x.isActive);
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -207,23 +208,24 @@ export class ReportsComponent implements OnInit {
   summarylist: any[] = [{ id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null }]
   getSummarydata(data) {
     this.summarylist = [];
-    this.serviceCategorylist.forEach(element => {
+    this.serviceCategorylist.forEach((element:any)=> {
+
       let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
       newSummary.type = element.serCatCode + '-' + element.serCatDesc;
-      let cre = data.filter(x => x.serviceCatagory == element.serCatCode && x.appSatus == 'Created');
+      let cre = data.filter((x:any)  => x.serviceCatagory == element.serCatCode && x.appSatus == 'Created');
       newSummary.Created = cre.length;
-      let sub = data.filter(x => x.serviceCatagory == element.serCatCode && x.appSatus == 'Submitted');
-      let rsub = data.filter(x => x.serviceCatagory == element.serCatCode && x.appSatus == 'ReSubmitted');
-      let revIn = data.filter(x => x.serviceCatagory == element.serCatCode && x.appSatus == 'Reverted to initiator');
+      let sub = data.filter((x:any)  => x.serviceCatagory == element.serCatCode && x.appSatus == 'Submitted');
+      let rsub = data.filter((x:any)  => x.serviceCatagory == element.serCatCode && x.appSatus == 'ReSubmitted');
+      let revIn = data.filter((x:any)  => x.serviceCatagory == element.serCatCode && x.appSatus == 'Reverted to initiator');
       newSummary.Submitted = sub.length + rsub.length + revIn.length;
-      let inp = data.filter(x => x.serviceCatagory == element.serCatCode && x.appSatus == 'InProcess');
-      let rev = data.filter(x => x.serviceCatagory == element.serCatCode && x.appSatus == 'Reverted');
+      let inp = data.filter((x:any)  => x.serviceCatagory == element.serCatCode && x.appSatus == 'InProcess');
+      let rev = data.filter((x:any)  => x.serviceCatagory == element.serCatCode && x.appSatus == 'Reverted');
       newSummary.InProcess = inp.length + rev.length;
-      let rej = data.filter(x => x.serviceCatagory == element.serCatCode && x.appSatus == 'Rejected');
+      let rej = data.filter((x:any)  => x.serviceCatagory == element.serCatCode && x.appSatus == 'Rejected');
       newSummary.rejected = rej.length;
-      let com = data.filter(x => x.serviceCatagory == element.serCatCode && x.appSatus == 'Completed');
+      let com = data.filter((x:any)  => x.serviceCatagory == element.serCatCode && x.appSatus == 'Completed');
       newSummary.Completed = com.length;
-      let tot = data.filter(x => x.serviceCatagory == element.serCatCode && x.appSatus != 'Created');
+      let tot = data.filter((x:any)  => x.serviceCatagory == element.serCatCode && x.appSatus != 'Created');
       newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length + rsub.length + revIn.length + rev.length;
       this.summarylist.push(newSummary);
     });
@@ -237,35 +239,36 @@ export class ReportsComponent implements OnInit {
     }
     else {
       this.ItemCodeRequestModel.dmfGradeId = undefined;
-      this.DmfGradelist1 = this.DmfGradelist.filter(x => x.dmfGradeId != '0');
+      this.DmfGradelist1 = this.DmfGradelist.filter((x:any)  => x.dmfGradeId != '0');
     }
   }
   getItemCodeSummarydata(data) {
     var softwareList1 = []
     if (this.filtermaterialtype != null) {
-      softwareList1 = this.materialList.filter(x => x.id == this.filtermaterialtype);
+      softwareList1 = this.materialList.filter((x:any)  => x.id == this.filtermaterialtype);
     }
     else {
       softwareList1 = this.materialList;
     }
     this.summarylist = [];
-    softwareList1.forEach(element => {
+    softwareList1.forEach((element:any)=> {
+
       let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
       newSummary.type = element.type;
-      let cre = data.filter(x => x.materialTypeId == element.id && x.approveType == 'Created');
+      let cre = data.filter((x:any)  => x.materialTypeId == element.id && x.approveType == 'Created');
       newSummary.Created = cre.length;
-      let sub = data.filter(x => x.materialTypeId == element.id && x.approveType == 'Submitted');
-      let rsub = data.filter(x => x.materialTypeId == element.id && x.approveType == 'ReSubmitted');
-      let revIn = data.filter(x => x.materialTypeId == element.id && x.approveType == 'Reverted to initiator');
+      let sub = data.filter((x:any)  => x.materialTypeId == element.id && x.approveType == 'Submitted');
+      let rsub = data.filter((x:any)  => x.materialTypeId == element.id && x.approveType == 'ReSubmitted');
+      let revIn = data.filter((x:any)  => x.materialTypeId == element.id && x.approveType == 'Reverted to initiator');
       newSummary.Submitted = sub.length + rsub.length + revIn.length;
-      let inp = data.filter(x => x.materialTypeId == element.id && x.approveType == 'InProcess');
-      let rev = data.filter(x => x.materialTypeId == element.id && x.approveType == 'Reverted');
+      let inp = data.filter((x:any)  => x.materialTypeId == element.id && x.approveType == 'InProcess');
+      let rev = data.filter((x:any)  => x.materialTypeId == element.id && x.approveType == 'Reverted');
       newSummary.InProcess = inp.length + rev.length;
-      let rej = data.filter(x => x.materialTypeId == element.id && x.approveType == 'Rejected');
+      let rej = data.filter((x:any)  => x.materialTypeId == element.id && x.approveType == 'Rejected');
       newSummary.rejected = rej.length;
-      let com = data.filter(x => x.materialTypeId == element.id && x.approveType == 'Completed');
+      let com = data.filter((x:any)  => x.materialTypeId == element.id && x.approveType == 'Completed');
       newSummary.Completed = com.length;
-      let tot = data.filter(x => x.materialTypeId == element.id && x.approveType != 'Created');
+      let tot = data.filter((x:any)  => x.materialTypeId == element.id && x.approveType != 'Created');
       newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length + rsub.length + revIn.length + rev.length;
       this.summarylist.push(newSummary);
     });
@@ -274,23 +277,24 @@ export class ReportsComponent implements OnInit {
 
   getVendororCustomerSummary(data) {
     this.summarylist = [];
-    this.AccGroupList.forEach(element => {
+    this.AccGroupList.forEach((element:any)=> {
+
       let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
       newSummary.type = element.accountGroupName;
-      let cre = data.filter(x => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Created');
+      let cre = data.filter((x:any)  => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Created');
       newSummary.Created = cre.length;
-      let sub = data.filter(x => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Submitted');
-      let rsub = data.filter(x => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'ReSubmitted');
-      let revIn = data.filter(x => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Reverted to initiator');
+      let sub = data.filter((x:any)  => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Submitted');
+      let rsub = data.filter((x:any)  => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'ReSubmitted');
+      let revIn = data.filter((x:any)  => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Reverted to initiator');
       newSummary.Submitted = sub.length + rsub.length + revIn.length;
-      let inp = data.filter(x => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'InProcess');
-      let rev = data.filter(x => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Reverted');
+      let inp = data.filter((x:any)  => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'InProcess');
+      let rev = data.filter((x:any)  => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Reverted');
       newSummary.InProcess = inp.length + rev.length;
-      let rej = data.filter(x => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Rejected');
+      let rej = data.filter((x:any)  => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Rejected');
       newSummary.rejected = rej.length;
-      let com = data.filter(x => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Completed');
+      let com = data.filter((x:any)  => +(x.accountGroupId) == element.accountGroupId && x.approveStatus == 'Completed');
       newSummary.Completed = com.length;
-      let tot = data.filter(x => +(x.accountGroupId) == element.accountGroupId && x.approveStatus != 'Created');
+      let tot = data.filter((x:any)  => +(x.accountGroupId) == element.accountGroupId && x.approveStatus != 'Created');
       newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length + rsub.length + revIn.length + rev.length;
       this.summarylist.push(newSummary);
     });
@@ -324,9 +328,9 @@ export class ReportsComponent implements OnInit {
     { id: 'Printed', name: 'Printed Material' },
     { id: 'Plain', name: 'Plain Material' }
   ];
-  serializer: boolean;
-  serializerid: boolean;
-  Aprlpriority: number;
+  serializer!: boolean;
+  serializerid!: boolean;
+  Aprlpriority!: number;
 
   dynamicArray: any = [];
   newDynamic: any = {};
@@ -339,7 +343,7 @@ export class ReportsComponent implements OnInit {
     };
     this.dynamicArray.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.dynamicArray.length > 1) {
       const index = this.dynamicArray.indexOf(item);
       this.dynamicArray.splice(index, 1);
@@ -348,31 +352,32 @@ export class ReportsComponent implements OnInit {
   summarylist1: any[] = [{ id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null }]
   PlantWiseSummary(data) {
     this.summarylist1 = [];
-    this.locationList.forEach(element => {
+    this.locationList.forEach((element:any)=> {
+
       let loc: any[] = [];
       if (this.filtertype == 'Item Code Extension') {
-        loc = data.filter(x => x.extendedToPlant1 == element.id);
+        loc = data.filter((x:any)  => x.extendedToPlant1 == element.id);
       }
       else {
-        loc = data.filter(x => x.locationId == element.id);
+        loc = data.filter((x:any)  => x.locationId == element.id);
       }
       if (loc.length > 0) {
         let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
         newSummary.type = element.code;
-        let cre = data.filter(x => x.locationId == element.id && x.approveType == 'Created');
+        let cre = data.filter((x:any)  => x.locationId == element.id && x.approveType == 'Created');
         newSummary.Created = cre.length;
-        let sub = data.filter(x => x.locationId == element.id && x.approveType == 'Submitted');
-        let rsub = data.filter(x => x.locationId == element.id && x.approveType == 'ReSubmitted');
-        let revIn = data.filter(x => x.locationId == element.id && x.approveType == 'Reverted to initiator');
+        let sub = data.filter((x:any)  => x.locationId == element.id && x.approveType == 'Submitted');
+        let rsub = data.filter((x:any)  => x.locationId == element.id && x.approveType == 'ReSubmitted');
+        let revIn = data.filter((x:any)  => x.locationId == element.id && x.approveType == 'Reverted to initiator');
         newSummary.Submitted = sub.length + rsub.length + revIn.length;
-        let inp = data.filter(x => x.locationId == element.id && x.approveType == 'InProcess');
-        let rev = data.filter(x => x.locationId == element.id && x.approveType == 'Reverted');
+        let inp = data.filter((x:any)  => x.locationId == element.id && x.approveType == 'InProcess');
+        let rev = data.filter((x:any)  => x.locationId == element.id && x.approveType == 'Reverted');
         newSummary.InProcess = inp.length + rev.length;
-        let rej = data.filter(x => x.locationId == element.id && x.approveType == 'Rejected');
+        let rej = data.filter((x:any)  => x.locationId == element.id && x.approveType == 'Rejected');
         newSummary.rejected = rej.length;
-        let com = data.filter(x => x.locationId == element.id && x.approveType == 'Completed');
+        let com = data.filter((x:any)  => x.locationId == element.id && x.approveType == 'Completed');
         newSummary.Completed = com.length;
-        let tot = data.filter(x => x.locationId == element.id && x.approveType != 'Created');
+        let tot = data.filter((x:any)  => x.locationId == element.id && x.approveType != 'Created');
         newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length + rsub.length + revIn.length + rev.length;
         this.summarylist1.push(newSummary);
       }
@@ -381,27 +386,28 @@ export class ReportsComponent implements OnInit {
   }
   PlantWiseExtSummary(data) {
     this.summarylist1 = [];
-    this.locationList.forEach(element => {
+    this.locationList.forEach((element:any)=> {
 
-      let loc = data.filter(x => x.extendedToPlant1 == element.id);
+
+      let loc = data.filter((x:any)  => x.extendedToPlant1 == element.id);
 
       if (loc.length > 0) {
         let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
         newSummary.type = element.code;
-        let cre = data.filter(x => x.extendedToPlant1 == element.id && x.approveType == 'Created');
+        let cre = data.filter((x:any)  => x.extendedToPlant1 == element.id && x.approveType == 'Created');
         newSummary.Created = cre.length;
-        let sub = data.filter(x => x.extendedToPlant1 == element.id && x.approveType == 'Submitted');
-        let rsub = data.filter(x => x.extendedToPlant1 == element.id && x.approveType == 'ReSubmitted');
-        let revIn = data.filter(x => x.extendedToPlant1 == element.id && x.approveType == 'Reverted to initiator');
+        let sub = data.filter((x:any)  => x.extendedToPlant1 == element.id && x.approveType == 'Submitted');
+        let rsub = data.filter((x:any)  => x.extendedToPlant1 == element.id && x.approveType == 'ReSubmitted');
+        let revIn = data.filter((x:any)  => x.extendedToPlant1 == element.id && x.approveType == 'Reverted to initiator');
         newSummary.Submitted = sub.length + rsub.length + revIn.length;
-        let inp = data.filter(x => x.extendedToPlant1 == element.id && x.approveType == 'InProcess');
-        let rev = data.filter(x => x.extendedToPlant1 == element.id && x.approveType == 'Reverted');
+        let inp = data.filter((x:any)  => x.extendedToPlant1 == element.id && x.approveType == 'InProcess');
+        let rev = data.filter((x:any)  => x.extendedToPlant1 == element.id && x.approveType == 'Reverted');
         newSummary.InProcess = inp.length + rev.length;
-        let rej = data.filter(x => x.extendedToPlant1 == element.id && x.approveType == 'Rejected');
+        let rej = data.filter((x:any)  => x.extendedToPlant1 == element.id && x.approveType == 'Rejected');
         newSummary.rejected = rej.length;
-        let com = data.filter(x => x.extendedToPlant1 == element.id && x.approveType == 'Completed');
+        let com = data.filter((x:any)  => x.extendedToPlant1 == element.id && x.approveType == 'Completed');
         newSummary.Completed = com.length;
-        let tot = data.filter(x => x.extendedToPlant1 == element.id && x.approveType != 'Created');
+        let tot = data.filter((x:any)  => x.extendedToPlant1 == element.id && x.approveType != 'Created');
         newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length + rsub.length + revIn.length + rev.length;
         this.summarylist1.push(newSummary);
       }
@@ -410,25 +416,26 @@ export class ReportsComponent implements OnInit {
   }
   PlantWiseSummary1(data) {
     this.summarylist1 = [];
-    this.locationList.forEach(element => {
-      let loc = data.filter(x => x.plantCode == element.code);
+    this.locationList.forEach((element:any)=> {
+
+      let loc = data.filter((x:any)  => x.plantCode == element.code);
       if (loc.length > 0) {
         let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
         newSummary.type = element.code;
-        let cre = data.filter(x => x.plantCode == element.code && x.appSatus == 'Created');
+        let cre = data.filter((x:any)  => x.plantCode == element.code && x.appSatus == 'Created');
         newSummary.Created = cre.length;
-        let sub = data.filter(x => x.plantCode == element.code && x.appSatus == 'Submitted');
-        let rsub = data.filter(x => x.plantCode == element.code && x.appSatus == 'ReSubmitted');
-        let revIn = data.filter(x => x.plantCode == element.code && x.appSatus == 'Reverted to initiator');
+        let sub = data.filter((x:any)  => x.plantCode == element.code && x.appSatus == 'Submitted');
+        let rsub = data.filter((x:any)  => x.plantCode == element.code && x.appSatus == 'ReSubmitted');
+        let revIn = data.filter((x:any)  => x.plantCode == element.code && x.appSatus == 'Reverted to initiator');
         newSummary.Submitted = sub.length + rsub.length + revIn.length;
-        let inp = data.filter(x => x.plantCode == element.code && x.appSatus == 'InProcess');
-        let rev = data.filter(x => x.plantCode == element.code && x.appSatus == 'Reverted');
+        let inp = data.filter((x:any)  => x.plantCode == element.code && x.appSatus == 'InProcess');
+        let rev = data.filter((x:any)  => x.plantCode == element.code && x.appSatus == 'Reverted');
         newSummary.InProcess = inp.length + rev.length;
-        let rej = data.filter(x => x.plantCode == element.code && x.appSatus == 'Rejected');
+        let rej = data.filter((x:any)  => x.plantCode == element.code && x.appSatus == 'Rejected');
         newSummary.rejected = rej.length;
-        let com = data.filter(x => x.plantCode == element.code && x.appSatus == 'Completed');
+        let com = data.filter((x:any)  => x.plantCode == element.code && x.appSatus == 'Completed');
         newSummary.Completed = com.length;
-        let tot = data.filter(x => x.plantCode == element.code && x.appSatus != 'Created');
+        let tot = data.filter((x:any)  => x.plantCode == element.code && x.appSatus != 'Created');
         newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length + rsub.length + revIn.length + rev.length;
         this.summarylist1.push(newSummary);
       }
@@ -437,25 +444,26 @@ export class ReportsComponent implements OnInit {
   }
   PlantWiseSummary2(data) {
     this.summarylist1 = [];
-    this.locationList.forEach(element => {
-      let loc = data.filter(x => x.locationId == element.id);
+    this.locationList.forEach((element:any)=> {
+
+      let loc = data.filter((x:any)  => x.locationId == element.id);
       if (loc.length > 0) {
         let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
         newSummary.type = element.code;
-        let cre = data.filter(x => x.locationId == element.id && x.approveStatus == 'Created');
+        let cre = data.filter((x:any)  => x.locationId == element.id && x.approveStatus == 'Created');
         newSummary.Created = cre.length;
-        let sub = data.filter(x => x.locationId == element.id && x.approveStatus == 'Submitted');
-        let rsub = data.filter(x => x.locationId == element.id && x.approveStatus == 'ReSubmitted');
-        let revIn = data.filter(x => x.locationId == element.id && x.approveStatus == 'Reverted to initiator');
+        let sub = data.filter((x:any)  => x.locationId == element.id && x.approveStatus == 'Submitted');
+        let rsub = data.filter((x:any)  => x.locationId == element.id && x.approveStatus == 'ReSubmitted');
+        let revIn = data.filter((x:any)  => x.locationId == element.id && x.approveStatus == 'Reverted to initiator');
         newSummary.Submitted = sub.length + rsub.length + revIn.length;
-        let inp = data.filter(x => x.locationId == element.id && x.approveStatus == 'InProcess');
-        let rev = data.filter(x => x.locationId == element.id && x.approveStatus == 'Reverted');
+        let inp = data.filter((x:any)  => x.locationId == element.id && x.approveStatus == 'InProcess');
+        let rev = data.filter((x:any)  => x.locationId == element.id && x.approveStatus == 'Reverted');
         newSummary.InProcess = inp.length + rev.length;
-        let rej = data.filter(x => x.locationId == element.id && x.approveStatus == 'Rejected');
+        let rej = data.filter((x:any)  => x.locationId == element.id && x.approveStatus == 'Rejected');
         newSummary.rejected = rej.length;
-        let com = data.filter(x => x.locationId == element.id && x.approveStatus == 'Completed');
+        let com = data.filter((x:any)  => x.locationId == element.id && x.approveStatus == 'Completed');
         newSummary.Completed = com.length;
-        let tot = data.filter(x => x.locationId == element.id && x.approveStatus != 'Created');
+        let tot = data.filter((x:any)  => x.locationId == element.id && x.approveStatus != 'Created');
         newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length + rsub.length + revIn.length + rev.length;
         this.summarylist1.push(newSummary);
       }
@@ -464,25 +472,26 @@ export class ReportsComponent implements OnInit {
   }
   PlantWiseSummary3(data) {
     this.summarylist1 = [];
-    this.locationList.forEach(element => {
-      let loc = data.filter(x => x.plantCode == element.code);
+    this.locationList.forEach((element:any)=> {
+
+      let loc = data.filter((x:any)  => x.plantCode == element.code);
       if (loc.length > 0) {
         let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
         newSummary.type = element.code;
-        let cre = data.filter(x => x.plantCode == element.code && x.approveStatus == 'Created');
+        let cre = data.filter((x:any)  => x.plantCode == element.code && x.approveStatus == 'Created');
         newSummary.Created = cre.length;
-        let sub = data.filter(x => x.plantCode == element.code && x.approveStatus == 'Submitted');
-        let rsub = data.filter(x => x.plantCode == element.code && x.approveStatus == 'ReSubmitted');
-        let revIn = data.filter(x => x.plantCode == element.code && x.approveStatus == 'Reverted to initiator');
+        let sub = data.filter((x:any)  => x.plantCode == element.code && x.approveStatus == 'Submitted');
+        let rsub = data.filter((x:any)  => x.plantCode == element.code && x.approveStatus == 'ReSubmitted');
+        let revIn = data.filter((x:any)  => x.plantCode == element.code && x.approveStatus == 'Reverted to initiator');
         newSummary.Submitted = sub.length + rsub.length + revIn.length;
-        let inp = data.filter(x => x.plantCode == element.code && x.approveStatus == 'InProcess');
-        let rev = data.filter(x => x.plantCode == element.code && x.approveStatus == 'Reverted');
+        let inp = data.filter((x:any)  => x.plantCode == element.code && x.approveStatus == 'InProcess');
+        let rev = data.filter((x:any)  => x.plantCode == element.code && x.approveStatus == 'Reverted');
         newSummary.InProcess = inp.length + rev.length;
-        let rej = data.filter(x => x.plantCode == element.code && x.approveStatus == 'Rejected');
+        let rej = data.filter((x:any)  => x.plantCode == element.code && x.approveStatus == 'Rejected');
         newSummary.rejected = rej.length;
-        let com = data.filter(x => x.plantCode == element.code && x.approveStatus == 'Completed');
+        let com = data.filter((x:any)  => x.plantCode == element.code && x.approveStatus == 'Completed');
         newSummary.Completed = com.length;
-        let tot = data.filter(x => x.plantCode == element.code && x.approveStatus != 'Created');
+        let tot = data.filter((x:any)  => x.plantCode == element.code && x.approveStatus != 'Created');
         newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length + rsub.length + revIn.length + rev.length;
         this.summarylist1.push(newSummary);
       }
@@ -493,23 +502,24 @@ export class ReportsComponent implements OnInit {
   CreSumList: any[] = [{ id: 0, type: '', Pending: '', Completed: '', Total: '' }]
   CreatorWiseSummary(data) {
     this.CreSumList = [];
-    this.creatorsList.forEach(element => {
+    this.creatorsList.forEach((element:any)=> {
+
       let loc: any;
       if (this.filtertype == 'Item Code Request') {
-        loc = data.filter(x => x.creator == element.approverId && x.approveType != 'Created');
+        loc = data.filter((x:any)  => x.creator == element.approverId && x.approveType != 'Created');
       }
       else if (this.filtertype == 'Service Master') {
-        loc = data.filter(x => x.pendingApprover == element.approverId && x.appSatus != 'Created');
+        loc = data.filter((x:any)  => x.pendingApprover == element.approverId && x.appSatus != 'Created');
       }
       else {
-        loc = data.filter(x => x.pendingApprover == element.approverId && x.approveStatus != 'Created');
+        loc = data.filter((x:any)  => x.pendingApprover == element.approverId && x.approveStatus != 'Created');
       }
       if (loc.length > 0) {
         let newSummary = { id: 0, type: '', Pending: '', Completed: '', Total: '' };
         newSummary.type = element.approverName;
-        let cre = data.filter(x => x.pendingApprover == element.approverId);
+        let cre = data.filter((x:any)  => x.pendingApprover == element.approverId);
         newSummary.Pending = cre.length;
-        let com = data.filter(x => x.creator == element.approverId);
+        let com = data.filter((x:any)  => x.creator == element.approverId);
         newSummary.Completed = com.length;
         newSummary.Total = cre.length + com.length;
         this.CreSumList.push(newSummary);
@@ -586,7 +596,8 @@ export class ReportsComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.masterslist = data;
-        this.masterslist.forEach(element => {
+        this.masterslist.forEach((element:any)=> {
+
           this.servicegrouplist = element.servicegrouplist;
           this.PaymentTermList = element.paymentTermList;
           this.ReconciliationAccList = element.reconciliationAccList;
@@ -610,7 +621,7 @@ export class ReportsComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.masterslist = {};
     });
@@ -619,11 +630,11 @@ export class ReportsComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_UOM_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        this.uomMasterList = data.filter(x => x.isActive);
+        this.uomMasterList = data.filter((x:any)  => x.isActive);
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.uomMasterList = [];
     });
@@ -631,14 +642,14 @@ export class ReportsComponent implements OnInit {
   getLocationMaster() {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locationList.filter(x => { return x.isActive; }).map((i) => { i.code = i.code, i.id = i.id, i.name = i.name, i.location = i.code + '-' + i.name; return i; });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locationList.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.code = i.code, i.id = i.id, i.name = i.name, i.location = i.code + '-' + i.name; return i; });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -648,9 +659,11 @@ export class ReportsComponent implements OnInit {
     this.to_date = this.today;
     this.SAP_from_date = null;
     this.SAP_to_date = null;
-    this.filterlocation = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
     this.filtermaterialtype = null;
-    this.filterstatus = null;
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filterRequestedBy = null;
     this.filterrequest = null;
     this.filtercreator = null;
@@ -665,7 +678,7 @@ export class ReportsComponent implements OnInit {
         this.creatorsList = data;
         this.creatorsList = this.creatorsList.filter((item, i, arr) => arr.findIndex((t) => t.approverName === item.approverName) === i);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.creatorsList = [];
     });
@@ -678,7 +691,7 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.storagelocationlist = [];
     });
@@ -727,17 +740,17 @@ export class ReportsComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         //this.materialgroupList = data;
-        this.materialgroupList = data.filter(x => x.stxt != null);
+        this.materialgroupList = data.filter((x:any)  => x.stxt != null);
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialgroupList = [];
     });
   }
-  location(id) {
-    let loc = this.locationList.find(x => x.id == id);
+  location(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code : "";
   }
 
@@ -745,12 +758,12 @@ export class ReportsComponent implements OnInit {
     this.showTable = true;
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
 
     filterModel.materialType = this.filtermaterialtype;
-    filterModel.location = this.filterlocation == null ? null : this.locationList.find(x => x.code == this.filterlocation).id;
+    filterModel.location = this.filterlocation == null ? null : this.locationList.find((x:any)  => x.code == this.filterlocation).id;
     filterModel.requestNo = this.filterrequest;
     this.filterstatus = this.filterstatus == 'InProcess' ? 'InProcess,Reverted' : this.filterstatus;
     //this.filterstatus=this.filterstatus=='Created'?'Created,':this.filterstatus;
@@ -781,7 +794,7 @@ export class ReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.reportdata = [];
     });
@@ -792,8 +805,8 @@ export class ReportsComponent implements OnInit {
     this.showTable = true;
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -839,7 +852,7 @@ export class ReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.reportdata = [];
     });
@@ -850,13 +863,13 @@ export class ReportsComponent implements OnInit {
   GetEmployeeDetails() {
     var self = this;
     $('#requestby').autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm1 = request.term;
         let connection = self.httpService.get(APIURLS.BR_GET_EMPLOYEE_BASED_ON_SEARCHTEXT + "/" + request.term)
         connection.then((data: any) => {
           if (data) {
             let result = data;
-            response(result.map((i) => {
+            response(result.map((i:any) => {
               // i.label = i.name + '-' + i.mobile + '-' + i.companyName, i.name = i.name, i.mobile = i.mobile
               //  , i.companyName = i.companyName, i.email = i.email; return i;
               i.label = i.fullName + " (" + i.employeeId + ")", i.value = i.employeeId, i.name = i.name,
@@ -864,10 +877,10 @@ export class ReportsComponent implements OnInit {
                 i.email = i.emailId, i.plant = i.plant; return i;
             }));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
 
         self.filterRequestedBy = ui.item.value;
 
@@ -895,8 +908,8 @@ export class ReportsComponent implements OnInit {
       this.showTable = true;
       this.isLoading = true;
       let td = new Date();
-      let formatedFROMdate: string;
-      let formatedTOdate: string;
+      let formatedFROMdate: string
+      let formatedTOdate: string
       var filterModel: any = {};
       if (this.from_date == '' || this.from_date == null) {
         formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -982,7 +995,7 @@ export class ReportsComponent implements OnInit {
         }
         this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.reportdata = [];
       });
@@ -1067,7 +1080,7 @@ export class ReportsComponent implements OnInit {
       return '';
     }
   }
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngAfterViewInit() {
     this.initDatatable();
   }
@@ -1081,7 +1094,7 @@ export class ReportsComponent implements OnInit {
     let status: any;
     let index = 0;
     var name = this.filtertype + ' ' + 'Report';
-    this.reportdata.forEach(item => {
+    this.reportdata.forEach((item :any) => {
       index = index + 1;
       if (this.filtertype == 'Service Master') {
         status = item.appSatus;
@@ -1120,7 +1133,7 @@ export class ReportsComponent implements OnInit {
     let status: any;
     let index = 0;
     var name = this.filtertype + ' ' + 'Report';
-    this.reportdata.forEach(item => {
+    this.reportdata.forEach((item :any) => {
       index = index + 1;
 
       let exportItem = {
@@ -1141,11 +1154,11 @@ export class ReportsComponent implements OnInit {
 
     this.excelService.exportAsExcelFile(this.exportList, name);
   }
-  getloc(loc) {
+  getloc(loc:any) {
     let loccode = loc.keyValue.split('~');
     return loccode ? loccode[0] : '';
   }
-  selCoated(id) {
+  selCoated(id:any) {
     if (id == '84') {
       this.ItemCodeRequestModel.isCoated = 'NotApplicable';
     }
@@ -1164,7 +1177,7 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist = [];
     });
@@ -1175,7 +1188,7 @@ export class ReportsComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionslist = data;
-        this.transactionslist = this.transactionslist.filter(x => x.approvalPriority != null && x.processType == 'Item Code Request');
+        this.transactionslist = this.transactionslist.filter((x:any)  => x.approvalPriority != null && x.processType == 'Item Code Request');
         this.getApproversList1(value);
       }
       else {
@@ -1183,7 +1196,7 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist = [];
     });
@@ -1198,8 +1211,8 @@ export class ReportsComponent implements OnInit {
     this.Closure = false;
     this.Approverslist = [];
     this.ItemCodeRequestModel = Object.assign({}, value);
-    var loc = this.locationList.find(x => x.id == this.ItemCodeRequestModel.locationId);
-    var mat = this.materialList.find(x => x.id == +this.ItemCodeRequestModel.materialTypeId);
+    var loc = this.locationList.find((x:any)  => x.id == this.ItemCodeRequestModel.locationId);
+    var mat = this.materialList.find((x:any)  => x.id == +this.ItemCodeRequestModel.materialTypeId);
 
     if (mat.type == 'FG') {
       var keyvalue = loc.code + '~' + mat.type + '~' + this.ItemCodeRequestModel.storageLocationId + '~' + this.ItemCodeRequestModel.domesticOrExports + '~' + this.ItemCodeRequestModel.market + ',' + 1;
@@ -1215,8 +1228,8 @@ export class ReportsComponent implements OnInit {
         let empid = this.currentUser.employeeId
         let empName = this.currentUser.fullName;
         if (mat.type == 'FG') {
-          let temp = this.Approverslist.find(x => x.role == 'Creator');
-          let temp1 = this.Approverslist.find(x => x.priority == temp.priority - 1);
+          let temp = this.Approverslist.find((x:any)  => x.role == 'Creator');
+          let temp1 = this.Approverslist.find((x:any)  => x.priority == temp.priority - 1);
           if (temp1.approverId == empid || temp1.parllelApprover1 == empid || temp1.parllelApprover2 == empid ||
             temp1.parllelApprover3 == empid || temp1.parllelApprover4 == empid) {
             this.serializer = true;
@@ -1224,7 +1237,7 @@ export class ReportsComponent implements OnInit {
             this.ItemCodeRequestModel.serializedFromDate = new Date().toLocaleString();
           }
         }
-        let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+        let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -1234,7 +1247,7 @@ export class ReportsComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr1.priority;
         }
-        let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+        let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr2 != null || Appr2 != undefined) {
@@ -1244,7 +1257,7 @@ export class ReportsComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr2.priority;
         }
-        let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+        let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr3 != null || Appr3 != undefined) {
@@ -1269,7 +1282,7 @@ export class ReportsComponent implements OnInit {
 
 
         this.transactionslist.forEach((ad) => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority &&
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority &&
             (ad.doneBy == x.approverId || ad.doneBy == x.parllelApprover1 || ad.doneBy == x.parllelApprover2));
           if (temp != undefined) {
             if (ad.transactionType == 1) {
@@ -1283,7 +1296,7 @@ export class ReportsComponent implements OnInit {
                 ad.status = 'Approved'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 0) {
@@ -1303,7 +1316,7 @@ export class ReportsComponent implements OnInit {
 
         });
         this.Approverslist.forEach((ad) => {
-          let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority &&
+          let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority &&
             (x.doneBy == ad.approverId || x.doneBy == ad.parllelApprover1 || x.doneBy == ad.parllelApprover2));
           if (temp1 == undefined) {
             let trans = {} as Transactions;
@@ -1316,12 +1329,12 @@ export class ReportsComponent implements OnInit {
           }
 
         });
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.approvalPriority > b.approvalPriority) return 1;
           if (a.approvalPriority < b.approvalPriority) return -1;
           return 0;
@@ -1333,7 +1346,7 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -1344,18 +1357,18 @@ export class ReportsComponent implements OnInit {
   ItemCodeRequestModel = {} as ItemCodeRequest
   Approverslist: any[] = [];
   weightUomlist: any[] = [];
-  getApproversList(value) {
+  getApproversList(value:any) {
     if (this.filtertype == 'Service Master') {
       var keyvalue = value.plantCode + ',' + 5;
     }
     else if (this.filtertype == 'Vendor Master') {
-      var loc = this.locationList.find(x => x.id == value.locationId);
-      var accgrp = this.AccGroupList.find(x => x.accountGroupId == value.accountGroupId);
+      var loc = this.locationList.find((x:any)  => x.id == value.locationId);
+      var accgrp = this.AccGroupList.find((x:any)  => x.accountGroupId == value.accountGroupId);
       var group = accgrp.accountGroupName == 'Import' ? 'Import' : 'Local';
       var keyvalue = loc.code + '~' + value.vendorCat + '~' + value.vendorSubCat + ',' + 3;
     }
     else {
-      var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+      var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
       var keyvalue = value.plantCode + '~' + value.customerType + ',' + 4;
     }
     this.Approverslist = [];
@@ -1363,10 +1376,10 @@ export class ReportsComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.Approverslist = data;
-        this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+        this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
         let empid = this.currentUser.employeeId
         let empName = this.currentUser.fullName;
-        let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+        let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -1376,7 +1389,7 @@ export class ReportsComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr1.priority;
         }
-        let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+        let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr2 != null || Appr2 != undefined) {
@@ -1386,7 +1399,7 @@ export class ReportsComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr2.priority;
         }
-        let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+        let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr3 != null || Appr3 != undefined) {
@@ -1406,7 +1419,7 @@ export class ReportsComponent implements OnInit {
           }
         }
         this.transactionslist.forEach((ad) => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority &&
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority &&
             (ad.doneBy == x.approverId || ad.doneBy == x.parllelApprover1 || ad.doneBy == x.parllelApprover2));
           if (temp != undefined) {
             if (ad.transactionType == 1) {
@@ -1420,7 +1433,7 @@ export class ReportsComponent implements OnInit {
                 ad.status = 'Approved'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 0) {
@@ -1440,7 +1453,7 @@ export class ReportsComponent implements OnInit {
 
         });
         this.Approverslist.forEach((ad) => {
-          let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority &&
+          let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority &&
             (x.doneBy == ad.approverId || x.doneBy == ad.parllelApprover1 || x.doneBy == ad.parllelApprover2));
           if (temp1 == undefined) {
             let trans = {} as Transactions;
@@ -1453,12 +1466,12 @@ export class ReportsComponent implements OnInit {
           }
 
         });
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.doneOn > b.doneOn) return 1;
           if (a.doneOn < b.doneOn) return -1;
           if (a.approvalPriority > b.approvalPriority) return 1;
@@ -1472,13 +1485,13 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
   }
-  getstatelist(id) {
-    this.stateList1 = this.stateList.filter(x => x.land1 == id);
+  getstatelist(id:any) {
+    this.stateList1 = this.stateList.filter((x:any)  => x.land1 == id);
   }
   clearvalue(value) {
     if (value == 'NotApplicable') {
@@ -1510,7 +1523,7 @@ export class ReportsComponent implements OnInit {
         this.attachments = item.attachments.split(',');
       }
       item.accountGroupId = item.accountGroupId.trim();
-      this.stateList1 = this.stateList.filter(x => x.land1 == this.vendormastermodel.countryId);
+      this.stateList1 = this.stateList.filter((x:any)  => x.land1 == this.vendormastermodel.countryId);
       this.vendormastermodel = Object.assign({}, item);
       jQuery('#vmModal').modal('show');
     }
@@ -1576,7 +1589,7 @@ export class ReportsComponent implements OnInit {
           this.purchasegrouplist = master.purchaseGroup;
           // this.locationList=master.locationMaster;
           this.materialList = master.materialType;
-          this.materialList.filter(x => { return x.isActive; }).map((i) => { i.type = i.type, i.id = i.id, i.description = i.description, i.MatType = i.type + '-' + i.description; return i; }); this.materialgroupList = master.materialGroup;
+          this.materialList.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.type = i.type, i.id = i.id, i.description = i.description, i.MatType = i.type + '-' + i.description; return i; }); this.materialgroupList = master.materialGroup;
           this.countrylist = master.country;
           this.DmfGradelist = master.dmfGrade;
           this.processlist = master.storageCondition;
@@ -1595,7 +1608,7 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.masterdatalist = [];
     });
@@ -1617,8 +1630,8 @@ export class ReportsComponent implements OnInit {
     var filterModel: any = {};
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
       this.from_date = new Date(td.getFullYear(), td.getMonth(), 1);
@@ -1652,14 +1665,14 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Count = {};
     });
 
   }
 
-  empId: string;
+  empId: string
   view: boolean = false;
   attachments: any[] = [];
   onUserActions(isedit: boolean, ItemCodeRequest: ItemCodeRequest, isprint: boolean, view) {
@@ -1682,15 +1695,15 @@ export class ReportsComponent implements OnInit {
       if (ItemCodeRequest.attachements != null || ItemCodeRequest.attachements != undefined) {
         this.attachments = ItemCodeRequest.attachements.split(',');
       }
-      let type = this.materialList.find(x => x.id.toString() == ItemCodeRequest.materialTypeId);
-      this.storagelocationlist1 = this.storagelocationlist.filter(x => x.matType == type.type);
-      this.ValuationClasslist1 = this.ValuationClasslist.filter(x => x.matType == type.type);
+      let type = this.materialList.find((x:any)  => x.id.toString() == ItemCodeRequest.materialTypeId);
+      this.storagelocationlist1 = this.storagelocationlist.filter((x:any)  => x.matType == type.type);
+      this.ValuationClasslist1 = this.ValuationClasslist.filter((x:any)  => x.matType == type.type);
       if (ItemCodeRequest.packingMaterialGroup != null || ItemCodeRequest.packingMaterialGroup != undefined) {
         ItemCodeRequest.packingMaterialGroup = ItemCodeRequest.packingMaterialGroup.trim();
       }
-      var name = this.materialList.find(x => x.id == +ItemCodeRequest.materialTypeId).type;
+      var name = this.materialList.find((x:any)  => x.id == +ItemCodeRequest.materialTypeId).type;
       if (ItemCodeRequest.pharmacopGrade != null || ItemCodeRequest.pharmacopGrade != undefined) {
-        ItemCodeRequest.qcSpecification = this.pharmagradelist.find(x => x.pharmaGradeDesc == ItemCodeRequest.pharmacopGrade).pharmaGradeId.toString();
+        ItemCodeRequest.qcSpecification = this.pharmagradelist.find((x:any)  => x.pharmaGradeDesc == ItemCodeRequest.pharmacopGrade).pharmaGradeId.toString();
       }
 
 
@@ -1726,13 +1739,13 @@ export class ReportsComponent implements OnInit {
       //this.ItemCodeRequestModel.locationId = this.currentUser.baselocation.toString();
 
       ItemCodeRequest.locationId = this.currentUser.baselocation.toString();
-      let type = this.materialList.find(x => x.id.toString() == ItemCodeRequest.materialTypeId);
-      this.ValuationClasslist1 = this.ValuationClasslist.filter(x => x.matType == type.type);
-      this.storagelocationlist1 = this.storagelocationlist.filter(x => x.matType == type.type);
-      //this.ValuationClasslist=this.ValuationClasslist.filter(x=>x.matType==type.type);
+      let type = this.materialList.find((x:any)  => x.id.toString() == ItemCodeRequest.materialTypeId);
+      this.ValuationClasslist1 = this.ValuationClasslist.filter((x:any)  => x.matType == type.type);
+      this.storagelocationlist1 = this.storagelocationlist.filter((x:any)  => x.matType == type.type);
+      //this.ValuationClasslist=this.ValuationClasslist.filter((x:any)=>x.matType==type.type);
       this.getApproversList(ItemCodeRequest);
       this.ItemCodeRequestModel = Object.assign({}, ItemCodeRequest);
-      var name = this.materialList.find(x => x.id == +this.ItemCodeRequestModel.materialTypeId).type;
+      var name = this.materialList.find((x:any)  => x.id == +this.ItemCodeRequestModel.materialTypeId).type;
       if (name == 'FG') {
         this.getserializationdetails(ItemCodeRequest.requestNo);
       }
@@ -1751,8 +1764,8 @@ export class ReportsComponent implements OnInit {
     jQuery(modal).modal('show');
 
   }
-  getTempcond(id) {
-    let temp = this.tempconditionlist.find(x => x.tempConId == id);
+  getTempcond(id:any) {
+    let temp = this.tempconditionlist.find((x:any)  => x.tempConId == id);
     return temp ? temp.tempConDesc : '';
   }
   downloadFile(reqNo, name) {
@@ -1761,16 +1774,16 @@ export class ReportsComponent implements OnInit {
     if (name.length > 0) {
       this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, reqNo, name).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], name, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
 
 
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
 
@@ -1793,7 +1806,7 @@ export class ReportsComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_SERIALIZATION_DATA_GETBY_PARAM_API, reqNo).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        data.forEach(mtrl => {
+        data.forEach((mtrl:any) => {
           let serializedata = {} as Serialization;
           serializedata.id = mtrl.id;
           serializedata.aun = mtrl.aun;
@@ -1810,7 +1823,7 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -1819,7 +1832,7 @@ export class ReportsComponent implements OnInit {
   ItemCodeExtensionModel = {} as ItemCodeExtension;
   //ItemCodeRequestModel = {} as ItemCodeRequest;
   ItemCodeRequestModelList: ItemCodeRequest[] = [];
-  materialtype: string;
+  materialtype!: string
   locationList1: any[] = [[]];
 
   GetMaterialDetails(code) {
@@ -1829,7 +1842,7 @@ export class ReportsComponent implements OnInit {
         //  this.ItemCodeRequestModel=data;
         this.ItemCodeRequestModelList = data;
         Object.assign(this.ItemCodeRequestModel, data);
-        let value = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code)
+        let value = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code)
         Object.assign(this.ItemCodeRequestModel, value);
         if (this.ItemCodeRequestModel.sapCodeExists == '1') {
           this.ItemCodeRequestModel.sapCodeExists = 'Yes';
@@ -1837,16 +1850,16 @@ export class ReportsComponent implements OnInit {
         else {
           this.ItemCodeRequestModel.sapCodeExists = 'No';
         }
-        this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).locationId;
-        this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).hsnCode;
-        let strloc = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code);
-        let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-        //this.storagelocationlist = this.storagelocationlist.filter(x => x.storageLocationId == strloc.storageLocationId &&  x.matType == type.type);
-        //let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-        // this.storagelocationlist2 = this.storagelocationlist.filter(x => x.matType == type.type);
-        let temp = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code);
-        this.locationList1 = this.locationList.filter(x => x.id == temp.locationId);
-        this.materialtype = this.materialList.find(x => x.id == +temp.materialTypeId).type;
+        this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).locationId;
+        this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).hsnCode;
+        let strloc = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code);
+        let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+        //this.storagelocationlist = this.storagelocationlist.filter((x:any)  => x.storageLocationId == strloc.storageLocationId &&  x.matType == type.type);
+        //let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+        // this.storagelocationlist2 = this.storagelocationlist.filter((x:any)  => x.matType == type.type);
+        let temp = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code);
+        this.locationList1 = this.locationList.filter((x:any)  => x.id == temp.locationId);
+        this.materialtype = this.materialList.find((x:any)  => x.id == +temp.materialTypeId).type;
         this.ItemCodeExtensionModel.materialTypeId = temp.materialTypeId;
         //this.ItemCodeExtensionModel.hsnCode=this.ItemCodeRequestModel.storageLocationId;
         //  this.ItemCodeExtensionModel.storageLocationId1=this.ItemCodeRequestModel.storageLocationId;
@@ -1862,7 +1875,7 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ItemCodeRequestModelList = [];
     });
@@ -1879,7 +1892,7 @@ export class ReportsComponent implements OnInit {
         this.ItemCodeRequestModelList1 = data;
 
         Object.assign(this.ItemCodeRequestModel, data);
-        let value = this.ItemCodeRequestModelList1.find(x => x.sapCodeNo == code)
+        let value = this.ItemCodeRequestModelList1.find((x:any)  => x.sapCodeNo == code)
         Object.assign(this.ItemCodeRequestModel, value);
 
         if (this.ItemCodeRequestModelList1[0].sapCodeExists == '1') {
@@ -1889,19 +1902,19 @@ export class ReportsComponent implements OnInit {
           this.ItemCodeRequestModel.sapCodeExists = 'Yes';
         }
         this.ItemCodeRequestModel.materialGroupId = this.ItemCodeRequestModelList1[0].materialGroup;
-        this.ItemCodeExtensionModel.materialTypeId = this.materialList.find(x => x.type == this.ItemCodeRequestModelList1[0].materialType).id.toString();
+        this.ItemCodeExtensionModel.materialTypeId = this.materialList.find((x:any)  => x.type == this.ItemCodeRequestModelList1[0].materialType).id.toString();
         this.ItemCodeRequestModel.unitOfMeasId = this.ItemCodeRequestModelList1[0].unitOfMeasId;
         this.ItemCodeRequestModel.storageLocationId = this.ItemCodeRequestModelList1[0].storageLoc;
-        // this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).locationId;
-        // this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).hsnCode;
-        let strloc = this.ItemCodeRequestModelList1.find(x => x.sapCodeNo == code);
-        //let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-        this.storagelocationlist1 = this.storagelocationlist.filter(x => x.storageLocationId == strloc.storageLoc && x.matType == this.ItemCodeRequestModelList1[0].materialType);
-        //let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-        this.storagelocationlist2 = this.storagelocationlist.filter(x => x.matType == this.ItemCodeRequestModelList1[0].materialType);
-        let temp = this.ItemCodeRequestModelList1.find(x => x.sapCodeNo == code);
-        //this.locationList1 = this.locationList.filter(x => x.id == temp.locationId);
-        this.materialtype = this.materialList.find(x => x.type == this.ItemCodeRequestModelList1[0].materialType).type;
+        // this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).locationId;
+        // this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).hsnCode;
+        let strloc = this.ItemCodeRequestModelList1.find((x:any)  => x.sapCodeNo == code);
+        //let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+        this.storagelocationlist1 = this.storagelocationlist.filter((x:any)  => x.storageLocationId == strloc.storageLoc && x.matType == this.ItemCodeRequestModelList1[0].materialType);
+        //let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+        this.storagelocationlist2 = this.storagelocationlist.filter((x:any)  => x.matType == this.ItemCodeRequestModelList1[0].materialType);
+        let temp = this.ItemCodeRequestModelList1.find((x:any)  => x.sapCodeNo == code);
+        //this.locationList1 = this.locationList.filter((x:any)  => x.id == temp.locationId);
+        this.materialtype = this.materialList.find((x:any)  => x.type == this.ItemCodeRequestModelList1[0].materialType).type;
         //this.ItemCodeExtensionModel.materialTypeId = temp.materialTypeId;
         //this.ItemCodeExtensionModel.hsnCode=this.ItemCodeRequestModel.storageLocationId;
         //  this.ItemCodeExtensionModel.storageLocationId1=this.ItemCodeRequestModel.storageLocationId;
@@ -1917,7 +1930,7 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ItemCodeRequestModelList = [];
     });
@@ -1930,19 +1943,19 @@ export class ReportsComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionslist = data;
-        this.transactionslist = this.transactionslist.filter(x => x.processType == 'Item Code Extension' && x.approvalPriority != null);
+        this.transactionslist = this.transactionslist.filter((x:any)  => x.processType == 'Item Code Extension' && x.approvalPriority != null);
         //this.transactionslist.reverse();
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist = [];
     });
 
   }
   // Approverslist: WorkFlowApprovers[] = [];
-  // Aprlpriority: number;
+  // Aprlpriority!: number;
   // view: boolean = false;
   getApproversListEx(value) {
 
@@ -1952,8 +1965,8 @@ export class ReportsComponent implements OnInit {
     this.Review = false;
     this.Closure = false;
     this.ItemCodeExtensionModel = Object.assign({}, value);
-    var loc = this.locationList.find(x => x.id == this.ItemCodeExtensionModel.extendedToPlant1);
-    var mat = this.materialList.find(x => x.id == +this.ItemCodeExtensionModel.materialTypeId);
+    var loc = this.locationList.find((x:any)  => x.id == this.ItemCodeExtensionModel.extendedToPlant1);
+    var mat = this.materialList.find((x:any)  => x.id == +this.ItemCodeExtensionModel.materialTypeId);
     // var matgrp=this.materialgroupList.find(x=>x.materialGroupId==this.ItemCodeRequestModel.materialGroupId);
     if (this.isEdit) {
       var keyvalue = loc.code + '~' + mat.type + '~' + this.ItemCodeExtensionModel.extendedStorageLocation1 + ',' + 2;
@@ -1966,10 +1979,10 @@ export class ReportsComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.Approverslist = data;
-        this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+        this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
         let empid = this.currentUser.employeeId
         let empName = this.currentUser.fullName;
-        let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+        let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -1979,7 +1992,7 @@ export class ReportsComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr1.priority;
         }
-        let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+        let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr2 != null || Appr2 != undefined) {
@@ -1989,7 +2002,7 @@ export class ReportsComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr2.priority;
         }
-        let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+        let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr3 != null || Appr3 != undefined) {
@@ -2011,7 +2024,7 @@ export class ReportsComponent implements OnInit {
           }
         }
         this.transactionslist.forEach((ad) => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority &&
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority &&
             (ad.doneBy == x.approverId || ad.doneBy == x.parllelApprover1 || ad.doneBy == x.parllelApprover2));
           if (temp != undefined) {
             if (ad.transactionType == 1) {
@@ -2025,7 +2038,7 @@ export class ReportsComponent implements OnInit {
                 ad.status = 'Approved'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 0) {
@@ -2045,7 +2058,7 @@ export class ReportsComponent implements OnInit {
 
         });
         this.Approverslist.forEach((ad) => {
-          let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority &&
+          let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority &&
             (x.doneBy == ad.approverId || x.doneBy == ad.parllelApprover1 || x.doneBy == ad.parllelApprover2));
           if (temp1 == undefined) {
             let trans = {} as Transactions;
@@ -2058,12 +2071,12 @@ export class ReportsComponent implements OnInit {
           }
 
         });
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.doneOn > b.doneOn) return 1;
           if (a.doneOn < b.doneOn) return -1;
           return 0;
@@ -2075,12 +2088,12 @@ export class ReportsComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
   }
-  //empId: string;
+  //empId: string
   resetForm() {
     this.ItemCodeExtensionModel = {} as ItemCodeExtension;
     this.ItemCodeRequestModel = {} as ItemCodeRequest;
@@ -2130,7 +2143,7 @@ export class ReportsComponent implements OnInit {
   chart1: any;
   chart2: any;
   chart3: any;
-  public chartPlugins = [ChartDataLabels];
+ // public chartPlugins = [ChartDataLabels];
   datas: any = [];
   label: any[] = [];
   getchart() {
@@ -2149,170 +2162,170 @@ export class ReportsComponent implements OnInit {
     lab2 = "Service Master Status"
     lab3 = "Customer Master Status"
 
-    this.chart = new Chart(document.getElementById("myPieChart"), {
-      plugin: this.chartPlugins,
-      type: 'doughnut',
-      data: {
-        labels: labels1,
-        datasets: [
-          {
-            label: lab,
-            backgroundColor: bckColor,
-            data: pieData
-          }
-        ]
-      },
-      options: {
-        maintainAspectRatio: true,
-        responsive: true,
-        legend: {
-          position: 'right',
-          labels: {
-            padding: 20,
-            boxWidth: 10
-          },
-          onClick: (e) => e.stopPropagation()
-        },
-        plugins: {
-          datalabels: {
-            color: 'white',
-            font: {
-              size: 15,
-              weight: 600
-            },
-            offset: 4,
-            padding: 0,
-          }
-        },
-        title: {
-          display: true,
-          text: 'Item Code Request Status'
-        }
-      }
-    });
-    this.chart1 = new Chart(document.getElementById("myPieChart1"), {
-      plugin: this.chartPlugins,
-      type: 'doughnut',
-      data: {
-        labels: labels1,
-        datasets: [
-          {
-            label: lab1,
-            backgroundColor: bckColor,
-            data: pieData1
-          }
-        ]
-      },
-      options: {
-        maintainAspectRatio: true,
-        responsive: true,
-        legend: {
-          position: 'right',
-          labels: {
-            padding: 20,
-            boxWidth: 10
-          },
-          onClick: (e) => e.stopPropagation()
-        },
-        plugins: {
-          datalabels: {
-            color: 'white',
-            font: {
-              size: 15,
-              weight: 600
-            },
-            offset: 4,
-            padding: 0,
-          }
-        },
-        title: {
-          display: true,
-          text: 'Vendor Master Status'
-        }
-      }
-    });
-    this.chart2 = new Chart(document.getElementById("myPieChart2"), {
-      plugin: this.chartPlugins,
-      type: 'doughnut',
-      data: {
-        labels: labels1,
-        datasets: [
-          {
-            label: lab2,
-            backgroundColor: bckColor,
-            data: pieData2
-          }
-        ]
-      },
-      options: {
-        maintainAspectRatio: true,
-        responsive: true,
-        legend: {
-          position: 'right',
-          labels: {
-            padding: 20,
-            boxWidth: 10
-          },
-          onClick: (e) => e.stopPropagation()
-        },
-        plugins: {
-          datalabels: {
-            color: 'white',
-            font: {
-              size: 15,
-              weight: 600
-            },
-            offset: 4,
-            padding: 0,
-          }
-        },
-        title: {
-          display: true,
-          text: 'Service Master Status'
-        }
-      }
-    });
-    this.chart3 = new Chart(document.getElementById("myPieChart3"), {
-      plugin: this.chartPlugins,
-      type: 'doughnut',
-      data: {
-        labels: labels1,
-        datasets: [
-          {
-            label: lab3,
-            backgroundColor: bckColor,
-            data: pieData3
-          }
-        ]
-      },
-      options: {
-        maintainAspectRatio: true,
-        responsive: true,
-        legend: {
-          position: 'right',
-          labels: {
-            padding: 20,
-            boxWidth: 10
-          },
-          onClick: (e) => e.stopPropagation()
-        },
-        plugins: {
-          datalabels: {
-            color: 'white',
-            font: {
-              size: 15,
-              weight: 600
-            },
-            offset: 4,
-            padding: 0,
-          }
-        },
-        title: {
-          display: true,
-          text: 'Customer Master Status'
-        }
-      }
-    });
+    // this.chart = new Chart(document.getElementById("myPieChart"), {
+    //   plugin: this.chartPlugins,
+    //   type: 'doughnut',
+    //   data: {
+    //     labels: labels1,
+    //     datasets: [
+    //       {
+    //         label: lab,
+    //         backgroundColor: bckColor,
+    //         data: pieData
+    //       }
+    //     ]
+    //   },
+    //   options: {
+    //     maintainAspectRatio: true,
+    //     responsive: true,
+    //     legend: {
+    //       position: 'right',
+    //       labels: {
+    //         padding: 20,
+    //         boxWidth: 10
+    //       },
+    //       onClick: (e) => e.stopPropagation()
+    //     },
+    //     plugins: {
+    //       datalabels: {
+    //         color: 'white',
+    //         font: {
+    //           size: 15,
+    //           weight: 600
+    //         },
+    //         offset: 4,
+    //         padding: 0,
+    //       }
+    //     },
+    //     title: {
+    //       display: true,
+    //       text: 'Item Code Request Status'
+    //     }
+    //   }
+    // });
+    // this.chart1 = new Chart(document.getElementById("myPieChart1"), {
+    //   plugin: this.chartPlugins,
+    //   type: 'doughnut',
+    //   data: {
+    //     labels: labels1,
+    //     datasets: [
+    //       {
+    //         label: lab1,
+    //         backgroundColor: bckColor,
+    //         data: pieData1
+    //       }
+    //     ]
+    //   },
+    //   options: {
+    //     maintainAspectRatio: true,
+    //     responsive: true,
+    //     legend: {
+    //       position: 'right',
+    //       labels: {
+    //         padding: 20,
+    //         boxWidth: 10
+    //       },
+    //       onClick: (e) => e.stopPropagation()
+    //     },
+    //     plugins: {
+    //       datalabels: {
+    //         color: 'white',
+    //         font: {
+    //           size: 15,
+    //           weight: 600
+    //         },
+    //         offset: 4,
+    //         padding: 0,
+    //       }
+    //     },
+    //     title: {
+    //       display: true,
+    //       text: 'Vendor Master Status'
+    //     }
+    //   }
+    // });
+    // this.chart2 = new Chart(document.getElementById("myPieChart2"), {
+    //   plugin: this.chartPlugins,
+    //   type: 'doughnut',
+    //   data: {
+    //     labels: labels1,
+    //     datasets: [
+    //       {
+    //         label: lab2,
+    //         backgroundColor: bckColor,
+    //         data: pieData2
+    //       }
+    //     ]
+    //   },
+    //   options: {
+    //     maintainAspectRatio: true,
+    //     responsive: true,
+    //     legend: {
+    //       position: 'right',
+    //       labels: {
+    //         padding: 20,
+    //         boxWidth: 10
+    //       },
+    //       onClick: (e) => e.stopPropagation()
+    //     },
+    //     plugins: {
+    //       datalabels: {
+    //         color: 'white',
+    //         font: {
+    //           size: 15,
+    //           weight: 600
+    //         },
+    //         offset: 4,
+    //         padding: 0,
+    //       }
+    //     },
+    //     title: {
+    //       display: true,
+    //       text: 'Service Master Status'
+    //     }
+    //   }
+    // });
+    // this.chart3 = new Chart(document.getElementById("myPieChart3"), {
+    //   plugin: this.chartPlugins,
+    //   type: 'doughnut',
+    //   data: {
+    //     labels: labels1,
+    //     datasets: [
+    //       {
+    //         label: lab3,
+    //         backgroundColor: bckColor,
+    //         data: pieData3
+    //       }
+    //     ]
+    //   },
+    //   options: {
+    //     maintainAspectRatio: true,
+    //     responsive: true,
+    //     legend: {
+    //       position: 'right',
+    //       labels: {
+    //         padding: 20,
+    //         boxWidth: 10
+    //       },
+    //       onClick: (e) => e.stopPropagation()
+    //     },
+    //     plugins: {
+    //       datalabels: {
+    //         color: 'white',
+    //         font: {
+    //           size: 15,
+    //           weight: 600
+    //         },
+    //         offset: 4,
+    //         padding: 0,
+    //       }
+    //     },
+    //     title: {
+    //       display: true,
+    //       text: 'Customer Master Status'
+    //     }
+    //   }
+    // });
 
   }
 
@@ -2321,8 +2334,8 @@ export class ReportsComponent implements OnInit {
     this.isLoading = true;
     let td = new Date();
     this.showTable = true;
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -2363,7 +2376,7 @@ export class ReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.reportdata = [];
     });
@@ -2394,9 +2407,9 @@ export class ReportsComponent implements OnInit {
       if (ItemCodeModification.attachments != null || ItemCodeModification.attachments != undefined) {
         this.attachments = ItemCodeModification.attachments.split(',');
       }
-      this.attachments.filter(x => x.name != null || undefined)
-      let temp = this.ItemcodesList.find(x => x.sapCodeNo == ItemCodeModification.itemCode);
-      //  this.SelectedCode=this.ItemcodesListCon.filter(x=>x.name1==(temp.sapCodeNo + '-' + temp.materialShortName))
+      this.attachments.filter((x:any)  => x.name != null || undefined)
+      let temp = this.ItemcodesList.find((x:any)  => x.sapCodeNo == ItemCodeModification.itemCode);
+      //  this.SelectedCode=this.ItemcodesListCon.filter((x:any)=>x.name1==(temp.sapCodeNo + '-' + temp.materialShortName))
       this.SelectedCode = ItemCodeModification.itemCode;
       this.getModApprovers(ItemCodeModification.itemCode);
       this.ItemCodeModificationModel = Object.assign({}, ItemCodeModification);
@@ -2407,8 +2420,8 @@ export class ReportsComponent implements OnInit {
         if (ItemCodeModification.attachments != null || ItemCodeModification.attachments != undefined) {
           this.attachments = ItemCodeModification.attachments.split(',');
         }
-        let temp = this.ItemcodesList.find(x => x.sapCodeNo == ItemCodeModification.itemCode);
-        //  this.SelectedCode=this.ItemcodesListCon.filter(x=>x.name1==(temp.sapCodeNo + '-' + temp.materialShortName))
+        let temp = this.ItemcodesList.find((x:any)  => x.sapCodeNo == ItemCodeModification.itemCode);
+        //  this.SelectedCode=this.ItemcodesListCon.filter((x:any)=>x.name1==(temp.sapCodeNo + '-' + temp.materialShortName))
         this.SelectedCode = ItemCodeModification.itemCode;
         this.getModApprovers(ItemCodeModification.itemCode);
       }
@@ -2444,11 +2457,11 @@ export class ReportsComponent implements OnInit {
         this.ItemCodeModificationModel.materialShortName = itemData.materialShortName;
         this.ItemCodeModificationModel.materialLongName = itemData.materialLongName;
 
-        this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+        this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
         let empid = this.currentUser.employeeId
         let empName = this.currentUser.fullName;
 
-        let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+        let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -2458,7 +2471,7 @@ export class ReportsComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr1.priority;
         }
-        let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+        let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr2 != null || Appr2 != undefined) {
@@ -2468,7 +2481,7 @@ export class ReportsComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr2.priority;
         }
-        let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+        let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr3 != null || Appr3 != undefined) {
@@ -2494,7 +2507,7 @@ export class ReportsComponent implements OnInit {
 
 
         this.transactionslist.forEach((ad) => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority);
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority);
           if (temp != undefined) {
             if (ad.transactionType == 1) {
               if (temp.role == 'Creator') {
@@ -2507,7 +2520,7 @@ export class ReportsComponent implements OnInit {
                 ad.status = 'Approved'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 3 || ad.transactionType == 4) {
@@ -2524,7 +2537,7 @@ export class ReportsComponent implements OnInit {
 
         });
         this.Approverslist.forEach((ad) => {
-          let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority);
+          let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority);
           if (temp1 == undefined) {
             let trans = {} as Transactions;
             trans.doneBy = ad.approverId;
@@ -2536,12 +2549,12 @@ export class ReportsComponent implements OnInit {
           }
 
         });
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.doneOn > b.doneOn) return 1;
           if (a.doneOn < b.doneOn) return -1;
           return 0;
@@ -2560,7 +2573,7 @@ export class ReportsComponent implements OnInit {
       }
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -2578,10 +2591,10 @@ export class ReportsComponent implements OnInit {
     this.httpService.get(APIURLS.BR_ITEMCODE_REQUEST_GET_CODES_API).then((data: any) => {
       if (data.length > 0) {
         this.ItemcodesList = data;
-        this.ItemcodesListCon = data.map((x) => { x.name1 = x.sapCodeNo + '-' + x.materialShortName; x.sapCodeNo = x.sapCodeNo; return x; });
+        this.ItemcodesListCon = data.map((x:any) => { x.name1 = x.sapCodeNo + '-' + x.materialShortName; x.sapCodeNo = x.sapCodeNo; return x; });
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ItemcodesList = [];
     });
@@ -2591,20 +2604,20 @@ export class ReportsComponent implements OnInit {
     this.summarylist = [];
     let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
     newSummary.type = 'Modification Request';
-    let cre = data.filter(x => x.status == 'Created');
+    let cre = data.filter((x:any)  => x.status == 'Created');
     newSummary.Created = cre.length;
-    let sub = data.filter(x => x.status == 'Submitted');
-    let rsub = data.filter(x => x.status == 'ReSubmitted')
-    let revIn = data.filter(x => x.status == 'Reverted to initiator');
+    let sub = data.filter((x:any)  => x.status == 'Submitted');
+    let rsub = data.filter((x:any)  => x.status == 'ReSubmitted')
+    let revIn = data.filter((x:any)  => x.status == 'Reverted to initiator');
     newSummary.Submitted = sub.length + rsub.length + revIn.length;
-    let inp = data.filter(x => x.status == 'InProcess');
-    let rev = data.filter(x => x.status == 'Reverted');
+    let inp = data.filter((x:any)  => x.status == 'InProcess');
+    let rev = data.filter((x:any)  => x.status == 'Reverted');
     newSummary.InProcess = inp.length + rev.length;
-    let rej = data.filter(x => x.status == 'Rejected');
+    let rej = data.filter((x:any)  => x.status == 'Rejected');
     newSummary.rejected = rej.length;
-    let com = data.filter(x => x.status == 'Completed');
+    let com = data.filter((x:any)  => x.status == 'Completed');
     newSummary.Completed = com.length;
-    let tot = data.filter(x => x.status != 'Created');
+    let tot = data.filter((x:any)  => x.status != 'Created');
     newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length + rsub.length + revIn.length + rev.length;
     this.summarylist.push(newSummary);
     this.gettotal(this.summarylist);
@@ -2629,7 +2642,7 @@ export class ReportsComponent implements OnInit {
 
   pageSize: any = 10;
   pageNo: any;
-  totalCount: number;
+  totalCount!: number;
   totalPages: number
   gotoPage(no) {
     if (this.pageNo == no) return;

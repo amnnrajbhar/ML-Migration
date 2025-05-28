@@ -21,17 +21,17 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
-import * as moment from 'moment';
+import moment from 'moment'
 import { ExcelService } from '../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import * as XLSX from 'xlsx';
-import * as pdfMake from "pdfmake/build/pdfmake";
+// import * as pdfMake from "pdfmake/build/pdfmake";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 //import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 
 declare var ActiveXObject: (type: string) => void;
 
@@ -43,18 +43,18 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./Reports.component.css']
 })
 export class AttendanceReportsComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-@ViewChild('table', { static: false }) table: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
+@ViewChild('table', { static: false }) table!: ElementRef;
 
-  // @ViewChild('table1') table1: ElementRef;
-  // @ViewChild('table2') table2: ElementRef;
-  // @ViewChild('table3') table3: ElementRef;
-  //@ViewChild('table4') table4: ElementRef;
-@ViewChild('dailyreport', { static: false }) dailyreport: ElementRef;
+  // @ViewChild('table1') table1!: ElementRef;
+  // @ViewChild('table2') table2!: ElementRef;
+  // @ViewChild('table3') table3!: ElementRef;
+  //@ViewChild('table4') table4!: ElementRef;
+@ViewChild('dailyreport', { static: false }) dailyreport!: ElementRef;
 
 
   public tableWidget: any;
@@ -64,7 +64,7 @@ export class AttendanceReportsComponent implements OnInit {
   departmentList: any[] = [];
   ReportData: any[] = [];
   locationList: any[] = [];
-  isLoading: boolean;
+  isLoading!: boolean;
   StaffCategoryList: any[] = [];
   PayGroupList: any[] = [];
   ReportingGroupList: any[] = [];
@@ -100,12 +100,12 @@ export class AttendanceReportsComponent implements OnInit {
   path: any;
   fromDate: any;
   toDate: any;
-  EmployeeNo: string = null;
+  EmployeeNo: string = ' ';
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private http: HttpClient, private https: HttpClient, private route: ActivatedRoute, private excelService: ExcelService,
     private datePipe: DatePipe) {
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ //   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   }
 
   private initDatatable(): void {
@@ -125,7 +125,7 @@ export class AttendanceReportsComponent implements OnInit {
 
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -135,45 +135,46 @@ export class AttendanceReportsComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.filterPlant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        this.locationname = this.filterPlant + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.filterPlant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        this.locationname = this.filterPlant + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
   }
 
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     let today = new Date();
     this.CalenderYear = new Date().getFullYear().toString();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -200,11 +201,13 @@ export class AttendanceReportsComponent implements OnInit {
   ClearData() {
     this.filterPlant = null;
     this.filterStaffcat = null;
-    this.filterPayGroup = null;
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
     this.filterDepartment = null;
     this.filterReportingGroup = null;
-    this.filterMonth = null;
-    this.filterEmployee = null;
+    this.filterMonth = '';
+    this.filterEmployee = '';
     this.AttendanceType = null;
     this.ViewType = null;
     this.Type = null;
@@ -270,29 +273,33 @@ export class AttendanceReportsComponent implements OnInit {
   getpayGroupList() {
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.PayGroupList = data.sort((a, b) => {
+        this.PayGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
   }
   payGroupList1: any[] = [];
   getPaygroupsBasedOnPlant() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.code == this.filterPlant);
-    this.payGroupList1 = this.PayGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.code == this.filterPlant);
+    this.payGroupList1 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
   }
 
   payGroupList11: any[] = [];
   getPaygroupsBasedOnPlant1() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.fkPlantId == this.filterPlant);
-    this.payGroupList11 = this.PayGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterPlant);
+    this.payGroupList11 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
   }
 
   getempCatList() {
@@ -300,7 +307,7 @@ export class AttendanceReportsComponent implements OnInit {
       if (data.length > 0) {
         this.StaffCategoryList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.StaffCategoryList = [];
     });
@@ -310,7 +317,7 @@ export class AttendanceReportsComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -324,7 +331,7 @@ export class AttendanceReportsComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -334,7 +341,7 @@ export class AttendanceReportsComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -344,7 +351,7 @@ export class AttendanceReportsComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -372,12 +379,12 @@ export class AttendanceReportsComponent implements OnInit {
     this.httpService.LApost(APIURLS.GET_AUTHORIZED_EMPLOYEE_LIST, filterModel).then((data: any) => {
       if (data.length > 0) {
         this.UserList = data;
-        this.empListCon = data.map((i) => {
+        this.empListCon = data.map((i:any) => {
           i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation
           i.id = i.employeeId; return i;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.UserList = [];
       this.isLoading = false;
 
@@ -387,19 +394,19 @@ export class AttendanceReportsComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
     });
   }
-  exportList: any[];
+  exportList!: any[];
   GetMonthlyMusterReport() {
     if (this.filterPlant == null) {
       toastr.error("Please select plant..");
@@ -422,7 +429,7 @@ export class AttendanceReportsComponent implements OnInit {
       let filterModel: any = {};
       filterModel.plant = this.filterPlant;
       filterModel.payGroup = this.filterPayGroup;
-      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.id).join(',') : null;;
+      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.id).join(',') : null;;
       filterModel.staffCat = this.filterStaffcat;
       filterModel.reporting = this.filterReportingGroup;
       filterModel.payGroup = this.filterPayGroup;
@@ -432,12 +439,12 @@ export class AttendanceReportsComponent implements OnInit {
       filterModel.Year = this.CalenderYear;
       filterModel.dept = this.filterDepartment;
       let connection = this.httpService.LApost(APIURLS.BR_GET_MONTHLY_MUSTER_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data.table.length > 0) {
           this.ReportData = data.table;
           this.exportList = [];
           let index = 0;
-          this.ReportData.forEach(item => {
+          this.ReportData.forEach((item :any) => {
             index = index + 1;
             let exportItem = {
               "SNo": index,
@@ -530,7 +537,7 @@ export class AttendanceReportsComponent implements OnInit {
       this.isLoading = true;
       let filterModel: any = {};
       filterModel.plant = this.filterPlant;
-      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.id).join(',') : null;
+      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.id).join(',') : null;
       filterModel.staffCat = this.filterStaffcat;
       filterModel.reporting = this.filterReportingGroup;
       filterModel.payGroup = this.filterPayGroup;
@@ -541,13 +548,14 @@ export class AttendanceReportsComponent implements OnInit {
       filterModel.Year = this.CalenderYear;
       filterModel.dept = this.filterDepartment;
       let connection = this.httpService.LApost(APIURLS.BR_GET_MONTHLY_DETAILED_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data.table.length > 0) {
           //this.ReportData=data;
-          let rep = data.table.filter(x => x.ord == 0);
-          let rep1 = data.table.filter(x => x.ord != 0);
-          rep.forEach(element => {
-            element.attendance = rep1.filter(x => x.pernr == element.pernr);
+          let rep = data.table.filter((x:any)  => x.ord == 0);
+          let rep1 = data.table.filter((x:any)  => x.ord != 0);
+          rep.forEach((element:any)=> {
+
+            element.attendance = rep1.filter((x:any)  => x.pernr == element.pernr);
           });
           this.ReportData = rep;
           swal({
@@ -591,7 +599,7 @@ export class AttendanceReportsComponent implements OnInit {
       this.isLoading = true;
       let filterModel: any = {};
       filterModel.plant = this.filterPlant;
-      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.id).join(',') : null;
+      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.id).join(',') : null;
       filterModel.category = this.filterStaffcat;
       filterModel.reporting = this.filterReportingGroup;
       filterModel.payGroup = this.filterPayGroup;
@@ -600,7 +608,7 @@ export class AttendanceReportsComponent implements OnInit {
       filterModel.Year = this.CalenderYear;
       filterModel.dept = this.filterDepartment;
       let connection = this.httpService.LApost(APIURLS.GET_MONTHLY_DAYWISE_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data.length > 0) {
           this.ReportData = data;
           swal({
@@ -612,7 +620,8 @@ export class AttendanceReportsComponent implements OnInit {
           }).then((data1) => {
             if (data1) {
               // this.ExportToExcel();
-              this.generateDayWiseExcel(this.ReportData);
+              //v10
+             // this.generateDayWiseExcel(this.ReportData);
             }
           })
 
@@ -648,7 +657,7 @@ export class AttendanceReportsComponent implements OnInit {
       filterModel.Year = this.CalenderYear;
       filterModel.dept = this.filterDepartment;
       let connection = this.httpService.LApost(APIURLS.GET_YEARLY_LEAVE_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data.length > 0) {
           this.ReportData = data;
         }
@@ -687,7 +696,7 @@ export class AttendanceReportsComponent implements OnInit {
       filterModel.month = this.filterMonth;
       filterModel.Year = this.CalenderYear;
       let connection = this.httpService.LApost(APIURLS.BR_GET_MONTHLY_DETAILED_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data.length > 0) {
           this.ReportData = data;
           swal({
@@ -696,7 +705,7 @@ export class AttendanceReportsComponent implements OnInit {
             icon: "warning",
             dangerMode: false,
             buttons: [true, true]
-          }).then((data) => {
+          }).then((data:any) => {
             if (data) {
               this.ExportToExcel();
             }
@@ -722,8 +731,8 @@ export class AttendanceReportsComponent implements OnInit {
     { id: 8, name: 'Shift Code' },
     { id: 91, name: 'Total OT Hours' }
   ]
-  getName(id) {
-    let temp = this.orderList.find(x => x.id == id);
+  getName(id:any) {
+    let temp = this.orderList.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
 
@@ -805,397 +814,405 @@ export class AttendanceReportsComponent implements OnInit {
     XLSX.writeFile(wb, 'DailyAttendanceReport.xlsx');
 
   }
+//v10
+  // generateExcel() {
 
-  generateExcel() {
+  //   //Excel Title, Header, Data
+  //   let dt = new Date();
+  //   let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
+  //   const title = 'Leave Balance Report for the year : ' + this.CalenderYear;
+  //   const header1 = ["", "", "", "", "",
+  //     "Casual Leave", "", "",
+  //     "Sick Leave", "", "",
+  //     "Earned Leave", "", "",
+  //     "Total", "", "", "Previous Year", "", "",]
+  //   const header = ["SNo", "Employee Id", "Employee Name", "Department", "Designation",
+  //     "Opening", "Availed", "Closing",
+  //     "Opening", "Availed", "Closing",
+  //     "Opening", "Availed", "Closing",
+  //     "Opening", "Availed", "Closing",
+  //     "Opening", "Availed", "Closing"]
 
-    //Excel Title, Header, Data
-    let dt = new Date();
-    let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
-    const title = 'Leave Balance Report for the year : ' + this.CalenderYear;
-    const header1 = ["", "", "", "", "",
-      "Casual Leave", "", "",
-      "Sick Leave", "", "",
-      "Earned Leave", "", "",
-      "Total", "", "", "Previous Year", "", "",]
-    const header = ["SNo", "Employee Id", "Employee Name", "Department", "Designation",
-      "Opening", "Availed", "Closing",
-      "Opening", "Availed", "Closing",
-      "Opening", "Availed", "Closing",
-      "Opening", "Availed", "Closing",
-      "Opening", "Availed", "Closing"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.ReportData.forEach((element:any)=> {
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.ReportData.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.id = index;
-      ts.pernr = element.pernr;
-      ts.empFullName = element.fullName;
-      ts.department = element.department;
-      ts.designation = element.designation;
-      ts.cl_open = element.cl_open;
-      ts.cl_avail = element.cl_avail;
-      ts.cl_close = element.cl_close;
-      ts.sl_open = element.sl_open;
-      ts.sl_avail = element.sl_avail;
-      ts.sl_close = element.sl_close;
-      ts.el_open = element.el_open;
-      ts.el_avail = element.el_avail;
-      ts.el_close = element.el_close;
-      ts.tot_open = element.tot_open;
-      ts.tot_availed = element.tot_availed;
-      ts.tot_close = element.tot_close;
-      ts.prev_open = element.prev_open;
-      ts.prev_availed = element.prev_availed;
-      ts.prev_close = element.prev_close;
-      exportList.push(ts);
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.id = index;
+  //     ts.pernr = element.pernr;
+  //     ts.empFullName = element.fullName;
+  //     ts.department = element.department;
+  //     ts.designation = element.designation;
+  //     ts.cl_open = element.cl_open;
+  //     ts.cl_avail = element.cl_avail;
+  //     ts.cl_close = element.cl_close;
+  //     ts.sl_open = element.sl_open;
+  //     ts.sl_avail = element.sl_avail;
+  //     ts.sl_close = element.sl_close;
+  //     ts.el_open = element.el_open;
+  //     ts.el_avail = element.el_avail;
+  //     ts.el_close = element.el_close;
+  //     ts.tot_open = element.tot_open;
+  //     ts.tot_availed = element.tot_availed;
+  //     ts.tot_close = element.tot_close;
+  //     ts.prev_open = element.prev_open;
+  //     ts.prev_availed = element.prev_availed;
+  //     ts.prev_close = element.prev_close;
+  //     exportList.push(ts);
 
-    });
-    let locname = this.locationList.find(x => x.code == this.filterPlant);
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Yearly Leave Balance Report for the year : ' + this.CalenderYear);
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    //let subTitleRow = worksheet.addRow(['Yearly Leave Balance Report']);
-    //subTitleRow.font = { size: 16, bold: true }
-    // subTitleRow.alignment = { horizontal: 'center' }
-    //Add Image
-    // subTitleRow.font = { size: 12, bold: true }
-    worksheet.mergeCells('A1:T1');
-    worksheet.mergeCells('A2:T2');
-    worksheet.mergeCells('A3:T3');
+  //   });
+  //   let locname = this.locationList.find((x:any)  => x.code == this.filterPlant);
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Yearly Leave Balance Report for the year : ' + this.CalenderYear);
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   //let subTitleRow = worksheet.addRow(['Yearly Leave Balance Report']);
+  //   //subTitleRow.font = { size: 16, bold: true }
+  //   // subTitleRow.alignment = { horizontal: 'center' }
+  //   //Add Image
+  //   // subTitleRow.font = { size: 12, bold: true }
+  //   worksheet.mergeCells('A1:T1');
+  //   worksheet.mergeCells('A2:T2');
+  //   worksheet.mergeCells('A3:T3');
 
-    //Blank Row 
-    // worksheet.addRow([]);
-    //Add Header Row
-    let headerRow1 = worksheet.addRow(header1);
-    let headerRow = worksheet.addRow(header);
-    // // Cell Style : Fill and Border
-    // worksheet.mergeCells('A4:A5');
-    // worksheet.mergeCells('B4:B5');
-    // worksheet.mergeCells('C4:C5');
-    // worksheet.mergeCells('D4:D5');
-    worksheet.mergeCells('F4:H4');
-    worksheet.mergeCells('I4:K4');
-    worksheet.mergeCells('L4:N4');
-    worksheet.mergeCells('O4:Q4');
-    worksheet.mergeCells('R4:T4');
+  //   //Blank Row 
+  //   // worksheet.addRow([]);
+  //   //Add Header Row
+  //   let headerRow1 = worksheet.addRow(header1);
+  //   let headerRow = worksheet.addRow(header);
+  //   // // Cell Style : Fill and Border
+  //   // worksheet.mergeCells('A4:A5');
+  //   // worksheet.mergeCells('B4:B5');
+  //   // worksheet.mergeCells('C4:C5');
+  //   // worksheet.mergeCells('D4:D5');
+  //   worksheet.mergeCells('F4:H4');
+  //   worksheet.mergeCells('I4:K4');
+  //   worksheet.mergeCells('L4:N4');
+  //   worksheet.mergeCells('O4:Q4');
+  //   worksheet.mergeCells('R4:T4');
 
-    headerRow1.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.alignment = { horizontal: 'center' }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.alignment = { horizontal: 'center' }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    //  worksheet.addRows(data);
-    // Add Data and Conditional Formatting
-    //data.forEach()
+  //   headerRow1.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.alignment = { horizontal: 'center' }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.alignment = { horizontal: 'center' }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   //  worksheet.addRows(data);
+  //   // Add Data and Conditional Formatting
+  //   //data.forEach()
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
 
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    worksheet.addRow([]);
+  //   worksheet.addRow([]);
 
-    //Generate Excel File with given name
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'LeaveBalanceReport.xlsx');
-    })
+  //   //Generate Excel File with given name
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'LeaveBalanceReport.xlsx');
+  //   })
 
-  }
+  // }
 
-  generateDayWiseExcel(values) {
+  //v10
+  // generateDayWiseExcel(values) {
 
-    //Excel Title, Header, Data
-    let dt = new Date();
-    let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
-    const title = 'Monthly Attendance Report';
+  //   //Excel Title, Header, Data
+  //   let dt = new Date();
+  //   let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
+  //   const title = 'Monthly Attendance Report';
 
-    const header = ["SNo", "Date", "Employee No", "Employee Name", "In",
-      "Out", "Status", "From Date", "To Date",
-      "Department", "Designation", "Remarks", "Pay Group"]
+  //   const header = ["SNo", "Date", "Employee No", "Employee Name", "In",
+  //     "Out", "Status", "From Date", "To Date",
+  //     "Department", "Designation", "Remarks", "Pay Group"]
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.ReportData = values;
-    this.ReportData.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.id = index;
-      ts.date = this.getDateFormate(element.date);
-      ts.employeeId = element.employeeId;
-      ts.empName = element.empName;
-      ts.inTime = element.inTime,
-        ts.outTime = element.outTime,
-        ts.status = element.status,
-        ts.fromDate = element.fromDate,
-        ts.toDate = element.toDate,
-        ts.department = element.department;
-      ts.designation = element.designation;
-      ts.remarks = element.remarks;
-      ts.payGroup = element.payGroup;
-      exportList.push(ts);
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.ReportData = values;
+  //   this.ReportData.forEach((element:any)=> {
 
-    });
-    let locname = this.locationList.find(x => x.code == this.filterPlant);
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let mon = this.MonthsList.find(x => x.id == this.filterMonth);
-    let worksheet = workbook.addWorksheet('Monthly Attendance Detail Report for the Month of ' + mon.name + '-' + this.CalenderYear);
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:M1');
-    worksheet.mergeCells('A2:M2');
-    worksheet.mergeCells('A3:M3');
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.id = index;
+  //     ts.date = this.getDateFormate(element.date);
+  //     ts.employeeId = element.employeeId;
+  //     ts.empName = element.empName;
+  //     ts.inTime = element.inTime,
+  //       ts.outTime = element.outTime,
+  //       ts.status = element.status,
+  //       ts.fromDate = element.fromDate,
+  //       ts.toDate = element.toDate,
+  //       ts.department = element.department;
+  //     ts.designation = element.designation;
+  //     ts.remarks = element.remarks;
+  //     ts.payGroup = element.payGroup;
+  //     exportList.push(ts);
 
-    //Blank Row 
-    // worksheet.addRow([]);
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.alignment = { horizontal: 'center' }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    //  worksheet.addRows(data);
-    // Add Data and Conditional Formatting
-    //data.forEach()
+  //   });
+  //   let locname = this.locationList.find((x:any)  => x.code == this.filterPlant);
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let mon = this.MonthsList.find((x:any)  => x.id == this.filterMonth);
+  //   let worksheet = workbook.addWorksheet('Monthly Attendance Detail Report for the Month of ' + mon.name + '-' + this.CalenderYear);
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:M1');
+  //   worksheet.mergeCells('A2:M2');
+  //   worksheet.mergeCells('A3:M3');
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
+  //   //Blank Row 
+  //   // worksheet.addRow([]);
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.alignment = { horizontal: 'center' }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   //  worksheet.addRows(data);
+  //   // Add Data and Conditional Formatting
+  //   //data.forEach()
 
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
 
-    worksheet.addRow([]);
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    //Generate Excel File with given name
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'MonthlyDaywiseReport.xlsx');
-    })
+  //   worksheet.addRow([]);
 
-  }
-  generateEsslReportToExcelExcel() {
+  //   //Generate Excel File with given name
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'MonthlyDaywiseReport.xlsx');
+  //   })
 
-    //Excel Title, Header, Data
-    let dt = new Date();
-    let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
-    const title = 'Daily Biometric Punch Report';
-    const header = ["SNo", "Employee No", "Employee Name", "Department", "Designation",
-      "Log Date&Time", "Device Name", "Direction",
-      "Shift", "IP Address", "Device Location"]
+  // }
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.EsslPunchReport.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.id = index;
-      ts.pernr = element.pernr;
-      ts.empName = element.empName;
-      ts.department = element.department;
-      ts.designation = element.designation;
-      ts.logDateTime = this.datePipe.transform(element.logDateTime, 'dd/MM/yyyy HH:mm a');
-      ts.deviceFName = element.deviceFName;
-      ts.deviceDirection = element.deviceDirection;
-      ts.shift = element.shift;
-      ts.ipAddress = element.ipAddress;
-      ts.deviceLocation = element.deviceLocation;
-      exportList.push(ts);
+  //v10
+  // generateEsslReportToExcelExcel() {
 
-    });
-    let locname = this.locationList.find(x => x.code == this.filterPlant);
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Daily Biometric Punch Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
+  //   //Excel Title, Header, Data
+  //   let dt = new Date();
+  //   let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
+  //   const title = 'Daily Biometric Punch Report';
+  //   const header = ["SNo", "Employee No", "Employee Name", "Department", "Designation",
+  //     "Log Date&Time", "Device Name", "Direction",
+  //     "Shift", "IP Address", "Device Location"]
 
-    worksheet.mergeCells('A1:K1');
-    worksheet.mergeCells('A2:K2');
-    worksheet.mergeCells('A3:K3');
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.EsslPunchReport.forEach((element:any)=> {
 
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.id = index;
+  //     ts.pernr = element.pernr;
+  //     ts.empName = element.empName;
+  //     ts.department = element.department;
+  //     ts.designation = element.designation;
+  //     ts.logDateTime = this.datePipe.transform(element.logDateTime, 'dd/MM/yyyy HH:mm a');
+  //     ts.deviceFName = element.deviceFName;
+  //     ts.deviceDirection = element.deviceDirection;
+  //     ts.shift = element.shift;
+  //     ts.ipAddress = element.ipAddress;
+  //     ts.deviceLocation = element.deviceLocation;
+  //     exportList.push(ts);
 
-    let headerRow = worksheet.addRow(header);
-    // Cell Style : Fill and Border
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   });
+  //   let locname = this.locationList.find((x:any)  => x.code == this.filterPlant);
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Daily Biometric Punch Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+
+  //   worksheet.mergeCells('A1:K1');
+  //   worksheet.mergeCells('A2:K2');
+  //   worksheet.mergeCells('A3:K3');
 
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-
-    worksheet.addRow([]);
-
-    //Generate Excel File with given name
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'DailyBoimetricPunchReport.xlsx');
-    })
-  }
-
-  generateEsslReportToExcelExcel1() {
-
-    //Excel Title, Header, Data
-    let dt = new Date();
-    let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
-    const title = 'Daily Biometric Punch Report';
-    const header = ["SNo", "Employee No", "Employee Name", "Department", "Designation", "LogDate",
-      "Log Date&Time", "Shift", "IP Address"]
-
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.EsslPunchReport.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.id = index;
-      ts.pernr = element.pernr;
-      ts.empName = element.empName;
-      ts.department = element.department;
-      ts.designation = element.designation;
-      ts.eventDate = this.datePipe.transform(element.eventDate, 'dd/MM/yyyy');
-      ts.eventTime = this.datePipe.transform(element.eventTime, 'HH:mm:ss a');
-      ts.shift = element.shift;
-      ts.ipAddress = element.ipAddress;
-      exportList.push(ts);
-
-    });
-    let locname = this.locationList.find(x => x.code == this.filterPlant);
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Daily Biometric Punch Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-
-    worksheet.mergeCells('A1:I1');
-    worksheet.mergeCells('A2:I2');
-    worksheet.mergeCells('A3:I3');
+  //   let headerRow = worksheet.addRow(header);
+  //   // Cell Style : Fill and Border
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
 
-    let headerRow = worksheet.addRow(header);
-    // Cell Style : Fill and Border
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+
+  //   worksheet.addRow([]);
+
+  //   //Generate Excel File with given name
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'DailyBoimetricPunchReport.xlsx');
+  //   })
+  // }
+
+  //v10
+  // generateEsslReportToExcelExcel1() {
+
+  //   //Excel Title, Header, Data
+  //   let dt = new Date();
+  //   let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
+  //   const title = 'Daily Biometric Punch Report';
+  //   const header = ["SNo", "Employee No", "Employee Name", "Department", "Designation", "LogDate",
+  //     "Log Date&Time", "Shift", "IP Address"]
+
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.EsslPunchReport.forEach((element:any)=> {
+
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.id = index;
+  //     ts.pernr = element.pernr;
+  //     ts.empName = element.empName;
+  //     ts.department = element.department;
+  //     ts.designation = element.designation;
+  //     ts.eventDate = this.datePipe.transform(element.eventDate, 'dd/MM/yyyy');
+  //     ts.eventTime = this.datePipe.transform(element.eventTime, 'HH:mm:ss a');
+  //     ts.shift = element.shift;
+  //     ts.ipAddress = element.ipAddress;
+  //     exportList.push(ts);
+
+  //   });
+  //   let locname = this.locationList.find((x:any)  => x.code == this.filterPlant);
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Daily Biometric Punch Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+
+  //   worksheet.mergeCells('A1:I1');
+  //   worksheet.mergeCells('A2:I2');
+  //   worksheet.mergeCells('A3:I3');
 
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-
-    worksheet.addRow([]);
-
-    //Generate Excel File with given name
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'DailyBoimetricPunchReport.xlsx');
-    })
+  //   let headerRow = worksheet.addRow(header);
+  //   // Cell Style : Fill and Border
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
 
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+
+  //   worksheet.addRow([]);
+
+  //   //Generate Excel File with given name
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'DailyBoimetricPunchReport.xlsx');
+  //   })
+
+
+  // }
 
   get(apiKey: string): any {
     const promise = new Promise((resolve, reject) => {
@@ -1217,7 +1234,8 @@ export class AttendanceReportsComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -1266,7 +1284,7 @@ getHeader(): { headers: HttpHeaders } {
       //filterModel.attendanceType=this.filterTY;
       filterModel.date = new Date(this.fromDate).toLocaleDateString();
       let connection = this.httpService.LApost(APIURLS.GET_DAILY_ATTENDANCE_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           // this.ReportData=data;
           this.lossofPay = data.lossofPay;
@@ -1291,7 +1309,7 @@ getHeader(): { headers: HttpHeaders } {
           //   icon: "warning",
           //   dangerMode: false,
           //   buttons: [true, true]
-          // }).then((data) => {
+          // }).then((data:any) => {
           //   if (data) {
           //     if (value == 'Excel') {
           //       //this.ExportDailyReportToExcel();
@@ -1340,7 +1358,7 @@ getHeader(): { headers: HttpHeaders } {
       //filterModel.attendanceType=this.filterTY;
       filterModel.date = this.setFormatDateTime(this.fromDate);;
       let connection = this.httpService.LApost(APIURLS.BR_GET_DAILY_SHIFT_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.ShiftReport = data;
           // swal({
@@ -1349,7 +1367,7 @@ getHeader(): { headers: HttpHeaders } {
           //   icon: "warning",
           //   dangerMode: false,
           //   buttons: [true, true]
-          // }).then((data) => {
+          // }).then((data:any) => {
           //   if (data) {
           //     this.printshiftreport();
           //   }
@@ -1383,12 +1401,12 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.category = this.filterStaffcat;
       filterModel.department = this.filterDepartment;
       filterModel.subdepartment = this.filterSubDepartment;
-      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.id).join(',') : null;
+      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.id).join(',') : null;
       //filterModel.attendanceType=this.filterTY;
       filterModel.fromDate = this.setFormatDateTime(this.fromDate);;
       filterModel.toDate = this.setFormatDateTime(this.toDate);;
       let connection = this.httpService.LApost(APIURLS.BR_GET_DAILY_ESSL_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.EsslPunchReport = data;
           // swal({
@@ -1397,7 +1415,7 @@ getHeader(): { headers: HttpHeaders } {
           //   icon: "warning",
           //   dangerMode: false,
           //   buttons: [true, true]
-          // }).then((data) => {
+          // }).then((data:any) => {
           //   if (data) {
           //     this.printEsslreport();
           //   }
@@ -1433,7 +1451,7 @@ getHeader(): { headers: HttpHeaders } {
       //filterModel.attendanceType=this.filterTY;
       //filterModel.date=this.setFormatDateTime(this.fromDate);;
       let connection = this.httpService.LApost(APIURLS.GET_MONTHLY_CONTRACTUAL_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.MonthlyContractualReport = data;
           swal({
@@ -1442,7 +1460,7 @@ getHeader(): { headers: HttpHeaders } {
             icon: "warning",
             dangerMode: false,
             buttons: [true, true]
-          }).then((data) => {
+          }).then((data:any) => {
             if (data) {
               this.printEsslreport();
             }
@@ -1485,18 +1503,18 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.year = this.CalenderYear;
       filterModel.reportType = this.AttendanceType;
       let connection = this.httpService.LApost(APIURLS.GET_MONTHLY_ADDR_ATTR_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.AddAttrReport = data;
-          this.AttritionReport = data.filter(x => x.reportType == 'Attrition');
-          this.AdditionReport = data.filter(x => x.reportType == 'Addition');
+          this.AttritionReport = data.filter((x:any)  => x.reportType == 'Attrition');
+          this.AdditionReport = data.filter((x:any)  => x.reportType == 'Addition');
           swal({
             title: "Message",
             text: "Are you Sure to export..?",
             icon: "warning",
             dangerMode: false,
             buttons: [true, true]
-          }).then((data) => {
+          }).then((data:any) => {
             if (data) {
               this.printAddAttrreport();
             }
@@ -1533,7 +1551,7 @@ getHeader(): { headers: HttpHeaders } {
       //filterModel.attendanceType=this.filterTY;
       //filterModel.date=this.setFormatDateTime(this.fromDate);;
       let connection = this.httpService.LApost(APIURLS.GET_MANUAL_ENTRY_AUDIT_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.ManualEntryAuditReport = data;
           // swal({
@@ -1542,7 +1560,7 @@ getHeader(): { headers: HttpHeaders } {
           //   icon: "warning",
           //   dangerMode: false,
           //   buttons: [true, true]
-          // }).then((data) => {
+          // }).then((data:any) => {
           //   if (data) {
           //     this.printManualreport();
           //   }
@@ -1585,7 +1603,7 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.reportType = this.ViewType;
       //filterModel.date=this.setFormatDateTime(this.fromDate);;
       let connection = this.httpService.LApost(APIURLS.GET_MONTHLY_OT_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.MonthlyOTReport = data;
           if (this.ViewType == 'Summary') {
@@ -1628,7 +1646,7 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.reportType = 'Detailed';
       //filterModel.date=this.setFormatDateTime(this.fromDate);;
       let connection = this.httpService.LApost(APIURLS.GET_MONTHLY_OT_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.MonthlyOTReport1 = data;
 
@@ -1645,7 +1663,7 @@ getHeader(): { headers: HttpHeaders } {
   details: any[] = [];
   ShowForm(empid) {
     this.details = [];
-    this.details = this.MonthlyOTReport1.filter(x => x.pernr == empid);
+    this.details = this.MonthlyOTReport1.filter((x:any)  => x.pernr == empid);
     this.reInitOTDatatable();
     jQuery('#myModal').modal('show')
   }
@@ -1691,7 +1709,7 @@ getHeader(): { headers: HttpHeaders } {
   cmpimg: any;
   printreport() {
     //this.lineclearancelist1=data;
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED, " + this.filterPlant;
     var pipe = new DatePipe('en-US');
     var ReportHeader = "Daily Attendance Detail Report for the Date: " + this.setFormatedDateTime(this.fromDate);;
@@ -1701,7 +1719,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1715,13 +1733,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Daily Attendance Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1739,7 +1757,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 110, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -1794,7 +1812,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
   printshiftreport() {
     //this.lineclearancelist1=data;
@@ -1808,7 +1826,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1822,13 +1840,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Daily Shift Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1846,7 +1864,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 110, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -1901,7 +1919,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
   printEsslreport() {
     //this.lineclearancelist1=data;
@@ -1915,7 +1933,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1929,13 +1947,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Daily Essl Punch Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1953,7 +1971,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 110, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -2008,7 +2026,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
   printAddAttrreport() {
     //this.lineclearancelist1=data;
@@ -2022,7 +2040,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -2036,13 +2054,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Addition Attrition Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -2060,7 +2078,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 110, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -2115,7 +2133,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
   printManualreport() {
     //this.lineclearancelist1=data;
@@ -2129,7 +2147,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -2143,13 +2161,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Manual Entry Audit Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -2167,7 +2185,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [20, 110, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -2222,7 +2240,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
   printMonthlyOTreport() {
     //this.lineclearancelist1=data;
@@ -2241,7 +2259,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -2255,13 +2273,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Monthly OT Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -2279,7 +2297,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 110, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -2334,7 +2352,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
@@ -2357,7 +2375,7 @@ getHeader(): { headers: HttpHeaders } {
     if (this.filterPlant == null) {
       this.isLoading = true;
       let connection = this.httpService.LAget(APIURLS.GET_ALL_DEV_REPORT);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.DevBioReport = data;
         }
@@ -2373,7 +2391,7 @@ getHeader(): { headers: HttpHeaders } {
       let filterModel: any = {};
       filterModel.Plant = this.filterPlant;
       let connection = this.httpService.LApost(APIURLS.GET_DEV_BIO_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.DevBioReport = data;
         }
@@ -2398,7 +2416,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -2412,13 +2430,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Biometric Device Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -2436,7 +2454,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 110, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -2491,7 +2509,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
 
   }
 
@@ -2532,7 +2550,7 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.toDate = this.toDate ? this.getDateFormate(this.toDate) : null;
 
       let connection = this.httpService.LApost(APIURLS.GET_EMP_SHIFT_ALLOWANCE_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data.length > 0) {
           this.EmpShiftAll = data;
           if (value == 'PDF') {
@@ -2564,7 +2582,7 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.fromDate = this.setFormatDate(this.fromDate);
       filterModel.toDate = this.setFormatDate(this.toDate);
       let connection = this.httpService.LApost(APIURLS.ABSENT_INTIMATION_REPORT, filterModel)
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.IntimationReport = data;
           if (value == 'PDF') {
@@ -2592,7 +2610,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -2606,13 +2624,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Intimation Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -2630,7 +2648,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 110, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -2685,7 +2703,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
 
   }
 
@@ -2705,7 +2723,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -2719,13 +2737,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Shift Allowance Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -2743,7 +2761,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -2800,7 +2818,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
 
   }
 
@@ -2823,7 +2841,7 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.fromDate = this.setFormatDateTime(this.fromDate);
       filterModel.toDate = this.setFormatDateTime(this.toDate);
       let connection = this.httpService.LApost(APIURLS.LOP_REIMBURSEMENT_REPORT, filterModel)
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.ReimbursementReport = data;
           if (values == 'PDF') {
@@ -2851,7 +2869,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -2865,13 +2883,13 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Reimbursement Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -2889,7 +2907,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 110, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -2944,7 +2962,7 @@ getHeader(): { headers: HttpHeaders } {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
 
   }
 }

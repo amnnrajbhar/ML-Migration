@@ -26,7 +26,7 @@ export class ViewComponent implements OnInit {
   employeeId: any;
   details: any = {};
   objectType: string = "Employee";
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading: boolean = false;
 
@@ -44,7 +44,8 @@ export class ViewComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.id = this.route.snapshot.paramMap.get('id')!;
       this.canViewFullProfile = this.util.hasPermission(PERMISSIONS.HR_EMPLOYEE_VIEW_FULL_PROFILE);
       
@@ -63,7 +64,7 @@ export class ViewComponent implements OnInit {
     }
   }
   
-  LoadEmployeeDetails(id) {
+  LoadEmployeeDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -71,7 +72,7 @@ export class ViewComponent implements OnInit {
         this.details = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

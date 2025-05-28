@@ -3,8 +3,8 @@ export class EmailListFilter {
     selectedEmployeeCategoryId: any;
     selectedPayGroupId: any;
     selectedStateId: any;
-    selectedEmailType: string;
-    selectedEmailId: string;
+    selectedEmailType: string
+    selectedEmailId: string
     pageNo:number;
     pageSize:number;
     export:boolean;

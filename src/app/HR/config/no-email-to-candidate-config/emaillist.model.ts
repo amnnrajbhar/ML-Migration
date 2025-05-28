@@ -1,8 +1,8 @@
 export class EmailListFilter {
-    selectedPlantId: number;
-    selectedEmployeeCategoryId: number;
-    selectedPayGroupId: number;
-    selectedStateId: string;
+    selectedPlantId!: number;
+    selectedEmployeeCategoryId!: number;
+    selectedPayGroupId!: number;
+    selectedStateId: string
    
     pageNo:number;
     pageSize:number;

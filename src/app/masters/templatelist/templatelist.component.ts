@@ -16,7 +16,7 @@ export class TemplateListComponent implements OnInit {
 
     public tableWidget: any;
     country_name: string = "";
-    stateList: any[];
+    stateList!: any[];
     SelState: any;
     ApprovalTemplateName ="";
     isDispHide: boolean = true;
@@ -24,17 +24,17 @@ export class TemplateListComponent implements OnInit {
     selectedtempVal2: string="";
     getapproval:any[];
     templateList1: any[] =[];
-    templateListSel1: any[];
-    templateListSel2: any[];
+    templateListSel1!: any[];
+    templateListSel2!: any[];
     hdrMappedList1: any[]=[];
     hdrMappedList2: any[]=[];
-    templateList2: any[];
+    templateList2!: any[];
     templateItem: any;
     projectList:any[];
     approvalItem: TemplateList  = new TemplateList(0,"","","",0,0,"","");
     sbuLst:any[];
     isLoading: boolean = false;
-    tempHeaderList: any[];
+    tempHeaderList!: any[];
     errMsg: string = "";
     errMsgPAN: string = "";
     errMsgGSTIN: string = "";
@@ -84,7 +84,7 @@ export class TemplateListComponent implements OnInit {
             this.isLoading = false;
             this.getapproval = data;
             this.reInitDatatable();
-            }).catch(error => {
+            }).catch((error)=> {
             this.isLoading = false;
             this.getapproval = [];
            

@@ -1,94 +1,94 @@
 export interface OfferDetails {
     offerId: number;
-    offerNo: string;
+    offerNo: string
     isConfidential: boolean;
-    pfApplicable: string;
-    esiApplicable: string;
-    epsApplicable: string;
-    preJoiningInitiation: string;
-    guid: string;
+    pfApplicable: string
+    esiApplicable: string
+    epsApplicable: string
+    preJoiningInitiation: string
+    guid: string
     plantId: number;
-    plantName: string;
+    plantName: string
     payGroupId: number;
-    payGroupName: string;
-    payGroupPrintName: string;
+    payGroupName: string
+    payGroupPrintName: string
     employeeCategoryId: number;
-    employeeCategoryName: string;
-    title: string;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    initial: string;
-    gender: string;
-    personalEmailId: string;
-    mobileNo: string;
-    dateOfBirth: string;
+    employeeCategoryName: string
+    title: string
+    firstName: string
+    middleName: string
+    lastName: string
+    initial: string
+    gender: string
+    personalEmailId: string
+    mobileNo: string
+    dateOfBirth: string
     age: number;
-    addressLine1: string;
-    addressLine2: string;
-    addressLine3: string;
-    city: string;
-    district: string;
+    addressLine1: string
+    addressLine2: string
+    addressLine3: string
+    city: string
+    district: string
     stateId: number;
-    state: string;
+    state: string
     pinCode: number;
-    qualification: string;
+    qualification: string
     locationId: number;
-    location: string;
+    location: string
     locationStateId: number;
-    locationState: string;
-    locationStateName: string;
-    countryName: string;
+    locationState: string
+    locationStateName: string
+    countryName: string
     designationId: number;
-    designation: string;
-    grade: string;
+    designation: string
+    grade: string
     roleId: number;
-    role: string;
+    role: string
     departmentId:number;
     department:string;
-    interviewedBy: string;
+    interviewedBy: string
     assesmentReport: boolean;
     matTest: boolean;
     sendEmailNotification: boolean;
-    otherEmails: string;
-    presentEmployer: string;    
-    presentDesignation: string;
+    otherEmails: string
+    presentEmployer: string    
+    presentDesignation: string
     salesAmount: number;
     totalExperience: number;
     presentCTC: number;
     offeredSalary: number;
-    salaryType: string;
-    packageType: string;
-    referenceThru: string;
-    refEmployeeNo: string;
-    refDetails: string;
-    recruitmentType: string;
-    replacingEmployeeNumber: string;
+    salaryType: string
+    packageType: string
+    referenceThru: string
+    refEmployeeNo: string
+    refDetails: string
+    recruitmentType: string
+    replacingEmployeeNumber: string
     replacingEmployeeId: number;
-    replacingEmployeeName: string;
-    replacingEmployeePlantCode: string;
-    replacingEmployeePlantName: string;
-    replacingEmployeeDesignation: string;
-    replacingEmployeeDepartment: string;
+    replacingEmployeeName: string
+    replacingEmployeePlantCode: string
+    replacingEmployeePlantName: string
+    replacingEmployeeDesignation: string
+    replacingEmployeeDepartment: string
     replacingEmployeeCurrentCTC: number;
-    replacingEmployeeDOL: string;
-    replacingEmployeeDOR: string;
-    additionalDetails: string;
-    status: string;
-    joiningDate: string;
-    acceptedDOJ: string;
-    notAcceptedReason: string;
-    createdDate: string;
+    replacingEmployeeDOL: string
+    replacingEmployeeDOR: string
+    additionalDetails: string
+    status: string
+    joiningDate: string
+    acceptedDOJ: string
+    notAcceptedReason: string
+    createdDate: string
     createdById: number;
-    createdByName: string;
-    modifiedDate: string;
+    createdByName: string
+    modifiedDate: string
     modifiedById: number;
-    modifiedByName: string;
-    emailSentDate: string;    
+    modifiedByName: string
+    emailSentDate: string    
     reportingManagerName:string;
     approvingManagerName:string;
     reportingManagerId:number;
     approvingManagerId:number;
-    secondSignatoryName: string;
-    statusColor: string;
+    secondSignatoryName: string
+    statusColor: string
 }

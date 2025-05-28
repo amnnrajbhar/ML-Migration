@@ -8,11 +8,11 @@ import { HttpService } from '../../shared/http-service';
 import { AuthData } from '../../auth/auth.model';
 import { FormControl } from '@angular/forms';
 import { AssetSummary } from './AssetSummary.model';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 // import { FileSaver }  from 'angular-file-saver';
-// import { saveAs } from 'file-saver';
+// //import { saveAs } from 'file-saver';
 declare var $: any;
 declare var toastr: any;
 
@@ -25,7 +25,7 @@ export class AssetSummaryComponent implements OnInit {
 @ViewChild('filterForm', { static: false }) filterForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   public tableWidget: any;
   isLoading: boolean = false;
   errMsg: string = "";
@@ -56,7 +56,8 @@ export class AssetSummaryComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;    
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     // console.log(this.path);
     this.getCatList();
     this.getAssetStateList();
@@ -64,16 +65,16 @@ export class AssetSummaryComponent implements OnInit {
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -167,7 +168,7 @@ export class AssetSummaryComponent implements OnInit {
       if (data.length > 0) {
         this.catList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.catList = [];
     });
   }
@@ -177,13 +178,13 @@ export class AssetSummaryComponent implements OnInit {
       if (data.length > 0) {
         this.assStateList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.assStateList = [];
     });
   }
 
-  getAssetState(id) {
-    let temp = this.assStateList.find(x => x.id == id);
+  getAssetState(id:any) {
+    let temp = this.assStateList.find((x:any)  => x.id == id);
     return temp ? temp.status : '';
   }
 
@@ -288,7 +289,7 @@ export class AssetSummaryComponent implements OnInit {
       }
       this.isLoading = false;
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.reInitDatatable();
     });
@@ -319,104 +320,105 @@ export class AssetSummaryComponent implements OnInit {
     jQuery("#searchModal").modal('hide');
     jQuery('#myModal').modal('show');
   }
+ //v10
+  // exportToExcel() {
+  //   const title = 'Asset Summary Report';
+  //   const header = ["Sl No","Location","VDI", "Dotmatrix", "Router ", "Deskjet", "Laptop", "Desktop", "Server", "Laser", "MFP", "Switch",
+  //   "Video Camera", "Firewall", "Mini Laptop", "Scanner", "Tape Drive", "Fire Proof Cabinet", "IP Phone", "Smart Cabinet", "Datamax",
+  //   "Disk Storage", "Tablets", "Projector", "Projector Screen", "VC Camera", "VC Speakers", "VC Microphone", "VC Controller",
+  //   "Wireless Presenter", "Interactive Panel/ Display", "WiFi AP", "Biometric", "PBX"]
 
-  exportToExcel() {
-    const title = 'Asset Summary Report';
-    const header = ["Sl No","Location","VDI", "Dotmatrix", "Router ", "Deskjet", "Laptop", "Desktop", "Server", "Laser", "MFP", "Switch",
-    "Video Camera", "Firewall", "Mini Laptop", "Scanner", "Tape Drive", "Fire Proof Cabinet", "IP Phone", "Smart Cabinet", "Datamax",
-    "Disk Storage", "Tablets", "Projector", "Projector Screen", "VC Camera", "VC Speakers", "VC Microphone", "VC Controller",
-    "Wireless Presenter", "Interactive Panel/ Display", "WiFi AP", "Biometric", "PBX"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.assetList.forEach((element:any)=> {
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.assetList.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.slNo = index;
-      ts.location = element.location;
-      ts.vdi = element.vdi;
-      ts.dotmatrix = element.dotmatrix;
-      ts.router = element.router;
-      ts.deskjet = element.deskjet;
-      ts.laptop = element.laptop;
-      ts.desktop = element.desktop;
-      ts.server = element.server;
-      ts.laser = element.laser;
-      ts.mfp = element.mfp;
-      ts.switch = element.switch;
-      ts.videoCamera = element.videoCamera;
-      ts.firewall = element.firewall;
-      ts.miniLaptop = element.miniLaptop;
-      ts.scanner = element.scanner;
-      ts.tapeDrive = element.tapeDrive;
-      ts.fireProofCabinet = element.fireProofCabinet;
-      ts.ipPhone = element.ipPhone;
-      ts.smartCabinet = element.smartCabinet;
-      ts.datamax = element.datamax;
-      ts.diskStorage = element.diskStorage;
-      ts.tablets = element.tablets;
-      ts.projector = element.projector;
-      ts.projectorScreen = element.projectorScreen;
-      ts.vcCamera = element.vcCamera;
-      ts.vcSpeakers = element.vcSpeakers;
-      ts.vcMicrophone = element.vcMicrophone;
-      ts.vcController = element.vcController;
-      ts.wirelessPresenter = element.wirelessPresenter;
-      ts.interactivePanelDisplay = element.interactivePanelDisplay;
-      ts.wiFiAP = element.wiFiAP;
-      ts.biometric = element.biometric;
-      ts.pbx = element.pbx;
-      exportList.push(ts);
-    });
-    var OrganisationName = "MICROLABS LIMITED";
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('ASSET SUMMARY REPORT');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:AH1');
-    worksheet.mergeCells('A2:AH2');
-    worksheet.mergeCells('A3:AH3');
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slNo = index;
+  //     ts.location = element.location;
+  //     ts.vdi = element.vdi;
+  //     ts.dotmatrix = element.dotmatrix;
+  //     ts.router = element.router;
+  //     ts.deskjet = element.deskjet;
+  //     ts.laptop = element.laptop;
+  //     ts.desktop = element.desktop;
+  //     ts.server = element.server;
+  //     ts.laser = element.laser;
+  //     ts.mfp = element.mfp;
+  //     ts.switch = element.switch;
+  //     ts.videoCamera = element.videoCamera;
+  //     ts.firewall = element.firewall;
+  //     ts.miniLaptop = element.miniLaptop;
+  //     ts.scanner = element.scanner;
+  //     ts.tapeDrive = element.tapeDrive;
+  //     ts.fireProofCabinet = element.fireProofCabinet;
+  //     ts.ipPhone = element.ipPhone;
+  //     ts.smartCabinet = element.smartCabinet;
+  //     ts.datamax = element.datamax;
+  //     ts.diskStorage = element.diskStorage;
+  //     ts.tablets = element.tablets;
+  //     ts.projector = element.projector;
+  //     ts.projectorScreen = element.projectorScreen;
+  //     ts.vcCamera = element.vcCamera;
+  //     ts.vcSpeakers = element.vcSpeakers;
+  //     ts.vcMicrophone = element.vcMicrophone;
+  //     ts.vcController = element.vcController;
+  //     ts.wirelessPresenter = element.wirelessPresenter;
+  //     ts.interactivePanelDisplay = element.interactivePanelDisplay;
+  //     ts.wiFiAP = element.wiFiAP;
+  //     ts.biometric = element.biometric;
+  //     ts.pbx = element.pbx;
+  //     exportList.push(ts);
+  //   });
+  //   var OrganisationName = "MICROLABS LIMITED";
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('ASSET SUMMARY REPORT');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:AH1');
+  //   worksheet.mergeCells('A2:AH2');
+  //   worksheet.mergeCells('A3:AH3');
 
-    //Blank Row 
-    worksheet.addRow([]);
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  //   //Blank Row 
+  //   worksheet.addRow([]);
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'AssetSummaryReport.xlsx');
-    })
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'AssetSummaryReport.xlsx');
+  //   })
+  // }
 
   closeSaveModal() {
     jQuery("#myModal").modal('hide');

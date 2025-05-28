@@ -1,24 +1,24 @@
 export class EmployeeOtherDetails {
-    id: number;
+    id!: number;
     fkEmpId: number | null;
-    employeeId: string;
+    employeeId: string
     designation: number | null;
-    panNumber: string;
+    panNumber: string
     visaIsActive: boolean | null;
-    visaNumber: string;
-    passportNumber: string;
-    qualification: string;
-    yearOfPassing: string;
-    hardSkill: string;
-    softSkill: string;
-    description: string;
+    visaNumber: string
+    passportNumber: string
+    qualification: string
+    yearOfPassing: string
+    hardSkill: string
+    softSkill: string
+    description: string
     yearExp: number | null;
     relativeExp: number | null;
-    lastCompany: string;
-    secondLastCompany: string;
-    previousLocation: string;
-    currentLocation: string;
-    imgUrl: string;
+    lastCompany: string
+    secondLastCompany: string
+    previousLocation: string
+    currentLocation: string
+    imgUrl: string
     createdBy: number | null;
     createdDate: string | null;
     modifiedBy: number | null;

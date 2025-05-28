@@ -1,16 +1,16 @@
 export class UserMaster {
-    id: number;
+    id!: number;
     fkCompanyId: number | null;
     fkEmpId: number | null;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    fullName: string;
-    employeeId: string;
-    password: string;
-    email: string;
+    firstName: string
+    middleName: string
+    lastName: string
+    fullName: string
+    employeeId: string
+    password: string
+    email: string
     phoneNumber: number | null;
-    imgUrl: string;
+    imgUrl: string
     fkDesignationId: number | null;
     fkRoleId: number | null;
     fkSubroleId: number | null;
@@ -18,10 +18,10 @@ export class UserMaster {
     fkDepartmentId: number | null;
     fkUrlId: number | null;
     lastLoginDateTime: string | null;
-    lastPassword: string;
-    passwordResetToken: string;
+    lastPassword: string
+    passwordResetToken: string
     tokenExpiryDate: string | null;
-    status: string;
+    status: string
     createdBy: number | null;
     createdDate: string | null;
     modifiedBy: number | null;

@@ -8,10 +8,10 @@ import { LineItem } from "../Lineitem.model";
 import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 
 @Component({
@@ -30,11 +30,11 @@ export class MIGOPostingComponent implements OnInit {
     pimdatalist:any[]=[];
     HeaderList:Header[]=[];
     ItemList:LineItem[]=[];
-    isLoading: boolean;
-    isLoadingPop: boolean;
+    isLoading!: boolean;
+    isLoadingPop!: boolean;
     plant:string;
-    path: string;
-    currentUser: AuthData;
+    path!: string
+    currentUser!: AuthData;
     locationList:any[]=[]
     filteredModel:any[]=[];
     samplesData:any[]=[];
@@ -47,7 +47,9 @@ export class MIGOPostingComponent implements OnInit {
     TotalPIMPallets:number=0;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
 
 
@@ -84,7 +86,8 @@ export class MIGOPostingComponent implements OnInit {
   }
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getLocationMaster();
     this.getbase64image();
   }
@@ -93,13 +96,13 @@ export class MIGOPostingComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         // this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
-        this.plant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+        this.locationList = data.filter((x:any)  => x.isActive);
+        this.plant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
         // this.locationname=this.plant+' - '+this.locationList.find(x=>x.id==this.currentUser.baselocation).name
       }
       this.reInitDatatable();
       this.reInitDatatable1();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -139,8 +142,9 @@ export class MIGOPostingComponent implements OnInit {
           this.materialstatusmodel = this.pimheader.materialstatusmodel;
           this.BinModel = this.pimheader.binModel;
 
-          this.filteredModel.forEach(element => {
-            element.binModel=this.BinModel.filter(x=>x.lineItemNo==element.lineItemNo && x.batchNo==element.batchNo);
+          this.filteredModel.forEach((element:any)=> {
+
+            element.binModel=this.BinModel.filter((x:any)=>x.lineItemNo==element.lineItemNo && x.batchNo==element.batchNo);
             this.TotalPIMQty = this.TotalPIMQty+ +element.qty;
             this.TotalPIMPallets = this.TotalPIMPallets+ +element.totalPallets;
           });
@@ -164,7 +168,7 @@ export class MIGOPostingComponent implements OnInit {
         this.reInitDatatable1();
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.pimdatalist = [];
     });
@@ -177,7 +181,7 @@ export class MIGOPostingComponent implements OnInit {
         this.getDataforReport();
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.pimdatalist = [];
     });
@@ -188,7 +192,8 @@ export class MIGOPostingComponent implements OnInit {
     {
       this.ReportModel=[];
       this.TotalShippers=0;
-      this.pimheader.binModel.forEach(element => {
+      this.pimheader.binModel.forEach((element:any)=> {
+
        element.itemDesc=this.filteredModel.find(x=>x.itemCode==element.itemCode).itemDesc;
        element.mfgDate=this.filteredModel.find(x=>x.batchNo==element.batchNo).mfgDate;
        element.expDate=this.filteredModel.find(x=>x.batchNo==element.batchNo).expDate;
@@ -214,9 +219,10 @@ export class MIGOPostingComponent implements OnInit {
     this.isLoading = true;
     var filterModel: any = {};
     this.ItemModel = [];
-    this.pimheader.binModel.forEach(element => {
+    this.pimheader.binModel.forEach((element:any)=> {
+
       let item = new LineItem();
-      var temp = this.pimheader.materialstatusmodel.find(x => x.lineItemNo == element.lineItemNo && x.batchNo == element.batchNo && x.itemCode == element.itemCode && x.poStoSr == element.poStoSr);
+      var temp = this.pimheader.materialstatusmodel.find((x:any)  => x.lineItemNo == element.lineItemNo && x.batchNo == element.batchNo && x.itemCode == element.itemCode && x.poStoSr == element.poStoSr);
       item.batchNo = element.batchNo;
       item.costCenter = '';
       item.itemCode = element.itemCode;
@@ -274,7 +280,7 @@ export class MIGOPostingComponent implements OnInit {
         this.isLoading = false;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.pimdatalist = [];
     });
@@ -284,7 +290,7 @@ export class MIGOPostingComponent implements OnInit {
   detailedList: any[] = [];
   showDetailedView(item) {
     this.detailedList = [];
-    this.detailedList = this.materialstatusmodel.filter(x => x.lineItemNo == item.lineItemNo);
+    this.detailedList = this.materialstatusmodel.filter((x:any)  => x.lineItemNo == item.lineItemNo);
     jQuery('#DetailedModal').modal('show');
   }
   setFormatedDateTime(date: any) {
@@ -306,7 +312,7 @@ export class MIGOPostingComponent implements OnInit {
   }
   locationname: any;
   downloadPdf() {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.locationname;
     var ReportName = "MIGO POSTING SUMMARY REPORT"
     var printedBy = this.currentUser.fullName;
@@ -315,7 +321,7 @@ export class MIGOPostingComponent implements OnInit {
     var logo = this.image;
     //var now = new Date('dd-MM-yyyy h:mm a');
     var date = pipe.transform(now, 'short');
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -329,13 +335,13 @@ export class MIGOPostingComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'MIGO Posting Report',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -353,7 +359,7 @@ export class MIGOPostingComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 40],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -406,11 +412,11 @@ export class MIGOPostingComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {

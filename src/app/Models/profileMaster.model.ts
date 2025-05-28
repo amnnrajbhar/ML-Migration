@@ -1,7 +1,7 @@
 export class ProfileMaster {
-    id: number;
-    name: string;
-    description: string;
+    id!: number;
+    name: string
+    description: string
     createdBy: number | null;
     createdDate: string | null;
     modifiedBy: number | null;

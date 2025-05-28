@@ -16,18 +16,18 @@ declare var $: any;
   styleUrls: ['./employee-salary.component.css']
 })
 export class EmployeeSalaryComponent implements OnInit {
-  @Input() employeeId: number;
-  @Input() recallId: number;
+  @Input() employeeId!: number;
+  @Input() recallId!: number;
   @Input() editAllowed: boolean = true;
-  @Input() newDesignationId: number;
-  @Input() newEmployeeCategoryId: number;
-  @Input() newPlantId: number;
-  @Input() newPayGroupId: number;
+  @Input() newDesignationId!: number;
+  @Input() newEmployeeCategoryId!: number;
+  @Input() newPlantId!: number;
+  @Input() newPayGroupId!: number;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
 
-  currentUser: AuthData;
-  isLoading: boolean;
+  currentUser!: AuthData;
+  isLoading!: boolean;
   details: any = {};
   salaryList: any[] = [];
   count = 0;
@@ -46,7 +46,8 @@ export class EmployeeSalaryComponent implements OnInit {
 
   ngOnInit() {
     //this.employeeId = 25;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));     
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;     
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
       this.isLoading = true; 
@@ -71,13 +72,13 @@ export class EmployeeSalaryComponent implements OnInit {
               index++;
             }
           }
-          this.benefitsList = this.salaryList.filter(x=>x.salaryTypeShortCode == 'B'); 
-          this.salaryList = this.salaryList.filter(x=>x.salaryTypeShortCode != 'B');   
+          this.benefitsList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == 'B'); 
+          this.salaryList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode != 'B');   
           this.calculateTotals();     
         }   
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while fetching details, please check the link.");
     });
@@ -92,7 +93,7 @@ export class EmployeeSalaryComponent implements OnInit {
         this.getAllowanceList();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -120,16 +121,16 @@ export class EmployeeSalaryComponent implements OnInit {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_ALLOWANCE_TYPES+ "?plantId="+this.newPlantId+"&payGroupId="+this.newPayGroupId+"&empCategoryId="+this.newEmployeeCategoryId+"&designationId="+this.newDesignationId+"&isMetro="+this.employeeDetails.isMetroCity)
     .then((data: any) => {
       if (data.length > 0) {
-        this.allowanceList = data.sort((a, b) => { if (a.allowanceType > b.allowanceType) return 1; if (a.allowanceType < b.allowanceType) return -1; return 0; });        
+        this.allowanceList = data.sort((a:any, b:any) => { if (a.allowanceType > b.allowanceType) return 1; if (a.allowanceType < b.allowanceType) return -1; return 0; });        
         this.onAllowanceChange();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.allowanceList = [];
     }); 
   }
 
   onAllowanceChange(){
-    var allowance = this.allowanceList.find(x => x.id == this.details.allowanceId);
+    var allowance = this.allowanceList.find((x:any)  => x.id == this.details.allowanceId);
     if(allowance)
       this.allowanceDetails = "HQ:"+allowance.hq + " HS:"+allowance.hs + " IA:"+allowance.ia + " MA:"+allowance.ma + " OS:"+allowance.os + " SA:"+allowance.sa+" EXHQ:"+allowance.exhq;
   }
@@ -172,7 +173,7 @@ console.log("save data called");
         //this.isLoading = false;
         swal('Error occured while saving the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         swal('Error occured while saving the details. Error:' + error);
       });
@@ -241,12 +242,12 @@ console.log("save data called");
           this.onSalaryHeadChange(index);
           index++;
         }             
-        this.benefitsList = this.salaryList.filter(x=>x.salaryTypeShortCode == 'B'); 
-        this.salaryList = this.salaryList.filter(x=>x.salaryTypeShortCode != 'B'); 
+        this.benefitsList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == 'B'); 
+        this.salaryList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode != 'B'); 
         this.calculateTotals();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while fetching details.");
     });
@@ -264,12 +265,12 @@ console.log("save data called");
           this.onSalaryHeadChange(index);
           index++;
         }             
-        this.benefitsList = this.salaryList.filter(x=>x.salaryTypeShortCode == 'B'); 
-        this.salaryList = this.salaryList.filter(x=>x.salaryTypeShortCode != 'B'); 
+        this.benefitsList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == 'B'); 
+        this.salaryList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode != 'B'); 
         this.calculateTotals();    
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while fetching details.");      
     });
@@ -291,16 +292,16 @@ console.log("save data called");
           var head = this.salaryHeads.find(x=>x.id == lineItem.salaryHeadId);
           if(head){
             this.benefitsList[index].description = head.descriptionInPaySlip;
-            this.benefitsList[index].salaryType = this.headTypes.find(x => x.type == head.salaryType).value;
+            this.benefitsList[index].salaryType = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
             this.benefitsList[index].salaryTypeShortCode = head.salaryType;
-            this.benefitsList[index].frequency = this.frequency.find(x => x.type == head.salaryPayableFrequency).value;
+            this.benefitsList[index].frequency = this.frequency.find((x:any)  => x.type == head.salaryPayableFrequency).value;
           }
           index++;
         }  
         this.calculateTotals();      
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while gettting details.");
       this.details = {};
@@ -317,7 +318,7 @@ console.log("save data called");
       this.salaryDetails = this.benefitsList;      
     }
     else{
-      this.salaryDetails = this.salaryList.filter(x=>x.salaryTypeShortCode == type);      
+      this.salaryDetails = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == type);      
     }
     $("#salaryDetailsModal").modal("show");
   }
@@ -332,9 +333,9 @@ console.log("save data called");
       var head = this.salaryHeads.find(x=>x.id == lineItem.salaryHeadId);
       if(head){
         this.salaryList[index].description = head.descriptionInPaySlip;
-        this.salaryList[index].salaryType = this.headTypes.find(x => x.type == head.salaryType).value;
+        this.salaryList[index].salaryType = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
         this.salaryList[index].salaryTypeShortCode = head.salaryType;
-        this.salaryList[index].frequency = this.frequency.find(x => x.type == head.salaryPayableFrequency).value;
+        this.salaryList[index].frequency = this.frequency.find((x:any)  => x.type == head.salaryPayableFrequency).value;
       }
     }
   }
@@ -359,13 +360,13 @@ console.log("save data called");
   getSalaryHeadsList() {
     this.httpService.HRget(APIURLS.HR_EMPLOYEE_GET_SALARY_HEADS).then((data: any) => {
       if (data) {
-        this.salaryHeads = data.sort((a, b) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });     
+        this.salaryHeads = data.sort((a:any, b:any) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });     
         for (var head of this.salaryHeads) {
-          head.salaryTypeDescription = this.headTypes.find(x => x.type == head.salaryType).value;
+          head.salaryTypeDescription = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
         }   
         this.LoadData();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.salaryHeads = [];
     }); 
   }

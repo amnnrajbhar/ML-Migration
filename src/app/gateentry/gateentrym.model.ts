@@ -1,47 +1,47 @@
 import { GateEntryD } from "./gateentryd.model";
 
 export class GateEntryM {
-    id: number;
-    mandt: string;
-    fiN_YEAR: string;
-    planT_ID: string;
-    gI_GATENO: string;
-    gI_NO: string;
-    gO_NO: string;
-    gI_TYPE: string;
+    id!: number;
+    mandt: string
+    fiN_YEAR: string
+    planT_ID: string
+    gI_GATENO: string
+    gI_NO: string
+    gO_NO: string
+    gI_TYPE: string
     gI_DATE: any;
-    gO_FIN_YEAR: string;
-    lifnr: string;
-    namE1: string;
-    orT01: string;
-    regio: string;
-    deliverymode: string;
-    deliveryperson: string;
-    courier_Name: string;
-    courier_Num: string;
+    gO_FIN_YEAR: string
+    lifnr: string
+    namE1: string
+    orT01: string
+    regio: string
+    deliverymode: string
+    deliveryperson: string
+    courier_Name: string
+    courier_Num: string
     courier_Date: any;
-    vehicleno: string;
+    vehicleno: string
     iN_TIME: any;
-    persoN_NAME: string;
-    doC_NO: string;
+    persoN_NAME: string
+    doC_NO: string
     doC_DATE: any;
-    deL_FLG: string;
-    deL_REASON: string;
-    createD_BY: string;
+    deL_FLG: string
+    deL_REASON: string
+    createD_BY: string
     createD_DATE: any;
-    modifieD_BY: string;
+    modifieD_BY: string
     modifieD_DATE: any;
-    deleteD_BY: string;
+    deleteD_BY: string
     deleteD_DATE: any;
-    remarks: string;
-    isActive: boolean;
-    recid: string;
-    ack: boolean;
-    landx: string;
-    receiveD_BY: string;
+    remarks: string
+    isActive!: boolean;
+    recid: string
+    ack!: boolean;
+    landx: string
+    receiveD_BY: string
     receiveD_DATE: any;
-    comments: string;
-    dC_NO: string;
+    comments: string
+    dC_NO: string
     dC_DATE: any;
     gateEntryDViewModel: GateEntryD[] = [];
 

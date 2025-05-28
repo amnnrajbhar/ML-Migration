@@ -12,8 +12,8 @@ import { AuditLogChange } from '../../masters/auditlogchange.model';
 import { AuditLog } from '../../masters/auditlog.model';
 declare var jQuery: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 @Component({
   selector: 'app-docCategory',
@@ -22,16 +22,16 @@ export class actionItemModel {
 })
 export class DocCategoryComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
   public tableWidget: any;
   selParentId: any;
-  docCategoryList: any[];
+  docCategoryList!: any[];
   docCategoryList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -47,8 +47,8 @@ export class DocCategoryComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   olddocCategoryItem: docCategory = new docCategory();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent) { }
 
   private initDatatable(): void {
@@ -69,7 +69,8 @@ export class DocCategoryComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getdocCategoryMasterList();
     }
     else
@@ -88,7 +89,7 @@ export class DocCategoryComponent implements OnInit {
     this.isLoading = true;
     this.httpService.DLSget(APIURLS.BR_GET_DOC_CAT_MASTER).then((data: any) => {
       if (data.length > 0) {
-        this.docCategoryList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.docCategoryList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
                                     if(a.name > b.name) return 1;
                                     if(a.name < b.name) return -1;
                                     return 0;
@@ -96,7 +97,7 @@ export class DocCategoryComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.docCategoryList = [];
     });
@@ -129,7 +130,7 @@ export class DocCategoryComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-    if (!this.docCategoryList.some(s => s.name.toLowerCase() == this.docCategoryItem.name.toLowerCase() && s.id != this.docCategoryItem.id)) {
+    if (!this.docCategoryList.some((s:any) => s.name.toLowerCase() == this.docCategoryItem.name.toLowerCase() && s.id != this.docCategoryItem.id)) {
       if (!this.isEdit) {
         this.auditType="Create";
         this.docCategoryItem.isActive = true;
@@ -157,7 +158,7 @@ export class DocCategoryComponent implements OnInit {
         else
           this.errMsgPop = data;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving department data..';
       });
@@ -193,7 +194,7 @@ export class DocCategoryComponent implements OnInit {
             this.insertAuditLog(this.docCategoryItem,this.olddocCategoryItem,this.docCategoryItem.id);
             this.getdocCategoryMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting docCategory..';
         });
@@ -260,12 +261,12 @@ export class DocCategoryComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -274,7 +275,7 @@ export class DocCategoryComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

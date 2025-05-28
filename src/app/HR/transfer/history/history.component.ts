@@ -16,9 +16,9 @@ declare var toastr: any;
   styleUrls: ['./history.component.css']
 })
 export class HistoryComponent implements OnInit {
-  @Input() employeeId: number;
+  @Input() employeeId!: number;
   
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading = false;
   itemList: any[] = [];
@@ -40,7 +40,8 @@ export class HistoryComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       
       this.GetData();
     }
@@ -59,7 +60,7 @@ export class HistoryComponent implements OnInit {
           } 
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
       });

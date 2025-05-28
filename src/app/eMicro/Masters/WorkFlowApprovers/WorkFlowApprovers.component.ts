@@ -18,15 +18,15 @@ import { ProcessMaster } from '../ProcessMaster/ProcessMaster.model';
 declare var jQuery: any;
 
 export class actionItemModel {
-  keyValue: string;
-  approverId: string;
-  priority: number;
-  parllelApprover1: string;
-  parllelApprover2: string;
-  parllelApprover3: string;
-  parllelApprover4: string;
-  role: string;
-  processId: number;
+  keyValue: string
+  approverId: string
+  priority!: number;
+  parllelApprover1: string
+  parllelApprover2: string
+  parllelApprover3: string
+  parllelApprover4: string
+  role: string
+  processId!: number;
   closure: Boolean;
   isActive: Boolean;
 }
@@ -38,21 +38,21 @@ export class actionItemModel {
 })
 export class WorkFlowApproversComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) materialForm: NgForm;
+@ViewChild(NgForm, { static: false }) materialForm!: NgForm;
 
   public tableWidget: any;
-  companyId: number;
+  companyId!: number;
   materialList: MaterialMaster[] = [];
   materialItem: MaterialMaster = new MaterialMaster();
 
   workflowapproverslist: WorkFlowApprovers[] = [];
   workflowapprovers: WorkFlowApprovers = new WorkFlowApprovers();
   oldworkflowapprovers: WorkFlowApprovers = new WorkFlowApprovers();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
 
   isLoading: boolean = false;
-  entityTabHeader: string;
+  entityTabHeader: string
   errMsg: string = "";
   isLoadingPop: boolean = false;
   errMsgPop: string = "";
@@ -90,7 +90,8 @@ export class WorkFlowApproversComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     //if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getworkflowapproversList();
       this.getMaterialMasterList();
       this.getLocationMaster();
@@ -110,7 +111,7 @@ export class WorkFlowApproversComponent implements OnInit {
     //this.softwareList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareList = data.filter(x => x.isActive).sort((a, b) => {
+        this.softwareList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -118,7 +119,7 @@ export class WorkFlowApproversComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareList = [];
     });
@@ -127,11 +128,11 @@ export class WorkFlowApproversComponent implements OnInit {
   getLocationMaster() {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-        this.locationList.sort((a,b)=>{return collator.compare(a.code,b.code)});
+        this.locationList.sort((a:any,b:any)=>{return collator.compare(a.code,b.code)});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -150,7 +151,7 @@ export class WorkFlowApproversComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.storagelocationlist = [];
     });
@@ -165,7 +166,7 @@ export class WorkFlowApproversComponent implements OnInit {
       }
      // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.processlist = [];
     });
@@ -177,11 +178,11 @@ export class WorkFlowApproversComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         //this.materialgroupList = data;
-        this.materialgroupList=data.filter(x=>x.stxt !=null);
+        this.materialgroupList=data.filter((x:any)=>x.stxt !=null);
       }
      // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialgroupList = [];
     });
@@ -246,17 +247,17 @@ export class WorkFlowApproversComponent implements OnInit {
   }
   getstoloclist(value)
   {
-    this.storagelocationlist1=this.storagelocationlist.filter(x=>x.matType==value);
+    this.storagelocationlist1=this.storagelocationlist.filter((x:any)=>x.matType==value);
   }
   getMaterialMasterList() {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_MATERIALTYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.materialList = data.filter(x => x.isActive);
+        this.materialList = data.filter((x:any)  => x.isActive);
       }
      // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -271,11 +272,11 @@ export class WorkFlowApproversComponent implements OnInit {
     this.httpService.get(APIURLS.BR_EMPLOYEEMASTER_GET_All_API).then((data: any) => {
       if (data.length > 0) {
         this.employeeList = data;
-        //this.empListCon = data.map((i) => { i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
-        //this.employeeList=this.employeeList.filter(x=>x.fkDepartment == this.currentUser.fK_Department);
+        //this.empListCon = data.map((i:any) => { i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
+        //this.employeeList=this.employeeList.filter((x:any)=>x.fkDepartment == this.currentUser.fK_Department);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.employeeList = [];
     });
@@ -285,11 +286,11 @@ export class WorkFlowApproversComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.workflowapproverslist = data;
-        this.workflowapproverslist=this.workflowapproverslist.filter(x=>x.isActive==true);
+        this.workflowapproverslist=this.workflowapproverslist.filter((x:any)=>x.isActive==true);
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.workflowapproverslist = [];
     });
@@ -412,7 +413,7 @@ export class WorkFlowApproversComponent implements OnInit {
           this.insertAuditLog(this.oldworkflowapprovers,this.workflowapprovers,Id);
           this.getworkflowapproversList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving WorkFlowApprovers..';
       });
@@ -500,12 +501,12 @@ export class WorkFlowApproversComponent implements OnInit {
      connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
      connection.then((data: any) => {
        this.isLoadingPop = false;
-     }).catch(() => {
+     }).catch((error) => {
        this.isLoadingPop = false;
      });
    }
    auditLogList: AuditLog[] = [];
-   openAuditLogs(id) {
+   openAuditLogs(id:any) {
      jQuery("#auditModal").modal('show');
      let stringparms = this.masterName + ',' + id;
      this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -514,7 +515,7 @@ export class WorkFlowApproversComponent implements OnInit {
          this.auditLogList.reverse();
        }
        this.reinitPOUPDatatable();
-     }).catch(() => {
+     }).catch((error) => {
      });
  
    }
@@ -552,7 +553,7 @@ export class WorkFlowApproversComponent implements OnInit {
   //filterModel: PageFilter = {} as PageFilter;
   pageSize: any = 10;
   pageNo: any;
-  totalCount: number;
+  totalCount!: number;
   totalPages: number
   gotoPage(no) {
     if (this.pageNo == no) return;

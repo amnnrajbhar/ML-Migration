@@ -19,18 +19,18 @@ import { FormControl, NgForm } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 import { ExcelService } from '../../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import * as XLSX from 'xlsx';
-import * as pdfMake from "pdfmake/build/pdfmake";
+// import * as pdfMake from "pdfmake/build/pdfmake";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 //import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import * as FileSaver from 'file-saver';
+// import pdfFonts from "pdfmake/build/vfs_fonts";
+//import * as FileSaver from 'file-saver';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
@@ -42,14 +42,14 @@ const EXCEL_EXTENSION = '.xlsx';
   styleUrls: ['./AttendanceMusterorSummary.component.css']
 })
 export class AttendanceMusterorSummaryComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-@ViewChild('table', { static: false }) table: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
+@ViewChild('table', { static: false }) table!: ElementRef;
 
-@ViewChild('dailyreport', { static: false }) dailyreport: ElementRef;
+@ViewChild('dailyreport', { static: false }) dailyreport!: ElementRef;
 
 
   public tableWidget: any;
@@ -59,7 +59,7 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
   departmentList: any[] = [];
   ReportData: any[] = [];
   locationList: any[] = [];
-  isLoading: boolean;
+  isLoading!: boolean;
   StaffCategoryList: any[] = [];
   PayGroupList: any[] = [];
   ReportingGroupList: any[] = [];
@@ -96,12 +96,12 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
   path: any;
   fromDate: any = null;
   toDate: any = null;
-  EmployeeNo: string = null;
+  EmployeeNo: string = ' ';
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private http: HttpClient, private https: HttpClient, private route: ActivatedRoute, private excelService: ExcelService,
     private datePipe: DatePipe) {
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ //   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   }
 
   private initDatatable(): void {
@@ -121,7 +121,7 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
 
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -131,45 +131,46 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.filterPlant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        this.locationname = this.filterPlant + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.filterPlant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        this.locationname = this.filterPlant + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
   }
 
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     let today = new Date();
     this.CalenderYear = new Date().getFullYear().toString();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -201,24 +202,26 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
     { id: 8, name: 'Shift Code' },
     { id: 91, name: 'Total OT Hours' }
   ]
-  getName(id) {
-    let temp = this.orderList.find(x => x.id == id);
+  getName(id:any) {
+    let temp = this.orderList.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
 
-  getMonth(id) {
-    let temp = this.MonthsList.find(x => x.id == id);
+  getMonth(id:any) {
+    let temp = this.MonthsList.find((x:any)  => x.id == id);
     return temp ? `${temp.name.toUpperCase()}` : '';
   }
 
   ClearData() {
     this.filterPlant = null;
     this.filterStaffcat = null;
-    this.filterPayGroup = null;
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
     this.filterDepartment = null;
     this.filterReportingGroup = null;
-    this.filterMonth = null;
-    this.filterEmployee = null;
+    this.filterMonth = '';
+    this.filterEmployee = '';
     this.AttendanceType = null;
     this.ViewType = null;
     this.Type = null;
@@ -281,29 +284,33 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
   getpayGroupList() {
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.PayGroupList = data.sort((a, b) => {
+        this.PayGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
   }
   payGroupList1: any[] = [];
   getPaygroupsBasedOnPlant() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.code == this.filterPlant);
-    this.payGroupList1 = this.PayGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.code == this.filterPlant);
+    this.payGroupList1 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
   }
 
   payGroupList11: any[] = [];
   getPaygroupsBasedOnPlant1() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.fkPlantId == this.filterPlant);
-    this.payGroupList11 = this.PayGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterPlant);
+    this.payGroupList11 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
   }
 
   getempCatList() {
@@ -311,7 +318,7 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
       if (data.length > 0) {
         this.StaffCategoryList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.StaffCategoryList = [];
     });
@@ -321,7 +328,7 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -335,7 +342,7 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -345,7 +352,7 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -355,7 +362,7 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -383,17 +390,18 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
       return;
     }
     let filterModel: any = {};
-    filterModel.baseLocation = this.locationList.find(x => x.code == this.filterPlant).fkPlantId;
+    filterModel.baseLocation = this.locationList.find((x:any)  => x.code == this.filterPlant).fkPlantId;
     filterModel.payGroup = this.filterPayGroup;
     filterModel.category = this.filterStaffcat;
     filterModel.department = this.filterDepartment;
     filterModel.reportingGroup = this.filterReportingGroup;
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LIST_FOR_REPORT, filterModel).then((data: any) => {
       this.empListCon = data.table;
-      this.empListCon.forEach(element => {
+      this.empListCon.forEach((element:any)=> {
+
         element.name = element.employeeNo + ' - ' + element.name;
       });
-    }).catch(error => {
+    }).catch((error)=> {
       this.empListCon = [];
       this.isLoading = false;
     });
@@ -402,19 +410,19 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
     });
   }
-  exportList: any[];
+  exportList!: any[];
 
   get(apiKey: string): any {
     const promise = new Promise((resolve, reject) => {
@@ -436,7 +444,8 @@ export class AttendanceMusterorSummaryComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -486,7 +495,7 @@ getHeader(): { headers: HttpHeaders } {
       let filterModel: any = {};
       filterModel.plant = this.filterPlant;
       filterModel.payGroup = this.filterPayGroup;
-      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.employeeNo).join(',') : null;
+      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.employeeNo).join(',') : null;
       filterModel.staffCat = this.filterStaffcat;
       filterModel.reporting = this.filterReportingGroup;
       filterModel.payGroup = this.filterPayGroup;
@@ -501,7 +510,7 @@ getHeader(): { headers: HttpHeaders } {
           this.ReportData = data1.table;
           this.exportList = [];
           let index = 0;
-          this.ReportData.forEach(item => {
+          this.ReportData.forEach((item :any) => {
             index = index + 1;
             let exportItem = {
               "SNo": index,
@@ -588,7 +597,7 @@ getHeader(): { headers: HttpHeaders } {
     }
   }
 
-  email: string = null;
+  email: string = ' ';
   upload(blob: Blob, filename: string) {
     swal("Sending Mail....");
     let connection: any;
@@ -611,7 +620,7 @@ getHeader(): { headers: HttpHeaders } {
       else {
         toastr.error("Error uploading file ..");
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg = 'Error uploading file ..';
     });
   }
@@ -652,7 +661,7 @@ getHeader(): { headers: HttpHeaders } {
       });
       let filterModel: any = {};
       filterModel.plant = this.filterPlant;
-      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.employeeNo).join(',') : null;
+      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.employeeNo).join(',') : null;
       filterModel.staffCat = this.filterStaffcat;
       filterModel.reporting = this.filterReportingGroup;
       filterModel.payGroup = this.filterPayGroup;
@@ -663,12 +672,13 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.Year = this.CalenderYear;
       filterModel.dept = this.filterDepartment;
       let connection = this.httpService.LApost(APIURLS.BR_GET_MONTHLY_DETAILED_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data.table.length > 0) {
-          let rep = data.table.filter(x => x.ord == 0);
-          let rep1 = data.table.filter(x => x.ord != 0);
-          rep.forEach(element => {
-            element.attendance = rep1.filter(x => x.pernr == element.pernr);
+          let rep = data.table.filter((x:any)  => x.ord == 0);
+          let rep1 = data.table.filter((x:any)  => x.ord != 0);
+          rep.forEach((element:any)=> {
+
+            element.attendance = rep1.filter((x:any)  => x.pernr == element.pernr);
           });
           this.ReportData = rep;
           this.MonthNo = this.filterMonth;

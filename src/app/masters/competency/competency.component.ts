@@ -19,13 +19,13 @@ declare var $: any;
 })
 export class CompetencyComponent implements OnInit {
   public tableWidget: any;
-@ViewChild(NgForm, { static: false }) competencyForm: NgForm;
+@ViewChild(NgForm, { static: false }) competencyForm!: NgForm;
 
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any;
   selCompetencyHead: any = [];
   selSbu: any;
-  HeadList: any[];
+  HeadList!: any[];
   headName: "";
   competencyList: any[] = [[]];
   sbuList: any[] = [[]];
@@ -110,7 +110,7 @@ export class CompetencyComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.competencyList = [];
     });
@@ -143,7 +143,7 @@ export class CompetencyComponent implements OnInit {
         this.sbuList = data;
         // this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.sbuList = [];
     });
@@ -157,12 +157,12 @@ export class CompetencyComponent implements OnInit {
         // console.log(this.LocationMasterList);
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.LocationMasterList = [];
     });
   }
-  getLocationName(id) {
-    return this.LocationMasterList.find(s => s.id == id).name;
+  getLocationName(id:any) {
+    return this.LocationMasterList.find((s:any) => s.id == id).name;
   }
   getUserMasterList() {
     this.httpService.get(APIURLS.BR_EMPLOYEEMASTER_API_GET).then((data: any) => {
@@ -170,7 +170,8 @@ export class CompetencyComponent implements OnInit {
         this.empList = data;
         console.log(this.empList);
         // this.reInitDatatable();
-        this.empList.forEach(element => {
+        this.empList.forEach((element:any)=> {
+
           var t = { 'id': 0, 'name': '' };
           t.id = element.id;
           t.name = element.firstName + '-' + element.employeeId + '-' + element.designation;
@@ -185,7 +186,7 @@ export class CompetencyComponent implements OnInit {
           allowSearchFilter: true
         };
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empList = [];
     });
@@ -207,18 +208,18 @@ export class CompetencyComponent implements OnInit {
     if (this.isEdit) {
       // this.competencyItem = data;
       Object.assign( this.competencyItem,data);
-      // this.parentList = this.competencyList.filter(s => s.isActive != false);
+      // this.parentList = this.competencyList.filter((s:any) => s.isActive != false);
       // var compParentName = this.competencyItem.fkParentId + '';
       // var compHeadName = this.competencyItem.fkHeadEmpId + '';
 
       ////console.log('SBU ID:'+this.competencyItem.fkSbuId);
-      // this.selParentRole = this.competencyList.find(s => s.id == +compParentName);
-      // this.selCompetencyHead = this.empList.find(s => s.id == this.competencyItem.fkHeadEmpId );
+      // this.selParentRole = this.competencyList.find((s:any) => s.id == +compParentName);
+      // this.selCompetencyHead = this.empList.find((s:any) => s.id == this.competencyItem.fkHeadEmpId );
       //   this.selCompetencyHead = this.empListCon1.filter(s=>s.id == this.competencyItem.fkHeadEmpId);
-      this.selSbu = this.sbuList.find(s => s.id == this.competencyItem.fkSbuId);
+      this.selSbu = this.sbuList.find((s:any) => s.id == this.competencyItem.fkSbuId);
     }
     else {
-      // this.parentList = this.competencyList.filter(s => s.isActive != false);;
+      // this.parentList = this.competencyList.filter((s:any) => s.isActive != false);;
       this.competencyItem = new Competency(0, '', 0, 0, '', '', 0, true, '', '');
       this.sbuItem = this.sbuItem = new SBU(0, '', '', '', 0, 0, '', true);
       this.empItem = this.empItem = new Employee(0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', '', '', 0, '', '', 0, '', 0, '', true, 0, 0, 0);
@@ -235,7 +236,8 @@ export class CompetencyComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -272,7 +274,7 @@ getHeader(): { headers: HttpHeaders } {
       this.errMsgPop = 'Competency name cannot be blank';
       // this.getSBUList();
     }
-    else if (!this.competencyList.some(s => s.name.trim().toLowerCase() == this.competencyItem.name.trim().toLowerCase() && s.id != this.competencyItem.id)) {
+    else if (!this.competencyList.some((s:any) => s.name.trim().toLowerCase() == this.competencyItem.name.trim().toLowerCase() && s.id != this.competencyItem.id)) {
       // if(!compNameFlag && !compParentFlag && !compHeadFlag && !compSBUFlag){
       // this.competencyItem.fkParentId = this.selParentRole.id;
       //this.competencyItem.fkHeadEmpId = this.selCompetencyHead[0].id;
@@ -292,7 +294,7 @@ getHeader(): { headers: HttpHeaders } {
           this.getCompetencyMasterList();
         }
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving department data..';
       });

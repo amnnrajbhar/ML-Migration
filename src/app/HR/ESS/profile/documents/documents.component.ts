@@ -20,7 +20,7 @@ declare var $: any;
   providers: [Util]
 })
 export class DocumentsComponent implements OnInit {
-  @Input() employeeId: number;
+  @Input() employeeId!: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
@@ -45,7 +45,7 @@ export class DocumentsComponent implements OnInit {
         this.dataLoaded.emit("loaded");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while fetching details, please check the link.");
     });
@@ -61,7 +61,7 @@ export class DocumentsComponent implements OnInit {
 
     connection.then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
@@ -75,15 +75,15 @@ export class DocumentsComponent implements OnInit {
           this.showPdfInViewer(data);
         }
         else{
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }        
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -99,14 +99,14 @@ export class DocumentsComponent implements OnInit {
     connection.then((data: any) => {
             
       if (data != undefined) {        
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

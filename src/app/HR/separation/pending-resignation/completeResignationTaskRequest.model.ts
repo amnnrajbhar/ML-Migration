@@ -1,5 +1,5 @@
 export interface CompleteResignationTaskRequest{
     flowTaskId: number;
-    comments: string;
+    comments: string
     completedById: number;
 }

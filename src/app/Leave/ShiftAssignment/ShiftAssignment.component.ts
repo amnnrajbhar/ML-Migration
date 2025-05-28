@@ -10,9 +10,9 @@ import { Observable, throwError as _observableThrow, of as _observableOf } from 
  
 import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
 
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 declare var jQuery: any;
 declare var $: any;
 import * as _ from "lodash";
@@ -34,10 +34,10 @@ import { DataRowOutlet } from '@angular/cdk/table';
   styleUrls: ['./ShiftAssignment.component.css']
 })
 export class ShiftAssignmentComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
   public tableWidget: any;
@@ -54,15 +54,15 @@ export class ShiftAssignmentComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  path: string;
-  filterEmployeeName: string = null;
-  filterEmployeeId: string = null;
-  filterLocation: string = null;;
-  filterPayGroup: string = null;
-  filterDepartment: string = null;
-  filterSubDepartment: string = null;
-  filterReportingGroup: string = null;
-  filterCategory: string = null;
+  path!: string
+  filterEmployeeName: string = ' ';
+  filterEmployeeId: string = ' ';
+  filterLocation: string = ' ';;
+  filterPayGroup: string = ' ';
+  filterDepartment: string = ' ';
+  filterSubDepartment: string = ' ';
+  filterReportingGroup: string = ' ';
+  filterCategory: string = ' ';
   filterStatus: number = 1;
   filterType: any = null;
   filterweek: any = null;
@@ -70,9 +70,9 @@ export class ShiftAssignmentComponent implements OnInit {
 
   ShiftAssignmentList: any[] = [];
   ShiftList: EmpShiftMaster[] = [];
-  AssignedShift: string;
+  AssignedShift: string
   AssignedCount: any;
-  month: string = null;
+  month: string = ' ';
   calYear: any;
   ShiftAssignmentList1: any[] = [];
 
@@ -103,7 +103,7 @@ export class ShiftAssignmentComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -111,41 +111,43 @@ export class ShiftAssignmentComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        //this.filterLocation = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        //this.filterLocation = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
       }
       //this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.plantList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
   }
   payGroupList1: any[] = [];
   getPaygroupsBasedOnPlant() {
-    this.filterPayGroup = null;
-    let temp = this.plantList.find(x => x.fkPlantId == this.filterLocation);
-    this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.plantList.find((x:any)  => x.fkPlantId == this.filterLocation);
+    this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
   }
   onSelectAll() {
 
@@ -162,7 +164,8 @@ export class ShiftAssignmentComponent implements OnInit {
     this.filterCategory = '';
     this.calYear = new Date().getFullYear().toString();
     this.filterStatus = 1;
-    this.filterType = null;
+    //this.filterType = null;
+this.filterType = '';
     this.ShiftAssignmentList = [];
     this.AssignedShift = '';
     this.month = '';
@@ -172,8 +175,8 @@ export class ShiftAssignmentComponent implements OnInit {
   ClearEmployee() {
     this.filterEmployeeId = '';
   }
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
@@ -188,10 +191,11 @@ export class ShiftAssignmentComponent implements OnInit {
 
   BloodGroupList: any[] = [];
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.calYear = new Date().getFullYear().toString();
     this.AssignedCount = 2;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -218,15 +222,15 @@ export class ShiftAssignmentComponent implements OnInit {
   ShiftList1: EmpShiftMaster[] = [];
   GetShift() {
     this.getPaygroupsBasedOnPlant();
-    let temp = this.locationList.find(x => x.id == this.filterLocation)
-    this.ShiftList1 = this.ShiftList.filter(x => x.loc.includes(temp.code));
+    let temp = this.locationList.find((x:any)  => x.id == this.filterLocation)
+    this.ShiftList1 = this.ShiftList.filter((x:any)  => x.loc.includes(temp.code));
   }
   getShiftMasterList() {
     this.httpService.LAget(APIURLS.BR_GET_ALL_SHIFTS).then((data: any) => {
       if (data.length > 0) {
-        this.ShiftList = data.filter(x => x.isActive == true);
+        this.ShiftList = data.filter((x:any)  => x.isActive == true);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ShiftList = [];
     });
@@ -237,16 +241,16 @@ export class ShiftAssignmentComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
-        // let temp = this.plantList.find(x => x.fkPlantId == this.filterLocation);
-        // this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+        // let temp = this.plantList.find((x:any)  => x.fkPlantId == this.filterLocation);
+        // this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
       }
       // this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -258,7 +262,7 @@ export class ShiftAssignmentComponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
@@ -270,7 +274,7 @@ export class ShiftAssignmentComponent implements OnInit {
       if (data.length > 0) {
         this.subdepartmentList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.subdepartmentList = [];
     });
@@ -283,7 +287,7 @@ export class ShiftAssignmentComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -294,13 +298,13 @@ export class ShiftAssignmentComponent implements OnInit {
     this.errMsg = "";
     this.get("DesignationMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.filter(x => x.isActive).sort((a, b) => {
+        this.designationList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.designationList = [];
     });
@@ -309,13 +313,13 @@ export class ShiftAssignmentComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -330,7 +334,7 @@ export class ShiftAssignmentComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -340,7 +344,7 @@ export class ShiftAssignmentComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -350,7 +354,7 @@ export class ShiftAssignmentComponent implements OnInit {
                   $("#reportingManager").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -411,7 +415,7 @@ export class ShiftAssignmentComponent implements OnInit {
           this.ShiftAssignmentList = data;
         }
         this.reInitDatatable();
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error getting data ..';
       });
     }
@@ -445,7 +449,7 @@ export class ShiftAssignmentComponent implements OnInit {
     this.checkedRequestList = this.checkedlist;
   }
 
-  weekCount: number;
+  weekCount!: number;
   GetWeeksCount(year, month_number) {
     var firstOfMonth = new Date(year, month_number - 1, 1);
     var day = firstOfMonth.getDay() || 6;
@@ -474,7 +478,7 @@ export class ShiftAssignmentComponent implements OnInit {
     }
     else {
       let filterModel: any = {};
-      filterModel.employeeId = this.checkedRequestList.map(x => x.employeeId).join();
+      filterModel.employeeId = this.checkedRequestList.map((x:any)  => x.employeeId).join();
       filterModel.shiftCode = this.AssignedShift;
       filterModel.swipecount = this.AssignedCount;
       filterModel.doneBy = this.currentUser.employeeId;
@@ -506,7 +510,7 @@ export class ShiftAssignmentComponent implements OnInit {
           this.clearFilter();
         }
         this.clearFilter();
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error updating data ..';
       });
     }
@@ -541,11 +545,12 @@ export class ShiftAssignmentComponent implements OnInit {
     let connection = this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE, filterModel);
     connection.then((data: any) => {
       if (data != null) {
-        this.downloadTemplate(data);
+        //v10
+       // this.downloadTemplate(data);
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -558,173 +563,175 @@ export class ShiftAssignmentComponent implements OnInit {
     datetime.setSeconds(parseInt(times[2]));
     return datetime;
   }
+//v10
+  // downloadTemplate(data) {
 
-  downloadTemplate(data) {
+  //   //Shift Codes Data
+  //   const header = ["Shift Code", "Shift Name", "Shift Start Time", "Shift End Time"]
 
-    //Shift Codes Data
-    const header = ["Shift Code", "Shift Name", "Shift Start Time", "Shift End Time"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
+  //   data.table.forEach((element:any)=> {
 
-    data.table.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.shift_Code = element.shift_Code;
-      ts.shift_Name = element.shift_Name;
-      ts.shift_start_time = element.shift_start_time;
-      ts.shift_End_Time = element.shift_End_Time;
-      exportList.push(ts);
-    });
-    const data1 = exportList;
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.shift_Code = element.shift_Code;
+  //     ts.shift_Name = element.shift_Name;
+  //     ts.shift_start_time = element.shift_start_time;
+  //     ts.shift_End_Time = element.shift_End_Time;
+  //     exportList.push(ts);
+  //   });
+  //   const data1 = exportList;
 
-    //Employee Shift Data
-    const header1 = ["Employee No", "Employee Name", "Month", "Year", "Day1", "Day2", "Day3", "Day4", "Day5", "Day6", "Day7", "Day8", "Day9",
-      "Day10", "Day11", "Day12", "Day13", "Day14", "Day15", "Day16", "Day17", "Day18", "Day19", "Day20", "Day21", "Day22", "Day23", "Day24",
-      "Day25", "Day26", "Day27", "Day28", "Day29", "Day30", "Day31"]
+  //   //Employee Shift Data
+  //   const header1 = ["Employee No", "Employee Name", "Month", "Year", "Day1", "Day2", "Day3", "Day4", "Day5", "Day6", "Day7", "Day8", "Day9",
+  //     "Day10", "Day11", "Day12", "Day13", "Day14", "Day15", "Day16", "Day17", "Day18", "Day19", "Day20", "Day21", "Day22", "Day23", "Day24",
+  //     "Day25", "Day26", "Day27", "Day28", "Day29", "Day30", "Day31"]
 
-    var exportList1 = [];
-    var ts1: any = {};
-    let index1 = 0;
+  //   var exportList1 = [];
+  //   var ts1: any = {};
+  //   let index1 = 0;
 
-    data.table1.forEach(element => {
-      index1 = index1 + 1;
-      ts1 = {};
-      ts1.pernr = element.pernr;
-      ts1.empName = element.empName;
-      ts1.month = element.month;
-      ts1.year = element.year;
-      ts1.day1 = element.day1;
-      ts1.day2 = element.day2;
-      ts1.day3 = element.day3;
-      ts1.day4 = element.day4;
-      ts1.day5 = element.day5;
-      ts1.day6 = element.day6;
-      ts1.day7 = element.day7;
-      ts1.day8 = element.day8;
-      ts1.day9 = element.day9;
-      ts1.day10 = element.day10;
-      ts1.day11 = element.day11;
-      ts1.day12 = element.day12;
-      ts1.day13 = element.day13;
-      ts1.day14 = element.day14;
-      ts1.day15 = element.day15;
-      ts1.day16 = element.day16;
-      ts1.day17 = element.day17;
-      ts1.day18 = element.day18;
-      ts1.day19 = element.day19;
-      ts1.day20 = element.day20;
-      ts1.day21 = element.day21;
-      ts1.day22 = element.day22;
-      ts1.day23 = element.day23;
-      ts1.day24 = element.day24;
-      ts1.day25 = element.day25;
-      ts1.day26 = element.day26;
-      ts1.day27 = element.day27;
-      ts1.day28 = element.day28;
-      ts1.day29 = element.day29;
-      ts1.day30 = element.day30;
-      ts1.day31 = element.day31;
-      exportList1.push(ts1);
-    });
-    const data11 = exportList1;
+  //   data.table1.forEach((element:any)=> {
 
-    //Informative Text
-    const header3 = ["FOR", "MORE", "SHIFT", "CODES", "AND", "TIMINGS", "REFER", "SHEET-2", "(SHIFT CODES)"]
+  //     index1 = index1 + 1;
+  //     ts1 = {};
+  //     ts1.pernr = element.pernr;
+  //     ts1.empName = element.empName;
+  //     ts1.month = element.month;
+  //     ts1.year = element.year;
+  //     ts1.day1 = element.day1;
+  //     ts1.day2 = element.day2;
+  //     ts1.day3 = element.day3;
+  //     ts1.day4 = element.day4;
+  //     ts1.day5 = element.day5;
+  //     ts1.day6 = element.day6;
+  //     ts1.day7 = element.day7;
+  //     ts1.day8 = element.day8;
+  //     ts1.day9 = element.day9;
+  //     ts1.day10 = element.day10;
+  //     ts1.day11 = element.day11;
+  //     ts1.day12 = element.day12;
+  //     ts1.day13 = element.day13;
+  //     ts1.day14 = element.day14;
+  //     ts1.day15 = element.day15;
+  //     ts1.day16 = element.day16;
+  //     ts1.day17 = element.day17;
+  //     ts1.day18 = element.day18;
+  //     ts1.day19 = element.day19;
+  //     ts1.day20 = element.day20;
+  //     ts1.day21 = element.day21;
+  //     ts1.day22 = element.day22;
+  //     ts1.day23 = element.day23;
+  //     ts1.day24 = element.day24;
+  //     ts1.day25 = element.day25;
+  //     ts1.day26 = element.day26;
+  //     ts1.day27 = element.day27;
+  //     ts1.day28 = element.day28;
+  //     ts1.day29 = element.day29;
+  //     ts1.day30 = element.day30;
+  //     ts1.day31 = element.day31;
+  //     exportList1.push(ts1);
+  //   });
+  //   const data11 = exportList1;
 
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet1 = workbook.addWorksheet('Shift Assignemt Template');
-    let worksheet2 = workbook.addWorksheet('Shift Codes');
+  //   //Informative Text
+  //   const header3 = ["FOR", "MORE", "SHIFT", "CODES", "AND", "TIMINGS", "REFER", "SHEET-2", "(SHIFT CODES)"]
 
-    //Add Row and formatting
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet1 = workbook.addWorksheet('Shift Assignemt Template');
+  //   let worksheet2 = workbook.addWorksheet('Shift Codes');
 
-    //Add Header Row
+  //   //Add Row and formatting
 
-    //Shift Codes Header
-    let headerRow = worksheet2.addRow(header);
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   //Add Header Row
 
-    for (let x1 of data1) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet2.addRow(temp)
-    }
+  //   //Shift Codes Header
+  //   let headerRow = worksheet2.addRow(header);
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    worksheet2.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet2.addRow([]);
+  //   for (let x1 of data1) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet2.addRow(temp)
+  //   }
 
-    //Informative Header
-    worksheet1.addRow([]);
+  //   worksheet2.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet2.addRow([]);
 
-    let headerRow2 = worksheet1.addRow(header3);
-    headerRow2.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thick' }, left: { style: 'thick' }, bottom: { style: 'thick' }, right: { style: 'thick' } }
-    })
+  //   //Informative Header
+  //   worksheet1.addRow([]);
 
-    worksheet1.addRow([]);
+  //   let headerRow2 = worksheet1.addRow(header3);
+  //   headerRow2.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thick' }, left: { style: 'thick' }, bottom: { style: 'thick' }, right: { style: 'thick' } }
+  //   })
 
-    //EMployee Shift Data header
-    let headerRow1 = worksheet1.addRow(header1);
-    headerRow1.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   worksheet1.addRow([]);
 
-    for (let x1 of data11) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet1.addRow(temp)
-    }
+  //   //EMployee Shift Data header
+  //   let headerRow1 = worksheet1.addRow(header1);
+  //   headerRow1.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    worksheet1.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet1.addRow([]);
+  //   for (let x1 of data11) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet1.addRow(temp)
+  //   }
+
+  //   worksheet1.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet1.addRow([]);
 
 
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'Shift_Assignment_Template.xlsx');
-    })
-  }
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'Shift_Assignment_Template.xlsx');
+  //   })
+  // }
 
   formData: FormData = new FormData();
-  file: File;
+  file!: File;
   uploadfiles(files: File) {
     this.file = files[0];
   }
 
   errorString: any;
-  TotalShifts: number;
+  TotalShifts!: number;
   upload() {
     if (this.file == null) {
       toastr.error("Please upload a valid file first..!");
@@ -773,7 +780,8 @@ export class ShiftAssignmentComponent implements OnInit {
         else if (data[0].type == 'E') {
           this.isLoading = false;
           this.errorString = "Shift Data not uploaded. Find the error list below: " + '\n';
-          data.forEach(element => {
+          data.forEach((element:any)=> {
+
             this.errorString = this.errorString + '\n' + '\n' + element.message;
           })
           swal({
@@ -785,7 +793,7 @@ export class ShiftAssignmentComponent implements OnInit {
           });
           this.reset();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error uploading file ..';
       });
     }
@@ -811,7 +819,7 @@ export class ShiftAssignmentComponent implements OnInit {
     return ("00" + d1.getDate()).slice(-2) + "-" + ("00" + (d1.getMonth() + 1)).slice(-2) + "-" +
       d1.getFullYear();
   }
-  exportList: any[];
+  exportList!: any[];
   exportExcel() {
     let filterModel: any = {};
     filterModel.plant = this.filterLocation;
@@ -828,7 +836,7 @@ export class ShiftAssignmentComponent implements OnInit {
         this.ShiftAssignmentList1 = data;
         this.exportList = [];
         let index = 0;
-        this.ShiftAssignmentList1.forEach(item => {
+        this.ShiftAssignmentList1.forEach((item :any) => {
           index = index + 1;
           let exportItem = {
             "SNo": index,
@@ -852,7 +860,7 @@ export class ShiftAssignmentComponent implements OnInit {
         toastr.error("No data to export for selected filters.")
       }
       //this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error exporting to excel..';
     });
   }
@@ -896,7 +904,8 @@ export class ShiftAssignmentComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

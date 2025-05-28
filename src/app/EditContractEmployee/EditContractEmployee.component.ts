@@ -24,24 +24,24 @@ import { ContractEmployee } from '../ContractEmployee/ContractEmployee.model';
 declare var require: any;
 
 export class actionItemModel {
-  employeeId: string;
-  firstName: string;
+  employeeId: string
+  firstName: string
   middleName: string
-  lastName: string;
-  email: string;
-  baseLocation: string;
-  department: string;
-  profile: string;
-  designation: string;
-  employee_type: string;
-  role: string;
-  manager: string;
-  permanent_Address: string;
-  phone_Number: string;
-  current_Address: string;
-  emergency_Contact_Name: string;
-  emergency_Contact_Number: string;
-  isActive: boolean;
+  lastName: string
+  email: string
+  baseLocation: string
+  department: string
+  profile: string
+  designation: string
+  employee_type: string
+  role: string
+  manager: string
+  permanent_Address: string
+  phone_Number: string
+  current_Address: string
+  emergency_Contact_Name: string
+  emergency_Contact_Number: string
+  isActive!: boolean;
   today = new Date();
 }
 
@@ -51,10 +51,10 @@ export class actionItemModel {
   styleUrls: ['./EditContractEmployee.component.css']
 })
 export class EditContractEmployeeComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   //designationList: any[] = [];
@@ -71,9 +71,9 @@ export class EditContractEmployeeComponent implements OnInit {
   locListCon1 = [];
   genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -82,9 +82,9 @@ export class EditContractEmployeeComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   types = [{ type: "Passport size Photo" }, { type: "Aadhar Card" }, { type: "PAN Card" }, { type: "PF-UAN Ac Details" },
@@ -109,7 +109,7 @@ export class EditContractEmployeeComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -117,30 +117,30 @@ export class EditContractEmployeeComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         this.getMaritalstatusList()
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.plantList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -150,7 +150,7 @@ export class EditContractEmployeeComponent implements OnInit {
     this.isLoading = true;
     this.httpService.LAget(APIURLS.BR_GET_ALL_SHIFTS).then((data: any) => {
       if (data.length > 0) {
-        this.EmpShiftMasterList = data.filter(x => x.isActive == 1).sort((a, b) => {
+        this.EmpShiftMasterList = data.filter((x:any)  => x.isActive == 1).sort((a:any, b:any) => {
           if (a.shiftCode > b.shiftCode) return 1;
           if (a.shiftCode < b.shiftCode) return -1;
           return 0;
@@ -158,7 +158,7 @@ export class EditContractEmployeeComponent implements OnInit {
         // console.log(this.EmpShiftMasterList);
       }
       this.isLoading = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.EmpShiftMasterList = [];
     });
@@ -166,8 +166,8 @@ export class EditContractEmployeeComponent implements OnInit {
   onSelectAll() {
 
   }
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
@@ -182,10 +182,11 @@ export class EditContractEmployeeComponent implements OnInit {
 
   BloodGroupList: any[] = [];
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
     this.employeeId = this.route.snapshot.paramMap.get('id')!;
 
@@ -219,12 +220,12 @@ export class EditContractEmployeeComponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
   }
-  getUsersList(id) {
+  getUsersList(id:any) {
     this.errMsg = "";
     this.httpService.LAgetById(APIURLS.CONTRACT_EMPLOYEE_INSERT, this.employeeId).then((data: any) => {
       if (data) {
@@ -233,12 +234,13 @@ export class EditContractEmployeeComponent implements OnInit {
         this.userMasterItem = data;
         this.getContractorDetails(this.userMasterItem.vendorContractorId);
         this.fileList = this.userMasterItem.fileList;
-        this.fileList.forEach(element => {
+        this.fileList.forEach((element:any)=> {
+
           element.attachmentType = element.filePath;
         });
         // this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userList = [];
     });
@@ -248,14 +250,14 @@ export class EditContractEmployeeComponent implements OnInit {
     this.errMsg = "";
     this.get("MaritalM/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.MaritalStatusList = data.filter(x => x.isActive).sort((a, b) => {
+        this.MaritalStatusList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
         this.getReportingGroupList()
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.MaritalStatusList = [];
     });
@@ -266,14 +268,14 @@ export class EditContractEmployeeComponent implements OnInit {
     this.errMsg = "";
     this.get("State/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.filter(x => x.isActive && x.land1 == 'IN').sort((a, b) => {
+        this.stateList = data.filter((x:any)  => x.isActive && x.land1 == 'IN').sort((a:any, b:any) => {
           if (a.bezei > b.bezei) return 1;
           if (a.bezei < b.bezei) return -1;
           return 0;
         });
         this.getsubDeptList();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.stateList = [];
     });
@@ -283,14 +285,14 @@ export class EditContractEmployeeComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
         this.getUsersList(this.employeeId);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -302,10 +304,10 @@ export class EditContractEmployeeComponent implements OnInit {
     this.errMsg = "";
     this.get("Country/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.CountryList = data.filter(x => x.isActive);
+        this.CountryList = data.filter((x:any)  => x.isActive);
         this.getDesignationList();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.CountryList = [];
     });
@@ -316,10 +318,10 @@ export class EditContractEmployeeComponent implements OnInit {
     this.errMsg = "";
     this.get("RoleMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.Rolelist = data.filter(x => x.isActive);
+        this.Rolelist = data.filter((x:any)  => x.isActive);
         this.getstateList();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Rolelist = [];
     });
@@ -333,7 +335,7 @@ export class EditContractEmployeeComponent implements OnInit {
         this.subDeptList = data;
         this.getpayGroupList();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.subDeptList = [];
     });
@@ -347,7 +349,7 @@ export class EditContractEmployeeComponent implements OnInit {
         this.ReportingGroupList = data;
         this.getDepartList()
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -361,7 +363,7 @@ export class EditContractEmployeeComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -371,7 +373,7 @@ export class EditContractEmployeeComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManager").val(ui.item.value);
                 }
@@ -380,7 +382,7 @@ export class EditContractEmployeeComponent implements OnInit {
                   $("#reportingManager").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManager").val(ui.item.value);
                 }
@@ -405,7 +407,7 @@ export class EditContractEmployeeComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -415,7 +417,7 @@ export class EditContractEmployeeComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManager").val(ui.item.value);
                 }
@@ -423,7 +425,7 @@ export class EditContractEmployeeComponent implements OnInit {
                   $("#approvingManager").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManager").val(ui.item.value);
                 }
@@ -447,7 +449,7 @@ export class EditContractEmployeeComponent implements OnInit {
       if ($event.timeStamp - this.lastcontractkeydown > 400) {
         this.httpService.LAgetByParam(APIURLS.BR_API_GET_CONTRACTORS, text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.name + " (" + item.sapCodeNo + ")", value: item.sapCodeNo };
             })
@@ -457,7 +459,7 @@ export class EditContractEmployeeComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#contractorId").val(ui.item.value);
                   $("#contractor").val(ui.item.label);
@@ -468,7 +470,7 @@ export class EditContractEmployeeComponent implements OnInit {
                   $("#contractor").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#contractorId").val(ui.item.value);
                   $("#contractor").val(ui.item.label);
@@ -492,21 +494,21 @@ export class EditContractEmployeeComponent implements OnInit {
     this.errMsg = "";
     this.get("DesignationMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.filter(x => x.isActive).sort((a, b) => {
+        this.designationList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
         this.getRolelist();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.designationList = [];
     });
   }
   onDesignationChange() {
-    this.userMasterItem.gradeId = this.designationList.find(x => x.id == this.userMasterItem.dsgid).grade;
-    this.userMasterItem.bandid = this.designationList.find(x => x.id == this.userMasterItem.dsgid).band;
+    this.userMasterItem.gradeId = this.designationList.find((x:any)  => x.id == this.userMasterItem.dsgid).grade;
+    this.userMasterItem.bandid = this.designationList.find((x:any)  => x.id == this.userMasterItem.dsgid).band;
   }
 
 
@@ -517,14 +519,14 @@ export class EditContractEmployeeComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
         this.getCountryList();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -568,7 +570,7 @@ export class EditContractEmployeeComponent implements OnInit {
         this.router.navigate(['/ContractEmployeeList'])
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       alert('Error saving user data..');
     });
@@ -594,7 +596,8 @@ export class EditContractEmployeeComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -648,20 +651,20 @@ getHeader(): { headers: HttpHeaders } {
     var name = id + ',' + fileName;
     this.httpService.LAgetFile(APIURLS.BR_GET_EMP_ATTACHMENTS, id, fileName).then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
       // }
 
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -688,9 +691,9 @@ getHeader(): { headers: HttpHeaders } {
     this.item = {};
   }
 
-  id: string;
+  id: string
   formData: FormData = new FormData();
-  uploadfile(id) {
+  uploadfile(id:any) {
     // debugger;
     // this.id='VM001';
     this.formData = new FormData();
@@ -705,7 +708,7 @@ getHeader(): { headers: HttpHeaders } {
         // console.log('copied file to server')
         //this.imageFlag = true;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
 
@@ -794,7 +797,7 @@ getHeader(): { headers: HttpHeaders } {
         alert(dataaddress.message);
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       alert('Error saving user data..');
     });
@@ -811,11 +814,11 @@ getHeader(): { headers: HttpHeaders } {
   getContractorDetails(contracterId) {
     this.httpService.LAgetByParam(APIURLS.BR_API_GET_CONTRACTORS, contracterId).then((data: any) => {
       if (data.length > 0) {
-        var sortedList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        var sortedList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
         var list = $.map(sortedList, function (item) {
           return { label: item.name + " (" + item.sapCodeNo + ")", value: item.sapCodeNo };
         })
-        var item = list.find(x => x.value == contracterId);
+        var item = list.find((x:any)  => x.value == contracterId);
         this.userMasterItem.vendorContractorId = item.value;
         this.userMasterItem.vendorContractorName = item.label;
       }

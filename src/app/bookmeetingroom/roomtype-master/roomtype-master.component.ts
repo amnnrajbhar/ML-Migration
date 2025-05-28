@@ -16,7 +16,7 @@ declare var $: any;
   styleUrls: ['./roomtype-master.component.css']
 })
 export class RoomtypeMasterComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
+@ViewChild(NgForm, { static: false }) meetingroomForm!: NgForm;
 
   currentUser = {} as AuthData;
   urlPath: string = '';
@@ -25,7 +25,7 @@ export class RoomtypeMasterComponent implements OnInit {
   errMsgPop: string = "";
   errMsgModalPop: string = "";
   isLoadingPop: boolean = false;
-  isLoading: boolean;
+  isLoading!: boolean;
   roomTypeModel = {} as RoomType;
   roomsTypeList: RoomType[] = [];
   tableWidget: any;
@@ -36,7 +36,8 @@ export class RoomtypeMasterComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getAllroomsTypes();
     }
   }
@@ -62,7 +63,7 @@ export class RoomtypeMasterComponent implements OnInit {
         this.roomsTypeList = data;
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomsTypeList = [];
     });
   }
@@ -109,7 +110,7 @@ export class RoomtypeMasterComponent implements OnInit {
           jQuery("#saveModal").modal('show');
           this.getAllroomsTypes();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Room Type..';
       });

@@ -14,7 +14,7 @@ import { Users } from './PasswordReset.model';
 })
 
 export class PasswordResetComponent implements OnInit {
-    //returnUrl: string;
+    //returnUrl: string
     passwordData = { employeeId: ''};
     public errMsg: string = '';
   public errMsg1: string = '';
@@ -40,7 +40,7 @@ export class PasswordResetComponent implements OnInit {
     ]
     newpassword:string='';
     confirmpassword:string='';
-    mismatch: boolean;
+    mismatch!: boolean;
     date:any;
     Validatepassword(){      
         this.isLoading =true;
@@ -60,8 +60,8 @@ export class PasswordResetComponent implements OnInit {
             icon: "warning",
           })
         }
-      }).catch(error => {
-        //console.log(error);
+      }).catch((error)=> {
+        ////console.log(error);
         this.isLoading = false;
         this.emailMsg1 = '';
         swal("", error.Message, "error");

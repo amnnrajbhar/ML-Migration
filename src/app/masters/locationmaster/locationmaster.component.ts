@@ -14,9 +14,9 @@ import { AuditLog } from '../auditlog.model';
 declare var jQuery: any;
 declare var $: any;
 export class actionItemModel {
-  code: string;
-  name: string;
-  description: string;
+  code: string
+  name: string
+  description: string
 }
 @Component({
   selector: 'app-locationmaster',
@@ -27,7 +27,7 @@ export class actionItemModel {
 
 export class LocationMasterComponent implements OnInit {
   public tableWidget: any;
-@ViewChild(NgForm, { static: false }) locationMasterForm: NgForm;
+@ViewChild(NgForm, { static: false }) locationMasterForm!: NgForm;
 
   LocationMasterList: any[] = [[]];
   locationMasterItem: Location = new Location();
@@ -39,10 +39,10 @@ export class LocationMasterComponent implements OnInit {
   isEdit: boolean = false;
   checkAll: boolean = false;
   path: string = '';
-  currentUser: AuthData;
+  currentUser!: AuthData;
   oldlocationMasterItem: Location = new Location();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
 
@@ -74,7 +74,8 @@ export class LocationMasterComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationMasterList();
     }
     else
@@ -110,7 +111,7 @@ export class LocationMasterComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.LocationMasterList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.LocationMasterList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
           if(a.name > b.name) return 1;
           if(a.name < b.name) return -1;
           return 0;
@@ -119,7 +120,7 @@ export class LocationMasterComponent implements OnInit {
       }
       this.isLoading = false;
       this.reInitDatatable();
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.LocationMasterList = [];
     });
@@ -138,8 +139,8 @@ export class LocationMasterComponent implements OnInit {
     this.isLoadingPop = true;
     let connection: any;
     this.validatedForm = true;
-    let validCode = this.LocationMasterList.some(s => s.code == this.locationMasterItem.code && s.id != this.locationMasterItem.id);
-    let validName = this.LocationMasterList.some(s => s.name == this.locationMasterItem.name && s.id != this.locationMasterItem.id);
+    let validCode = this.LocationMasterList.some((s:any) => s.code == this.locationMasterItem.code && s.id != this.locationMasterItem.id);
+    let validName = this.LocationMasterList.some((s:any) => s.name == this.locationMasterItem.name && s.id != this.locationMasterItem.id);
     if (validCode) {
       this.isLoadingPop = false;
       this.validatedForm = false;
@@ -176,7 +177,7 @@ export class LocationMasterComponent implements OnInit {
           this.insertAuditLog(this.oldlocationMasterItem, this.locationMasterItem, Id);
           this.getLocationMasterList();
         }
-      }).catch(() => {
+      }).catch((error) => {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Location..';
       });
@@ -208,7 +209,7 @@ export class LocationMasterComponent implements OnInit {
             this.insertAuditLog(this.locationMasterItem, this.oldlocationMasterItem, this.locationMasterItem.id);
             this.getLocationMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Location..';
         });
@@ -276,12 +277,12 @@ export class LocationMasterComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -290,7 +291,7 @@ export class LocationMasterComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

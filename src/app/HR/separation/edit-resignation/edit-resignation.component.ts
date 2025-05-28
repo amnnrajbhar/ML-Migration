@@ -25,7 +25,7 @@ import swal from 'sweetalert';
 })
 export class EditResignationComponent implements OnInit {
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   resignationId: any;
   employeeId: any;
   urlPath: string = '';
@@ -35,7 +35,7 @@ export class EditResignationComponent implements OnInit {
   isRejected: boolean = false;
   resignationStatus: any;
   resignationDetails = {} as Resignation;
-  noticePeriod: string;
+  noticePeriod: string
   currentTab: string = "details";
   tabIndex: number = 0;
   tabsList: string[] = ["details", "attachments", "checklist", "exitinterview", "history"];
@@ -53,7 +53,8 @@ export class EditResignationComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.resignationId = this.route.snapshot.paramMap.get('id')!;
       if (!this.resignationId || this.resignationId <= 0) {
         toastr.error("Invalid ID passed.");
@@ -63,7 +64,7 @@ export class EditResignationComponent implements OnInit {
     }
   }
 
-  GetResignationDetailsById(id) {
+  GetResignationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible = true;
 
@@ -84,7 +85,7 @@ export class EditResignationComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg = error;
       this.isLoading = false;
     });
@@ -197,7 +198,7 @@ resubmit(){
         this.isLoading = false;
         toastr.error('Error occured while re-submitting resignation details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while re-submitting resignation details. Error:' + error);
       });
@@ -231,7 +232,7 @@ performTask() {
       } else
       toastr.error("Error occurred.");
         this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });
@@ -321,14 +322,14 @@ performTask() {
           this.isLoading = false;
           toastr.error('Error occured while editing resignation details. Error:' + err);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while editing resignation details. Error:' + error);
         });
     }
   }
 
-  submitForApproval(id) {
+  submitForApproval(id:any) {
     var request: any = {};
     request.resignationId = id;
     request.submittedById = this.currentUser.uid;
@@ -345,7 +346,7 @@ performTask() {
           toastr.error(data.message);
         } else
           toastr.error("Error occurred.");
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });

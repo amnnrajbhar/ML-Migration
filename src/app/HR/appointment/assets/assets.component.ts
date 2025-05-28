@@ -19,9 +19,9 @@ declare var toastr: any;
 })
 
 export class AssetsComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) assetForm: NgForm;
+@ViewChild(NgForm, { static: false }) assetForm!: NgForm;
 
-  @Input() appointmentId: number;
+  @Input() appointmentId!: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
@@ -53,7 +53,7 @@ export class AssetsComponent implements OnInit {
         this.dataLoaded.emit("loaded");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       this.assetsList = [];
@@ -104,8 +104,8 @@ export class AssetsComponent implements OnInit {
         this.onAddLineClick();
         toastr.success("Successfully added the asset details.");
       }
-    }).catch(error => {
-      //console.log(error);
+    }).catch((error)=> {
+      ////console.log(error);
       toastr.error('Error adding details...'+ error);
     })
   }
@@ -139,8 +139,8 @@ export class AssetsComponent implements OnInit {
         this.onUpdateLine();
         toastr.success("Successfully updated the details.");
       }
-    }).catch(error => {
-      //console.log(error);
+    }).catch((error)=> {
+      ////console.log(error);
       toastr.error('Error updating details...'+ error);
     })
   }
@@ -169,7 +169,7 @@ export class AssetsComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + error);
       });
@@ -179,20 +179,20 @@ export class AssetsComponent implements OnInit {
     if(id <= 0) return;
     this.httpService.HRdownloadFile(APIURLS.APPOINTMENT_GET_ASSET_FILE+"/"+this.appointmentId+ "/" + id).then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
       // }
 
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -202,7 +202,7 @@ export class AssetsComponent implements OnInit {
       if (data.length > 0) {
         this.assetTypes = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.assetTypes=[];
     });
   }

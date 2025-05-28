@@ -34,7 +34,9 @@ export class HttpService {
 }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

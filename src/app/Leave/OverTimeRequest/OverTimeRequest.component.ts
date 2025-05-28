@@ -21,7 +21,7 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { OverTimeRequest } from './OverTimeRequest.model';
-import * as moment from 'moment';
+import moment from 'moment'
 
 declare var ActiveXObject: (type: string) => void;
 
@@ -31,10 +31,10 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./OverTimeRequest.component.css']
 })
 export class OverTimeRequestComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   public tableWidget: any;
   public tableWidgetlv: any;
   empListCon = [];
@@ -49,16 +49,16 @@ export class OverTimeRequestComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   employeeId: any = null;
   year: any;
   CalenderYear: string = '';
   CalYear: any;
-  StartDate: string = null;
-  EndDate: string = null;
-  LvReason: string = null;
+  StartDate: string = ' ';
+  EndDate: string = ' ';
+  LvReason: string = ' ';
   personResponsible: any;
   personName: any;
   DetailedReason: string = '';
@@ -71,10 +71,10 @@ export class OverTimeRequestComponent implements OnInit {
   toTime: any;
   Plant: any = null;
   SwipeType: any = null;
-  isSubmitting: boolean;
+  isSubmitting!: boolean;
   uploadedfileUrl: any;
   snackBar: any;
-  isShowFileUpload: boolean;
+  isShowFileUpload!: boolean;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private http: HttpClient, private route: ActivatedRoute) { }
@@ -95,7 +95,7 @@ export class OverTimeRequestComponent implements OnInit {
   }
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -103,27 +103,28 @@ export class OverTimeRequestComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
     this.year = today.getFullYear();
@@ -150,29 +151,29 @@ export class OverTimeRequestComponent implements OnInit {
   HolidayDate: any;
   holidayname: any = null;
   holidaysList: HolidayMaster[] = [];
-  getholidaysList(id) {
+  getholidaysList(id:any) {
     this.errMsg = "";
     let srchstr = this.currentUser.baselocation + ',,' + this.year + ',' + ',,'
     this.httpService.LAgetByParam(APIURLS.GET_HOLIDAYS_LIST, srchstr).then((data: any) => {
       if (data.length > 0) {
         this.holidaysList = data;
-        this.holidaysList = this.holidaysList.filter(x => x.isActive == true).sort((a, b) => {
+        this.holidaysList = this.holidaysList.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => {
           if (a.date > b.date) return 1;
           if (a.date < b.date) return -1;
           return 0;
         });
-        let temp = this.holidaysList.find(x => new Date(x.date) > new Date());
+        let temp = this.holidaysList.find((x:any)  => new Date(x.date) > new Date());
         this.Holiday = temp ? temp.holidayName : 'No Holidays.'
         this.HolidayDate = temp ? temp.date : null;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.holidaysList = [];
     });
   }
 
   ApproversList: any[] = [];
-  getApproversList(id) {
+  getApproversList(id:any) {
     this.errMsg = "";
     this.httpService.LAgetByParam(APIURLS.GET_PLANT_HEADS_FOR_EMPLOYEE, this.currentUser.employeeId).then((data: any) => {
       if (data) {
@@ -190,7 +191,7 @@ export class OverTimeRequestComponent implements OnInit {
         }
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -213,7 +214,7 @@ export class OverTimeRequestComponent implements OnInit {
           this.ApproversList = data;
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -231,7 +232,7 @@ export class OverTimeRequestComponent implements OnInit {
 
   fileToUpload: File | null = null;
   File: File | null = null;
-  name: string;
+  name: string
   files: File[] = []
   handleFileInput(files: FileList) {
     this.File = files[0];
@@ -261,7 +262,7 @@ export class OverTimeRequestComponent implements OnInit {
     console.log(this.myInputVariable.nativeElement.files);
   }
 
-  id: string;
+  id: string
   formData = new FormData();
   fileslist1: any[] = [];
   errMsg1: string = '';
@@ -276,7 +277,7 @@ export class OverTimeRequestComponent implements OnInit {
       this.isLoading = false;
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
   }
@@ -288,9 +289,9 @@ export class OverTimeRequestComponent implements OnInit {
     this.ReasonList = [];
     this.httpService.LAget(APIURLS.BR_GET_ALL_REASONS_LIST).then((data: any) => {
       if (data.length > 0) {
-        this.ReasonList = data.filter(x => x.isActive);
+        this.ReasonList = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReasonList = [];
     });
@@ -304,7 +305,7 @@ export class OverTimeRequestComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -314,7 +315,7 @@ export class OverTimeRequestComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -324,7 +325,7 @@ export class OverTimeRequestComponent implements OnInit {
                   $("#personName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -359,7 +360,7 @@ export class OverTimeRequestComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.OverTimeRequestList = [];
     });
@@ -386,7 +387,7 @@ export class OverTimeRequestComponent implements OnInit {
     this.newDynamic = { id: this.rowcount, empNo: null, Name: null, Dept: null, Desig: null, DOJ: null, NoHrs: null, stored: "0" };
     this.dynamicArray.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.dynamicArray.length > 1) {
       const index = this.dynamicArray.indexOf(item);
       this.dynamicArray.splice(index, 1);
@@ -398,38 +399,38 @@ export class OverTimeRequestComponent implements OnInit {
     this.errMsg = "";
     this.get("RoleMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.Rolelist = data.filter(x => x.isActive);
+        this.Rolelist = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Rolelist = [];
     });
   }
 
-  getRole(id) {
-    let temp = this.Rolelist.find(x => x.id == id);
+  getRole(id:any) {
+    let temp = this.Rolelist.find((x:any)  => x.id == id);
     return temp ? temp.role_Stxt : '';
   }
 
   GetEmpDetails(mtrl) {
     var self = this;
     $('#empNo' + mtrl.id).autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm1 = mtrl.empNo;
         let connection = self.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, searchTerm1);
         connection.then((data: any) => {
           if (data) {
-            let result = data.filter(x => { return x.employeeId != null });
-            response(result.map((i) => {
+            let result = data.filter((x:any)  => { return x.employeeId != null });
+            response(result.map((i:any) => {
               i.label = i.fullName + '-' + i.department + '-' + i.designation,
                 i.fullName = i.fullName, i.department = i.department, i.designation = i.designation,
                 i.joiningdate = i.joiningDate, i.val = i.materialCode; return i;
             }));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         mtrl.Name = ui.item.fullName;
         mtrl.Dept = ui.item.department;
         mtrl.Desig = ui.item.designation;
@@ -441,7 +442,7 @@ export class OverTimeRequestComponent implements OnInit {
     });
   }
 
-  checkOTEligibility(id) {
+  checkOTEligibility(id:any) {
     let filterModel: any = {};
     filterModel.pernr = id;
     filterModel.TYP = 'Overtime';
@@ -490,7 +491,7 @@ export class OverTimeRequestComponent implements OnInit {
           this.fromDate = data.fromDate;
           this.SwipeType = data.swipeType;
           this.DetailedReason = data.reason;
-          let result = data1.find(x => x.employeeId == data.pernr);
+          let result = data1.find((x:any)  => x.employeeId == data.pernr);
           let newDynamic = { id: this.rowcount, empNo: null, Name: null, Dept: null, Desig: null, DOJ: null, NoHrs: null, stored: "0" };
           newDynamic.empNo = data.pernr;
           newDynamic.NoHrs = data.noHRS;
@@ -500,7 +501,7 @@ export class OverTimeRequestComponent implements OnInit {
           newDynamic.DOJ = result.joiningDate;
           this.dynamicArray.push(newDynamic);
         }
-      }).catch(error => {
+      }).catch((error)=> {
       });
     }
     else {
@@ -562,7 +563,7 @@ export class OverTimeRequestComponent implements OnInit {
             });
             this.getEmpOverTimeRequests();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error Cancelling Overtime ..';
         });
       }
@@ -595,7 +596,7 @@ export class OverTimeRequestComponent implements OnInit {
           this.attendanceDetails.push(data);
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.attendanceDetails = [];
       });
@@ -624,8 +625,8 @@ export class OverTimeRequestComponent implements OnInit {
 
     filterModel.fromDate = formdate;
     filterModel.toDate = this.toDate;
-    filterModel.pernr = this.dynamicArray.map(x => x.empNo).join();
-    filterModel.noHRS = this.dynamicArray.map(x => x.NoHrs).join();
+    filterModel.pernr = this.dynamicArray.map((x:any)  => x.empNo).join();
+    filterModel.noHRS = this.dynamicArray.map((x:any)  => x.NoHrs).join();
     filterModel.reason = this.DetailedReason;
     filterModel.apprvrStatus = 'Pending';
     filterModel.pendingApprover = this.ApproversList[0].employeeId;
@@ -657,7 +658,7 @@ export class OverTimeRequestComponent implements OnInit {
       }
       this.reset();
       this.getEmpOverTimeRequests();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error Applying Over Time ..';
     });
   }
@@ -681,7 +682,8 @@ export class OverTimeRequestComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -692,7 +694,7 @@ getHeader(): { headers: HttpHeaders } {
   return { headers };
 }
 
-  file: File;
+  file!: File;
   uploadfiles(files: File) {
     this.file = files[0];
   }
@@ -732,7 +734,7 @@ getHeader(): { headers: HttpHeaders } {
         this.reset;
         this.getEmpOverTimeRequests();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
   }

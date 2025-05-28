@@ -19,7 +19,7 @@ declare var toastr: any;
   styleUrls: ['./complete-exit.component.css']
 })
 export class CompleteExitComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   terminationId: any;
   employeeId: any;
   urlPath: string = '';
@@ -30,8 +30,8 @@ export class CompleteExitComponent implements OnInit {
   terminationStatus: any;
   terminationDetails: any = {};
   employeeDetails: any = {};
-  TerminationDate: string;
-  noticePeriod: string;
+  TerminationDate: string
+  noticePeriod: string
   currentTab:string = "details";
   tabIndex: number = 0;
   tabsList: string[] = ["details", "attachments","checklist","exitinterview", "history"];
@@ -49,7 +49,8 @@ export class CompleteExitComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.terminationId = this.route.snapshot.paramMap.get('id')!;
       if (!this.terminationId || this.terminationId <= 0) {
         toastr.error("Invalid ID passed.");
@@ -60,7 +61,7 @@ export class CompleteExitComponent implements OnInit {
   }
 
   
-  GetTerminationDetailsById(id) {
+  GetTerminationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible = true;
 
@@ -75,7 +76,7 @@ export class CompleteExitComponent implements OnInit {
         this.noticePeriod = this.terminationDetails.noticePeriod + ' Month(s)';        
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = error;
     });
@@ -112,7 +113,7 @@ export class CompleteExitComponent implements OnInit {
         } else
         toastr.error("Error occurred.");
           this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });
@@ -129,13 +130,13 @@ export class CompleteExitComponent implements OnInit {
     this.httpService.HRdownloadFile(APIURLS.TERMINATION_DETAILS_GET_ATTACHMENT_FILE + "/" + this.terminationId + "/" + id).then((data: any) => {
 
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -182,7 +183,7 @@ export class CompleteExitComponent implements OnInit {
             else
             toastr.error(data.message);
           })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while uploading attachments. Error:' + error);
         });

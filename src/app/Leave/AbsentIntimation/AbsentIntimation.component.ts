@@ -15,9 +15,9 @@ declare var jQuery: any;
 
 
 export class actionItemModel {
-    description: string;
-    id: number;
-    uname: string;
+    description: string
+    id!: number;
+    uname: string
 }
 @Component({
     selector: 'app-AbsentIntimation',
@@ -26,7 +26,7 @@ export class actionItemModel {
 })
 export class AbsentIntimationcomponent implements OnInit {
     searchTerm: FormControl = new FormControl();
-  @ViewChild(NgForm, { static: false }) leaveForm: NgForm;
+  @ViewChild(NgForm, { static: false }) leaveForm!: NgForm;
 
     public tableWidget: any;
     AbsentIntimationItem: AbsentIntimation = new AbsentIntimation();
@@ -67,7 +67,8 @@ export class AbsentIntimationcomponent implements OnInit {
         this.path = this.router.url;
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         if (chkaccess == true) {
-            this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+         const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         }
         else
             this.router.navigate(["/unauthorized"]);
@@ -99,7 +100,7 @@ export class AbsentIntimationcomponent implements OnInit {
             if ($event.timeStamp - this.lastReportingkeydown > 400) {
                 this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
                     if (data.length > 0) {
-                        var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+                        var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
                         var list = $.map(sortedList, function (item) {
                             return { label: item.fullName + " (" + item.employeeId + ") ", value: item.employeeId + " (" + item.fullName + ") "
                                     , name: item.fullName };
@@ -110,7 +111,7 @@ export class AbsentIntimationcomponent implements OnInit {
                                 "ui-autocomplete": "highlight",
                                 "ui-menu-item": "list-group-item"
                             },
-                            change: function (event, ui) {
+                            change: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#empNo").val(ui.item.value);
                                     $("#empNo").val(ui.item.value);
@@ -121,7 +122,7 @@ export class AbsentIntimationcomponent implements OnInit {
                                     $("#empNo").val('');
                                 }
                             },
-                            select: function (event, ui) {
+                            select: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#empNo").val(ui.item.value);
                                     $("#empNo").val(ui.item.value);
@@ -207,7 +208,7 @@ export class AbsentIntimationcomponent implements OnInit {
                         buttons: [false, true]
                     });
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
                 this.errMsgPop = 'Error saving intimation data..';
             });
@@ -250,7 +251,9 @@ export class AbsentIntimationcomponent implements OnInit {
     }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

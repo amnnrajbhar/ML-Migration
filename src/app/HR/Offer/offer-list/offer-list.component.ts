@@ -24,19 +24,20 @@ export class OfferListComponent implements OnInit {
 
   constructor(private masterDataService: MasterDataService, private httpService: HttpService,
     private router: Router, private excelService: ExcelService, private dataStore: DataStorageService, private util: Util) { }
-  currentUser: AuthData;
+  currentUser!: AuthData;
   plantList: any[] = [];
   payGroupList: any[] = [];
   employeeCategoryList: any[] = [];
   today = new Date();
   offerId: number = 0;
-  comments: string;
-  action: string;
+  comments: string
+  action: string
   filterData: any = {};
   filterModel: OfferListFilter = {} as OfferListFilter;
   isLoading: boolean = false;
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.pageNo = 1;
 
@@ -74,9 +75,9 @@ export class OfferListComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -86,9 +87,9 @@ export class OfferListComponent implements OnInit {
     if (this.filterModel.selectedPlantId) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.filterModel.selectedPlantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -103,9 +104,9 @@ export class OfferListComponent implements OnInit {
     this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
       .then((data: any) => {
         if (data.length > 0) {
-          this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+          this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.employeeCategoryList = [];
       });
   }
@@ -156,7 +157,7 @@ export class OfferListComponent implements OnInit {
       // store the filter model
       this.dataStore.SetData("OfferList", this.filterModel);
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -214,13 +215,13 @@ export class OfferListComponent implements OnInit {
     });
   }
 
-  withdraw(id) {
+  withdraw(id:any) {
     this.offerId = id;
     this.comments = "";
     this.action = "Withdrawn";
   }
 
-  archive(id) {
+  archive(id:any) {
     this.offerId = id;
     this.comments = "";
     this.action = "Archived";
@@ -249,13 +250,13 @@ export class OfferListComponent implements OnInit {
           swal(data.message);
         } else
           swal("Error occurred.");
-      }).catch(error => {
+      }).catch((error)=> {
         swal(error);
       });
     }
   }
 
-  submitForApproval(id) {
+  submitForApproval(id:any) {
     if (confirm("Are you sure you want to submit this for approval?")) {
       var request: any = {};
       request.offerId = id;
@@ -270,13 +271,13 @@ export class OfferListComponent implements OnInit {
             swal(data.message);
           } else
             swal("Error occurred.");
-        }).catch(error => {
+        }).catch((error)=> {
           swal(error);
         });
     }
   }
 
-  sendEntryEmail(id) {
+  sendEntryEmail(id:any) {
     if (confirm("Are you sure you want to send details entry email?")) {
       var request: any = {};
       request.offerId = id;
@@ -291,7 +292,7 @@ export class OfferListComponent implements OnInit {
           swal(data.message);
         } else
           swal("Error occurred.");
-      }).catch(error => {
+      }).catch((error)=> {
         swal(error);
       });
     }
@@ -304,7 +305,7 @@ export class OfferListComponent implements OnInit {
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "SNo":index,
@@ -362,7 +363,7 @@ export class OfferListComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Offers_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');   
@@ -377,7 +378,7 @@ export class OfferListComponent implements OnInit {
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl. No":index,
@@ -409,7 +410,7 @@ export class OfferListComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'RecruitmentApproval_FS_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');   
@@ -424,7 +425,7 @@ export class OfferListComponent implements OnInit {
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl. No":index,
@@ -458,7 +459,7 @@ export class OfferListComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'RecruitmentApproval_OS_Plant_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');   
@@ -477,9 +478,9 @@ export class OfferListComponent implements OnInit {
   getDepartments(){
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -488,15 +489,15 @@ export class OfferListComponent implements OnInit {
   subDepartmentList:any[]=[];
   onDepartmentChange(event: any){
     this.filterModel.selectedSubDepartmentId = "";
-    this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.filterModel.selectedDepartmentId);
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.filterModel.selectedDepartmentId);
   }
   
   getSubDepartments(){
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        this.subDepartmentFullList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        this.subDepartmentFullList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.subDepartmentFullList = [];      
     });
   }

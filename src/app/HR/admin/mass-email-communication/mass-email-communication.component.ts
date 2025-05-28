@@ -23,10 +23,10 @@ declare var toastr: any;
   providers: [Util]
 })
 export class MassEmailCommunicationComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) massEmailComunicationForm: NgForm;
+@ViewChild(NgForm, { static: false }) massEmailComunicationForm!: NgForm;
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   filterData: any = {};
   filterModel: any = {};
@@ -55,7 +55,8 @@ export class MassEmailCommunicationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageNo = 1;
     this.filterModel.pageSize = 10;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -104,9 +105,9 @@ export class MassEmailCommunicationComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantlist = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantlist = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantlist = [];
     });
   }
@@ -116,9 +117,9 @@ export class MassEmailCommunicationComponent implements OnInit {
     if (this.filterModel.plantId) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.filterModel.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -133,9 +134,9 @@ export class MassEmailCommunicationComponent implements OnInit {
       this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
         .then((data: any) => {
           if (data.length > 0) {
-            this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+            this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.employeeCategoryList = [];
         });
   }
@@ -145,9 +146,9 @@ export class MassEmailCommunicationComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -157,9 +158,9 @@ export class MassEmailCommunicationComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -168,9 +169,9 @@ export class MassEmailCommunicationComponent implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -180,10 +181,10 @@ export class MassEmailCommunicationComponent implements OnInit {
     this.httpService.HRpost(APIURLS.EMPLOYEE_GET_EMPLOYEELIST, this.filterModel).then((data: any) => {
       this.filterData = data;
       for (var item of this.filterData.list) {
-        item.statusColor = this.statusList.find(x => x.type == item.status).color;
+        item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -201,7 +202,7 @@ export class MassEmailCommunicationComponent implements OnInit {
 
   onStateChange() {
     this.filterModel.locationId = "";
-    this.locationList = this.locationFullList.filter(x => x.stateId == this.filterModel.stateId);
+    this.locationList = this.locationFullList.filter((x:any)  => x.stateId == this.filterModel.stateId);
   }
 
   setDateFormate(date: any): string {
@@ -217,7 +218,7 @@ export class MassEmailCommunicationComponent implements OnInit {
   }
 
   SendSelected(files) {
-    var selectedList = this.filterData.list.filter(x => x.selected == true);
+    var selectedList = this.filterData.list.filter((x:any)  => x.selected == true);
     if (selectedList.length <= 0) {
       toastr.error("Please select atleast one employee to send email notification");
       return;
@@ -274,7 +275,7 @@ export class MassEmailCommunicationComponent implements OnInit {
         } else
           toastr.error("Error occurred while sending email.");
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
         this.isLoading = false;
       });
@@ -338,7 +339,7 @@ export class MassEmailCommunicationComponent implements OnInit {
         } else
           toastr.error("Error occurred while sending email.");
           this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
         this.isLoading = false;
       });
@@ -348,7 +349,7 @@ export class MassEmailCommunicationComponent implements OnInit {
   count = 0;
   sendEmail(option) {
     if(option == "selected"){
-      var selectedList = this.filterData.list.filter(x => x.selected == true);
+      var selectedList = this.filterData.list.filter((x:any)  => x.selected == true);
       if (selectedList.length <= 0) {
         toastr.error("Please select atleast one employee to send email notification");        
         return;
@@ -372,7 +373,7 @@ export class MassEmailCommunicationComponent implements OnInit {
 
   countClick(){
     if(this.option == "selected"){
-      var selectedList = this.filterData.list.filter(x => x.selected == true);
+      var selectedList = this.filterData.list.filter((x:any)  => x.selected == true);
       this.exportData(selectedList);
     }
     else{
@@ -382,7 +383,7 @@ export class MassEmailCommunicationComponent implements OnInit {
         this.filterModel.export = false;
         this.exportData(data.list);
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;   
         this.filterModel.export = false;
         swal('Error occurred while fetching data.');   
@@ -395,7 +396,7 @@ export class MassEmailCommunicationComponent implements OnInit {
   exportData(data: any[]){
     var exportList=[];
     let index=0;
-    data.forEach(item => {
+    data.forEach((item :any) => {
       index=index+1;
       let exportItem={
         "SlNo":index,

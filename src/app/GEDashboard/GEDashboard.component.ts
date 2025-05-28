@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 // import { Lightbox } from 'ngx-lightbox';
 declare var jQuery: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
 import * as _ from "lodash";
 import { AuthData } from '../auth/auth.model';
 import { AppComponent } from '../app.component';
@@ -14,7 +14,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ExcelService } from '../shared/excel-service';
 declare var $: any;
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 //import { debug } from 'util';
 import { GenericGateEntryM } from '../gateentry/genericgateentrym.model';
 
@@ -29,15 +29,15 @@ export class GEDashboardComponent implements OnInit {
     todayDate = new Date();
     today: Date = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), this.todayDate.getDate());
     chart1: any;
-    errMsg: string;
+    errMsg: string
     location: any;
-    usrid: number;
-    path: string;
+    usrid!: number;
+    path: string
     employeeId: any;
     locationList: any[] = [[]];
     errMsgPop = '';
-    public tableWidget;
-    public tableWidget1;
+    public tableWidget:any;
+   public tableWidget1:any;
     chart: any;
     myDate = new Date();
     todaysvisitorsList: any = [];
@@ -46,7 +46,7 @@ export class GEDashboardComponent implements OnInit {
     //today report filter
     fromDate = '';
     toDate = '';
-    empData: AuthData;
+    empData!: AuthData;
     DashboardData: any;;
     datas: any = [];
     misseddatas: any[] = [];
@@ -64,7 +64,7 @@ export class GEDashboardComponent implements OnInit {
         { id: 5, name: 'Fri' },
         { id: 6, name: 'Sat' },
     ]
-    isLoading: boolean;
+    isLoading!: boolean;
 
     GEWithPOCount: any = 0;
     GEWithoutPOCount: any = 0;
@@ -81,7 +81,7 @@ export class GEDashboardComponent implements OnInit {
     NonRetData: any[] = [];
     Sales: any[] = [];
 
-    public chartPlugins = [ChartDataLabels];
+   // public chartPlugins = [ChartDataLabels];
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, 
         private http: HttpClient,private excelService: ExcelService) {
 
@@ -97,7 +97,8 @@ export class GEDashboardComponent implements OnInit {
         this.path = this.router.url;
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         if (chkaccess == true) {
-            let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+            //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
             this.usrid = authData.uid;
             this.employeeId = authData.userName;
             this.empData = authData;
@@ -120,21 +121,21 @@ export class GEDashboardComponent implements OnInit {
 
 
 
-    bookAppointment(ch) {
+    bookAppointment(ch:any) {
         localStorage.setItem('categoryVMS', ch);
         this.router.navigateByUrl("/visitorentry");
     }
     locationGateList = [];
     selGateLocation: any;
-    getGateList(id) {
+    getGateList(id:any) {
       this.isLoading = true;
       this.httpService.getById(APIURLS.BR_MASTER_LOCATIONGATE_MASTER_ANY_API, id).then((data: any) => {
         if (data.length > 0) {
           this.locationGateList = data;
-          this.selGateLocation = this.locationGateList.find(x => x.gateNo == '1');
+          this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == '1');
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.locationGateList = [];
       });
@@ -145,13 +146,13 @@ export class GEDashboardComponent implements OnInit {
       this.errMsg = "";
       this.get("PayGroupMaster/GetAll").then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => {
+          this.payGroupList = data.sort((a:any, b:any) => {
             if (a.short_desc > b.short_desc) return 1;
             if (a.short_desc < b.short_desc) return -1;
             return 0;
           });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.payGroupList = [];
       });
@@ -174,7 +175,7 @@ export class GEDashboardComponent implements OnInit {
         });
         return promise;
       }
-    getFormatedDate(d) {
+    getFormatedDate(d:any) {
         let fd = new Date(d);
         let formateddate = fd.getFullYear() + "-" + ("00" + (fd.getMonth() + 1)).slice(-2) + "-" +
             ("00" + fd.getDate()).slice(-2);
@@ -182,16 +183,16 @@ export class GEDashboardComponent implements OnInit {
     }
 
     plantAssignedList: any[] = [];
-    getPlantsassigned(id) {
+    getPlantsassigned(id:any) {
       this.isLoading = true;
       this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
         if (data) {
           this.plantAssignedList = data;
           let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-          this.plantAssignedList.sort((a, b) => { return collator.compare(a.code, b.code) });
+          this.plantAssignedList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.plantAssignedList = [];
       });
@@ -200,8 +201,8 @@ export class GEDashboardComponent implements OnInit {
     filterReport() {
         // debugger;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         if (this.from_date == '' || this.from_date == null) {
             formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
             this.from_date = new Date(td.getFullYear(), td.getMonth(), 1);
@@ -253,7 +254,7 @@ export class GEDashboardComponent implements OnInit {
             this.isLoading = false;
             this.reInitDatatable();
 
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
         });
 
@@ -285,8 +286,8 @@ export class GEDashboardComponent implements OnInit {
         setTimeout(() => this.initDatatable(), 0)
     }
 
-    getLocationName(id) {
-        let temp = this.locationList.find(s => s.id == id);
+    getLocationName(id:any) {
+        let temp = this.locationList.find((s:any) => s.id == id);
         return temp ? temp.name : '';
     }
 
@@ -297,7 +298,7 @@ export class GEDashboardComponent implements OnInit {
                 this.locationList = data;
             }
 
-        }).catch(error => {
+        }).catch((error)=> {
             // this.isLoading = false;
             this.locationList = [];
         });
@@ -331,7 +332,7 @@ export class GEDashboardComponent implements OnInit {
         this.GISubContractCount = this.DashboardData.subContractingInwardCount;
         this.GTReturnableCount = this.DashboardData.retInwardCount;
         let Models = this.DashboardData.models
-        let withPOList = Models.filter(x => x.type == 'WithPO');
+        let withPOList = Models.filter((x:any)  => x.type == 'WithPO');
         if (withPOList.length > 0) {
             for (let i = 0; i <= withPOList.length; i++) {
 
@@ -343,7 +344,7 @@ export class GEDashboardComponent implements OnInit {
         else {
             this.datas = [0, 0, 0, 0, 0, 0, 0];
         }
-        let withoutPOList = Models.filter(x => x.type == 'WithoutPO');
+        let withoutPOList = Models.filter((x:any)  => x.type == 'WithoutPO');
         if (withoutPOList.length > 0) {
             for (let i = 0; i <= withoutPOList.length; i++) {
 
@@ -356,7 +357,7 @@ export class GEDashboardComponent implements OnInit {
             this.misseddatas = [0, 0, 0, 0, 0, 0, 0];
         }
 
-        let retlist = Models.filter(x => x.type == 'ReturnableInward');
+        let retlist = Models.filter((x:any)  => x.type == 'ReturnableInward');
         if (retlist.length > 0) {
             for (let i = 0; i <= retlist.length; i++) {
 
@@ -368,7 +369,7 @@ export class GEDashboardComponent implements OnInit {
         else {
             this.Retdatas = [0, 0, 0, 0, 0, 0, 0];
         }
-        let SCList = Models.filter(x => x.type == 'SubContractingInward');
+        let SCList = Models.filter((x:any)  => x.type == 'SubContractingInward');
         if (SCList.length > 0) {
             for (let i = 0; i <= SCList.length; i++) {
 
@@ -380,7 +381,7 @@ export class GEDashboardComponent implements OnInit {
         else {
             this.SCdatas = [0, 0, 0, 0, 0, 0, 0];
         }
-        let STOoutList = Models.filter(x => x.type == 'STO');
+        let STOoutList = Models.filter((x:any)  => x.type == 'STO');
         if (STOoutList.length > 0) {
             for (let i = 0; i <= STOoutList.length; i++) {
 
@@ -393,7 +394,7 @@ export class GEDashboardComponent implements OnInit {
             this.STOdatasout = [0, 0, 0, 0, 0, 0, 0];
         }
 
-        let SCOutList = Models.filter(x => x.type == 'SubContractingOutward');
+        let SCOutList = Models.filter((x:any)  => x.type == 'SubContractingOutward');
         if (SCOutList.length > 0) {
             for (let i = 0; i <= SCOutList.length; i++) {
 
@@ -406,7 +407,7 @@ export class GEDashboardComponent implements OnInit {
             this.SCdatasOUT = [0, 0, 0, 0, 0, 0, 0];
         }
 
-        let RetOutList = Models.filter(x => x.type == 'Returnable');
+        let RetOutList = Models.filter((x:any)  => x.type == 'Returnable');
         if (RetOutList.length > 0) {
             for (let i = 0; i <= RetOutList.length; i++) {
 
@@ -418,7 +419,7 @@ export class GEDashboardComponent implements OnInit {
         else {
             this.RetOutdata = [0, 0, 0, 0, 0, 0, 0];
         }
-        let NonRetList = Models.filter(x => x.type == 'NonReturnable');
+        let NonRetList = Models.filter((x:any)  => x.type == 'NonReturnable');
         if (NonRetList.length > 0) {
             for (let i = 0; i <= NonRetList.length; i++) {
 
@@ -430,7 +431,7 @@ export class GEDashboardComponent implements OnInit {
         else {
             this.NonRetData = [0, 0, 0, 0, 0, 0, 0];
         }
-        let SaleList = Models.filter(x => x.type == 'Sales');
+        let SaleList = Models.filter((x:any)  => x.type == 'Sales');
         if (SaleList.length > 0) {
             for (let i = 0; i <= SaleList.length; i++) {
 
@@ -442,7 +443,7 @@ export class GEDashboardComponent implements OnInit {
         else {
             this.Sales = [0, 0, 0, 0, 0, 0, 0];
         }
-        let STOList = Models.filter(x => x.type == 'STOInward');
+        let STOList = Models.filter((x:any)  => x.type == 'STOInward');
         if (STOList.length > 0) {
             for (let i = 0; i <= STOList.length; i++) {
 
@@ -455,173 +456,173 @@ export class GEDashboardComponent implements OnInit {
             this.STOdatas = [0, 0, 0, 0, 0, 0, 0];
         }
 
-        this.chart = new Chart('mixed-out-chart', {
-            plugin: this.chartPlugins,
-            type: 'line',
-            data: {
-                labels: this.label,
-                datasets: [{
-                    label: "STO",
-                    type: "line",
-                    borderColor: "#8e5ea2",
-                    data: this.STOdatasout,
-                    fill: false
-                }, {
-                    label: "Sub Contracting",
-                    type: "line",
-                    borderColor: "#3e95cd",
-                    data: this.SCdatasOUT,
-                    fill: false
-                },
-                {
-                    label: "Sales",
-                    type: "line",
-                    borderColor: "#E4D482",
-                    data: this.Sales,
-                    fill: false
-                },
-                {
-                    label: "Returnable",
-                    type: "line",
-                    borderColor: "#FF33B2",
-                    data: this.RetOutdata,
-                    fill: false
-                },
-                {
-                    label: "Non Returnable",
-                    type: "line",
-                    borderColor: "#FF5733",
-                    data: this.NonRetData,
-                    fill: false
-                },
-                ]
-            },
-            options: {
-                title: {
-                    display: true,
-                    text: 'Gate Entry Outward Summary(Last 7 days)'
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            callback: function (value) { if (Number.isInteger(value)) { return value; } }
-                            //stepSize: 1
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Count'
-                        }
-                    }]
-                },
-                legend: {
-                    position: 'bottom',
-                    // labels: {
-                    //   padding: 20,
-                    //   boxWidth: 10
-                    // }
-                    onClick: (e) => e.stopPropagation()
-                },
-                plugins: {
-                    datalabels: {
-                        color: 'black',
-                        font: {
-                            size: 12,
-                            weight: 600
-                        },
-                        offset: 4,
-                        padding: 0,
-                        // formatter: function(value) {
-                        //   return value;
-                        // }
-                    }
-                }
-            }
-        });
+        // this.chart = new Chart('mixed-out-chart', {
+        //     plugin: this.chartPlugins,
+        //     type: 'line',
+        //     data: {
+        //         labels: this.label,
+        //         datasets: [{
+        //             label: "STO",
+        //             type: "line",
+        //             borderColor: "#8e5ea2",
+        //             data: this.STOdatasout,
+        //             fill: false
+        //         }, {
+        //             label: "Sub Contracting",
+        //             type: "line",
+        //             borderColor: "#3e95cd",
+        //             data: this.SCdatasOUT,
+        //             fill: false
+        //         },
+        //         {
+        //             label: "Sales",
+        //             type: "line",
+        //             borderColor: "#E4D482",
+        //             data: this.Sales,
+        //             fill: false
+        //         },
+        //         {
+        //             label: "Returnable",
+        //             type: "line",
+        //             borderColor: "#FF33B2",
+        //             data: this.RetOutdata,
+        //             fill: false
+        //         },
+        //         {
+        //             label: "Non Returnable",
+        //             type: "line",
+        //             borderColor: "#FF5733",
+        //             data: this.NonRetData,
+        //             fill: false
+        //         },
+        //         ]
+        //     },
+        //     options: {
+        //         title: {
+        //             display: true,
+        //             text: 'Gate Entry Outward Summary(Last 7 days)'
+        //         },
+        //         scales: {
+        //             yAxes: [{
+        //                 ticks: {
+        //                     beginAtZero: true,
+        //                     callback: function (value:any) { if (Number.isInteger(value)) { return value; } }
+        //                     //stepSize: 1
+        //                 },
+        //                 scaleLabel: {
+        //                     display: true,
+        //                     labelString: 'Count'
+        //                 }
+        //             }]
+        //         },
+        //         legend: {
+        //             position: 'bottom',
+        //             // labels: {
+        //             //   padding: 20,
+        //             //   boxWidth: 10
+        //             // }
+        //             onClick: (e) => e.stopPropagation()
+        //         },
+        //         plugins: {
+        //             datalabels: {
+        //                 color: 'black',
+        //                 font: {
+        //                     size: 12,
+        //                     weight: 600
+        //                 },
+        //                 offset: 4,
+        //                 padding: 0,
+        //                 // formatter: function(value) {
+        //                 //   return value;
+        //                 // }
+        //             }
+        //         }
+        //     }
+        // });
 
-        this.chart = new Chart(document.getElementById("mixed-chart"), {
-            plugin: this.chartPlugins,
-            type: 'line',
-            data: {
-                labels: this.label,
-                datasets: [{
-                    label: "With PO",
-                    type: "line",
-                    borderColor: "#8e5ea2",
-                    data: this.datas,
-                    fill: false
-                }, {
-                    label: "Without PO",
-                    type: "line",
-                    borderColor: "#3e95cd",
-                    data: this.misseddatas,
-                    fill: false
-                },
-                {
-                    label: "STO",
-                    type: "line",
-                    borderColor: "#E4D482",
-                    data: this.STOdatas,
-                    fill: false
-                },
-                {
-                    label: "Sub Contracting",
-                    type: "line",
-                    borderColor: "#FF33B2",
-                    data: this.SCdatas,
-                    fill: false
-                },
-                {
-                    label: "Returnable",
-                    type: "line",
-                    borderColor: "#FF5733",
-                    data: this.Retdatas,
-                    fill: false
-                },
-                ]
-            },
-            options: {
-                title: {
-                    display: true,
-                    text: 'Gate Entry Inward Summary(Last 7 days)'
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            callback: function (value) { if (Number.isInteger(value)) { return value; } }
-                            //stepSize: 1
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Count'
-                        }
-                    }]
-                },
-                legend: {
-                    position: 'bottom',
-                    // labels: {
-                    //   padding: 20,
-                    //   boxWidth: 10
-                    // }
-                    onClick: (e) => e.stopPropagation()
-                },
-                plugins: {
-                    datalabels: {
-                        color: 'black',
-                        font: {
-                            size: 12,
-                            weight: 600
-                        },
-                        offset: 4,
-                        padding: 0,
-                        // formatter: function(value) {
-                        //   return value;
-                        // }
-                    }
-                }
-            }
-        });
+        // this.chart = new Chart(document.getElementById("mixed-chart"), {
+        //     plugin: this.chartPlugins,
+        //     type: 'line',
+        //     data: {
+        //         labels: this.label,
+        //         datasets: [{
+        //             label: "With PO",
+        //             type: "line",
+        //             borderColor: "#8e5ea2",
+        //             data: this.datas,
+        //             fill: false
+        //         }, {
+        //             label: "Without PO",
+        //             type: "line",
+        //             borderColor: "#3e95cd",
+        //             data: this.misseddatas,
+        //             fill: false
+        //         },
+        //         {
+        //             label: "STO",
+        //             type: "line",
+        //             borderColor: "#E4D482",
+        //             data: this.STOdatas,
+        //             fill: false
+        //         },
+        //         {
+        //             label: "Sub Contracting",
+        //             type: "line",
+        //             borderColor: "#FF33B2",
+        //             data: this.SCdatas,
+        //             fill: false
+        //         },
+        //         {
+        //             label: "Returnable",
+        //             type: "line",
+        //             borderColor: "#FF5733",
+        //             data: this.Retdatas,
+        //             fill: false
+        //         },
+        //         ]
+        //     },
+        //     options: {
+        //         title: {
+        //             display: true,
+        //             text: 'Gate Entry Inward Summary(Last 7 days)'
+        //         },
+        //         scales: {
+        //             yAxes: [{
+        //                 ticks: {
+        //                     beginAtZero: true,
+        //                     callback: function (value:any) { if (Number.isInteger(value)) { return value; } }
+        //                     //stepSize: 1
+        //                 },
+        //                 scaleLabel: {
+        //                     display: true,
+        //                     labelString: 'Count'
+        //                 }
+        //             }]
+        //         },
+        //         legend: {
+        //             position: 'bottom',
+        //             // labels: {
+        //             //   padding: 20,
+        //             //   boxWidth: 10
+        //             // }
+        //             onClick: (e) => e.stopPropagation()
+        //         },
+        //         plugins: {
+        //             datalabels: {
+        //                 color: 'black',
+        //                 font: {
+        //                     size: 12,
+        //                     weight: 600
+        //                 },
+        //                 offset: 4,
+        //                 padding: 0,
+        //                 // formatter: function(value) {
+        //                 //   return value;
+        //                 // }
+        //             }
+        //         }
+        //     }
+        // });
 
 
         //PIE Chart
@@ -642,47 +643,47 @@ export class GEDashboardComponent implements OnInit {
         }
         let displayFlag = (this.GEWithPOCount != 0 || this.GEWithoutPOCount != 0) ? true : false;
         // let displayFlag = true;
-        this.chart = new Chart(document.getElementById("inwardPieChart"), {
-            plugin: this.chartPlugins,
-            type: 'pie',
-            data: {
-                labels: labels1,
-                datasets: [
-                    {
-                        label: lab,
-                        backgroundColor: bckColor,
-                        data: pieData
-                    }
-                ]
-            },
-            options: {
-                maintainAspectRatio: true,
-                responsive: true,
-                legend: {
-                    position: 'right',
-                    labels: {
-                        padding: 20,
-                        boxWidth: 10
-                    },
-                    onClick: (e) => e.stopPropagation()
-                },
-                plugins: {
-                    datalabels: {
-                        color: 'white',
-                        font: {
-                            size: 15,
-                            weight: 600
-                        },
-                        offset: 4,
-                        padding: 0,
-                    }
-                },
-                title: {
-                    display: true,
-                    text: 'Gate Entry Inward Status'
-                }
-            }
-        });
+        // this.chart = new Chart(document.getElementById("inwardPieChart"), {
+        //     plugin: this.chartPlugins,
+        //     type: 'pie',
+        //     data: {
+        //         labels: labels1,
+        //         datasets: [
+        //             {
+        //                 label: lab,
+        //                 backgroundColor: bckColor,
+        //                 data: pieData
+        //             }
+        //         ]
+        //     },
+        //     options: {
+        //         maintainAspectRatio: true,
+        //         responsive: true,
+        //         legend: {
+        //             position: 'right',
+        //             labels: {
+        //                 padding: 20,
+        //                 boxWidth: 10
+        //             },
+        //             onClick: (e) => e.stopPropagation()
+        //         },
+        //         plugins: {
+        //             datalabels: {
+        //                 color: 'white',
+        //                 font: {
+        //                     size: 15,
+        //                     weight: 600
+        //                 },
+        //                 offset: 4,
+        //                 padding: 0,
+        //             }
+        //         },
+        //         title: {
+        //             display: true,
+        //             text: 'Gate Entry Inward Status'
+        //         }
+        //     }
+        // });
 
         let pieData1 = [];
         let labels12 = [];
@@ -702,47 +703,47 @@ export class GEDashboardComponent implements OnInit {
         }
         let displayFlag1 = (this.GEWithPOCount != 0 || this.GEWithoutPOCount != 0) ? true : false;
         // let displayFlag = true;
-        this.chart = new Chart(document.getElementById("outwardPieChart"), {
-            plugin: this.chartPlugins,
-            type: 'pie',
-            data: {
-                labels: labels12,
-                datasets: [
-                    {
-                        label: lab1,
-                        backgroundColor: bckColor1,
-                        data: pieData1
-                    }
-                ]
-            },
-            options: {
-                maintainAspectRatio: true,
-                responsive: true,
-                legend: {
-                    position: 'right',
-                    labels: {
-                        padding: 20,
-                        boxWidth: 10
-                    },
-                    onClick: (e) => e.stopPropagation()
-                },
-                plugins: {
-                    datalabels: {
-                        color: 'white',
-                        font: {
-                            size: 15,
-                            weight: 600
-                        },
-                        offset: 4,
-                        padding: 0,
-                    }
-                },
-                title: {
-                    display: true,
-                    text: 'Gate Entry Outward Status'
-                }
-            }
-        });
+        // this.chart = new Chart(document.getElementById("outwardPieChart"), {
+        //     plugin: this.chartPlugins,
+        //     type: 'pie',
+        //     data: {
+        //         labels: labels12,
+        //         datasets: [
+        //             {
+        //                 label: lab1,
+        //                 backgroundColor: bckColor1,
+        //                 data: pieData1
+        //             }
+        //         ]
+        //     },
+        //     options: {
+        //         maintainAspectRatio: true,
+        //         responsive: true,
+        //         legend: {
+        //             position: 'right',
+        //             labels: {
+        //                 padding: 20,
+        //                 boxWidth: 10
+        //             },
+        //             onClick: (e) => e.stopPropagation()
+        //         },
+        //         plugins: {
+        //             datalabels: {
+        //                 color: 'white',
+        //                 font: {
+        //                     size: 15,
+        //                     weight: 600
+        //                 },
+        //                 offset: 4,
+        //                 padding: 0,
+        //             }
+        //         },
+        //         title: {
+        //             display: true,
+        //             text: 'Gate Entry Outward Status'
+        //         }
+        //     }
+        // });
 
 
 
@@ -751,7 +752,9 @@ export class GEDashboardComponent implements OnInit {
 
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -761,12 +764,12 @@ export class GEDashboardComponent implements OnInit {
 
   return { headers };
 }
-    getTimeFormat(time) {
+    getTimeFormat(time:any) {
         return moment('1970-01-01 ' + time);
     }
 
 
-    AMCEntry(id) {
+    AMCEntry(id:any) {
         let route = 'amc-entry/' + id;
         this.router.navigate([route]);
     }

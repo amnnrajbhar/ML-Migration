@@ -15,10 +15,10 @@ declare var $: any;
   styleUrls: ['./flow-viewer.component.css']
 })
 export class FlowViewerComponent implements OnInit {
-  @Input() objectId: number;
-  @Input() objectType: string;
+  @Input() objectId!: number;
+  @Input() objectType: string
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading: boolean = false;
   flows: any[] = [];
@@ -30,7 +30,8 @@ export class FlowViewerComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.LoadOfferFlowRecords();
     }
   }
@@ -43,7 +44,7 @@ export class FlowViewerComponent implements OnInit {
         this.flows = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.flows = [];
     });

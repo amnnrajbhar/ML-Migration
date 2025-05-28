@@ -1,10 +1,10 @@
 export class SamplingFilter {
-    PimNo: string;
-    BatchNo: string;
-    ItemCode: string;
-    FromDate: string;
-    Todate: string;
-    Plant: string;
+    PimNo!: string;
+    BatchNo!: string;
+    ItemCode!: string;
+    FromDate!: string;
+    Todate!: string;
+    Plant!: string;
     pageNo:number;
     pageSize:number;
     export:boolean;

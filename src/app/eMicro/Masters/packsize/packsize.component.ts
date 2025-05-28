@@ -16,7 +16,7 @@ declare var jQuery: any;
 
 export class actionItemModel {
   packSizeCode:string;
-  packSizeDesc: string;
+  packSizeDesc: string
   isActive:boolean;
 }
 
@@ -28,10 +28,10 @@ export class actionItemModel {
 })
 export class PackSizeComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) materialForm: NgForm;
+@ViewChild(NgForm, { static: false }) materialForm!: NgForm;
 
   public tableWidget: any;
-  companyId: number;
+  companyId!: number;
   materialList: MaterialMaster[] = [];
   materialItem: MaterialMaster = new MaterialMaster();
 
@@ -40,7 +40,7 @@ export class PackSizeComponent implements OnInit {
 
 
   isLoading: boolean = false;
-  entityTabHeader: string;
+  entityTabHeader: string
   errMsg: string = "";
   isLoadingPop: boolean = false;
   errMsgPop: string = "";
@@ -50,8 +50,8 @@ export class PackSizeComponent implements OnInit {
   currentUser = {} as AuthData;
 
   oldPackSize: PackSize = new PackSize();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
@@ -75,7 +75,8 @@ export class PackSizeComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     //if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getPackSizeList();
    // }
     //else
@@ -115,7 +116,7 @@ export class PackSizeComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -129,7 +130,7 @@ export class PackSizeComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PackSizelist = [];
     });
@@ -165,7 +166,7 @@ export class PackSizeComponent implements OnInit {
           this.insertAuditLog(this.oldPackSize,this.PackSize,Id);
           this.getPackSizeList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Pack Size..';
       });
@@ -238,12 +239,12 @@ export class PackSizeComponent implements OnInit {
      connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
      connection.then((data: any) => {
        this.isLoadingPop = false;
-     }).catch(() => {
+     }).catch((error) => {
        this.isLoadingPop = false;
      });
    }
    auditLogList: AuditLog[] = [];
-   openAuditLogs(id) {
+   openAuditLogs(id:any) {
      jQuery("#auditModal").modal('show');
      let stringparms = this.masterName + ',' + id;
      this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -252,7 +253,7 @@ export class PackSizeComponent implements OnInit {
          this.auditLogList.reverse();
        }
        this.reinitPOUPDatatable();
-     }).catch(() => {
+     }).catch((error) => {
      });
  
    }

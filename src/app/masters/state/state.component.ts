@@ -60,7 +60,7 @@ private reInitDatatable(): void {
             
             this.reInitDatatable();
         }
-    }).catch(error => {
+    }).catch((error)=> {
         this.isLoading = false;
         this.stateList = [];
     });
@@ -99,7 +99,7 @@ private reInitDatatable(): void {
             else 
               this.errMsgPop = data;
             
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving department data..';
           });

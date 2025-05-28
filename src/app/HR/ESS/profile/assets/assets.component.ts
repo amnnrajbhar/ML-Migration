@@ -23,12 +23,12 @@ declare var $: any;
   providers: [Util, AppointmentService],
 })
 export class AssetsComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) assetForm: NgForm;
+@ViewChild(NgForm, { static: false }) assetForm!: NgForm;
 
-  @Input() employeeId: number;
+  @Input() employeeId!: number;
   @Input() profileDetails: TemporaryProfile;
   @Input() editAllowed: boolean ;
-  @Input() profileId: number;
+  @Input() profileId!: number;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   
@@ -41,7 +41,7 @@ export class AssetsComponent implements OnInit {
   isEdit: boolean = false;
   editIndex: number = -1;
   selectedAssetType: any = null;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -63,7 +63,8 @@ export class AssetsComponent implements OnInit {
   
         var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
         if (chkaccess == true) {
-          this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+       const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
           this.LoadData();
         }
         if (this.currentUser.hrEmployeeId == this.employeeId)
@@ -88,7 +89,7 @@ export class AssetsComponent implements OnInit {
         this.dataLoaded.emit("loaded");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       this.assetList = [];
@@ -102,13 +103,13 @@ export class AssetsComponent implements OnInit {
     this.httpService.HRget(APIURLS.TEMPORARY_EMPLOYEE_PROFILE_GET_DETAILS + "/" + id).then((data: any) => {
       if (data) {
         this.profileDetailsList = data;
-        this.profileDetailsList.assetDetails = this.profileDetailsList.assetDetails.filter(x => x.action!="None");
+        this.profileDetailsList.assetDetails = this.profileDetailsList.assetDetails.filter((x:any)  => x.action!="None");
         for(var item of this.profileDetailsList.addressDetails){
           item.statusColor = this.statusList.find(x=>x.type == item.action).color;
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -126,7 +127,7 @@ export class AssetsComponent implements OnInit {
       if (data.length > 0) {
         this.assetTypes = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.assetTypes=[];
     });
   }

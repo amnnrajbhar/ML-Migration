@@ -20,7 +20,7 @@ declare var toastr: any;
 })
 export class InitiateExitComponent implements OnInit {
   @ViewChild(TerminationChecklistComponent,{static:false})  terminationChecklistComponent: TerminationChecklistComponent;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   terminationId: any;
   employeeId: any;
   urlPath: string = '';
@@ -31,8 +31,8 @@ export class InitiateExitComponent implements OnInit {
   terminationStatus: any;
   terminationDetails = {} as Termination;
   employeeDetails: any = {};
-  TerminationDate: string;
-  noticePeriod: string;
+  TerminationDate: string
+  noticePeriod: string
   currentTab: string = "details";
   tabIndex: number = 0;
   tabsList: string[] = ["details", "attachments"];
@@ -43,7 +43,7 @@ export class InitiateExitComponent implements OnInit {
   files: any[] = [];
   templatesList: any[] = [];
   selectedTemplateId: any;
-  exitInterviewRequired: boolean;
+  exitInterviewRequired!: boolean;
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute, private location: Location) { }
@@ -52,7 +52,8 @@ export class InitiateExitComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.terminationId = this.route.snapshot.paramMap.get('id')!;
       if (!this.terminationId || this.terminationId <= 0) {
         toastr.error("Invalid ID passed.");
@@ -63,7 +64,7 @@ export class InitiateExitComponent implements OnInit {
     }
   }
 
-  GetTerminationDetailsById(id) {
+  GetTerminationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible = true;
 
@@ -84,7 +85,7 @@ export class InitiateExitComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = error;
     });
@@ -122,7 +123,7 @@ export class InitiateExitComponent implements OnInit {
         } else
         toastr.error("Error occurred.");
           this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });
@@ -144,11 +145,11 @@ export class InitiateExitComponent implements OnInit {
     //console.log(event.target.value);
     this.httpService.HRget(APIURLS.TERMINATION_GET_PRINT_TEMPLATES+"/Exit Interview").then((data: any) => {
       if (data.length > 0) {
-        this.templatesList = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
+        this.templatesList = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
         
-        //this.printTemplateTypes = data.sort((a, b) => { if (a.templateType > b.templateType) return 1; if (a.templateType < b.templateType) return -1; return 0; });
+        //this.printTemplateTypes = data.sort((a:any, b:any) => { if (a.templateType > b.templateType) return 1; if (a.templateType < b.templateType) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.templatesList = [];
     });
   }

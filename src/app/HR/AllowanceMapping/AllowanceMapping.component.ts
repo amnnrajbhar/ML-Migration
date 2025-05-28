@@ -10,8 +10,8 @@ import swal from 'sweetalert';
 import * as _ from "lodash";
 declare var jQuery: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 @Component({
   selector: 'app-AllowanceMapping',
@@ -20,16 +20,16 @@ export class actionItemModel {
 })
 export class AllowanceMappingComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
   public tableWidget: any;
   selParentId: any;
-  AllowanceMappingList: any[];
+  AllowanceMappingList!: any[];
   AllowanceMappingList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -45,8 +45,8 @@ export class AllowanceMappingComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldAllowanceMappingItem: AllowanceMapping = new AllowanceMapping();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent) { }
 
   private initDatatable(): void {
@@ -67,7 +67,8 @@ export class AllowanceMappingComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       //this.getAllowanceMappingMasterList();
       this.getEmployeeCatList();
     //  this.getPlantList();
@@ -101,7 +102,7 @@ export class AllowanceMappingComponent implements OnInit {
       }
     //  this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCategoryList = [];
     });
@@ -118,7 +119,7 @@ export class AllowanceMappingComponent implements OnInit {
       }
     //  this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.AllowanceList = [];
     });
@@ -135,7 +136,7 @@ export class AllowanceMappingComponent implements OnInit {
       }
     //  this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.DesigList = [];
     });
@@ -150,7 +151,7 @@ export class AllowanceMappingComponent implements OnInit {
       }
     //  this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
@@ -165,7 +166,7 @@ export class AllowanceMappingComponent implements OnInit {
       }
     //  this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PlantList = [];
     });
@@ -206,10 +207,10 @@ export class AllowanceMappingComponent implements OnInit {
   {
     if(value=='Y')
     {
-      this.AllowanceList1=this.AllowanceList.filter(x=>x.metro=='X');
+      this.AllowanceList1=this.AllowanceList.filter((x:any)=>x.metro=='X');
     }
     else{
-      this.AllowanceList1=this.AllowanceList.filter(x=>x.metro !='X');
+      this.AllowanceList1=this.AllowanceList.filter((x:any)=>x.metro !='X');
     }
 
   }
@@ -223,7 +224,7 @@ export class AllowanceMappingComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.AllowanceMappingList = [];
     });
@@ -256,7 +257,7 @@ export class AllowanceMappingComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-    if (!this.AllowanceMappingList.some(s => s.plantId == this.AllowanceMappingItem.plantId && s.payGroupId == this.AllowanceMappingItem.payGroupId
+    if (!this.AllowanceMappingList.some((s:any) => s.plantId == this.AllowanceMappingItem.plantId && s.payGroupId == this.AllowanceMappingItem.payGroupId
       && s.employeeCategoryId == this.AllowanceMappingItem.employeeCategoryId &&  s.designationId == this.AllowanceMappingItem.designationId  && 
       s.allowanceTypeId== this.AllowanceMappingItem.allowanceTypeId)) {
       if (!this.isEdit) {
@@ -286,7 +287,7 @@ export class AllowanceMappingComponent implements OnInit {
         else
           this.errMsgPop = data;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving mapping..';
       });

@@ -22,10 +22,10 @@
 export class LetterMappingConfigComponent implements OnInit {
 
 
-  @ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+  @ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
     isLoading: boolean = false;
-    currentUser: AuthData;
+    currentUser!: AuthData;
     filterModel: any = {};
     filterData: any = {}
     item: any = {};
@@ -48,7 +48,8 @@ export class LetterMappingConfigComponent implements OnInit {
        }
   
     ngOnInit() {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.masterService.getPlantList().then((data:any)=>{this.plantList = data;});
       this.masterService.getPayGroupList().then((data:any)=>{this.payGroupFullList = data;});      
       this.masterService.getEmployeeCategoryList().then((data:any)=>{this.employeeCategoryList = data;});
@@ -65,9 +66,9 @@ export class LetterMappingConfigComponent implements OnInit {
     getTemplates(){
       this.httpService.HRget(APIURLS.RESIGNATION_GET_PRINT_TEMPLATES+"/"+"Appointment Letter").then((data: any) => {
         if (data.length > 0) {
-          this.Templates = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });                   
+          this.Templates = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });                   
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.Templates = [];
       });
     }
@@ -82,7 +83,7 @@ export class LetterMappingConfigComponent implements OnInit {
       this.httpService.HRpost(APIURLS.LETTER_MAPPING_CONFIG_GET_BY_FILTER, this.filterModel).then((data: any) => {
         this.filterData = data;      
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error("Error while fetching the list. Error: "+ error);
         this.isLoading = false;      
       });
@@ -125,7 +126,7 @@ export class LetterMappingConfigComponent implements OnInit {
           toastr.error('Error adding details...'+ data.message);
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error adding details...'+ error);
       })
@@ -152,7 +153,7 @@ export class LetterMappingConfigComponent implements OnInit {
           toastr.error('Error updating details...'+ data.message);
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error updating details...'+ error);
       })
@@ -181,7 +182,7 @@ export class LetterMappingConfigComponent implements OnInit {
           this.isLoading = false;
           toastr.error('Error occured while deleting the details. Error:' + err);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while deleting the details. Error:' + error);
         });
@@ -237,7 +238,7 @@ export class LetterMappingConfigComponent implements OnInit {
         this.filterModel.export = false;
         var exportList = [];
         let index = 0;
-        data.list.forEach(item => {
+        data.list.forEach((item :any) => {
           index = index + 1;
           let exportItem = {          
             "Sl No": index,
@@ -255,7 +256,7 @@ export class LetterMappingConfigComponent implements OnInit {
         });
         this.excelService.exportAsExcelFile(exportList, 'SalaryHead_List');
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.filterModel.export = false;
         swal('Error occurred while fetching data.');
@@ -265,8 +266,8 @@ export class LetterMappingConfigComponent implements OnInit {
 
     onPlantChange() {
       if (this.item.plantId > 0) {
-        let plant = this.plantList.find(x => x.id == this.item.plantId)
-        this.payGroupList = this.payGroupFullList.filter(x => x.plant == plant.code);
+        let plant = this.plantList.find((x:any)  => x.id == this.item.plantId)
+        this.payGroupList = this.payGroupFullList.filter((x:any)  => x.plant == plant.code);
       }
       else
         this.payGroupList = [];
@@ -274,8 +275,8 @@ export class LetterMappingConfigComponent implements OnInit {
   
     onFilterPlantChange() {
       if (this.filterModel.plantId > 0) {
-        let plant = this.plantList.find(x => x.id == this.filterModel.plantId)
-        this.filterPayGroupList = this.payGroupFullList.filter(x => x.plant == plant.code);       
+        let plant = this.plantList.find((x:any)  => x.id == this.filterModel.plantId)
+        this.filterPayGroupList = this.payGroupFullList.filter((x:any)  => x.plant == plant.code);       
       }
       else
         this.filterPayGroupList = [];

@@ -14,12 +14,13 @@ declare var toastr: any;
   styleUrls: ['./employee-transfer.component.css']
 })
 export class EmployeeTransferComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   constructor( private router: Router) { }
 
   ngOnInit() {
     console.log('inside');
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     let route = 'HR/transfer/details/' + this.currentUser.hrEmployeeId+"/0/EMP";
       this.router.navigate([route]);
   }

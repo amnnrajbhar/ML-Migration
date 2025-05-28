@@ -24,7 +24,7 @@ declare var require: any;
   providers: [Util]  
 })
 export class EditResignationApproverComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   resignationId: any;
   approverId: any;
   employeeId: any;
@@ -37,8 +37,8 @@ export class EditResignationApproverComponent implements OnInit {
   //resignationDetails:any={}; //= {} as Resignation;
   resignationDetails = {} as Resignation;
   employeeDetails: any = {};
-  DateLastWorkingDay: string;
-  ResignationDate: string;
+  DateLastWorkingDay: string
+  ResignationDate: string
   currentTab: string = "details";
   tabIndex: number = 0;
   tabsList: string[] = ["details", "attachments", "history"];
@@ -46,9 +46,9 @@ export class EditResignationApproverComponent implements OnInit {
   reasonList = [{ type: "Personal" },{ type: "Retired" }, { type: "Terminated" }];  
   fileList: any[] = [];
   taskId: number = 0;
-  comments: string;
+  comments: string
   reason: string = "";
-  noticePeriod: string;
+  noticePeriod: string
   files: any[] = [];
   settlementTypeList = [{ type: "Release with short notice period" },{ type: "Deduction in Settlement" }, { type: "Payment to be done" }];  
   paymodeList = [{ type: "Demand Draft(DD)" },{ type: "Online Payment" }, { type: "Cheque" }];  
@@ -61,7 +61,8 @@ export class EditResignationApproverComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.resignationId = this.route.snapshot.paramMap.get('id1')!;
       this.approverId = this.currentUser.uid;
       this.taskId = Number(this.route.snapshot.paramMap.get('id2')!);
@@ -71,7 +72,7 @@ export class EditResignationApproverComponent implements OnInit {
     }
   }
 
-  GetResignationDetailsById(id) {
+  GetResignationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible = true;
 
@@ -93,7 +94,7 @@ export class EditResignationApproverComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg = error;
     });
   }
@@ -182,7 +183,7 @@ export class EditResignationApproverComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while editing resignation details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while editing resignation details. Error:' + error);
       });
@@ -212,7 +213,7 @@ export class EditResignationApproverComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error occured.");
       this.isLoading = false;
     });
@@ -243,7 +244,7 @@ export class EditResignationApproverComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
       this.isLoading = false;
     });

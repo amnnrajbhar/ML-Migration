@@ -1,6 +1,6 @@
 export class StockFilter {
-    GroupBy: string;
-    Plant: string;
+    GroupBy: string
+    Plant: string
     pageNo:number;
     pageSize:number;
     export:boolean;

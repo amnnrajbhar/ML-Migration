@@ -1,5 +1,5 @@
 export class PlantsAssignedForUserid {
-  id: number;
-  uid: number;
+  id!: number;
+  uid!: number;
   locationId: number
 }

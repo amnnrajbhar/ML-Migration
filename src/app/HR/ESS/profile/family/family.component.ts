@@ -23,11 +23,11 @@ declare var $: any;
   providers:[Util,AppointmentService]
 })
 export class FamilyComponent implements OnInit {
-  @ViewChild(NgForm , { static: false })  familyForm: NgForm;
-  @Input() employeeId: number;
+  @ViewChild(NgForm , { static: false })  familyForm!: NgForm;
+  @Input() employeeId!: number;
   @Input() profileDetails: TemporaryProfile;
   @Input() editAllowed: boolean ;
-  @Input() profileId: number;
+  @Input() profileId!: number;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   isLoading = false;
@@ -42,7 +42,7 @@ export class FamilyComponent implements OnInit {
   selectedRelationType: any =null;
   selectedState: any = null;
   selectedCountry: any = null;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -68,7 +68,8 @@ export class FamilyComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getData(this.employeeId);
     }
     if (this.profileId>0)
@@ -87,7 +88,7 @@ export class FamilyComponent implements OnInit {
       return this.profileDetails;
     }
 
-getData(id) {
+getData(id:any) {
   this.isLoading = true;
 
   this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_GET_FAMILY, id).then((data: any) => {
@@ -96,7 +97,7 @@ getData(id) {
       this.familyLists = this.familyList;
     }
     this.isLoading = false;
-  }).catch(error => {
+  }).catch((error)=> {
     this.isLoading = false;
   });
 }
@@ -108,13 +109,13 @@ getProfileData(id)
   this.httpService.HRget(APIURLS.TEMPORARY_EMPLOYEE_PROFILE_GET_DETAILS + "/" + id).then((data: any) => {
     if (data) {
       this.profileDetailsList = data;
-      this.profileDetailsList.familyDetails = this.profileDetailsList.familyDetails.filter(x => x.action!="None");
+      this.profileDetailsList.familyDetails = this.profileDetailsList.familyDetails.filter((x:any)  => x.action!="None");
       for(var item of this.profileDetailsList.familyDetails){
         item.statusColor = this.statusList.find(x=>x.type == item.action).color;
       }
     }
     this.isLoading = false;
-  }).catch(error => {
+  }).catch((error)=> {
     this.isLoading = false;
   });
 }

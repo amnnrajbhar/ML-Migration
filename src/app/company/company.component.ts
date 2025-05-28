@@ -16,7 +16,7 @@ declare var jQuery: any;
 export class CompanyComponent implements OnInit {
 
   public tableWidget: any;
-  stateList: any[];
+  stateList!: any[];
   SelState: any;
   licenseList: Company[];
   id1: number = 0;
@@ -35,7 +35,7 @@ export class CompanyComponent implements OnInit {
   regBtnHide: boolean = true;
   formData: FormData = new FormData();
   postParams: any;
-  file: File;
+  file!: File;
   fileUploadMsgPop: string = "";
   path: string = "";
   constructor(private appService: AppComponent,  private router: Router, private httpService: HttpService) { }
@@ -79,12 +79,12 @@ export class CompanyComponent implements OnInit {
       this.isLoading = false;
       if (data.length > 0){
           this.companyList = data;
-          if (data.companyList.filter(e => e.cmpid == 1).length > 0) {
+          if (data.companyList.filter((e:any) => e.cmpid == 1).length > 0) {
               this.regBtnHide = false;
           }
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.licenseList = [];
     });
@@ -100,7 +100,7 @@ export class CompanyComponent implements OnInit {
         // if (this.companyItem.domainName.indexOf('@') >= 0 && this.companyItem.domainName.indexOf('.in') >= 0) {
         //     this.companyItem.domainName = this.companyItem.domainName.substring(this.companyItem.domainName.indexOf('@') + 1, this.companyItem.domainName.indexOf('.in'));
         // }
-      this.SelState = this.stateList.find(s => s.sname === this.companyItem.stateName);
+      this.SelState = this.stateList.find((s:any) => s.sname === this.companyItem.stateName);
     }
     else {
       this.companyItem = new Company(0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '',0, 0, 0, '', '', Number(new Date()), Number(new Date()), 0, 0, 0,  true,'');
@@ -119,7 +119,7 @@ export class CompanyComponent implements OnInit {
       if (data.length > 0) {
         this.stateList = data.stateList;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -153,7 +153,7 @@ export class CompanyComponent implements OnInit {
           //     this.companyItem.domainName = this.companyItem.domainName.substring(this.companyItem.domainName.indexOf('@') + 1, this.companyItem.domainName.indexOf('.in'));
           // }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving company data..';
     });
@@ -192,7 +192,7 @@ export class CompanyComponent implements OnInit {
       else {
         this.errMsg = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = 'Error saving company data..';
     });
@@ -296,7 +296,7 @@ export class CompanyComponent implements OnInit {
                   // else {
                   // this.errMsgPop = data;
              // }
-          }).catch(error => {
+          }).catch((error)=> {
              // debugger;
               this.isLoadingPop = false;
               this.errMsgPop = 'Error uploading file ..';

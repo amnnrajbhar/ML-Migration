@@ -13,10 +13,10 @@ import { GenericGateEntryM } from '../gateentry/genericgateentrym.model';
 declare var jQuery: any;
 declare var $: any;
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
@@ -33,35 +33,37 @@ export class GEOutOtherMaterialComponent implements OnInit {
 
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
-  fiscalYear: string;
+  path!: string
+  fiscalYear: string
   errMsg: string = "";
   errMsgPop: string = "";
   errMsgModalPop: string = "";
   errMsgMatPop: string = "";
-  isEdit: boolean;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  isLoadingBAPI: boolean;
-  isLoadingMatPop: boolean;
+  isEdit!: boolean;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  isLoadingBAPI!: boolean;
+  isLoadingMatPop!: boolean;
   gateOutwardMModel = {} as GateOutwardMaster;
   gateOutwardDModel = {} as GateOutwardD;
   gateOutwardMList: GateOutwardMaster[] = [];
   gateOutwardDList: GateOutwardD[] = [];
-  pO_No: string;
+  pO_No: string
   qtY_RCVD: any;
   entryDateTime: Date = new Date();
-  reason: string;
-  invNO: string;
-  sendingPersonName: string;
+  reason: string
+  invNO: string
+  sendingPersonName: string
   mindate: Date = new Date();
 
-  elementtype: string;
+  elementtype: string
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private https: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private https: HttpClient) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
   getCurrentFinancialYear() {
     var fiscalyear = "";
     var today = new Date();
@@ -81,7 +83,8 @@ export class GEOutOtherMaterialComponent implements OnInit {
     this.fiscalYear = this.getCurrentFinancialYear();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationById(this.currentUser.baselocation);
       this.getPlantsassigned(this.currentUser.fkEmpId);
       //this.getGateList();
@@ -115,8 +118,8 @@ export class GEOutOtherMaterialComponent implements OnInit {
     }
     setTimeout(() => this.initDatatable(), 0)
   }
-  locationName: string;
-  plant: string;
+  locationName: string
+  plant!: string
   getLocationById(lId: number) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_LOCATION_MASTER_API, lId).then((data: any) => {
@@ -126,7 +129,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
         this.loadGateOutwardList('load');
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plant = '';
       this.locationName = '';
@@ -135,25 +138,26 @@ export class GEOutOtherMaterialComponent implements OnInit {
   plantList: any[] = [];
   location: any[] = [];
   baseloc = { fkPlantId: 0, code: '', name: '' }
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
         this.plantList = data;
-        let temp = this.plantList.find(x => x.fkPlantId == this.currentUser.baselocation);
+        let temp = this.plantList.find((x:any)  => x.fkPlantId == this.currentUser.baselocation);
         if (temp == null || temp == undefined) {
-          this.location.forEach(element => {
+          this.location.forEach((element:any)=> {
+
             this.baseloc.fkPlantId = element.id;
             this.baseloc.code = element.code;
             this.baseloc.name = element.name;
           });
           this.plantList.push(this.baseloc);
         }
-        this.plant = this.plantList.find(x => x.fkPlantId == this.currentUser.baselocation).code;
+        this.plant = this.plantList.find((x:any)  => x.fkPlantId == this.currentUser.baselocation).code;
         this.loadGateOutwardList('load');
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -165,12 +169,12 @@ export class GEOutOtherMaterialComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_MASTER_LOCATIONGATE_MASTER_ANY_API, this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
         this.locationGateList = data;
-        this.selGateLocation = this.locationGateList.find(x => x.gateNo == '1');
+        this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == '1');
         // this.selGateLocation = null;
-        // this.selGateLocation = this.locationGateList.find(x => x.gateNo == 'G1');
+        // this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == 'G1');
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationGateList = [];
     });
@@ -183,22 +187,22 @@ export class GEOutOtherMaterialComponent implements OnInit {
       if (data) {
         this.locationList = data;
         // this.selDestination = null;
-        let code = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+        let code = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
         this.getApproversDetails(code);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
   Approverslist: any[] = [];
-  getApproversDetails(code) {
+  getApproversDetails(code:any) {
     this.httpService.getByParam(APIURLS.BR_GET_VMS_APPROVERS, code + ',Gate' + "," + this.currentUser.employeeId).then((data: any) => {
       // this.isLoading = false;
       if (data.length > 0) {
         this.Approverslist = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -210,11 +214,11 @@ export class GEOutOtherMaterialComponent implements OnInit {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_GETBY_ANY_API, this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
-        this.employeeAllList = data.map((i) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
-        this.employeeList = this.employeeAllList.filter(x => x.isActive);
-        this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.currentUser.employeeId);
+        this.employeeAllList = data.map((i:any) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
+        this.employeeList = this.employeeAllList.filter((x:any)  => x.isActive);
+        this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.currentUser.employeeId);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.employeeList = [];
     });
@@ -226,9 +230,9 @@ export class GEOutOtherMaterialComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
         this.departmentList = data;
-        this.sendingDEPTNAME = this.departmentList.find(x => x.id == this.currentUser.fK_Department);
+        this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.id == this.currentUser.fK_Department);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.departmentList = [];
     });
@@ -270,9 +274,9 @@ export class GEOutOtherMaterialComponent implements OnInit {
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   delete: boolean = false;
-  fltrGONO: string;
-  fltrInvoiceNo: string;
-  fltrDCNO: string;
+  fltrGONO: string
+  fltrInvoiceNo: string
+  fltrDCNO: string
   // 2:Returnable, N:Non-Returnable
   loadGateOutwardList(action) {
     this.isLoading = true;
@@ -303,7 +307,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.gateOutwardMList = [];
     });
@@ -325,7 +329,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
       ("00" + dt.getSeconds()).slice(-2);
     return formateddate;
   }
-  typeChange(val) {
+  typeChange(val:any) {
     if (val != "2") {
       this.gateOutwardMModel.exP_RETURN_DATE = null;
     }
@@ -358,12 +362,12 @@ export class GEOutOtherMaterialComponent implements OnInit {
     if (isedit) {
       this.employeeList = this.employeeAllList;
       this.gateOutwardMModel = Object.assign({}, gateOutwardM);
-      // let postedlocation = this.locationList.find(x => x.code == this.gateOutwardMModel.planT_ID);
+      // let postedlocation = this.locationList.find((x:any)  => x.code == this.gateOutwardMModel.planT_ID);
       // this.locationName = postedlocation ? postedlocation.code + '-' + postedlocation.name : '';
-      this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
+      this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
       this.sendingPersonName = this.gateOutwardMModel.sendingPersonName;
       // this.sendingPersonName = this.sendingPERSON.firstName + ' ' + this.sendingPERSON.middleName + ' ' + this.sendingPERSON.lastName;
-      this.sendingDEPTNAME = this.departmentList.find(x => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
+      this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
       this.fiscalYear = this.gateOutwardMModel.fiN_YEAR;
       if (this.gateOutwardMModel.gO_TYPE == '2' && this.gateOutwardMModel.ouT_TIME != null) {
         this.isDelete = false;
@@ -372,7 +376,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
         this.locationName=loc.code +'-'+loc.name;
         this.httpService.getById(APIURLS.BR_MASTER_GATEOUTWARDD_ANY_API, gateOutwardM.id).then((data: any) => {
           if (data) {
-            data.forEach(mtrl => {
+            data.forEach((mtrl:any) => {
               let newDynamic = {
                 id: 0, iteM_CODE: null, material_Type: null, iteM_DESC: null, uom: null, nO_OF_CASES: null,
                 qty: null, exP_RETURN_DATE: null, remarks: null, stored: "0"
@@ -389,7 +393,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
             this.dynamicArray.push(newDynamic);
           });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.dynamicArray = [];
       });
     }
@@ -423,16 +427,16 @@ export class GEOutOtherMaterialComponent implements OnInit {
     this.errMsgModalPop = '';
     this.reason = '';
     // this.selDestination = null;
-    this.employeeList = this.employeeAllList.filter(x => x.isActive);
-    this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.currentUser.employeeId);
-    this.sendingDEPTNAME = this.departmentList.find(x => x.id == this.currentUser.fK_Department);
+    this.employeeList = this.employeeAllList.filter((x:any)  => x.isActive);
+    this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.currentUser.employeeId);
+    this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.id == this.currentUser.fK_Department);
     this.dynamicArray = [];
     this.rowcount = 0;
     this.isDelete = true;
   }
   changeDepartment(employee) {
     if (employee != null) {
-      this.sendingDEPTNAME = this.departmentList.find(x => x.id == employee.fkDepartment);
+      this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.id == employee.fkDepartment);
     }
     else
       this.sendingDEPTNAME = null;
@@ -445,10 +449,10 @@ export class GEOutOtherMaterialComponent implements OnInit {
         if (this.isEdit)
           this.UOMList = data;
         else
-          this.UOMList = data.filter(x => x.isActive);
+          this.UOMList = data.filter((x:any)  => x.isActive);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UOMList = [];
     });
@@ -461,10 +465,10 @@ export class GEOutOtherMaterialComponent implements OnInit {
         if (this.isEdit)
           this.materialList = data;
         else
-          this.materialList = data.filter(x => x.isActive);
+          this.materialList = data.filter((x:any)  => x.isActive);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -481,8 +485,8 @@ export class GEOutOtherMaterialComponent implements OnInit {
     jQuery("#materialModal").modal('show');
   }
   saveMaterial(materials: any) {
-    materials.forEach(mtrl => {
-      let matId = this.materialList.find(s => s.type == mtrl.material_Type).id;
+    materials.forEach((mtrl:any) => {
+      let matId = this.materialList.find((s:any) => s.type == mtrl.material_Type).id;
       let materialItem = new Material();
       materialItem.fkMaterialType = matId;
       materialItem.materialCode = mtrl.iteM_CODE;
@@ -493,7 +497,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200 || data.id > 0) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
 
       });
     });
@@ -503,31 +507,31 @@ export class GEOutOtherMaterialComponent implements OnInit {
     this.rowcount = this.rowcount + 1;
     this.newDynamic = { id: this.rowcount, iteM_CODE: null, material_Type: null, iteM_DESC: null, uom: null, nO_OF_CASES: null, qty: null, stored: "0" };
     this.dynamicArray.push(this.newDynamic);
-    let shift: string;
+    let shift: string
 
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.dynamicArray.length > 1) {
       const index = this.dynamicArray.indexOf(item);
       this.dynamicArray.splice(index, 1);
     }
   }
   setDesc(mtrl) {
-    let matId = this.materialList.find(s => s.type == mtrl.material_Type).id;
+    let matId = this.materialList.find((s:any) => s.type == mtrl.material_Type).id;
     var self = this;
     $('#iteM_DESC' + mtrl.id).autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm1 = 'description' + ';' + request.term + ';' + matId;
         let connection = self.httpService.getByParam(APIURLS.BR_MASTER_MATERIAL_GETBYPARAM_API, searchTerm1);
         connection.then((data: any) => {
           if (data) {
-            let result = data.filter(x => { return x.materialCode != null });
-            response(result.map((i) => { i.label = i.description, i.val = i.materialCode; return i; }));
+            let result = data.filter((x:any)  => { return x.materialCode != null });
+            response(result.map((i:any) => { i.label = i.description, i.val = i.materialCode; return i; }));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         mtrl.iteM_DESC = ui.item.label;
         mtrl.iteM_CODE = ui.item.val;
         mtrl.stored = "1";
@@ -538,17 +542,17 @@ export class GEOutOtherMaterialComponent implements OnInit {
       mtrl.stored = "0";
     });
     $('#iteM_CODE' + mtrl.id).autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm2 = 'returnable' + ';' + request.term + ';' + matId;
         let connection = self.httpService.getByParam(APIURLS.BR_MASTER_MATERIAL_GETBYPARAM_API, searchTerm2);
         connection.then((data: any) => {
           if (data) {
-            response(data.map((i) => { i.label = i.materialCode, i.val = i.description; return i; }));
+            response(data.map((i:any) => { i.label = i.materialCode, i.val = i.description; return i; }));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         mtrl.iteM_CODE = ui.item.label;
         mtrl.iteM_DESC = ui.item.val;
         mtrl.stored = "1";
@@ -560,7 +564,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
     });
   }
 
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {
@@ -571,8 +575,8 @@ export class GEOutOtherMaterialComponent implements OnInit {
   }
   onSaveEntry() {
     if (!this.isEdit) {
-      let usermatlist = this.dynamicArray.filter(x => { return x.stored == "0" });
-      let zeroQTYMatList = this.dynamicArray.filter(x => { return x.qty == 0 });
+      let usermatlist = this.dynamicArray.filter((x:any)  => { return x.stored == "0" });
+      let zeroQTYMatList = this.dynamicArray.filter((x:any)  => { return x.qty == 0 });
       if (zeroQTYMatList.length > 0) {
         swal({
           title: "Message",
@@ -640,7 +644,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
     //Insert Material
     var index = 0;
     let lstgateOutwardD: GateOutwardD[] = [];
-    this.dynamicArray.forEach(mtrl => {
+    this.dynamicArray.forEach((mtrl:any) => {
       if (+mtrl.qty > 0) {
         index = index + 1;
         this.gateOutwardDModel = {} as GateOutwardD;
@@ -682,7 +686,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
         });
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error saving Outward...';
       this.isLoadingPop = false;
     });
@@ -708,7 +712,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
         });
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Delete Gate Entry Outward...';
     });
@@ -776,7 +780,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
       ("00" + dt.getSeconds()).slice(-2);
     return formateddate;
   }
-  userimage: string;
+  userimage!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -794,7 +798,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
   address: any = {};
   getplantAddress(code) {
     this.isLoading = true;
-    this.httpService.getByParam(APIURLS.GET_PLANT_ADDRESS_DETAILS, code).then((data) => {
+    this.httpService.getByParam(APIURLS.GET_PLANT_ADDRESS_DETAILS, code).then((data:any) => {
       if (data) {
         this.plantAddressDetails = data;
         this.address = Object.assign({}, this.plantAddressDetails[0])
@@ -823,27 +827,27 @@ export class GEOutOtherMaterialComponent implements OnInit {
           var now = new Date();
           var jsDate = this.setFormatedDateTime(now);
           var logo = this.userimage;
-          var htmnikhitml = htmlToPdfmake(`<html>
-        <head>
-        </head>
-        <body>
-        ${printContents}
-        <div>     
-        </div>
-        </body>  
-        </html>`, {
-            tableAutoSize: true,
-            headerRows: 1,
-            dontBreakRows: true,
-            keepWithHeaderRows: true,
-          })
+        //   var htmnikhitml = htmlToPdfmake(`<html>
+        // <head>
+        // </head>
+        // <body>
+        // ${printContents}
+        // <div>     
+        // </div>
+        // </body>  
+        // </html>`, {
+        //     tableAutoSize: true,
+        //     headerRows: 1,
+        //     dontBreakRows: true,
+        //     keepWithHeaderRows: true,
+        //   })
           var docDefinition = {
             info: {
               title: 'DC',
             },
 
             content: [
-              htmnikhitml,
+              //htmnikhitml,
             ],
             defaultStyle: {
               fontSize: 9,
@@ -861,7 +865,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
             pageSize: 'A4',
             pageMargins: [40, 100, 40, 60],
             pageOrientation: 'portrait',
-            header: function (currentPage, pageCount) {
+            header: function (currentPage:any, pageCount:any) {
               return {
 
                 columns: [
@@ -915,7 +919,7 @@ export class GEOutOtherMaterialComponent implements OnInit {
               }
             },
           };
-          pdfMake.createPdf(docDefinition).open();
+          //pdfMake.createPdf(docDefinition).open();
         }
       });
   }

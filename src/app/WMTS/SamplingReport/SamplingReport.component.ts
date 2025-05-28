@@ -6,10 +6,10 @@ import { HttpService } from "../../shared/http-service";
 import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe, Time } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 import { SamplingFilter } from '../SamplingReport/SamplingReport.model';
 import { ExcelService } from '../../shared/excel-service';
@@ -26,24 +26,24 @@ export class SamplingReportComponent implements OnInit {
 
   public tableWidget: any;
   public tableWidget1: any;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  plant: string;
-  path: string;
-  currentUser: AuthData;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  plant!: string
+  path!: string
+  currentUser!: AuthData;
   errMsg: string = "";
-  TotalQty: number;
+  TotalQty!: number;
   locationList: any[] = [];
-  locationname: string;
-  image: string;
-  gtime: string;
-  slno: number;
+  locationname!: string
+  image!: string
+  gtime!: string
+  slno!: number;
   today = new Date();
-  Slno: string;
-  PimNo: string;
-  BatchNo: string;
-  ItemCode: string;
-  SamplesType: string;
+  Slno!: string
+  PimNo!: string
+  BatchNo!: string
+  ItemCode!: string
+  SamplesType!: string
   filterModel: SamplingFilter = {} as SamplingFilter;
   filterData: any[] = [];
   paginationData: any[] = [];
@@ -51,7 +51,9 @@ export class SamplingReportComponent implements OnInit {
 
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe, private excelService: ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe, private excelService: ExcelService) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#sampletable');
@@ -85,7 +87,8 @@ export class SamplingReportComponent implements OnInit {
     this.path = this.router.url;
     this.filterModel.pageSize = 10;
     this.filterModel.pageNo = 1;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getLocationMaster();
     this.getbase64image();
   }
@@ -106,13 +109,13 @@ export class SamplingReportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         // this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
-        this.plant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        this.locationname = this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.locationList = data.filter((x:any)  => x.isActive);
+        this.plant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        this.locationname = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
 
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -182,7 +185,7 @@ export class SamplingReportComponent implements OnInit {
         this.filterModel.export = false;
         var exportList = [];
         let index = 0;
-        this.exportfilterData.forEach(item => {
+        this.exportfilterData.forEach((item :any) => {
           index = index + 1;
           let exportItem = {
             "SNo": index,
@@ -223,7 +226,7 @@ export class SamplingReportComponent implements OnInit {
   }
 
   downloadPDF() {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.plant + ' - ' + this.locationname;
     var ReportName = "PICKED SUMMARY REPORT"
     var printedBy = this.currentUser.fullName;
@@ -231,27 +234,27 @@ export class SamplingReportComponent implements OnInit {
     var now = Date.now();
     var date = pipe.transform(now, 'short');
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
-    <head>
-    </head>
-    <body>
-    ${printContents}
-    <div> 
-    </div>
-    </body>  
-    </html>`, {
-      tableAutoSize: true,
-      tablebordered: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-    })
+    // var htmnikhitml = htmlToPdfmake(`<html>
+    // <head>
+    // </head>
+    // <body>
+    // ${printContents}
+    // <div> 
+    // </div>
+    // </body>  
+    // </html>`, {
+    //   tableAutoSize: true,
+    //   tablebordered: true,
+    //   headerRows: 1,
+    //   dontBreakRows: true,
+    //   keepWithHeaderRows: true,
+    // })
     var docDefinition = {
       info: {
         title: ReportName,
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -266,7 +269,7 @@ export class SamplingReportComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [80, 100, 100, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -318,6 +321,6 @@ export class SamplingReportComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 }

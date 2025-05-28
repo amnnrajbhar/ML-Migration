@@ -20,7 +20,7 @@ declare var toastr: any;
 })
 export class EmailTemplatesComponent implements OnInit {
   id: number = 0;
-  action: string;
+  action: string
   isLoading: boolean = false;
   filterData: any = {};
   currentUser: AuthData;  
@@ -904,7 +904,8 @@ statusList = [
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.getEmailTemplateList();
   }
@@ -936,7 +937,7 @@ statusList = [
       item.statusColor = this.statusList.find(x=>x.type == item.active).color;      
     }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     }); 
   }
@@ -944,7 +945,7 @@ statusList = [
   EditLine(item, index){    
     this.item = Object.assign({}, item);
     this.editIndex = index;
-    this.keywordsList = this.keywordsFullList.filter(x=>this.item.actionType.includes(x.emailType));
+    this.keywordsList = this.keywordsFullList.filter((x:any)=>this.item.actionType.includes(x.emailType));
     $("#detailsModal").modal("show");
   }
 
@@ -964,7 +965,7 @@ statusList = [
           this.getData();
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error updating details...' + error);
       })
@@ -1009,7 +1010,7 @@ statusList = [
         this.printmultiple();
       }, 100); 
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.filterModel.export = false;
         this.isLoading = false;      
       }); 

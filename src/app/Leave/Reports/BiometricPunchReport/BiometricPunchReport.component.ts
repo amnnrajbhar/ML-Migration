@@ -20,17 +20,17 @@ import { FormControl, NgForm } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 import { ExcelService } from '../../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import * as XLSX from 'xlsx';
-import * as pdfMake from "pdfmake/build/pdfmake";
+// import * as pdfMake from "pdfmake/build/pdfmake";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 //import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 
 
 
@@ -40,14 +40,14 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
   styleUrls: ['./BiometricPunchReport.component.css']
 })
 export class BiometricPunchReportComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-@ViewChild('table', { static: false }) table: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
+@ViewChild('table', { static: false }) table!: ElementRef;
 
-@ViewChild('dailyreport', { static: false }) dailyreport: ElementRef;
+@ViewChild('dailyreport', { static: false }) dailyreport!: ElementRef;
 
 
   public tableWidget: any;
@@ -57,7 +57,7 @@ export class BiometricPunchReportComponent implements OnInit {
   departmentList: any[] = [];
   ReportData: any[] = [];
   locationList: any[] = [];
-  isLoading: boolean;
+  isLoading!: boolean;
   StaffCategoryList: any[] = [];
   PayGroupList: any[] = [];
   ReportingGroupList: any[] = [];
@@ -93,12 +93,12 @@ export class BiometricPunchReportComponent implements OnInit {
   path: any;
   fromDate: any = null;
   toDate: any = null;
-  EmployeeNo: string = null;
+  EmployeeNo: string = ' ';
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private http: HttpClient, private https: HttpClient, private route: ActivatedRoute, private excelService: ExcelService,
     private datePipe: DatePipe) {
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ //   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   }
 
   private initDatatable(): void {
@@ -118,7 +118,7 @@ export class BiometricPunchReportComponent implements OnInit {
 
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -128,45 +128,46 @@ export class BiometricPunchReportComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.filterPlant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        this.locationname = this.filterPlant + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.filterPlant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        this.locationname = this.filterPlant + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
   }
 
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     let today = new Date();
     this.CalenderYear = new Date().getFullYear().toString();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -190,11 +191,13 @@ export class BiometricPunchReportComponent implements OnInit {
   ClearData() {
     this.filterPlant = null;
     this.filterStaffcat = null;
-    this.filterPayGroup = null;
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
     this.filterDepartment = null;
     this.filterReportingGroup = null;
-    this.filterMonth = null;
-    this.filterEmployee = null;
+    this.filterMonth = '';
+    this.filterEmployee = '';
     this.AttendanceType = null;
     this.ViewType = null;
     this.Type = null;
@@ -256,29 +259,33 @@ export class BiometricPunchReportComponent implements OnInit {
   getpayGroupList() {
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.PayGroupList = data.sort((a, b) => {
+        this.PayGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
   }
   payGroupList1: any[] = [];
   getPaygroupsBasedOnPlant() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.code == this.filterPlant);
-    this.payGroupList1 = this.PayGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.code == this.filterPlant);
+    this.payGroupList1 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
   }
 
   payGroupList11: any[] = [];
   getPaygroupsBasedOnPlant1() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.fkPlantId == this.filterPlant);
-    this.payGroupList11 = this.PayGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterPlant);
+    this.payGroupList11 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
   }
 
   getempCatList() {
@@ -286,7 +293,7 @@ export class BiometricPunchReportComponent implements OnInit {
       if (data.length > 0) {
         this.StaffCategoryList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.StaffCategoryList = [];
     });
@@ -296,7 +303,7 @@ export class BiometricPunchReportComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -310,7 +317,7 @@ export class BiometricPunchReportComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -320,7 +327,7 @@ export class BiometricPunchReportComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -330,7 +337,7 @@ export class BiometricPunchReportComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -362,17 +369,18 @@ export class BiometricPunchReportComponent implements OnInit {
       return;
     }
     let filterModel: any = {};
-    filterModel.baseLocation = this.locationList.find(x => x.code == this.filterPlant).fkPlantId;
+    filterModel.baseLocation = this.locationList.find((x:any)  => x.code == this.filterPlant).fkPlantId;
     filterModel.payGroup = this.filterPayGroup;
     filterModel.category = this.filterStaffcat;
     filterModel.department = this.filterDepartment;
     filterModel.reportingGroup = this.filterReportingGroup;
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LIST_FOR_REPORT, filterModel).then((data: any) => {
       this.empListCon = data.table;
-      this.empListCon.forEach(element => {
+      this.empListCon.forEach((element:any)=> {
+
         element.name = element.employeeNo + ' - ' + element.name;
       });
-    }).catch(error => {
+    }).catch((error)=> {
       this.empListCon = [];
       this.isLoading = false;
     });
@@ -381,19 +389,19 @@ export class BiometricPunchReportComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
     });
   }
-  exportList: any[];
+  exportList!: any[];
 
   get(apiKey: string): any {
     const promise = new Promise((resolve, reject) => {
@@ -414,7 +422,8 @@ export class BiometricPunchReportComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -444,12 +453,12 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.category = this.filterStaffcat;
       filterModel.department = this.filterDepartment;
       filterModel.subdepartment = this.filterSubDepartment;
-      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.employeeNo).join(',') : null;
+      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.employeeNo).join(',') : null;
       //filterModel.attendanceType=this.filterTY;
       filterModel.fromDate = this.setFormatDateTime(this.fromDate);;
       filterModel.toDate = this.setFormatDateTime(this.toDate);;
       let connection = this.httpService.LApost(APIURLS.BR_GET_DAILY_ESSL_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data.length > 0) {
           this.EsslPunchReport = data;
           this.isLoading = false;
@@ -471,167 +480,170 @@ getHeader(): { headers: HttpHeaders } {
       });
     }
   }
+//v10
+  // generateEsslReportToExcelExcel() {
 
-  generateEsslReportToExcelExcel() {
+  //   //Excel Title, Header, Data
+  //   let dt = new Date();
+  //   let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
+  //   const title = 'Daily Biometric Punch Report';
+  //   const header = ["SNo", "Employee No", "Employee Name", "Department", "Designation",
+  //     "Log Date&Time", "Device Name", "Direction",
+  //     "Shift", "IP Address", "Device Location"]
 
-    //Excel Title, Header, Data
-    let dt = new Date();
-    let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
-    const title = 'Daily Biometric Punch Report';
-    const header = ["SNo", "Employee No", "Employee Name", "Department", "Designation",
-      "Log Date&Time", "Device Name", "Direction",
-      "Shift", "IP Address", "Device Location"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.EsslPunchReport.forEach((element:any)=> {
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.EsslPunchReport.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.id = index;
-      ts.pernr = element.pernr;
-      ts.empName = element.empName;
-      ts.department = element.department;
-      ts.designation = element.designation;
-      ts.logDateTime = this.datePipe.transform(element.logDateTime, 'dd/MM/yyyy HH:mm a');
-      ts.deviceFName = element.deviceFName;
-      ts.deviceDirection = element.deviceDirection;
-      ts.shift = element.shift;
-      ts.ipAddress = element.ipAddress;
-      ts.deviceLocation = element.deviceLocation;
-      exportList.push(ts);
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.id = index;
+  //     ts.pernr = element.pernr;
+  //     ts.empName = element.empName;
+  //     ts.department = element.department;
+  //     ts.designation = element.designation;
+  //     ts.logDateTime = this.datePipe.transform(element.logDateTime, 'dd/MM/yyyy HH:mm a');
+  //     ts.deviceFName = element.deviceFName;
+  //     ts.deviceDirection = element.deviceDirection;
+  //     ts.shift = element.shift;
+  //     ts.ipAddress = element.ipAddress;
+  //     ts.deviceLocation = element.deviceLocation;
+  //     exportList.push(ts);
 
-    });
-    let locname = this.locationList.find(x => x.code == this.filterPlant);
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Daily Biometric Punch Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
+  //   });
+  //   let locname = this.locationList.find((x:any)  => x.code == this.filterPlant);
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Daily Biometric Punch Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
 
-    worksheet.mergeCells('A1:K1');
-    worksheet.mergeCells('A2:K2');
-    worksheet.mergeCells('A3:K3');
-
-
-    let headerRow = worksheet.addRow(header);
-    // Cell Style : Fill and Border
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   worksheet.mergeCells('A1:K1');
+  //   worksheet.mergeCells('A2:K2');
+  //   worksheet.mergeCells('A3:K3');
 
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
+  //   let headerRow = worksheet.addRow(header);
+  //   // Cell Style : Fill and Border
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
 
-    worksheet.addRow([]);
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
 
-    //Generate Excel File with given name
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'DailyBoimetricPunchReport.xlsx');
-    })
-  }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-  generateEsslReportToExcelExcel1() {
+  //   worksheet.addRow([]);
 
-    //Excel Title, Header, Data
-    let dt = new Date();
-    let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
-    const title = 'Daily Biometric Punch Report';
-    const header = ["SNo", "Employee No", "Employee Name", "Department", "Designation", "LogDate",
-      "Log Date&Time", "Shift", "IP Address"]
+  //   //Generate Excel File with given name
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'DailyBoimetricPunchReport.xlsx');
+  //   })
+  // }
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.EsslPunchReport.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.id = index;
-      ts.pernr = element.pernr;
-      ts.empName = element.empName;
-      ts.department = element.department;
-      ts.designation = element.designation;
-      ts.eventDate = this.datePipe.transform(element.eventDate, 'dd/MM/yyyy');
-      ts.eventTime = this.datePipe.transform(element.eventTime, 'HH:mm:ss a');
-      ts.shift = element.shift;
-      ts.ipAddress = element.ipAddress;
-      exportList.push(ts);
+  //v10
+  // generateEsslReportToExcelExcel1() {
 
-    });
-    let locname = this.locationList.find(x => x.code == this.filterPlant);
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Daily Biometric Punch Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
+  //   //Excel Title, Header, Data
+  //   let dt = new Date();
+  //   let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
+  //   const title = 'Daily Biometric Punch Report';
+  //   const header = ["SNo", "Employee No", "Employee Name", "Department", "Designation", "LogDate",
+  //     "Log Date&Time", "Shift", "IP Address"]
 
-    worksheet.mergeCells('A1:I1');
-    worksheet.mergeCells('A2:I2');
-    worksheet.mergeCells('A3:I3');
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.EsslPunchReport.forEach((element:any)=> {
 
-    let headerRow = worksheet.addRow(header);
-    // Cell Style : Fill and Border
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.id = index;
+  //     ts.pernr = element.pernr;
+  //     ts.empName = element.empName;
+  //     ts.department = element.department;
+  //     ts.designation = element.designation;
+  //     ts.eventDate = this.datePipe.transform(element.eventDate, 'dd/MM/yyyy');
+  //     ts.eventTime = this.datePipe.transform(element.eventTime, 'HH:mm:ss a');
+  //     ts.shift = element.shift;
+  //     ts.ipAddress = element.ipAddress;
+  //     exportList.push(ts);
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
+  //   });
+  //   let locname = this.locationList.find((x:any)  => x.code == this.filterPlant);
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Daily Biometric Punch Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
 
-    //Generate Excel File with given name
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'DailyBoimetricPunchReport.xlsx');
-    })
-  }
+  //   worksheet.mergeCells('A1:I1');
+  //   worksheet.mergeCells('A2:I2');
+  //   worksheet.mergeCells('A3:I3');
+
+  //   let headerRow = worksheet.addRow(header);
+  //   // Cell Style : Fill and Border
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+
+  //   //Generate Excel File with given name
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'DailyBoimetricPunchReport.xlsx');
+  //   })
+  // }
 
   setFormatedDateTime(date: any) {
     let dt = new Date(date);

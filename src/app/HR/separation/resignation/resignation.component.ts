@@ -22,7 +22,7 @@ declare var toastr: any;
 })
 
 export class ResignationComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   resignationId: any;
   urlPath: string = '';
@@ -37,7 +37,7 @@ export class ResignationComponent implements OnInit {
   DateLastWorkingDay :Date ;
   objectType: string = "Resignation";
   reason = [{ type: "Personal" },{ type: "Better Opportunities" }, { type: "Relocation" }, { type: "Studies" }, { type: "Retiring" }];  
-  noticePeriod: string;
+  noticePeriod: string
   files: any[] = [];
 
   constructor(private appService: AppComponent, private httpService: HttpService,
@@ -51,7 +51,8 @@ export class ResignationComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;  
       this.resignationDetails.hodApproval=true;
       this.resignationDetails.reportingManagerApproval=true;
@@ -65,7 +66,7 @@ export class ResignationComponent implements OnInit {
     }
   }
 
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     this.isLoading = true;
    // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -82,13 +83,13 @@ export class ResignationComponent implements OnInit {
         this.GetResignationDetailsById(this.employeeId);    
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
   }
 
-  GetResignationDetailsById(id) {
+  GetResignationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible=true;
     this.httpService.HRget(APIURLS.RESIGNATION_STATUS_GET_BYEMPID+"/"+id).then((data: any) => {
@@ -122,7 +123,7 @@ export class ResignationComponent implements OnInit {
          }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }
@@ -255,7 +256,7 @@ export class ResignationComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while saving resignation details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving resignation details. Error:' + error);
       });
@@ -287,7 +288,7 @@ export class ResignationComponent implements OnInit {
           else
           toastr.error(data.message);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while uploading attachments. Error:' + error);
         });
@@ -317,7 +318,7 @@ export class ResignationComponent implements OnInit {
       }else
         toastr.error("Error occurred.");
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });    

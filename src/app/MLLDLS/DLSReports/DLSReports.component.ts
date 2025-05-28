@@ -12,17 +12,17 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { ExcelService } from '../../shared/excel-service';
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 //import { T } from '@angular/core/src/render3';
 
 @Component({
@@ -31,9 +31,9 @@ import * as fs from 'file-saver';
     styleUrls: ['./DLSReports.component.css']
 })
 export class DLSReportsComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     public tableWidget: any;
@@ -47,17 +47,17 @@ export class DLSReportsComponent implements OnInit {
     locationList: any[] = [[]];
 
     //filter vaues
-    filterbarcode: string = null;
-    filterType: string = null;
-    filterstatus: string = null;
-    filterDocstatus: string = null;
-    filterBoxstatus: string = null;
-    filterDocType: string = null;
-    filterlocation: string = null;
-    filterdocno: string = null;
-    filterCategory: string = null;
-    filterDcDesc: string = null;
-    filterBoxno: string = null;
+    filterbarcode: string = ' ';
+    filterType: string = ' ';
+    filterstatus: string = ' ';
+    filterDocstatus: string = ' ';
+    filterBoxstatus: string = ' ';
+    filterDocType: string = ' ';
+    filterlocation: string = ' ';
+    filterdocno: string = ' ';
+    filterCategory: string = ' ';
+    filterDcDesc: string = ' ';
+    filterBoxno: string = ' ';
 
     DLSDocReport: any[] = [];
 
@@ -68,7 +68,9 @@ export class DLSReportsComponent implements OnInit {
 
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-        private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+        private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
     private initDatatable(): void {
         let exampleId: any = jQuery('#userTable');
@@ -89,7 +91,8 @@ export class DLSReportsComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //this.filterlocation = this.currentUser.baselocation.toString();
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         // if (chkaccess == true) {
@@ -98,7 +101,7 @@ export class DLSReportsComponent implements OnInit {
     }
 
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationList.find(e => e.id == id);
         return temp ? temp.code : '';
     }
@@ -131,14 +134,17 @@ export class DLSReportsComponent implements OnInit {
         this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
         this.to_date = this.today;
         this.filterbarcode = null;
-        this.filterType = null;
-        this.filterstatus = null;
+        //this.filterType = null;
+this.filterType = '';
+      // this.filterstatus = null;
+  this.filterstatus = '';
         this.filterDocstatus = null;
         this.filterBoxstatus = null;
         this.filterDocType = null;
-        this.filterlocation = null;
+       // this.filterlocation = null;
+ this.filterlocation = '';
         this.filterdocno = null;
-        this.filterCategory = null;
+        this.filterCategory = '';
         this.filterDcDesc = null;
         this.filterBoxno = null;
 
@@ -147,8 +153,8 @@ export class DLSReportsComponent implements OnInit {
     getAllEntries() {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         if (this.from_date == '' || this.from_date == null) {
             formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -195,36 +201,36 @@ export class DLSReportsComponent implements OnInit {
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.DLSDocReport = [];
         });
 
     }
 
-    locationCode: string;
+    locationCode: string
     getLocationMaster() {
         this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locationCode = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locationCode = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
                 this.filterlocation=this.locationCode;
                 this.getCategoryList();
                 this.getAllEntries();
             }
             this.reInitDatatable();
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
         this.initDatatable();
     }
@@ -234,13 +240,13 @@ export class DLSReportsComponent implements OnInit {
     getCategoryList() {
         this.httpService.DLSget(APIURLS.BR_GET_TYP_CAT_MASTER).then((data: any) => {
             if (data.length > 0) {
-                this.CategoryList = data.filter(x => x.location == this.locationCode);
+                this.CategoryList = data.filter((x:any)  => x.location == this.locationCode);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.CategoryList.sort((a, b) => { return collator.compare(a.type, b.type) });
+                this.CategoryList.sort((a:any, b:any) => { return collator.compare(a.type, b.type) });
                 
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CategoryList = [];
         });
@@ -250,97 +256,98 @@ export class DLSReportsComponent implements OnInit {
     GetCategory(type) {
         this.CategoryList1=[];
         this.filterCategory=null;
-        this.CategoryList1 = this.CategoryList.filter(x => x.type == type && x.category != null);
+        this.CategoryList1 = this.CategoryList.filter((x:any)  => x.type == type && x.category != null);
       //  this.getLibrarianDetails(type);
     }
 
+//v10
+    // generateExcel() {
+    //     const title = 'Document List Report';
+    //     const header = ["Sl NO","Type","Doc No","Barcode","Room/Rack/Bin","Desc","Created Date","Created by"," Approval Status"
+    //     ,"Document Status","Person Responsible"  ]
+        
+    //     var exportList=[];
+    //     var ts:any={};
+    //     let index=0;
+    //     this.DLSDocReport.forEach((element:any)=> {
 
-    generateExcel() {
-        const title = 'Document List Report';
-        const header = ["Sl NO","Type","Doc No","Barcode","Room/Rack/Bin","Desc","Created Date","Created by"," Approval Status"
-        ,"Document Status","Person Responsible"  ]
-        
-        var exportList=[];
-        var ts:any={};
-        let index=0;
-        this.DLSDocReport.forEach(element => {
-          index=index+1;
-          ts={};
-          ts.sl=index;
-          ts.docType=element.docType;
-          ts.docNo=element.docNo;
-          ts.barcode=element.barcode;
-          ts.docRack=element.docRack;
-          ts.docShtDesc=element.docShtDesc;
-          ts.initialDocDate=this.datePipe.transform(element.initialDocDate,'dd/MM/yyyy');
-          ts.empCode=element.empCode;
-          ts.reqStatus=element.reqStatus;
-          ts.borrowStatus=element.borrowStatus;
-          ts.personResponsible=element.personResponsible;
-          exportList.push(ts);     
+    //       index=index+1;
+    //       ts={};
+    //       ts.sl=index;
+    //       ts.docType=element.docType;
+    //       ts.docNo=element.docNo;
+    //       ts.barcode=element.barcode;
+    //       ts.docRack=element.docRack;
+    //       ts.docShtDesc=element.docShtDesc;
+    //       ts.initialDocDate=this.datePipe.transform(element.initialDocDate,'dd/MM/yyyy');
+    //       ts.empCode=element.empCode;
+    //       ts.reqStatus=element.reqStatus;
+    //       ts.borrowStatus=element.borrowStatus;
+    //       ts.personResponsible=element.personResponsible;
+    //       exportList.push(ts);     
           
-        });
-        var OrganisationName ="MICRO LABS LIMITED";
-        const data = exportList;
-        //Create workbook and worksheet
-        let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-        let worksheet = workbook.addWorksheet('Document List Report');
-        //Add Row and formatting
-        var head=worksheet.addRow([OrganisationName]);
-        head.font = {size: 16, bold: true }
-        head.alignment ={horizontal:'center'}
-        //Blank Row 
-       // worksheet.addRow([]);
-        //Add Header Row
-        let headerRow = worksheet.addRow(header);
-        worksheet.mergeCells('A1:K1');
-        // Cell Style : Fill and Border
-        headerRow.eachCell((cell, number) => {
-          cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFFFFF00' },
-            bgColor: { argb: 'FF0000FF' }
-          }
-          cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
-       //  worksheet.addRows(data);
-        // Add Data and Conditional Formatting
-        //data.forEach()
+    //     });
+    //     var OrganisationName ="MICRO LABS LIMITED";
+    //     const data = exportList;
+    //     //Create workbook and worksheet
+    //     //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+    //     let worksheet = workbook.addWorksheet('Document List Report');
+    //     //Add Row and formatting
+    //     var head=worksheet.addRow([OrganisationName]);
+    //     head.font = {size: 16, bold: true }
+    //     head.alignment ={horizontal:'center'}
+    //     //Blank Row 
+    //    // worksheet.addRow([]);
+    //     //Add Header Row
+    //     let headerRow = worksheet.addRow(header);
+    //     worksheet.mergeCells('A1:K1');
+    //     // Cell Style : Fill and Border
+    //     headerRow.eachCell((cell, number) => {
+    //       cell.fill = {
+    //         type: 'pattern',
+    //         pattern: 'solid',
+    //         fgColor: { argb: 'FFFFFF00' },
+    //         bgColor: { argb: 'FF0000FF' }
+    //       }
+    //       cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+    //     })
+    //    //  worksheet.addRows(data);
+    //     // Add Data and Conditional Formatting
+    //     //data.forEach()
         
-        for (let x1 of data)
-        {
-          let x2=Object.keys(x1);
-          let temp=[]
-          for(let y of x2)
-          {
-            temp.push(x1[y])
-          }
-          worksheet.addRow(temp)
-        }
-        // data.forEach((element) => {
-        //   let eachRow = [];
-        //   header.forEach((headers) => {
-        //     eachRow.push(element.id);
-        //   })   
+    //     for (let x1 of data)
+    //     {
+    //       let x2=Object.keys(x1);
+    //       let temp=[]
+    //       for(let y of x2)
+    //       {
+    //         temp.push(x1[y])
+    //       }
+    //       worksheet.addRow(temp)
+    //     }
+    //     // data.forEach((element) => {
+    //     //   let eachRow = [];
+    //     //   header.forEach((headers) => {
+    //     //     eachRow.push(element.id);
+    //     //   })   
          
-        //   worksheet.addRow(eachRow); 
-        // })
-        worksheet.eachRow((cell,number)=>{
-          cell.border = { top: { style:'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
-        // worksheet.getColumn(2).width = 10;
-        // worksheet.getColumn(4).width = 20;
-        // worksheet.getColumn(5).width = 60;
-        // worksheet.getColumn(6).width = 40;
-        // worksheet.getColumn(7).width = 10;    
-        // worksheet.getColumn(8).width = 20;    
-        // worksheet.addRow([]);
+    //     //   worksheet.addRow(eachRow); 
+    //     // })
+    //     worksheet.eachRow((cell,number)=>{
+    //       cell.border = { top: { style:'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+    //     })
+    //     // worksheet.getColumn(2).width = 10;
+    //     // worksheet.getColumn(4).width = 20;
+    //     // worksheet.getColumn(5).width = 60;
+    //     // worksheet.getColumn(6).width = 40;
+    //     // worksheet.getColumn(7).width = 10;    
+    //     // worksheet.getColumn(8).width = 20;    
+    //     // worksheet.addRow([]);
         
-        workbook.xlsx.writeBuffer().then((data) => {
-          let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          fs.saveAs(blob, 'Document List Report.xlsx');
-        })
+    //     workbook.xlsx.writeBuffer().then((data:any) => {
+    //       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    //       fs.saveAs(blob, 'Document List Report.xlsx');
+    //     })
       
-      }
+    //   }
 }

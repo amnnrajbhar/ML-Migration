@@ -8,10 +8,10 @@ import { LineItem } from "../Lineitem.model";
 import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 import { toBase64String } from "@angular/compiler/src/output/source_map";
 declare var toastr: any;
@@ -27,23 +27,25 @@ export class DCCancellationComponent implements OnInit {
 
   public tableWidget: any;
   public tableWidget1: any;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  plant: string;
-  path: string;
-  currentUser: AuthData;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  plant!: string
+  path!: string
+  currentUser!: AuthData;
   filteredModel: any[] = [];
   errMsg: string = "";
   DCList: any[] = [];
   isMasterSel: boolean = false;
-  CancelType: string;
+  CancelType!: string
   PickedfilteredModel: any[] = [];
-  LineQty: number;
-  RemQty: number;
-  TotalRemQty: number;
-  DCNo: string;
+  LineQty!: number;
+  RemQty!: number;
+  TotalRemQty!: number;
+  DCNo!: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#datatable1');
@@ -95,7 +97,8 @@ export class DCCancellationComponent implements OnInit {
 
   ngOnInit(): void {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
   }
 
   isAllSelected() {
@@ -140,8 +143,8 @@ export class DCCancellationComponent implements OnInit {
 
           this.filteredModel = data;
 
-          this.filteredModel.sort(x => x.batch);
-          let temp = this.filteredModel.find(x => x.status == true);
+          this.filteredModel.sort((x:any)  => x.batch);
+          let temp = this.filteredModel.find((x:any)  => x.status == true);
           temp ? this.post = true : this.post = false;
         }
       }
@@ -157,7 +160,7 @@ export class DCCancellationComponent implements OnInit {
       }
       this.reInitDatatable();
       //this.reInitDatatable1();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filteredModel = [];
     });
@@ -204,7 +207,7 @@ export class DCCancellationComponent implements OnInit {
         }
         this.isLoading = false;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     }
@@ -240,7 +243,7 @@ export class DCCancellationComponent implements OnInit {
         }
         this.isLoading = false;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     }
@@ -267,7 +270,7 @@ export class DCCancellationComponent implements OnInit {
       }
       this.isLoading = false;
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -297,7 +300,7 @@ export class DCCancellationComponent implements OnInit {
       return;
     }
     this.isLoadingPop = true;
-    this.PickedfilteredModel = this.PickedfilteredModel.filter(x => x.RemovedQty > 0)
+    this.PickedfilteredModel = this.PickedfilteredModel.filter((x:any)  => x.RemovedQty > 0)
     for (var i = 0; i < this.PickedfilteredModel.length; i++) {
       if (this.PickedfilteredModel[i].RemovedQty == this.PickedfilteredModel[i].qty) {
         this.PickedfilteredModel[i].fullOrPartial = 1;
@@ -347,7 +350,7 @@ export class DCCancellationComponent implements OnInit {
       }
       this.isLoading = false;
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

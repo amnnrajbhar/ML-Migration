@@ -12,11 +12,11 @@ import { Util } from '../../Services/util.service';
 import swal from 'sweetalert';
 declare var toastr: any;
 declare var $: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import {Pipe, PipeTransform} from "@angular/core";
 
@@ -29,7 +29,7 @@ import {Pipe, PipeTransform} from "@angular/core";
 export class JoiningReportComponent implements OnInit {
 
   appointmentId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   personalDetails: any ={};
   officialDetails: any ={};
@@ -42,11 +42,14 @@ export class JoiningReportComponent implements OnInit {
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
     private http: HttpClient, private service: AppointmentService, private util: Util, private location: Location) 
-    { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+    { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
 
   ngOnInit() {
       this.appointmentId = this.route.snapshot.paramMap.get('id')!;
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.GetPersonalData();
       this.GetOfficialData();
       this.GetAddressDetails();
@@ -65,7 +68,7 @@ export class JoiningReportComponent implements OnInit {
           this.personalDetails = data;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         swal("Error occurred while fetching details, please check the link.");
       });
@@ -80,7 +83,7 @@ export class JoiningReportComponent implements OnInit {
           this.officialDetails = data;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         swal("Error occurred while fetching details, please check the link.");
       });
@@ -97,7 +100,7 @@ export class JoiningReportComponent implements OnInit {
           this.mailingAddress = data.find(x=>x.addressTypeId == 3);
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         swal("Error occurred while fetching details, please check the link.");
       });
@@ -112,7 +115,7 @@ export class JoiningReportComponent implements OnInit {
           this.nominationDetails = data;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         swal("Error occurred while fetching details, please check the link.");
       });
@@ -127,7 +130,7 @@ export class JoiningReportComponent implements OnInit {
           this.bankDetails = data;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         swal("Error occurred while fetching details, please check the link.");
       });
@@ -186,7 +189,7 @@ export class JoiningReportComponent implements OnInit {
       popupWin.document.close();
     }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -202,7 +205,7 @@ export class JoiningReportComponent implements OnInit {
 
   
   download() {
-    this.createPDF().open();
+   // this.createPDF().open();
   }
   
   createPDF() {
@@ -219,7 +222,7 @@ export class JoiningReportComponent implements OnInit {
     //     bolditalics: 'Times-BoldItalic'
     //   }
     // };
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -232,14 +235,14 @@ export class JoiningReportComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    });
+    })*/;
     var docDefinition = {
       info: {
         title: 'Joining Report',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 11,
@@ -270,7 +273,7 @@ export class JoiningReportComponent implements OnInit {
       pageMargins: [40, 40, 40, 40],
       pageOrientation: 'portrait',
       imagesByReference: true,
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // columns: [
           //   {
@@ -314,7 +317,7 @@ export class JoiningReportComponent implements OnInit {
       },
     };
     
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
   

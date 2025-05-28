@@ -15,10 +15,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { stringify } from 'querystring';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 //import { NPDRequest } from './NPDRequest.model';
 // import { Transactions } from '../eMicro/ItemCodeCreation/transactions.model';
 // import { WorkFlowApprovers } from '../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -39,10 +39,10 @@ import { NPDSCM } from '../NPDRequest/NPDScmdetails.model';
 import { NPDSTRATEGIC } from '../NPDRequest/NPDStrategicdetails.model';
 import { NPDBrands } from '../NPDRequest/NPDBrands.model';
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient,HttpClientModule } from '@angular/common/http';
 //import { MediServiceBrand } from '../MediServiceBrand/MediServiceBrand.model';
 
@@ -52,9 +52,9 @@ import { HttpClient,HttpClientModule } from '@angular/common/http';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     public tableWidget: any;
@@ -72,14 +72,17 @@ export class DashboardComponent implements OnInit {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File;
+     successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
     baseLocationnotfirst = true;
 
-    filterProduct:string=null;
-    filterBrand:string=null;
+    //filterProduct:string=null;
+filterProduct:string='';
+   // filterBrand:string=null;
+ filterBrand:string='';
 
     NPDRequestmodel = {} as NPDRequest;
     NPDCmdmodel={} as NPDCMD;
@@ -96,12 +99,12 @@ export class DashboardComponent implements OnInit {
 
     NPDRequestlist: NPDRequest[] = [];
     // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-    materialtype: string;
-    filterMaterialCode: string = null;
-    filterstatus: string = null;
-    filterlocation: string = null;
-    filterrequest: string = null;
-    filterplace: string = null;
+    materialtype!: string
+    filterMaterialCode: string = ' ';
+    filterstatus: string = ' ';
+    filterlocation: string = ' ';
+    filterrequest: string = ' ';
+    filterplace: string = ' ';
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     to_date: any = this.today;
@@ -110,8 +113,9 @@ export class DashboardComponent implements OnInit {
     NPDRequestFilter: NPDRequest[] = [];
     NPDRequestsearchlist: NPDRequest[] = [];
 
-    emailid: string;
-    requestdate: Date;
+    emailid!: string
+
+    requestdate!: Date;
     Approver1: boolean = false;
     Approverid1: string = "";
     Approverid2: string = "";
@@ -119,29 +123,33 @@ export class DashboardComponent implements OnInit {
     Creator: boolean = false;
     Review: boolean = false;
     Closure: boolean = false;
-    userid: string;
+    userid!: string
+
 
 
     MedHead:string='Manjula  Suresh';
     MedHeadList:any[]=[];
-    Reviewer:string=null;
+    // Reviewer:string=null;
+    Reviewer:string='';
     ReviewerList:any[]=[];
     MediRequestFilter:any[]=[];
     Approves:any;
-    Comments: string;
+    Comments!: string
 
     storeData: any;
     jsonData: any;
-    fileUploaded: File;
+    fileUploaded!: File;
     worksheet: any;
-  inprocess: number;
-  completed: number;
-  rejected: number;
+  inprocess!: number;
+  completed!: number;
+  rejected!: number;
 
     //NPDRequestmodeldata = {} as ItemCodeExtension;
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-      private http: HttpClient,private datePipe: DatePipe,private excelService :ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+      private http: HttpClient,private datePipe: DatePipe,private excelService :ExcelService) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
 
     private initDatatable(): void {
       let exampleId: any = jQuery('#userTable');
@@ -160,7 +168,8 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit() {
       this.path = this.router.url;
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       //  this.baseLocation = this.currentUser.baselocation;
       this.emailid = this.currentUser.email;
       this.userid = this.currentUser.employeeId;
@@ -190,11 +199,11 @@ export class DashboardComponent implements OnInit {
         if (data.length > 0) {
           this.BrandList = data;
           let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-          this.BrandList.sort((a, b) => { return collator.compare(a.brandDesc, b.brandDesc) });
+          this.BrandList.sort((a:any, b:any) => { return collator.compare(a.brandDesc, b.brandDesc) });
 
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.BrandList = [];
       });
@@ -202,11 +211,11 @@ export class DashboardComponent implements OnInit {
     }
 
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
       let temp = this.locationList.find(e => e.id == id);
       return temp ? temp.code : '';
     }
-    getloc(loc) {
+    getloc(loc:any) {
       let loccode = loc.keyValue.split('~');
       return loccode ? loccode[0] : '';
     }
@@ -238,12 +247,18 @@ export class DashboardComponent implements OnInit {
     clearFilter() {
       this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
       this.to_date = this.today;
-      this.filterlocation = null;
-      this.filterstatus = null;
-      this.filterrequest = null;
-      this.filterplace = null;
-      this.filterProduct=null;
-      this.filterBrand=null;
+     // this.filterlocation = null;
+ this.filterlocation = '';
+    // this.filterstatus = null;
+  this.filterstatus = '';
+ //    this.filterrequest = null;
+     this.filterrequest = '';
+    //    this.filterplace = null;
+      this.filterplace = '';
+ //        this.filterProduct=null;
+           this.filterProduct='';
+   //           this.filterBrand=null;
+         this.filterBrand='';
       this.Approves=null;
 
     }
@@ -252,8 +267,8 @@ export class DashboardComponent implements OnInit {
     getAllEntries() {
       this.isLoading = true;
       let td = new Date();
-      let formatedFROMdate: string;
-      let formatedTOdate: string;
+      let formatedFROMdate: string
+      let formatedTOdate: string
       var filterModel: any = {};
       if (this.from_date == '' || this.from_date == null) {
         formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -290,7 +305,7 @@ export class DashboardComponent implements OnInit {
       this.httpService.post(APIURLS.BR_NPD_REQUEST_FILTER_API, filterModel).then((data: any) => {
         if (data) {
           if (this.filterstatus == 'Pending') {
-            this.NPDRequestFilter = data.filter(x => x.pendingApprover == this.currentUser.fullName);
+            this.NPDRequestFilter = data.filter((x:any)  => x.pendingApprover == this.currentUser.fullName);
             this.NPDRequestFilter.reverse();
           
             
@@ -302,7 +317,7 @@ export class DashboardComponent implements OnInit {
         }
         this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.NPDRequestFilter = [];
       });
@@ -310,15 +325,15 @@ export class DashboardComponent implements OnInit {
     }
   
 
-     GetRequest(value)
+     GetRequest(value:any)
     {
     //   if(value=="Approve")
     //   {
-    //     this.NPDRequestFilter=this.NPDRequestFilter1.filter(x=>x.reviewerAssignFlag==1 && x.stage=='4');
+    //     this.NPDRequestFilter=this.NPDRequestFilter1.filter((x:any)=>x.reviewerAssignFlag==1 && x.stage=='4');
     //   }
     //   else if(value=="Assign")
     //   {
-    //     this.NPDRequestFilter=this.NPDRequestFilter1.filter(x=>x.reviewerAssignFlag==0 && x.stage=='1' && x.approveType !='Rejected');
+    //     this.NPDRequestFilter=this.NPDRequestFilter1.filter((x:any)=>x.reviewerAssignFlag==0 && x.stage=='1' && x.approveType !='Rejected');
     //   }
     //   this.reInitDatatable();
      }
@@ -331,7 +346,7 @@ export class DashboardComponent implements OnInit {
        this.newDynamic = { id: this.rowcount, competitorBrand: "", competitorDetails: "", competitorExistingmarketshare: "", competitorMrp: "", stored: "0" };
        this.dynamicArray.push(this.newDynamic);
      }
-     removeRows(item) {
+     removeRows(item:any) {
        if (this.dynamicArray.length > 1) {
          const index = this.dynamicArray.indexOf(item);
          this.dynamicArray.splice(index, 1);
@@ -341,18 +356,18 @@ export class DashboardComponent implements OnInit {
       this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
         if (data.length > 0) {
           this.locationAllList = data;
-          this.locationList = data.filter(x => x.isActive);
+          this.locationList = data.filter((x:any)  => x.isActive);
           let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-          this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-          this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-          this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+          this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+          this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+          this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.locationList = [];
       });
     }
-    Approver:string;
+    Approver!:string;
     Apprvr:boolean=false;
     ApproversList:any[]=[];
     GetApprovers()
@@ -364,13 +379,13 @@ export class DashboardComponent implements OnInit {
           this.Approver =  temp==undefined?'':temp.department;
           this.Apprvr=  temp==undefined?false:true;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.locationList = [];
       });
     }
     MedReviewer:boolean=false;
-    GetReviewersList(empId) {
+    GetReviewersList(empId:any) {
       this.httpService.post(APIURLS.BR_MED_HEAD_REVIEWERS_LIST_API,empId).then((data: any) => {
         if (data.length > 0) {
           this.ReviewerList = data;
@@ -378,7 +393,7 @@ export class DashboardComponent implements OnInit {
           temp ?this.MedReviewer=true:this.MedReviewer=false;
          // temp ? this.Approver ='Medical':'';
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.ReviewerList = [];
       });
@@ -400,14 +415,14 @@ export class DashboardComponent implements OnInit {
             }
             this.GetReviewersList('93823');
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoading = false;
           this.MedHeadList = [];
         });
       }
     fileToUpload: File | null = null;
     File: File | null = null;
-    name: string;
+    name!: string
     files: File[] = []
     handleFileInput(files: FileList) {
       this.errMsg1 = "";
@@ -421,7 +436,7 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    ReadAsBase64(file): Promise<any> {
+    ReadAsBase64(file:any): Promise<any> {
       const reader = new FileReader();
       const fileValue = new Promise((resolve, reject) => {
         reader.addEventListener('load', () => {
@@ -440,7 +455,7 @@ export class DashboardComponent implements OnInit {
 
       return fileValue;
     }
-    id: string;
+    id!: string
     uploadfile() {
       // debugger;
       // this.id='VM001';
@@ -456,14 +471,14 @@ export class DashboardComponent implements OnInit {
           // console.log('copied file to server')
           //this.imageFlag = true;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error uploading file ..';
       });
 
     }
 
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
       this.initDatatable();
     }
@@ -481,12 +496,14 @@ export class DashboardComponent implements OnInit {
       this.NPDScmmodel={} as NPDSCM;
       this.NPDStrategicmodel={} as NPDSTRATEGIC;
       this.NPDBrandsModel={} as NPDBrands;
-      this.Comments = null;
+      
+//this.Comments = null;
+  this.Comments = '';
     }
 
 
     transactionslist: any[] = [];
-    gettransactions(reqNo) {
+    gettransactions(reqNo:any) {
       this.httpService.getByParam(APIURLS.BR_MED_SERVICE_HISTORY_API, reqNo).then((data: any) => {
         this.isLoading = true;
         if (data.length > 0) {
@@ -496,7 +513,7 @@ export class DashboardComponent implements OnInit {
         }
         //this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.transactionslist = [];
       });
@@ -504,16 +521,17 @@ export class DashboardComponent implements OnInit {
     }
     Approverslist: any[] = [];
     accountGroupList: any[] = [];
-    Aprlpriority: number;
+    Aprlpriority!: number;
     ApprovingManager:any;
     ApprvrM:boolean=false;
-    getApproversList(value) {
+    getApproversList(value:any) {
       this.httpService.post(APIURLS.BR_MED_SERVICE_REQUEST_APPROVER_API, value).then((data: any) => {
         this.isLoading = true;
         if (data.employeeId > 0) {
           this.ApprovingManager=data;
           this.Approverslist.push(data);
-          this.Approverslist.forEach(element => {
+          this.Approverslist.forEach((element:any)=> {
+
             element.type="Approving Manager";
           });
           //this.transactionslist.reverse();
@@ -524,7 +542,7 @@ export class DashboardComponent implements OnInit {
         }
         //this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.Approverslist = [];
       });
@@ -576,9 +594,9 @@ export class DashboardComponent implements OnInit {
         .catch(err => this.errMsg1 = err);
     }
 
-    empId: string;
+    empId!: string
     view: boolean = false;
-    locationName: string;
+    locationName!: string
     attachments: any[] = [];
     onUserActions(NPDRequest: NPDRequest) {
       this.resetForm();
@@ -593,7 +611,8 @@ export class DashboardComponent implements OnInit {
       this.fileslist = [];
       this.files = [];
       this.fileslist1 = [];
-      this.Reviewer=null;
+      //this.Reviewer=null;
+  this.Reviewer='';
       //this.reset();
       
       // this.dataForm.form.markAsPristine();
@@ -655,22 +674,22 @@ export class DashboardComponent implements OnInit {
     isValid: boolean = false;
     validatedForm: boolean = true;
 
-    downloadFile(reqNo, value) {
+    downloadFile(reqNo:any, value:any) {
 
       // console.log(filename);
       if (value.length > 0) {
         this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
           // console.log(data);
-          // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+          // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
           if (data != undefined) {
-            var FileSaver = require('file-saver');
+           // var FileSaver = require('file-saver');
             const imageFile = new File([data], value, { type: 'application/doc' });
             // console.log(imageFile);
-            FileSaver.saveAs(imageFile);
+        //      FileSaver.saveAs(imageFile);
 
 
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoading = false;
         });
 
@@ -688,7 +707,7 @@ export class DashboardComponent implements OnInit {
         });
       }
     }
-    deletefile(item, name) {
+    deletefile(item:any, name:any) {
       //let attach:any='';
       if (this.attachments.length > 1) {
         const index = this.attachments.indexOf(name);
@@ -712,12 +731,12 @@ export class DashboardComponent implements OnInit {
             buttons: [false, true]
           })
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error deleteing file..';
       });
     }
-    removefile(name) {
+    removefile(name:any) {
       const index = this.fileslist.indexOf(name);
       this.fileslist.splice(index, 1);
     }
@@ -727,7 +746,7 @@ export class DashboardComponent implements OnInit {
 
   transactionslist1:MediServiceRequestHistory[]=[];
   Finalcopy:boolean=false;
-  ShowHistory(data)
+  ShowHistory(data:any)
   {
     this.transactionslist1=[];
     this.NPDRequestmodel=data;
@@ -735,23 +754,23 @@ export class DashboardComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionslist1 = data;
-        this.transactionslistCMD=this.transactionslist1.filter(x=>x.role=='CMD')
-        this.transactionslistHODI=this.transactionslist1.filter(x=>x.role=='HOD' && x.approvalPriority==2)
-        this.transactionslistHODF=this.transactionslist1.filter(x=>x.role=='HOD' && x.approvalPriority==4)
-        this.transactionslistCQA=this.transactionslist1.filter(x=>x.role=='CQA')
-        this.transactionslistIPR=this.transactionslist1.filter(x=>x.role=='IPR')
-        this.transactionslistSCM=this.transactionslist1.filter(x=>x.role=='SupplyChain')
-        this.transactionslistSM=this.transactionslist1.filter(x=>x.role=='Strategic')
-        this.transactionslistDIST=this.transactionslist1.filter(x=>x.role=='Distribution')
-        this.transactionslistMED=this.transactionslist1.filter(x=>x.role=='Medical')
-        this.transactionslistRND=this.transactionslist1.filter(x=>x.role=='RND')
+        this.transactionslistCMD=this.transactionslist1.filter((x:any)=>x.role=='CMD')
+        this.transactionslistHODI=this.transactionslist1.filter((x:any)=>x.role=='HOD' && x.approvalPriority==2)
+        this.transactionslistHODF=this.transactionslist1.filter((x:any)=>x.role=='HOD' && x.approvalPriority==4)
+        this.transactionslistCQA=this.transactionslist1.filter((x:any)=>x.role=='CQA')
+        this.transactionslistIPR=this.transactionslist1.filter((x:any)=>x.role=='IPR')
+        this.transactionslistSCM=this.transactionslist1.filter((x:any)=>x.role=='SupplyChain')
+        this.transactionslistSM=this.transactionslist1.filter((x:any)=>x.role=='Strategic')
+        this.transactionslistDIST=this.transactionslist1.filter((x:any)=>x.role=='Distribution')
+        this.transactionslistMED=this.transactionslist1.filter((x:any)=>x.role=='Medical')
+        this.transactionslistRND=this.transactionslist1.filter((x:any)=>x.role=='RND')
         var temp=this.transactionslist1.find(x=>x.role !='CMD' && x.transactionType =='Pending')
         this.Finalcopy= temp==undefined?true:false;
         //this.transactionslist.reverse();
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist1 = [];
     });    
@@ -780,7 +799,7 @@ export class DashboardComponent implements OnInit {
 
 
 
-  image:string;
+  image!:string;
   getbase64image()
   {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
@@ -801,7 +820,7 @@ export class DashboardComponent implements OnInit {
   downloadPdf()
   {
    
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICRO LABS LIMITED";
     var ReportName = "NEW PRODUCT DEVELOPMENT (NPD) FORM"
     var printedBy = this.currentUser.fullName;
@@ -811,20 +830,20 @@ export class DashboardComponent implements OnInit {
     var day=now.getDay();
     var jsDate =this.datePipe.transform(now,'dd/MM/yyyy');
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div>     
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-    })
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div>     
+  // </div>
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //   })
     var docDefinition = {
       info: {
         title:'NPD_Form_'+this.NPDRequestmodel.requestNo,
@@ -832,7 +851,7 @@ export class DashboardComponent implements OnInit {
       // watermark: { text: 'DRAFT', fontSize: 80 },
       watermark: { text: 'DRAFT', opacity: 0.2, fontSize:10 },
       content: [
-        htmnikhitml,
+       // htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -850,7 +869,7 @@ export class DashboardComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -900,12 +919,12 @@ export class DashboardComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
   downloadPdf1()
   {
    
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICRO LABS LIMITED";
     var ReportName = "NEW PRODUCT DEVELOPMENT (NPD) FORM"
     var printedBy = this.currentUser.fullName;
@@ -915,20 +934,20 @@ export class DashboardComponent implements OnInit {
     var day=now.getDay();
     var jsDate =this.datePipe.transform(now,'dd/MM/yyyy');
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div>     
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-    })
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div>     
+  // </div>
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //   })
     var docDefinition = {
       info: {
         title:'NPD_Form_'+this.NPDRequestmodel.requestNo,
@@ -936,7 +955,7 @@ export class DashboardComponent implements OnInit {
       // watermark: { text: 'DRAFT', fontSize: 80 },
     //  watermark: { text: 'DRAFT', opacity: 0.2, fontSize:10 },
       content: [
-        htmnikhitml,
+       // htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -954,7 +973,7 @@ export class DashboardComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -1004,7 +1023,7 @@ export class DashboardComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
   
@@ -1053,8 +1072,8 @@ exportAsXLSX(): void {
     this.rejected=0;
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -1089,16 +1108,16 @@ exportAsXLSX(): void {
       if (data) {
        
           this.NPDRequestFilter = data.reverse();
-          this.inprocess=this.NPDRequestFilter.filter(x=>x.apprvrStatus=='InProcess').length;
-          this.completed=this.NPDRequestFilter.filter(x=>x.apprvrStatus=='Completed').length;
-          this.rejected=this.NPDRequestFilter.filter(x=>x.apprvrStatus=='Rejected').length;
+          this.inprocess=this.NPDRequestFilter.filter((x:any)=>x.apprvrStatus=='InProcess').length;
+          this.completed=this.NPDRequestFilter.filter((x:any)=>x.apprvrStatus=='Completed').length;
+          this.rejected=this.NPDRequestFilter.filter((x:any)=>x.apprvrStatus=='Rejected').length;
           
         }
        
       
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.NPDRequestFilter = [];
     });

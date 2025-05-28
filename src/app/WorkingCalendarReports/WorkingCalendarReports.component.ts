@@ -8,7 +8,7 @@ import { AuthData } from '../auth/auth.model';
 import swal from 'sweetalert';
 import { AuditLogChange } from '../masters/auditlogchange.model';
 import { AuditLog } from '../masters/auditlog.model';
-import * as _ from "lodash";
+// import * as _ from "lodash";
 import { WorkingCalendarReports } from './WorkingCalendarReports.model';
 declare var jQuery: any;
 declare var toastr: any;
@@ -29,20 +29,20 @@ import {
     endOfDay,
     addMonths,
 } from 'date-fns';
-import {
-    SchedulerViewDay,
-    SchedulerViewHour,
-    SchedulerViewHourSegment,
-    CalendarSchedulerEvent,
-    CalendarSchedulerEventAction,
-    startOfPeriod,
-    endOfPeriod,
-    addPeriod,
-    subPeriod,
-    SchedulerDateFormatter,
-    SchedulerEventTimesChangedEvent,
-    CalendarSchedulerEventStatus
-} from 'angular-calendar-scheduler';
+// import {
+//     SchedulerViewDay,
+//     SchedulerViewHour,
+//     SchedulerViewHourSegment,
+//     CalendarSchedulerEvent,
+//     CalendarSchedulerEventAction,
+//     startOfPeriod,
+//     endOfPeriod,
+//     addPeriod,
+//     subPeriod,
+//     SchedulerDateFormatter,
+//     SchedulerEventTimesChangedEvent,
+//     CalendarSchedulerEventStatus
+// } from 'angular-calendar-scheduler';
 import {
     CalendarView,
     CalendarDateFormatter,
@@ -72,20 +72,20 @@ export class MyCalendarUtils extends CalendarUtils {
     styleUrls: ['./WorkingCalendarReports.component.css'],
     providers: [{
         provide: CalendarDateFormatter,
-        useClass: SchedulerDateFormatter
+        //useClass: SchedulerDateFormatter
     }]
 })
 export class WorkingCalendarReportsComponent implements OnInit {
     searchTerm: FormControl = new FormControl();
-  @ViewChild(NgForm, { static: false }) desigForm: NgForm;
+  @ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
-  @ViewChild('native', { static: false }) native: ElementRef;
+  @ViewChild('native', { static: false }) native!: ElementRef;
 
     public filteredItems = [];
 
 
     CalendarView = CalendarView;
-    events: CalendarSchedulerEvent[];
+    //events: CalendarSchedulerEvent[];
     public tableWidget: any;
     selParentId: any;
     WorkingCalendarReportsList: any[] = [];
@@ -93,7 +93,7 @@ export class WorkingCalendarReportsComponent implements OnInit {
     AddTypeCodeNameList: any[] = [];
     WorkingCalendarReportsList1: any = [] = [];
     desgList: any;
-    parentList: any[];
+    parentList!: any[];
     selParentRole: any = [];
     selParentRoleList: any;
     requiredField: boolean = true;
@@ -110,22 +110,22 @@ export class WorkingCalendarReportsComponent implements OnInit {
     notFirst = true;
     currentUser = {} as AuthData;
     oldWorkingCalendarReports: WorkingCalendarReports = new WorkingCalendarReports();// For aduit log
-    auditType: string;// set ActionTypes: Create,Update,Delete
-    aduitpurpose: string;
-    calYear: string;
+    auditType !: string// set ActionTypes: Create,Update,Delete
+    aduitpurpose!: string
+    calYear!: string
 
-    filterLocation: string = null;
+    filterLocation: string = '';
     filterPayGroup: string = '';
-    filterCategory: string = null;
-    filterAction: string = null;
+    filterCategory: string = ' ';
+    filterAction: string = ' ';
     filterTypeCode: string = '';
     filterTypeName: string = '';
 
 
-    filterMonth: string = null;
-    filterEmployee: string = null;
+    filterMonth: string = ' ';
+    filterEmployee: string = ' ';
     filterType: string = '';
-    filterHolidayTypeCode: string = null;
+    filterHolidayTypeCode: string = ' ';
     view: CalendarView = CalendarView.Month;
     viewDate: Date = new Date();
     refresh: Subject<any> = new Subject();
@@ -136,13 +136,13 @@ export class WorkingCalendarReportsComponent implements OnInit {
     excludeDays: number[] = []; // [0];
     viewStart = startOfMonth(this.viewDate);
     viewEnd = endOfMonth(this.viewDate);
-    dayModifier: Function;
-    hourModifier: Function;
-    segmentModifier: Function;
-    eventModifier: Function;
-    selectedEvent: CalendarSchedulerEvent;
-    pastEvent: boolean;
-    actions: CalendarSchedulerEventAction[];
+    dayModifier!: Function;
+    hourModifier!: Function;
+    segmentModifier!: Function;
+    eventModifier!: Function;
+    // selectedEvent: CalendarSchedulerEvent;
+    pastEvent!: boolean;
+    // //actions: CalendarSchedulerEventAction[];
     MonthList: any[] = [
         { id: 1, name: 'Jan' },
         { id: 2, name: 'Feb' },
@@ -157,7 +157,8 @@ export class WorkingCalendarReportsComponent implements OnInit {
         { id: 11, name: 'Nov' },
         { id: 12, name: 'Dec' }
     ];
-    filterWOType: string = null;
+    // v10 filterWOType: string = ' ';
+    filterWOType: string = '';
     wodate: any;
     frequency: any;
     days: any;
@@ -171,9 +172,9 @@ export class WorkingCalendarReportsComponent implements OnInit {
             if (data.length > 0) {
                 this.locationList11 = data;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList11.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList11.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList11 = [];
         });
@@ -204,7 +205,8 @@ export class WorkingCalendarReportsComponent implements OnInit {
         this.path = this.router.url;
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         if (chkaccess == true) {
-            this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+         const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
             this.calYear = new Date().getFullYear().toString();
             this.filterLocation = this.currentUser.baselocation.toString();
             this.getPlantsassigned(this.currentUser.fkEmpId);
@@ -226,7 +228,7 @@ export class WorkingCalendarReportsComponent implements OnInit {
         jQuery("#myModal").modal('hide');
     }
 
-    getWorkingCalendarReportsList(month) {
+    getWorkingCalendarReportsList(month:any) {
         this.errMsg = "";
         this.isLoading = true;
         this.showCalendar = true;
@@ -251,51 +253,51 @@ export class WorkingCalendarReportsComponent implements OnInit {
                     dangerMode: false,
                     buttons: [false, true]
                 });
-                this.events = [];
+                // this.events = [];
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.WorkingCalendarReportsList = [];
         });
     }
 
     clearFilter() {
-        this.filterEmployee = null;
-        this.filterMonth = null;
-        this.filterLocation = null;
+        this.filterEmployee = '';
+        this.filterMonth = '';
+        this.filterLocation = '';
         this.filterType = '';
-        this.filterCategory = null;
+        this.filterCategory = '';
         this.filterPayGroup = '';
         this.frequency = null;
         this.days = null;
         this.months = null;
         this.holidayType = null;
         this.showCalendar = false;
-        this.events = [];
+        // this.events = [];
     }
 
     locationList: any[] = [[]];
     plantList: any[] = [];
-    getPlantsassigned(id) {
+    getPlantsassigned(id:any) {
         this.isLoading = true;
         this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
             if (data) {
-                this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+                this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
                 this.getpayGroupList();
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.plantList = [];
         });
     }
 
-    getLocationName(id) {
-        let t = this.locationList.find(s => s.id == id);
+    getLocationName(id:any) {
+        let t = this.locationList.find((s:any) => s.id == id);
 
         return t.code + ' - ' + t.name;
     }
@@ -305,16 +307,16 @@ export class WorkingCalendarReportsComponent implements OnInit {
         this.errMsg = "";
         this.get("PayGroupMaster/GetAll").then((data: any) => {
             if (data.length > 0) {
-                this.payGroupList = data.sort((a, b) => {
+                this.payGroupList = data.sort((a:any, b:any) => {
                     if (a.short_desc > b.short_desc) return 1;
                     if (a.short_desc < b.short_desc) return -1;
                     return 0;
                 });
-                let temp = this.locationList.find(x => x.fkPlantId == this.filterLocation);
-                this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+                let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterLocation);
+                this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
             }
             //this.reInitDatatable();
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.payGroupList = [];
         });
@@ -322,9 +324,11 @@ export class WorkingCalendarReportsComponent implements OnInit {
 
     payGroupList1: any[] = [];
     getPaygroupsBasedOnPlant() {
-        this.filterPayGroup = null;
-        let temp = this.locationList.find(x => x.fkPlantId == this.filterLocation);
-        this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+        let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterLocation);
+        this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
     }
 
     HolidaysList: any[] = [];
@@ -335,7 +339,7 @@ export class WorkingCalendarReportsComponent implements OnInit {
         let searchTerm = this.filterLocation + ',' + this.filterPayGroup + ',' + this.calYear + ',,,';
         this.httpService.LAgetByParam(APIURLS.GET_HOLIDAYS_LIST, searchTerm).then((data: any) => {
             if (data.length > 0) {
-                this.HolidaysList = data.filter(x => x.isActive == true).sort((a, b) => {
+                this.HolidaysList = data.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => {
                     if (a.date > b.date) return 1;
                     if (a.date < b.date) return -1;
                     return 0;
@@ -343,14 +347,14 @@ export class WorkingCalendarReportsComponent implements OnInit {
             }
             // this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.HolidaysList = [];
         });
     }
 
-    getLoc(id) {
-        let temp = this.locationList.find(x => x.id == id);
+    getLoc(id:any) {
+        let temp = this.locationList.find((x:any)  => x.id == id);
         return temp ? temp.code : '';
     }
 
@@ -359,13 +363,13 @@ export class WorkingCalendarReportsComponent implements OnInit {
         this.errMsg = "";
         this.get("EmployeeCategoryMaster/GetAll").then((data: any) => {
             if (data.length > 0) {
-                this.employeeCategoryList = data.sort((a, b) => {
+                this.employeeCategoryList = data.sort((a:any, b:any) => {
                     if (a.catltxt > b.catltxt) return 1;
                     if (a.catltxt < b.catltxt) return -1;
                     return 0;
                 });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.employeeCategoryList = [];
         });
@@ -391,7 +395,9 @@ export class WorkingCalendarReportsComponent implements OnInit {
     }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -418,7 +424,7 @@ export class WorkingCalendarReportsComponent implements OnInit {
             d1.getFullYear();
     }
 
-    exportList: any[];
+    exportList!: any[];
     getExportData() {
         if (this.calYear == null) {
             toastr.error("Please enter calendar year..!");
@@ -447,7 +453,7 @@ export class WorkingCalendarReportsComponent implements OnInit {
                     return;
                 }
                 this.isLoading = false;
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
                 this.WorkingCalendarReportsList1 = [];
             });
@@ -457,15 +463,15 @@ export class WorkingCalendarReportsComponent implements OnInit {
     ExportExcel() {
         this.exportList = [];
         let index = 0;
-        this.WorkingCalendarReportsList1.forEach(item => {
+        this.WorkingCalendarReportsList1.forEach((item :any) => {
             index = index + 1;
             if (item.type == 'Regular') {
                 let exportItemReg = {
                     "SNo": index,
-                    "Plant": item.location ? this.locationList11.find(x => x.id == item.location).code : '',
+                    "Plant": item.location ? this.locationList11.find((x:any)  => x.id == item.location).code : '',
                     "Calendar Type": item.cyear,
-                    "Pay Group": item.payGroup ? this.payGroupList.find(x => x.id == item.payGroup).short_desc : '',
-                    "Staff category": item.empCat ? this.employeeCategoryList.find(x => x.id == item.empCat).catltxt : '',
+                    "Pay Group": item.payGroup ? this.payGroupList.find((x:any)  => x.id == item.payGroup).short_desc : '',
+                    "Staff category": item.empCat ? this.employeeCategoryList.find((x:any)  => x.id == item.empCat).catltxt : '',
                     "Day": item.day,
                     "January": item.jan,
                     "February": item.feb,
@@ -488,10 +494,10 @@ export class WorkingCalendarReportsComponent implements OnInit {
             else {
                 let exportItemAdd = {
                     "SNo": index,
-                    "Plant": item.location ? this.locationList11.find(x => x.id == item.location).code : '',
+                    "Plant": item.location ? this.locationList11.find((x:any)  => x.id == item.location).code : '',
                     "Calendar Type": item.cyear,
-                    "Pay Group": item.payGroup ? this.payGroupList.find(x => x.id == item.payGroup).short_desc : '',
-                    "Staff category": item.empCat ? this.employeeCategoryList.find(x => x.id == item.empCat).catltxt : '',
+                    "Pay Group": item.payGroup ? this.payGroupList.find((x:any)  => x.id == item.payGroup).short_desc : '',
+                    "Staff category": item.empCat ? this.employeeCategoryList.find((x:any)  => x.id == item.empCat).catltxt : '',
                     "Day": item.day,
                     "January": item.jan,
                     "February": item.feb,

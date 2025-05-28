@@ -11,10 +11,10 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 declare var $: any;
 declare var toastr: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Retirement } from '../retirement-list/retirement.model';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
@@ -31,7 +31,7 @@ import { Util } from '../../Services/util.service';
 export class PrintExtensionComponent implements OnInit {
   retirementId: any;
   employeeId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -51,13 +51,16 @@ export class PrintExtensionComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
-    private http: HttpClient, private location: Location, private util: Util) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private location: Location, private util: Util) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.retirementId = this.route.snapshot.paramMap.get('id')!;     
       this.letterType = this.route.snapshot.paramMap.get('id2')!;   
       this.canPrint = this.util.hasPermission(PERMISSIONS.HR_PRINT_LETTERS);
@@ -87,7 +90,7 @@ export class PrintExtensionComponent implements OnInit {
         this.retirementDetails = data;   
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -103,7 +106,7 @@ export class PrintExtensionComponent implements OnInit {
         this.GetSignatoryDetails();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -127,9 +130,9 @@ export class PrintExtensionComponent implements OnInit {
   //   //console.log(event.target.value);
   //   this.httpService.HRget(APIURLS.RETIREMENT_GET_PRINT_TEMPLATES).then((data: any) => {
   //     if (data.length > 0) {
-  //       this.printTemplates = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
+  //       this.printTemplates = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.printTemplates = [];
   //   });
   // }
@@ -147,7 +150,7 @@ export class PrintExtensionComponent implements OnInit {
     //$("#print-me").empty();
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -178,7 +181,7 @@ export class PrintExtensionComponent implements OnInit {
   }
 
   download() {
-    this.createPDF().open();
+   // this.createPDF().open();
     this.saveLetterActivity("Downloaded");
   }
 
@@ -196,7 +199,7 @@ export class PrintExtensionComponent implements OnInit {
     //     bolditalics: 'Times-BoldItalic'
     //   }
     // };
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -209,14 +212,14 @@ export class PrintExtensionComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    });
+    })*/;
     var docDefinition = {
       info: {
         title: 'retirement Letter',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -243,7 +246,7 @@ export class PrintExtensionComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 130, 40, 10],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           columns: [
             {
@@ -272,7 +275,7 @@ export class PrintExtensionComponent implements OnInit {
       }
     };
     
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
   sendEmail() {
@@ -296,27 +299,27 @@ export class PrintExtensionComponent implements OnInit {
       //request.letterType = this.printTemplates.find(x=>x.printTemplateId==this.selectedTemplateId).templateType;
 
       this.isLoading = true;
-      this.createPDF().getBase64((encodedString) => {
-        if (encodedString) {
-          request.attachment = encodedString;
-          toastr.info("Sending email...");
-          this.isLoading = true;
-          this.httpService.HRpost(APIURLS.RETIREMENT_DETAILS_SEND_EMAIL, request).then((data: any) => {
-            if (data == 200 || data.success) {
-              toastr.success("Successfully emailed the letter.");
-              this.saveLetterActivity("Emailed");
-            } else if (!data.success) {
-              toastr.error(data.message);
-            } else
-            toastr.error("Error occurred.");
-            this.isLoading = false;
-          }
-          ).catch(error => {
-            toastr.error(error);
-            this.isLoading = false;
-          });
-        }
-      });
+      // this.createPDF().getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     request.attachment = encodedString;
+      //     toastr.info("Sending email...");
+      //     this.isLoading = true;
+      //     this.httpService.HRpost(APIURLS.RETIREMENT_DETAILS_SEND_EMAIL, request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         toastr.success("Successfully emailed the letter.");
+      //         this.saveLetterActivity("Emailed");
+      //       } else if (!data.success) {
+      //         toastr.error(data.message);
+      //       } else
+      //       toastr.error("Error occurred.");
+      //       this.isLoading = false;
+      //     }
+      //     ).catch((error)=> {
+      //       toastr.error(error);
+      //       this.isLoading = false;
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -325,7 +328,8 @@ export class PrintExtensionComponent implements OnInit {
   }
 
 print1(): void {
-  this.createPDF().print(); 
+  //v10
+  //this.createPDF().print(); 
   this.saveLetterActivity("Printed");
   return;
 
@@ -374,19 +378,19 @@ print1(): void {
 
   
   saveLetter(){
-    this.createPDF().getBase64((encodedString) => {
-      if (encodedString) {
-        var request: any = {};
-        request.attachment = encodedString;      
-        request.objectId = this.retirementId;
-        request.employeeId = this.retirementDetails.employeeId;
-        request.objectType = "Retirement";
-        request.letterType = "Retirement Extension Letter";
-        request.submittedById = this.currentUser.uid;
-        request.submittedByName = this.currentUser.fullName;
-        this.util.saveLetter(request);
-      }
-    });
+    // this.createPDF().getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     var request: any = {};
+    //     request.attachment = encodedString;      
+    //     request.objectId = this.retirementId;
+    //     request.employeeId = this.retirementDetails.employeeId;
+    //     request.objectType = "Retirement";
+    //     request.letterType = "Retirement Extension Letter";
+    //     request.submittedById = this.currentUser.uid;
+    //     request.submittedByName = this.currentUser.fullName;
+    //     this.util.saveLetter(request);
+    //   }
+    // });
   }
 
   saveLetterActivity(activity: string){

@@ -8,7 +8,7 @@ import { AuthData } from '../auth/auth.model';
 import swal from 'sweetalert';
 import { AuditLogChange } from '../masters/auditlogchange.model';
 import { AuditLog } from '../masters/auditlog.model';
-import * as _ from "lodash";
+// import * as _ from "lodash";
 import { WorkingCalendar } from './WorkingCalendar.model';
 declare var jQuery: any;
 declare var toastr: any;
@@ -29,20 +29,20 @@ import {
     endOfDay,
     addMonths,
 } from 'date-fns';
-import {
-    SchedulerViewDay,
-    SchedulerViewHour,
-    SchedulerViewHourSegment,
-    CalendarSchedulerEvent,
-    CalendarSchedulerEventAction,
-    startOfPeriod,
-    endOfPeriod,
-    addPeriod,
-    subPeriod,
-    SchedulerDateFormatter,
-    SchedulerEventTimesChangedEvent,
-    CalendarSchedulerEventStatus
-} from 'angular-calendar-scheduler';
+// import {
+//     SchedulerViewDay,
+//     SchedulerViewHour,
+//     SchedulerViewHourSegment,
+//     CalendarSchedulerEvent,
+//     CalendarSchedulerEventAction,
+//     startOfPeriod,
+//     endOfPeriod,
+//     addPeriod,
+//     subPeriod,
+//     SchedulerDateFormatter,
+//     SchedulerEventTimesChangedEvent,
+//     CalendarSchedulerEventStatus
+// } from 'angular-calendar-scheduler';
 import {
     CalendarView,
     CalendarDateFormatter,
@@ -70,22 +70,23 @@ export class MyCalendarUtils extends CalendarUtils {
     selector: 'app-WorkingCalendar',
     templateUrl: './WorkingCalendar.component.html',
     styleUrls: ['./WorkingCalendar.component.css'],
-    providers: [{
-        provide: CalendarDateFormatter,
-        useClass: SchedulerDateFormatter
-    }]
+    // providers: [{
+    //     provide: CalendarDateFormatter,
+    //     //useClass: SchedulerDateFormatter
+    // }]
 })
 export class WorkingCalendarComponent implements OnInit {
+   
     searchTerm: FormControl = new FormControl();
-  @ViewChild(NgForm, { static: false }) desigForm: NgForm;
+  @ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
-  @ViewChild('native', { static: false }) native: ElementRef;
+  @ViewChild('native', { static: false }) native!: ElementRef;
 
     public filteredItems = [];
 
 
     CalendarView = CalendarView;
-    events: CalendarSchedulerEvent[];
+    // //events: CalendarSchedulerEvent[];
     public tableWidget: any;
     selParentId: any;
     WorkingCalendarList: any[] = [];
@@ -93,7 +94,7 @@ export class WorkingCalendarComponent implements OnInit {
     AddTypeCodeNameList: any[] = [];
     WorkingCalendarList1: any = [] = [];
     desgList: any;
-    parentList: any[];
+    parentList!: any[];
     selParentRole: any = [];
     selParentRoleList: any;
     requiredField: boolean = true;
@@ -110,19 +111,19 @@ export class WorkingCalendarComponent implements OnInit {
     notFirst = true;
     currentUser = {} as AuthData;
     oldWorkingCalendar: WorkingCalendar = new WorkingCalendar();// For aduit log
-    auditType: string;// set ActionTypes: Create,Update,Delete
-    aduitpurpose: string;
-    calYear: string;
-    filterLocation: string = null;
-    filterPayGroup: string = null;
-    filterCategory: string = null;
-    filterAction: string = null;
-    filterTypeCode: string = null;
-    filterTypeName: string = null;
-    filterMonth: string = null;
-    filterEmployee: string = null;
-    filterType: string = null;
-    filterHolidayTypeCode: string = null;
+    auditType!: string// set ActionTypes: Create,Update,Delete
+    aduitpurpose!: string
+    calYear!: string
+    filterLocation: string = ' ';
+    filterPayGroup: string = ' ';
+    filterCategory: string = ' ';
+    filterAction: string = ' ';
+    filterTypeCode: string = ' ';
+    filterTypeName: string = ' ';
+    filterMonth: string = ' ';
+    filterEmployee: string = ' ';
+    filterType: string = ' ';
+    filterHolidayTypeCode: string = ' ';
     view: CalendarView = CalendarView.Month;
     viewDate: Date = new Date();
     refresh: Subject<any> = new Subject();
@@ -133,13 +134,13 @@ export class WorkingCalendarComponent implements OnInit {
     excludeDays: number[] = []; // [0];
     viewStart = startOfMonth(this.viewDate);
     viewEnd = endOfMonth(this.viewDate);
-    dayModifier: Function;
-    hourModifier: Function;
-    segmentModifier: Function;
-    eventModifier: Function;
-    selectedEvent: CalendarSchedulerEvent;
-    pastEvent: boolean;
-    actions: CalendarSchedulerEventAction[];
+    dayModifier!: Function;
+    hourModifier!: Function;
+    segmentModifier!: Function;
+    eventModifier!: Function;
+    // selectedEvent: CalendarSchedulerEvent;
+    pastEvent!: boolean;
+    // //actions: CalendarSchedulerEventAction[];
     MonthList: any[] = [
         { id: 1, name: 'Jan' },
         { id: 2, name: 'Feb' },
@@ -154,12 +155,12 @@ export class WorkingCalendarComponent implements OnInit {
         { id: 11, name: 'Nov' },
         { id: 12, name: 'Dec' }
     ];
-    filterWOType: string = null;
+    filterWOType: string = ' ';
     wodate: any;
     frequency: any;
-    days: string = null;
-    months: string = null;
-    holidayType: string = null;
+    days: string = ' ';
+    months: string = ' ';
+    holidayType: string = ' ';
     showCalendar: boolean = false;
 
     locationList11: any[] = [[]];
@@ -168,9 +169,9 @@ export class WorkingCalendarComponent implements OnInit {
             if (data.length > 0) {
                 this.locationList11 = data;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList11.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList11.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
-        }).catch(error => {
+        }).catch((error) => {
             this.isLoading = false;
             this.locationList11 = [];
         });
@@ -180,20 +181,20 @@ export class WorkingCalendarComponent implements OnInit {
         private appService: AppComponent, private http: HttpClient, private excelService: ExcelService) {
         this.locale = locale;
 
-        this.dayModifier = ((day: SchedulerViewDay): void => {
-            day.cssClass = this.isDateValid(day.date) ? '' : 'cal-disabled';
-        }).bind(this);
-        this.hourModifier = ((hour: SchedulerViewHour): void => {
-            hour.cssClass = this.isDateValid(hour.date) ? '' : 'cal-disabled';
-        }).bind(this);
+        // this.dayModifier = ((day: SchedulerViewDay): void => {
+        //     day.cssClass = this.isDateValid(day.date) ? '' : 'cal-disabled';
+        // }).bind(this);
+        // this.hourModifier = ((hour: SchedulerViewHour): void => {
+        //     hour.cssClass = this.isDateValid(hour.date) ? '' : 'cal-disabled';
+        // }).bind(this);
 
-        this.segmentModifier = ((segment: SchedulerViewHourSegment): void => {
-            segment.isDisabled = !this.isDateValid(segment.date);
-        }).bind(this);
+        // this.segmentModifier = ((segment: SchedulerViewHourSegment): void => {
+        //     segment.isDisabled = !this.isDateValid(segment.date);
+        // }).bind(this);
 
-        this.eventModifier = ((event: CalendarSchedulerEvent): void => {
-            event.isDisabled = !this.isDateValid(event.start);
-        }).bind(this);
+        // this.eventModifier = ((event: CalendarSchedulerEvent): void => {
+        //     event.isDisabled = !this.isDateValid(event.start);
+        // }).bind(this);
 
         // this.dateOrViewChanged();
     }
@@ -212,11 +213,14 @@ export class WorkingCalendarComponent implements OnInit {
         }
         setTimeout(() => this.initDatatable(), 0)
     }
-    ngOnInit() {
+    ngOnInit() : void {
         this.path = this.router.url;
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         if (chkaccess == true) {
-            this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            // this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
+
             this.filterLocation = this.currentUser.baselocation.toString();
             this.calYear = new Date().getFullYear().toString();
             this.getPlantsassigned(this.currentUser.fkEmpId);
@@ -255,19 +259,19 @@ export class WorkingCalendarComponent implements OnInit {
                     dangerMode: false,
                     buttons: [false, true]
                 });
-                this.events = [];
+                ////this.events = [];
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.holidayTypesList = [];
         });
     }
 
-    typeCodeEditCreateFlag: string = null;
+    typeCodeEditCreateFlag: string = ' ';
     CheckAdditionalCalendar() {
-        let flag: string = null;
+        let flag: string = ' ';
         if (this.filterType == 'Additional' && this.filterHolidayTypeCode == 'REGULAR') {
             swal({
                 title: "Message",
@@ -323,11 +327,11 @@ export class WorkingCalendarComponent implements OnInit {
             //         dangerMode: false,
             //         buttons: [false, true]
             //     });
-            //     this.events = [];
+            //     //this.events = [];
             // }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.AddTypeCodeNameList = [];
         });
@@ -342,7 +346,7 @@ export class WorkingCalendarComponent implements OnInit {
         this.newDynamic = { id: this.rowcount, location: null, day: "", date: null, occasion: "", stored: "0" };
         this.dynamicArray.push(this.newDynamic);
     }
-    removeRows(item) {
+    removeRows(item:any) {
         if (this.dynamicArray.length > 1) {
             const index = this.dynamicArray.indexOf(item);
             this.dynamicArray.splice(index, 1);
@@ -384,7 +388,7 @@ export class WorkingCalendarComponent implements OnInit {
         }
         else {
             let date = new Date();
-            this.filterMonth = this.MonthList.find(x => x.id == date.getMonth() + 1).name;
+            this.filterMonth = this.MonthList.find((x:any)  => x.id == date.getMonth() + 1).name;
             this.getWorkingCalendarList(this.filterMonth);
         }
 
@@ -405,7 +409,7 @@ export class WorkingCalendarComponent implements OnInit {
         this.httpService.LAgetByParam(APIURLS.BR_GET_PLANT_WORKING_CALENDAR, searchTerm).then((data: any) => {
             if (data.length > 0) {
                 this.WorkingCalendarList = data;
-                let mon = this.MonthList.find(x => x.name == this.filterMonth).id;
+                let mon = this.MonthList.find((x:any)  => x.name == this.filterMonth).id;
                 let date = "'" + mon + "/" + new Date().getDay() + "/" + this.calYear + "'";
                 let d = new Date(date);
                 this.viewDate = d;
@@ -422,31 +426,33 @@ export class WorkingCalendarComponent implements OnInit {
                     dangerMode: false,
                     buttons: [false, true]
                 });
-                this.events = [];
+                //this.events = [];
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.WorkingCalendarList = [];
         });
     }
 
     clearFilter() {
-        this.filterEmployee = null;
-        this.filterMonth = null;
-        this.filterLocation = null;
+        this.filterEmployee = '';
+        this.filterMonth = '';
+        this.filterLocation = '';
         this.filterType = '';
-        this.filterCategory = null;
+        this.filterCategory = '';
         this.filterPayGroup = '';
         this.frequency = null;
         this.days = null;
         this.months = null;
         this.holidayType = null;
         this.showCalendar = false;
-        this.events = [];
-        this.filterTypeCode = null;
-        this.filterTypeName = null;
+        //this.events = [];
+     //   this.filterTypeCode = null;
+   this.filterTypeCode = '';
+       //   this.filterTypeName = null;
+ this.filterTypeName = '';
         this.filterHolidayTypeCode = null;
 
         this.typeCodeEditCreateFlag = null;
@@ -461,7 +467,7 @@ export class WorkingCalendarComponent implements OnInit {
         this.httpService.LAgetByParam(APIURLS.BR_GET_EMP_WORKING_CALENDAR, searchTerm).then((data: any) => {
             if (data.length > 0) {
                 this.EmpCalendarList = data;
-                let mon = this.MonthList.find(x => x.name == this.filterMonth).id;
+                let mon = this.MonthList.find((x:any)  => x.name == this.filterMonth).id;
                 let date = "'" + mon + "/" + new Date().getDay() + "/" + this.calYear + "'";
                 let d = new Date(date);
                 this.viewDate = d;
@@ -478,11 +484,11 @@ export class WorkingCalendarComponent implements OnInit {
                     dangerMode: false,
                     buttons: [false, true]
                 });
-                this.events = [];
+                //this.events = [];
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.EmpCalendarList = [];
         });
@@ -491,24 +497,24 @@ export class WorkingCalendarComponent implements OnInit {
 
     locationList: any[] = [[]];
     plantList: any[] = [];
-    getPlantsassigned(id) {
+    getPlantsassigned(id:any) {
         this.isLoading = true;
         this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
             if (data) {
-                this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+                this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
                 this.getpayGroupList();
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.plantList = [];
         });
     }
 
-    getLocationName(id) {
-        let t = this.locationList.find(s => s.id == id);
+    getLocationName(id:any) {
+        let t = this.locationList.find((s:any) => s.id == id);
 
         return t.code + ' - ' + t.name;
     }
@@ -518,16 +524,16 @@ export class WorkingCalendarComponent implements OnInit {
         this.errMsg = "";
         this.get("PayGroupMaster/GetAll").then((data: any) => {
             if (data.length > 0) {
-                this.payGroupList = data.sort((a, b) => {
+                this.payGroupList = data.sort((a:any, b:any) => {
                     if (a.short_desc > b.short_desc) return 1;
                     if (a.short_desc < b.short_desc) return -1;
                     return 0;
                 });
-                let temp = this.locationList.find(x => x.fkPlantId == this.filterLocation);
-                this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+                let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterLocation);
+                this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
             }
             //this.reInitDatatable();
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.payGroupList = [];
         });
@@ -535,9 +541,11 @@ export class WorkingCalendarComponent implements OnInit {
 
     payGroupList1: any[] = [];
     getPaygroupsBasedOnPlant() {
-        this.filterPayGroup = null;
-        let temp = this.locationList.find(x => x.fkPlantId == this.filterLocation);
-        this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+        let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterLocation);
+        this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
     }
 
     HolidaysList: any[] = [];
@@ -548,7 +556,7 @@ export class WorkingCalendarComponent implements OnInit {
         let searchTerm = this.filterLocation + ',' + this.filterPayGroup + ',' + this.calYear + ',,,';
         this.httpService.LAgetByParam(APIURLS.GET_HOLIDAYS_LIST, searchTerm).then((data: any) => {
             if (data.length > 0) {
-                this.HolidaysList = data.filter(x => x.isActive == true).sort((a, b) => {
+                this.HolidaysList = data.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => {
                     if (a.date > b.date) return 1;
                     if (a.date < b.date) return -1;
                     return 0;
@@ -556,14 +564,14 @@ export class WorkingCalendarComponent implements OnInit {
             }
             // this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.HolidaysList = [];
         });
     }
 
-    getLoc(id) {
-        let temp = this.locationList.find(x => x.id == id);
+    getLoc(id:any) {
+        let temp = this.locationList.find((x:any)  => x.id == id);
         return temp ? temp.code : '';
     }
 
@@ -583,9 +591,10 @@ export class WorkingCalendarComponent implements OnInit {
         if (this.isEdit) {
             Object.assign(this.oldWorkingCalendar, data);
             this.WorkingCalendar = Object.assign({}, data);
-            let holiday = this.WorkingCalendarList.filter(x => x.location == this.WorkingCalendar.location && x.year == this.WorkingCalendar.cyear);
+            let holiday = this.WorkingCalendarList.filter((x:any)  => x.location == this.WorkingCalendar.location && x.year == this.WorkingCalendar.cyear);
             let index = 0;
-            holiday.forEach(element => {
+            holiday.forEach((element:any)=> {
+
                 let newDynamic = { id: this.rowcount, location: null, day: "", date: null, occasion: "" };
                 newDynamic.id = element.id;
                 newDynamic.location = element.location;
@@ -640,7 +649,7 @@ export class WorkingCalendarComponent implements OnInit {
             else
                 this.errMsgPop = data;
 
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving calendar..';
         });
@@ -682,7 +691,7 @@ export class WorkingCalendarComponent implements OnInit {
             else
                 this.errMsgPop = data;
 
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving calendar..';
         });
@@ -710,7 +719,7 @@ export class WorkingCalendarComponent implements OnInit {
     }
 
     dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-        let temp = this.HolidaysList.find(x => this.getDateFormate(x.date) == this.getDateFormate(date))
+        let temp = this.HolidaysList.find((x:any)  => this.getDateFormate(x.date) == this.getDateFormate(date))
         if (date < new Date()) {
             swal({
                 title: "Message",
@@ -740,7 +749,7 @@ export class WorkingCalendarComponent implements OnInit {
 
     dateOrViewChanged(date): void {
         let date1 = new Date();
-        this.filterMonth = this.MonthList.find(x => x.id == date.getMonth() + 1).name;
+        this.filterMonth = this.MonthList.find((x:any)  => x.id == date.getMonth() + 1).name;
         this.getWorkingCalendarList(this.filterMonth);
     }
 
@@ -752,7 +761,7 @@ export class WorkingCalendarComponent implements OnInit {
 
     PrevdateOrViewChanged(date) {
         let date1 = new Date();
-        this.filterMonth = this.MonthList.find(x => x.id == date.getMonth() + 1).name;
+        this.filterMonth = this.MonthList.find((x:any)  => x.id == date.getMonth() + 1).name;
         this.getWorkingCalendarList(this.filterMonth);
     }
 
@@ -764,71 +773,71 @@ export class WorkingCalendarComponent implements OnInit {
     }
 
 
-    eventClicked(action: string, event: CalendarSchedulerEvent): void {
+    // eventClicked(action: string, event: CalendarSchedulerEvent): void {
 
-        this.selectedEvent = event;
-        if (this.selectedEvent.start < new Date()) {
-            this.pastEvent = true;
-        }
-        else
-            this.pastEvent = false;
+    //     this.selectedEvent = event;
+    //     if (this.selectedEvent.start < new Date()) {
+    //         this.pastEvent = true;
+    //     }
+    //     else{
+    //         this.pastEvent = false;
 
-        this.errMsgPop = '';
-        this.errMsgPop1 = '';
-        this.isEdit = true;
-        let connection: any;
-        connection = this.httpService.getById(APIURLS.BR_MASTER_VISITOR_POST_API, +event.id);
+    //     this.errMsgPop = '';
+    //     this.errMsgPop1 = '';
+    //     this.isEdit = true;
+    //     let connection: any;
+    //     connection = this.httpService.getById(APIURLS.BR_MASTER_VISITOR_POST_API, +event.id);
 
-        connection.then((data: any) => {
-            if (data == 200 || data.id > 0) {
-                jQuery("#myModal").modal('show');
-            }
-        }).catch(() => {
-            this.isLoadingPop = false;
-            this.errMsgPop = 'Error saving Calendar data..';
-        });
-    }
-
+    //     connection.then((data: any) => {
+    //         if (data == 200 || data.id > 0) {
+    //             jQuery("#myModal").modal('show');
+    //         }
+    //     }).catch((error) => {
+    //         this.isLoadingPop = false;
+    //         this.errMsgPop = 'Error saving Calendar data..';
+    //     });}
+    
+    // }
     getEvents(list) {
 
         // this.appService.getEvents(this.employeeId, this.actions)
         // .then((events: CalendarSchedulerEvent[]) => this.events = events);
         let events = [];
-        let list1 = list.filter(x => x.month != 'W')
+        let list1 = list.filter((x:any)  => x.month != 'W')
         for (let cal of list1) {
-            let mon = this.MonthList.find(x => x.name == this.filterMonth).id;
+            let mon = this.MonthList.find((x:any)  => x.name == this.filterMonth).id;
             let date = "'" + mon + "/" + cal.day + "/" + cal.year + "'";
             let d = new Date(date);
             let ed = new Date(date);
-            let temp = this.HolidaysList.find(x => this.getDateFormate(x.date) == this.getDateFormate(d));
+            let temp = this.HolidaysList.find((x:any)  => this.getDateFormate(x.date) == this.getDateFormate(d));
             let name = temp ? temp.holidayName : '';
 
 
-            events.push(
-                <CalendarSchedulerEvent>{
-                    // id: cal.id,
-                    start: d,//startOfHour(d),
-                    //end: ed,//addHours(d, hours),
-                    title: cal.month == 'SS' ? 'Second Saturday' : cal.month == 'TS' ? 'Third Saturday' : cal.month == 'SH' ? 'Special Holiday' : cal.month == 'WO' ? 'Week Off' : cal.month == 'PH' ? name : '',//+'<br><br>'+cal.purpose!=null?cal.purpose:'',
-                    content: name,
-                    // color: { primary: '#E0E0E0', secondary: '#EEEEEE' },
-                    color: cal.month == 'PH' ? colors.green : cal.month == 'WO' ? colors.red : cal.month == 'SS' ? colors.cyan : cal.month == 'SH' ? colors.orange :
-                        cal.month == 'TS' ? colors.blue : '',
-                    actions: this.actions,
-                    // status: 'ok' as CalendarSchedulerEventStatus,
-                    isClickable: true,
-                    isDisabled: false,
-                    draggable: true,
+            // events.push(
+            //     <CalendarSchedulerEvent>{
+            //         // id: cal.id,
+            //         start: d,//startOfHour(d),
+            //         //end: ed,//addHours(d, hours),
+            //         title: cal.month == 'SS' ? 'Second Saturday' : cal.month == 'TS' ? 'Third Saturday' : cal.month == 'SH' ? 'Special Holiday' : cal.month == 'WO' ? 'Week Off' : cal.month == 'PH' ? name : '',//+'<br><br>'+cal.purpose!=null?cal.purpose:'',
+            //         content: name,
+            //         // color: { primary: '#E0E0E0', secondary: '#EEEEEE' },
+            //         color: cal.month == 'PH' ? colors.green : cal.month == 'WO' ? colors.red : cal.month == 'SS' ? colors.cyan : cal.month == 'SH' ? colors.orange :
+            //             cal.month == 'TS' ? colors.blue : '',
+            //         actions: this.actions,
+            //         // status: 'ok' as CalendarSchedulerEventStatus,
+            //         isClickable: true,
+            //         isDisabled: false,
+            //         draggable: true,
 
-                    resizable: {
-                        beforeStart: true,
-                        afterEnd: true
-                    }
-                });
+            //         resizable: {
+            //             beforeStart: true,
+            //             afterEnd: true
+            //         }
+            //     });
 
 
         }
-        this.events = events;
+      //  this.events = events;
     }
 
 
@@ -837,13 +846,13 @@ export class WorkingCalendarComponent implements OnInit {
         this.errMsg = "";
         this.get("EmployeeCategoryMaster/GetAll").then((data: any) => {
             if (data.length > 0) {
-                this.employeeCategoryList = data.sort((a, b) => {
+                this.employeeCategoryList = data.sort((a:any, b:any) => {
                     if (a.catltxt > b.catltxt) return 1;
                     if (a.catltxt < b.catltxt) return -1;
                     return 0;
                 });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.employeeCategoryList = [];
         });
@@ -870,8 +879,10 @@ export class WorkingCalendarComponent implements OnInit {
         return promise;
     }
 
-   getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+   getHeader() :{ headers: HttpHeaders } {
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -899,6 +910,7 @@ export class WorkingCalendarComponent implements OnInit {
     }
 
     exportList: any[];
+
     getExportData() {
         if (this.calYear == null) {
             toastr.error("Please enter calendar year..!");
@@ -954,7 +966,7 @@ export class WorkingCalendarComponent implements OnInit {
                     return;
                 }
                 this.isLoading = false;
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
                 this.WorkingCalendarList1 = [];
             });
@@ -964,15 +976,15 @@ export class WorkingCalendarComponent implements OnInit {
     ExportExcel() {
         this.exportList = [];
         let index = 0;
-        this.WorkingCalendarList1.forEach(item => {
+        this.WorkingCalendarList1.forEach((item :any) => {
             index = index + 1;
             if (item.type == 'Regular') {
                 let exportItemReg = {
                     "SNo": index,
-                    "Plant": item.location ? this.locationList11.find(x => x.id == item.location).code : '',
+                    "Plant": item.location ? this.locationList11.find((x:any)  => x.id == item.location).code : '',
                     "Calendar Type": item.cyear,
-                    "Pay Group": item.payGroup ? this.payGroupList.find(x => x.id == item.payGroup).short_desc : '',
-                    "Staff category": item.empCat ? this.employeeCategoryList.find(x => x.id == item.empCat).catltxt : '',
+                    "Pay Group": item.payGroup ? this.payGroupList.find((x:any)  => x.id == item.payGroup).short_desc : '',
+                    "Staff category": item.empCat ? this.employeeCategoryList.find((x:any)  => x.id == item.empCat).catltxt : '',
                     "Day": item.day,
                     "January": item.jan,
                     "February": item.feb,
@@ -995,10 +1007,10 @@ export class WorkingCalendarComponent implements OnInit {
             else {
                 let exportItemAdd = {
                     "SNo": index,
-                    "Plant": item.location ? this.locationList11.find(x => x.id == item.location).code : '',
+                    "Plant": item.location ? this.locationList11.find((x:any)  => x.id == item.location).code : '',
                     "Calendar Type": item.cyear,
-                    "Pay Group": item.payGroup ? this.payGroupList.find(x => x.id == item.payGroup).short_desc : '',
-                    "Staff category": item.empCat ? this.employeeCategoryList.find(x => x.id == item.empCat).catltxt : '',
+                    "Pay Group": item.payGroup ? this.payGroupList.find((x:any)  => x.id == item.payGroup).short_desc : '',
+                    "Staff category": item.empCat ? this.employeeCategoryList.find((x:any)  => x.id == item.empCat).catltxt : '',
                     "Day": item.day,
                     "January": item.jan,
                     "February": item.feb,
@@ -1025,3 +1037,4 @@ export class WorkingCalendarComponent implements OnInit {
         this.excelService.exportAsExcelFileForLA(this.exportList, 'Working_Calendar');
     }
 }
+

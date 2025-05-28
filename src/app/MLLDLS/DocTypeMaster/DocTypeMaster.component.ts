@@ -15,7 +15,7 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DocTypeMaster } from './DocTypeMaster.model';
 
@@ -25,9 +25,9 @@ import { DocTypeMaster } from './DocTypeMaster.model';
     styleUrls: ['./DocTypeMaster.component.css']
 })
 export class DocTypeMasterComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     public tableWidget: any;
@@ -45,24 +45,24 @@ export class DocTypeMasterComponent implements OnInit {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File; successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
     baseLocationnotfirst = true;
 
-    filterbarcode: string = null;
-    filterBrand: string = null;
+    filterbarcode: string = ' ';
+    filterBrand: string = ' ';
 
     DocTypeMastermodel = {} as DocTypeMaster;
     DocTypeMasterlist: DocTypeMaster[] = [];
     // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-    materialtype: string;
-    filterMaterialCode: string = null;
-    filterstatus: string = null;
-    filterlocation: string = null;
-    filterdocno: string = null;
-    filterplace: string = null;
+    materialtype!: string
+    filterMaterialCode: string = ' ';
+    filterstatus: string = ' ';
+    filterlocation: string = ' ';
+    filterdocno: string = ' ';
+    filterplace: string = ' ';
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     to_date: any = this.today;
@@ -71,8 +71,9 @@ export class DocTypeMasterComponent implements OnInit {
     DocTypeMasterFilter: DocTypeMaster[] = [];
     DocTypeMastersearchlist: DocTypeMaster[] = [];
 
-    emailid: string;
-    requestdate: Date;
+    emailid!: string
+
+    requestdate!: Date;
     Approver1: boolean = false;
     Approverid1: string = "";
     Approverid2: string = "";
@@ -80,11 +81,12 @@ export class DocTypeMasterComponent implements OnInit {
     Creator: boolean = false;
     Review: boolean = false;
     Closure: boolean = false;
-    userid: string;
+    userid!: string
+
 
     storeData: any;
     jsonData: any;
-    fileUploaded: File;
+    fileUploaded!: File;
     worksheet: any;
 
     //DocTypeMastermodeldata = {} as ItemCodeExtension;
@@ -113,7 +115,8 @@ export class DocTypeMasterComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //  this.baseLocation = this.currentUser.baselocation;
         this.emailid = this.currentUser.email;
         this.userid = this.currentUser.employeeId;
@@ -133,26 +136,26 @@ export class DocTypeMasterComponent implements OnInit {
             }
             this.isLoading = false;
             this.reInitDatatable();
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CategoryList = [];
         });
 
     }
 
-    locationCode: string;
+    locationCode: string
     getLocationMaster() {
         this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locationCode = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locationCode = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
                 this.getCategoryList();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
@@ -165,7 +168,7 @@ export class DocTypeMasterComponent implements OnInit {
         }
     }
    
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
         this.initDatatable();
     }
@@ -175,9 +178,9 @@ export class DocTypeMasterComponent implements OnInit {
         this.DocTypeMastermodel = {} as DocTypeMaster;
     }
 
-    empId: string;
+    empId: string
     view: boolean = false;
-    locationName: string;
+    locationName: string
     onUserActions(isedit: boolean, DocTypeMaster: DocTypeMaster, isprint: boolean, value: string) {
         this.isEdit = isedit;
         this.resetForm();
@@ -196,7 +199,7 @@ export class DocTypeMasterComponent implements OnInit {
     isValid: boolean = false;
     validatedForm: boolean = true;
 
-    onSaveEntry(status) {
+    onSaveEntry(status:any) {
         this.errMsg = "";
         let connection: any;
      
@@ -225,7 +228,7 @@ export class DocTypeMasterComponent implements OnInit {
                     
                     // this.reset();
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
                 this.errMsgPop = 'Error saving Type..';
             });
@@ -257,7 +260,7 @@ export class DocTypeMasterComponent implements OnInit {
                 jQuery("#saveModal").modal('show');
                 this.getCategoryList();
               }
-            }).catch(() => {
+            }).catch((error) => {
               this.isLoadingPop = false;
               this.errMsgPop = 'Error deleting Type..';
             });

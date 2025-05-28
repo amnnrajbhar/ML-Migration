@@ -12,8 +12,8 @@ import * as _ from "lodash";
 import { SoftwareRoles } from './SofwareRoles.model';
 declare var jQuery: any;
 export class actionItemModel {
-  role: string;
-  sequenceNo: number;
+  role: string
+  sequenceNo!: number;
   softwareid:number;
   isbold:boolean;
 }
@@ -24,20 +24,20 @@ export class actionItemModel {
 })
 export class SoftwareRolesComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public filteredItems = [];
 
   public tableWidget: any;
   selParentId: any;
-  softwareList: any[];
-  softwareRolesList: any[];
+  softwareList!: any[];
+  softwareRolesList!: any[];
   softwareList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -53,8 +53,8 @@ export class SoftwareRolesComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldsoftware: SoftwareRoles = new SoftwareRoles();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent) { }
 
   private initDatatable(): void {
@@ -76,7 +76,8 @@ export class SoftwareRolesComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getsoftwareMasterList();
     this.getsoftwareRolesMasterList();
     this.getLocationMaster();
@@ -96,9 +97,9 @@ export class SoftwareRolesComponent implements OnInit {
   getLocationMaster() {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -109,7 +110,7 @@ export class SoftwareRolesComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_SOFTWARE_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.softwareList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
                                     if(a.name > b.name) return 1;
                                     if(a.name < b.name) return -1;
                                     return 0;
@@ -117,14 +118,14 @@ export class SoftwareRolesComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareList = [];
     });
   }
   Getsoftwares()
   {
-    this.softwareList1 = this.softwareList.filter(x=>x.location == this.software.location);
+    this.softwareList1 = this.softwareList.filter((x:any)=>x.location == this.software.location);
   }
 
   getsoftName(id)
@@ -140,7 +141,7 @@ export class SoftwareRolesComponent implements OnInit {
     //this.softwareRolesList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_ROLES_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareRolesList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.softwareRolesList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
                                     if(a.name > b.name) return 1;
                                     if(a.name < b.name) return -1;
                                     return 0;
@@ -148,7 +149,7 @@ export class SoftwareRolesComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareRolesList = [];
     });
@@ -181,7 +182,7 @@ export class SoftwareRolesComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-   // if (!this.softwareList.some(s => s.name.toLowerCase() == this.software.role.toLowerCase() && s.id != this.software.id)) {
+   // if (!this.softwareList.some((s:any) => s.name.toLowerCase() == this.software.role.toLowerCase() && s.id != this.software.id)) {
       if (!this.isEdit) {
         this.auditType="Create";
         this.software.isActive = true;
@@ -209,7 +210,7 @@ export class SoftwareRolesComponent implements OnInit {
         else
           this.errMsgPop = data;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving software role data..';
       });
@@ -245,7 +246,7 @@ export class SoftwareRolesComponent implements OnInit {
             this.insertAuditLog(this.software,this.oldsoftware,this.software.id);
             this.getsoftwareMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting software role..';
         });
@@ -317,12 +318,12 @@ export class SoftwareRolesComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -331,7 +332,7 @@ export class SoftwareRolesComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }
@@ -366,14 +367,14 @@ export class SoftwareRolesComponent implements OnInit {
     setTimeout(() => this.initPOUPDatatable(), 0);
   }
  //excel upload methods
- isSubmitting: boolean;
- errorlist: string;
+ isSubmitting!: boolean;
+ errorlist: string
  uploadfiles(files: File) {
   // this.id='VM001';
   this.file = files[0];
 }
  formData: FormData = new FormData();
- file: File; successMsg: string = "";
+ file!: File; successMsg: string = "";
   upload(): any {
     let connection: any;
     this.isSubmitting = true;
@@ -387,7 +388,8 @@ export class SoftwareRolesComponent implements OnInit {
         if (data[0].type == 'E') {
           this.isLoading = false;
           this.errorlist = 'Error List';
-          data.forEach(element => {
+          data.forEach((element:any)=> {
+
             this.errorlist = this.errorlist + '\n' + element.message;
 
           });
@@ -400,9 +402,10 @@ export class SoftwareRolesComponent implements OnInit {
           let reqNoList: any[] = [];
           let reqnumber: string = '';
           if (data.length > 0) {
-            reqNoList = data.filter(x => x.id > 0);
+            reqNoList = data.filter((x:any)  => x.id > 0);
           }
-          reqNoList.forEach(element => {
+          reqNoList.forEach((element:any)=> {
+
             reqnumber = reqnumber + "\n" + element.requestNo;
           });
 
@@ -418,7 +421,7 @@ export class SoftwareRolesComponent implements OnInit {
         this.reset(); 
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsgPop = 'Error uploading file ..';
     });

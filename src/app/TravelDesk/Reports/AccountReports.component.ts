@@ -18,33 +18,33 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
 import { ExcelService } from '../../shared/excel-service';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { AccountReports } from './AccountReports.model';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { ExpenseUpdate } from '../ExpenseUpdate/ExpenseUpdate.model';
 export class actionItemModel {
-  eventDate: string;
-  division: string;
-  department: string;
-  gender: string;
-  hotelName: string;
-  typeOfGuest: string;
-  vendorName: string;
-  vendorCity: string;
-  others: string;
-  invoiceNo: number;
-  invoiceDate: string;
-  amount: number;
-  noOfPax: number;
-  checkInFavourOf: string;
-  remarks: string;
-  createdBy: number;
-  modifiedBy: number;
-  id: number;
-  name: string;
-  typeOfEvent: string;
-  supportings: string;
+  eventDate: string
+  division: string
+  department: string
+  gender: string
+  hotelName: string
+  typeOfGuest: string
+  vendorName: string
+  vendorCity: string
+  others: string
+  invoiceNo!: number;
+  invoiceDate: string
+  amount!: number;
+  noOfPax!: number;
+  checkInFavourOf: string
+  remarks: string
+  createdBy!: number;
+  modifiedBy!: number;
+  id!: number;
+  name: string
+  typeOfEvent: string
+  supportings: string
 }
 
 @Component({
@@ -54,11 +54,11 @@ export class actionItemModel {
 })
 export class AccountReportsComponent implements OnInit {
 
- @ViewChild(NgForm, { static: false }) accountReportForm: NgForm;
+ @ViewChild(NgForm, { static: false }) accountReportForm!: NgForm;
 
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-@ViewChild(NgForm, { static: false }) accsubForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
+@ViewChild(NgForm, { static: false }) accsubForm!: NgForm;
 
 
   accsubList: AccountReports[] = [];
@@ -72,32 +72,32 @@ export class AccountReportsComponent implements OnInit {
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
-  path: string;
+  path!: string
   filterPayGroup: any[] = [];
   filterInvoiceNo: number = null;
-  filterVendorName: string = null;
-  filterDepartment: string = null;
-  filterTypeOfGuest: string = null;
-  filtertypeOfEvent: string = null;
-  filterEmployeeNo: string;
+  filterVendorName: string = ' ';
+  filterDepartment: string = ' ';
+  filterTypeOfGuest: string = ' ';
+  filtertypeOfEvent: string = ' ';
+  filterEmployeeNo: string
   VendorMasterList: any;
   vendorListCon: any;
   filterInvoiceDate: Date;
   AccountSubmission: any;
   filterCreatedDate: Date;
   reset: any;
-  filterNoOfPax: string = null;
-  Remarks: string;
+  filterNoOfPax: string = ' ';
+  Remarks: string
   AccSubmittedReferenceNoId: number = null;
   advanceChequeNo: number = null;
   supportings: any;
-  remarks: string;
+  remarks: string
   departmentList: any[] = [];
-  filterEventDate: string;
-  accountStatus: number;
-  paymentStatus: number;
-  amount: number;
-  TotalAmount: number;
+  filterEventDate!: string
+  accountStatus!: number;
+  paymentStatus!: number;
+  amount!: number;
+  TotalAmount!: number;
   today = new Date();
   fromDate: any = new Date(
     this.today.getFullYear(),
@@ -106,46 +106,48 @@ export class AccountReportsComponent implements OnInit {
   );
   toDate: any = this.today;
   groupbyList = [];
-  filtergroupby: string = null;
+  filtergroupby: string = ' ';
   groupbyList1: any[] = [];
-  submitting: boolean;
-  isSubmitting: boolean;
-  exportList: any[];
+  submitting!: boolean;
+  isSubmitting!: boolean;
+  exportList!: any[];
   empId: any;
-  groupByList: any[];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  groupByList!: any[];
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   accexpItem: ExpenseUpdate = new ExpenseUpdate();
-  Name: string;
+  Name: string
   TypeOfGuest: any;
-  EmployeeNo: number;
-  EmployeeName: string;
-  PayGroup: string;
-  TypeOfEvent: string;
-  InvoiceNo: number;
-  NoOfPax: number;
-  Amount: number;
-  VendorCity: string;
-  Hotel: string;
-  Supportings: string;
-  vendorName: string;
+  EmployeeNo!: number;
+  EmployeeName: string
+  PayGroup: string
+  TypeOfEvent: string
+  InvoiceNo!: number;
+  NoOfPax!: number;
+  Amount!: number;
+  VendorCity: string
+  Hotel: string
+  Supportings: string
+  vendorName: string
   selectedVendor: any[] = [];
-  payGroup: string;
+  payGroup: string
   selectedPaygroup: any[] = [];
   eventDate: any;
   invoiceDate: any;
-  createdOn: string;
-  id: number;
+  createdOn: string
+  id!: number;
   CreatedBy: any;
-  Division: string;
-  empListCon: any[];
-  userList: any[];
+  Division: string
+  empListCon!: any[];
+  userList!: any[];
   filterEmployeeName: any;
   groupbyDivision: any[] = [];
   
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private excelService: ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private excelService: ExcelService) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
 
   private initDatatable(): void {
@@ -166,7 +168,8 @@ export class AccountReportsComponent implements OnInit {
   currentUser = {} as AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
       this.getTypeOfGuestList();
@@ -212,13 +215,13 @@ export class AccountReportsComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.long_Desc > b.long_Desc) return 1;
           if (a.long_Desc < b.long_Desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -228,13 +231,13 @@ export class AccountReportsComponent implements OnInit {
     this.errMsg = "";
     this.get("DepartmentMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -250,7 +253,7 @@ export class AccountReportsComponent implements OnInit {
       }
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -279,7 +282,7 @@ export class AccountReportsComponent implements OnInit {
         this.PurposeList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PurposeList = [];
     });
@@ -291,19 +294,19 @@ export class AccountReportsComponent implements OnInit {
     this.httpService.get(APIURLS.BR_GET_TDVENDOR_DETAILS_API).then((data: any) => {
       if (data.length > 0) {
         this.VendorMasterList = data;
-        this.vendorListCon = data.map((i) => {
+        this.vendorListCon = data.map((i:any) => {
           i.name = i.name; return i;
         });
         this.isLoading = false;
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.VendorMasterList = [];
     });
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -323,7 +326,8 @@ export class AccountReportsComponent implements OnInit {
     this.TotalAmount = 0;
     this.errMsgPop = "";
     this.isLoading = false;
-    this.groupbyDivision.forEach(element => {
+    this.groupbyDivision.forEach((element:any)=> {
+
       this.amount = this.amount + element.total;
     });
     this.TotalAmount = this.amount;
@@ -386,7 +390,7 @@ export class AccountReportsComponent implements OnInit {
     this.groupbyList = [];
     let filterModel: any = {}
     if (this.filterPayGroup != null) {
-      filterModel.division = this.filterPayGroup.map(x => x.long_Desc).join(",");
+      filterModel.division = this.filterPayGroup.map((x:any)  => x.long_Desc).join(",");
     }
 
     if (this.filterVendorName != null && this.filterVendorName != "") {
@@ -431,11 +435,11 @@ export class AccountReportsComponent implements OnInit {
             console.log(groupedByData);
             // console.log(Object.keys(groupedByData));
 
-            (Object.keys(groupedByData)).forEach(x => {
+            (Object.keys(groupedByData)).forEach((x:any)  => {
               this.groupbyList.push(
                 {
                   name: x,
-                  subtotal: (groupedByData[x].map(x => x.amount)).reduce(function (a, b) { return a + b; }, 0)
+                  subtotal: (groupedByData[x].map((x:any)  => x.amount)).reduce(function (a, b) { return a + b; }, 0)
                 }
               )
             })
@@ -444,7 +448,7 @@ export class AccountReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error fetching Details..';
       this.AccountSubmissionList = [];
     });
@@ -476,11 +480,11 @@ export class AccountReportsComponent implements OnInit {
         console.log(groupedByData);
         // console.log(Object.keys(groupedByData));
 
-        (Object.keys(groupedByData)).forEach(x => {
+        (Object.keys(groupedByData)).forEach((x:any)  => {
           this.groupbyList.push(
             {
               name: x,
-              subtotal: (groupedByData[x].map(x => x.amount)).reduce(function (a, b) { return a + b; }, 0)
+              subtotal: (groupedByData[x].map((x:any)  => x.amount)).reduce(function (a, b) { return a + b; }, 0)
             }
           )
         })
@@ -509,28 +513,28 @@ export class AccountReportsComponent implements OnInit {
           var now = new Date();
           var jsDate = this.setFormatedDateTime(now);
           var logo = this.image;
-          var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div>     
-  </div>
-  </body>  
-  </html>`,
-            {
-              tableAutoSize: true,
-              headerRows: 1,
-              dontBreakRows: true,
-              keepWithHeaderRows: true,
-            })
+  //         var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div>     
+  // </div>
+  // </body>  
+  // </html>`,
+  //           {
+  //             tableAutoSize: true,
+  //             headerRows: 1,
+  //             dontBreakRows: true,
+  //             keepWithHeaderRows: true,
+  //           })
           var docDefinition = {
             info: {
               title: 'Expense Report',
             },
 
             content: [
-              htmnikhitml,
+              //htmnikhitml,
             ],
             defaultStyle: {
               fontSize: 9,
@@ -551,7 +555,7 @@ export class AccountReportsComponent implements OnInit {
 
             // pageMargins: [40, 80, 40, 60],
             pageOrientation: 'landscape',
-            header: function (currentPage, pageCount) {
+            header: function (currentPage:any, pageCount:any) {
               return {
 
                 columns: [
@@ -630,7 +634,7 @@ export class AccountReportsComponent implements OnInit {
               }
             },
           };
-          pdfMake.createPdf(docDefinition).open();
+          //pdfMake.createPdf(docDefinition).open();
         }
       })
   }
@@ -701,7 +705,7 @@ export class AccountReportsComponent implements OnInit {
     this.EmployeeNo = data.employeeId;
     this.EmployeeName = data.employeeName;
     this.payGroup = data.division;
-    this.selectedPaygroup = this.payGroupList.filter(x => x.long_Desc == data.division);
+    this.selectedPaygroup = this.payGroupList.filter((x:any)  => x.long_Desc == data.division);
     this.TypeOfEvent = data.typeOfEvent;
     this.InvoiceNo = data.invoiceNo;
     this.eventDate = data.eventDate;
@@ -709,7 +713,7 @@ export class AccountReportsComponent implements OnInit {
     this.NoOfPax = data.noOfPax;
     this.Amount = data.amount;
     this.vendorName = data.vendorName;
-    this.selectedVendor = this.VendorMasterList.filter(x => x.name == data.vendorName);
+    this.selectedVendor = this.VendorMasterList.filter((x:any)  => x.name == data.vendorName);
     this.VendorCity = data.vendorCity;
     this.Hotel = data.hotelName;
     this.Remarks = data.remarks;
@@ -767,7 +771,7 @@ export class AccountReportsComponent implements OnInit {
         }
 
         this.reInitDatatable();
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error updating expense details ..';
       });
@@ -784,13 +788,13 @@ export class AccountReportsComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_EMPLOYEEMASTER_ACTIVE_API_GET_BY_ID, id).then((data: any) => {
       if (data.length > 0) {
         this.userList = data;
-        this.empListCon = data.map((i) => {
+        this.empListCon = data.map((i:any) => {
           i.name = i.firstName + '' + i.middleName + '' + i.lastName + '-' + i.employeeId; return i;
         });
 
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userList = [];
     });
@@ -804,14 +808,14 @@ export class AccountReportsComponent implements OnInit {
     }
     var data = this.empListCon;
     $('#filterEmployeeNo').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.employeeId.includes(mtrl));
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.employeeId.includes(mtrl));
+        response(result.map((i:any) => {
           i.label = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-'
           i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName, i.empNo = i.employeeId; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterEmployeeNo = ui.item.empNo;
         self.filterEmployeeName = ui.item.name;
 
@@ -826,13 +830,13 @@ export class AccountReportsComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_EMPLOYEEMASTER_ACTIVE_API_GET_BY_NAME, mtrl).then((data: any) => {
       if (data.length > 0) {
         this.userList = data;
-        this.empListCon = data.map((i) => {
+        this.empListCon = data.map((i:any) => {
           i.name = i.firstName + '' + i.middleName + '' + i.lastName + '-' + i.employeeId; return i;
         });
 
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userList = [];
     });
@@ -846,14 +850,14 @@ export class AccountReportsComponent implements OnInit {
     }
     var data = this.empListCon;
     $('#EmployeeName').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.firstName.includes(mtrl));
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.firstName.includes(mtrl));
+        response(result.map((i:any) => {
           i.label = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-'
           i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName, i.empNo = i.employeeId; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterEmployeeNo = ui.item.empNo;
         self.filterEmployeeName = ui.item.name;
 
@@ -864,7 +868,8 @@ export class AccountReportsComponent implements OnInit {
 
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

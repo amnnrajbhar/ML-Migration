@@ -21,7 +21,7 @@ export class ListComponent implements OnInit {
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
     private dataStore: DataStorageService, private excelService: ExcelService) { }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   transferId: any;
   isLoading: boolean = false;
   filterData: any = {};
@@ -30,7 +30,7 @@ export class ListComponent implements OnInit {
   payGroupList:any[]=[];
   employeeCategoryList:any[]=[];
   listFilter: any;
-  comments: string;
+  comments: string
   statusList = [
     { type: "Probationary", color: "info" },
     { type: "Confirmed", color: "success" },
@@ -49,7 +49,8 @@ export class ListComponent implements OnInit {
     { type: "Withdrawn", color:"danger" },    
   ]
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageNo = 1;
     this.filterModel.pageSize = 10;
     this.filterModel.status = "";
@@ -135,9 +136,9 @@ export class ListComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantlist = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantlist = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantlist = [];
     });
   }
@@ -147,9 +148,9 @@ export class ListComponent implements OnInit {
     if (this.filterModel.plantId) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.filterModel.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -164,9 +165,9 @@ export class ListComponent implements OnInit {
       this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
         .then((data: any) => {
           if (data.length > 0) {
-            this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+            this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.employeeCategoryList = [];
         });
   }
@@ -175,9 +176,9 @@ export class ListComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -186,9 +187,9 @@ export class ListComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -198,9 +199,9 @@ export class ListComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -209,9 +210,9 @@ export class ListComponent implements OnInit {
   getDepartments(){
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -222,9 +223,9 @@ export class ListComponent implements OnInit {
       this.filterData = data;
       console.log(data);
       for (var item of this.filterData.list) {
-        item.statusColor = this.statusList.find(x => x.type == item.status).color;
+        item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
         if (item.transferStatus != undefined && item.transferStatus !=''){
-          var status = this.transferStatusList.find(x => x.type == item.transferStatus);
+          var status = this.transferStatusList.find((x:any)  => x.type == item.transferStatus);
           if(status != null)
             item.transferStatusColor = status.color;
         }
@@ -232,7 +233,7 @@ export class ListComponent implements OnInit {
       // store the filter model
       this.dataStore.SetData("EmployeeList", this.filterModel);
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -250,16 +251,16 @@ export class ListComponent implements OnInit {
 
   onStateChange() {    
     this.filterModel.locationId="";
-    this.locationList = this.locationFullList.filter(x => x.stateId == this.filterModel.stateId);
+    this.locationList = this.locationFullList.filter((x:any)  => x.stateId == this.filterModel.stateId);
   }
 
   roleList: any[] = [];
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -271,7 +272,7 @@ export class ListComponent implements OnInit {
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No":index,          
@@ -309,7 +310,7 @@ export class ListComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Employee_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');   
@@ -325,7 +326,7 @@ export class ListComponent implements OnInit {
       d1.getFullYear();
   }
   
-  submitForApproval(id) {
+  submitForApproval(id:any) {
     if (confirm("Are you sure you want to submit this for approval?")) {
       var request: any = {};
       request.transferId = id;
@@ -340,13 +341,13 @@ export class ListComponent implements OnInit {
             toastr.error(data.message);
           } else
           toastr.error("Error occurred.");
-        }).catch(error => {
+        }).catch((error)=> {
           toastr.error(error);
         });
     }
   }
 
-  withdraw(id) {
+  withdraw(id:any) {
     this.transferId = id;
     this.comments = "";
   }
@@ -390,7 +391,7 @@ export class ListComponent implements OnInit {
           toastr.error(data.message);
         } else
         toastr.error("Error occurred.");
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
       });
     }

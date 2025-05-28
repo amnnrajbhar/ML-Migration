@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 // import { Lightbox } from 'ngx-lightbox';
 declare var jQuery: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
 import * as _ from "lodash";
 import { AuthData } from '../auth/auth.model';
 import { AppComponent } from '../app.component';
@@ -14,7 +14,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ExcelService } from '../shared/excel-service';
 declare var $: any;
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 //import { debug } from 'util';
 import { Visitor } from '../visitorappointment/visitor.model';
 import { AmcvisitDetails } from '../UpdateAMCDetails/AMCDetails.model';
@@ -26,16 +26,16 @@ import { AmcvisitDetails } from '../UpdateAMCDetails/AMCDetails.model';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   newVisitorsMonth: any;
   todayDate = new Date();
   today: Date = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), this.todayDate.getDate());
   chart1: any;
-  errMsg: string;
+  errMsg: string
   EmployeeList1: any;
   location: any;
-  usrid: number;
-  path: string;
+  usrid!: number;
+  path!: string
   employeeId: any;
   additionalVisitorItem: any[] = [[]];
   additionalVisitors: any[] = [[]]
@@ -57,8 +57,8 @@ export class DashboardComponent implements OnInit {
     fkVisitorPurpose: 0
   } as Visitor;
   // [x: string]: any;
-  public tableWidget;
-  public tableWidget1;
+  public tableWidget:any;
+ public tableWidget1:any;
   chart: any;
   visitorsList: any[] = [[]];
   totalnewvisits: number = 0;
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit {
   visitorsInside: any;
   myDate = new Date();
   todaysvisitorsList: any = [];
-  roleId: number;
+  roleId!: number;
   from_date: any;
   to_date: any;
   //today report filter
@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit {
   visitorsListAllCount = 0;
   private _albums = [];
   j = 1;
-  empData: AuthData;
+  empData!: AuthData;
   pendingCheckouts = 0;
   visitorsFilteredList1: any[] = [];
   visitorsFilteredList: any[] = [];
@@ -97,16 +97,16 @@ export class DashboardComponent implements OnInit {
     { id: 6, name: 'Sat' },
   ]
   otherVisitorsTotal = 0;
-  isLoading: boolean;
+  isLoading!: boolean;
   checkedInCount: any = 0;
   todaysVisitorCount: any = 0;
-  exportList: any[];
+  exportList!: any[];
   newVisitors: any[] = [];
   pendingbook = 0;
   canceledBookings = 0;
   directcheckedInCount = 0;
   totaltodayvisits: any = 0;
-  public chartPlugins = [ChartDataLabels];
+ // public chartPlugins = [ChartDataLabels];
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private excelService: ExcelService) {
     // for (let i = 1; i <= 8; i++) {
     //   this.j = (this.j%3==0)?this.j++:this.j%3;
@@ -149,7 +149,7 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  toggleDataSeries(e) {
+  toggleDataSeries(e :any) {
     if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
       e.dataSeries.visible = false;
     } else {
@@ -163,7 +163,8 @@ export class DashboardComponent implements OnInit {
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     // console.log('Access:'+chkaccess);
     if (chkaccess == true) {
-      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+      //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
       this.currentUser = authData;
       // console.log(authData);
       this.roleId = authData.roleId;
@@ -214,7 +215,7 @@ export class DashboardComponent implements OnInit {
         // console.log(this.EmployeeList1);
 
         this.location = this.EmployeeList1.baseLocation;
-        this.locationName = this.locationList.find(s => s.id == this.location).code;
+        this.locationName = this.locationList.find((s:any) => s.id == this.location).code;
 
         // this.location = this.EmployeeList1.baseLocation;
         // console.log(this.location);
@@ -224,14 +225,14 @@ export class DashboardComponent implements OnInit {
         // this.generateChart();
         // this.getLocwiseList();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList1 = [];
     });
 
   }
 
-  bookAppointment(ch) {
+  bookAppointment(ch:any) {
     localStorage.setItem('categoryVMS', ch);
     // console.log('navigating from welcome'+ localStorage.getItem('categoryVMS'));
     this.router.navigateByUrl("/visitorentry");
@@ -294,7 +295,7 @@ export class DashboardComponent implements OnInit {
   //     }
   //     this.reInitDatatable();
   //   }
-  // }).catch(error => {
+  // }).catch((error)=> {
   // this.isLoading = false;
   //   this.visitorsFilteredList = [];
   //   this.visitorsFilteredList1 = [];
@@ -302,7 +303,7 @@ export class DashboardComponent implements OnInit {
 
   // }
 
-  getFormatedDate(d) {
+  getFormatedDate(d:any) {
     let fd = new Date(d);
     let formateddate = fd.getFullYear() + "-" + ("00" + (fd.getMonth() + 1)).slice(-2) + "-" +
       ("00" + fd.getDate()).slice(-2);
@@ -326,8 +327,8 @@ export class DashboardComponent implements OnInit {
     this.visitorsFilteredList1.splice(0);
     // debugger;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
       this.from_date = new Date(td.getFullYear(), td.getMonth(), 1);
@@ -364,7 +365,7 @@ export class DashboardComponent implements OnInit {
       // this.httpService.get(APIURLS.BR_MASTER_VISITOR_ALL_API ).then((data: any) => {
       if (data.length > 0) {
         this.visitorsFilteredList1 = data;
-        this.visitorsFilteredList = this.visitorsFilteredList1.filter(s => s.numberOfPerson > 0);
+        this.visitorsFilteredList = this.visitorsFilteredList1.filter((s:any) => s.numberOfPerson > 0);
       }
       else {
         swal({
@@ -384,7 +385,7 @@ export class DashboardComponent implements OnInit {
       // console.log(this.visitorsFilteredList.length);
       this.reInitDatatable();
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.isFilterReportLoading = false;
       // this.todayVisitorsFilteredList = [];
@@ -433,13 +434,13 @@ export class DashboardComponent implements OnInit {
   //     }
   //     setTimeout(() => this.initVisitorDatatable(), 0)
   // }
-  addDays(date, daysToAdd) {
+  addDays(date:any, daysToAdd:any) {
     var _24HoursInMilliseconds = 86400000;
     return new Date(date.getTime() + daysToAdd * _24HoursInMilliseconds);
   };
 
-  getLocationName(id) {
-    let temp = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let temp = this.locationList.find((s:any) => s.id == id);
     return temp ? temp.name : '';
   }
 
@@ -453,7 +454,7 @@ export class DashboardComponent implements OnInit {
       }
       this.getVisitorTypeList();
 
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.locationList = [];
     });
@@ -470,8 +471,8 @@ export class DashboardComponent implements OnInit {
 
     let td = new Date();
     let StartMnDate, EndMnDate;
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     // formatedFROMdate = td.getFullYear() + "-" +("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
     StartMnDate = this.getFormatedDate(threemonthAgo);
     // console.log(StartMnDate);
@@ -484,13 +485,13 @@ export class DashboardComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_MASTER_VISITOR_BYPARAM_API, searchStr).then((data: any) => {
       if (data.length > 0) {
         this.visitorsList1 = data;
-        this.visitorsList = this.visitorsList1.filter(s => s.numberOfPerson > 0);
+        this.visitorsList = this.visitorsList1.filter((s:any) => s.numberOfPerson > 0);
         //console.log(this.visitorsList);
       }
       // debugger;
       this.totalVisits();
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.visitorsList = [];
     });
@@ -498,10 +499,10 @@ export class DashboardComponent implements OnInit {
     // this.httpService.getByParam(APIURLS.BR_MASTER_VISITOR_BYPARAM_API, searchStr).then((data: any) => {
     //   if (data.length > 0) {
     //     let visitorsList1 = data;
-    //     this.visitorsListAllCount = visitorsList1.filter(s => s.numberOfPerson > 0).length;
+    //     this.visitorsListAllCount = visitorsList1.filter((s:any) => s.numberOfPerson > 0).length;
 
     //   }
-    // }).catch(error => {
+    // }).catch((error)=> {
     //   this.isLoading = false;
     // visitorsList = [];
     // });
@@ -532,7 +533,7 @@ export class DashboardComponent implements OnInit {
       for (let i = 0; i <= 6; i++) {
         let dateCheck = this.getFormatedDate(temp);
 
-        let abc: any[] = this.visitorsList.filter(e => (new Date(e.date).getFullYear() + "-" + ("00" + (new Date(e.date).getMonth() + 1)).slice(-2) + "-" +
+        let abc: any[] = this.visitorsList.filter((e:any) => (new Date(e.date).getFullYear() + "-" + ("00" + (new Date(e.date).getMonth() + 1)).slice(-2) + "-" +
           ("00" + new Date(e.date).getDate()).slice(-2)) == dateCheck);
         // console.log(abc?abc.length:0);
         this.datas.push(abc ? abc.length : 0);
@@ -553,9 +554,9 @@ export class DashboardComponent implements OnInit {
     if (this.visitorsList1.length > 0) {
       for (let i = 0; i <= 6; i++) {
         let dateCheck = this.getFormatedDate(temp);
-        let abc: any[] = this.visitorsList1.filter(e => this.getFormatedDate(e.date) == dateCheck);
-        // console.log(abc.filter(s => s.numberOfPerson <= 0));
-        this.misseddatas.push(abc ? abc.filter(s => s.numberOfPerson <= 0).length : 0);
+        let abc: any[] = this.visitorsList1.filter((e:any) => this.getFormatedDate(e.date) == dateCheck);
+        // console.log(abc.filter((s:any) => s.numberOfPerson <= 0));
+        this.misseddatas.push(abc ? abc.filter((s:any) => s.numberOfPerson <= 0).length : 0);
         temp.setDate(temp.getDate() - 1);
       }
       this.misseddatas.reverse();
@@ -563,7 +564,7 @@ export class DashboardComponent implements OnInit {
       this.misseddatas = [0, 0, 0, 0, 0, 0, 0];
     }
     this.totalvisits = this.visitorsList.length;
-    this.otherVisitorsTotal = this.visitorsList.filter(s => s.numberOfPerson > 0 && s.fkEmployeeName == '').length;
+    this.otherVisitorsTotal = this.visitorsList.filter((s:any) => s.numberOfPerson > 0 && s.fkEmployeeName == '').length;
 
     if (this.visitorsList1.length > 0) {
       for (let e of this.visitorsList1) {
@@ -576,81 +577,81 @@ export class DashboardComponent implements OnInit {
       }
     }
 
-    this.totaltodayvisits = this.todaysvisitorsList.filter(e => e.fromTime != null).length;
-    this.pendingbook = this.todaysvisitorsList.filter(e => e.isPreShedualled == true && e.isCancelled == false).length;
-    this.canceledBookings = this.todaysvisitorsList.filter(e => e.toTime != null).length;
-    this.pendingCheckouts = this.visitorsList.filter(e => e.fromTime != null && e.toTime == null).length;
-    this.checkedInCount = this.visitorsList.filter(e => e.fromTime != null && e.isPreShedualled == true).length;
-    this.directcheckedInCount = this.visitorsList.filter(e => e.fromTime != null && e.isPreShedualled == false).length;
+    this.totaltodayvisits = this.todaysvisitorsList.filter((e:any) => e.fromTime != null).length;
+    this.pendingbook = this.todaysvisitorsList.filter((e:any) => e.isPreShedualled == true && e.isCancelled == false).length;
+    this.canceledBookings = this.todaysvisitorsList.filter((e:any) => e.toTime != null).length;
+    this.pendingCheckouts = this.visitorsList.filter((e:any) => e.fromTime != null && e.toTime == null).length;
+    this.checkedInCount = this.visitorsList.filter((e:any) => e.fromTime != null && e.isPreShedualled == true).length;
+    this.directcheckedInCount = this.visitorsList.filter((e:any) => e.fromTime != null && e.isPreShedualled == false).length;
 
 
     // console.log('checkedincount' + this.checkedInCount);
     // console.log('totalcount' + this.totaltodayvisits);
 
 
-    this.chart = new Chart('linechart', {
+    // this.chart = new Chart('linechart', {
 
-      type: 'bar',
-      data: {
-        // labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        labels: this.label,
-        datasets: [{
-          label: '# of Visitors last 7 days',
-          // data: [12, 119, 103, 105, 92, 23],
-          data: this.datas,
-          backgroundColor: [
-            '#4e73df',
-            '#4e73df',
-            '#4e73df',
-            '#4e73df',
-            '#4e73df',
-            '#4e73df'
-          ],
-          borderColor: [
-            '#4e73df',
-            '#4e73df',
-            '#4e73df',
-            '#4e73df',
-            '#4e73df',
-            '#4e73df'
-          ],
+    //   type: 'bar',
+    //   data: {
+    //     // labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    //     labels: this.label,
+    //     datasets: [{
+    //       label: '# of Visitors last 7 days',
+    //       // data: [12, 119, 103, 105, 92, 23],
+    //       data: this.datas,
+    //       backgroundColor: [
+    //         '#4e73df',
+    //         '#4e73df',
+    //         '#4e73df',
+    //         '#4e73df',
+    //         '#4e73df',
+    //         '#4e73df'
+    //       ],
+    //       borderColor: [
+    //         '#4e73df',
+    //         '#4e73df',
+    //         '#4e73df',
+    //         '#4e73df',
+    //         '#4e73df',
+    //         '#4e73df'
+    //       ],
 
-          borderWidth: 1
-        }]
-      },
-      options: {
-        title: {
-          display: true,
-          text: '# of Visitors last 7 days'
-        },
-        legend: {
-          display: false
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              callback: function (value) { if (Number.isInteger(value)) { return value; } }
-              //stepSize: 1,
-            }
-          }]
-        },
-        plugins: {
-          datalabels: {
-            color: 'white',
-            font: {
-              size: 12,
-              weight: 600
-            },
-            offset: 4,
-            padding: 0,
-            // formatter: function(value) {
-            //   return value;
-            // }
-          }
-        }
-      }
-    });
+    //       borderWidth: 1
+    //     }]
+    //   },
+    //   options: {
+    //     title: {
+    //       display: true,
+    //       text: '# of Visitors last 7 days'
+    //     },
+    //     legend: {
+    //       display: false
+    //     },
+    //     scales: {
+    //       yAxes: [{
+    //         ticks: {
+    //           beginAtZero: true,
+    //           callback: function (value:any) { if (Number.isInteger(value)) { return value; } }
+    //           //stepSize: 1,
+    //         }
+    //       }]
+    //     },
+    //     plugins: {
+    //       datalabels: {
+    //         color: 'white',
+    //         font: {
+    //           size: 12,
+    //           weight: 600
+    //         },
+    //         offset: 4,
+    //         padding: 0,
+    //         // formatter: function(value) {
+    //         //   return value;
+    //         // }
+    //       }
+    //     }
+    //   }
+    // });
 
     // this.chart = new Chart(document.getElementById("myPieChart1"), {
     //   type: 'doughnut',
@@ -672,56 +673,56 @@ export class DashboardComponent implements OnInit {
     //   }
     // });
 
-    this.chart = new Chart(document.getElementById("mixed-chart"), {
-      type: 'bar',
-      data: {
-        labels: this.label,
-        datasets: [{
-          label: "All Visitors",
-          type: "bar",
-          borderColor: "#8e5ea2",
-          data: this.datas,
-          fill: false
-        }, {
-          label: "Missed App",
-          type: "line",
-          borderColor: "#3e95cd",
-          data: this.misseddatas,
-          fill: false
-        },
-        ]
-      },
-      options: {
-        title: {
-          display: true,
-          text: 'Missed appointments'
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              callback: function (value) { if (Number.isInteger(value)) { return value; } }
-              //stepSize: 1
-            }
-          }]
-        },
-        legend: { display: false },
-        plugins: {
-          datalabels: {
-            color: 'black',
-            font: {
-              size: 12,
-              weight: 600
-            },
-            offset: 4,
-            padding: 0,
-            // formatter: function(value) {
-            //   return value;
-            // }
-          }
-        }
-      }
-    });
+    // this.chart = new Chart(document.getElementById("mixed-chart"), {
+    //   type: 'bar',
+    //   data: {
+    //     labels: this.label,
+    //     datasets: [{
+    //       label: "All Visitors",
+    //       type: "bar",
+    //       borderColor: "#8e5ea2",
+    //       data: this.datas,
+    //       fill: false
+    //     }, {
+    //       label: "Missed App",
+    //       type: "line",
+    //       borderColor: "#3e95cd",
+    //       data: this.misseddatas,
+    //       fill: false
+    //     },
+    //     ]
+    //   },
+    //   options: {
+    //     title: {
+    //       display: true,
+    //       text: 'Missed appointments'
+    //     },
+    //     scales: {
+    //       yAxes: [{
+    //         ticks: {
+    //           beginAtZero: true,
+    //           callback: function (value:any) { if (Number.isInteger(value)) { return value; } }
+    //           //stepSize: 1
+    //         }
+    //       }]
+    //     },
+    //     legend: { display: false },
+    //     plugins: {
+    //       datalabels: {
+    //         color: 'black',
+    //         font: {
+    //           size: 12,
+    //           weight: 600
+    //         },
+    //         offset: 4,
+    //         padding: 0,
+    //         // formatter: function(value) {
+    //         //   return value;
+    //         // }
+    //       }
+    //     }
+    //   }
+    // });
 
     let pieData = [];
     let labels1 = [];
@@ -740,47 +741,47 @@ export class DashboardComponent implements OnInit {
     }
     let displayFlag = (this.checkedInCount != 0 || this.directcheckedInCount != 0) ? true : false;
     // let displayFlag = true;
-    this.chart = new Chart(document.getElementById("myPieChart"), {
-      plugin:this.chartPlugins,
-      type: 'doughnut',
-      data: {
-        labels: labels1,
-        datasets: [
-          {
-            label: lab,
-            backgroundColor: bckColor,
-            data: pieData
-          }
-        ]
-      },
-      options: {
-        maintainAspectRatio: true,
-        responsive: true,
-        legend: {
-          position: 'right',
-          labels: {
-            padding: 20,
-            boxWidth: 10
-          },
-          onClick: (e) => e.stopPropagation()
-        },
-        plugins: {
-          datalabels: {
-            color: 'white',
-            font: {
-              size: 15,
-              weight: 600
-            },
-            offset: 4,
-            padding: 0,
-          }
-        },
-        title: {
-          display: true,
-          text: 'Monthly Visitors Status'
-        }
-      }
-    });
+    // this.chart = new Chart(document.getElementById("myPieChart"), {
+    //   plugin:this.chartPlugins,
+    //   type: 'doughnut',
+    //   data: {
+    //     labels: labels1,
+    //     datasets: [
+    //       {
+    //         label: lab,
+    //         backgroundColor: bckColor,
+    //         data: pieData
+    //       }
+    //     ]
+    //   },
+    //   options: {
+    //     maintainAspectRatio: true,
+    //     responsive: true,
+    //     legend: {
+    //       position: 'right',
+    //       labels: {
+    //         padding: 20,
+    //         boxWidth: 10
+    //       },
+    //       onClick: (e) => e.stopPropagation()
+    //     },
+    //     plugins: {
+    //       datalabels: {
+    //         color: 'white',
+    //         font: {
+    //           size: 15,
+    //           weight: 600
+    //         },
+    //         offset: 4,
+    //         padding: 0,
+    //       }
+    //     },
+    //     title: {
+    //       display: true,
+    //       text: 'Monthly Visitors Status'
+    //     }
+    //   }
+    // });
     this.filterReport();
     this.reInitVisiorDatatable();
   }
@@ -823,11 +824,11 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  additionalVisitorsDetails(id) {
+  additionalVisitorsDetails(id:any) {
     // console.log(id);
     this.avDetailsFlag = false;
     this.additionalVisitorItem = [];
-    this.additionalVisitorItem = this.additionalVisitors.filter(s => s.fkId == id);
+    this.additionalVisitorItem = this.additionalVisitors.filter((s:any) => s.fkId == id);
     this.httpService.getById(APIURLS.BR_MASTER_ADDITIONAL_VISITOR_ANY_API, id).then((data: any) => {
       // this.isLoading = false;
       // console.log(data);
@@ -837,7 +838,7 @@ export class DashboardComponent implements OnInit {
         // this.employeeList = data;
         // console.log(this.additionalVisitors);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.errMsgPop = 'error retrieving additional persons details.';
       this.additionalVisitors = [];
@@ -858,30 +859,30 @@ export class DashboardComponent implements OnInit {
         // this.employeeList = data;
         // console.log(this.additionalVisitors);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.errMsgPop = 'error retrieving additional persons details.';
       this.additionalVisitors = [];
     });
   }
-  getAdditionalCount(id) {
+  getAdditionalCount(id:any) {
     // debugger;
-    let temp = this.additionalVisitors.filter(s => s.fkId == id);
+    let temp = this.additionalVisitors.filter((s:any) => s.fkId == id);
     // if(temp)// console.log(id+'-'+temp.length);
     return temp ? temp.length : 0;
   }
 
-  getVisitorCount(id) {
-    return this.visitorsList1.find(s => s.fkEmployeeId == id) ? this.visitorsList1.filter(s => s.fkEmployeeId == id).length : 0;
+  getVisitorCount(id:any) {
+    return this.visitorsList1.find((s:any) => s.fkEmployeeId == id) ? this.visitorsList1.filter((s:any) => s.fkEmployeeId == id).length : 0;
   }
 
-  getVisitorType(id) {
-    let t = this.visitorTypeList.find(s => s.id == id);
+  getVisitorType(id:any) {
+    let t = this.visitorTypeList.find((s:any) => s.id == id);
     return t ? t.visitor_Type : '';
   }
 
-  getPurpose(id) {
-    let t = this.purposeList.find(s => s.id == id);
+  getPurpose(id:any) {
+    let t = this.purposeList.find((s:any) => s.id == id);
     return t ? t.purpose : '';
   }
 
@@ -896,7 +897,7 @@ export class DashboardComponent implements OnInit {
       }
       this.getEmployee();
 
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.purposeList = [];
     });
@@ -912,13 +913,14 @@ export class DashboardComponent implements OnInit {
         // console.log(this.visitorTypeList);
       }
       this.getPurposeList();
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.visitorTypeList = [];
     });
   }
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -928,7 +930,7 @@ getHeader(): { headers: HttpHeaders } {
 
   return { headers };
 }
-  getTimeFormat(time) {
+  getTimeFormat(time:any) {
     return moment('1970-01-01 '+time);
    }
 
@@ -943,7 +945,7 @@ getHeader(): { headers: HttpHeaders } {
    getAMCDetailsById(id: number) {
      this.isLoading = true;
  
-     this.httpService.getById(APIURLS.GET_AMC_VISIT_DETAILS_BY_ID, id).then((data) => {
+     this.httpService.getById(APIURLS.GET_AMC_VISIT_DETAILS_BY_ID, id).then((data:any) => {
        if (data.length > 0) {
          this.printAMCItems = data;
        }
@@ -1030,7 +1032,7 @@ getHeader(): { headers: HttpHeaders } {
          this.reason = null;
          // this.router.navigateByUrl('welcome-page');
        }
-     }).catch(error => {
+     }).catch((error)=> {
        this.isLoadingPop = false;
        this.isLoading = false;
        this.errMsgPop = 'Error completing entry..';

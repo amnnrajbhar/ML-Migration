@@ -18,23 +18,23 @@ declare var jQuery: any;
 })
 export class TdTypeOfEventMasterComponent implements OnInit {
 
-  @ViewChild(NgForm, { static: false }) TdTypeOfEventMasterForm: NgForm;
+  @ViewChild(NgForm, { static: false }) TdTypeOfEventMasterForm!: NgForm;
 
   public tableWidget: any;
-  id: number;
+  id!: number;
   TdTypeOfEventMasterList: TdTypeOfEventMaster[] = [];
   TdTypeOfEventMasterItem: TdTypeOfEventMaster = new TdTypeOfEventMaster();
   isLoading: boolean = false;
-  entityTabHeader: string;
+  entityTabHeader: string
   errMsg: string = "";
   isLoadingPop: boolean = false;
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
   path: string = '';
-    masterName: string;
+    masterName: string
     reinitPOUPDatatable: any;
-    isActive: boolean;
+    isActive!: boolean;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
@@ -57,7 +57,8 @@ export class TdTypeOfEventMasterComponent implements OnInit {
   currentUser = {} as AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
       this.getTdTypeOfEventMasterList();
@@ -96,7 +97,7 @@ export class TdTypeOfEventMasterComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.TdTypeOfEventMasterList = [];
     });
@@ -105,7 +106,7 @@ export class TdTypeOfEventMasterComponent implements OnInit {
   onSaveTdTypeOfEventMaster() {
     this.errMsg = "";
     let connection: any;
-    if (!this.TdTypeOfEventMasterList.some(s => s.typeOfEvent.trim().toLowerCase() === this.TdTypeOfEventMasterItem.typeOfEvent.trim().toLowerCase() && s.id != this.TdTypeOfEventMasterItem.id)) {
+    if (!this.TdTypeOfEventMasterList.some((s:any) => s.typeOfEvent.trim().toLowerCase() === this.TdTypeOfEventMasterItem.typeOfEvent.trim().toLowerCase() && s.id != this.TdTypeOfEventMasterItem.id)) {
       if (!this.isEdit)
        {
            if (this.TdTypeOfEventMasterItem.isActive == true)
@@ -136,7 +137,7 @@ export class TdTypeOfEventMasterComponent implements OnInit {
           jQuery("#saveModal").modal('show');
           this.getTdTypeOfEventMasterList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving type of event data..';
       });

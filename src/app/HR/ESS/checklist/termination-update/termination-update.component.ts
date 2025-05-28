@@ -22,7 +22,7 @@ declare var toastr: any;
   styleUrls: ['./termination-update.component.css']
 })
 export class TerminationUpdateComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   terminationId: any;
   employeeId: any;
   urlPath: string = '';
@@ -37,9 +37,9 @@ export class TerminationUpdateComponent implements OnInit {
   DateLastWorkingDay :string ;
   TerminationDate :string;
   objectType: string = "Termination";
-  comments: string;
-  action: string;
-  noticePeriod: string;
+  comments: string
+  action: string
+  noticePeriod: string
   checklistItems: any[] = [];
   checklistItemId: number = 0;
   statusList = [
@@ -56,14 +56,15 @@ export class TerminationUpdateComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.terminationId = this.route.snapshot.paramMap.get('id')!;  
       this.GetTerminationDetailsById(this.terminationId);    
       this.getChecklistData();
     }
   }
 
-  GetTerminationDetailsById(id) {
+  GetTerminationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible=true;
    
@@ -76,7 +77,7 @@ export class TerminationUpdateComponent implements OnInit {
          this.TerminationDate = this.getDateFormate(this.terminationDetails.terminationDate);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg= error;
     });
   }
@@ -97,7 +98,7 @@ export class TerminationUpdateComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.terminationDetails = {};
     });
@@ -141,7 +142,7 @@ export class TerminationUpdateComponent implements OnInit {
         } else
           toastr.error("Error occurred.");
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });

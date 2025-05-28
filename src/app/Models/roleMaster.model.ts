@@ -1,8 +1,8 @@
 export class RoleMaster {
-    id: number;
+    id!: number;
     fkSuperRoleId: number | null;
-    role: string;
-    description: string;
+    role: string
+    description: string
     createdBy: number | null;
     createdDate: string | null;
     modifiedBy: number | null;

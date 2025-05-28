@@ -1,4 +1,4 @@
 export class RFCSCInputs {
-    mblnr: string;
+    mblnr: string
     werks: string
 }

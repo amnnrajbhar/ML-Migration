@@ -24,7 +24,7 @@ export class ExitInterviewLinkComponent implements OnInit {
   
   resignationId :any;
   editAllowed:boolean=true;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading = false;
   questions: any[] = [];
@@ -44,7 +44,8 @@ export class ExitInterviewLinkComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       if (this.resignationId==undefined)
       {
         this.resignationId = this.route.snapshot.paramMap.get('id')!; 
@@ -59,12 +60,12 @@ export class ExitInterviewLinkComponent implements OnInit {
     return this.service.getData(APIURLS.RESIGNATION_GET_EXIT_INTERVIEW_ANSWERS_LINK+"/"+ this.resignationId+"/"+this.guid).then((data: any) => {
       if (data.length > 0) {
         this.questions = data;
-        this.isAnswered = (data.filter(x=>x.answer != "" && x.answer != null && x.answer != undefined).length > 0);
+        this.isAnswered = (data.filter((x:any)=>x.answer != "" && x.answer != null && x.answer != undefined).length > 0);
         this.editAllowed = !this.isAnswered;
         this.isDeclared = this.isAnswered;
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -97,7 +98,7 @@ export class ExitInterviewLinkComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while submitting details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while submitting details. Error:' + error);
       });

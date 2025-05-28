@@ -25,10 +25,10 @@ import { LeaveDetails } from './ApplyLeave.model';
 
 declare var ActiveXObject: (type: string) => void;
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe, DecimalPipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 //import { filter } from 'rxjs-compat/operator/filter';
 //import { calcBindingFlags } from '@angular/core/src/view/util';
 //import { C } from '@angular/core/src/render3';
@@ -40,11 +40,11 @@ import htmlToPdfmake from 'html-to-pdfmake';
   styleUrls: ['./ApplyLeave.component.css']
 })
 export class ApplyLeaveComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -60,9 +60,9 @@ export class ApplyLeaveComponent implements OnInit {
   locListCon1 = [];
   genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -71,9 +71,9 @@ export class ApplyLeaveComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   userMasterItem: any = {};
@@ -84,18 +84,18 @@ export class ApplyLeaveComponent implements OnInit {
   lvType: number = null;
   reqId: number = null;
   reqNo: number = null;
-  StartDate: string = null;
-  EndDate: string = null;
+  StartDate: string = ' ';
+  EndDate: string = ' ';
   Duration1: any;
   Duration2: any;
   NoOfDays: any;
-  LvReason: string = null;
+  LvReason: string = ' ';
   personResponsible: any;
   personName: any;
   DetailedReason: string = '';
   LeaveRequestList: any[] = [];
   ApplyFor: any = null;
-  userId: string = null;
+  userId: string = ' ';
   appliedDate: any;
   fromDate: any;
   startDur: any;
@@ -111,7 +111,9 @@ export class ApplyLeaveComponent implements OnInit {
   documents: any[] = [];
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -151,7 +153,7 @@ export class ApplyLeaveComponent implements OnInit {
   };
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -160,13 +162,13 @@ export class ApplyLeaveComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -176,8 +178,8 @@ export class ApplyLeaveComponent implements OnInit {
 
   }
 
-  getLocationName(id) {
-    let temp = this.locationList.find(x => x.fkPlantId == id);
+  getLocationName(id:any) {
+    let temp = this.locationList.find((x:any)  => x.fkPlantId == id);
     return temp ? temp.code + ' - ' + temp.name : '';
   }
 
@@ -192,10 +194,11 @@ export class ApplyLeaveComponent implements OnInit {
 
   BloodGroupList: any[] = [];
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
@@ -223,7 +226,7 @@ export class ApplyLeaveComponent implements OnInit {
   totAvbal: number = 0;
   lvbalaneList: any[] = [];
   lvbalaneList1: any[] = [];
-  getUsersList(id) {
+  getUsersList(id:any) {
     this.errMsg = "";
     this.lvbalaneList = [];
     this.lvbalaneList1 = [];
@@ -231,17 +234,18 @@ export class ApplyLeaveComponent implements OnInit {
     this.httpService.LAgetByParam(APIURLS.GET_LEAVE_DATA_BY_EMPLOYEE, srcstr).then((data: any) => {
       if (data.length > 0) {
         this.lvbalaneList1 = [];
-        this.lvbalaneList = data.sort((a, b) => {
+        this.lvbalaneList = data.sort((a:any, b:any) => {
           if (a.lvTypeid > b.lvTypeid) return 1;
           if (a.lvTypeid < b.lvTypeid) return -1;
           return 0;
         });
-        //    this.lvbalaneList =this.lvbalaneList.filter(x=>x.lvClbal >0);
+        //    this.lvbalaneList =this.lvbalaneList.filter((x:any)=>x.lvClbal >0);
         this.totOpbal = 0;
         this.totUsbal = 0;
         this.totClbal = 0;
         this.totAvbal = 0;
-        this.lvbalaneList.forEach(element => {
+        this.lvbalaneList.forEach((element:any)=> {
+
           this.totOpbal = this.totOpbal + element.lvOpbal;
           this.totUsbal = this.totUsbal + element.lvAvailed;
           this.totClbal = this.totClbal + element.lvClbal;
@@ -269,7 +273,7 @@ export class ApplyLeaveComponent implements OnInit {
       //   this.lvbalanelist1.push(lvtype);
       // }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.lvbalaneList = [];
       this.lvbalaneList1 = [];
@@ -288,25 +292,25 @@ export class ApplyLeaveComponent implements OnInit {
     this.httpService.LApost(APIURLS.GET_HOLIDAYS_LIST_BASED_ON_EMPLOYEES, filterModel).then((data: any) => {
       if (data.length > 0) {
         this.holidaysList = data;
-        this.holidaysList = this.holidaysList.sort((a, b) => {
+        this.holidaysList = this.holidaysList.sort((a:any, b:any) => {
           if (a.date > b.date) return 1;
           if (a.date < b.date) return -1;
           return 0;
 
         });
-        let temp = this.holidaysList.find(x => new Date(x.date) > new Date());
+        let temp = this.holidaysList.find((x:any)  => new Date(x.date) > new Date());
         this.Holiday = temp ? temp.holidayName : 'No Holidays.'
         this.HolidayDate = temp ? temp.date : null;
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.holidaysList = [];
     });
   }
 
   ApproversList: any[] = [];
-  getApproversList(id) {
+  getApproversList(id:any) {
     if (this.ApplyFor == "Others" && (this.userId == null || this.userId == '')) {
       toastr.error("Please enter Employee no...!");
       return;
@@ -322,7 +326,7 @@ export class ApplyLeaveComponent implements OnInit {
           this.ApproversList = data;
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -331,7 +335,7 @@ export class ApplyLeaveComponent implements OnInit {
   totNoDays: number = 0;
   totCobal: number = 0;
   CompOffAvailList: any[] = [];
-  getAvailCompOffList(id) {
+  getAvailCompOffList(id:any) {
     this.errMsg = "";
     let srchstr: any = {};
     if (this.ApplyFor == "Others") {
@@ -357,13 +361,14 @@ export class ApplyLeaveComponent implements OnInit {
           this.CompOffAvailList = data;
           this.totNoDays = 0;
           this.totCobal = 0;
-          this.CompOffAvailList.forEach(element => {
+          this.CompOffAvailList.forEach((element:any)=> {
+
             this.totNoDays = this.totNoDays + element.numberOfDays;
             this.totCobal = this.totCobal + element.compOffBalance;
           });
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.CompOffAvailList = [];
     });
@@ -403,14 +408,14 @@ export class ApplyLeaveComponent implements OnInit {
         this.lvTypeList = data;
         //this.getUsersList(this.employeeId);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.lvTypeList = [];
     });
   }
 
-  getType(id) {
-    let temp = this.lvTypeList.find(x => x.lvTypeid == id);
+  getType(id:any) {
+    let temp = this.lvTypeList.find((x:any)  => x.lvTypeid == id);
     return temp ? temp.lvType : '';
   }
 
@@ -419,23 +424,23 @@ export class ApplyLeaveComponent implements OnInit {
     this.errMsg = "";
     this.get("RoleMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.Rolelist = data.filter(x => x.isActive);
+        this.Rolelist = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Rolelist = [];
     });
   }
 
-  getRole(id) {
-    let temp = this.Rolelist.find(x => x.id == id);
+  getRole(id:any) {
+    let temp = this.Rolelist.find((x:any)  => x.id == id);
     return temp ? temp.role_Stxt : '';
   }
 
 
   fileToUpload: File | null = null;
   File: File | null = null;
-  name: string;
+  name: string
   files: File[] = []
   handleFileInput(files: FileList) {
 
@@ -488,7 +493,7 @@ export class ApplyLeaveComponent implements OnInit {
     }
   }
 
-  ReadAsBase64(file): Promise<any> {
+  ReadAsBase64(file:any): Promise<any> {
     const reader = new FileReader();
     const fileValue = new Promise((resolve, reject) => {
       reader.addEventListener('load', () => {
@@ -508,7 +513,7 @@ export class ApplyLeaveComponent implements OnInit {
     return fileValue;
   }
 
-  id: string;
+  id: string
   formData = new FormData();
   fileslist1: any[] = [];
   errMsg1: string = '';
@@ -529,7 +534,7 @@ export class ApplyLeaveComponent implements OnInit {
       this.isLoading = false;
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
   }
@@ -542,9 +547,9 @@ export class ApplyLeaveComponent implements OnInit {
     this.ReasonList = [];
     this.httpService.LAgetByParam(APIURLS.BR_GET_LEAVE_REASONS, type).then((data: any) => {
       if (data.length > 0) {
-        this.ReasonList = data.filter(x => x.isActive);
+        this.ReasonList = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReasonList = [];
     });
@@ -552,8 +557,8 @@ export class ApplyLeaveComponent implements OnInit {
 
   checklvbalance(type) {
     let leaveType: any = {};
-    let temp = this.lvbalaneList.find(x => x.lvTypeid == type);
-    let temp1 = this.lvTypeList.find(x => x.lvTypeid == type);
+    let temp = this.lvbalaneList.find((x:any)  => x.lvTypeid == type);
+    let temp1 = this.lvTypeList.find((x:any)  => x.lvTypeid == type);
     if (temp1.lvTypeid == 1) {
       leaveType = 'Casual';
     }
@@ -573,7 +578,7 @@ export class ApplyLeaveComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -583,7 +588,7 @@ export class ApplyLeaveComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -593,7 +598,7 @@ export class ApplyLeaveComponent implements OnInit {
                   $("#personName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -621,7 +626,7 @@ export class ApplyLeaveComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -631,7 +636,7 @@ export class ApplyLeaveComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#userId").val(ui.item.value);
                   $("#userId").val(ui.item.value);
@@ -641,7 +646,7 @@ export class ApplyLeaveComponent implements OnInit {
                   $("#userId").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#userId").val(ui.item.value);
                   $("#userId").val(ui.item.value);
@@ -675,12 +680,12 @@ export class ApplyLeaveComponent implements OnInit {
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LEAVE_REQUESTS, srchstr).then((data: any) => {
       if (data) {
         this.LeaveRequestList = data;
-        this.upcomingLeaves = this.LeaveRequestList.filter(x => new Date(x.startDate) > new Date() && (x.approvelStatus == 'Pending' || x.approvelStatus == 'Approved'));
-        this.upcomingLeaves = this.LeaveRequestList.filter(x => new Date(x.startDate) > new Date() && (x.approvelStatus == 'Pending' || x.approvelStatus == 'Approved'));
+        this.upcomingLeaves = this.LeaveRequestList.filter((x:any)  => new Date(x.startDate) > new Date() && (x.approvelStatus == 'Pending' || x.approvelStatus == 'Approved'));
+        this.upcomingLeaves = this.LeaveRequestList.filter((x:any)  => new Date(x.startDate) > new Date() && (x.approvelStatus == 'Pending' || x.approvelStatus == 'Approved'));
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.LeaveRequestList = [];
     });
@@ -700,7 +705,7 @@ export class ApplyLeaveComponent implements OnInit {
       //   let data=Object.assign({},value)
       this.getApproversList(data.userId);
       this.getAvailCompOffList(data.userId);
-      this.lvType = this.lvTypeList.find(x => x.lvType == data.leaveType).lvTypeid;
+      this.lvType = this.lvTypeList.find((x:any)  => x.lvType == data.leaveType).lvTypeid;
       this.reqId = data.reqId;
       this.getLvReasonList(this.lvType);
       this.CalenderYear = this.CalYear;
@@ -872,7 +877,7 @@ export class ApplyLeaveComponent implements OnInit {
         this.NoOfDays = '';
       }
       this.getEmpleaveRequests();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error Submitting Leave ..';
     });
 
@@ -891,7 +896,7 @@ export class ApplyLeaveComponent implements OnInit {
       this.isLoading = false;
 
       //this.getEmpleaveRequests();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error Cancelling Leave ..';
     });
   }
@@ -932,7 +937,7 @@ export class ApplyLeaveComponent implements OnInit {
           }
           this.reset();
           this.getEmpleaveRequests();
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error Cancelling Leave ..';
         });
       }
@@ -951,7 +956,7 @@ export class ApplyLeaveComponent implements OnInit {
     let connection = this.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, val);
     connection.then((data: any) => {
       if (data) {
-        let result = data.filter(x => { return x.employeeId != null });
+        let result = data.filter((x:any)  => { return x.employeeId != null });
         this.Plant = result[0].baselocation;
         this.PayGroup = result[0].division;
         this.Department = result[0].department;
@@ -961,22 +966,22 @@ export class ApplyLeaveComponent implements OnInit {
         this.JoiningDate = result[0].joiningDate;
         this.RoleId = result[0].roleId;
       }
-    }).catch(error => {
+    }).catch((error)=> {
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         this.getPayGroupList();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -986,20 +991,20 @@ export class ApplyLeaveComponent implements OnInit {
   getPayGroupList() {
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.PayGroupList = data.sort((a, b) => {
+        this.PayGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
   }
 
-  getPay(id) {
-    let tempPg = this.PayGroupList.find(x => x.id == id);
+  getPay(id:any) {
+    let tempPg = this.PayGroupList.find((x:any)  => x.id == id);
     return tempPg ? tempPg.short_desc : '';
   }
 
@@ -1024,7 +1029,8 @@ export class ApplyLeaveComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -1074,22 +1080,22 @@ getHeader(): { headers: HttpHeaders } {
     // let edDate=new Date(this.EndDate);
     // let endYear=new Date(this.EndDate).getFullYear();
     let endDur = this.Duration2;
-    var cb = this.lvbalaneList.find(x => x.lvTypeid == 1);
+    var cb = this.lvbalaneList.find((x:any)  => x.lvTypeid == 1);
     var casualBal: any;
     if (cb) {
       casualBal = cb.lvClbal;
     }
-    var sb = this.lvbalaneList.find(x => x.lvTypeid == 2);
+    var sb = this.lvbalaneList.find((x:any)  => x.lvTypeid == 2);
     var sickBal: any;
     if (sb) {
       sickBal = sb.lvClbal;
     }
-    var pb = this.lvbalaneList.find(x => x.lvTypeid == 3);
+    var pb = this.lvbalaneList.find((x:any)  => x.lvTypeid == 3);
     var privbal: any;
     if (pb) {
       privbal = pb.lvClbal;
     }
-    var co = this.lvbalaneList.find(x => x.lvTypeid == 6);
+    var co = this.lvbalaneList.find((x:any)  => x.lvTypeid == 6);
     var coBal: any;
     if (co) {
       coBal = co.lvClbal;
@@ -1407,7 +1413,7 @@ getHeader(): { headers: HttpHeaders } {
               this.ClearData();
               jQuery("#myModal").modal('hide');
             }
-          }).catch(error => {
+          }).catch((error)=> {
           });
         }
       }
@@ -1444,7 +1450,7 @@ getHeader(): { headers: HttpHeaders } {
             this.ClearData();
             jQuery("#myModal").modal('hide');
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       }
     }
@@ -1479,7 +1485,7 @@ getHeader(): { headers: HttpHeaders } {
     return new Date(mdy[0], mdy[1] - 1, mdy[2]);
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -1517,19 +1523,19 @@ getHeader(): { headers: HttpHeaders } {
     return formateddate;
   }
 
-  downloadFile(reqNo, value) {
+  downloadFile(reqNo:any, value:any) {
     // console.log(filename);
     if (value.length > 0) {
       this.httpService.LAgetFile(APIURLS.BR_LEAVE_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], value, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
 
@@ -1615,7 +1621,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1628,14 +1634,14 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Leave Detail',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1653,7 +1659,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -1708,19 +1714,19 @@ getHeader(): { headers: HttpHeaders } {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
   Print() {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED";
     var ReportName = "EMPLOYEE LEAVE CARD";
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1733,14 +1739,14 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Leave card',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1758,7 +1764,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -1813,7 +1819,7 @@ getHeader(): { headers: HttpHeaders } {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
@@ -1830,18 +1836,18 @@ getHeader(): { headers: HttpHeaders } {
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LEAVE_REQUESTS, srchstr).then((data: any) => {
       if (data) {
         this.LeaveRequestList = data;
-        this.LeaveRequestList = this.LeaveRequestList.filter(x => new Date(x.startDate) > new Date(stdate) &&
+        this.LeaveRequestList = this.LeaveRequestList.filter((x:any)  => new Date(x.startDate) > new Date(stdate) &&
           (x.approvelStatus == 'Approved'));
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.LeaveRequestList = [];
     });
   }
 
-  getCAncelApproversList(id) {
+  getCAncelApproversList(id:any) {
     this.errMsg = "";
     this.httpService.LAgetByParam(APIURLS.GET_CANCEL_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
       if (data) {
@@ -1853,7 +1859,7 @@ getHeader(): { headers: HttpHeaders } {
         }
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -1879,7 +1885,7 @@ getHeader(): { headers: HttpHeaders } {
         this.errMsgPop = "";
         this.ClearData();
         this.getCAncelApproversList(data.userId);
-        this.lvType = this.lvTypeList.find(x => x.lvType == data.leaveType).lvTypeid;
+        this.lvType = this.lvTypeList.find((x:any)  => x.lvType == data.leaveType).lvTypeid;
         this.getLvReasonList(this.lvType);
         this.CalenderYear = this.CalYear;
         this.reqNo = data.reqId;
@@ -1935,7 +1941,7 @@ getHeader(): { headers: HttpHeaders } {
           }
           this.reset();
           this.getEmpleaveRequests();
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error Cancelling Leave ..';
         });
 

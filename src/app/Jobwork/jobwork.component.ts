@@ -11,16 +11,16 @@ import swal from 'sweetalert';
 import { JobWorkD } from './jobworkd.model';
 import { JobWorkM } from './jobworkm.model';
 declare var $: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe, DecimalPipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
 import { ToWords } from 'to-words';
 import { VendorDetails } from './vendor.model';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 
 
 @Component({
@@ -32,38 +32,40 @@ export class JobWorkComponent implements OnInit {
  @ViewChild('userForm', { static: false }) userForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
-  fiscalYear: string;
+  path!: string
+  fiscalYear: string
   errMsg: string = "";
   errMsgPop: string = "";
   errMsgModalPop: string = "";
-  isEdit: boolean;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  isLoadingBAPI: boolean;
+  isEdit!: boolean;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  isLoadingBAPI!: boolean;
   JobWorkDModel = {} as JobWorkD;
   JobWorkM = {} as JobWorkM;
   JobWorkMModel = {} as JobWorkM;
   JobWorkMModel1 = {} as JobWorkM;
   JobWorkMList: JobWorkM[] = [];
   JobWorkDList: JobWorkD[] = [];
-  pO_No: string;
+  pO_No: string
   qtY_RCVD: any;
   entryDateTime: Date = new Date();
-  userName: string;
-  reason: string;
-  gONO: string;
-  sendingPersonName: string;
+  userName: string
+  reason: string
+  gONO: string
+  sendingPersonName: string
 
-  elementtype: string;
-  shipvendor: string;
-  billvendor: string;
+  elementtype: string
+  shipvendor: string
+  billvendor: string
 
   mindate: Date = new Date();
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe, private datePipe1: DecimalPipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe, private datePipe1: DecimalPipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   getCurrentFinancialYear() {
     var fiscalyear = "";
@@ -83,7 +85,8 @@ export class JobWorkComponent implements OnInit {
     this.fiscalYear = this.getCurrentFinancialYear();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.userName = this.currentUser.firstName;
       this.getLocationById(this.currentUser.baselocation);
       this.getPlantsassigned(this.currentUser.fkEmpId);
@@ -123,8 +126,8 @@ export class JobWorkComponent implements OnInit {
     var filterModel: any = {};
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -158,13 +161,13 @@ export class JobWorkComponent implements OnInit {
     filterModel.todate = this.getFormatedDateTime(this.to_date);
     this.httpService.post(APIURLS.BR_JOB_WORK_FILTER_DATA_API, filterModel).then((data: any) => {
       if (data) {
-        this.JobWorkMList = data.filter(x => x.isActive == true);
+        this.JobWorkMList = data.filter((x:any)  => x.isActive == true);
         this.JobWorkMList.reverse();
         this.getReportData();
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.JobWorkMList = [];
     });
@@ -174,8 +177,8 @@ export class JobWorkComponent implements OnInit {
     var filterModel: any = {};
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -213,14 +216,14 @@ export class JobWorkComponent implements OnInit {
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.JobWorkMList = [];
     });
   }
 
-  locationName: string;
-  plant: string;
+  locationName: string
+  plant!: string
   getLocationById(lId: number) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_LOCATION_MASTER_API, lId).then((data: any) => {
@@ -233,7 +236,7 @@ export class JobWorkComponent implements OnInit {
         this.getAllData();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plant = '';
       this.locationName = '';
@@ -242,25 +245,26 @@ export class JobWorkComponent implements OnInit {
   plantList: any[] = [];
   location: any[] = [];
   baseloc = { fkPlantId: 0, code: '', name: '' }
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
         this.plantList = data;
-        let temp = this.plantList.find(x => x.fkPlantId == this.currentUser.baselocation);
+        let temp = this.plantList.find((x:any)  => x.fkPlantId == this.currentUser.baselocation);
         if (temp == null || temp == undefined) {
-          this.location.forEach(element => {
+          this.location.forEach((element:any)=> {
+
             this.baseloc.fkPlantId = element.id;
             this.baseloc.code = element.code;
             this.baseloc.name = element.name;
           });
           this.plantList.push(this.baseloc);
         }
-        this.plant = this.plantList.find(x => x.fkPlantId == this.currentUser.baselocation).code;
+        this.plant = this.plantList.find((x:any)  => x.fkPlantId == this.currentUser.baselocation).code;
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -272,12 +276,12 @@ export class JobWorkComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_MASTER_LOCATIONGATE_MASTER_ANY_API, this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
         this.locationGateList = data;
-        this.selGateLocation = this.locationGateList.find(x => x.gateNo == '1');
+        this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == '1');
         // this.selGateLocation = null;
-        // this.selGateLocation = this.locationGateList.find(x => x.gateNo == 'G1');
+        // this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == 'G1');
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationGateList = [];
     });
@@ -293,7 +297,7 @@ export class JobWorkComponent implements OnInit {
         this.selDestination = null;
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -304,10 +308,10 @@ export class JobWorkComponent implements OnInit {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_GETBY_ANY_API, this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
-        this.employeeList = data.map((i) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
-        this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.currentUser.employeeId);
+        this.employeeList = data.map((i:any) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
+        this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.currentUser.employeeId);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.employeeList = [];
     });
@@ -319,9 +323,9 @@ export class JobWorkComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
         this.departmentList = data;
-        this.sendingDEPTNAME = this.departmentList.find(x => x.id == this.currentUser.fK_Department);
+        this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.id == this.currentUser.fK_Department);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.departmentList = [];
     });
@@ -363,9 +367,9 @@ export class JobWorkComponent implements OnInit {
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   delete: boolean = false;
-  fltrChallenNO: string;
-  fltrInvoiceNo: string;
-  fltrtransportername: string;
+  fltrChallenNO: string
+  fltrInvoiceNo: string
+  fltrtransportername: string
 
   getDateFormate(date: any): string {
     let d1 = new Date(date);
@@ -384,7 +388,7 @@ export class JobWorkComponent implements OnInit {
     this.newDynamic = { id: this.rowcount, itemCode: null, itemDesc: null, hsnCode: null, uom: null, batchNo: null, qty: null, packingDetails: null, rate: null, amount: null, stored: "0" };
     this.dynamicArray.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.dynamicArray.length > 1) {
       const index = this.dynamicArray.indexOf(item);
       this.dynamicArray.splice(index, 1);
@@ -392,15 +396,15 @@ export class JobWorkComponent implements OnInit {
   }
   materialList: any[] = [];
   setDesc(mtrl) {
-    //let matId = this.materialList.find(s => s.type == mtrl.itemCode).id;
+    //let matId = this.materialList.find((s:any) => s.type == mtrl.itemCode).id;
     var self = this;
     var data = this.materialList;
     $('#itemCode' + mtrl.id).autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.material.toLowerCase().includes(mtrl.itemCode));;
-        response(result.map((i) => { i.label = i.maktx, i.val = i.matnr, i.uom = i.meins, i.hsn = i.steuc; return i; }));
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.material.toLowerCase().includes(mtrl.itemCode));;
+        response(result.map((i:any) => { i.label = i.maktx, i.val = i.matnr, i.uom = i.meins, i.hsn = i.steuc; return i; }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         mtrl.itemDesc = ui.item.label;
         mtrl.itemCode = ui.item.val;
         mtrl.uom = ui.item.uom;
@@ -420,10 +424,10 @@ export class JobWorkComponent implements OnInit {
         if (this.isEdit)
           this.UOMList = data;
         else
-          this.UOMList = data.filter(x => x.isActive);
+          this.UOMList = data.filter((x:any)  => x.isActive);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UOMList = [];
     });
@@ -445,11 +449,11 @@ export class JobWorkComponent implements OnInit {
       this.isLoading = true;
       if (data.iT_RETURN == null) {
         this.materialList = data.iT_MATERIAL;
-        this.materialList = data.iT_MATERIAL.map((i) => { i.material = i.matnr + ', ' + i.maktx; return i; });
+        this.materialList = data.iT_MATERIAL.map((i:any) => { i.material = i.matnr + ', ' + i.maktx; return i; });
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -476,13 +480,13 @@ export class JobWorkComponent implements OnInit {
       this.isLoading = true;
       if (data) {
         this.vendorList = data;
-        this.vendorList = this.vendorList.map((i) => { i.vendor = i.name1 + ', ' + i.lifnr + ', ' + i.street + ', ' + i.strSuppl1 + i.mcCity1 + ', ' + i.bezei + ', ' + i.landx + '-' + i.postCode1; return i; });
+        this.vendorList = this.vendorList.map((i:any) => { i.vendor = i.name1 + ', ' + i.lifnr + ', ' + i.street + ', ' + i.strSuppl1 + i.mcCity1 + ', ' + i.bezei + ', ' + i.landx + '-' + i.postCode1; return i; });
         this.vendorList1 = data;
-        this.vendorList1 = this.vendorList1.map((i) => { i.vendor = i.name1 + ', ' + i.lifnr + ', ' + i.street + ', ' + i.strSuppl1 + i.mcCity1 + ', ' + i.bezei + ', ' + i.landx + '-' + i.postCode1; return i; });
+        this.vendorList1 = this.vendorList1.map((i:any) => { i.vendor = i.name1 + ', ' + i.lifnr + ', ' + i.street + ', ' + i.strSuppl1 + i.mcCity1 + ', ' + i.bezei + ', ' + i.landx + '-' + i.postCode1; return i; });
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -491,17 +495,17 @@ export class JobWorkComponent implements OnInit {
     var self = this.JobWorkMModel;
     var data1 = this.vendorList;
     $('#billing1').autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
 
-        let result = data1.filter(x => x.vendor.toLowerCase().includes(value));;
-        response(result.map((i) => {
+        let result = data1.filter((x:any)  => x.vendor.toLowerCase().includes(value));;
+        response(result.map((i:any) => {
           i.label = i.lifnr + ' - ' + i.name1 + '~ ' + i.street + ', '
             + i.strSuppl1 + i.mcCity1 + ', ' + i.bezei + '~' + i.landx + '-' + i.postCode1 + '~' + i.stcd3,
           i.val = i.name1 + ', ' + i.mcCity1 + ', ' + i.bezei + ', ' + i.landx + '-' + i.postCode1; return i;
         }));
 
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.billingAddress = ui.item.label;
         return false;
       }
@@ -511,16 +515,16 @@ export class JobWorkComponent implements OnInit {
     var self = this.JobWorkMModel;
     var data2 = this.vendorList1;
     $('#shippingAddress').autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
 
-        let result = data2.filter(x => x.vendor.toLowerCase().includes(value));;
-        response(result.map((i) => {
+        let result = data2.filter((x:any)  => x.vendor.toLowerCase().includes(value));;
+        response(result.map((i:any) => {
           i.label == i.lifnr + ' - ' + i.name1 + '~ ' + i.street + ', '
             + i.strSuppl1 + i.mcCity1 + ', ' + i.bezei + '~' + i.landx + '-' + i.postCode1 + '~' + i.stcd3,
           i.val = i.name1 + ', ' + i.mcCity1 + ', ' + i.bezei + ', ' + i.landx + '-' + i.postCode1; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.shippingAddress = ui.item.label;
         return false;
       }
@@ -537,7 +541,7 @@ export class JobWorkComponent implements OnInit {
 
     return
   }
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {
@@ -558,7 +562,7 @@ export class JobWorkComponent implements OnInit {
     if (isedit && !isprint) {
       this.JobWorkMModel = Object.assign({}, JobWorkM);
       var data = this.JobWorkMModel.jobWorkDViewModel;
-      data.forEach(mtrl => {
+      data.forEach((mtrl:any) => {
         let newDynamic = { id: 0, itemCode: null, itemDesc: null, hsnCode: null, uom: null, batchNo: null, qty: null, packingDetails: null, rate: null, amount: null, stored: "0" };
         newDynamic.id = mtrl.id;
         newDynamic.itemCode = mtrl.itemCode;
@@ -572,16 +576,16 @@ export class JobWorkComponent implements OnInit {
         newDynamic.amount = mtrl.amount;
         this.dynamicArray.push(newDynamic);
       });
-      this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.JobWorkMModel.doneBy);
+      this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.JobWorkMModel.doneBy);
       this.sendingPersonName = this.sendingPERSON.firstName + ' ' + this.sendingPERSON.middleName + ' ' + this.sendingPERSON.lastName;
-      // this.sendingDEPTNAME = this.departmentList.find(x => x.name == this.JobWorkMModel.sendinG_DEPT_NM);
+      // this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.name == this.JobWorkMModel.sendinG_DEPT_NM);
       // this.fiscalYear = this.JobWorkMModel.fiN_YEAR;
 
     }
     else if (JobWorkM.challenNo != null || JobWorkM.challenNo != undefined) {
       this.JobWorkMModel = Object.assign({}, JobWorkM);
       var data = this.JobWorkMModel.jobWorkDViewModel;
-      data.forEach(mtrl => {
+      data.forEach((mtrl:any) => {
         let newDynamic = { id: 0, itemCode: null, itemDesc: null, hsnCode: null, uom: null, batchNo: null, qty: null, packingDetails: null, rate: null, amount: null, stored: "0" };
         newDynamic.id = mtrl.id;
         newDynamic.itemCode = mtrl.itemCode;
@@ -595,9 +599,9 @@ export class JobWorkComponent implements OnInit {
         newDynamic.amount = mtrl.amount;
         this.dynamicArray.push(newDynamic);
       });
-      this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.JobWorkMModel.doneBy);
+      this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.JobWorkMModel.doneBy);
       this.sendingPersonName = this.sendingPERSON.firstName + ' ' + this.sendingPERSON.middleName + ' ' + this.sendingPERSON.lastName;
-      // this.sendingDEPTNAME = this.departmentList.find(x => x.name == this.JobWorkMModel.sendinG_DEPT_NM);
+      // this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.name == this.JobWorkMModel.sendinG_DEPT_NM);
       // this.fiscalYear = this.JobWorkMModel.fiN_YEAR;
 
 
@@ -671,7 +675,7 @@ export class JobWorkComponent implements OnInit {
     this.SAddress3 = temp1[2];
     this.SGST = temp1[3];
     var data = this.JobWorkMModel1.jobWorkDViewModel;
-    data.forEach(mtrl => {
+    data.forEach((mtrl:any) => {
       let newDynamic = { id: 0, itemCode: null, itemDesc: null, hsnCode: null, uom: null, batchNo: null, qty: null, packingDetails: null, rate: null, amount: null, stored: "0" };
       newDynamic.id = mtrl.id;
       newDynamic.itemCode = mtrl.itemCode;
@@ -754,7 +758,7 @@ export class JobWorkComponent implements OnInit {
     //Insert Material
     var index = 0;
     let lstJobWorkD: JobWorkD[] = [];
-    this.dynamicArray.forEach(mtrl => {
+    this.dynamicArray.forEach((mtrl:any) => {
       index = index + 1;
       this.JobWorkDModel = {} as JobWorkD;
       this.JobWorkDModel.plant = this.plant
@@ -789,7 +793,7 @@ export class JobWorkComponent implements OnInit {
         });
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error saving Header...';
       this.isLoadingPop = false;
     });
@@ -800,7 +804,7 @@ export class JobWorkComponent implements OnInit {
     //this.JobWorkMModel.modifiedOn = this.getDateFormate(new Date());
     this.JobWorkMModel.challenDate = this.getFormatedDateTime(this.JobWorkMModel.challenDate);
     this.JobWorkMModel.lrDate = this.JobWorkMModel.lrDate != undefined ? this.getFormatedDateTime(this.JobWorkMModel.lrDate) : null;
-    this.dynamicArray.forEach(mtrl => {
+    this.dynamicArray.forEach((mtrl:any) => {
       for (let i = 0; i < this.JobWorkMModel.jobWorkDViewModel.length; i++) {
         if (mtrl.id == this.JobWorkMModel.jobWorkDViewModel[i].id) {
           this.JobWorkMModel.jobWorkDViewModel[i].itemCode = mtrl.itemCode;
@@ -832,7 +836,7 @@ export class JobWorkComponent implements OnInit {
         });
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving data...';
     });
@@ -864,7 +868,7 @@ export class JobWorkComponent implements OnInit {
             });
           }
           this.isLoadingPop = false;
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving data...';
         });
@@ -891,7 +895,7 @@ export class JobWorkComponent implements OnInit {
         });
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Delete Gate Entry Outward...';
     });
@@ -935,7 +939,7 @@ export class JobWorkComponent implements OnInit {
     popupWin.document.close();
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -967,7 +971,7 @@ export class JobWorkComponent implements OnInit {
   }
 
   downloadPdf() {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED, API DIVISION (ML15) ";
     var ReportName = "Plot No-43-45, IV Phase, KIADB, Bommasandra Industrial Area, Bangalore - 560105, Karnataka";
     var gtin = " GSTIN No: 29AABCM2131N1ZE             CIN No:U24232KA1973PLC002401             Drug Lic No. KTK/25/535/2007 DT-29.08.2017"
@@ -975,7 +979,7 @@ export class JobWorkComponent implements OnInit {
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -988,14 +992,14 @@ export class JobWorkComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Job Work DC',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1013,7 +1017,7 @@ export class JobWorkComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 10, 40, 60],
       pageOrientation: 'landscape',
-      // header: function (currentPage, pageCount) {
+      // header: function (currentPage:any, pageCount:any) {
       //   return {
 
       //     columns: [
@@ -1065,110 +1069,112 @@ export class JobWorkComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
   JobWorkDCReport: any[] = [];
-  generateExcel() {
-    const title = 'Job Work Challen Register';
-    const header = ["Sl NO", "Job Work DC Number", "Job Work DC Date",
-      "Ship to Party/Ship from Party", "Ship to Party", "HSN Code",
-      "Material Code", "Description of Goods", "Batch No"
-      , "UOM", "Quantity", "Rate", "Taxable Value", "Transporter Name", "Vehicle No.", "LR Number", "LR Date", "Mode", "PO Number",
-      "GST Number", "State", "Job Work Type", "Type Of Goods"]
+   //v10
+  // generateExcel() {
+  //   const title = 'Job Work Challen Register';
+  //   const header = ["Sl NO", "Job Work DC Number", "Job Work DC Date",
+  //     "Ship to Party/Ship from Party", "Ship to Party", "HSN Code",
+  //     "Material Code", "Description of Goods", "Batch No"
+  //     , "UOM", "Quantity", "Rate", "Taxable Value", "Transporter Name", "Vehicle No.", "LR Number", "LR Date", "Mode", "PO Number",
+  //     "GST Number", "State", "Job Work Type", "Type Of Goods"]
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.JobWorkDCReport.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.sl = index;
-      ts.challen_No = element.challen_No,
-        ts.challen_Date = this.datePipe.transform(element.challen_Date, 'dd/MM/yyyy');
-      ts.shippingAddress = element.shippingAddress,
-        ts.billingAddress = element.billingAddress,
-        ts.hsN_Code = element.hsN_Code,
-        ts.item_Code = element.item_Code,
-        ts.item_Desc = element.item_Desc,
-        ts.batchNo = element.batchNo,
-        ts.uom = element.uom,
-        ts.qty = element.qty,
-        ts.rate = element.rate,
-        ts.amount = element.amount,
-        ts.transporter_Name = element.transporter_Name,
-        ts.vehicle_No = element.vehicle_No,
-        ts.lR_No = element.lR_No,
-        ts.lR_Date = this.datePipe.transform(element.lR_Date, 'dd/MM/yyyy');
-      ts.modeOfTransport = element.modeOfTransport,
-        ts.ponumber = element.ponumber;
-      ts.gstNumber = element.gstNumber,
-        ts.state = element.state,
-        ts.jobworkType = "",
-        ts.type = '';
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.JobWorkDCReport.forEach((element:any)=> {
 
-      exportList.push(ts);
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.sl = index;
+  //     ts.challen_No = element.challen_No,
+  //       ts.challen_Date = this.datePipe.transform(element.challen_Date, 'dd/MM/yyyy');
+  //     ts.shippingAddress = element.shippingAddress,
+  //       ts.billingAddress = element.billingAddress,
+  //       ts.hsN_Code = element.hsN_Code,
+  //       ts.item_Code = element.item_Code,
+  //       ts.item_Desc = element.item_Desc,
+  //       ts.batchNo = element.batchNo,
+  //       ts.uom = element.uom,
+  //       ts.qty = element.qty,
+  //       ts.rate = element.rate,
+  //       ts.amount = element.amount,
+  //       ts.transporter_Name = element.transporter_Name,
+  //       ts.vehicle_No = element.vehicle_No,
+  //       ts.lR_No = element.lR_No,
+  //       ts.lR_Date = this.datePipe.transform(element.lR_Date, 'dd/MM/yyyy');
+  //     ts.modeOfTransport = element.modeOfTransport,
+  //       ts.ponumber = element.ponumber;
+  //     ts.gstNumber = element.gstNumber,
+  //       ts.state = element.state,
+  //       ts.jobworkType = "",
+  //       ts.type = '';
 
-    });
-    var OrganisationName = "Micro Labs Limited, API Plant (ML15). Job Work Challan Register from " + this.datePipe.transform(this.from_date, 'dd/MM/yyyy') + " to " + this.datePipe.transform(this.to_date, 'dd/MM/yyyy');
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Job Work Challen Register');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    //Blank Row 
-    // worksheet.addRow([]);
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
-    worksheet.mergeCells('A1:W1');
-    // Cell Style : Fill and Border
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    //  worksheet.addRows(data);
-    // Add Data and Conditional Formatting
-    //data.forEach()
+  //     exportList.push(ts);
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    // data.forEach((element) => {
-    //   let eachRow = [];
-    //   header.forEach((headers) => {
-    //     eachRow.push(element.id);
-    //   })   
+  //   });
+  //   var OrganisationName = "Micro Labs Limited, API Plant (ML15). Job Work Challan Register from " + this.datePipe.transform(this.from_date, 'dd/MM/yyyy') + " to " + this.datePipe.transform(this.to_date, 'dd/MM/yyyy');
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Job Work Challen Register');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   //Blank Row 
+  //   // worksheet.addRow([]);
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
+  //   worksheet.mergeCells('A1:W1');
+  //   // Cell Style : Fill and Border
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   //  worksheet.addRows(data);
+  //   // Add Data and Conditional Formatting
+  //   //data.forEach()
 
-    //   worksheet.addRow(eachRow); 
-    // })
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    // worksheet.getColumn(2).width = 10;
-    // worksheet.getColumn(4).width = 20;
-    // worksheet.getColumn(5).width = 60;
-    // worksheet.getColumn(6).width = 40;
-    // worksheet.getColumn(7).width = 10;    
-    // worksheet.getColumn(8).width = 20;    
-    // worksheet.addRow([]);
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   // data.forEach((element) => {
+  //   //   let eachRow = [];
+  //   //   header.forEach((headers) => {
+  //   //     eachRow.push(element.id);
+  //   //   })   
 
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'Job Work Challen Register.xlsx');
-    })
+  //   //   worksheet.addRow(eachRow); 
+  //   // })
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   // worksheet.getColumn(2).width = 10;
+  //   // worksheet.getColumn(4).width = 20;
+  //   // worksheet.getColumn(5).width = 60;
+  //   // worksheet.getColumn(6).width = 40;
+  //   // worksheet.getColumn(7).width = 10;    
+  //   // worksheet.getColumn(8).width = 20;    
+  //   // worksheet.addRow([]);
 
-  }
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'Job Work Challen Register.xlsx');
+  //   })
+
+  // }
 }

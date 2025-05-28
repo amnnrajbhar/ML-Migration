@@ -1,20 +1,20 @@
 export interface confirmEmployeeModel {
     employeeConfirmationId: number;
     employeeId: number;
-    status: string;
+    status: string
     submitedById: number;
-    comments : string;
+    comments : string
     hodid: number;
-    performanceRating: string;
-    achievement: string;
-    currentJobResponsibilty: string;
-    jobChangeDetails: string;
-    nextConfirmation: string;
-    reason: string;
-    createdDate: string;
+    performanceRating: string
+    achievement: string
+    currentJobResponsibilty: string
+    jobChangeDetails: string
+    nextConfirmation: string
+    reason: string
+    createdDate: string
     createdById: number;
     modifiedById: number;
-    modifiedDate: string;
-    confirmationType: string;
+    modifiedDate: string
+    confirmationType: string
     
 }

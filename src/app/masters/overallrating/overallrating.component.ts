@@ -21,8 +21,8 @@ declare var jQuery: any;
 export class OverallRatingComponent implements OnInit {
     
     public tableWidget: any;
-    overallRatingList: any[];
-    parentList: any[];
+    overallRatingList!: any[];
+    parentList!: any[];
     selCalYr: any;
     calendarList: any[] = [[]];
    calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
@@ -83,7 +83,7 @@ overallRatingItem: Overallrating = new Overallrating(0, 0, 0, 0, '', '', true);
 
     getCalName(id: number){
       var temp: any;
-      temp = this.calendarList.find(s => s.id == id);
+      temp = this.calendarList.find((s:any) => s.id == id);
       var fiscalname = (typeof temp != 'undefined')? temp.fiscalYear : '';
       return fiscalname;
     }
@@ -95,12 +95,12 @@ overallRatingItem: Overallrating = new Overallrating(0, 0, 0, 0, '', '', true);
       if (this.isEdit) {
         this.overallRatingItem = data;
         this.calenderId = this.overallRatingItem.fkCalenderId+'';
-        // this.parentList = this.calendarList.filter(s => s.isActive != false);
+        // this.parentList = this.calendarList.filter((s:any) => s.isActive != false);
         ////console.log(this.calenderId);
-        this.selCalYr = this.calendarList.find(s => s.id == this.calenderId);
+        this.selCalYr = this.calendarList.find((s:any) => s.id == this.calenderId);
       }
       else {
-        // this.parentList = this.calendarList.filter(s => s.isActive != false);
+        // this.parentList = this.calendarList.filter((s:any) => s.isActive != false);
         this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
         this.overallRatingItem = new Overallrating(0, 0,0,0,'', '',true);
         this.selCalYr = null;
@@ -130,8 +130,9 @@ overallRatingItem: Overallrating = new Overallrating(0, 0, 0, 0, '', '', true);
           // for(let des of this.overallRatingList) {
           //   this.httpService.getById(APIURLS.BR_MASTER_CALENDAR_INSERT_API, des.fkCalenderId).then((datam:any) => {
           //   this.calendarItem = datam;
-          //   var ratingsWithSameCalanderId = this.overallRatingList.filter(s => s.fkCalenderId == this.calendarItem.id);
-          //   ratingsWithSameCalanderId.forEach(element => {
+          //   var ratingsWithSameCalanderId = this.overallRatingList.filter((s:any) => s.fkCalenderId == this.calendarItem.id);
+          //   ratingsWithSameCalanderId.forEach((element:any)=> {
+
           //     element['fkCalenderId']= this.calendarItem.fiscalYear;
           //   });
           //  });  
@@ -140,7 +141,7 @@ overallRatingItem: Overallrating = new Overallrating(0, 0, 0, 0, '', '', true);
           ////console.log(this.overallRatingList);
           this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.overallRatingList = [];
       });
@@ -154,7 +155,7 @@ overallRatingItem: Overallrating = new Overallrating(0, 0, 0, 0, '', '', true);
       this.overallRatingItem.fkCalenderId = this.selCalYr.id; 
       let connection: any;
       // debugger;
-      if(!this.overallRatingList.some(s => s.rating == this.overallRatingItem.rating && s.fkCalenderId == this.overallRatingItem.fkCalenderId && s.id != this.overallRatingItem.id)){
+      if(!this.overallRatingList.some((s:any) => s.rating == this.overallRatingItem.rating && s.fkCalenderId == this.overallRatingItem.fkCalenderId && s.id != this.overallRatingItem.id)){
         if (!this.isEdit)
          connection = this.httpService.post(APIURLS.BR_MASTER_OVERALLRATING_API, this.overallRatingItem);
         else
@@ -169,7 +170,7 @@ overallRatingItem: Overallrating = new Overallrating(0, 0, 0, 0, '', '', true);
  jQuery("#saveModal").modal('show');
            this.getRatingList();
          }
-        }).catch(error => {
+        }).catch((error)=> {
          this.isLoadingPop = false;
          this.errMsgPop = 'Error saving Rating data..';
         });

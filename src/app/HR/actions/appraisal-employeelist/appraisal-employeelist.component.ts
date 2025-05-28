@@ -26,13 +26,13 @@ export class AppraisalEmployeelistComponent implements OnInit {
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute, 
     private dataStore: DataStorageService, private excelService: ExcelService) { }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
-  action: string;
-  employeeId: number;
-  employeeInitialAppraisalDetailId: number;
-  comment: string;
-  hrcomment: string;
+  action: string
+  employeeId!: number;
+  employeeInitialAppraisalDetailId!: number;
+  comment: string
+  hrcomment: string
   filterData: any = {};
   filterModel: any = {};
   plantlist: any[] = [];
@@ -41,7 +41,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
   employeeInitialAppraisalrequests: AppraisalInitialRequest[] = [];
   initiatedFor: any;
   initialApproverType: any;
-  predefinedApproversExists: boolean;
+  predefinedApproversExists!: boolean;
   statusList = [
     { type: "Appraisal Initiated", color: "info" },
     { type: "Pending For Recommendation", color: "warning" },
@@ -72,7 +72,8 @@ export class AppraisalEmployeelistComponent implements OnInit {
   approvalInitiatorTypes = [{ type: "HOD" }, { type: "Reporting Manager and HOD" }, { type: "Predefined Initiators" }];
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageNo = 1;
     this.filterModel.pageSize = 10;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -133,9 +134,9 @@ export class AppraisalEmployeelistComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantlist = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantlist = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantlist = [];
     });
   }
@@ -144,9 +145,9 @@ export class AppraisalEmployeelistComponent implements OnInit {
     this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
       .then((data: any) => {
         if (data.length > 0) {
-          this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+          this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.employeeCategoryList = [];
       });
   }
@@ -158,9 +159,9 @@ export class AppraisalEmployeelistComponent implements OnInit {
     if (this.filterModel.plantId > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.filterModel.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -174,9 +175,9 @@ export class AppraisalEmployeelistComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -185,9 +186,9 @@ export class AppraisalEmployeelistComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -197,9 +198,9 @@ export class AppraisalEmployeelistComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -208,9 +209,9 @@ export class AppraisalEmployeelistComponent implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -220,15 +221,15 @@ export class AppraisalEmployeelistComponent implements OnInit {
   getSubDepartments() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        this.subDepartmentFullList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        this.subDepartmentFullList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.subDepartmentFullList = [];
     });
   }
 
   onDepartmentChange() {
-    this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.filterModel.departmentId);
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.filterModel.departmentId);
   }
 
   getData() {
@@ -236,17 +237,17 @@ export class AppraisalEmployeelistComponent implements OnInit {
     this.httpService.HRpost(APIURLS.HR_EMPLOYEE_APPRAISAL_GET_EMPLOYEELIST, this.filterModel).then((data: any) => {
       this.filterData = data;
       for (var item of this.filterData.list) {
-        if (this.statusList.find(x => x.type == item.employeeAppraisalStatus) != null)
-          item.statusColor = this.statusList.find(x => x.type == item.employeeAppraisalStatus).color;
+        if (this.statusList.find((x:any)  => x.type == item.employeeAppraisalStatus) != null)
+          item.statusColor = this.statusList.find((x:any)  => x.type == item.employeeAppraisalStatus).color;
           
-          var empStatusData = this.empStatusList.find(x => x.type == item.status);
+          var empStatusData = this.empStatusList.find((x:any)  => x.type == item.status);
           if (empStatusData)
             item.empStatusColor = empStatusData.color;
       }      
       // store the filter model
       this.dataStore.SetData("AppraisalEmployeeList", this.filterModel);
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -263,16 +264,16 @@ export class AppraisalEmployeelistComponent implements OnInit {
   }
 
   onStateChange() {
-    this.locationList = this.locationFullList.filter(x => x.stateId == this.filterModel.locationStateId);
+    this.locationList = this.locationFullList.filter((x:any)  => x.stateId == this.filterModel.locationStateId);
   }
 
   roleList: any[] = [];
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -284,7 +285,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
       this.filterModel.export = false;
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index = index + 1;
         let exportItem = {
           "Sl No": index,
@@ -311,7 +312,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Employee_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -347,7 +348,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
       if ($event.timeStamp - this.lastAppraiseeEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -357,7 +358,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approverId").val(ui.item.value);
                   $("#approverName").val(ui.item.label);
@@ -367,7 +368,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
                   $("#approverName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approverId").val(ui.item.value);
                   $("#approverName").val(ui.item.label);
@@ -386,13 +387,13 @@ export class AppraisalEmployeelistComponent implements OnInit {
     }
   }
 
-  initiateappraisalviahod(id) {
+  initiateappraisalviahod(id:any) {
     this.employeeId = id;
     this.comment = this.comment;
     this.action = "Appraisal Initiated via Hod";
     this.initiatedFor = "Hod";
   }
-  initiateappraisal(id) {
+  initiateappraisal(id:any) {
     this.employeeId = id;
     this.comment = $('#approverComments').val();
     this.action = "Appraisal Initiated via Hr";
@@ -404,11 +405,11 @@ export class AppraisalEmployeelistComponent implements OnInit {
     this.action = "Initiate Selected via Hod";
     this.initiatedFor = "Hod";
   }
-  initiateappraisalviaapprovers(id) {
+  initiateappraisalviaapprovers(id:any) {
     this.employeeId = id;
     this.initiatedFor = "";
   }
-  initiateappraisalviarmandhod(id) {
+  initiateappraisalviarmandhod(id:any) {
     this.employeeId = id;
     this.comment = $('#approverComments').val();
     this.action = "Appraisal Initiated via Reporting Manager and HOD";
@@ -427,12 +428,12 @@ export class AppraisalEmployeelistComponent implements OnInit {
   //   this.comment = $('#approverComments').val();
   //   this.action = "Initiate All";
   // }
-  withdraw(id) {
+  withdraw(id:any) {
     this.employeeInitialAppraisalDetailId = id;
     this.comment = "";
     this.action = "Withdrawn";
   }
-  initiateappraisalviaconfigapprovers(id) {
+  initiateappraisalviaconfigapprovers(id:any) {
     this.employeeId = id;
     this.comment = $('#approverComments').val();
     this.action = "Appraisal Initiated via Predefined Initiators";
@@ -451,7 +452,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
     this.initiatedFor = "Predefined Initiators";
   }
 
-  CheckifPreDefinedApproversExistsForEmployee(id) {
+  CheckifPreDefinedApproversExistsForEmployee(id:any) {
     this.isLoading = true;
     this.httpService.HRget(APIURLS.HR_EMPLOYEE_APPRAISAL_CHECK_PREDEFINED_INITIATORS_EXISTS + "/" + id).then((data: any) => {
       this.predefinedApproversExists = data;
@@ -464,7 +465,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
         this.callSaveService();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -543,9 +544,10 @@ export class AppraisalEmployeelistComponent implements OnInit {
       || this.action == "Initiate selected via Hr"
       || this.action == "Initiate Selected via Reporting Manager and HOD"
       || this.action == "Initiate Selected via Predefined Initiators") {
-      var selectedList = this.filterData.list.filter(x => x.selected);
+      var selectedList = this.filterData.list.filter((x:any)  => x.selected);
       console.log(selectedList);
-      selectedList.forEach(element => {
+      selectedList.forEach((element:any)=> {
+
         var request = {} as AppraisalInitialRequest;
         request.employeeid = element.employeeId;
         //request.hodid = $("#approverId").val();
@@ -586,7 +588,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
         swal(data.message);
       } else
         swal("Error occurred.");
-    }).catch(error => {
+    }).catch((error)=> {
       swal(error);
     });
   }
@@ -611,7 +613,7 @@ export class AppraisalEmployeelistComponent implements OnInit {
           swal(data.message);
         } else
           swal("Error occurred.");
-      }).catch(error => {
+      }).catch((error)=> {
         swal(error);
       });
     }

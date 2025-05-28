@@ -23,10 +23,10 @@ declare var $: any;
   styleUrls: ['./book-guesthouse.component.css']
 })
 export class BookGuesthouseComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
-  currentUser: AuthData;
-  isLoading: boolean;
+  currentUser!: AuthData;
+  isLoading!: boolean;
   urlPath: string = '';
   errMsg: string = "";
   errMsgPop: string = "";
@@ -38,8 +38,8 @@ export class BookGuesthouseComponent implements OnInit {
   roomsInfoList: GuestHouseInformation[] = [];
   baseLocation:number;
   type:string="GuestHouse";
-  roomName: string;
-  roomLocation: string;
+  roomName: string
+  roomLocation: string
   isEdit: boolean = false;
   min:Date=new Date();
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
@@ -50,7 +50,8 @@ export class BookGuesthouseComponent implements OnInit {
     this.min=new Date(this.min.getFullYear(),this.min.getMonth(),this.min.getDate());
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       //this.baseLocation = this.currentUser.baselocation;
       this.getLocationList();
       //this.getRoomsByLocation(this.baseLocation);
@@ -62,7 +63,7 @@ export class BookGuesthouseComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_GUESTHOUSE_LOCATION_ALL_API).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x=>x.isActive).sort((a,b)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1;  return 0;});
+        this.locationList = data.filter((x:any)=>x.isActive).sort((a:any,b:any)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1;  return 0;});
         if (this.locationList.length > 0) {
           let info = this.locationList[0];
           this.baseLocation=info.id;
@@ -70,7 +71,7 @@ export class BookGuesthouseComponent implements OnInit {
         }
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -87,7 +88,7 @@ export class BookGuesthouseComponent implements OnInit {
    this.isLoading = true;
     this.httpService.getById(APIURLS.BR_GUESTHOUSE_MASTER_GetBYANY_API, lId).then((data: any) => {
       if (data) {
-        this.roomsInfoList = data.filter(x=>x.isActive);
+        this.roomsInfoList = data.filter((x:any)=>x.isActive);
         roomInfo = this.roomsInfoList[0];
 
         this.roomName=roomInfo.name;
@@ -97,7 +98,7 @@ export class BookGuesthouseComponent implements OnInit {
         this.getBaseLocationAdmin(roomInfo.adminId);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomsInfoList = [];
       this.isLoading = false;
     });
@@ -107,7 +108,7 @@ export class BookGuesthouseComponent implements OnInit {
       if (data) {
         this.roomLocation = data ? data.code + '-' + data.name : '';
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomLocation = '';
     });
   }
@@ -132,12 +133,12 @@ export class BookGuesthouseComponent implements OnInit {
         selectedFacilities = data;
         for (let index = 0; index < selectedFacilities.length; index++) {
           let element = selectedFacilities[index];
-          let facility = this.roomsFacilityList.find(x => x.id == element.fk_FacilityId);
+          let facility = this.roomsFacilityList.find((x:any)  => x.id == element.fk_FacilityId);
           rmFacilities.push(facility);
         }
         this.selectedItems = rmFacilities;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }
@@ -146,9 +147,9 @@ export class BookGuesthouseComponent implements OnInit {
   getRoomfacilities() {
     this.httpService.get(APIURLS.BR_MASTER_ROOM_FACILITY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roomsFacilityList = data.filter(x => x.type == this.type);
+        this.roomsFacilityList = data.filter((x:any)  => x.type == this.type);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomsFacilityList = [];
     });
   }
@@ -174,7 +175,7 @@ export class BookGuesthouseComponent implements OnInit {
           this.images.push(image);
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }
@@ -197,9 +198,9 @@ export class BookGuesthouseComponent implements OnInit {
   getPurposeList() {
     this.httpService.get(APIURLS.BR_BOOK_PURPOSE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.purposeList = data.filter(x=>x.type=="Guest House" && x.isActive).sort((a,b)=>{if(a.purpose > b.purpose) return 1; if(a.purpose < b.purpose) return -1;  return 0;});
+        this.purposeList = data.filter((x:any)=>x.type=="Guest House" && x.isActive).sort((a:any,b:any)=>{if(a.purpose > b.purpose) return 1; if(a.purpose < b.purpose) return -1;  return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.purposeList = [];
     });
   }
@@ -236,7 +237,7 @@ export class BookGuesthouseComponent implements OnInit {
   removePersonDetails(id: number, position: number) {
     if (this.person.length == 0)
       this.showTable = false;
-    if (id != 0 && this.personIds.find(s => s == id)) this.deletedPersonIds.push(id);
+    if (id != 0 && this.personIds.find((s:any) => s == id)) this.deletedPersonIds.push(id);
     this.person.splice(position, 1);
     this.recCount--;
   }
@@ -247,8 +248,8 @@ export class BookGuesthouseComponent implements OnInit {
         this.getCurrentUserManager(managerId);
 
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
     });
   }
   managerInfo: any = {};
@@ -257,7 +258,7 @@ export class BookGuesthouseComponent implements OnInit {
       if (data) {
         this.managerInfo = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.managerInfo = {};
     });
   }
@@ -268,7 +269,7 @@ export class BookGuesthouseComponent implements OnInit {
     //   if (data.length > 0) {
     //     this.adminInfo = data;
     //   }
-    // }).catch(error => {
+    // }).catch((error)=> {
     //   this.adminInfo = [];
     // });
     this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_API, adminId).then((data: any) => {
@@ -276,7 +277,7 @@ export class BookGuesthouseComponent implements OnInit {
         this.adminInfo = data;
         //console.log(data);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.adminInfo = {};
     });
   }
@@ -318,7 +319,7 @@ export class BookGuesthouseComponent implements OnInit {
       });
     }
     else {
-      let bookingId: number;
+      let bookingId!: number;
       let connection: any;
       if (!this.isEdit) {
         let formdate: string = d1.getFullYear() + "-" + ("00" + (d1.getMonth() + 1)).slice(-2) + "-" +
@@ -392,7 +393,7 @@ export class BookGuesthouseComponent implements OnInit {
             this.errMsgModalPop = 'Booked successfully!';
           jQuery("#saveModal").modal('show');
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error in Booking';
       });
@@ -414,7 +415,7 @@ export class BookGuesthouseComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200 || data.id > 0) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error saving BOOKING PARTICIPANTS ...';
       });
     }
@@ -427,12 +428,12 @@ export class BookGuesthouseComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error in sending mail..';
       });
     }
   }
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {

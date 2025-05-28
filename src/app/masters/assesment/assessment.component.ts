@@ -22,8 +22,8 @@ import { Router } from '@angular/router';
   export class AssesmentComponent implements OnInit {
 
   public tableWidget: any;
-  assessList: any[];
-  parentList: any[];
+  assessList!: any[];
+  parentList!: any[];
   employeeList: any[] = [[]];
   selParentRole: any;
   selCalYr: any;
@@ -95,15 +95,15 @@ calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
 
     if (this.isEdit) {
       this.assessItem = data;
-      this.parentList = this.assessList.filter(s => s.isActive != false);
+      this.parentList = this.assessList.filter((s:any) => s.isActive != false);
       this.calenderId = this.assessItem.fkCalendarId+'';
-      this.selParentRole1 = this.employeeList.find(s => s.id === this.assessItem.fkEmpId);
+      this.selParentRole1 = this.employeeList.find((s:any) => s.id === this.assessItem.fkEmpId);
       this.filteredName = this.selParentRole1.firstName+' ('+this.selParentRole1.employeeId+')';
-      this.selCalYr = this.calendarList.find(s => s.id == this.calenderId);
+      this.selCalYr = this.calendarList.find((s:any) => s.id == this.calenderId);
 
     }
     else {
-      this.parentList = this.assessList.filter(s => s.isActive != false);
+      this.parentList = this.assessList.filter((s:any) => s.isActive != false);
       this.assessItem = new Assessment(0, '', '', 0,0,'',true, true, true, true, true, true,true, true, true,'',true,'' );
       this.empItem = new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true, 0, 0,0);
       this.calendarItem = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
@@ -114,7 +114,9 @@ calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
     jQuery("#myModal").modal('show');
   }
  getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -127,19 +129,19 @@ calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
 
   getEmpName(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
+    temp = this.employeeList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.firstName+ ' '+temp.lastName : '';
     return name;
   }
   getEmpId(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
+    temp = this.employeeList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.employeeId: '';
     return name;
   }
   getEmpEmail(id: number){
     var temp: any;
-    temp = this.employeeList.find(s => s.id == id);
+    temp = this.employeeList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.email: '';
     return name;
   }
@@ -147,7 +149,7 @@ calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
 
   getCalName(id: number){
     var temp: any;
-    temp = this.calendarList.find(s => s.id == id);
+    temp = this.calendarList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined')? temp.fiscalYear : '';
     return name;
   }
@@ -160,20 +162,20 @@ calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
         // for(let des of this.assessList) {
         //   this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_API,des.fkEmpId).then((datam:any) => {
         //   this.empItem = datam;
-        //   this.assessList.find(s => s.fkEmpId === this.empItem.id)['fkEmpId'] = this.empItem.firstName;
+        //   this.assessList.find((s:any) => s.fkEmpId === this.empItem.id)['fkEmpId'] = this.empItem.firstName;
         //  });  
         // }
 
         // for(let des of this.assessList) {
         //   this.httpService.getById(APIURLS.BR_MASTER_CALENDAR_INSERT_API,des.fkCalendarId).then((datam:any) => {
         //   this.calendarItem = datam;
-        //   this.assessList.find(s => s.fkCalendarId === this.calendarItem.id)['fkCalendarId'] = this.calendarItem.fiscalYear;
+        //   this.assessList.find((s:any) => s.fkCalendarId === this.calendarItem.id)['fkCalendarId'] = this.calendarItem.fiscalYear;
         //  });  
         // }
 
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.assessList = [];
     });
@@ -190,8 +192,8 @@ calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
     
     let connection: any;
     if(this.assessItem.fkEmpId != null){
-    // if(!this.assessList.some(s => s.name == this.assessItem.name && s.id != this.assessItem.id && s.fkEmpId == this.assessItem.fkEmpId)){ 
-    if(!this.assessList.some(s => s.id != this.assessItem.id && s.fkEmpId == this.assessItem.fkEmpId && s.fkCalendarId == this.assessItem.fkCalendarId) ){ 
+    // if(!this.assessList.some((s:any) => s.name == this.assessItem.name && s.id != this.assessItem.id && s.fkEmpId == this.assessItem.fkEmpId)){ 
+    if(!this.assessList.some((s:any) => s.id != this.assessItem.id && s.fkEmpId == this.assessItem.fkEmpId && s.fkCalendarId == this.assessItem.fkCalendarId) ){ 
       this.assessItem.name="Assessment "+this.assessItem.fkEmpId;
       if (!this.isEdit){
         this.assessItem.employeePcpStatus = 'System Initiated';
@@ -216,7 +218,7 @@ calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
          jQuery("#myModal").modal('hide');
           //this.getAssessList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Assessment data..';
       });
@@ -265,7 +267,8 @@ calendarItem: Calendar = new Calendar(0, '', '', 0, '', '', '', 0, 0, 0);
     // debugger;
     if(this.filteredEmployee)
      this.filteredEmployee.pop();
-    this.employeeList.forEach(element => {
+    this.employeeList.forEach((element:any)=> {
+
       this.filteredEmployee.push(element);
     });
   }

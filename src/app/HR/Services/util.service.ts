@@ -51,7 +51,7 @@ export class Util{
       } else
       console.log("Error while saving the letter "+data);
     }
-    ).catch(error => {
+    ).catch((error)=> {
       console.log("Error while saving the letter "+error);
     });  
   }
@@ -65,7 +65,7 @@ export class Util{
       } else
       console.log("Error while saving the letter activity "+data);
     }
-    ).catch(error => {
+    ).catch((error)=> {
       console.log("Error while saving the letter activity "+error);
     });  
   }
@@ -81,7 +81,7 @@ export class Util{
       toastr.error("You are not authorized to approve this.");
       }
     }
-    ).catch(error => {
+    ).catch((error)=> {
       toastr.error("You are not authorized to approve this.");
     });  
   }

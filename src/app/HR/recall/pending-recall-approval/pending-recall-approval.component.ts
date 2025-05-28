@@ -30,7 +30,7 @@ declare var require: any;
 export class PendingRecallApprovalComponent implements OnInit {
 @ViewChild(ReadonlyemployeeSalaryComponent, { static: false }) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   appraisalId: any;
   objectType: string = "Recall";
   employeeId: any;
@@ -88,7 +88,8 @@ export class PendingRecallApprovalComponent implements OnInit {
     this.employeeRecallId = this.route.snapshot.paramMap.get('id')!;
     this.taskId = this.route.snapshot.paramMap.get('id2')!;
     this.employeeId = this.route.snapshot.paramMap.get('id3')!;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));  
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;  
     this.util.canApproveTask(this.taskId, this.currentUser.uid);
     this.getRecallDetails(this.employeeRecallId);
     this.GetResignationDetails(this.employeeId);
@@ -113,14 +114,14 @@ export class PendingRecallApprovalComponent implements OnInit {
           this.lastWorkingDate = this.getDateFormate(this.resignationDetails.lastWorkingDate);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
 
   }
   allowanceDetails: any;
-  getRecallDetails(id) {
+  getRecallDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.RECALL_GET_DETAILS_BY_ID, id).then((data: any) => {
@@ -131,82 +132,82 @@ export class PendingRecallApprovalComponent implements OnInit {
         this.employeeId = data.employeeId;
         if(this.recallDetail.recallSalaryHeadDetails && this.recallDetail.recallSalaryHeadDetails.length > 0){
           for(var item of this.recallDetail.recallSalaryHeadDetails){            
-            item.salaryTypeName = this.headTypes.find(x => x.type == item.salaryType).value;
-            item.frequencyName = this.frequency.find(x => x.type == item.frequency).value;
+            item.salaryTypeName = this.headTypes.find((x:any)  => x.type == item.salaryType).value;
+            item.frequencyName = this.frequency.find((x:any)  => x.type == item.frequency).value;
           }
-          this.monthlyComponents = this.recallDetail.recallSalaryHeadDetails.filter(x=>x.salaryType=="I" && x.frequency == "M");
-          this.annualComponents = this.recallDetail.recallSalaryHeadDetails.filter(x=>x.salaryType!="V" && x.frequency == "A");
-          this.variableComponents = this.recallDetail.recallSalaryHeadDetails.filter(x=>x.salaryType =="V");
-          this.onetimeComponents = this.recallDetail.recallSalaryHeadDetails.filter(x=>x.salaryType =="O" && x.frequency == "O");
+          this.monthlyComponents = this.recallDetail.recallSalaryHeadDetails.filter((x:any)=>x.salaryType=="I" && x.frequency == "M");
+          this.annualComponents = this.recallDetail.recallSalaryHeadDetails.filter((x:any)=>x.salaryType!="V" && x.frequency == "A");
+          this.variableComponents = this.recallDetail.recallSalaryHeadDetails.filter((x:any)=>x.salaryType =="V");
+          this.onetimeComponents = this.recallDetail.recallSalaryHeadDetails.filter((x:any)=>x.salaryType =="O" && x.frequency == "O");
           this.calculateTotals();
         }
-        if(this.recallDetail.jobChangeDetails.find(x => x.type == "Role") != null)
+        if(this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Role") != null)
         {
-        this.oldRole = this.recallDetail.jobChangeDetails.find(x => x.type == "Role").oldValueText
-        this.newRole = this.recallDetail.jobChangeDetails.find(x => x.type == "Role").newValueText
+        this.oldRole = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Role").oldValueText
+        this.newRole = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Role").newValueText
         this.isJobDetailsChanged=true;
         }
-        if(this.recallDetail.jobChangeDetails.find(x => x.type == "StaffCategory") != null)
+        if(this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "StaffCategory") != null)
         {
-        this.oldCategory = this.recallDetail.jobChangeDetails.find(x => x.type == "StaffCategory").oldValueText
-        this.newCategory = this.recallDetail.jobChangeDetails.find(x => x.type == "StaffCategory").newValueText
+        this.oldCategory = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "StaffCategory").oldValueText
+        this.newCategory = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "StaffCategory").newValueText
         this.isJobDetailsChanged=true;
         }
-        if(this.recallDetail.jobChangeDetails.find(x => x.type == "State") != null)
+        if(this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "State") != null)
         {
-        this.oldState = this.recallDetail.jobChangeDetails.find(x => x.type == "State").oldValueText
-        this.newState = this.recallDetail.jobChangeDetails.find(x => x.type == "State").newValueText
+        this.oldState = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "State").oldValueText
+        this.newState = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "State").newValueText
         this.isJobDetailsChanged=true;
         }
-        if(this.recallDetail.jobChangeDetails.find(x => x.type == "Department") != null)
+        if(this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Department") != null)
         {
-        this.oldDepartment = this.recallDetail.jobChangeDetails.find(x => x.type == "Department").oldValueText
-        this.newDepartment = this.recallDetail.jobChangeDetails.find(x => x.type == "Department").newValueText
+        this.oldDepartment = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Department").oldValueText
+        this.newDepartment = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Department").newValueText
         this.isJobDetailsChanged=true;
         }
-        if(this.recallDetail.jobChangeDetails.find(x => x.type == "Designation") != null)
+        if(this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Designation") != null)
         {
-        this.oldDesignation = this.recallDetail.jobChangeDetails.find(x => x.type == "Designation").oldValueText
-        this.newDesignation = this.recallDetail.jobChangeDetails.find(x => x.type == "Designation").newValueText
+        this.oldDesignation = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Designation").oldValueText
+        this.newDesignation = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Designation").newValueText
         this.isJobDetailsChanged=true;
         }
-        if(this.recallDetail.jobChangeDetails.find(x => x.type == "PayGroup") != null)
+        if(this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "PayGroup") != null)
         {
-        this.oldPayGroup = this.recallDetail.jobChangeDetails.find(x => x.type == "PayGroup").oldValueText
-        this.newPayGroup = this.recallDetail.jobChangeDetails.find(x => x.type == "PayGroup").newValueText
+        this.oldPayGroup = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "PayGroup").oldValueText
+        this.newPayGroup = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "PayGroup").newValueText
         this.isJobDetailsChanged=true;
         }
-        if(this.recallDetail.jobChangeDetails.find(x => x.type == "Location") != null)
+        if(this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Location") != null)
         {
-        this.oldLocation = this.recallDetail.jobChangeDetails.find(x => x.type == "Location").oldValueText
-        this.newLocation = this.recallDetail.jobChangeDetails.find(x => x.type == "Location").newValueText
+        this.oldLocation = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Location").oldValueText
+        this.newLocation = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Location").newValueText
         this.isJobDetailsChanged=true;
         }
-        if(this.recallDetail.jobChangeDetails.find(x => x.type == "SubDepartment") != null)
+        if(this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "SubDepartment") != null)
         {
-        this.oldSubDepartment = this.recallDetail.jobChangeDetails.find(x => x.type == "SubDepartment").oldValueText
-        this.newSubDepartment = this.recallDetail.jobChangeDetails.find(x => x.type == "SubDepartment").newValueText
+        this.oldSubDepartment = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "SubDepartment").oldValueText
+        this.newSubDepartment = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "SubDepartment").newValueText
         this.isJobDetailsChanged=true;
         }
-          if (this.recallDetail.jobChangeDetails.find(x => x.type == "Plant") != null) {
-              this.oldPlant = this.recallDetail.jobChangeDetails.find(x => x.type == "Plant").oldValueText
-              this.newPlant = this.recallDetail.jobChangeDetails.find(x => x.type == "Plant").newValueText
+          if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Plant") != null) {
+              this.oldPlant = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Plant").oldValueText
+              this.newPlant = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "Plant").newValueText
               this.isJobDetailsChanged=true;
           }
-          if (this.recallDetail.jobChangeDetails.find(x => x.type == "HOD") != null) {
-            this.oldHOD = this.recallDetail.jobChangeDetails.find(x => x.type == "HOD").oldValueText
-            this.newHOD = this.recallDetail.jobChangeDetails.find(x => x.type == "HOD").newValueText
+          if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "HOD") != null) {
+            this.oldHOD = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "HOD").oldValueText
+            this.newHOD = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "HOD").newValueText
             this.isJobDetailsChanged=true;
         }
-        if (this.recallDetail.jobChangeDetails.find(x => x.type == "ReportingManager") != null) {
-          this.oldRM = this.recallDetail.jobChangeDetails.find(x => x.type == "ReportingManager").oldValueText
-          this.newRM = this.recallDetail.jobChangeDetails.find(x => x.type == "ReportingManager").newValueText
+        if (this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "ReportingManager") != null) {
+          this.oldRM = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "ReportingManager").oldValueText
+          this.newRM = this.recallDetail.jobChangeDetails.find((x:any)  => x.type == "ReportingManager").newValueText
           this.isJobDetailsChanged=true;
       }
       
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -236,7 +237,7 @@ export class PendingRecallApprovalComponent implements OnInit {
             this.location.back();
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error("Error occured.");
       });
     }
@@ -274,7 +275,7 @@ export class PendingRecallApprovalComponent implements OnInit {
             this.location.back();
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
       });
     }

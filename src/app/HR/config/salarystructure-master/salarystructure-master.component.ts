@@ -18,10 +18,10 @@ declare var toastr: any;
   providers: [Util]
 })
 export class SalarystructureMasterComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   filterModel: any = {};
   filterData: any = {}
   item: any = {};
@@ -38,7 +38,8 @@ export class SalarystructureMasterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.salaryType = '';
     this.filterModel.frequency = '';
@@ -61,17 +62,17 @@ export class SalarystructureMasterComponent implements OnInit {
     this.httpService.HRpost(APIURLS.BR_GET_SALARY_HEAD_LIST_BY_FILTER, this.filterModel).then((data: any) => {
       this.filterData = data;
       for (var item of this.filterData.list) {
-        if (this.salaryTypes.find(x => x.type == item.salaryType) != null) {
-          this.item.salaryType = this.salaryTypes.find(x => x.type == item.salaryType).text;
-          item.salaryTypeText = this.salaryTypes.find(x => x.type == item.salaryType).text;
+        if (this.salaryTypes.find((x:any)  => x.type == item.salaryType) != null) {
+          this.item.salaryType = this.salaryTypes.find((x:any)  => x.type == item.salaryType).text;
+          item.salaryTypeText = this.salaryTypes.find((x:any)  => x.type == item.salaryType).text;
         }
-        if (this.salaryFrequency.find(x => x.type == item.salaryPayableFrequency) != null) {
-          this.item.salaryPayableFrequency = this.salaryFrequency.find(x => x.type == item.salaryPayableFrequency).text;
-          item.salaryPayableFrequencyText = this.salaryFrequency.find(x => x.type == item.salaryPayableFrequency).text;
+        if (this.salaryFrequency.find((x:any)  => x.type == item.salaryPayableFrequency) != null) {
+          this.item.salaryPayableFrequency = this.salaryFrequency.find((x:any)  => x.type == item.salaryPayableFrequency).text;
+          item.salaryPayableFrequencyText = this.salaryFrequency.find((x:any)  => x.type == item.salaryPayableFrequency).text;
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the list. Error: " + error);
       this.isLoading = false;
     });
@@ -130,7 +131,7 @@ export class SalarystructureMasterComponent implements OnInit {
           this.getData();
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error adding details...' + error);
       })
@@ -174,7 +175,7 @@ export class SalarystructureMasterComponent implements OnInit {
           this.getData();
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error updating details...' + error);
       })
@@ -193,7 +194,7 @@ export class SalarystructureMasterComponent implements OnInit {
     this.clearInput();
   }
 
-  EditLine(item, index) {
+  EditLine(item:any, index:any) {
     this.item = Object.assign({}, item);
     this.isEdit = true;
     this.editIndex = index;
@@ -229,16 +230,16 @@ export class SalarystructureMasterComponent implements OnInit {
     this.httpService.HRpost(APIURLS.BR_GET_SALARY_HEAD_LIST_BY_FILTER, this.filterModel).then((data: any) => {
       this.filterModel.export = false;
       for (var item of data.list) {
-        if (this.salaryTypes.find(x => x.type == item.salaryType) != null) {
-          item.salaryTypeText = this.salaryTypes.find(x => x.type == item.salaryType).text;
+        if (this.salaryTypes.find((x:any)  => x.type == item.salaryType) != null) {
+          item.salaryTypeText = this.salaryTypes.find((x:any)  => x.type == item.salaryType).text;
         }
-        if (this.salaryFrequency.find(x => x.type == item.salaryPayableFrequency) != null) {
-          item.salaryPayableFrequencyText = this.salaryFrequency.find(x => x.type == item.salaryPayableFrequency).text;
+        if (this.salaryFrequency.find((x:any)  => x.type == item.salaryPayableFrequency) != null) {
+          item.salaryPayableFrequencyText = this.salaryFrequency.find((x:any)  => x.type == item.salaryPayableFrequency).text;
         }
       }
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index = index + 1;
         let exportItem = {
           "Sl No": index,
@@ -274,7 +275,7 @@ export class SalarystructureMasterComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'SalaryHead_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');

@@ -23,30 +23,30 @@ export class GeOutSubContractSecurityComponent implements OnInit {
  @ViewChild('userForm', { static: false }) userForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
-  fiscalYear: string;
+  path!: string
+  fiscalYear: string
   errMsg: string = "";
   errMsgPop: string = "";
   errMsgModalPop: string = "";
-  isEdit: boolean;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  isLoadingBAPI: boolean;
+  isEdit!: boolean;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  isLoadingBAPI!: boolean;
   gateOutwardMModel = {} as GateOutwardMaster;
   gateOutwardDModel = {} as GateOutwardD;
   gateEntryHeaderModel = {} as GateEntryHeader;
   gateOutwardMList: GateOutwardMaster[] = [];
   gateOutwardDList: GateOutwardD[] = [];
-  pO_No: string;
+  pO_No: string
   qtY_RCVD: any;
   entryDateTime: Date = new Date();
-  userName: string;
+  userName: string
   OUT_TIME: any;
-  reason: string;
-  gONo: string;
-  sendingPersonName: string;
+  reason: string
+  gONo: string
+  sendingPersonName: string
 
   elementtype:string;
 
@@ -61,7 +61,8 @@ export class GeOutSubContractSecurityComponent implements OnInit {
     // this.fiscalYear = today.getFullYear() + '-' + (today.getFullYear() + 1).toString().substr(-2);
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.userName = this.currentUser.fullName;
       this.getLocationById(this.currentUser.baselocation);
       this.getPlantsassigned(this.currentUser.fkEmpId);
@@ -138,10 +139,10 @@ export class GeOutSubContractSecurityComponent implements OnInit {
             }
             else {
               this.gateOutwardMModel = goData[0];
-              this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
+              this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
               this.sendingPersonName = this.gateOutwardMModel.sendingPersonName;
               // this.sendingPersonName = this.sendingPERSON.firstName + ' ' + this.sendingPERSON.middleName + ' ' + this.sendingPERSON.lastName;
-              this.sendingDEPTNAME = this.departmentList.find(x => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
+              this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
               this.fiscalYear = this.gateOutwardMModel.fiN_YEAR;
               this.getOutWardMaterial(this.gateOutwardMModel.id);
             }
@@ -157,7 +158,7 @@ export class GeOutSubContractSecurityComponent implements OnInit {
           }
         }
         this.isLoadingBAPI = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingBAPI = false;
         this.gateOutwardMModel = {} as GateOutwardMaster;
       });
@@ -167,18 +168,18 @@ export class GeOutSubContractSecurityComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_MASTER_GATEOUTWARDD_ANY_API, fkHId).then((data: any) => {
       this.isLoadingBAPI = true;
       if (data) {
-        data.forEach(mtrl => {
+        data.forEach((mtrl:any) => {
           this.gateOutwardDList = data;
         });
       }
       this.isLoadingBAPI = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingBAPI = false;
       this.gateOutwardDList = [];
     });
   }
-  locationName: string;
-  plant: string;
+  locationName: string
+  plant!: string
   getLocationById(lId: number) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_LOCATION_MASTER_API, lId).then((data: any) => {
@@ -188,7 +189,7 @@ export class GeOutSubContractSecurityComponent implements OnInit {
       //  this.loadGateOutwardList('load');
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plant = '';
       this.locationName = '';
@@ -197,7 +198,7 @@ export class GeOutSubContractSecurityComponent implements OnInit {
   plantList:any[]=[];
   location:any[]=[]; 
   baseloc={fkPlantId:0,code:'',name:''}
-  getPlantsassigned(id)
+  getPlantsassigned(id:any)
   {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
@@ -206,7 +207,8 @@ export class GeOutSubContractSecurityComponent implements OnInit {
         let temp=this.plantList.find(x=>x.fkPlantId == this.currentUser.baselocation);
         if(temp == null || temp == undefined)
         {
-          this.location.forEach(element => {
+          this.location.forEach((element:any)=> {
+
             this.baseloc.fkPlantId=element.id;
             this.baseloc.code=element.code;
             this.baseloc.name=element.name;
@@ -217,7 +219,7 @@ export class GeOutSubContractSecurityComponent implements OnInit {
        this.loadGateOutwardList('load');  
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -229,12 +231,12 @@ export class GeOutSubContractSecurityComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_MASTER_LOCATIONGATE_MASTER_ANY_API, this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
         this.locationGateList = data;
-        this.selGateLocation = this.locationGateList.find(x => x.gateNo == '1');
-        // this.selGateLocation = this.locationGateList.find(x => x.gateNo == 'G1');
+        this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == '1');
+        // this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == 'G1');
         // this.gateNo = this.selGateLocation.id;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationGateList = [];
     });
@@ -248,7 +250,7 @@ export class GeOutSubContractSecurityComponent implements OnInit {
         this.locationList = data;
         //this.selDestination = null;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -259,9 +261,9 @@ export class GeOutSubContractSecurityComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_EMPLOYEEMASTER_API_GET).then((data: any) => {
       if (data.length > 0) {
-        this.employeeList = data.map((i) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
+        this.employeeList = data.map((i:any) => { i.empfull = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.employeeList = [];
     });
@@ -274,7 +276,7 @@ export class GeOutSubContractSecurityComponent implements OnInit {
       if (data.length > 0) {
         this.departmentList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.departmentList = [];
     });
@@ -316,9 +318,9 @@ export class GeOutSubContractSecurityComponent implements OnInit {
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   delete: boolean = false;
-  fltrGONO: string;
-  fltrInvoiceNo: string;
-  fltrDCNO: string;
+  fltrGONO: string
+  fltrInvoiceNo: string
+  fltrDCNO: string
   loadGateOutwardList(action) {
     this.isLoading = true;
     var genericGateEntryM = {} as GenericGateEntryM;
@@ -342,7 +344,7 @@ export class GeOutSubContractSecurityComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.gateOutwardMList = [];
     });
@@ -366,13 +368,13 @@ export class GeOutSubContractSecurityComponent implements OnInit {
     this.resetForm();
     if (isedit) {
       this.gateOutwardMModel = Object.assign({},gateOutwardM);
-      let postedlocation = this.locationList.find(x => x.code == this.gateOutwardMModel.planT_ID);
+      let postedlocation = this.locationList.find((x:any)  => x.code == this.gateOutwardMModel.planT_ID);
       this.locationName = postedlocation ? postedlocation.code + '-' + postedlocation.name : '';
-      this.selGateLocation = this.locationGateList.find(x => x.gateNo == this.gateOutwardMModel.gO_GATENO);
-      this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
+      this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == this.gateOutwardMModel.gO_GATENO);
+      this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
       this.sendingPersonName = this.gateOutwardMModel.sendingPersonName;
       // this.sendingPersonName = this.sendingPERSON.firstName + ' ' + this.sendingPERSON.middleName + ' ' + this.sendingPERSON.lastName;
-      //this.sendingDEPTNAME = this.departmentList.find(x => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
+      //this.sendingDEPTNAME = this.departmentList.find((x:any)  => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
       this.fiscalYear = this.gateOutwardMModel.fiN_YEAR;
       if (this.gateOutwardMModel.ouT_TIME != null)
         this.OUT_TIME = this.gateOutwardMModel.ouT_TIME;
@@ -380,7 +382,7 @@ export class GeOutSubContractSecurityComponent implements OnInit {
         if (data) {
           this.gateOutwardDList = data;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.gateOutwardDList = [];
       });
     }
@@ -451,7 +453,7 @@ export class GeOutSubContractSecurityComponent implements OnInit {
               });
             }
             this.isLoadingPop = false;
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error Gate Entry...';
           });

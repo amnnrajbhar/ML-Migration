@@ -17,8 +17,8 @@ export class FormMasterComponent implements OnInit {
 
  
   public tableWidget: any;
-  formList: any[];
-  parentList: any[];
+  formList!: any[];
+  parentList!: any[];
   selParentRole: any;
   formItem={} as Form;
   isLoading: boolean = false;
@@ -63,11 +63,11 @@ export class FormMasterComponent implements OnInit {
     this.isLoadingPop = false;
     if (this.isEdit) {
       this.formItem = data;
-      this.parentList = this.formList.filter(s => s.isActive != false);
-      // this.selParentRole = this.formList.find(s => s.id === this.formItem.fkParentId);
+      this.parentList = this.formList.filter((s:any) => s.isActive != false);
+      // this.selParentRole = this.formList.find((s:any) => s.id === this.formItem.fkParentId);
     }
     else {
-      this.parentList = this.formList.filter(s => s.isActive != false);;
+      this.parentList = this.formList.filter((s:any) => s.isActive != false);;
       this.formItem = new Form(0, '', '', '','',0, 0, 0, 0, 0, true,0);
       this.selParentRole = null;
     }
@@ -86,7 +86,7 @@ export class FormMasterComponent implements OnInit {
         
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.formList = [];
     });
@@ -98,7 +98,7 @@ export class FormMasterComponent implements OnInit {
     //   }
     //   else 
     //   this.errMsgPop = data;
-    // }).catch(error => {
+    // }).catch((error)=> {
     //   this.isLoading = false;
     //   this.formList = [];
     // });
@@ -134,7 +134,7 @@ export class FormMasterComponent implements OnInit {
           // else 
           //   this.errMsgPop = data;
           
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving form data..';
         });

@@ -28,7 +28,7 @@ export class PendingEmployeeProfileComponent implements OnInit {
   details:any={};
   objectType: string = "Employee";
   objectTypeProfile: string = "Employee Profile";
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   isLoading: boolean = false;
@@ -49,7 +49,8 @@ export class PendingEmployeeProfileComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;
       this.taskId = this.route.snapshot.paramMap.get('id1')!;
       this.profileId = this.route.snapshot.paramMap.get('id2')!;
@@ -60,7 +61,7 @@ export class PendingEmployeeProfileComponent implements OnInit {
     this.getProfileData(this.profileId);
   }
 
-  LoadEmployeeDetails(id) {
+  LoadEmployeeDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -68,7 +69,7 @@ export class PendingEmployeeProfileComponent implements OnInit {
         this.details = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -84,7 +85,7 @@ export class PendingEmployeeProfileComponent implements OnInit {
         console.log(this.profileDetails);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -129,7 +130,7 @@ approve(){
           this.location.back();
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error occured.");
     });
   }
@@ -158,7 +159,7 @@ reject() {
           this.location.back();
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }

@@ -16,18 +16,18 @@ declare var toastr: any;
 })
 export class FnfApprovalListComponent implements OnInit {
   id: number = 0;
-  action: string;
+  action: string
   isLoading: boolean = false;
   plantList: any[] = [];
   payGroupList: any[] = [];
   employeeCategoryList: any[] = [];
   filterData: any = {};
-  currentUser: AuthData;
+  currentUser!: AuthData;
   from_date: any = null;
   to_date: any = null;
   name:string="";
   fnfId: number = 0;
-  comments: string;
+  comments: string
   reisinationList1: any[] = [];
 
   filterModel: FNFListFilter = {} as FNFListFilter;
@@ -37,7 +37,8 @@ export class FnfApprovalListComponent implements OnInit {
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     
     this.getFNFList();
@@ -61,9 +62,9 @@ export class FnfApprovalListComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.RESIGNATION_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -74,9 +75,9 @@ export class FnfApprovalListComponent implements OnInit {
     if (this.selectedPlant.id > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.selectedPlant.id).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -89,9 +90,9 @@ export class FnfApprovalListComponent implements OnInit {
     this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
       .then((data: any) => {
         if (data.length > 0) {
-          this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+          this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.employeeCategoryList = [];
       });
   }
@@ -101,9 +102,9 @@ export class FnfApprovalListComponent implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -114,9 +115,9 @@ export class FnfApprovalListComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -203,7 +204,7 @@ export class FnfApprovalListComponent implements OnInit {
         item.earningsTotal = earningsTotal;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -240,7 +241,7 @@ export class FnfApprovalListComponent implements OnInit {
       let index=0;
       this.earningHeads = [];
       this.deductionHeads = [];
-      this.fnfList1.forEach(item => {        
+      this.fnfList1.forEach((item :any) => {        
         var earningsTotal =0;
         for(var details of item.fnfSettlementDetailsViewModel){
           if(details.type=="Earnings"){
@@ -257,7 +258,7 @@ export class FnfApprovalListComponent implements OnInit {
         }
         item.earningsTotal = earningsTotal;         
       });
-      this.fnfList1.forEach(item => {
+      this.fnfList1.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No":index,
@@ -289,16 +290,16 @@ export class FnfApprovalListComponent implements OnInit {
      
       this.excelService.exportAsExcelFile(exportList, 'FNF_Approval_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       toastr.error('Error occurred while fetching data.');   
-      console.log(error);
+      //console.log(error);
       return;
     });    
   }
 
-  submitForApproval(id) {
+  submitForApproval(id:any) {
     if (confirm("Are you sure you want to submit this for approval?")) {
       var request: any = {};
       request.employeeFNFId = id;
@@ -314,7 +315,7 @@ export class FnfApprovalListComponent implements OnInit {
             toastr.error(data.message);
           } else
           toastr.error("Error occurred.");
-        }).catch(error => {
+        }).catch((error)=> {
           toastr.error(error);
         });
     }

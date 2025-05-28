@@ -22,7 +22,7 @@ declare var toastr: any;
 })
 export class ViewComponent implements OnInit {
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   objectType: string = "Transfer";
   employeeId: any;
   transferId: any;
@@ -47,7 +47,8 @@ export class ViewComponent implements OnInit {
 
   ngOnInit() {
     this.transferId = this.route.snapshot.paramMap.get('id')!;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));  
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;  
     this.getTransferDetails(this.transferId);
   }
 
@@ -58,7 +59,7 @@ export class ViewComponent implements OnInit {
 
   }
 
-  getTransferDetails(id) {
+  getTransferDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.HR_TRANSFER_GET_DETAILS_BY_ID, id).then((data: any) => {
@@ -68,7 +69,7 @@ export class ViewComponent implements OnInit {
         this.jobChangeDetails = data.jobChangeDetailsList;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

@@ -36,7 +36,7 @@ import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 declare var require: any;
 
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-ItemCodeExtension',
@@ -44,19 +44,19 @@ import * as FileSaver from 'file-saver';
   styleUrls: ['./ItemCodeExtension.component.css']
 })
 export class ItemCodeExtensionComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  // @ViewChild(NgForm  , { static: false })dataForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })FGNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })LCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })OSENGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PPCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMForm: NgForm;
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  // @ViewChild(NgForm  , { static: false })dataForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })FGNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })LCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })OSENGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PPCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMForm!: NgForm;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();
@@ -78,7 +78,7 @@ export class ItemCodeExtensionComponent implements OnInit {
   isEdit: boolean = false;
 
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   locationList1: any[] = [[]];
@@ -90,18 +90,19 @@ export class ItemCodeExtensionComponent implements OnInit {
   ItemCodeRequestModelList: ItemCodeRequest[] = [];
 
   ItemCodeExtensionlist: ItemCodeExtension[] = [];
-  materialtype: string;
-  comments: string;
-  filterMaterialCode: string = null;
-  filterstatus: string = null;
-  filterlocation: string = null;
-  filterrequest: string = null;
+  materialtype!: string
+  comments: string
+  filterMaterialCode: string = ' ';
+  filterstatus: string = ' ';
+  filterlocation: string = ' ';
+  filterrequest: string = ' ';
   today = new Date();
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   ItemCodeExtensionFilter: ItemCodeExtension[] = [];
-  emailid: string;
-  requestdate: Date;
+  emailid!: string
+
+  requestdate!: Date;
   Approver1: boolean = false;
   Approverid1: string = "";
   Approverid2: string = "";
@@ -109,12 +110,12 @@ export class ItemCodeExtensionComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
+  userid: string
 
 
   storeData: any;
   jsonData: any;
-  fileUploaded: File;
+  fileUploaded!: File;
   worksheet: any;
 
   ItemCodeExtensionModeldata = {} as ItemCodeExtension;
@@ -138,7 +139,8 @@ export class ItemCodeExtensionComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //  this.baseLocation = this.currentUser.baselocation;
     this.emailid = this.currentUser.email;
     this.userid = this.currentUser.employeeId;
@@ -187,11 +189,11 @@ export class ItemCodeExtensionComponent implements OnInit {
 
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
-  getloc(loc) {
+  getloc(loc:any) {
     let loccode = loc.keyValue.split('~');
     return loccode ? loccode[0] : '';
   }
@@ -237,15 +239,17 @@ export class ItemCodeExtensionComponent implements OnInit {
     this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     this.to_date = this.today;
     this.filterMaterialCode = null;
-    this.filterlocation = null;
-    this.filterstatus = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filterrequest = null;
 
   }
 
 
-  location(id) {
-    let loc = this.locationList.find(x => x.id == id);
+  location(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code : "";
   }
 
@@ -255,8 +259,8 @@ export class ItemCodeExtensionComponent implements OnInit {
     this.isGoLoading = true;
 
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -302,8 +306,8 @@ export class ItemCodeExtensionComponent implements OnInit {
      // this.reInitDatatable();
       this.isLoading = false;
       this.isGoLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.isGoLoading = false;
       this.ItemCodeExtensionFilter = [];
@@ -316,14 +320,14 @@ export class ItemCodeExtensionComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.locationList = [];
     });
@@ -338,18 +342,18 @@ export class ItemCodeExtensionComponent implements OnInit {
       if (data.length > 0) {
         this.storagelocationlist = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.storagelocationlist.sort((a, b) => { return collator.compare(a.storageLocationId, b.storageLocationId) });
+        this.storagelocationlist.sort((a:any, b:any) => { return collator.compare(a.storageLocationId, b.storageLocationId) });
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.storagelocationlist = [];
     });
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngAfterViewInit() {
     this.initDatatable();
   }
@@ -364,12 +368,12 @@ export class ItemCodeExtensionComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_MATERIALTYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.materialList = data.filter(x => x.isActive);
+        this.materialList = data.filter((x:any)  => x.isActive);
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.materialList = [];
     });
@@ -380,14 +384,14 @@ export class ItemCodeExtensionComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         //this.materialgroupList = data;
-        this.materialgroupList = data.filter(x => x.stxt != null);
+        this.materialgroupList = data.filter((x:any)  => x.stxt != null);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.materialgroupList.sort((a, b) => { return collator.compare(a.materialGroupId, b.materialGroupId) });
+        this.materialgroupList.sort((a:any, b:any) => { return collator.compare(a.materialGroupId, b.materialGroupId) });
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.materialgroupList = [];
     });
@@ -397,14 +401,14 @@ export class ItemCodeExtensionComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_UOM_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        this.uomMasterList = data.filter(x => x.isActive);
+        this.uomMasterList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.uomMasterList.sort((a, b) => { return collator.compare(a.uom, b.uom) });
+        this.uomMasterList.sort((a:any, b:any) => { return collator.compare(a.uom, b.uom) });
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.uomMasterList = [];
     });
@@ -416,7 +420,7 @@ export class ItemCodeExtensionComponent implements OnInit {
         //  this.ItemCodeRequestModel=data;
         this.ItemCodeRequestModelList = data;
         Object.assign(this.ItemCodeRequestModel, data);
-        let value = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code)
+        let value = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code)
         Object.assign(this.ItemCodeRequestModel, value);
         if (this.ItemCodeRequestModel.sapCodeExists == '1') {
           this.ItemCodeRequestModel.sapCodeExists = 'No';
@@ -424,16 +428,16 @@ export class ItemCodeExtensionComponent implements OnInit {
         else {
           this.ItemCodeRequestModel.sapCodeExists = 'Yes';
         }
-        this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).locationId;
-       // this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).hsnCode;
-        let strloc = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code);
-        let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-        this.storagelocationlist1 = this.storagelocationlist.filter(x => x.storageLocationId == strloc.storageLocationId &&  x.matType == type.type);
-        //let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-        this.storagelocationlist2 = this.storagelocationlist.filter(x => x.matType == type.type);
-        let temp = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code);
-        this.locationList1 = this.locationList.filter(x => x.id == temp.locationId);
-        this.materialtype = this.materialList.find(x => x.id == +temp.materialTypeId).type;
+        this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).locationId;
+       // this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).hsnCode;
+        let strloc = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code);
+        let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+        this.storagelocationlist1 = this.storagelocationlist.filter((x:any)  => x.storageLocationId == strloc.storageLocationId &&  x.matType == type.type);
+        //let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+        this.storagelocationlist2 = this.storagelocationlist.filter((x:any)  => x.matType == type.type);
+        let temp = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code);
+        this.locationList1 = this.locationList.filter((x:any)  => x.id == temp.locationId);
+        this.materialtype = this.materialList.find((x:any)  => x.id == +temp.materialTypeId).type;
         this.ItemCodeExtensionModel.materialTypeId = temp.materialTypeId;
         //this.ItemCodeExtensionModel.hsnCode=this.ItemCodeRequestModel.storageLocationId;
         //  this.ItemCodeExtensionModel.storageLocationId1=this.ItemCodeRequestModel.storageLocationId;
@@ -449,8 +453,8 @@ export class ItemCodeExtensionComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.ItemCodeRequestModelList = [];
     });
@@ -467,7 +471,7 @@ export class ItemCodeExtensionComponent implements OnInit {
         this.ItemCodeRequestModelList1 = data;
 
           Object.assign(this.ItemCodeRequestModel, data);
-        let value = this.ItemCodeRequestModelList1.find(x => x.sapCodeNo == code)
+        let value = this.ItemCodeRequestModelList1.find((x:any)  => x.sapCodeNo == code)
         Object.assign(this.ItemCodeRequestModel, value);
         
         if (this.ItemCodeRequestModelList1[0].sapCodeExists == '1') {
@@ -477,19 +481,19 @@ export class ItemCodeExtensionComponent implements OnInit {
           this.ItemCodeRequestModel.sapCodeExists = 'Yes';
         }
         this.ItemCodeRequestModel.materialGroupId=this.ItemCodeRequestModelList1[0].materialGroup;
-        this.ItemCodeExtensionModel.materialTypeId=this.materialList.find(x => x.type == this.ItemCodeRequestModelList1[0].materialType).id.toString();
+        this.ItemCodeExtensionModel.materialTypeId=this.materialList.find((x:any)  => x.type == this.ItemCodeRequestModelList1[0].materialType).id.toString();
         this.ItemCodeRequestModel.unitOfMeasId=this.ItemCodeRequestModelList1[0].unitOfMeasId;
         this.ItemCodeRequestModel.storageLocationId=this.ItemCodeRequestModelList1[0].storageLoc;
-       // this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).locationId;
-       // this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).hsnCode;
-        let strloc = this.ItemCodeRequestModelList1.find(x => x.sapCodeNo == code);
-        //let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-        this.storagelocationlist1 = this.storagelocationlist.filter(x => x.storageLocationId == strloc.storageLoc &&  x.matType == this.ItemCodeRequestModelList1[0].materialType);
-        //let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-        this.storagelocationlist2 = this.storagelocationlist.filter(x => x.matType == this.ItemCodeRequestModelList1[0].materialType);
-        let temp = this.ItemCodeRequestModelList1.find(x => x.sapCodeNo == code);
-        //this.locationList1 = this.locationList.filter(x => x.id == temp.locationId);
-        this.materialtype = this.materialList.find(x => x.type == this.ItemCodeRequestModelList1[0].materialType).type;
+       // this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).locationId;
+       // this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).hsnCode;
+        let strloc = this.ItemCodeRequestModelList1.find((x:any)  => x.sapCodeNo == code);
+        //let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+        this.storagelocationlist1 = this.storagelocationlist.filter((x:any)  => x.storageLocationId == strloc.storageLoc &&  x.matType == this.ItemCodeRequestModelList1[0].materialType);
+        //let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+        this.storagelocationlist2 = this.storagelocationlist.filter((x:any)  => x.matType == this.ItemCodeRequestModelList1[0].materialType);
+        let temp = this.ItemCodeRequestModelList1.find((x:any)  => x.sapCodeNo == code);
+        //this.locationList1 = this.locationList.filter((x:any)  => x.id == temp.locationId);
+        this.materialtype = this.materialList.find((x:any)  => x.type == this.ItemCodeRequestModelList1[0].materialType).type;
         //this.ItemCodeExtensionModel.materialTypeId = temp.materialTypeId;
         //this.ItemCodeExtensionModel.hsnCode=this.ItemCodeRequestModel.storageLocationId;
         //  this.ItemCodeExtensionModel.storageLocationId1=this.ItemCodeRequestModel.storageLocationId;
@@ -505,8 +509,8 @@ export class ItemCodeExtensionComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.ItemCodeRequestModelList = [];
     });
@@ -521,22 +525,22 @@ export class ItemCodeExtensionComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionslist = data;
-        this.transactionslist = this.transactionslist.filter(x => x.processType == 'Item Code Extension' && x.approvalPriority != null);
+        this.transactionslist = this.transactionslist.filter((x:any)  => x.processType == 'Item Code Extension' && x.approvalPriority != null);
         //this.transactionslist.reverse();
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.transactionslist = [];
     });
 
   }
   Approverslist: WorkFlowApprovers[] = [];
-  Aprlpriority: number;
+  Aprlpriority!: number;
   view: boolean = false;
-  getApproversList(value) {
+  getApproversList(value:any) {
     this.Approver1 = false;
     this.Approver2 = false;
     this.Creator = false;
@@ -545,8 +549,8 @@ export class ItemCodeExtensionComponent implements OnInit {
     this.ItemCodeExtensionModel = Object.assign({}, value);
     console.log(this.ItemCodeExtensionModel);
 
-    var loc = this.locationList.find(x => x.id == this.ItemCodeExtensionModel.extendedToPlant1);
-    var mat = this.materialList.find(x => x.id == +this.ItemCodeExtensionModel.materialTypeId);
+    var loc = this.locationList.find((x:any)  => x.id == this.ItemCodeExtensionModel.extendedToPlant1);
+    var mat = this.materialList.find((x:any)  => x.id == +this.ItemCodeExtensionModel.materialTypeId);
     // var matgrp=this.materialgroupList.find(x=>x.materialGroupId==this.ItemCodeRequestModel.materialGroupId);
     if (this.isEdit) {
       var keyvalue = loc.code + '~' + mat.type + '~' + this.ItemCodeExtensionModel.extendedStorageLocation1  + ',' + 2;
@@ -559,11 +563,11 @@ export class ItemCodeExtensionComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.Approverslist = data;
-        this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+        this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
         let empid = this.currentUser.employeeId
         let empName = this.currentUser.fullName;
 
-        let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid || x.parllelApprover1 == empid || x.parllelApprover2 == empid || x.parllelApprover3 == empid || x.parllelApprover4 == empid);
+        let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid || x.parllelApprover1 == empid || x.parllelApprover2 == empid || x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
         if (Appr1 != null || Appr1 != undefined) {
           this.Approverid1 = Appr1.approverId;
@@ -571,7 +575,7 @@ export class ItemCodeExtensionComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr1.priority;
         }
-        let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid || x.parllelApprover1 == empid || x.parllelApprover2 == empid || x.parllelApprover3 == empid || x.parllelApprover4 == empid);
+        let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid || x.parllelApprover1 == empid || x.parllelApprover2 == empid || x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr2 != null || Appr2 != undefined) {
           this.Approver1 = true;
           this.Approver2 = true;
@@ -580,7 +584,7 @@ export class ItemCodeExtensionComponent implements OnInit {
           this.Aprlpriority = Appr2.priority;
         }
 
-        let Appr3 = this.Approverslist.find(x => x.priority == this.ItemCodeExtensionModel.pendingPriority && (x.approverId == empid || x.parllelApprover1 == empid || x.parllelApprover2 == empid || 
+        let Appr3 = this.Approverslist.find((x:any)  => x.priority == this.ItemCodeExtensionModel.pendingPriority && (x.approverId == empid || x.parllelApprover1 == empid || x.parllelApprover2 == empid || 
           x.parllelApprover3 == empid || x.parllelApprover4 == empid));
 
         if (Appr3 != null || Appr3 != undefined) {
@@ -602,7 +606,7 @@ export class ItemCodeExtensionComponent implements OnInit {
           }
         }
         this.transactionslist.forEach((ad) => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority && 
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority && 
             (ad.doneBy == x.approverId || ad.doneBy== x.parllelApprover1 || ad.doneBy == x.parllelApprover2));
           if (temp != undefined) {
             if (ad.transactionType == 1) {
@@ -616,7 +620,7 @@ export class ItemCodeExtensionComponent implements OnInit {
                 ad.status = 'Approved'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 0) {
@@ -636,7 +640,7 @@ export class ItemCodeExtensionComponent implements OnInit {
 
         });
         this.Approverslist.forEach((ad) => {
-          let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority && (x.doneBy == ad.approverId || x.doneBy== ad.parllelApprover1 || x.doneBy == ad.parllelApprover2));
+          let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority && (x.doneBy == ad.approverId || x.doneBy== ad.parllelApprover1 || x.doneBy == ad.parllelApprover2));
           if (temp1 == undefined) {
             let trans = {} as Transactions;
             trans.doneBy = ad.approverId;
@@ -648,12 +652,12 @@ export class ItemCodeExtensionComponent implements OnInit {
           }
 
         });
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.doneOn > b.doneOn) return 1;
           if (a.doneOn < b.doneOn) return -1;
           return 0;
@@ -665,13 +669,13 @@ export class ItemCodeExtensionComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.Approverslist = [];
     });
   }
-  empId: string;
+  empId: string
   onClickNewRequest(isedit: boolean, ItemCodeExtension: ItemCodeExtension, isprint: boolean, value: string) {
     this.isEdit = isedit;
     this.resetForm();
@@ -721,7 +725,7 @@ export class ItemCodeExtensionComponent implements OnInit {
   isValid: boolean = false;
   validatedForm: boolean = true;
 
-  onSaveEntry(status) {
+  onSaveEntry(status:any) {
     this.errMsg = "";
     let connection: any;
     if (this.Approverslist.length == 0) {
@@ -736,7 +740,7 @@ export class ItemCodeExtensionComponent implements OnInit {
     else
     {
       if (!this.isEdit) {
-        let temp = this.ItemCodeRequestModelList1.find(x => x.sapCodeNo == this.ItemCodeExtensionModel.materialCode1);
+        let temp = this.ItemCodeRequestModelList1.find((x:any)  => x.sapCodeNo == this.ItemCodeExtensionModel.materialCode1);
         this.ItemCodeExtensionModel.materialShortName = temp.materialShortName;
        // this.ItemCodeExtensionModel.materialTypeId = temp.materialTypeId;
         this.ItemCodeExtensionModel.createdBy = this.currentUser.employeeId;
@@ -752,7 +756,7 @@ export class ItemCodeExtensionComponent implements OnInit {
             this.ItemCodeExtensionModel.attachments = file;
           }
         }
-        this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+        this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
         this.ItemCodeExtensionModel.approveType = status == "Submit" ? "Submitted" : "Created";
         this.comments=this.ItemCodeExtensionModel.reason;
         connection = this.httpService.post(APIURLS.BR_ITEMCODE_EXTENSION_POST_API, this.ItemCodeExtensionModel);
@@ -772,8 +776,8 @@ export class ItemCodeExtensionComponent implements OnInit {
           this.getAllEntries();
           this.resetForm();
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoadingPop = false;
         this.errMsgPop = 'Error Saving Request: ' + error;
       });
@@ -799,7 +803,8 @@ export class ItemCodeExtensionComponent implements OnInit {
           }
         });
 
-        this.fileslist.forEach(element => {
+        this.fileslist.forEach((element:any)=> {
+
           file = element + "," + file;
         });
 
@@ -826,30 +831,30 @@ export class ItemCodeExtensionComponent implements OnInit {
         this.sendPendingMail('EPending',this.ItemCodeExtensionModel);
         this.resetForm();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Submitting Request ' + this.ItemCodeExtensionModel.requestNo + ": " + error;
     });
   }
 
   Role:any;
-  onreview(status) {
+  onreview(status:any) {
     this.errMsg = "";
     let connection: any;
     let uid = this.currentUser.employeeId;
     if (status == "Rejected") {
-      let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+      let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
         || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
       this.ItemCodeExtensionModel.pendingApprover = '';
-    //  this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+    //  this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     }
     else {
-      let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+      let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
         || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
       this.Role=user.role; 
-      this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find(x => x.priority == user.priority + 1).approverId;
-      this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+      this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).approverId;
+      this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     }
 
 
@@ -882,32 +887,32 @@ export class ItemCodeExtensionComponent implements OnInit {
         this.getAllEntries();
         this.resetForm();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = status == "Rejected" ? "Error Rejecting Request " + this.ItemCodeExtensionModel.requestNo + ": " + error : "Error Reviewing Request " + this.ItemCodeExtensionModel.requestNo + ": " + error;
     });
   }
 
-  onRevertRequest(status) {
+ onRevertRequest(status:any) {
     this.errMsg = "";
     let connection: any;
     if (status == "ReverttoInitiator") {
       let usid = this.currentUser.employeeId;
-      let user = this.Approverslist.find(x => x.approverId == usid || x.parllelApprover1 == usid || x.parllelApprover2 == usid
+      let user = this.Approverslist.find((x:any)  => x.approverId == usid || x.parllelApprover1 == usid || x.parllelApprover2 == usid
         || x.parllelApprover3 == usid || x.parllelApprover4 == usid);
 
-      this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+      this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
       this.ItemCodeExtensionModel.approveType = "Created";
-      this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+      this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     }
     else {
       let uid = this.ItemCodeExtensionModel.modifiedBy;
-      let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+      let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
         || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-      this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find(x => x.priority == user.priority).approverId;
-      this.priority = this.Approverslist.find(x => x.priority == user.priority + 1).priority;
+      this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == user.priority).approverId;
+      this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).priority;
       this.ItemCodeExtensionModel.approveType = "InProcess";
     }
 
@@ -930,8 +935,8 @@ export class ItemCodeExtensionComponent implements OnInit {
         this.Inserttransactions(this.ItemCodeExtensionModel, id)
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Reverting Request " + this.ItemCodeExtensionModel.requestNo + ": " + error;
     });
@@ -942,10 +947,10 @@ export class ItemCodeExtensionComponent implements OnInit {
     let connection: any;
     let uid = this.currentUser.employeeId;
 
-    let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+    let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
       || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-    let temp = this.Approverslist.find(x => x.priority == user.priority + 1);
+    let temp = this.Approverslist.find((x:any)  => x.priority == user.priority + 1);
     if (temp != null || temp != undefined) {
       this.ItemCodeExtensionModel.pendingApprover = temp.approverId;
       this.ItemCodeExtensionModel.approveType = 'InProcess';
@@ -954,7 +959,7 @@ export class ItemCodeExtensionComponent implements OnInit {
       this.ItemCodeExtensionModel.pendingApprover = 'No';
       this.ItemCodeExtensionModel.approveType = 'Completed';
     }
-    this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+    this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     this.ItemCodeExtensionModel.lastApprover = this.currentUser.fullName;
     this.ItemCodeExtensionModel.modifiedBy = this.currentUser.employeeId;
    // this.ItemCodeExtensionModel.modifiedDate = new Date().toLocaleString();
@@ -976,25 +981,25 @@ export class ItemCodeExtensionComponent implements OnInit {
         this.getAllEntries();
         this.resetForm();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Creating Item Code: " + error;
     });
 
   }
-  priority: number;
+  priority!: number;
   oncloserequest(status) {
     this.errMsg = "";
     let connection: any;
 
     if (status == 'Completed') {
       let uid = this.currentUser.employeeId;
-      let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+      let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
         || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-      this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find(x => x.priority == user.priority + 1).approverId;
-      this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+      this.ItemCodeExtensionModel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).approverId;
+      this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
     }
     this.ItemCodeExtensionModel.lastApprover = this.currentUser.fullName;
     this.ItemCodeExtensionModel.modifiedBy = this.currentUser.employeeId;
@@ -1013,8 +1018,8 @@ export class ItemCodeExtensionComponent implements OnInit {
         this.sendMail('Created', this.ItemCodeExtensionModel)
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Closing Request: " + error;
     });
@@ -1040,8 +1045,8 @@ export class ItemCodeExtensionComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error in sending mail: ' + error;
     });
 
@@ -1053,8 +1058,8 @@ export class ItemCodeExtensionComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error in sending mail: ' + error;
     });
 
@@ -1068,17 +1073,17 @@ export class ItemCodeExtensionComponent implements OnInit {
     if (value.length > 0) {
       this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, id, value).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], value, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
 
 
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoading = false;
       });
 
@@ -1096,7 +1101,7 @@ export class ItemCodeExtensionComponent implements OnInit {
       });
     }
   }
-  deletefile(item, name) {
+  deletefile(item:any, name:any) {
 
     if (this.attachments.length > 1) {
       const index = this.attachments.indexOf(name);
@@ -1123,13 +1128,13 @@ export class ItemCodeExtensionComponent implements OnInit {
     //       buttons: [false, true]
     //     })
     //   }
-    // }).catch(error => {
-    //   console.log(error);
+    // }).catch((error)=> {
+    //   //console.log(error);
     //   this.isLoadingPop = false;
     //   this.errMsgPop = 'Error deleting file: ' + error;
     // });
   }
-  removefile(name) {
+  removefile(name:any) {
     const index = this.fileslist.indexOf(name);
     this.fileslist.splice(index, 1);
   }
@@ -1203,7 +1208,7 @@ export class ItemCodeExtensionComponent implements OnInit {
     this.reset();
   }
 
-  ReadAsBase64(file): Promise<any> {
+  ReadAsBase64(file:any): Promise<any> {
     const reader = new FileReader();
     const fileValue = new Promise((resolve, reject) => {
       reader.addEventListener('load', () => {
@@ -1223,7 +1228,7 @@ export class ItemCodeExtensionComponent implements OnInit {
     return fileValue;
   }
 
-  id: string;
+  id: string
   uploadfile() {
     // debugger;
     // this.id='VM001';
@@ -1239,8 +1244,8 @@ export class ItemCodeExtensionComponent implements OnInit {
         // console.log('copied file to server')
         //this.imageFlag = true;
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error uploading file: ' + error;
     });
 
@@ -1248,7 +1253,7 @@ export class ItemCodeExtensionComponent implements OnInit {
 
   pageSize: any = 10;
   pageNo: any;
-  totalCount: number;
+  totalCount!: number;
   totalPages: number
   gotoPage(no) {
     if (this.pageNo == no) return;

@@ -11,18 +11,18 @@ import swal from 'sweetalert';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 import { error } from 'console';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
 import { ExcelService } from '../../shared/excel-service';
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 // import { DISABLED } from '@angular/forms/src/model';
 
 
 declare var jQuery: any;
 export class actionItemModel {
-  description: string;
-  id: number;
-  uname: string;
+  description: string
+  id!: number;
+  uname: string
 }
 @Component({
   selector: 'app-LeaveStructure',
@@ -31,7 +31,7 @@ export class actionItemModel {
 })
 export class LeaveStructurecomponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
+@ViewChild(NgForm, { static: false }) leaveForm!: NgForm;
 
   public filteredItems = [];
   public tableWidget: any;
@@ -47,14 +47,14 @@ export class LeaveStructurecomponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldleavestructureItem: LeaveStructure = new LeaveStructure();
-  auditType: string;
-  aduitpurpose: string;
+  auditType: string
+  aduitpurpose: string
   leavestructureList: any;
   id: any;
   locationAllList: any;
   locationList: any;
   locListCon: any;
-  baseLocation: number;
+  baseLocation!: number;
   public filteredItemsBasePlant = [];
 
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent, private excelService: ExcelService,
@@ -80,7 +80,8 @@ export class LeaveStructurecomponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.baseLocation = this.currentUser.baselocation;
       this.getplantMaster();
       this.getempCatList();
@@ -95,13 +96,13 @@ export class LeaveStructurecomponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -134,7 +135,7 @@ export class LeaveStructurecomponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.leavestructureList = [];
     });
@@ -155,14 +156,14 @@ export class LeaveStructurecomponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
   }
 
-  getStaffCat(id) {
-    let temp = this.empCatList.find(x => x.id == id);
+  getStaffCat(id:any) {
+    let temp = this.empCatList.find((x:any)  => x.id == id);
     return temp ? temp.catltxt : '';
   }
 
@@ -172,11 +173,12 @@ export class LeaveStructurecomponent implements OnInit {
     this.httpService.LAget(APIURLS.GET_LEAVE_TYPES_GETALL).then((data: any) => {
       if (data.length > 0) {
         this.leaveTypeList = data;
-        this.leaveTypeList.forEach(element => {
+        this.leaveTypeList.forEach((element:any)=> {
+
           element.leaveTypes = element.lvShrt + ' - ' + element.lvType;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.leaveTypeList = [];
     });
@@ -207,13 +209,13 @@ export class LeaveStructurecomponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -222,12 +224,12 @@ export class LeaveStructurecomponent implements OnInit {
   payGroupList1: any[] = [];
   getPaygroupsBasedOnPlant() {
     //this.filterPaygroup = null;
-    let temp = this.locationList.find(x => x.code == this.Plant);
-    this.payGroupList1 = temp ? this.payGroupList.filter(x => x.plant == temp.code) : [];
+    let temp = this.locationList.find((x:any)  => x.code == this.Plant);
+    this.payGroupList1 = temp ? this.payGroupList.filter((x:any)  => x.plant == temp.code) : [];
   }
 
-  getPaygroup(id) {
-    let temp = this.payGroupList.find(x => x.id == id);
+  getPaygroup(id:any) {
+    let temp = this.payGroupList.find((x:any)  => x.id == id);
     return temp ? temp.long_Desc : '';
   }
 
@@ -265,8 +267,9 @@ export class LeaveStructurecomponent implements OnInit {
         // this.selectedLeaveList =  this.selectedLeaveList.concat(data.leaveTypeid);
         this.selectedLeaveList = [];
         let leaveTypeIDs: string[] = this.leavestructureItem.leavetypes.split(',');
-        this.leaveTypeList.forEach(element => {
-          if (leaveTypeIDs.find(x => x == element.id)) {
+        this.leaveTypeList.forEach((element:any)=> {
+
+          if (leaveTypeIDs.find((x:any)  => x == element.id)) {
             this.selectedLeaveList.push(element);
             console.log(this.selectedLeaveList);
           }
@@ -335,7 +338,7 @@ export class LeaveStructurecomponent implements OnInit {
       this.leavestructureItem.leavtyp = 'NL'
     }
     if (this.leavestructureItem.awothltyp == true) {
-      this.leavestructureItem.leaveTypeid = this.selectedLeaveList.length > 0 ? this.selectedLeaveList.map(x => x.id).join(',') : null;
+      this.leavestructureItem.leaveTypeid = this.selectedLeaveList.length > 0 ? this.selectedLeaveList.map((x:any)  => x.id).join(',') : null;
     }
     else {
       this.leavestructureItem.leaveTypeid = null;
@@ -384,7 +387,7 @@ export class LeaveStructurecomponent implements OnInit {
           buttons: [false, true],
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Leave data..';
     });
@@ -415,7 +418,7 @@ export class LeaveStructurecomponent implements OnInit {
             jQuery("#saveModal").modal('show');
             this.getLeaveStructureList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting LeaveStructure..';
         });
@@ -448,7 +451,8 @@ export class LeaveStructurecomponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -465,7 +469,7 @@ getHeader(): { headers: HttpHeaders } {
     return formateddate;
   }
 
-  exportList: any[];
+  exportList!: any[];
   exportAsXLSX(): void {
     if (this.leavestructureList == undefined) {
       swal({
@@ -481,7 +485,7 @@ getHeader(): { headers: HttpHeaders } {
     let status: any;
     let index = 0;
     var name = 'Leave Structure Masters Report';
-    this.leavestructureList.forEach(item => {
+    this.leavestructureList.forEach((item :any) => {
       index = index + 1;
       let exportItem = {
         "SNo": index,
@@ -523,186 +527,186 @@ getHeader(): { headers: HttpHeaders } {
 
     this.excelService.exportAsExcelFileForLA(this.exportList, name);
   }
+ //v10
+  // exportExcelLeaveStructure() {
+  //   if (this.leavestructureList == undefined) {
+  //     swal({
+  //       title: "Message",
+  //       text: "Provide required filters to get data...!",
+  //       icon: "error",
+  //       dangerMode: false,
+  //       buttons: [false, true],
+  //     });
+  //     return;
+  //   }
+  //   const title = 'Leave Structure Masters Report';
+  //   const header = ["SNo", "Plant", "PayGroup", "Emp Cat", "Leave Type", "Leave Text", "NO. of Days Leave",
+  //     "Leave Accumulation", "Leave Accumulation Days", "Leave Enchashment", "Leave Enchashment Days", "Minimum Leave Avail",
+  //     "Maximum Leave Avail", "Minimum Gap b/w 2 Leaves", "Half Day Allowed", "Maximum Half Day leaves allowed in a Year",
+  //     "Minimum Attendance required in a Month", "Allow Negative Leave balance", "Negative Days Limit", "Include Weekend In Availed Leaves",
+  //     "Include Company Declared Hoidays In Availed Leaves", "Allow Leave Application to be posted in advance", "Advance Leave Posting Days",
+  //     "Can Leave be availed in Combination of Other Leave", "Combined With", "In a Half year how many Leaves can be availed",
+  //     "Applicable to which Gender", "Applicable With", "Calculate Leave Eligibility after a period",
+  //     "After how many Months", "Auto Approval", "Auto Approval After Days", "Show Zero Leave balance",
+  //     "Created By", "Created Date"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.leavestructureList.forEach((item :any) => {
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slno = index;
+  //     ts.werks = item.werks;
+  //     ts.paygroup = this.getPaygroup(item.paygroup);
+  //     ts.staffcat = this.getStaffCat(item.staffcat);
+  //     ts.leavtyp = item.leavtyp;
+  //     ts.leavtxt = item.leavtxt;
+  //     ts.lnodays = +item.lnodays;
+  //     if (item.laccum == true) {
+  //       ts.laccum = "YES";
+  //     }
+  //     else {
+  //       ts.laccum = "NO";
+  //     }
+  //     ts.lacclt = +item.lacclt;
+  //     if (item.lencash == true) {
+  //       ts.lencash = "YES";
+  //     }
+  //     else {
+  //       ts.lencash = "NO";
+  //     }
+  //     ts.lenclt = +item.lenclt;
+  //     ts.lminalw = +item.lminalw;
+  //     ts.lmaxalw = +item.lmaxalw;
+  //     ts.lmindur = +item.lmindur;
+  //     if (item.lhdallow == true) {
+  //       ts.lhdallow = "YES";
+  //     }
+  //     else {
+  //       ts.lhdallow = "NO";
+  //     }
+  //     ts.lmaxtime = +item.lmaxtime;
+  //     ts.lattlt = +item.lattlt;
+  //     if (item.ladv == true) {
+  //       ts.ladv = "YES";
+  //     }
+  //     else {
+  //       ts.ladv = "NO";
+  //     }
+  //     ts.lmaxadv = +item.lmaxadv;
+  //     if (item.lwkend == true) {
+  //       ts.lwkend = "YES";
+  //     }
+  //     else {
+  //       ts.lwkend = "NO";
+  //     }
+  //     if (item.lihol == true) {
+  //       ts.lihol = "YES";
+  //     }
+  //     else {
+  //       ts.lihol = "NO";
+  //     }
+  //     if (item.lpiadv == true) {
+  //       ts.lpiadv = "YES";
+  //     }
+  //     else {
+  //       ts.lpiadv = "NO";
+  //     }
+  //     ts.lpiadv = item.lpiadv;
+  //     ts.ladvday = +item.ladvday;
+  //     if (item.awothltyp == true) {
+  //       ts.awothltyp = "YES";
+  //     }
+  //     else {
+  //       ts.awothltyp = "NO";
+  //     }
+  //     ts.leavetypes = item.leavetypes;
+  //     ts.lhalfyr = +item.lhalfyr;
+  //     if (item.gesch == 1) {
+  //       ts.gesch = 'All';
+  //     }
+  //     else if (item.gesch == 2) {
+  //       ts.gesch = 'MALE';
+  //     }
+  //     else {
+  //       ts.gesch = 'FEMALE';
+  //     }
+  //     if (item.applicablewith == 1) {
+  //       ts.gesch = 'All';
+  //     }
+  //     else if (item.applicablewith == 2) {
+  //       ts.gesch = 'ESIC';
+  //     }
+  //     else {
+  //       ts.gesch = 'MEDICLAIM';
+  //     }
+  //     if (item.cldm == true) {
+  //       ts.cldm = "YES";
+  //     }
+  //     else {
+  //       ts.cldm = "NO";
+  //     }
+  //     ts.month = +item.month;
+  //     if (item.autoApprove == true) {
+  //       ts.autoApprove = "YES";
+  //     }
+  //     else {
+  //       ts.autoApprove = "NO";
+  //     }
+  //     ts.autoApproveAfterDays = +item.autoApproveAfterDays;
+  //     if (item.availFlexiHours == true) {
+  //       ts.showzeroleavebalance = "YES";
+  //     }
+  //     else {
+  //       ts.showzeroleavebalance = "NO";
+  //     }
+  //     ts.createdBy = +item.createdBy;
+  //     ts.createdOn = this.setFormatedDate(item.createdOn);
+  //     exportList.push(ts);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED";
+  //   const data = exportList;
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Rules Masters');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:W1');
+  //   worksheet.mergeCells('A2:W2');
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-  exportExcelLeaveStructure() {
-    if (this.leavestructureList == undefined) {
-      swal({
-        title: "Message",
-        text: "Provide required filters to get data...!",
-        icon: "error",
-        dangerMode: false,
-        buttons: [false, true],
-      });
-      return;
-    }
-    const title = 'Leave Structure Masters Report';
-    const header = ["SNo", "Plant", "PayGroup", "Emp Cat", "Leave Type", "Leave Text", "NO. of Days Leave",
-      "Leave Accumulation", "Leave Accumulation Days", "Leave Enchashment", "Leave Enchashment Days", "Minimum Leave Avail",
-      "Maximum Leave Avail", "Minimum Gap b/w 2 Leaves", "Half Day Allowed", "Maximum Half Day leaves allowed in a Year",
-      "Minimum Attendance required in a Month", "Allow Negative Leave balance", "Negative Days Limit", "Include Weekend In Availed Leaves",
-      "Include Company Declared Hoidays In Availed Leaves", "Allow Leave Application to be posted in advance", "Advance Leave Posting Days",
-      "Can Leave be availed in Combination of Other Leave", "Combined With", "In a Half year how many Leaves can be availed",
-      "Applicable to which Gender", "Applicable With", "Calculate Leave Eligibility after a period",
-      "After how many Months", "Auto Approval", "Auto Approval After Days", "Show Zero Leave balance",
-      "Created By", "Created Date"]
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.leavestructureList.forEach(item => {
-      index = index + 1;
-      ts = {};
-      ts.slno = index;
-      ts.werks = item.werks;
-      ts.paygroup = this.getPaygroup(item.paygroup);
-      ts.staffcat = this.getStaffCat(item.staffcat);
-      ts.leavtyp = item.leavtyp;
-      ts.leavtxt = item.leavtxt;
-      ts.lnodays = +item.lnodays;
-      if (item.laccum == true) {
-        ts.laccum = "YES";
-      }
-      else {
-        ts.laccum = "NO";
-      }
-      ts.lacclt = +item.lacclt;
-      if (item.lencash == true) {
-        ts.lencash = "YES";
-      }
-      else {
-        ts.lencash = "NO";
-      }
-      ts.lenclt = +item.lenclt;
-      ts.lminalw = +item.lminalw;
-      ts.lmaxalw = +item.lmaxalw;
-      ts.lmindur = +item.lmindur;
-      if (item.lhdallow == true) {
-        ts.lhdallow = "YES";
-      }
-      else {
-        ts.lhdallow = "NO";
-      }
-      ts.lmaxtime = +item.lmaxtime;
-      ts.lattlt = +item.lattlt;
-      if (item.ladv == true) {
-        ts.ladv = "YES";
-      }
-      else {
-        ts.ladv = "NO";
-      }
-      ts.lmaxadv = +item.lmaxadv;
-      if (item.lwkend == true) {
-        ts.lwkend = "YES";
-      }
-      else {
-        ts.lwkend = "NO";
-      }
-      if (item.lihol == true) {
-        ts.lihol = "YES";
-      }
-      else {
-        ts.lihol = "NO";
-      }
-      if (item.lpiadv == true) {
-        ts.lpiadv = "YES";
-      }
-      else {
-        ts.lpiadv = "NO";
-      }
-      ts.lpiadv = item.lpiadv;
-      ts.ladvday = +item.ladvday;
-      if (item.awothltyp == true) {
-        ts.awothltyp = "YES";
-      }
-      else {
-        ts.awothltyp = "NO";
-      }
-      ts.leavetypes = item.leavetypes;
-      ts.lhalfyr = +item.lhalfyr;
-      if (item.gesch == 1) {
-        ts.gesch = 'All';
-      }
-      else if (item.gesch == 2) {
-        ts.gesch = 'MALE';
-      }
-      else {
-        ts.gesch = 'FEMALE';
-      }
-      if (item.applicablewith == 1) {
-        ts.gesch = 'All';
-      }
-      else if (item.applicablewith == 2) {
-        ts.gesch = 'ESIC';
-      }
-      else {
-        ts.gesch = 'MEDICLAIM';
-      }
-      if (item.cldm == true) {
-        ts.cldm = "YES";
-      }
-      else {
-        ts.cldm = "NO";
-      }
-      ts.month = +item.month;
-      if (item.autoApprove == true) {
-        ts.autoApprove = "YES";
-      }
-      else {
-        ts.autoApprove = "NO";
-      }
-      ts.autoApproveAfterDays = +item.autoApproveAfterDays;
-      if (item.availFlexiHours == true) {
-        ts.showzeroleavebalance = "YES";
-      }
-      else {
-        ts.showzeroleavebalance = "NO";
-      }
-      ts.createdBy = +item.createdBy;
-      ts.createdOn = this.setFormatedDate(item.createdOn);
-      exportList.push(ts);
-    });
-    var OrganisationName = "MICRO LABS LIMITED";
-    const data = exportList;
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Rules Masters');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:W1');
-    worksheet.mergeCells('A2:W2');
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'LeaveStructures_Master.xlsx');
-    });
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'LeaveStructures_Master.xlsx');
+  //   });
+  // }
 
 }

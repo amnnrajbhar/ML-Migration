@@ -13,10 +13,10 @@ export class MasterDataService {
     var plantList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_PLANT_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
       return plantList;
-    }).catch(error => {
+    }).catch((error)=> {
         return plantList;
     });    
   }
@@ -25,10 +25,10 @@ export class MasterDataService {
     var plantList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + eid).then((data: any) => {
       if (data.length > 0) {
-        plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
       return plantList;
-    }).catch(error => {
+    }).catch((error)=> {
         return plantList;
     });    
   }
@@ -37,10 +37,10 @@ export class MasterDataService {
     var payGroupList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_PAYGROUP_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        payGroupList =  data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+        payGroupList =  data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
       }
       return payGroupList;
-    }).catch(error => {
+    }).catch((error)=> {
       return payGroupList;
     });    
   }  
@@ -49,10 +49,10 @@ export class MasterDataService {
     var payGroupList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED+ "/" + eid + "/" + plantId).then((data: any) => {
       if (data.length > 0) {
-        payGroupList =  data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+        payGroupList =  data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
       }
       return payGroupList;
-    }).catch(error => {
+    }).catch((error)=> {
       return payGroupList;
     });    
   }  
@@ -61,10 +61,10 @@ export class MasterDataService {
     var employeeCategoryList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_EMPLOYEE_CATEGORY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+        employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
       }
       return employeeCategoryList;
-    }).catch(error => {
+    }).catch((error)=> {
       return employeeCategoryList;
     });    
   }
@@ -73,10 +73,10 @@ export class MasterDataService {
     var employeeCategoryList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED+ "/" + eid + "/" + plantId + "/" + payGroupId).then((data: any) => {
       if (data.length > 0) {
-        employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+        employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
       }
       return employeeCategoryList;
-    }).catch(error => {
+    }).catch((error)=> {
       return employeeCategoryList;
     });    
   }
@@ -85,10 +85,10 @@ export class MasterDataService {
     var locationList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        locationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        locationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
       return locationList;
-    }).catch(error => {
+    }).catch((error)=> {
       return locationList;
     });    
   }  
@@ -97,10 +97,10 @@ export class MasterDataService {
     let list: [] = [];
     return this.httpService.HRget(APIURLS.APPOINTMENT_GET_COUNTRIES).then((data: any) => {
       if (data.length > 0) {
-        list = data.sort((a, b) => { if (a.landx > b.landx) return 1; if (a.landx < b.landx) return -1; return 0; });
+        list = data.sort((a:any, b:any) => { if (a.landx > b.landx) return 1; if (a.landx < b.landx) return -1; return 0; });
       }
       return list;
-    }).catch(error => {
+    }).catch((error)=> {
       return list;
     });
     return list;
@@ -110,10 +110,10 @@ export class MasterDataService {
     var stateList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
       return stateList;
-    }).catch(error => {
+    }).catch((error)=> {
       return stateList;
     });    
   }  
@@ -123,10 +123,10 @@ export class MasterDataService {
     var stateList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_STATE_API+"/GetAll").then((data: any) => {
       if (data.length > 0) {
-        stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
       return stateList;
-    }).catch(error => {
+    }).catch((error)=> {
       return stateList;
     });    
   }  
@@ -135,10 +135,10 @@ export class MasterDataService {
     var designationList: any[] = [];
     return this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
       return designationList;
-    }).catch(error => {
+    }).catch((error)=> {
       return designationList;
     });    
   }  
@@ -147,10 +147,10 @@ export class MasterDataService {
     var roleList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
       return roleList;
-    }).catch(error => {
+    }).catch((error)=> {
       return roleList;
     });
     
@@ -160,10 +160,10 @@ export class MasterDataService {
     var gradeList: any[] = [];
     return this.httpService.HRget(APIURLS.OFFER_GRADE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        gradeList = data.sort((a,b)=>{if(a.GRDTXT > b.GRDTXT) return 1; if(a.GRDTXT < b.GRDTXT) return -1; return 0;});
+        gradeList = data.sort((a:any,b:any)=>{if(a.GRDTXT > b.GRDTXT) return 1; if(a.GRDTXT < b.GRDTXT) return -1; return 0;});
       }
       return gradeList;
-    }).catch(error => {
+    }).catch((error)=> {
       return gradeList;
     });    
   }
@@ -172,10 +172,10 @@ export class MasterDataService {
     var departmentList:any[]=[];
     return this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
       return departmentList;
-    }).catch(error => {
+    }).catch((error)=> {
       return departmentList;
     });
   }  
@@ -184,10 +184,10 @@ export class MasterDataService {
     var subDepartmentList:any[]=[];
     return this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        subDepartmentList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        subDepartmentList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
       }
       return subDepartmentList;
-    }).catch(error => {
+    }).catch((error)=> {
       return subDepartmentList;
     });
   }  
@@ -196,10 +196,10 @@ export class MasterDataService {
     var qualificationList: any[] = [];
     return this.httpService.HRget(APIURLS.EDUCATION_C_M_API_GETALL).then((data: any) => {
       if (data.length > 0) {
-        qualificationList = data.sort((a, b) => { if (a.educationCourse > b.educationCourse) return 1; if (a.educationCourse < b.educationCourse) return -1; return 0; });
+        qualificationList = data.sort((a:any, b:any) => { if (a.educationCourse > b.educationCourse) return 1; if (a.educationCourse < b.educationCourse) return -1; return 0; });
       }
       return qualificationList;
-    }).catch(error => {
+    }).catch((error)=> {
       return qualificationList;
     });
   }  
@@ -208,10 +208,10 @@ export class MasterDataService {
     var reportingGroupsList: any[] = [];
     return this.httpService.HRget(APIURLS.APPOINTMENT_GET_REPORTING_GROUPS).then((data: any) => {
       if (data.length > 0) {
-        reportingGroupsList = data.sort((a, b) => { if (a.reportingGroupLt > b.reportingGroupLt) return 1; if (a.reportingGroupLt < b.reportingGroupLt) return -1; return 0; });
+        reportingGroupsList = data.sort((a:any, b:any) => { if (a.reportingGroupLt > b.reportingGroupLt) return 1; if (a.reportingGroupLt < b.reportingGroupLt) return -1; return 0; });
       }
       return reportingGroupsList;
-    }).catch(error => {
+    }).catch((error)=> {
       return reportingGroupsList;
     });
   }
@@ -220,10 +220,10 @@ export class MasterDataService {
     var salaryHeadList: any[] = [];
     return this.httpService.HRget(APIURLS.BR_GET_SALARY_HEAD_LIST_ALL).then((data: any) => {
       if (data.length > 0) {
-        salaryHeadList = data.sort((a, b) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });
+        salaryHeadList = data.sort((a:any, b:any) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });
       }
       return salaryHeadList;
-    }).catch(error => {
+    }).catch((error)=> {
       return salaryHeadList;
     });
   }

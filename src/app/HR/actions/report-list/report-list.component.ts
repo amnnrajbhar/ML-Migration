@@ -9,9 +9,9 @@ import swal from 'sweetalert';
 import { DataStorageService } from '../../Services/data-storage.service';
 declare var $: any;
 declare var toastr: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import htmlToPdfmake from 'html-to-pdfmake';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
 import { Util } from '../../Services/util.service';
 import { PERMISSIONS } from '../../../shared/permissions';
@@ -26,9 +26,10 @@ import { PERMISSIONS } from '../../../shared/permissions';
 export class ReportListComponent implements OnInit {
 
   constructor(private masterService: MasterDataService, private httpService: HttpService, private http: HttpClient,
-    private router: Router, private excelService: ExcelService, private dataStore: DataStorageService, private util: Util) {pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private router: Router, private excelService: ExcelService, private dataStore: DataStorageService, private util: Util) {// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+       }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   plantList: any[] = [];
   payGroupList: any[] = [];
   employeeCategoryList: any[] = [];
@@ -68,7 +69,8 @@ export class ReportListComponent implements OnInit {
   appraisalTypeList = [{ type: "Regular" }, { type: "Ad-Hoc" }, { type: "Retention" }, { type: "VP and Above" }];
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.pageNo = 1;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -116,9 +118,9 @@ export class ReportListComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -126,10 +128,10 @@ export class ReportListComponent implements OnInit {
   getReportingGroups() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_REPORTING_GROUPS).then((data: any) => {
       if (data.length > 0) {
-        this.reportingGroupsList = data.sort((a, b) => { if (a.reportingGroupLt > b.reportingGroupLt) return 1; if (a.reportingGroupLt < b.reportingGroupLt) return -1; return 0; });
+        this.reportingGroupsList = data.sort((a:any, b:any) => { if (a.reportingGroupLt > b.reportingGroupLt) return 1; if (a.reportingGroupLt < b.reportingGroupLt) return -1; return 0; });
       }
       ;
-    }).catch(error => {
+    }).catch((error)=> {
       this.reportingGroupsList = [];
     });
   }
@@ -150,7 +152,7 @@ export class ReportListComponent implements OnInit {
   getSubDepartmentList() {
     this.filterModel.SubDepartmentId = "";
     if (this.filterModel.DepartmentId > 0)
-      this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.filterModel.DepartmentId);
+      this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.filterModel.DepartmentId);
     else
       this.subDepartmentList = [];
   }
@@ -158,8 +160,8 @@ export class ReportListComponent implements OnInit {
   getLocationList() {
     this.filterModel.LocationId = "";
     if (this.filterModel.StateId > 0) {
-      var selectedState = this.stateList.find(x => x.id == this.filterModel.StateId);
-      this.locationList = this.locationFullList.filter(x => x.stateId == selectedState.bland);
+      var selectedState = this.stateList.find((x:any)  => x.id == this.filterModel.StateId);
+      this.locationList = this.locationFullList.filter((x:any)  => x.stateId == selectedState.bland);
     }
     else
       this.locationList = [];
@@ -188,13 +190,13 @@ export class ReportListComponent implements OnInit {
     this.httpService.HRpost(APIURLS.HR_EMPLOYEE_APPRAISAL_GET_APPRAISAL_LIST_REPORT_BY_FILTER, this.filterModel).then((data: any) => {
       this.filterData = data;
       for (var item of this.filterData.list) {
-        item.statusColor = this.statusList.find(x => x.type == item.status).color;
-        var empStatusData = this.empStatusList.find(x => x.type == item.employeeStatus);
+        item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
+        var empStatusData = this.empStatusList.find((x:any)  => x.type == item.employeeStatus);
         if (empStatusData)
           item.empStatusColor = empStatusData.color;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -222,7 +224,7 @@ export class ReportListComponent implements OnInit {
       this.filterModel.export = false;
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index = index + 1;
         let exportItem: any = {};
         if (this.filterText == 'Employee') {
@@ -311,7 +313,7 @@ export class ReportListComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Appraisal_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -326,7 +328,7 @@ export class ReportListComponent implements OnInit {
       this.filterModel.export = false;
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index = index + 1;
         let exportItem: any = {};
         if (this.filterText == 'Employee') {
@@ -407,7 +409,7 @@ export class ReportListComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Appraisal_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -429,7 +431,7 @@ export class ReportListComponent implements OnInit {
       this.filterModel.export = false;
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index = index + 1;
         let exportItem: any = {};
         if (this.filterText == 'Employee') {
@@ -541,7 +543,7 @@ export class ReportListComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Appraisal_Recommendation_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -551,7 +553,7 @@ export class ReportListComponent implements OnInit {
 
   selectedList: any[] = [];
   BulkPrint() {
-    this.selectedList = this.filterData.list.filter(x => x.selected);
+    this.selectedList = this.filterData.list.filter((x:any)  => x.selected);
     if (this.selectedList.length <= 0) {
       swal("Please select at least one appraisal record to print letters.");
       return;
@@ -572,7 +574,7 @@ export class ReportListComponent implements OnInit {
   getLetterContentForPrinting() {
 
     if (this.index >= this.selectedList.length) {
-      this.createPDF(this.letterContent, true).print();
+      //this.createPDF(this.letterContent, true).print();
       swal("Opening letters for printing...");
       if (this.errorCount > 0)
         swal("Error occurred while generating the letter for " + this.errorCount + " employees.");
@@ -599,7 +601,7 @@ export class ReportListComponent implements OnInit {
           // get next letter content
           this.index++;
           this.getLetterContentForPrinting();
-        }).catch(error => {
+        }).catch((error)=> {
           this.index++;
           this.getLetterContentForPrinting();
           this.errorCount++;
@@ -609,7 +611,7 @@ export class ReportListComponent implements OnInit {
 
   request: any = {};
   sendEmail() {
-    var selectedList = this.filterData.list.filter(x => x.selected && (x.status == "Approved" || x.status == "Email Sent"));
+    var selectedList = this.filterData.list.filter((x:any)  => x.selected && (x.status == "Approved" || x.status == "Email Sent"));
     if (selectedList.length <= 0) {
       swal("Please select at least one Approved Appraisal record to send letter.");
       return;
@@ -626,7 +628,7 @@ export class ReportListComponent implements OnInit {
       return;
     }
     this.getbase64image();
-    this.selectedList = this.filterData.list.filter(x => x.selected && (x.status == "Approved" || x.status == "Email Sent"));
+    this.selectedList = this.filterData.list.filter((x:any)  => x.selected && (x.status == "Approved" || x.status == "Email Sent"));
     this.errorCount = 0;
     if (confirm("Are you sure you want to send bulk appraisal letter email?")) {
       this.sending = true;
@@ -687,7 +689,7 @@ export class ReportListComponent implements OnInit {
             this.index++;
             this.sendLetterEmail();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.index++;
           this.sendLetterEmail();
           this.errorCount++;
@@ -696,37 +698,38 @@ export class ReportListComponent implements OnInit {
   }
 
   createPdfAndSendEmail(pdfContent, employeeInitialAppraisalDetailId, name) {
-    this.createPDF(pdfContent, false).getBase64((encodedString) => {
-      if (encodedString) {
-        this.request.employeeInitialAppraisalDetailId = employeeInitialAppraisalDetailId;
-        this.request.submittedById = this.currentUser.uid;
-        this.request.submittedByName = this.currentUser.fullName;
-        this.request.attachment = encodedString;
-        swal("Sending email for " + name);
-        this.httpService.HRpost(APIURLS.HR_EMPLOYEE_APPRAISAL_SEND_LETTER_EMAIL, this.request).then((data: any) => {
-          if (data == 200 || data.success) {
-            swal("Successfully emailed the Appraisal letter for " + name);
-          } else if (!data.success) {
-            swal(data.message); this.errorCount++;
-          } else { swal("Error occurred."); this.errorCount++; }
-          // send next letter email
-          this.index++;
-          this.sendLetterEmail();
-        }
-        ).catch(error => {
-          this.index++;
-          this.sendLetterEmail();
-          swal(error);
-          this.errorCount++;
-        });
-      } else {
-        this.index++;
-        this.sendLetterEmail();
-      }
-    });
+    //v10
+    // this.createPDF(pdfContent, false).getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     this.request.employeeInitialAppraisalDetailId = employeeInitialAppraisalDetailId;
+    //     this.request.submittedById = this.currentUser.uid;
+    //     this.request.submittedByName = this.currentUser.fullName;
+    //     this.request.attachment = encodedString;
+    //     swal("Sending email for " + name);
+    //     this.httpService.HRpost(APIURLS.HR_EMPLOYEE_APPRAISAL_SEND_LETTER_EMAIL, this.request).then((data: any) => {
+    //       if (data == 200 || data.success) {
+    //         swal("Successfully emailed the Appraisal letter for " + name);
+    //       } else if (!data.success) {
+    //         swal(data.message); this.errorCount++;
+    //       } else { swal("Error occurred."); this.errorCount++; }
+    //       // send next letter email
+    //       this.index++;
+    //       this.sendLetterEmail();
+    //     }
+    //     ).catch((error)=> {
+    //       this.index++;
+    //       this.sendLetterEmail();
+    //       swal(error);
+    //       this.errorCount++;
+    //     });
+    //   } else {
+    //     this.index++;
+    //     this.sendLetterEmail();
+    //   }
+    // });
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -755,34 +758,34 @@ export class ReportListComponent implements OnInit {
       //printContents = $(html).html();
     }
 
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div>     
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-      defaultStyles: {
-        td: {
-          border: undefined
-        },
-        img: undefined,
-        p: undefined
-      }
-    });
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div>     
+  // </div>
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //     defaultStyles: {
+  //       td: {
+  //         border: undefined
+  //       },
+  //       img: undefined,
+  //       p: undefined
+  //     }
+  //   });
 
     var docDefinition = {
       info: {
         title: 'Appraisal Letter',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -844,7 +847,7 @@ export class ReportListComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 140, 40, 40],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         if (forPrinting == true) return { height: 120, text: "" };
         return {
           alignment: 'center',
@@ -888,7 +891,7 @@ export class ReportListComponent implements OnInit {
       }
     };
 
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
   selectAll = false;

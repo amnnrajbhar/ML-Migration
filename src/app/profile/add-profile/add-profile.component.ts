@@ -18,15 +18,15 @@ declare var toastr: any;
 })
 export class AddProfileComponent implements OnInit {
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   public tableWidget: any;
-  profileList: any[];
+  profileList!: any[];
   formData: FormData = new FormData();
-  file: File;
-  formList: any[];
+  file!: File;
+  formList!: any[];
   selectedformItems = [];
   deletedformItems = [];
-  formMainList: any[];
+  formMainList!: any[];
   selectedformIds = [];
   selectedOldList = [];
   isLoading: boolean = false;
@@ -38,7 +38,7 @@ export class AddProfileComponent implements OnInit {
   isEdit: boolean = false;
   checkAll: boolean = false;
   path: string = '';
-  permissionMasterList: any[];
+  permissionMasterList!: any[];
   item: any = {};
   selectedProfilePermissionList = [];
 
@@ -58,7 +58,8 @@ export class AddProfileComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
@@ -127,14 +128,14 @@ export class AddProfileComponent implements OnInit {
       this.isLoading = false;
       if (data.length > 0) {
         this.formList = data;
-        this.formList.forEach(item => { item.isChecked = false; });
+        this.formList.forEach((item :any) => { item.isChecked = false; });
         this.formMainList = this.formList;
         if (this.isEdit) {
           this.getProMainListtoFilter(this.proItem.id);
         }
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.formList = [];
     });
@@ -147,7 +148,7 @@ export class AddProfileComponent implements OnInit {
         this.profileList = data;
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.profileList = [];
     });
@@ -155,7 +156,7 @@ export class AddProfileComponent implements OnInit {
 
   FormsAssignedList: any = [] = [];
   DisplayFormsAssigned() {
-    this.FormsAssignedList = this.formList.filter(x => x.isChecked == true);
+    this.FormsAssignedList = this.formList.filter((x:any)  => x.isChecked == true);
   }
 
 
@@ -176,7 +177,7 @@ export class AddProfileComponent implements OnInit {
   //           item.isChecked = false;
   //       });
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.formList = [];
   //   });
   // }
@@ -191,13 +192,13 @@ export class AddProfileComponent implements OnInit {
         }
         this.DisplayFormsAssigned();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.formList = [];
     });
   }
 
   checkAllForm(check: boolean) {
-    this.formList.forEach(item => { item.isChecked = this.checkAll; });
+    this.formList.forEach((item :any) => { item.isChecked = this.checkAll; });
   }
 
   onSaveProfile() {
@@ -213,7 +214,7 @@ export class AddProfileComponent implements OnInit {
     let connection: any;
     if (!this.isEdit) {
       {
-        if (this.profileList.find(x => x.name == this.proItem.name)) {
+        if (this.profileList.find((x:any)  => x.name == this.proItem.name)) {
           this.errMsgPop = 'Profile Name already exist'
         }
         else {
@@ -228,7 +229,7 @@ export class AddProfileComponent implements OnInit {
               jQuery("#saveModal").modal('show');
               this.getProfileList();
             }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving profile data..';
           });
@@ -236,7 +237,7 @@ export class AddProfileComponent implements OnInit {
       }
     }
     else {
-      if (this.profileList.find(x => x.name == this.proItem.name && x.id != this.proItem.id)) {
+      if (this.profileList.find((x:any)  => x.name == this.proItem.name && x.id != this.proItem.id)) {
         this.errMsgPop = 'Profile Name already exist'
       }
       else {
@@ -258,7 +259,7 @@ export class AddProfileComponent implements OnInit {
           else {
             this.errMsgPop = 'Error saving profile data...';
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving profile data..';
         });
@@ -291,7 +292,7 @@ export class AddProfileComponent implements OnInit {
           else {
             this.errMsgPop = 'Error adding form data...';
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error adding form data..';
         });
@@ -319,7 +320,7 @@ export class AddProfileComponent implements OnInit {
         else {
           this.errMsgPop = 'Error adding form data...';
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error adding form data..';
       });
@@ -331,8 +332,8 @@ export class AddProfileComponent implements OnInit {
     var delId = this.selectedformIds.find(item => item.fkFormId == form.id);
     if (delId != undefined && !isChecked) {
       this.deletedformItems.push(delId.id);
-      //if (this.selectedformIds.find(x => x.id == delId)) {
-      this.selectedformIds.splice(this.selectedformIds.findIndex(x => x.id == delId.id), 1);
+      //if (this.selectedformIds.find((x:any)  => x.id == delId)) {
+      this.selectedformIds.splice(this.selectedformIds.findIndex((x:any)  => x.id == delId.id), 1);
       //}
       //this.selectedformIds.reduce (delId);
       //this.deleteProfileMaintList(delId);
@@ -354,35 +355,35 @@ export class AddProfileComponent implements OnInit {
       if (data.length > 0) {
         this.permissionMasterList = data;        
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.permissionMasterList = [];
     });
   }
 
-  profilePermissionList: any[];
+  profilePermissionList!: any[];
   getProfilePermissionList() {
     this.httpService.HRget(APIURLS.BR_PROFILE_PERMISSION_GET_ALL).then((data: any) => {
       this.isLoading = false;
       if (data.length > 0) {
         this.profilePermissionList = data;
-        //this.profilePermissionListFiltered = data.filter(x => x.profileId == this.proItem.id);        
+        //this.profilePermissionListFiltered = data.filter((x:any)  => x.profileId == this.proItem.id);        
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.profilePermissionList = [];
     });
   }
 
-  profilePermissionListFiltered: any[];
+  profilePermissionListFiltered!: any[];
   onAddEditPermission(isEdit: boolean, data: AddProfile) {
     this.isEdit = isEdit;
     this.errMsgPop = "";
     this.isLoadingPop = false;
        this.proItem = data;
-    this.profilePermissionListFiltered = this.profilePermissionList.filter(x => x.profileId == this.proItem.id);
+    this.profilePermissionListFiltered = this.profilePermissionList.filter((x:any)  => x.profileId == this.proItem.id);
     for (var item of this.permissionMasterList) {
-      if (this.profilePermissionListFiltered.find(x => x.permissionId == item.id) != null)
+      if (this.profilePermissionListFiltered.find((x:any)  => x.permissionId == item.id) != null)
         item.selected = true;
       else
         item.selected = false;
@@ -401,7 +402,7 @@ export class AddProfileComponent implements OnInit {
     console.log(this.permissionMasterList);
 
     
-    var filteredList = this.permissionMasterList.filter(x => x.selected == true);
+    var filteredList = this.permissionMasterList.filter((x:any)  => x.selected == true);
     this.selectedProfilePermissionList = filteredList.map(function (a) { return a.id });
     console.log(this.selectedProfilePermissionList);
     var dataRet = '';
@@ -419,7 +420,7 @@ export class AddProfileComponent implements OnInit {
       else {
         toastr.error("Some error occurred.");
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       toastr.error("Some error occurred.");
     });

@@ -10,10 +10,10 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 declare var $: any;
 declare var toastr: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
 import { Pipe, PipeTransform } from "@angular/core";
@@ -31,7 +31,7 @@ export class ConfirmationPrintComponent implements OnInit {
 
   
   employeeConfirmationId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -48,13 +48,16 @@ export class ConfirmationPrintComponent implements OnInit {
   
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
-    private http: HttpClient, private location: Location, private util: Util) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private location: Location, private util: Util) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeConfirmationId = this.route.snapshot.paramMap.get('id')!;
       this.canPrint = this.util.hasPermission(PERMISSIONS.HR_PRINT_LETTERS);
       this.canEmail = this.util.hasPermission(PERMISSIONS.HR_EMAIL_LETTERS);
@@ -65,7 +68,7 @@ export class ConfirmationPrintComponent implements OnInit {
   }
 
 
-  LoadDetails(id) {
+  LoadDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.CONFIRMATION_GET_LETTER_FOR_PRINT, id).then((data: any) => {
@@ -74,7 +77,7 @@ export class ConfirmationPrintComponent implements OnInit {
         this.GetSignatoryDetails();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.details = null;
     });
@@ -109,7 +112,7 @@ export class ConfirmationPrintComponent implements OnInit {
   }
 
   print() {
-    this.createPDF(true).print();
+   // this.createPDF(true).print();
     this.saveLetterActivity("Printed");
     return;
 
@@ -154,7 +157,7 @@ export class ConfirmationPrintComponent implements OnInit {
     popupWin.document.close();
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -185,7 +188,7 @@ export class ConfirmationPrintComponent implements OnInit {
   }
 
   download() {
-    this.createPDF(false).open();
+   // this.createPDF(false).open();
     this.saveLetterActivity("Downloaded");
   }
 
@@ -232,27 +235,27 @@ export class ConfirmationPrintComponent implements OnInit {
       //pageMarginsConfig =  [40, 40, 40, 50];
     }
 
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div>     
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-      defaultStyles: {      
-        td: {         
-         border: undefined
-         },
-         img: undefined,
-         p: undefined            
-       }
-    });
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div>     
+  // </div>
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //     defaultStyles: {      
+  //       td: {         
+  //        border: undefined
+  //        },
+  //        img: undefined,
+  //        p: undefined            
+  //      }
+  //   });
 
     var docDefinition = {
       info: {
@@ -261,7 +264,7 @@ export class ConfirmationPrintComponent implements OnInit {
 
       content: [
         header,
-        htmnikhitml,
+       // htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -350,7 +353,7 @@ export class ConfirmationPrintComponent implements OnInit {
       }
     };
 
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
   sendEmail() {
@@ -366,24 +369,24 @@ export class ConfirmationPrintComponent implements OnInit {
       this.request.submittedById = this.currentUser.uid;
       this.request.submittedByName = this.currentUser.fullName;
 
-      this.createPDF(false).getBase64((encodedString) => {
-        if (encodedString) {
-          this.request.attachment = encodedString;
-          swal("Sending email...");
-          this.httpService.HRpost(APIURLS.CONFIRMATION_SEND_LETTER_EMAIL, this.request).then((data: any) => {
-            if (data == 200 || data.success) {
-              swal("Successfully sent the letter to email.");
-              this.saveLetterActivity("Emailed");
-            } else if (!data.success) {
-              swal(data.message);
-            } else
-              swal("Error occurred.");
-          }
-          ).catch(error => {
-            swal(error);
-          });
-        }
-      });
+      // this.createPDF(false).getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     this.request.attachment = encodedString;
+      //     swal("Sending email...");
+      //     this.httpService.HRpost(APIURLS.CONFIRMATION_SEND_LETTER_EMAIL, this.request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         swal("Successfully sent the letter to email.");
+      //         this.saveLetterActivity("Emailed");
+      //       } else if (!data.success) {
+      //         swal(data.message);
+      //       } else
+      //         swal("Error occurred.");
+      //     }
+      //     ).catch((error)=> {
+      //       swal(error);
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -394,19 +397,19 @@ export class ConfirmationPrintComponent implements OnInit {
 
   
   saveLetter(){
-    this.createPDF(false).getBase64((encodedString) => {
-      if (encodedString) {
-        var request: any = {};
-        request.attachment = encodedString;      
-        request.objectId = this.employeeConfirmationId;
-        request.employeeId = this.details.employeeId;
-        request.objectType = "Confirmation";
-        request.letterType = "Confirmation Letter";
-        request.submittedById = this.currentUser.uid;
-        request.submittedByName = this.currentUser.fullName;
-        this.util.saveLetter(request);
-      }
-    });
+    // this.createPDF(false).getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     var request: any = {};
+    //     request.attachment = encodedString;      
+    //     request.objectId = this.employeeConfirmationId;
+    //     request.employeeId = this.details.employeeId;
+    //     request.objectType = "Confirmation";
+    //     request.letterType = "Confirmation Letter";
+    //     request.submittedById = this.currentUser.uid;
+    //     request.submittedByName = this.currentUser.fullName;
+    //     this.util.saveLetter(request);
+    //   }
+    // });
   }
   
   saveLetterActivity(activity: string){

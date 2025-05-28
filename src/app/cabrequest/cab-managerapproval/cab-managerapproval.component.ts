@@ -17,9 +17,9 @@ declare var $: any;
   styleUrls: ['./cab-managerapproval.component.css']
 })
 export class CabManagerapprovalComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgPop: string = "";
@@ -36,7 +36,8 @@ export class CabManagerapprovalComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.loadTilesCount();
       this.getMyRequests();
     }
@@ -56,12 +57,12 @@ export class CabManagerapprovalComponent implements OnInit {
       genericBookingFilters.status = 'Pending with Admin,Approved,Rejected by Admin,Rejected by Manager';
     this.httpService.post(APIURLS.BR_CAB_BOOKING_BY_FILTER_API, genericBookingFilters).then((data: any) => {
       if (data) {
-        this.mycabRequests = data.filter(x => { return x.isCancelled == false });
+        this.mycabRequests = data.filter((x:any)  => { return x.isCancelled == false });
         this.mycabRequests.reverse();
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.mycabRequests = [];
     });
@@ -79,13 +80,13 @@ export class CabManagerapprovalComponent implements OnInit {
 
     this.httpService.post(APIURLS.BR_CAB_BOOKING_BY_FILTER_API, genericBookingFilters).then((data: any) => {
       if (data) {
-        this.allBookings = data.filter(x => { return x.isCancelled == false }).length;
-        // this.todayBookings = data.filter(x => { return x.isCancelled == false && new Date(x.toDateTime).getDate() == todaydate.getDate() && x.status == 'Pending with Manager' }).length;
-        this.todayBookings = data.filter(x => { return x.isCancelled == false  && x.status == 'Pending with Manager' }).length;
-        this.approvedBookings = data.filter(x => { return x.isCancelled == false && (x.status == 'Approved' || x.status == 'Pending with Admin' || x.status == 'Rejected by Admin' || x.status == 'Rejected by Manager') }).length;
+        this.allBookings = data.filter((x:any)  => { return x.isCancelled == false }).length;
+        // this.todayBookings = data.filter((x:any)  => { return x.isCancelled == false && new Date(x.toDateTime).getDate() == todaydate.getDate() && x.status == 'Pending with Manager' }).length;
+        this.todayBookings = data.filter((x:any)  => { return x.isCancelled == false  && x.status == 'Pending with Manager' }).length;
+        this.approvedBookings = data.filter((x:any)  => { return x.isCancelled == false && (x.status == 'Approved' || x.status == 'Pending with Admin' || x.status == 'Rejected by Admin' || x.status == 'Rejected by Manager') }).length;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -186,14 +187,14 @@ export class CabManagerapprovalComponent implements OnInit {
         this.loadTilesCount();
         this.getMyRequests();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error in Booking Room';
     });
   }
   sendMail(bookingData: CabBooking) {
     let connection: any;
-    let type: string;
+    let type: string
     if (bookingData.status == "Pending with Admin") {
       type = "Cab-2ndLevelApproval";
     }
@@ -207,7 +208,7 @@ export class CabManagerapprovalComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error in sending mail..';
     });
   }

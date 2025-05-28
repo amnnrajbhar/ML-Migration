@@ -1,8 +1,8 @@
 import { SbuMaster } from "./sbuMaster.model";
 export class EmployeeMaster {
-    id: number;
-    employeeId: string;
-    email: string;
+    id!: number;
+    employeeId: string
+    email: string
     fkAddressId: number | null;
     fkOtherDetailsId: number | null;
     fkProjectId: number | null;
@@ -17,16 +17,16 @@ export class EmployeeMaster {
     fkApprovalTemplateId: number | null;
     fkPayroll: number | null;
     fkProfileId: number | null;
-    baseLocation: string;
-    description: string;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    imgUrl: string;
-    designation: string;
+    baseLocation: string
+    description: string
+    firstName: string
+    middleName: string
+    lastName: string
+    imgUrl: string
+    designation: string
     interviwer: number | null;
     joiningDate: string | null;
-    redirectUrl: string;
+    redirectUrl: string
     createdBy: number | null;
     createdDate: string | null;
     modifiedBy: number | null;
@@ -35,22 +35,22 @@ export class EmployeeMaster {
     fkRoleId: number | null;
     dol: string | null;
     dob: string | null;
-    department: string;
-    location: string;
-    reportingManagerName: string;
-    reportingManagerEmpId: string;
-    managerName: string;
-    managerEmpId: string;
-    category: string;
-    paygroup: string;
-    role: string;
+    department: string
+    location: string
+    reportingManagerName: string
+    reportingManagerEmpId: string
+    managerName: string
+    managerEmpId: string
+    category: string
+    paygroup: string
+    role: string
     sbuMasterViewModel: SbuMaster;
-    fullName: string;
-    payGroup: string;
-    pernr: string;
-    desigRoleId: number;
-    hrEmployeeId: number;
-    profileIDs: string;
-    totalCount: number;
-    totalPages: number;
+    fullName: string
+    payGroup: string
+    pernr: string
+    desigRoleId!: number;
+    hrEmployeeId!: number;
+    profileIDs: string
+    totalCount!: number;
+    totalPages!: number;
 }

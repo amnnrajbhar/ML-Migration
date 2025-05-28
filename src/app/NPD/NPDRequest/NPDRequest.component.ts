@@ -15,10 +15,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { stringify } from 'querystring';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 //import { NPDRequest } from './NPDRequest.model';
 // import { Transactions } from '../eMicro/ItemCodeCreation/transactions.model';
 // import { WorkFlowApprovers } from '../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -39,10 +39,10 @@ import { NPDSCM } from './NPDScmdetails.model';
 import { NPDSTRATEGIC } from './NPDStrategicdetails.model';
 import { NPDBrands } from './NPDBrands.model';
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient,HttpClientModule } from '@angular/common/http';
 //import { MediServiceBrand } from '../MediServiceBrand/MediServiceBrand.model';
 
@@ -52,10 +52,10 @@ import { HttpClient,HttpClientModule } from '@angular/common/http';
   styleUrls: ['./NPDRequest.component.css']
 })
 export class NPDRequestComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-    @ViewChild(NgForm  , { static: false })dataForm: NgForm;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+    @ViewChild(NgForm  , { static: false })dataForm!: NgForm;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     public tableWidget: any;
@@ -73,14 +73,16 @@ export class NPDRequestComponent implements OnInit {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File; successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
     baseLocationnotfirst = true;
 
-    filterProduct:string=null;
-    filterBrand:string=null;
+    //filterProduct:string=null;
+filterProduct:string='';
+   // filterBrand:string=null;
+ filterBrand:string='';
 
     NPDRequestmodel = {} as NPDRequest;
     NPDCmdmodel={} as NPDCMD;
@@ -97,12 +99,12 @@ export class NPDRequestComponent implements OnInit {
 
     NPDRequestlist: NPDRequest[] = [];
     // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-    materialtype: string;
-    filterMaterialCode: string = null;
-    filterstatus: string = null;
-    filterlocation: string = null;
-    filterrequest: string = null;
-    filterplace: string = null;
+    materialtype!: string
+    filterMaterialCode: string = ' ';
+    filterstatus: string = ' ';
+    filterlocation: string = ' ';
+    filterrequest: string = ' ';
+    filterplace: string = ' ';
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     to_date: any = this.today;
@@ -111,8 +113,9 @@ export class NPDRequestComponent implements OnInit {
     NPDRequestFilter: NPDRequest[] = [];
     NPDRequestsearchlist: NPDRequest[] = [];
 
-    emailid: string;
-    requestdate: Date;
+    emailid!: string
+
+    requestdate!: Date;
     Approver1: boolean = false;
     Approverid1: string = "";
     Approverid2: string = "";
@@ -120,26 +123,30 @@ export class NPDRequestComponent implements OnInit {
     Creator: boolean = false;
     Review: boolean = false;
     Closure: boolean = false;
-    userid: string;
+    userid!: string
+
 
 
     MedHead:string='Manjula  Suresh';
     MedHeadList:any[]=[];
-    Reviewer:string=null;
+    // Reviewer:string=null;
+    Reviewer:string='';
     ReviewerList:any[]=[];
     MediRequestFilter:any[]=[];
     Approves:any;
-    Comments: string;
+    Comments!: string
 
     storeData: any;
     jsonData: any;
-    fileUploaded: File;
+    fileUploaded!: File;
     worksheet: any;
 
     //NPDRequestmodeldata = {} as ItemCodeExtension;
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-      private http: HttpClient,private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+      private http: HttpClient,private datePipe: DatePipe) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
 
     private initDatatable(): void {
       let exampleId: any = jQuery('#userTable');
@@ -158,7 +165,8 @@ export class NPDRequestComponent implements OnInit {
 
     ngOnInit() {
       this.path = this.router.url;
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       //  this.baseLocation = this.currentUser.baselocation;
       this.emailid = this.currentUser.email;
       this.userid = this.currentUser.employeeId;
@@ -188,11 +196,11 @@ export class NPDRequestComponent implements OnInit {
         if (data.length > 0) {
           this.BrandList = data;
           let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-          this.BrandList.sort((a, b) => { return collator.compare(a.brandDesc, b.brandDesc) });
+          this.BrandList.sort((a:any, b:any) => { return collator.compare(a.brandDesc, b.brandDesc) });
 
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error) => {
         this.isLoading = false;
         this.BrandList = [];
       });
@@ -200,11 +208,11 @@ export class NPDRequestComponent implements OnInit {
     }
 
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
       let temp = this.locationList.find(e => e.id == id);
       return temp ? temp.code : '';
     }
-    getloc(loc) {
+    getloc(loc:any) {
       let loccode = loc.keyValue.split('~');
       return loccode ? loccode[0] : '';
     }
@@ -236,12 +244,18 @@ export class NPDRequestComponent implements OnInit {
     clearFilter() {
       this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
       this.to_date = this.today;
-      this.filterlocation = null;
-      this.filterstatus = null;
-      this.filterrequest = null;
-      this.filterplace = null;
-      this.filterProduct=null;
-      this.filterBrand=null;
+     // this.filterlocation = null;
+ this.filterlocation = '';
+    // this.filterstatus = null;
+  this.filterstatus = '';
+ //    this.filterrequest = null;
+     this.filterrequest = '';
+    //    this.filterplace = null;
+      this.filterplace = '';
+ //        this.filterProduct=null;
+           this.filterProduct='';
+   //           this.filterBrand=null;
+         this.filterBrand='';
       this.Approves=null;
 
     }
@@ -250,8 +264,8 @@ export class NPDRequestComponent implements OnInit {
     getAllEntries() {
       this.isLoading = true;
       let td = new Date();
-      let formatedFROMdate: string;
-      let formatedTOdate: string;
+      let formatedFROMdate: string
+      let formatedTOdate: string
       var filterModel: any = {};
       if (this.from_date == '' || this.from_date == null) {
         formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -288,7 +302,7 @@ export class NPDRequestComponent implements OnInit {
       this.httpService.post(APIURLS.BR_NPD_REQUEST_FILTER_API, filterModel).then((data: any) => {
         if (data) {
           if (this.filterstatus == 'Pending') {
-            this.NPDRequestFilter = data.filter(x => x.pendingApprover == this.currentUser.fullName);
+            this.NPDRequestFilter = data.filter((x:any)  => x.pendingApprover == this.currentUser.fullName);
             this.NPDRequestFilter.reverse();
           
             
@@ -300,7 +314,7 @@ export class NPDRequestComponent implements OnInit {
         }
         this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.NPDRequestFilter = [];
       });
@@ -308,15 +322,15 @@ export class NPDRequestComponent implements OnInit {
     }
   
 
-     GetRequest(value)
+     GetRequest(value:any)
     {
     //   if(value=="Approve")
     //   {
-    //     this.NPDRequestFilter=this.NPDRequestFilter1.filter(x=>x.reviewerAssignFlag==1 && x.stage=='4');
+    //     this.NPDRequestFilter=this.NPDRequestFilter1.filter((x:any)=>x.reviewerAssignFlag==1 && x.stage=='4');
     //   }
     //   else if(value=="Assign")
     //   {
-    //     this.NPDRequestFilter=this.NPDRequestFilter1.filter(x=>x.reviewerAssignFlag==0 && x.stage=='1' && x.approveType !='Rejected');
+    //     this.NPDRequestFilter=this.NPDRequestFilter1.filter((x:any)=>x.reviewerAssignFlag==0 && x.stage=='1' && x.approveType !='Rejected');
     //   }
     //   this.reInitDatatable();
      }
@@ -329,7 +343,7 @@ export class NPDRequestComponent implements OnInit {
        this.newDynamic = { id: this.rowcount, competitorBrand: "", competitorDetails: "", competitorExistingmarketshare: "", competitorMrp: "", stored: "0" };
        this.dynamicArray.push(this.newDynamic);
      }
-     removeRows(item) {
+     removeRows(item:any) {
        if (this.dynamicArray.length > 1) {
          const index = this.dynamicArray.indexOf(item);
          this.dynamicArray.splice(index, 1);
@@ -339,18 +353,18 @@ export class NPDRequestComponent implements OnInit {
       this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
         if (data.length > 0) {
           this.locationAllList = data;
-          this.locationList = data.filter(x => x.isActive);
+          this.locationList = data.filter((x:any)  => x.isActive);
           let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-          this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-          this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-          this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+          this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+          this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+          this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.locationList = [];
       });
     }
-    Approver:string;
+    Approver!:string;
     Apprvr:boolean=false;
     ApproversList:any[]=[];
     GetApprovers()
@@ -362,13 +376,13 @@ export class NPDRequestComponent implements OnInit {
           this.Approver =  temp==undefined?'':temp.department;
           this.Apprvr=  temp==undefined?false:true;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.locationList = [];
       });
     }
     MedReviewer:boolean=false;
-    GetReviewersList(empId) {
+    GetReviewersList(empId:any) {
       this.httpService.post(APIURLS.BR_MED_HEAD_REVIEWERS_LIST_API,empId).then((data: any) => {
         if (data.length > 0) {
           this.ReviewerList = data;
@@ -376,7 +390,7 @@ export class NPDRequestComponent implements OnInit {
           temp ?this.MedReviewer=true:this.MedReviewer=false;
          // temp ? this.Approver ='Medical':'';
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.ReviewerList = [];
       });
@@ -398,7 +412,7 @@ export class NPDRequestComponent implements OnInit {
             }
             this.GetReviewersList('93823');
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoading = false;
           this.MedHeadList = [];
         });
@@ -407,7 +421,7 @@ export class NPDRequestComponent implements OnInit {
     File: File | null = null;
     File1: File | null = null;
     FinalFile:File[]=[];
-    name: string;
+    name!: string
     files: File[] = []
     handleFileInput(files: FileList) {
       this.errMsg1 = "";
@@ -427,7 +441,7 @@ export class NPDRequestComponent implements OnInit {
      this.formData= new FormData()
     }
 
-    ReadAsBase64(file): Promise<any> {
+    ReadAsBase64(file:any): Promise<any> {
       const reader = new FileReader();
       const fileValue = new Promise((resolve, reject) => {
         reader.addEventListener('load', () => {
@@ -446,7 +460,7 @@ export class NPDRequestComponent implements OnInit {
 
       return fileValue;
     }
-    id: string;
+    id!: string
     uploadfile() {
       // debugger;
       // this.id='VM001';
@@ -462,12 +476,12 @@ export class NPDRequestComponent implements OnInit {
           // console.log('copied file to server')
           //this.imageFlag = true;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error uploading file ..';
       });
 
     }
-    uploadfile1(req) {
+    uploadfile1(req:any) {
       // debugger;
       // this.id='VM001';
       this.formData = new FormData();
@@ -482,13 +496,13 @@ export class NPDRequestComponent implements OnInit {
           // console.log('copied file to server')
           //this.imageFlag = true;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error uploading file ..';
       });
 
     }
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
       this.initDatatable();
     }
@@ -506,13 +520,15 @@ export class NPDRequestComponent implements OnInit {
       this.NPDScmmodel={} as NPDSCM;
       this.NPDStrategicmodel={} as NPDSTRATEGIC;
       this.NPDBrandsModel={} as NPDBrands;
-      this.Comments = null;
+      
+//this.Comments = null;
+  this.Comments = '';
       this.dynamicArray=[];
     }
 
 
     transactionslist: any[] = [];
-    gettransactions(reqNo) {
+    gettransactions(reqNo:any) {
       this.httpService.getByParam(APIURLS.BR_MED_SERVICE_HISTORY_API, reqNo).then((data: any) => {
         this.isLoading = true;
         if (data.length > 0) {
@@ -526,7 +542,7 @@ export class NPDRequestComponent implements OnInit {
         }
         //this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.transactionslist = [];
       });
@@ -534,16 +550,17 @@ export class NPDRequestComponent implements OnInit {
     }
     Approverslist: any[] = [];
     accountGroupList: any[] = [];
-    Aprlpriority: number;
+    Aprlpriority!: number;
     ApprovingManager:any;
     ApprvrM:boolean=false;
-    getApproversList(value) {
+    getApproversList(value:any) {
       this.httpService.post(APIURLS.BR_MED_SERVICE_REQUEST_APPROVER_API, value).then((data: any) => {
         this.isLoading = true;
         if (data.employeeId > 0) {
           this.ApprovingManager=data;
           this.Approverslist.push(data);
-          this.Approverslist.forEach(element => {
+          this.Approverslist.forEach((element:any)=> {
+
             element.type="Approving Manager";
           });
           //this.transactionslist.reverse();
@@ -554,7 +571,7 @@ export class NPDRequestComponent implements OnInit {
         }
         //this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.Approverslist = [];
       });
@@ -606,9 +623,9 @@ export class NPDRequestComponent implements OnInit {
         .catch(err => this.errMsg1 = err);
     }
 
-    empId: string;
+    empId!: string
     view: boolean = false;
-    locationName: string;
+    locationName!: string
     attachments: any[] = [];
     attachments1: any[] = [];
     onUserActions(isedit: boolean, NPDRequest: NPDRequest, isprint: boolean, value: string) {
@@ -625,7 +642,8 @@ export class NPDRequestComponent implements OnInit {
       this.fileslist = [];
       this.files = [];
       this.fileslist1 = [];
-      this.Reviewer=null;
+      //this.Reviewer=null;
+  this.Reviewer='';
       //this.reset();
       
       this.dataForm.form.markAsPristine();
@@ -729,7 +747,7 @@ export class NPDRequestComponent implements OnInit {
     isValid: boolean = false;
     validatedForm: boolean = true;
 
-    onSaveEntry(status) {
+    onSaveEntry(status:any) {
       this.errMsg = "";
       let connection: any;
       if (this.Approverslist.length == 0) {
@@ -761,9 +779,9 @@ export class NPDRequestComponent implements OnInit {
             this.NPDRequestmodel.attachments = file;
            
           }
-          var brandsList=[];
+          var brandsList: any[]=[];
           if (this.dynamicArray.length>0) {
-            this.dynamicArray.forEach(mtrl => {
+            this.dynamicArray.forEach((mtrl:any) => {
               let brands = {} as NPDBrands;
               brands.competitorBrand = mtrl.competitorBrand;
               brands.competitorDetails = mtrl.competitorDetails;
@@ -792,7 +810,7 @@ export class NPDRequestComponent implements OnInit {
             this.getAllEntries();
             this.reset();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving Request..';
         });
@@ -820,9 +838,9 @@ export class NPDRequestComponent implements OnInit {
         }
 
       }
-      var brandsList=[];
+      var brandsList: any[]=[];
       if (this.dynamicArray.length>0) {
-        this.dynamicArray.forEach(mtrl => {
+        this.dynamicArray.forEach((mtrl:any) => {
           let brands = {} as NPDBrands;
           brands.competitorBrand = mtrl.competitorBrand;
           brands.competitorDetails = mtrl.competitorDetails;
@@ -848,13 +866,13 @@ export class NPDRequestComponent implements OnInit {
           this.getAllEntries();
           this.reset();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error Submitting Request'+''+this.NPDRequestmodel.requestNo;
       });
     }
 
-    onreview(status) {
+    onreview(status:any) {
       this.errMsg = "";
       let connection: any;
       let uid = this.currentUser.employeeId;
@@ -915,13 +933,13 @@ export class NPDRequestComponent implements OnInit {
          // this.Inserttransactions(this.NPDRequestmodel, status)
           this.getAllEntries();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = status == "Rejected" ? "Error Rejecting Request.."+''+this.NPDRequestmodel.requestNo : "Error Approving Request"+''+this.NPDRequestmodel.requestNo;
       });
     }
 
-    onRevertRequest(status) {
+   onRevertRequest(status:any) {
       this.errMsg = "";
       let connection: any;
       if (status == "CQA") {      
@@ -978,7 +996,7 @@ export class NPDRequestComponent implements OnInit {
          // this.Inserttransactions(this.NPDRequestmodel, 'Revert')
           this.getAllEntries();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop ="Error Reverting Request "+''+this.NPDRequestmodel.requestNo;
       });
@@ -986,7 +1004,7 @@ export class NPDRequestComponent implements OnInit {
 
   
     transactions = {} as MediServiceRequestHistory;
-    Inserttransactions(data, status) {
+    Inserttransactions(data:any, status:any) {
       this.errMsg = "";
       let connection: any;
       this.transactions.doneBy = this.currentUser.employeeId;
@@ -1030,7 +1048,7 @@ export class NPDRequestComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error in sending mail..';
       });
 
@@ -1043,27 +1061,27 @@ export class NPDRequestComponent implements OnInit {
     //   connection.then((data: any) => {
     //     if (data == 200) {
     //     }
-    //   }).catch(error => {
+    //   }).catch((error)=> {
     //     this.errMsgPop = 'Error in sending mail..';
     //   });
 
     // }
-    downloadFile(reqNo, value) {
+    downloadFile(reqNo:any, value:any) {
 
       // console.log(filename);
       if (value.length > 0) {
         this.httpService.getFile(APIURLS.BR_NPD_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
           // console.log(data);
-          // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+          // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
           if (data != undefined) {
-            var FileSaver = require('file-saver');
+           // var FileSaver = require('file-saver');
             const imageFile = new File([data], value, { type: 'application/doc' });
             // console.log(imageFile);
-            FileSaver.saveAs(imageFile);
+        //      FileSaver.saveAs(imageFile);
 
 
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoading = false;
         });
 
@@ -1081,7 +1099,7 @@ export class NPDRequestComponent implements OnInit {
         });
       }
     }
-    deletefile(item, name) {
+    deletefile(item:any, name:any) {
       //let attach:any='';
       if (this.attachments.length > 1) {
         const index = this.attachments.indexOf(name);
@@ -1105,12 +1123,12 @@ export class NPDRequestComponent implements OnInit {
             buttons: [false, true]
           })
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error deleteing file..';
       });
     }
-    removefile(name) {
+    removefile(name:any) {
       const index = this.fileslist.indexOf(name);
       this.fileslist.splice(index, 1);
     }
@@ -1142,9 +1160,10 @@ export class NPDRequestComponent implements OnInit {
     this.checkedRequestList = this.checkedlist;
   }
 
-  MassApprove(status)
+  MassApprove(status:any)
   {
-    this.checkedRequestList.forEach(element => {
+    this.checkedRequestList.forEach((element:any)=> {
+
      element.fullName=this.currentUser.fullName;
      element.action=status;
 
@@ -1205,7 +1224,8 @@ export class NPDRequestComponent implements OnInit {
       if (data != null) {
         this.getAllEntries();
         this.isMasterSel = false;
-        this.Reviewer=null;
+        //this.Reviewer=null;
+  this.Reviewer='';
         this.checkUncheckAll();
       }
       else {
@@ -1222,31 +1242,31 @@ export class NPDRequestComponent implements OnInit {
 
   transactionslist1:MediServiceRequestHistory[]=[];
   Finalcopy:boolean=false;
-  ShowHistory(data)
+  ShowHistory(data:any)
   {
     this.transactionslist1=[];
     this.NPDRequestmodel=data;
     this.httpService.getByParam(APIURLS.BR_MED_SERVICE_HISTORY_API, this.NPDRequestmodel.requestNo).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        this.transactionslist1 = data.filter(x=>x.processType=='NPD Request');
-        this.transactionslistCMD=this.transactionslist1.filter(x=>x.role=='CMD')
-        this.transactionslistHODI=this.transactionslist1.filter(x=>x.role=='HOD' && x.approvalPriority==2)
-        this.transactionslistHODF=this.transactionslist1.filter(x=>x.role=='HOD' && x.approvalPriority==4)
-        this.transactionslistCQA=this.transactionslist1.filter(x=>x.role=='CQA')
-        this.transactionslistIPR=this.transactionslist1.filter(x=>x.role=='IPR')
-        this.transactionslistSCM=this.transactionslist1.filter(x=>x.role=='SupplyChain')
-        this.transactionslistSM=this.transactionslist1.filter(x=>x.role=='Strategic')
-        this.transactionslistDIST=this.transactionslist1.filter(x=>x.role=='Distribution')
-        this.transactionslistMED=this.transactionslist1.filter(x=>x.role=='Medical')
-        this.transactionslistRND=this.transactionslist1.filter(x=>x.role=='RND')
+        this.transactionslist1 = data.filter((x:any)=>x.processType=='NPD Request');
+        this.transactionslistCMD=this.transactionslist1.filter((x:any)=>x.role=='CMD')
+        this.transactionslistHODI=this.transactionslist1.filter((x:any)=>x.role=='HOD' && x.approvalPriority==2)
+        this.transactionslistHODF=this.transactionslist1.filter((x:any)=>x.role=='HOD' && x.approvalPriority==4)
+        this.transactionslistCQA=this.transactionslist1.filter((x:any)=>x.role=='CQA')
+        this.transactionslistIPR=this.transactionslist1.filter((x:any)=>x.role=='IPR')
+        this.transactionslistSCM=this.transactionslist1.filter((x:any)=>x.role=='SupplyChain')
+        this.transactionslistSM=this.transactionslist1.filter((x:any)=>x.role=='Strategic')
+        this.transactionslistDIST=this.transactionslist1.filter((x:any)=>x.role=='Distribution')
+        this.transactionslistMED=this.transactionslist1.filter((x:any)=>x.role=='Medical')
+        this.transactionslistRND=this.transactionslist1.filter((x:any)=>x.role=='RND')
         var temp=this.transactionslist1.find(x=>x.role !='CMD' && x.transactionType =='Pending')
         this.Finalcopy= temp==undefined?true:false;
         //this.transactionslist.reverse();
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist1 = [];
     });    
@@ -1275,7 +1295,7 @@ export class NPDRequestComponent implements OnInit {
 
 
 
-  image:string;
+  image!:string;
   getbase64image()
   {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
@@ -1296,7 +1316,7 @@ export class NPDRequestComponent implements OnInit {
   downloadPdf()
   {
    
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICRO LABS LIMITED";
     var ReportName = "NEW PRODUCT DEVELOPMENT (NPD) FORM"
     var printedBy = this.currentUser.fullName;
@@ -1306,7 +1326,7 @@ export class NPDRequestComponent implements OnInit {
     var day=now.getDay();
     var jsDate =this.datePipe.transform(now,'dd/MM/yyyy');
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1319,7 +1339,7 @@ export class NPDRequestComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:'NPD_Form_'+this.NPDRequestmodel.requestNo,
@@ -1327,7 +1347,7 @@ export class NPDRequestComponent implements OnInit {
       // watermark: { text: 'DRAFT', fontSize: 80 },
       watermark: { text: 'DRAFT', opacity: 0.2, fontSize:10 },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1345,7 +1365,7 @@ export class NPDRequestComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -1395,12 +1415,12 @@ export class NPDRequestComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
   downloadPdf1()
   {
    
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICRO LABS LIMITED";
     var ReportName = "NEW PRODUCT DEVELOPMENT (NPD) FORM"
     var printedBy = this.currentUser.fullName;
@@ -1410,7 +1430,7 @@ export class NPDRequestComponent implements OnInit {
     var day=now.getDay();
     var jsDate =this.datePipe.transform(now,'dd/MM/yyyy');
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1423,7 +1443,7 @@ export class NPDRequestComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:'NPD_Form_'+this.NPDRequestmodel.requestNo,
@@ -1431,7 +1451,7 @@ export class NPDRequestComponent implements OnInit {
       // watermark: { text: 'DRAFT', fontSize: 80 },
     //  watermark: { text: 'DRAFT', opacity: 0.2, fontSize:10 },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1449,7 +1469,7 @@ export class NPDRequestComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -1499,7 +1519,7 @@ export class NPDRequestComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
   AssignApprover()
@@ -1531,7 +1551,7 @@ export class NPDRequestComponent implements OnInit {
           this.NPDRequestmodel.pendingApprover=this.Reviewer;
           this.sendMail(this.NPDRequestmodel);
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = status == "Rejected" ? "Error Rejecting Request.."+''+this.NPDRequestmodel.requestNo : "Error Approving Request"+''+this.NPDRequestmodel.requestNo;
       });
@@ -1563,13 +1583,13 @@ export class NPDRequestComponent implements OnInit {
          this.sendMail(this.NPDRequestmodel)
           this.getAllEntries();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = status == "Rejected" ? "Error Rejecting Request.."+''+this.NPDRequestmodel.requestNo : "Error Approving Request"+''+this.NPDRequestmodel.requestNo;
       });
   }
 
-  Inserttransactions1(data, status) {
+  Inserttransactions1(data:any, status:any) {
     this.errMsg = "";
     let connection: any;
     
@@ -1614,7 +1634,7 @@ export class NPDRequestComponent implements OnInit {
             buttons: [false, true]
           })
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error in sending mail..';
       });
     }

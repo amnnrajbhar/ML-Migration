@@ -17,8 +17,8 @@ declare var jQuery: any;
   styleUrls: ['./UserIdsBulkUpload.component.css']
 })
 export class UserIdsBulkUploadComponent implements OnInit {
-  currentUser: AuthData;
- @ViewChild('file', { static: false }) file: ElementRef;
+  currentUser!: AuthData;
+ @ViewChild('file', { static: false }) file!: ElementRef;
 
   data: excelData = [[1, 2], [3, 4]];
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
@@ -32,7 +32,8 @@ export class UserIdsBulkUploadComponent implements OnInit {
   ngOnInit() {
     var chkaccess = true;
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
 
     }
   }
@@ -66,10 +67,10 @@ export class UserIdsBulkUploadComponent implements OnInit {
     this.httpService.postAttachmentWithReturn(APIURLS.USERID_BULK_UPLOAD, this.data).then((data: any) => {
       // this.filterData = data;
       // for (var item of this.filterData.list) {
-      //   item.statusColor = this.statusList.find(x => x.type == item.employeeAppraisalStatus).color;
+      //   item.statusColor = this.statusList.find((x:any)  => x.type == item.employeeAppraisalStatus).color;
       // }
       //this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       //this.isLoading = false;
     });
     /* generate worksheet */
@@ -106,10 +107,10 @@ export class UserIdsBulkUploadComponent implements OnInit {
       if (data.length > 0) {
         this.errorData = data;
         swal('Invalid data encountered in Upload file, The error file is being downloaded for review');
-        if (this.errorData.find(x => x.employeeNo == "Invalid Columns") != null
-          || this.errorData.find(x => x.employeeNo == "Duplicate Employees Found") != null
-          || this.errorData.find(x => x.employeeNo == "Blank Values Found") != null
-          || this.errorData.find(x => x.employeeNo == "Unexpected Error") != null) {
+        if (this.errorData.find((x:any)  => x.employeeNo == "Invalid Columns") != null
+          || this.errorData.find((x:any)  => x.employeeNo == "Duplicate Employees Found") != null
+          || this.errorData.find((x:any)  => x.employeeNo == "Blank Values Found") != null
+          || this.errorData.find((x:any)  => x.employeeNo == "Unexpected Error") != null) {
           this.getInitialErrorFile();
         }
         else {
@@ -121,7 +122,7 @@ export class UserIdsBulkUploadComponent implements OnInit {
       console.log(data);
       console.log(data.length);
       this.reset();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -133,7 +134,7 @@ export class UserIdsBulkUploadComponent implements OnInit {
     // this.filterModel.export = false;
     var exportList = [];
     let index = 0;
-    this.errorData.forEach(item => {
+    this.errorData.forEach((item :any) => {
       index = index + 1;
       let exportItem = {
         "Row No": item.rowNo,
@@ -159,7 +160,7 @@ export class UserIdsBulkUploadComponent implements OnInit {
     // this.filterModel.export = false;
     var exportList = [];
     let index = 0;
-    this.errorData.forEach(item => {
+    this.errorData.forEach((item :any) => {
       index = index + 1;
       let exportItem = {
         "Row No": item.rowNo,
@@ -173,7 +174,7 @@ export class UserIdsBulkUploadComponent implements OnInit {
   }
   pageSize: any = 10;
   pageNo: any;
-  totalCount: number;
+  totalCount!: number;
   totalPages: number
   gotoPage(no) {
     if (this.pageNo == no) return;

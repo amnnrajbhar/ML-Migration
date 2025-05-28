@@ -25,7 +25,7 @@ export class AuthService {
         ////console.log('data');
         ////console.log(data.status);
         resolve(data);
-      }).catch(error => {
+      }).catch((error)=> {
         reject(error.status);
         
       });

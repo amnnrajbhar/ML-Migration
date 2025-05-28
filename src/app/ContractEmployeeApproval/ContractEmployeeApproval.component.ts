@@ -23,24 +23,24 @@ import swal from 'sweetalert';
 import { ExcelService } from '../shared/excel-service';
 
 export class actionItemModel {
-  employeeId: string;
-  firstName: string;
+  employeeId: string
+  firstName: string
   middleName: string
-  lastName: string;
-  email: string;
-  baseLocation: string;
-  department: string;
-  profile: string;
-  designation: string;
-  employee_type: string;
-  role: string;
-  manager: string;
-  permanent_Address: string;
-  phone_Number: string;
-  current_Address: string;
-  emergency_Contact_Name: string;
-  emergency_Contact_Number: string;
-  isActive: boolean;
+  lastName: string
+  email: string
+  baseLocation: string
+  department: string
+  profile: string
+  designation: string
+  employee_type: string
+  role: string
+  manager: string
+  permanent_Address: string
+  phone_Number: string
+  current_Address: string
+  emergency_Contact_Name: string
+  emergency_Contact_Number: string
+  isActive!: boolean;
 }
 
 @Component({
@@ -49,8 +49,8 @@ export class actionItemModel {
   styleUrls: ['./ContractEmployeeApproval.component.css']
 })
 export class ContractEmployeeApprovalComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
   public tableWidget: any;
   //designationList: any[] = [];
@@ -67,9 +67,9 @@ export class ContractEmployeeApprovalComponent implements OnInit {
   locListCon1 = [];
   genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -78,9 +78,9 @@ export class ContractEmployeeApprovalComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   filterEmployeeName: string = '';
   filterEmployeeId: string = '';
@@ -117,7 +117,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -125,30 +125,30 @@ export class ContractEmployeeApprovalComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.filterLocation = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.filterLocation = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.plantList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -169,8 +169,8 @@ export class ContractEmployeeApprovalComponent implements OnInit {
     this.filterStatus = 'Active';
     this.userList = [];
   }
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
@@ -185,10 +185,11 @@ export class ContractEmployeeApprovalComponent implements OnInit {
 
   BloodGroupList: any[] = [];
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
 
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -220,13 +221,13 @@ export class ContractEmployeeApprovalComponent implements OnInit {
       if (data.length > 0) {
         this.empCatListAll = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatListAll = [];
     });
   }
-  getcat(id) {
-    let temp = this.empCatListAll.find(x => x.id == id);
+  getcat(id:any) {
+    let temp = this.empCatListAll.find((x:any)  => x.id == id);
     return temp ? temp.catltxt : '';
   }
 
@@ -235,13 +236,13 @@ export class ContractEmployeeApprovalComponent implements OnInit {
     this.errMsg = "";
     this.get("MaritalM/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.MaritalStatusList = data.filter(x => x.isActive).sort((a, b) => {
+        this.MaritalStatusList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.MaritalStatusList = [];
     });
@@ -277,25 +278,25 @@ export class ContractEmployeeApprovalComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userList = [];
     });
   }
-  getdesig(id) {
-    var temp = this.designationList.find(x => x.id == id);
+  getdesig(id:any) {
+    var temp = this.designationList.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
-  getdept(id) {
-    var temp = this.departmentList.find(x => x.id == id);
+  getdept(id:any) {
+    var temp = this.departmentList.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
-  getsubdept(id) {
-    var temp = this.subDeptList.find(x => id == id);
+  getsubdept(id:any) {
+    var temp = this.subDeptList.find((x:any)  => id == id);
     return temp ? temp.sdptidStxt : '';
   }
-  getpaygroup(id) {
-    var temp = this.payGroupList.find(x => x.payGroup == id);
+  getpaygroup(id:any) {
+    var temp = this.payGroupList.find((x:any)  => x.payGroup == id);
     return temp ? temp.short_desc : '';
   }
 
@@ -304,13 +305,13 @@ export class ContractEmployeeApprovalComponent implements OnInit {
     this.errMsg = "";
     this.get("State/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.filter(x => x.isActive && x.land1 == 'IN').sort((a, b) => {
+        this.stateList = data.filter((x:any)  => x.isActive && x.land1 == 'IN').sort((a:any, b:any) => {
           if (a.bezei > b.bezei) return 1;
           if (a.bezei < b.bezei) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.stateList = [];
     });
@@ -320,23 +321,23 @@ export class ContractEmployeeApprovalComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
   }
 
-  EditUser(id) {
+  EditUser(id:any) {
     let route = 'EditContractEmployee/' + id;
     this.router.navigate([route]);
   }
-  ViewUser(id) {
+  ViewUser(id:any) {
     let route = 'ViewContractEmployee/' + id;
     this.router.navigate([route]);
   }
@@ -348,7 +349,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
       icon: "warning",
       dangerMode: false,
       buttons: [true, true]
-    }).then((data) => {
+    }).then((data:any) => {
       if (data) {
         this.userMasterItem = {} as ContractEmployee;
         this.userMasterItem = Object.assign({}, user);
@@ -371,7 +372,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
             this.clear();
           }
           this.isLoadingPop = false;
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           alert('Error inactivating user..');
         });
@@ -385,9 +386,9 @@ export class ContractEmployeeApprovalComponent implements OnInit {
     this.errMsg = "";
     this.get("Country/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.CountryList = data.filter(x => x.isActive);
+        this.CountryList = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.CountryList = [];
     });
@@ -398,16 +399,16 @@ export class ContractEmployeeApprovalComponent implements OnInit {
     this.errMsg = "";
     this.get("RoleMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.Rolelist = data.filter(x => x.isActive);
+        this.Rolelist = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Rolelist = [];
     });
   }
 
-  getRole(id) {
-    let temp = this.Rolelist.find(x => x.id == id);
+  getRole(id:any) {
+    let temp = this.Rolelist.find((x:any)  => x.id == id);
     return temp ? temp.role_Stxt : '';
   }
 
@@ -418,7 +419,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
       if (data.length > 0) {
         this.subDeptList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.subDeptList = [];
     });
@@ -431,14 +432,14 @@ export class ContractEmployeeApprovalComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
   }
 
-  getReporting(id) {
-    let temp = this.ReportingGroupList.find(x => x.id == id);
+  getReporting(id:any) {
+    let temp = this.ReportingGroupList.find((x:any)  => x.id == id);
     return temp ? temp.reportingGroupSt : '';
   }
   lastReportingkeydown = 0;
@@ -449,7 +450,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -459,7 +460,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -469,7 +470,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
                   $("#reportingManager").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -496,7 +497,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -506,7 +507,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManagerId").val(ui.item.value);
                   $("#approvingManager").val(ui.item.label);
@@ -516,7 +517,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
                   $("#approvingManager").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManagerId").val(ui.item.value);
                   $("#approvingManager").val(ui.item.label);
@@ -540,20 +541,20 @@ export class ContractEmployeeApprovalComponent implements OnInit {
     this.errMsg = "";
     this.get("DesignationMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.filter(x => x.isActive).sort((a, b) => {
+        this.designationList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.designationList = [];
     });
   }
   onDesignationChange() {
-    this.userMasterItem.gradeId = this.designationList.find(x => x.id == this.userMasterItem.dsgid).grade;
-    this.userMasterItem.bandid = this.designationList.find(x => x.id == this.userMasterItem.dsgid).band;
+    this.userMasterItem.gradeId = this.designationList.find((x:any)  => x.id == this.userMasterItem.dsgid).grade;
+    this.userMasterItem.bandid = this.designationList.find((x:any)  => x.id == this.userMasterItem.dsgid).band;
   }
 
 
@@ -564,13 +565,13 @@ export class ContractEmployeeApprovalComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -630,7 +631,8 @@ export class ContractEmployeeApprovalComponent implements OnInit {
       this.errMsgPop = "";
       this.isLoadingPop = true;
       let connection: any;
-      this.checkedRequestList.forEach(element => {
+      this.checkedRequestList.forEach((element:any)=> {
+
         this.userMasterItem = {} as ContractEmployee;
         this.userMasterItem = Object.assign({}, element);
         this.userMasterItem.isActive = 1;
@@ -658,7 +660,7 @@ export class ContractEmployeeApprovalComponent implements OnInit {
           this.clear();
         }
         this.isLoadingPop = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         alert('Error approving user..');
       });
@@ -689,7 +691,8 @@ export class ContractEmployeeApprovalComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -714,11 +717,11 @@ getHeader(): { headers: HttpHeaders } {
     return ("00" + d1.getDate()).slice(-2) + "-" + ("00" + (d1.getMonth() + 1)).slice(-2) + "-" +
       d1.getFullYear();
   }
-  exportList: any[];
+  exportList!: any[];
   exportExcel() {
     this.exportList = [];
     let index = 0;
-    this.userList.forEach(item => {
+    this.userList.forEach((item :any) => {
       index = index + 1;
       let midName = '';
       let lastName = ''
@@ -727,24 +730,24 @@ getHeader(): { headers: HttpHeaders } {
       let exportItem = {
         "SNo": index,
         "Plant": item.location,
-        "Pay Group": item.payGroup ? this.payGroupList.find(x => x.id == item.payGroup).payGroup : '',
+        "Pay Group": item.payGroup ? this.payGroupList.find((x:any)  => x.id == item.payGroup).payGroup : '',
         "Employee Id": item.employeeId,
         "Title": item.title,
         "Full Name": item.firstName + ' ' + midName + ' ' + lastName,
         "Gender": item.gender == '1' ? 'Male' : 'Female',
         "DOB": this.setDateFormate(item.dob),
-        "Marital Status": this.MaritalStatusList.find(x => x.id == item.maritalStatus).name,
+        "Marital Status": this.MaritalStatusList.find((x:any)  => x.id == item.maritalStatus).name,
         "Blood Group": item.bloodGroup,
         "Mobile No": item.mobile,
         "Email Id": item.emailId,
         "Vendor Id": item.vendorContractorId,
-        "Designation": item.dsgid ? this.designationList.find(x => x.id == item.dsgid).name : '',
+        "Designation": item.dsgid ? this.designationList.find((x:any)  => x.id == item.dsgid).name : '',
         "Grade": item.gradeId,
         "Band": item.bandid,
-        "Role": this.Rolelist.find(x => x.id == item.roleId).role_Stxt,
-        "Department": item.dptid ? this.departmentList.find(x => x.id == item.dptid).name : '',
-        "Sub Department": item.sdptid ? this.subDeptList.find(x => x.id == item.sdptid).sdptidStxt : '',
-        "Reporting Group": item.reportingGroup ? this.ReportingGroupList.find(x => x.id == item.reportingGroup).reportingGroupSt : '',
+        "Role": this.Rolelist.find((x:any)  => x.id == item.roleId).role_Stxt,
+        "Department": item.dptid ? this.departmentList.find((x:any)  => x.id == item.dptid).name : '',
+        "Sub Department": item.sdptid ? this.subDeptList.find((x:any)  => x.id == item.sdptid).sdptidStxt : '',
+        "Reporting Group": item.reportingGroup ? this.ReportingGroupList.find((x:any)  => x.id == item.reportingGroup).reportingGroupSt : '',
         "DOJ": item.doj ? this.setDateFormate(item.doj) : '',
         "Contract End Date": item.dol ? this.setDateFormate(item.dol) : '',
         "Reporting Manager": item.rptmngr,
@@ -775,7 +778,7 @@ getHeader(): { headers: HttpHeaders } {
       icon: "warning",
       dangerMode: false,
       buttons: [true, true]
-    }).then((data) => {
+    }).then((data:any) => {
       if (data) {
         this.userMasterItem = {} as ContractEmployee;
         this.userMasterItem = Object.assign({}, user);
@@ -804,7 +807,7 @@ getHeader(): { headers: HttpHeaders } {
             this.clear();
           }
           this.isLoadingPop = false;
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           alert('Error blacklisting user..');
         });
@@ -819,7 +822,7 @@ getHeader(): { headers: HttpHeaders } {
       icon: "warning",
       dangerMode: false,
       buttons: [true, true]
-    }).then((data) => {
+    }).then((data:any) => {
       if (data) {
         this.userMasterItem = {} as ContractEmployee;
         this.userMasterItem = Object.assign({}, user);
@@ -848,7 +851,7 @@ getHeader(): { headers: HttpHeaders } {
             this.clear();
           }
           this.isLoadingPop = false;
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           alert('Error blacklisting user..');
         });

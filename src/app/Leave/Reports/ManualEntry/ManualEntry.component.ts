@@ -20,17 +20,17 @@ import { FormControl, NgForm } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 import { ExcelService } from '../../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import * as XLSX from 'xlsx';
-import * as pdfMake from "pdfmake/build/pdfmake";
+// import * as pdfMake from "pdfmake/build/pdfmake";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 //import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 
 
 
@@ -40,15 +40,15 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
     styleUrls: ['./ManualEntry.component.css']
 })
 export class ManualEntryComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm, { static: false }) userForm: NgForm;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
-  @ViewChild('table', { static: false }) table: ElementRef;
+  @ViewChild('table', { static: false }) table!: ElementRef;
 
-  @ViewChild('dailyreport', { static: false }) dailyreport: ElementRef;
+  @ViewChild('dailyreport', { static: false }) dailyreport!: ElementRef;
 
 
     public tableWidget: any;
@@ -58,7 +58,7 @@ export class ManualEntryComponent implements OnInit {
     departmentList: any[] = [];
     ReportData: any[] = [];
     locationList: any[] = [];
-    isLoading: boolean;
+    isLoading!: boolean;
     StaffCategoryList: any[] = [];
     PayGroupList: any[] = [];
     ReportingGroupList: any[] = [];
@@ -94,12 +94,12 @@ export class ManualEntryComponent implements OnInit {
     path: any;
     fromDate: any = null;
     toDate: any = null;
-    EmployeeNo: string = null;
+    EmployeeNo: string = ' ';
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
         private http: HttpClient, private https: HttpClient, private route: ActivatedRoute, private excelService: ExcelService,
         private datePipe: DatePipe) {
-        pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    //    pdfMake.vfs = pdfFonts.pdfMake.vfs;
     }
 
     private initDatatable(): void {
@@ -119,7 +119,7 @@ export class ManualEntryComponent implements OnInit {
 
 
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationAllList.find(e => e.id == id);
         return temp ? temp.name : '';
     }
@@ -129,45 +129,46 @@ export class ManualEntryComponent implements OnInit {
         this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.filterPlant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-                this.locationname = this.filterPlant + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.filterPlant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+                this.locationname = this.filterPlant + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
     plantList: any[] = [];
-    getPlantsassigned(id) {
+    getPlantsassigned(id:any) {
         this.isLoading = true;
         this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
             if (data) {
-                this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+                this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.plantList = [];
         });
     }
 
 
-    getLocationName(id) {
-        let t = this.locationList.find(s => s.id == id);
+    getLocationName(id:any) {
+        let t = this.locationList.find((s:any) => s.id == id);
         return t.code + ' - ' + t.name;
     }
 
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         let today = new Date();
         this.CalenderYear = new Date().getFullYear().toString();
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -194,11 +195,13 @@ export class ManualEntryComponent implements OnInit {
     ClearData() {
         this.filterPlant = null;
         this.filterStaffcat = null;
-        this.filterPayGroup = null;
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
         this.filterDepartment = null;
         this.filterReportingGroup = null;
-        this.filterMonth = null;
-        this.filterEmployee = null;
+        this.filterMonth = '';
+        this.filterEmployee = '';
         this.AttendanceType = null;
         this.ViewType = null;
         this.Type = null;
@@ -261,29 +264,33 @@ export class ManualEntryComponent implements OnInit {
     getpayGroupList() {
         this.get("PayGroupMaster/GetAll").then((data: any) => {
             if (data.length > 0) {
-                this.PayGroupList = data.sort((a, b) => {
+                this.PayGroupList = data.sort((a:any, b:any) => {
                     if (a.short_desc > b.short_desc) return 1;
                     if (a.short_desc < b.short_desc) return -1;
                     return 0;
                 });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.PayGroupList = [];
         });
     }
     payGroupList1: any[] = [];
     getPaygroupsBasedOnPlant() {
-        this.filterPayGroup = null;
-        let temp = this.locationList.find(x => x.code == this.filterPlant);
-        this.payGroupList1 = this.PayGroupList.filter(x => x.plant == temp.code);
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+        let temp = this.locationList.find((x:any)  => x.code == this.filterPlant);
+        this.payGroupList1 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
     }
 
     payGroupList11: any[] = [];
     getPaygroupsBasedOnPlant1() {
-        this.filterPayGroup = null;
-        let temp = this.locationList.find(x => x.fkPlantId == this.filterPlant);
-        this.payGroupList11 = this.PayGroupList.filter(x => x.plant == temp.code);
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+        let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterPlant);
+        this.payGroupList11 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
     }
 
     getempCatList() {
@@ -291,7 +298,7 @@ export class ManualEntryComponent implements OnInit {
             if (data.length > 0) {
                 this.StaffCategoryList = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.StaffCategoryList = [];
         });
@@ -301,7 +308,7 @@ export class ManualEntryComponent implements OnInit {
             if (data.length > 0) {
                 this.ReportingGroupList = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ReportingGroupList = [];
         });
@@ -315,7 +322,7 @@ export class ManualEntryComponent implements OnInit {
             if ($event.timeStamp - this.lastReportingkeydown > 400) {
                 this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
                     if (data.length > 0) {
-                        var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+                        var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
                         var list = $.map(sortedList, function (item) {
                             return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
                         })
@@ -325,7 +332,7 @@ export class ManualEntryComponent implements OnInit {
                                 "ui-autocomplete": "highlight",
                                 "ui-menu-item": "list-group-item"
                             },
-                            change: function (event, ui) {
+                            change: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#empNo").val(ui.item.value);
                                     $("#empNo").val(ui.item.value);
@@ -335,7 +342,7 @@ export class ManualEntryComponent implements OnInit {
                                     $("#empNo").val('');
                                 }
                             },
-                            select: function (event, ui) {
+                            select: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#empNo").val(ui.item.value);
                                     $("#empNo").val(ui.item.value);
@@ -363,12 +370,12 @@ export class ManualEntryComponent implements OnInit {
         this.httpService.LApost(APIURLS.GET_AUTHORIZED_EMPLOYEE_LIST, filterModel).then((data: any) => {
             if (data.length > 0) {
                 this.UserList = data;
-                this.empListCon = data.map((i) => {
+                this.empListCon = data.map((i:any) => {
                     i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation
                     i.id = i.employeeId; return i;
                 });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.UserList = [];
             this.isLoading = false;
 
@@ -378,19 +385,19 @@ export class ManualEntryComponent implements OnInit {
     getDepartList() {
         this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
             if (data.length > 0) {
-                this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+                this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
                     if (a.name > b.name) return 1;
                     if (a.name < b.name) return -1;
                     return 0;
                 });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.departmentList = [];
             this.isLoading = false;
 
         });
     }
-    exportList: any[];
+    exportList!: any[];
 
 
 
@@ -416,7 +423,9 @@ export class ManualEntryComponent implements OnInit {
     }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -450,7 +459,7 @@ export class ManualEntryComponent implements OnInit {
       //filterModel.attendanceType=this.filterTY;
       //filterModel.date=this.setFormatDateTime(this.fromDate);;
       let connection = this.httpService.LApost(APIURLS.GET_MANUAL_ENTRY_AUDIT_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           this.ManualEntryAuditReport = data;
           // swal({
@@ -459,7 +468,7 @@ export class ManualEntryComponent implements OnInit {
           //   icon: "warning",
           //   dangerMode: false,
           //   buttons: [true, true]
-          // }).then((data) => {
+          // }).then((data:any) => {
           //   if (data) {
           //     this.printManualreport();
           //   }
@@ -486,7 +495,7 @@ export class ManualEntryComponent implements OnInit {
     var now = Date.now();
     var date = this.setFormatedDateTime(now);
     var logo = this.cmpimg;
-    var htmnikhitml = htmlToPdfmake(`<html>
+   /* var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -500,13 +509,13 @@ export class ManualEntryComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: "Manual Entry Audit Report",
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -524,7 +533,7 @@ export class ManualEntryComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [20, 110, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -579,7 +588,7 @@ export class ManualEntryComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
     cmpimg: any;
 

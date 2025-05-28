@@ -2,8 +2,8 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 // import { Lightbox } from 'ngx-lightbox';
 declare var jQuery: any;
 declare var toastr: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
 import * as _ from "lodash";
 import { AuthData } from '../../auth/auth.model';
 import { AppComponent } from '../../app.component';
@@ -16,16 +16,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ExcelService } from '../../shared/excel-service';
 declare var $: any;
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 //import { debug } from 'util';
 import { EmpShiftMaster } from '../EmpShiftMaster/EmpShiftMaster.model';
 import { EmployeeData } from './EmployeeData.model';
 import { Profile } from '../../profile-page/profile.model';
 import { EmployeeDetails } from './Employeedetails.model';
 import { DependantDetails } from './DependantDetails.model';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import { info } from 'console';
 declare var toastr: any;
 //import { Employee } from 'src/app/masters/employee/employee.model';
@@ -38,17 +38,17 @@ declare var toastr: any;
 })
 export class EmployeeDataComponent implements OnInit {
   todayDate = new Date();
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   today: Date = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), this.todayDate.getDate());
   tableWidget: any;
-  errMsg: string;
+  errMsg: string
   location: any;
-  usrid: number;
-  path: string;
+  usrid!: number;
+  path!: string
   locationList: any[] = [[]];
   errMsgPop = '';
-  empData: AuthData;
-  isLoading: boolean;
+  empData!: AuthData;
+  isLoading!: boolean;
   list: any = {};
   StaffCategoryList: any[] = [];
   PayGroupList: any[] = [];
@@ -97,8 +97,8 @@ export class EmployeeDataComponent implements OnInit {
   PunchingDevices: any;
   PunchingDevicesSelected: any;
 
-  public chartPlugins = [ChartDataLabels];
-  filterempName: string = null;
+ // public chartPlugins = [ChartDataLabels];
+  filterempName: string = ' ';
   profileItem = {} as EmployeeDetails;
   DependentList: any[] = [];
   UpdatedDependentList: DependantDetails[] = [];
@@ -121,7 +121,8 @@ export class EmployeeDataComponent implements OnInit {
     // console.log('Access:'+chkaccess);
     this.profileItem.imgUrl = '../assets/dist/img/pp.jpg'
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       // console.log(authData);
       this.usrid = this.currentUser.uid;
       this.empData = this.currentUser;
@@ -147,7 +148,7 @@ export class EmployeeDataComponent implements OnInit {
       this.router.navigate(["/unauthorized"]);
   }
 
-  getFormatedDate(d) {
+  getFormatedDate(d:any) {
     let fd = new Date(d);
     let formateddate = fd.getFullYear() + "-" + ("00" + (fd.getMonth() + 1)).slice(-2) + "-" +
       ("00" + fd.getDate()).slice(-2);
@@ -163,17 +164,17 @@ export class EmployeeDataComponent implements OnInit {
     return datetime;
   }
 
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -215,12 +216,13 @@ export class EmployeeDataComponent implements OnInit {
   GetDevBio(plant) {
     this.isLoading = true;
     let filterModel: any = {};
-    filterModel.Plant = this.locationList.find(x => x.fkPlantId == plant).code;
+    filterModel.Plant = this.locationList.find((x:any)  => x.fkPlantId == plant).code;
     let connection = this.httpService.LApost(APIURLS.GET_DEV_BIO_REPORT, filterModel);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
         this.DevBioReport = data;
-        this.DevBioReport.forEach(element => {
+        this.DevBioReport.forEach((element:any)=> {
+
           element.deviceName = element.deviceFname;
         });
       }
@@ -233,19 +235,19 @@ export class EmployeeDataComponent implements OnInit {
 
   ShiftList: EmpShiftMaster[] = [];
   ShiftList1: EmpShiftMaster[] = [];
-  loccode: string;
+  loccode: string
 
   GetShift() {
-    let temp = this.locationList.find(x => x.id == this.empData.baselocation)
-    this.ShiftList1 = this.ShiftList.filter(x => x.loc.includes(temp.code));
+    let temp = this.locationList.find((x:any)  => x.id == this.empData.baselocation)
+    this.ShiftList1 = this.ShiftList.filter((x:any)  => x.loc.includes(temp.code));
   }
   getShiftMasterList() {
     this.httpService.LAget(APIURLS.BR_GET_ALL_SHIFTS).then((data: any) => {
       if (data.length > 0) {
-        this.ShiftList = data.filter(x => x.isActive == true);
+        this.ShiftList = data.filter((x:any)  => x.isActive == true);
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ShiftList = [];
     });
@@ -278,26 +280,26 @@ export class EmployeeDataComponent implements OnInit {
     setTimeout(() => this.initDatatable(), 0)
   }
 
-  addDays(date, daysToAdd) {
+  addDays(date:any, daysToAdd:any) {
     var _24HoursInMilliseconds = 86400000;
     return new Date(date.getTime() + daysToAdd * _24HoursInMilliseconds);
   };
 
-  getLocationName(id) {
-    let temp = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let temp = this.locationList.find((s:any) => s.id == id);
     return temp ? temp.name : '';
   }
 
   getpayGroupList() {
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.PayGroupList = data.sort((a, b) => {
+        this.PayGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
@@ -305,8 +307,8 @@ export class EmployeeDataComponent implements OnInit {
   getPaygroupsBasedOnPlant() {
     this.GetDevBio(this.EmployeeData.baseLocation);
     //this.filterPaygroup = null;
-    let temp = this.locationList.find(x => x.fkPlantId == this.EmployeeData.baseLocation);
-    this.payGroupList1 = temp ? this.PayGroupList.filter(x => x.plant == temp.code) : [];
+    let temp = this.locationList.find((x:any)  => x.fkPlantId == this.EmployeeData.baseLocation);
+    this.payGroupList1 = temp ? this.PayGroupList.filter((x:any)  => x.plant == temp.code) : [];
   }
 
   getempCatList() {
@@ -314,7 +316,7 @@ export class EmployeeDataComponent implements OnInit {
       if (data.length > 0) {
         this.StaffCategoryList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.StaffCategoryList = [];
     });
@@ -324,7 +326,7 @@ export class EmployeeDataComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -332,13 +334,13 @@ export class EmployeeDataComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -356,7 +358,7 @@ export class EmployeeDataComponent implements OnInit {
       if (data1.length > 0) {
         this.holidayList = data1;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.holidayList = [];
     });
@@ -373,7 +375,7 @@ export class EmployeeDataComponent implements OnInit {
       if (data1.length > 0) {
         this.calendarList = data1;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.calendarList = [];
     });
@@ -390,7 +392,7 @@ export class EmployeeDataComponent implements OnInit {
       if (data1) {
         this.holidayList = data1.table;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.holidayList = [];
     });
@@ -408,7 +410,7 @@ export class EmployeeDataComponent implements OnInit {
       if (data1) {
         this.calendarList = data1.table;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.calendarList = [];
     });
@@ -420,7 +422,7 @@ export class EmployeeDataComponent implements OnInit {
       if (data.length > 0) {
         this.subdepartmentList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.subdepartmentList = [];
     });
@@ -431,13 +433,13 @@ export class EmployeeDataComponent implements OnInit {
       if (data.length > 0) {
         this.workTypeList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.workTypeList = [];
     });
   }
 
-  getTimeFormat(time) {
+  getTimeFormat(time:any) {
     return moment('1970-01-01 ' + time);
   }
 
@@ -474,7 +476,8 @@ export class EmployeeDataComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -487,7 +490,7 @@ getHeader(): { headers: HttpHeaders } {
 
 
   formData: FormData = new FormData();
-  file: File;
+  file!: File;
   uploadedFile(files: File) {
     this.file = files[0];
   }
@@ -506,7 +509,7 @@ getHeader(): { headers: HttpHeaders } {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -516,7 +519,7 @@ getHeader(): { headers: HttpHeaders } {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#rptMgr").val(ui.item.value);
                   $("#rptMgr").val(ui.item.value);
@@ -528,7 +531,7 @@ getHeader(): { headers: HttpHeaders } {
                   $("#rptMgr").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#rptMgr").val(ui.item.value);
                   $("#rptMgr").val(ui.item.value);
@@ -557,7 +560,7 @@ getHeader(): { headers: HttpHeaders } {
       if ($event.timeStamp - this.lastReportingkeydown1 > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -567,7 +570,7 @@ getHeader(): { headers: HttpHeaders } {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#appMgr").val(ui.item.value);
                   $("#appMgr").val(ui.item.value);
@@ -579,7 +582,7 @@ getHeader(): { headers: HttpHeaders } {
                   $("#appMgr").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#appMgr").val(ui.item.value);
                   $("#appMgr").val(ui.item.value);
@@ -661,7 +664,7 @@ getHeader(): { headers: HttpHeaders } {
         });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -709,8 +712,9 @@ getHeader(): { headers: HttpHeaders } {
       this.WorkType = data.workType;
       this.PunchingDevices = [];
       let punchingDeviceIDs: string[] = data.punchingDevices.split(',');
-      this.DevBioReport.forEach(element => {
-        if (punchingDeviceIDs.find(x => x == element.deviceId)) {
+      this.DevBioReport.forEach((element:any)=> {
+
+        if (punchingDeviceIDs.find((x:any)  => x == element.deviceId)) {
           this.PunchingDevices.push(element);
           console.log(this.PunchingDevices);
         }
@@ -723,7 +727,7 @@ getHeader(): { headers: HttpHeaders } {
     jQuery("#myModal").modal('show');
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoadingPop: boolean = false;
   UpdateData() {
     this.errMsg = "";
@@ -795,7 +799,7 @@ getHeader(): { headers: HttpHeaders } {
     EmployeeData.mediclaimExpiry = this.Mediclaimexpirydate;
     EmployeeData.mediclaimorESI = this.EligibilityType;
     EmployeeData.workType = this.WorkType;
-    EmployeeData.punchingDevice = this.PunchingDevices.map(x => x.deviceId).join(',');
+    EmployeeData.punchingDevice = this.PunchingDevices.map((x:any)  => x.deviceId).join(',');
 
     let connection = this.httpService.LApost(APIURLS.BR_UPDATE_EMP_DATA, EmployeeData);
     connection.then((output: any) => {
@@ -822,7 +826,7 @@ getHeader(): { headers: HttpHeaders } {
       }
       jQuery("#myModal").modal('hide');
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request...';
     });
@@ -916,10 +920,10 @@ getHeader(): { headers: HttpHeaders } {
 
     if ((val.relationship == 'Mother' || val.relationship == 'Father' || val.relationship == 'Husband'
       || val.relationship == 'Wife') && val.id != undefined) {
-      let temp = this.DependentList.find(x => x.relationship == val.relationship);
+      let temp = this.DependentList.find((x:any)  => x.relationship == val.relationship);
       if (temp) {
         if (val.id) {
-          let rel = this.UpdatedDependentList.find(x => x.id == val.id);
+          let rel = this.UpdatedDependentList.find((x:any)  => x.id == val.id);
           val.relationship = val.relationship;
           swal({
             title: "Message",
@@ -949,28 +953,29 @@ getHeader(): { headers: HttpHeaders } {
   updateData() {
     this.isLoading = true;
     let connection: any;
-    if ((this.DependentList.filter(x => x.relationship == 'Mother').length) > 1) {
+    if ((this.DependentList.filter((x:any)  => x.relationship == 'Mother').length) > 1) {
       this.isLoading = false;
       toastr.error("Only one entry allowed for the relation 'Mother'.");
       return;
     }
-    else if ((this.DependentList.filter(x => x.relationship == 'Father').length) > 1) {
+    else if ((this.DependentList.filter((x:any)  => x.relationship == 'Father').length) > 1) {
       this.isLoading = false;
       toastr.error("Only one entry allowed for the relation 'Father'.");
       return;
     }
-    else if ((this.DependentList.filter(x => x.relationship == 'Husband').length) > 1) {
+    else if ((this.DependentList.filter((x:any)  => x.relationship == 'Husband').length) > 1) {
       this.isLoading = false;
       toastr.error("Only one entry allowed for the relation 'Husband'.");
       return;
     }
-    else if ((this.DependentList.filter(x => x.relationship == 'Wife').length) > 1) {
+    else if ((this.DependentList.filter((x:any)  => x.relationship == 'Wife').length) > 1) {
       this.isLoading = false;
       toastr.error("Only one entry allowed for the relation 'Wife'.");
       return;
     }
     else {
-      this.DependentList.forEach(element => {
+      this.DependentList.forEach((element:any)=> {
+
         let dependant = {} as DependantDetails;
         dependant.id = element.id ? element.id : 0;
         dependant.dependantAge = element.dependantAge;
@@ -983,7 +988,7 @@ getHeader(): { headers: HttpHeaders } {
         connection = this.httpService.LAput(APIURLS.UPDATE_DEPENDANT_DETAILS, dependant.id, dependant);
 
       });
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data == 200 || data.id > 0) {
           swal({
             title: "Message",
@@ -1002,10 +1007,10 @@ getHeader(): { headers: HttpHeaders } {
     }
   }
 
-  deleteDependentDetails(id) {
+  deleteDependentDetails(id:any) {
     let connection: any;
     connection = this.httpService.LAdelete(APIURLS.UPDATE_DEPENDANT_DETAILS, id);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data == 200 || data.id > 0) {
         swal({
           title: "Message",
@@ -1046,8 +1051,8 @@ getHeader(): { headers: HttpHeaders } {
   }
 
 
-  isSubmitting: boolean;
-  errorlist: string;
+  isSubmitting!: boolean;
+  errorlist: string
   uploadExcel() {
     if (this.file == undefined || this.file == null) {
       swal({
@@ -1082,7 +1087,8 @@ getHeader(): { headers: HttpHeaders } {
         if (data[0].typ == 'E') {
           this.isLoading = false;
           this.errorlist = "Employee Data not Updated, please find the below error list: " + '\n';
-          data.forEach(element => {
+          data.forEach((element:any)=> {
+
             this.errorlist = this.errorlist + '\n' + '\n' + element.message;
           });
           swal({
@@ -1108,7 +1114,7 @@ getHeader(): { headers: HttpHeaders } {
         this.reset();
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsgPop = 'Error uploading file ..';
     });
@@ -1119,146 +1125,147 @@ getHeader(): { headers: HttpHeaders } {
     let formateddate = dt.getFullYear() + "-" + ("00" + (dt.getMonth() + 1)).slice(-2) + '-' + ("00" + dt.getDate()).slice(-2);
     return formateddate;
   }
+ //v10
+  // exportEmployeeList() {
+  //   if (this.EmployeeData.baseLocation == null || this.EmployeeData.baseLocation == '') {
+  //     toastr.error("Please select Plant..!");
+  //     return;
+  //   }
+  //   else if (this.EmployeeData.paygroup == null || this.EmployeeData.paygroup == '') {
+  //     toastr.error("Please select Paygroup..!");
+  //     return;
+  //   }
+  //   this.isLoading = true;
+  //   let td = new Date();
+  //   var filterModel: any = {};
+  //   filterModel.baseLocation = this.EmployeeData.baseLocation;
+  //   filterModel.payGroup = this.EmployeeData.paygroup;
+  //   filterModel.category = this.EmployeeData.Category;
+  //   filterModel.department = this.EmployeeData.department;
+  //   filterModel.subDepartment = this.EmployeeData.subDepartment;
+  //   filterModel.reportingGroup = this.EmployeeData.reportingGroup;
+  //   filterModel.export = true;
+  //   this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LIST, filterModel).then((data: any) => {
+  //     if (data) {
+  //       var list = data.table;
+  //       swal({
+  //         title: "Message",
+  //         text: "Are you sure to export?",
+  //         icon: "warning",
+  //         dangerMode: false,
+  //         buttons: [true, true]
+  //       }).then((willsave) => {
+  //         if (willsave) {
+  //           const title = 'Employee Data Report';
+  //           const header = ["Sl No", "Employee No", "First Name", "Middle Name", "Last Name", "Plant", "PayGroup", "Staff Category", "Reporting Group",
+  //             "Department", "Designation", "Role", "Sub Department", "Date of Joining", "Email Id",
+  //             "Reporting Manager No", "Reporting Manager Name", "Approving Manager No", "Approving Manager Name",
+  //             "Active", "Created Date", "Shift Code", "Swipe Count", "Work Type", "Biometric Punching Device",
+  //             "Mediclaim/ESIC", "Mediclaim No", "Mediclaim Expiry Date", "Holiday Type", "Holiday Type Code", "Holiday Type Name",
+  //             "Calendar Type", "Calendar Type Code", "Calendar Type Name",]
 
-  exportEmployeeList() {
-    if (this.EmployeeData.baseLocation == null || this.EmployeeData.baseLocation == '') {
-      toastr.error("Please select Plant..!");
-      return;
-    }
-    else if (this.EmployeeData.paygroup == null || this.EmployeeData.paygroup == '') {
-      toastr.error("Please select Paygroup..!");
-      return;
-    }
-    this.isLoading = true;
-    let td = new Date();
-    var filterModel: any = {};
-    filterModel.baseLocation = this.EmployeeData.baseLocation;
-    filterModel.payGroup = this.EmployeeData.paygroup;
-    filterModel.category = this.EmployeeData.Category;
-    filterModel.department = this.EmployeeData.department;
-    filterModel.subDepartment = this.EmployeeData.subDepartment;
-    filterModel.reportingGroup = this.EmployeeData.reportingGroup;
-    filterModel.export = true;
-    this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LIST, filterModel).then((data: any) => {
-      if (data) {
-        var list = data.table;
-        swal({
-          title: "Message",
-          text: "Are you sure to export?",
-          icon: "warning",
-          dangerMode: false,
-          buttons: [true, true]
-        }).then((willsave) => {
-          if (willsave) {
-            const title = 'Employee Data Report';
-            const header = ["Sl No", "Employee No", "First Name", "Middle Name", "Last Name", "Plant", "PayGroup", "Staff Category", "Reporting Group",
-              "Department", "Designation", "Role", "Sub Department", "Date of Joining", "Email Id",
-              "Reporting Manager No", "Reporting Manager Name", "Approving Manager No", "Approving Manager Name",
-              "Active", "Created Date", "Shift Code", "Swipe Count", "Work Type", "Biometric Punching Device",
-              "Mediclaim/ESIC", "Mediclaim No", "Mediclaim Expiry Date", "Holiday Type", "Holiday Type Code", "Holiday Type Name",
-              "Calendar Type", "Calendar Type Code", "Calendar Type Name",]
+  //           var exportList = [];
+  //           var ts: any = {};
+  //           let index = 0;
+  //           list.forEach((element:any)=> {
 
-            var exportList = [];
-            var ts: any = {};
-            let index = 0;
-            list.forEach(element => {
-              index = index + 1;
-              ts = {};
-              ts.slNo = index;
-              ts.employeeId = +element.employee_Id;
-              ts.firstName = element.firstName
-              ts.middleName = element.middleName
-              ts.lastName = element.lastName;
-              ts.plant = element.plant + ' - ' + element.plantName;
-              ts.payGroup = element.payGroup;
-              ts.employeeCategory = element.employeeCategory;
-              ts.reportingGroupLT = element.reportingGroupLT;
-              ts.department = element.department;
-              ts.designation = element.designation;
-              ts.role = element.roleId;
-              ts.subDepartmentName = element.subDeparmtentName;
-              ts.joiningDate = this.setFormatedDate(element.dateOfJoining);
-              ts.email = element.email;
-              ts.employeeIdR = +element.employeeIdR;
-              ts.reportingmanagerName = element.firstNameR + ' ' + element.middleNameR + ' ' + element.lastNameR;
-              ts.employeeIdApp = +element.employeeIdApp;
-              ts.apprivingmanagerName = element.firstNameApp + ' ' + element.middleNameApp + ' ' + element.lastNameApp;
-              if (element.IsActive == '0') {
-                ts.IsActive = 'No';
-              }
-              else {
-                ts.IsActive = 'Yes';
-              }
-              ts.createdDate = this.setFormatedDate(element.createdDate);
-              ts.shiftCode = element.shiftCode;
-              ts.swipeCount = element.swipeCount;
-              ts.workTypeName = element.workTypeName;
-              ts.punchingDevices = element.punchingDevices;
-              if (element.mediclaimorESI == 'E') {
-                ts.mediclaimorESI = 'ESIC';
-              }
-              else {
-                ts.mediclaimorESI = 'Mediclaim';
-              }
-              ts.mediclaimNo = element.mediclaimNo;
-              ts.mediclaimExpiry = this.getFormatedDate(element.mediclaimExpiry);
-              ts.holiday = element.holiday;
-              ts.typeCodeH = element.typeCodeH;
-              ts.typeNameH = element.typeNameH;
-              ts.calendar = element.calendarType;
-              ts.typeCodeC = element.typeCodeC;
-              ts.typeNameC = element.typeNameC;
-              exportList.push(ts);
-            });
-            const data1 = exportList;
-            //Create workbook and worksheet
-            var OrganisationName = "MICRO LABS LIMITED";
-            const data = exportList;
-            let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-            let worksheet = workbook.addWorksheet('Employee Data Rules Report');
-            //Add Row and formatting
-            var head = worksheet.addRow([OrganisationName]);
-            head.font = { size: 16, bold: true }
-            head.alignment = { horizontal: 'center' }
-            let titleRow = worksheet.addRow([title]);
-            titleRow.font = { size: 16, bold: true }
-            titleRow.alignment = { horizontal: 'center' }
-            worksheet.mergeCells('A1:AH1');
-            worksheet.mergeCells('A2:AH2');
-            worksheet.addRow("");
-            let headerRow = worksheet.addRow(header);
-            headerRow.eachCell((cell, number) => {
-              cell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'FFFFFF00' },
-                bgColor: { argb: 'FF0000FF' }
-              }
-              cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-            })
+  //             index = index + 1;
+  //             ts = {};
+  //             ts.slNo = index;
+  //             ts.employeeId = +element.employee_Id;
+  //             ts.firstName = element.firstName
+  //             ts.middleName = element.middleName
+  //             ts.lastName = element.lastName;
+  //             ts.plant = element.plant + ' - ' + element.plantName;
+  //             ts.payGroup = element.payGroup;
+  //             ts.employeeCategory = element.employeeCategory;
+  //             ts.reportingGroupLT = element.reportingGroupLT;
+  //             ts.department = element.department;
+  //             ts.designation = element.designation;
+  //             ts.role = element.roleId;
+  //             ts.subDepartmentName = element.subDeparmtentName;
+  //             ts.joiningDate = this.setFormatedDate(element.dateOfJoining);
+  //             ts.email = element.email;
+  //             ts.employeeIdR = +element.employeeIdR;
+  //             ts.reportingmanagerName = element.firstNameR + ' ' + element.middleNameR + ' ' + element.lastNameR;
+  //             ts.employeeIdApp = +element.employeeIdApp;
+  //             ts.apprivingmanagerName = element.firstNameApp + ' ' + element.middleNameApp + ' ' + element.lastNameApp;
+  //             if (element.IsActive == '0') {
+  //               ts.IsActive = 'No';
+  //             }
+  //             else {
+  //               ts.IsActive = 'Yes';
+  //             }
+  //             ts.createdDate = this.setFormatedDate(element.createdDate);
+  //             ts.shiftCode = element.shiftCode;
+  //             ts.swipeCount = element.swipeCount;
+  //             ts.workTypeName = element.workTypeName;
+  //             ts.punchingDevices = element.punchingDevices;
+  //             if (element.mediclaimorESI == 'E') {
+  //               ts.mediclaimorESI = 'ESIC';
+  //             }
+  //             else {
+  //               ts.mediclaimorESI = 'Mediclaim';
+  //             }
+  //             ts.mediclaimNo = element.mediclaimNo;
+  //             ts.mediclaimExpiry = this.getFormatedDate(element.mediclaimExpiry);
+  //             ts.holiday = element.holiday;
+  //             ts.typeCodeH = element.typeCodeH;
+  //             ts.typeNameH = element.typeNameH;
+  //             ts.calendar = element.calendarType;
+  //             ts.typeCodeC = element.typeCodeC;
+  //             ts.typeNameC = element.typeNameC;
+  //             exportList.push(ts);
+  //           });
+  //           const data1 = exportList;
+  //           //Create workbook and worksheet
+  //           var OrganisationName = "MICRO LABS LIMITED";
+  //           const data = exportList;
+  //           //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //           let worksheet = workbook.addWorksheet('Employee Data Rules Report');
+  //           //Add Row and formatting
+  //           var head = worksheet.addRow([OrganisationName]);
+  //           head.font = { size: 16, bold: true }
+  //           head.alignment = { horizontal: 'center' }
+  //           let titleRow = worksheet.addRow([title]);
+  //           titleRow.font = { size: 16, bold: true }
+  //           titleRow.alignment = { horizontal: 'center' }
+  //           worksheet.mergeCells('A1:AH1');
+  //           worksheet.mergeCells('A2:AH2');
+  //           worksheet.addRow("");
+  //           let headerRow = worksheet.addRow(header);
+  //           headerRow.eachCell((cell, number) => {
+  //             cell.fill = {
+  //               type: 'pattern',
+  //               pattern: 'solid',
+  //               fgColor: { argb: 'FFFFFF00' },
+  //               bgColor: { argb: 'FF0000FF' }
+  //             }
+  //             cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //           })
 
-            for (let x1 of data1) {
-              let x2 = Object.keys(x1);
-              let temp = []
-              for (let y of x2) {
-                temp.push(x1[y])
-              }
-              worksheet.addRow(temp)
-            }
-            worksheet.eachRow((cell, number) => {
-              cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-            })
-            worksheet.addRow([]);
-            workbook.xlsx.writeBuffer().then((data1) => {
-              let blob = new Blob([data1], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-              fs.saveAs(blob, 'EmployeeDataReport.xlsx');
-            })
-          }
-        })
-      }
-    }).catch(error => {
-      this.isLoading = false;
-    });
-  }
+  //           for (let x1 of data1) {
+  //             let x2 = Object.keys(x1);
+  //             let temp = []
+  //             for (let y of x2) {
+  //               temp.push(x1[y])
+  //             }
+  //             worksheet.addRow(temp)
+  //           }
+  //           worksheet.eachRow((cell, number) => {
+  //             cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //           })
+  //           worksheet.addRow([]);
+  //           workbook.xlsx.writeBuffer().then((data1) => {
+  //             let blob = new Blob([data1], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //             fs.saveAs(blob, 'EmployeeDataReport.xlsx');
+  //           })
+  //         }
+  //       })
+  //     }
+  //   }).catch((error)=> {
+  //     this.isLoading = false;
+  //   });
+  // }
 
 }

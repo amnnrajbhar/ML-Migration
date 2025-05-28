@@ -12,8 +12,8 @@ import * as _ from "lodash";
 import { UserSubGroupsMaster } from './UserSubGroups.model';
 declare var jQuery: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
   softwareid:number;
   usergroupid:number;
 }
@@ -24,7 +24,7 @@ export class actionItemModel {
 })
 export class UserSubGroupsComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
@@ -33,7 +33,7 @@ export class UserSubGroupsComponent implements OnInit {
   UserSubGroupsList: any[]=[];
   UserSubGroupsList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -49,8 +49,8 @@ export class UserSubGroupsComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldUserSubGroups: UserSubGroupsMaster = new UserSubGroupsMaster();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent) { }
 
   private initDatatable(): void {
@@ -71,7 +71,8 @@ export class UserSubGroupsComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getUserSubGroupsMasterList();
     this.getsoftwareMasterList();
     this.getUserGroupsMasterList();
@@ -97,7 +98,7 @@ export class UserSubGroupsComponent implements OnInit {
       }
      // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareList = [];
     });
@@ -114,7 +115,7 @@ export class UserSubGroupsComponent implements OnInit {
       }
      // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UserGroupsList = [];
     });
@@ -129,7 +130,7 @@ export class UserSubGroupsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UserSubGroupsList = [];
     });
@@ -166,7 +167,7 @@ export class UserSubGroupsComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-   // if (!this.UserSubGroupsList.some(s => s.name.toLowerCase() == this.UserSubGroups.name.toLowerCase() && s.id != this.UserSubGroups.id)) {
+   // if (!this.UserSubGroupsList.some((s:any) => s.name.toLowerCase() == this.UserSubGroups.name.toLowerCase() && s.id != this.UserSubGroups.id)) {
       if (!this.isEdit) {
         this.auditType="Create";
         this.UserSubGroups.isActive = true;
@@ -194,7 +195,7 @@ export class UserSubGroupsComponent implements OnInit {
         else
           this.errMsgPop = data;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving department data..';
       });
@@ -232,7 +233,7 @@ export class UserSubGroupsComponent implements OnInit {
             this.insertAuditLog(this.UserSubGroups,this.oldUserSubGroups,this.UserSubGroups.id);
             this.getUserSubGroupsMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Designation..';
         });
@@ -304,12 +305,12 @@ export class UserSubGroupsComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -318,7 +319,7 @@ export class UserSubGroupsComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

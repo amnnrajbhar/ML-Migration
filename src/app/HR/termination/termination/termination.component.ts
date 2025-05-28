@@ -22,7 +22,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class TerminationComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   terminationId: any;
   urlPath: string = '';
@@ -51,7 +51,8 @@ export class TerminationComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;  
       this.terminationDetails.hodApproval=true;
       this.terminationDetails.reportingManagerApproval=true;
@@ -64,7 +65,7 @@ export class TerminationComponent implements OnInit {
     }
   }
 
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     this.isLoading = true;
    // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -75,13 +76,13 @@ export class TerminationComponent implements OnInit {
         this.GetTerminationDetailsById(this.employeeId);    
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
   }
 
-  GetTerminationDetailsById(id) {
+  GetTerminationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible=true;
     this.httpService.HRget(APIURLS.TERMINATION_STATUS_GET_BYEMPID+"/"+id).then((data: any) => {
@@ -114,7 +115,7 @@ export class TerminationComponent implements OnInit {
          }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }
@@ -198,7 +199,7 @@ export class TerminationComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while saving service withdrawn details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving service withdrawn details. Error:' + error);
       });
@@ -230,7 +231,7 @@ export class TerminationComponent implements OnInit {
           else
           toastr.error(data.message);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while uploading attachments. Error:' + error);
         });
@@ -260,7 +261,7 @@ export class TerminationComponent implements OnInit {
       }else
         toastr.error("Error occurred.");
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });    

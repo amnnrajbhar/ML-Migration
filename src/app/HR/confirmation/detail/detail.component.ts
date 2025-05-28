@@ -21,7 +21,7 @@ declare var toastr: any;
 })
 export class DetailComponent implements OnInit {
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   flowTaskId: any;
   employeeId: any;
   employeeConfirmationId: any;
@@ -72,7 +72,8 @@ export class DetailComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;
       this.employeeConfirmationId = this.route.snapshot.paramMap.get('id2')!;
       this.flowTaskId = this.route.snapshot.paramMap.get('id3')!;
@@ -85,14 +86,14 @@ export class DetailComponent implements OnInit {
     }
   }
 
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     this.isLoading = true;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
       if (data) {
         this.employeeDetails = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -117,9 +118,9 @@ export class DetailComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -129,9 +130,9 @@ export class DetailComponent implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -168,7 +169,7 @@ export class DetailComponent implements OnInit {
           this.isExtension = this.hodConfirmationDetail.hodConfirmationType == 'Probation Extension' || this.hodConfirmationDetail.hodConfirmationType == 'Trainee Extension';
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
 
       });
@@ -205,7 +206,7 @@ export class DetailComponent implements OnInit {
           this.isLoading = false;
           swal('Error occured while saving confirmation details. Error:' + err);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           swal('Error occured while saving confirmation details. Error:' + error);
         });
@@ -258,7 +259,7 @@ export class DetailComponent implements OnInit {
         this.isLoading = false;
         swal('Error occured while saving confirmation details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         swal('Error occured while saving confirmation details. Error:' + error);
       });

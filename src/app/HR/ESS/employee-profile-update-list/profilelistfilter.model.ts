@@ -3,9 +3,9 @@ export class ProfileListFilter {
     selectedEmployeeCategoryId: any;
     selectedPayGroupId: any;
     departmentId: any;
-    selectedStatus: string;
-    name: string;
-    employeeId: number;
+    selectedStatus: string
+    name: string
+    employeeId!: number;
     pageNo:number;
     pageSize:number;
     export:boolean;

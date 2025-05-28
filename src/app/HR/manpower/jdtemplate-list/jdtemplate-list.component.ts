@@ -33,7 +33,7 @@ export class JdtemplateListComponent implements OnInit {
         this.filterData = data;
    
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
   }

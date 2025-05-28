@@ -1,5 +1,5 @@
 export class EssTemplates {
-    id: number;
+    id!: number;
     description:string;
     path:string;
 }

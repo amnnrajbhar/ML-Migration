@@ -51,7 +51,7 @@ export class VerifyComponent implements OnInit {
   showData: boolean = true;
   currentTab:string = "personal";
   completedTabIndex: number = 0;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -70,7 +70,8 @@ export class VerifyComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser')); 
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null; 
       this.appointmentId = this.route.snapshot.paramMap.get('id')!;
       this.taskId = this.route.snapshot.paramMap.get('id2')!;
       this.util.canApproveTask(this.taskId, this.currentUser.uid);
@@ -104,7 +105,7 @@ export class VerifyComponent implements OnInit {
         this.isLoading = false;
         toastr.error("Appointment details not found.");
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details.");
     });
@@ -127,7 +128,7 @@ export class VerifyComponent implements OnInit {
         //this.errMsg = "Offer details not found.";
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = "Error occurred while fetching details, please check the link.";
       this.offerDetails = {} as OfferDetails;
@@ -252,7 +253,7 @@ onTabClick(index){
         this.isLoading = false;
         toastr.error('Error occured while submitting the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while submitting the details. Error:' + error);
       });

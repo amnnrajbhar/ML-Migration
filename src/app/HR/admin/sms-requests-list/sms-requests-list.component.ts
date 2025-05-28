@@ -25,7 +25,7 @@ export class SmsRequestsListComponent implements OnInit {
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute, private util: Util,
     private dataStore: DataStorageService, private excelService: ExcelService, private masterDataService: MasterDataService) { }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   filterData: any = {};
   filterModel: any = {};
@@ -37,7 +37,8 @@ export class SmsRequestsListComponent implements OnInit {
   ]
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageNo = 1;
     this.filterModel.pageSize = 10;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -59,10 +60,10 @@ export class SmsRequestsListComponent implements OnInit {
     this.httpService.HRpost(APIURLS.ADMIN_GET_SMS_REQUESTS_BY_FILTER, this.filterModel).then((data: any) => {
       this.filterData = data;
       for (var item of this.filterData.list) {
-        item.statusColor = this.statusList.find(x => x.type == item.status).color;
+        item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -71,9 +72,9 @@ export class SmsRequestsListComponent implements OnInit {
     this.httpService.HRget(APIURLS.SMS_TEMPLATES_API + "/GetAll")
       .then((data: any) => {
         if (data.length > 0) {
-          this.smsTemplatesList = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });;
+          this.smsTemplatesList = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.smsTemplatesList = [];
       });
   }
@@ -88,10 +89,10 @@ export class SmsRequestsListComponent implements OnInit {
     this.httpService.HRget(APIURLS.ADMIN_GET_SMS_MESSAGES_BY_REQUEST_ID+"/"+id).then((data: any) => {
       this.smsMessagesList = data;
       for (var item of this.smsMessagesList) {
-        item.statusColor = smsStatusList.find(x => x.type == item.status).color;
+        item.statusColor = smsStatusList.find((x:any)  => x.type == item.status).color;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

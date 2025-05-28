@@ -22,14 +22,14 @@ declare var jQuery: any;
 export class ProjectComponent implements OnInit {
     
     public tableWidget: any;
-@ViewChild(NgForm, { static: false }) prjForm: NgForm;
+@ViewChild(NgForm, { static: false }) prjForm!: NgForm;
 
     prjList: any[]=[];
     empList: any[]=[];
-    codeList: any[];
+    codeList!: any[];
     flag: any;
-    parentList: any[];
-    employeeList: any[];
+    parentList!: any[];
+    employeeList!: any[];
     selParentRole: any;
     selManagerName: any;
     selTeamLead: any;
@@ -125,16 +125,16 @@ export class ProjectComponent implements OnInit {
       // debugger;
       if (this.isEdit) {
         this.prjItem = data;
-        this.parentList = this.prjList.filter(s => s.isActive != false);
-        this.employeeList = this.empList.filter(s => s.isActive != false);
-        this.selParentRole = this.prjList.find(s => s.fkParentId === this.prjItem.fkParentId);
-        // this.selManagerName = this.empList.find(s => s.firstName === this.prjItem.fkProjectManager);
-        this.selManagerName = this.empListCon1.filter(s => s.id === this.prjItem.fkProjectManager);
-        // this.selTeamLead = this.empList.find(s => s.fkTeamLead === this.prjItem.fkTeamLead);
-        this.selTeamLead = this.empListCon2.filter(s => s.id === this.prjItem.fkTeamLead);
+        this.parentList = this.prjList.filter((s:any) => s.isActive != false);
+        this.employeeList = this.empList.filter((s:any) => s.isActive != false);
+        this.selParentRole = this.prjList.find((s:any) => s.fkParentId === this.prjItem.fkParentId);
+        // this.selManagerName = this.empList.find((s:any) => s.firstName === this.prjItem.fkProjectManager);
+        this.selManagerName = this.empListCon1.filter((s:any) => s.id === this.prjItem.fkProjectManager);
+        // this.selTeamLead = this.empList.find((s:any) => s.fkTeamLead === this.prjItem.fkTeamLead);
+        this.selTeamLead = this.empListCon2.filter((s:any) => s.id === this.prjItem.fkTeamLead);
       }
       else {
-        this.parentList = this.prjList.filter(s => s.isActive != false);;
+        this.parentList = this.prjList.filter((s:any) => s.isActive != false);;
         this.prjItem = new Project(0, '','', '', 0, 0, '', 0,'','',true);
         this.empItem = new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true);
         this.selParentRole = null;
@@ -186,7 +186,7 @@ export class ProjectComponent implements OnInit {
             allowSearchFilter: true
           };
         }
-      }).catch(error => {
+      }).catch((error)=> {
         // this.isLoading = false;
         this.empList = [];
         this.employeeList = [];
@@ -205,14 +205,14 @@ export class ProjectComponent implements OnInit {
 
     getEmployeeName(id){
       let temp: any;
-      temp = this.empList.find(s => s.id == id);
+      temp = this.empList.find((s:any) => s.id == id);
       var name = temp? temp.firstName + ' ' + temp.lastName: '';
       return name;
     }
 
     getParentPrj(id){
       let temp: any;
-      temp = this.prjList.find(s => s.id == id);
+      temp = this.prjList.find((s:any) => s.id == id);
       var name = temp? temp.name : '';
       return name;
     }
@@ -226,7 +226,7 @@ export class ProjectComponent implements OnInit {
           this.reInitDatatable();
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.prjList = [];
       });
@@ -246,8 +246,8 @@ validateForm(){
   this.validatedForm = true;
   let blankName = this.prjItem.name.trim()==null || this.prjItem.name.trim()=='';
   let blankCode = this.prjItem.code.trim()==null || this.prjItem.code.trim()=='';
-  let validName = this.prjList.some(s => s.name.trim().toLowerCase() == this.prjItem.name.trim().toLowerCase() && s.id != this.prjItem.id);
-  let validCode = this.prjList.some(s => s.code.trim().toLowerCase() == this.prjItem.code.trim().toLowerCase() && s.id != this.prjItem.id);
+  let validName = this.prjList.some((s:any) => s.name.trim().toLowerCase() == this.prjItem.name.trim().toLowerCase() && s.id != this.prjItem.id);
+  let validCode = this.prjList.some((s:any) => s.code.trim().toLowerCase() == this.prjItem.code.trim().toLowerCase() && s.id != this.prjItem.id);
   if(blankName){
     this.isLoadingPop = false;
     this.validatedForm = false;
@@ -303,7 +303,7 @@ validateForm(){
            jQuery("#saveModal").modal('show');
            this.getProjectList();
          }
-        }).catch(error => {
+        }).catch((error)=> {
          this.isLoadingPop = false;
          this.errMsgPop = 'Error saving department data..';
         });

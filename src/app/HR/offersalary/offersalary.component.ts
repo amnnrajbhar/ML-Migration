@@ -18,15 +18,15 @@ declare var toastr: any;
 })
 
 export class OfferSalaryComponent implements OnInit {
-  @Input() offerId: number;
-  @Input() packageType: string;
+  @Input() offerId!: number;
+  @Input() packageType: string
   @Input() editAllowed: boolean = true;
-  @Input() offeredSalary: number;
+  @Input() offeredSalary!: number;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
 
-  currentUser: AuthData;
-  isLoading: boolean;
+  currentUser!: AuthData;
+  isLoading!: boolean;
   details: any = {};
   salaryList: any[] = [];
   count = 0;
@@ -41,7 +41,8 @@ export class OfferSalaryComponent implements OnInit {
     private service: AppService, private util: Util) { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));     
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;     
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
       this.isLoading = true; 
@@ -65,13 +66,13 @@ export class OfferSalaryComponent implements OnInit {
             this.onSalaryHeadChange(index);
             index++;
           }
-          this.benefitsList = this.salaryList.filter(x=>x.salaryTypeShortCode == 'B'); 
-          this.salaryList = this.salaryList.filter(x=>x.salaryTypeShortCode != 'B');   
+          this.benefitsList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == 'B'); 
+          this.salaryList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode != 'B');   
           this.calculateTotals();        
         }          
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
     });
@@ -114,7 +115,7 @@ export class OfferSalaryComponent implements OnInit {
         //this.isLoading = false;
         toastr.error('Error occured while saving the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         toastr.error('Error occured while saving the details. Error:' + error);
       });
@@ -175,12 +176,12 @@ export class OfferSalaryComponent implements OnInit {
           this.onSalaryHeadChange(index);
           index++;
         }             
-        this.benefitsList = this.salaryList.filter(x=>x.salaryTypeShortCode == 'B'); 
-        this.salaryList = this.salaryList.filter(x=>x.salaryTypeShortCode != 'B'); 
+        this.benefitsList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == 'B'); 
+        this.salaryList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode != 'B'); 
         this.calculateTotals();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details.");
     });
@@ -197,12 +198,12 @@ export class OfferSalaryComponent implements OnInit {
           this.onSalaryHeadChange(index);
           index++;
         }             
-        this.benefitsList = this.salaryList.filter(x=>x.salaryTypeShortCode == 'B'); 
-        this.salaryList = this.salaryList.filter(x=>x.salaryTypeShortCode != 'B'); 
+        this.benefitsList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == 'B'); 
+        this.salaryList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode != 'B'); 
         this.calculateTotals();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details.");
     });
@@ -224,16 +225,16 @@ export class OfferSalaryComponent implements OnInit {
           var head = this.salaryHeads.find(x=>x.id == lineItem.salaryHeadId);
           if(head){
             this.benefitsList[index].description = head.descriptionInPaySlip;
-            this.benefitsList[index].salaryType = this.headTypes.find(x => x.type == head.salaryType).value;
+            this.benefitsList[index].salaryType = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
             this.benefitsList[index].salaryTypeShortCode = head.salaryType;
-            this.benefitsList[index].frequency = this.frequency.find(x => x.type == head.salaryPayableFrequency).value;
+            this.benefitsList[index].frequency = this.frequency.find((x:any)  => x.type == head.salaryPayableFrequency).value;
           }
           index++;
         }  
         this.calculateTotals();      
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while gettting details.");
       this.details = {};
@@ -249,7 +250,7 @@ export class OfferSalaryComponent implements OnInit {
       this.salaryDetails = this.benefitsList;      
     }
     else{
-      this.salaryDetails = this.salaryList.filter(x=>x.salaryTypeShortCode == type);      
+      this.salaryDetails = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == type);      
     }
     $("#salaryDetailsModal").modal("show");
   }
@@ -264,9 +265,9 @@ export class OfferSalaryComponent implements OnInit {
       var head = this.salaryHeads.find(x=>x.id == lineItem.salaryHeadId);
       if(head){
         this.salaryList[index].description = head.descriptionInPaySlip;
-        this.salaryList[index].salaryType = this.headTypes.find(x => x.type == head.salaryType).value;
+        this.salaryList[index].salaryType = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
         this.salaryList[index].salaryTypeShortCode = head.salaryType;
-        this.salaryList[index].frequency = this.frequency.find(x => x.type == head.salaryPayableFrequency).value;
+        this.salaryList[index].frequency = this.frequency.find((x:any)  => x.type == head.salaryPayableFrequency).value;
       }
     }
   }
@@ -302,13 +303,13 @@ export class OfferSalaryComponent implements OnInit {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SALARY_HEADS).then((data: any) => {
       debugger;
       if (data.length > 0) {
-        this.salaryHeads = data.sort((a, b) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });        
+        this.salaryHeads = data.sort((a:any, b:any) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });        
         for (var head of this.salaryHeads) {
-          head.salaryTypeDescription = this.headTypes.find(x => x.type == head.salaryType).value;
+          head.salaryTypeDescription = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
         }
         this.LoadData();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.salaryHeads = [];
     }); 
   }

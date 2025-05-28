@@ -23,16 +23,16 @@ import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { LeaveDetails } from './CompOffReport.model';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 
 declare var ActiveXObject: (type: string) => void;
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe, DecimalPipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 
 @Component({
@@ -42,11 +42,11 @@ import htmlToPdfmake from 'html-to-pdfmake';
 })
 
 export class CompOffReportComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -64,9 +64,9 @@ export class CompOffReportComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   userMasterItem: any = {};
@@ -75,21 +75,23 @@ export class CompOffReportComponent implements OnInit {
   CalenderYear: string = '';
   CalYear: any;
   CompOffRequestList: any[] = [];
-  userId: string = null;
+  userId: string = ' ';
   EmployeeNo: any;
-  EmployeeName: string = null;
+  EmployeeName: string = ' ';
   EmployeeNo1: any[] = [];
-  filterPayGroup: string = null;
-  filterDepartment: string = null;
-  filterCategory: string = null;
+  filterPayGroup: string = ' ';
+  filterDepartment: string = ' ';
+  filterCategory: string = ' ';
   today = new Date();
   fromDate: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   toDate: any = this.today;
   Plant: any = null;
-  filterappStatus: string = null;
+  filterappStatus: string = ' ';
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -147,7 +149,7 @@ export class CompOffReportComponent implements OnInit {
   }
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -155,20 +157,20 @@ export class CompOffReportComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
@@ -179,7 +181,7 @@ export class CompOffReportComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
@@ -187,20 +189,22 @@ export class CompOffReportComponent implements OnInit {
 
       }
       //this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
   }
 
   getpaygroupbasedonplant() {
-    this.filterPayGroup = null;
-    this.payGroupList1 = this.payGroupList.filter(x => x.plant == this.Plant);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == this.Plant);
   }
 
 
-  GetPaYGroup(id) {
-    let temp = this.payGroupList.find(x => x.id == id);
+  GetPaYGroup(id:any) {
+    let temp = this.payGroupList.find((x:any)  => x.id == id);
     return temp ? temp.short_desc : '';
   }
   empCatList: any[] = [];
@@ -210,36 +214,37 @@ export class CompOffReportComponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
   }
-  GetCat(id) {
-    let temp = this.empCatList.find(x => x.id == id);
+  GetCat(id:any) {
+    let temp = this.empCatList.find((x:any)  => x.id == id);
     return temp ? temp.catltxt : '';
   }
 
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
     });
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
@@ -263,16 +268,16 @@ export class CompOffReportComponent implements OnInit {
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.plantList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -285,7 +290,7 @@ export class CompOffReportComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -295,7 +300,7 @@ export class CompOffReportComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#emp1").val(ui.item.value);
                   $("#empNo").val(ui.item.label);
@@ -306,7 +311,7 @@ export class CompOffReportComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#emp1").val(ui.item.value);
                   $("#empNo").val(ui.item.label);
@@ -332,8 +337,8 @@ export class CompOffReportComponent implements OnInit {
     this.httpService.LAgetByParam(APIURLS.GET_EMP_OF_REPORTING, this.currentUser.employeeId).then((data: any) => {
       if (data.length > 0) {
         this.EmployeeList = data;
-        this.empListCon = data.map((i) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
-        this.EmployeeList.sort((a, b) => {
+        this.empListCon = data.map((i:any) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
+        this.EmployeeList.sort((a:any, b:any) => {
           if (a.fullName > b.fullName) return 1;
           if (a.fullName < b.fullName) return -1;
           return 0;
@@ -343,7 +348,7 @@ export class CompOffReportComponent implements OnInit {
       else {
         this.EmployeeList = [];
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList = [];
     });
@@ -358,8 +363,10 @@ export class CompOffReportComponent implements OnInit {
   clearFilter() {
     this.fromDate = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     this.Plant = null;
-    this.filterPayGroup = null;
-    this.filterCategory = null;
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    this.filterCategory = '';
     this.filterDepartment = null;
     this.filterappStatus = null;
     this.EmployeeNo = null;
@@ -369,7 +376,7 @@ export class CompOffReportComponent implements OnInit {
 
   isValid: boolean = false;
   validatedForm: boolean = true;
-  empName: string;
+  empName: string
   upcomingLeaves: any[] = [];
   getEmpCompOffList() {
     this.isLoading = true;
@@ -398,8 +405,8 @@ export class CompOffReportComponent implements OnInit {
           this.empName = this.currentUser.fullName;
         }
         else {
-          srchstr.pernr = this.EmployeeNo1.map(x => x.id).join();
-          this.empName = this.EmployeeList.find(x => x.employeeId == this.EmployeeNo1[0].id).fullName;
+          srchstr.pernr = this.EmployeeNo1.map((x:any)  => x.id).join();
+          this.empName = this.EmployeeList.find((x:any)  => x.employeeId == this.EmployeeNo1[0].id).fullName;
         }
       }
       else {
@@ -422,7 +429,7 @@ export class CompOffReportComponent implements OnInit {
         this.reInitDatatable();
         this.isLoading = false;
         
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.CompOffRequestList = [];
       });
@@ -440,14 +447,14 @@ export class CompOffReportComponent implements OnInit {
     let connection = this.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, val);
     connection.then((data: any) => {
       if (data) {
-        let result = data.filter(x => { return x.employeeId != null });
+        let result = data.filter((x:any)  => { return x.employeeId != null });
         this.Department = result[0].department;
         this.Designation = result[0].designation;
         this.FullName = result[0].fullName;
         this.EmployeeId = result[0].employeeId;
         this.JoiningDate = result[0].joiningDate;
       }
-    }).catch(error => {
+    }).catch((error)=> {
     });
   }
 
@@ -472,7 +479,8 @@ export class CompOffReportComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -483,7 +491,7 @@ getHeader(): { headers: HttpHeaders } {
   return { headers };
 }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -523,80 +531,81 @@ getHeader(): { headers: HttpHeaders } {
       buttons: [true, true]
     }).then((willsave) => {
       if (willsave) {
-        this.onUserActions1();
+        //this.onUserActions1();
       }
     });
   }
 
-  exportList: any[];
-  onUserActions1() {
-    const title = ' Comp-Off Report';
-    const header = ["SNo", "Request No", "Employee Name", "Department", "Designation", "Role", "Requested Date", "Worked Date",
-      "Shift Code", "In Time", "Out Time", "Reason", "Status", "Balance Status"]
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.CompOffRequestList.forEach(item => {
-      index = index + 1;
-      ts = {};
-      ts.slno = index;
-      ts.reqNo = item.reqNo;
-      ts.empName = item.empName;
-      ts.department = item.department;
-      ts.designation = item.desig;
-      ts.role = item.role;
-      ts.requestedDate = this.getDateFormate(item.requestedDate);
-      ts.fromDate = this.getDateFormate(item.fromDate);
-      ts.shift = item.shift;
-      ts.intime = item.intime;
-      ts.outtime = item.outtime;
-      ts.reason = item.reason;
-      ts.apprvrStatus = item.apprvrStatus;
-      ts.balancestatus = item.sapApproved == 1 ? 'Credited' : 'Pending';
-      exportList.push(ts);
-    });
-    var OrganisationName = "MICRO LABS LIMITED";
-    const data = exportList;
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Comp-Off Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:L1');
-    worksheet.mergeCells('A2:L2');
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  exportList!: any[];
+   //v10
+  // onUserActions1() {
+  //   const title = ' Comp-Off Report';
+  //   const header = ["SNo", "Request No", "Employee Name", "Department", "Designation", "Role", "Requested Date", "Worked Date",
+  //     "Shift Code", "In Time", "Out Time", "Reason", "Status", "Balance Status"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.CompOffRequestList.forEach((item :any) => {
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slno = index;
+  //     ts.reqNo = item.reqNo;
+  //     ts.empName = item.empName;
+  //     ts.department = item.department;
+  //     ts.designation = item.desig;
+  //     ts.role = item.role;
+  //     ts.requestedDate = this.getDateFormate(item.requestedDate);
+  //     ts.fromDate = this.getDateFormate(item.fromDate);
+  //     ts.shift = item.shift;
+  //     ts.intime = item.intime;
+  //     ts.outtime = item.outtime;
+  //     ts.reason = item.reason;
+  //     ts.apprvrStatus = item.apprvrStatus;
+  //     ts.balancestatus = item.sapApproved == 1 ? 'Credited' : 'Pending';
+  //     exportList.push(ts);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED";
+  //   const data = exportList;
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Comp-Off Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:L1');
+  //   worksheet.mergeCells('A2:L2');
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'Compoff_Report.xlsx');
-    });
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'Compoff_Report.xlsx');
+  //   });
+  // }
 
 }

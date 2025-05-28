@@ -15,10 +15,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { stringify } from 'querystring';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 //import { DocCreate } from './DocCreate.model';
 // import { Transactions } from '../eMicro/ItemCodeCreation/transactions.model';
 // import { WorkFlowApprovers } from '../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -30,10 +30,10 @@ import { MediServiceBrand } from '../../MedicalServices/MediServiceBrand/MediSer
 import { MediServiceRequestHistory } from '../../MedicalServices/MediServiceRequestHistory/MediServiceRequestHistory.model';
 
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DocBorrow } from '../DocBorrow/DocBorrow.model';
 //import { MediServiceBrand } from '../MediServiceBrand/MediServiceBrand.model';
@@ -44,9 +44,9 @@ import { DocBorrow } from '../DocBorrow/DocBorrow.model';
     styleUrls: ['./DocCreate.component.css']
 })
 export class DocCreateComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     public tableWidget: any;
@@ -64,25 +64,25 @@ export class DocCreateComponent implements OnInit {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File; successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
     baseLocationnotfirst = true;
 
-    filterbarcode: string = null;
-    filterBrand: string = null;
+    filterbarcode: string = ' ';
+    filterBrand: string = ' ';
 
     DocCreatemodel = {} as DocCreate;
 
     DocCreatelist: DocCreate[] = [];
     // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-    materialtype: string;
-    filterMaterialCode: string = null;
-    filterstatus: string = null;
-    filterlocation: string = null;
-    filterdocno: string = null;
-    filterplace: string = null;
+    materialtype!: string
+    filterMaterialCode: string = ' ';
+    filterstatus: string = ' ';
+    filterlocation: string = ' ';
+    filterdocno: string = ' ';
+    filterplace: string = ' ';
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     to_date: any = this.today;
@@ -91,8 +91,9 @@ export class DocCreateComponent implements OnInit {
     DocCreateFilter: DocCreate[] = [];
     DocCreatesearchlist: DocCreate[] = [];
 
-    emailid: string;
-    requestdate: Date;
+    emailid!: string
+
+    requestdate!: Date;
     Approver1: boolean = false;
     Approverid1: string = "";
     Approverid2: string = "";
@@ -100,20 +101,22 @@ export class DocCreateComponent implements OnInit {
     Creator: boolean = false;
     Review: boolean = false;
     Closure: boolean = false;
-    userid: string;
+    userid!: string
 
 
-    MedHead: string = 'Manjula  Suresh';
+
+    MedHead: string
+ = 'Manjula  Suresh';
     MedHeadList: any[] = [];
-    Reviewer: string = null;
+    Reviewer: string = ' ';
     ReviewerList: any[] = [];
     MediRequestFilter: any[] = [];
     Approves: any;
-    Comments: string;
+    Comments!: string
 
     storeData: any;
     jsonData: any;
-    fileUploaded: File;
+    fileUploaded!: File;
     worksheet: any;
     Librarian:boolean=false;
 
@@ -123,7 +126,9 @@ export class DocCreateComponent implements OnInit {
     //DocCreatemodeldata = {} as ItemCodeExtension;
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-        private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+        private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
     private initDatatable(): void {
         let exampleId: any = jQuery('#userTable');
@@ -142,7 +147,8 @@ export class DocCreateComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //  this.baseLocation = this.currentUser.baselocation;
         this.emailid = this.currentUser.email;
         this.userid = this.currentUser.employeeId;
@@ -213,15 +219,15 @@ export class DocCreateComponent implements OnInit {
     getCategoryList() {
         this.httpService.DLSgetByParam(APIURLS.BR_GET_TYP_CAT_GET_BYPARAM_MASTER,this.locationCode).then((data: any) => {
             if (data.length > 0) {
-                this.CategoryList = data.filter(x => x.location == this.locationCode);
+                this.CategoryList = data.filter((x:any)  => x.location == this.locationCode);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.CategoryList.sort((a, b) => { return collator.compare(a.type, b.type) });
-                // this.CategoryList.filter(x=>x.location==this.locationCode);
+                this.CategoryList.sort((a:any, b:any) => { return collator.compare(a.type, b.type) });
+                // this.CategoryList.filter((x:any)=>x.location==this.locationCode);
                 this.getRackList();
                 
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CategoryList = [];
         });
@@ -235,15 +241,15 @@ export class DocCreateComponent implements OnInit {
         this.httpService.DLSget(APIURLS.BR_GET_DOCK_RACK_MASTER).then((data: any) => {
             if (data.length > 0) {
 
-                this.DocRackMasterList = data.filter(x => (x.location).toLocaleLowerCase() == this.locationCode.toLocaleLowerCase());
+                this.DocRackMasterList = data.filter((x:any)  => (x.location).toLocaleLowerCase() == this.locationCode.toLocaleLowerCase());
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.DocRackMasterList.sort((a, b) => { return collator.compare(a.name, b.name) });
-                // this.CategoryList.filter(x=>x.location==this.locationCode);
+                this.DocRackMasterList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
+                // this.CategoryList.filter((x:any)=>x.location==this.locationCode);
                 
                 this.getLocRackList();
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CategoryList = [];
         });
@@ -256,15 +262,15 @@ export class DocCreateComponent implements OnInit {
         this.httpService.DLSget(APIURLS.BR_LOC_RACK_DETAILS_MASTER).then((data: any) => {
             if (data.length > 0) {
 
-                this.LocRackList = data.filter(x => (x.location).toLocaleLowerCase() == this.locationCode.toLocaleLowerCase());
+                this.LocRackList = data.filter((x:any)  => (x.location).toLocaleLowerCase() == this.locationCode.toLocaleLowerCase());
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.LocRackList.sort((a, b) => { return collator.compare(a.room, b.room) });
-                // this.CategoryList.filter(x=>x.location==this.locationCode);
+                this.LocRackList.sort((a:any, b:any) => { return collator.compare(a.room, b.room) });
+                // this.CategoryList.filter((x:any)=>x.location==this.locationCode);
                 this.RoomList = this.LocRackList.filter((item, i, arr) => arr.findIndex((t) => t.room === item.room) === i);
                 this.RoomList1 = this.LocRackList.filter((item, i, arr) => arr.findIndex((t) => t.rack === item.rack) === i);
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CategoryList = [];
         });
@@ -276,8 +282,9 @@ export class DocCreateComponent implements OnInit {
     this.success=null;
     this.DocCreatemodel.docBin=null;
     this.BinsList=[];    
-    this.BinsList=this.LocRackList.filter(x=>x.room==value.docRoom && x.rack==value.docRack && x.bin != null && x.bin != '');
-    this.BinsList.forEach(element => {       
+    this.BinsList=this.LocRackList.filter((x:any)=>x.room==value.docRoom && x.rack==value.docRack && x.bin != null && x.bin != '');
+    this.BinsList.forEach((element:any)=> {
+       
             element.docNo=null;
     });
     }
@@ -288,7 +295,8 @@ export class DocCreateComponent implements OnInit {
     {
         this.success=null;
         this.DocCreatemodel.docBin=bin;
-        this.BinsList.forEach(element => {
+        this.BinsList.forEach((element:any)=> {
+
             if(element.bin==bin)
             {
                 element.docNo=this.DocCreatemodel.docNo;
@@ -309,7 +317,7 @@ export class DocCreateComponent implements OnInit {
         this.RackList=[];
         this.BinsList=[];
         this.DocCreatemodel.docRack=null;
-        this.RackList = this.LocRackList.filter(x => x.room == Room )
+        this.RackList = this.LocRackList.filter((x:any)  => x.room == Room )
                         .filter((item, i, arr) => arr.findIndex((t) => t.rack === item.rack) === i);;
     }
     CategoryList1: any[] = [];
@@ -328,17 +336,17 @@ export class DocCreateComponent implements OnInit {
             }
         }
         
-        this.CategoryList1 = this.CategoryList.filter(x => x.type == type && x.category != null);
+        this.CategoryList1 = this.CategoryList.filter((x:any)  => x.type == type && x.category != null);
       //  this.getLibrarianDetails(type);
     }
 
 
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationList.find(e => e.id == id);
         return temp ? temp.code : '';
     }
-    getloc(loc) {
+    getloc(loc:any) {
         let loccode = loc.keyValue.split('~');
         return loccode ? loccode[0] : '';
     }
@@ -370,23 +378,27 @@ export class DocCreateComponent implements OnInit {
     clearFilter() {
         this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
         this.to_date = this.today;
-        this.filterlocation = null;
-        this.filterstatus = null;
+       // this.filterlocation = null;
+ this.filterlocation = '';
+      // this.filterstatus = null;
+  this.filterstatus = '';
         this.filterdocno = null;
-        this.filterplace = null;
+      //    this.filterplace = null;
+      this.filterplace = '';
         this.filterbarcode = null;
         this.filterBrand = null;
         this.Approves = null;
         this.filterArNumber=null;
-        this.filterProduct=null;
+   //        this.filterProduct=null;
+           this.filterProduct='';
     }
 
     DocCreateFilter1: DocCreate[] = [];
     getAllEntries() {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         if (this.from_date == '' || this.from_date == null) {
             formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -428,7 +440,7 @@ export class DocCreateComponent implements OnInit {
              }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.DocCreateFilter = [];
         });
@@ -442,7 +454,7 @@ export class DocCreateComponent implements OnInit {
         this.httpService.DLSgetByParam(APIURLS.BR_GET_DOC_APPROVERS, searchtr).then((data: any) => {
             this.isLoading = true;
             if (data.length > 0) {
-                this.Approverslist = data.filter(x=>x.reqType.toLocaleLowerCase()=='create');
+                this.Approverslist = data.filter((x:any)=>x.reqType.toLocaleLowerCase()=='create');
                  var temp=this.Approverslist.find(x=>x.approverId==this.currentUser.employeeId 
                                                 || x.parllelApprover1==this.currentUser.employeeId
                                                 || x.parllelApprover2==this.currentUser.employeeId
@@ -454,7 +466,7 @@ export class DocCreateComponent implements OnInit {
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.Approverslist = [];
         });
@@ -469,35 +481,35 @@ export class DocCreateComponent implements OnInit {
         this.newDynamic = { id: this.rowcount, competitorBrand: "", competitorDetails: "", competitorExistingmarketshare: "", competitorMrp: "", stored: "0" };
         this.dynamicArray.push(this.newDynamic);
     }
-    removeRows(item) {
+    removeRows(item:any) {
         if (this.dynamicArray.length > 1) {
             const index = this.dynamicArray.indexOf(item);
             this.dynamicArray.splice(index, 1);
         }
     }
 
-    locationCode: string;
+    locationCode: string
     getLocationMaster() {
         this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locationCode = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locationCode = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
                 this.getCategoryList();
                 this.getAllEntries();
                // this.getRackList();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
         this.initDatatable();
     }
@@ -506,9 +518,11 @@ export class DocCreateComponent implements OnInit {
         this.errMsg1 = "";
         this.DocCreatemodel = {} as DocCreate;
         this.BinsList=[];
-        this.Comments = null;
+        
+//this.Comments = null;
+  this.Comments = '';
         this.DocCreatemodel.empCode = this.currentUser.employeeId;
-        this.DocCreatemodel.location = this.locationCode + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.DocCreatemodel.location = this.locationCode + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
         this.DocCreatemodel.fromDept = this.currentUser.department;
         this.DocCreatemodel.initialDocDate = new Date().toLocaleString();
     }
@@ -517,19 +531,19 @@ export class DocCreateComponent implements OnInit {
     {  
             var self = this;
             $('#boxNo').autocomplete({
-              source: function (request, response) {
+              source: function (request:any, response:any) {
                 //var searchTerm1 = 'description'+';'+request.term + ';' + matId;
                 let connection = self.httpService.DLSgetByParam(APIURLS.BR_BOX_DETAILS_GETBYPARAM_API, value);
                 connection.then((data: any) => {
                   if (data) {
-                    let result =data.filter(x => { return x.boxNo!=null });
-                    response(result.map((i) => { i.label = i.boxNo,i.boxdesc=i.boxDescription,i.barcode=i.boxBarcode1,
+                    let result =data.filter((x:any)  => { return x.boxNo!=null });
+                    response(result.map((i:any) => { i.label = i.boxNo,i.boxdesc=i.boxDescription,i.barcode=i.boxBarcode1,
                             i.room=i.room,i.rack=i.rack,i.bin=i.bin; return i; }));
                   }
-                }).catch(error => {
+                }).catch((error)=> {
                 });
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
               self.DocCreatemodel.boxBarcode=ui.item.barcode;
               self.DocCreatemodel.boxDescription=ui.item.boxdesc;
               self.DocCreatemodel.boxNo=ui.item.boxNo;
@@ -554,7 +568,7 @@ export class DocCreateComponent implements OnInit {
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.transactionslist = [];
         });
@@ -562,13 +576,13 @@ export class DocCreateComponent implements OnInit {
     }
     Approverslist: any[] = [];
     accountGroupList: any[] = [];
-    Aprlpriority: number;
+    Aprlpriority!: number;
     ApprovingManager: any;
     ApprvrM: boolean = false;
   
-    empId: string;
+    empId: string
     view: boolean = false;
-    locationName: string;
+    locationName: string
     attachments: any[] = [];
     onUserActions(isedit: boolean, DocCreate: DocCreate, isprint: boolean, value: string) {
         this.isEdit = isedit;
@@ -599,7 +613,7 @@ export class DocCreateComponent implements OnInit {
 
             this.DocCreatemodel = {} as DocCreate;
             this.DocCreatemodel.empCode = this.currentUser.employeeId;
-            this.DocCreatemodel.location = this.locationCode + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+            this.DocCreatemodel.location = this.locationCode + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
             this.DocCreatemodel.fromDept = this.currentUser.department;
             this.DocCreatemodel.initialDocDate = new Date().toLocaleString();
 
@@ -624,7 +638,7 @@ export class DocCreateComponent implements OnInit {
     isValid: boolean = false;
     validatedForm: boolean = true;
 
-    onSaveEntry(status) {
+    onSaveEntry(status:any) {
         this.errMsg = "";
         let connection: any;
         if (this.Approverslist.length == 0) {
@@ -672,7 +686,7 @@ export class DocCreateComponent implements OnInit {
                     
                     // this.reset();
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
                 this.errMsgPop = 'Error saving Request..';
             });
@@ -703,13 +717,13 @@ export class DocCreateComponent implements OnInit {
                 this.getAllEntries();
                 // this.reset();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error Submitting Request' + '' + this.DocCreatemodel.barcode;
         });
     }
 
-    onreview(status) {
+    onreview(status:any) {
         this.errMsg = "";
         let connection: any;
         let uid = this.currentUser.employeeId;
@@ -760,13 +774,13 @@ export class DocCreateComponent implements OnInit {
                 // this.Inserttransactions(this.DocCreatemodel, status)
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = status == "Rejected" ? "Error Rejecting Request.." + '' + this.DocCreatemodel.barcode : "Error Approving Request" + '' + this.DocCreatemodel.barcode;
         });
     }
 
-    onRevertRequest(status) {
+   onRevertRequest(status:any) {
         this.errMsg = "";
         let connection: any;
 
@@ -789,7 +803,7 @@ export class DocCreateComponent implements OnInit {
                 // this.Inserttransactions(this.DocCreatemodel, 'Revert')
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = "Error Reverting Request " + '' + this.DocCreatemodel.barcode;
         });
@@ -797,7 +811,7 @@ export class DocCreateComponent implements OnInit {
 
 
     transactions = {} as MediServiceRequestHistory;
-    Inserttransactions(data, status) {
+    Inserttransactions(data:any, status:any) {
         this.errMsg = "";
         let connection: any;
         this.transactions.doneBy = this.currentUser.employeeId;
@@ -837,7 +851,7 @@ export class DocCreateComponent implements OnInit {
         connection.then((data: any) => {
             if (data == 200) {
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error in sending mail..';
         });
 
@@ -850,7 +864,7 @@ export class DocCreateComponent implements OnInit {
         connection.then((data: any) => {
             if (data == 200) {
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error in sending mail..';
         });
 
@@ -884,8 +898,9 @@ export class DocCreateComponent implements OnInit {
         this.checkedRequestList = this.checkedlist;
     }
 
-    MassApprove(status) {
-        this.checkedRequestList.forEach(element => {
+    MassApprove(status:any) {
+        this.checkedRequestList.forEach((element:any)=> {
+
             element.fullName = this.currentUser.fullName;
             element.action = status;
 
@@ -954,30 +969,30 @@ export class DocCreateComponent implements OnInit {
 
     transactionslist1: MediServiceRequestHistory[] = [];
     Finalcopy: boolean = false;
-    ShowHistory(data) {
+    ShowHistory(data:any) {
         this.transactionslist1 = [];
         this.DocCreatemodel = data;
         this.httpService.getByParam(APIURLS.BR_MED_SERVICE_HISTORY_API, this.DocCreatemodel.barcode).then((data: any) => {
             this.isLoading = true;
             if (data.length > 0) {
                 this.transactionslist1 = data;
-                this.transactionslistCMD = this.transactionslist1.filter(x => x.role == 'CMD')
-                this.transactionslistHODI = this.transactionslist1.filter(x => x.role == 'HOD' && x.approvalPriority == 2)
-                this.transactionslistHODF = this.transactionslist1.filter(x => x.role == 'HOD' && x.approvalPriority == 4)
-                this.transactionslistCQA = this.transactionslist1.filter(x => x.role == 'CQA')
-                this.transactionslistIPR = this.transactionslist1.filter(x => x.role == 'IPR')
-                this.transactionslistSCM = this.transactionslist1.filter(x => x.role == 'SupplyChain')
-                this.transactionslistSM = this.transactionslist1.filter(x => x.role == 'Strategic')
-                this.transactionslistDIST = this.transactionslist1.filter(x => x.role == 'Distribution')
-                this.transactionslistMED = this.transactionslist1.filter(x => x.role == 'Medical')
-                this.transactionslistRND = this.transactionslist1.filter(x => x.role == 'RND')
-                var temp = this.transactionslist1.find(x => x.role != 'CMD' && x.transactionType == 'Pending')
+                this.transactionslistCMD = this.transactionslist1.filter((x:any)  => x.role == 'CMD')
+                this.transactionslistHODI = this.transactionslist1.filter((x:any)  => x.role == 'HOD' && x.approvalPriority == 2)
+                this.transactionslistHODF = this.transactionslist1.filter((x:any)  => x.role == 'HOD' && x.approvalPriority == 4)
+                this.transactionslistCQA = this.transactionslist1.filter((x:any)  => x.role == 'CQA')
+                this.transactionslistIPR = this.transactionslist1.filter((x:any)  => x.role == 'IPR')
+                this.transactionslistSCM = this.transactionslist1.filter((x:any)  => x.role == 'SupplyChain')
+                this.transactionslistSM = this.transactionslist1.filter((x:any)  => x.role == 'Strategic')
+                this.transactionslistDIST = this.transactionslist1.filter((x:any)  => x.role == 'Distribution')
+                this.transactionslistMED = this.transactionslist1.filter((x:any)  => x.role == 'Medical')
+                this.transactionslistRND = this.transactionslist1.filter((x:any)  => x.role == 'RND')
+                var temp = this.transactionslist1.find((x:any)  => x.role != 'CMD' && x.transactionType == 'Pending')
                 this.Finalcopy = temp == undefined ? true : false;
                 //this.transactionslist.reverse();
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.transactionslist1 = [];
         });
@@ -1006,7 +1021,7 @@ export class DocCreateComponent implements OnInit {
 
 
 
-    image: string;
+    image!: string
     getbase64image() {
         this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
             .subscribe(blob => {
@@ -1022,7 +1037,7 @@ export class DocCreateComponent implements OnInit {
   
 
 
-    Inserttransactions1(data, status) {
+    Inserttransactions1(data:any, status:any) {
         this.errMsg = "";
         let connection: any;
 
@@ -1032,7 +1047,7 @@ export class DocCreateComponent implements OnInit {
             this.transactions.approvalPriority = data.stage;
             this.transactions.transactionType = status;
             this.transactions.role = 'MED_REVIEWER';
-            let rev = this.ReviewerList.find(x => x.employeeId == this.Reviewer)
+            let rev = this.ReviewerList.find((x:any)  => x.employeeId == this.Reviewer)
             this.transactions.approverName = rev.fullName;
             this.transactions.department = rev.department;
             this.transactions.designation = rev.designation;
@@ -1040,7 +1055,7 @@ export class DocCreateComponent implements OnInit {
             connection = this.httpService.post(APIURLS.BR_MED_SERVICE_HISTORY_INSERT_API, this.transactions);
         }
         else {
-            var temp = this.transactionslist.find(x => x.role == 'MED_REVIEWER');
+            var temp = this.transactionslist.find((x:any)  => x.role == 'MED_REVIEWER');
             this.transactions = temp;
             this.transactions.transactionType = status;
             this.transactions.doneOn = new Date().toLocaleString();
@@ -1083,7 +1098,7 @@ export class DocCreateComponent implements OnInit {
             this.DocCreatemodel = {} as DocCreate;
             this.DocCreatemodel = Object.assign({}, DocCreate);
             this.DocBorrowmodel.empCode = this.currentUser.employeeId;
-            this.DocBorrowmodel.location = this.locationCode + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+            this.DocBorrowmodel.location = this.locationCode + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
             this.DocBorrowmodel.fromDept = this.currentUser.department;
             this.getLibrarianDetails(this.DocCreatemodel)
             this.DocBorrowmodel.empCode = this.currentUser.employeeId;
@@ -1164,7 +1179,7 @@ export class DocCreateComponent implements OnInit {
                     
                     // this.reset();
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
                 this.errMsgPop = 'Error saving Request..';
             });
@@ -1195,7 +1210,7 @@ export class DocCreateComponent implements OnInit {
                 this.getAllEntries();
                 // this.reset();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error Submitting Request' + '' + this.DocCreatemodel.barcode;
         });

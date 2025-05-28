@@ -9,7 +9,7 @@ import { AuthData } from '../../auth/auth.model';
 import { FormControl } from '@angular/forms';
 import { AssetDashboard } from './Assetdashboard.model';
 // import { FileSaver }  from 'angular-file-saver';
-// import { saveAs } from 'file-saver';
+// //import { saveAs } from 'file-saver';
 declare var $: any;
 
 @Component({
@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
 @ViewChild('filterForm', { static: false }) filterForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   public tableWidget: any;
   dashboard: any = {};
   isLoading: boolean = false;
@@ -53,7 +53,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;    
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     // console.log(this.path);
     this.getCatList();
     this.getAssetStateList();
@@ -67,30 +68,30 @@ export class DashboardComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList:any[]=[];
-  getPlantsassigned(id)
+  getPlantsassigned(id:any)
   {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x=>{ return x.isActive;}).map((i) => { i.location = i.code + '-' + i.name; return i; });;          
+        this.plantList = data.filter((x:any)=>{ return x.isActive;}).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;          
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });          
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -120,7 +121,7 @@ export class DashboardComponent implements OnInit {
       if (data.length > 0) {
         this.catList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.catList = [];
     });
   }
@@ -130,13 +131,13 @@ export class DashboardComponent implements OnInit {
       if (data.length > 0) {
         this.assStateList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.assStateList = [];
     });
   }
 
-  getAssetState(id) {
-    let temp = this.assStateList.find(x => x.id == id);
+  getAssetState(id:any) {
+    let temp = this.assStateList.find((x:any)  => x.id == id);
     return temp ? temp.status : '';
   }
 
@@ -147,13 +148,13 @@ export class DashboardComponent implements OnInit {
         this.monType = data;
         console.log(this.monType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.monType = [];
     });
   }
 
-  getMonitorType(id) {
-    let temp = this.monType.find(x => x.id == id);
+  getMonitorType(id:any) {
+    let temp = this.monType.find((x:any)  => x.id == id);
     return temp ? temp.type : '';
   }
 
@@ -164,14 +165,14 @@ export class DashboardComponent implements OnInit {
         this.sizeList = data;
         console.log(this.sizeList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.sizeList = [];
     });
   }
 
-  getStorageSize(id) {
-    let temp = this.sizeList.find(x => x.storId == id);
+  getStorageSize(id:any) {
+    let temp = this.sizeList.find((x:any)  => x.storId == id);
     return temp ? temp.storTxt : '';
   }
 
@@ -189,7 +190,7 @@ export class DashboardComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

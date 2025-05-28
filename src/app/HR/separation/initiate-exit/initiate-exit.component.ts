@@ -21,7 +21,7 @@ declare var toastr: any;
 export class InitiateExitComponent implements OnInit {
 @ViewChild(ResignationChecklistComponent, { static: false }) resignationChecklistComponent: ResignationChecklistComponent;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   resignationId: any;
   employeeId: any;
   urlPath: string = '';
@@ -32,9 +32,9 @@ export class InitiateExitComponent implements OnInit {
   resignationStatus: any;
   resignationDetails = {} as Resignation;
   employeeDetails: any = {};
-  DateLastWorkingDay: string;
-  ResignationDate: string;
-  noticePeriod: string;
+  DateLastWorkingDay: string
+  ResignationDate: string
+  noticePeriod: string
   currentTab: string = "details";
   tabIndex: number = 0;
   tabsList: string[] = ["details", "attachments"];
@@ -45,8 +45,8 @@ export class InitiateExitComponent implements OnInit {
   files: any[] = [];
   templatesList: any[] = [];
   selectedTemplateId: any;
-  exitInterviewRequired: boolean;
-  isShortfall: boolean;
+  exitInterviewRequired!: boolean;
+  isShortfall!: boolean;
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute, private location: Location) { }
@@ -55,7 +55,8 @@ export class InitiateExitComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.resignationId = this.route.snapshot.paramMap.get('id')!;
       if (!this.resignationId || this.resignationId <= 0) {
         toastr.error("Invalid ID passed.");
@@ -66,7 +67,7 @@ export class InitiateExitComponent implements OnInit {
     }
   }
 
-  GetResignationDetailsById(id) {
+  GetResignationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible = true;
 
@@ -93,7 +94,7 @@ export class InitiateExitComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = error;
     });
@@ -131,7 +132,7 @@ export class InitiateExitComponent implements OnInit {
         } else
         toastr.error("Error occurred.");
           this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });
@@ -148,13 +149,13 @@ export class InitiateExitComponent implements OnInit {
     this.httpService.HRdownloadFile(APIURLS.RESIGNATION_DETAILS_GET_ATTACHMENT_FILE + "/" + this.resignationId + "/" + id).then((data: any) => {
 
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -201,7 +202,7 @@ export class InitiateExitComponent implements OnInit {
             else
             toastr.error(data.message);
           })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while uploading attachments. Error:' + error);
         });
@@ -213,11 +214,11 @@ export class InitiateExitComponent implements OnInit {
     //console.log(event.target.value);
     this.httpService.HRget(APIURLS.RESIGNATION_GET_PRINT_TEMPLATES+"/Exit Interview").then((data: any) => {
       if (data.length > 0) {
-        this.templatesList = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
+        this.templatesList = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
         
-        //this.printTemplateTypes = data.sort((a, b) => { if (a.templateType > b.templateType) return 1; if (a.templateType < b.templateType) return -1; return 0; });
+        //this.printTemplateTypes = data.sort((a:any, b:any) => { if (a.templateType > b.templateType) return 1; if (a.templateType < b.templateType) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.templatesList = [];
     });
   }

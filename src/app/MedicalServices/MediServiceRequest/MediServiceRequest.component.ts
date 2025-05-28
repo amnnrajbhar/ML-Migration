@@ -19,9 +19,9 @@ import { ExcelService } from '../../shared/excel-service';
 import { MediServiceRequestHistory } from '../MediServiceRequestHistory/MediServiceRequestHistory.model';
 import { MediServiceBrand } from '../MediServiceBrand/MediServiceBrand.model';
 import { DatePipe } from '@angular/common';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import { MSService } from '../../Services/ms.service';
 import { MedicalReviewer } from '../../Models/medicalReviewer.model';
 import { MedServiceFilterModel } from '../../Models/medServiceFilterModel.model';
@@ -32,13 +32,13 @@ import { MedServiceFilterModel } from '../../Models/medServiceFilterModel.model'
     styleUrls: ['./MediServiceRequest.component.css']
 })
 export class MediServiceRequestComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     public tableWidget: any;
-    currentUser: AuthData;
+    currentUser!: AuthData;
 
     locListCon = [];
     locListCon1 = [];
@@ -56,7 +56,7 @@ export class MediServiceRequestComponent implements OnInit {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File; successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
@@ -66,28 +66,29 @@ export class MediServiceRequestComponent implements OnInit {
     MediServiceRequestmodel1 = {} as MediServiceRequest
     MediServiceRequestlist: MediServiceRequest[] = [];
     // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-    materialtype: string;
+    materialtype!: string
     today = new Date();
 
     // Filter variables
-    // filterRequest: string = null;
-    // filterProduct: string = null;
-    // filterStatus: string = null;
-    // filterBrand: string = null;
+    // filterRequest: string = ' ';
+    // filterProduct: string = ' ';
+    // filterStatus: string = ' ';
+    // filterBrand: string = ' ';
     // from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 60);
     // to_date: any = this.today;
 
-    filterMaterialCode: string = null;
-    filterlocation: string = null;
-    filterplace: string = null;
+    filterMaterialCode: string = ' ';
+    filterlocation: string = ' ';
+    filterplace: string = ' ';
     from_date1: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     //ItemCodeExtensionFilter:ItemCodeExtension[]=[];
 
     MediServiceRequestList: MediServiceRequest[] = [];
     MediServiceRequestsearchlist: MediServiceRequest[] = [];
 
-    emailid: string;
-    requestDate: Date;
+    emailid!: string
+
+    requestDate!: Date;
     Approver1: boolean = false;
     Approverid1: string = "";
     Approverid2: string = "";
@@ -95,23 +96,25 @@ export class MediServiceRequestComponent implements OnInit {
     Creator: boolean = false;
     Review: boolean = false;
     Closure: boolean = false;
-    userid: string;
+    userid!: string
 
-    MedHead: string;
-    MedHeadID: string;
+
+    MedHead!: string
+
+    MedHeadID!: string
     MedHeadList: any[] = [];
-    Reviewer: string = null;
+    Reviewer: string = ' ';
     ReviewerList: any[] = [];
     MediRequestFilter: any[] = [];
     Approves: any;
-    Comments: string;
+    Comments!: string
 
     storeData: any;
     jsonData: any;
-    fileUploaded: File;
+    fileUploaded!: File;
     worksheet: any;
-    current: string;
-    MedCode: string = null;
+    current: string
+    MedCode: string = ' ';
     //MediServiceRequestmodeldata = {} as ItemCodeExtension;
 
     BrandList: MediServiceBrand[] = [];
@@ -131,22 +134,22 @@ export class MediServiceRequestComponent implements OnInit {
     MediServiceRequestList1: MediServiceRequest[] = [];
     
     Head: boolean = false;
-    id: string;
+    id: string
 
     transactionslist: MediServiceRequestHistory[] = [];
     transactionslist1: any[] = [];
     
     Approverslist: any[] = [];
     accountGroupList: any[] = [];
-    Aprlpriority: number;
+    Aprlpriority!: number;
     ApprovingManager: any;
     
-    empId: string;
+    empId: string
     view: boolean = false;
-    locationName: string;
+    locationName: string
     attachments: string[] = [];
     
-    Role: string;
+    Role: string
     currentStage: any;
     mailbody: any;
 
@@ -158,7 +161,7 @@ export class MediServiceRequestComponent implements OnInit {
     
     fileToUpload: File | null = null;
     File: File | null = null;
-    name: string;
+    name: string
     files: File[] = [];
     totalFileSize: number = 0;
     totalFileSizeInMB: number = 0;
@@ -171,7 +174,7 @@ export class MediServiceRequestComponent implements OnInit {
     filesList: File[] = [];
     
     MasterDumpData: any[] = [];
-    exportList: any[];
+    exportList!: any[];
 
     constructor(private appService: AppComponent, private httpService: HttpService, private datePipe: DatePipe, private router: Router, private excelService: ExcelService, private msService: MSService) { }
 
@@ -192,7 +195,8 @@ export class MediServiceRequestComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //  this.baseLocation = this.currentUser.baselocation;
         this.emailid = this.currentUser.email;
         this.userid = this.currentUser.employeeId;
@@ -229,11 +233,11 @@ export class MediServiceRequestComponent implements OnInit {
             if (data.length > 0) {
                 this.BrandList = data;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.BrandList.sort((a, b) => { return collator.compare(a.brandDesc, b.brandDesc) });
+                this.BrandList.sort((a:any, b:any) => { return collator.compare(a.brandDesc, b.brandDesc) });
 
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.BrandList = [];
         });
@@ -245,23 +249,23 @@ export class MediServiceRequestComponent implements OnInit {
             if (data.length > 0) {
                 this.CategoryList = data;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.CategoryList.sort((a, b) => { return collator.compare(a.category, b.category) });
+                this.CategoryList.sort((a:any, b:any) => { return collator.compare(a.category, b.category) });
 
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CategoryList = [];
         });
 
     }
 
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationList.find(e => e.id == id);
         return temp ? temp.code : '';
     }
 
-    getloc(loc) {
+    getloc(loc:any) {
         let loccode = loc.keyValue.split('~');
         return loccode ? loccode[0] : '';
     }
@@ -289,7 +293,8 @@ export class MediServiceRequestComponent implements OnInit {
         this.msService.filterBrand = null;
 
         // this.Approves = "Approve";
-        // this.filterlocation = null;
+        //// this.filterlocation = null;
+ this.filterlocation = '';
         // this.filterplace = null;
 
         // this.checkedRequestList = [];
@@ -318,7 +323,7 @@ export class MediServiceRequestComponent implements OnInit {
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.Approverslist = [];
         });
@@ -329,8 +334,8 @@ export class MediServiceRequestComponent implements OnInit {
         this.isGOLoading = true;
         let td = new Date();
         this.MediServiceRequestList1 = [];
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         let filterModel: MedServiceFilterModel = {} as MedServiceFilterModel;
         this.checkedRequestList = [];
 
@@ -370,16 +375,16 @@ export class MediServiceRequestComponent implements OnInit {
                 if (this.msService.filterStatus == null && (this.msService.filterRequest == null || this.msService.filterRequest == '')) {
                     var createdBy = this.currentUser.employeeId + ' - ' + this.currentUser.fullName;
 
-                    this.MediServiceRequestList = data.filter(x => x.pendingApprover == this.currentUser.fullName || x.pendingApprover == this.currentUser.employeeId || x.createdBy.includes(this.currentUser.employeeId) 
+                    this.MediServiceRequestList = data.filter((x:any)  => x.pendingApprover == this.currentUser.fullName || x.pendingApprover == this.currentUser.employeeId || x.createdBy.includes(this.currentUser.employeeId) 
                         || x.createdBy == this.currentUser.employeeId);
                     this.MediServiceRequestList.reverse();
 
-                    this.MediServiceRequestList1 = data.filter(x => x.pendingApprover == this.currentUser.fullName || x.pendingApprover == this.currentUser.employeeId || x.createdByDisplay == createdBy 
+                    this.MediServiceRequestList1 = data.filter((x:any)  => x.pendingApprover == this.currentUser.fullName || x.pendingApprover == this.currentUser.employeeId || x.createdByDisplay == createdBy 
                         || x.createdBy == this.currentUser.employeeId);
                     this.MediServiceRequestList1.reverse();
 
                     if (this.Approves == "Approve" && this.Head == true) {
-                        this.MediServiceRequestList = this.MediServiceRequestList.filter(x => x.reviewerAssignFlag == 1);
+                        this.MediServiceRequestList = this.MediServiceRequestList.filter((x:any)  => x.reviewerAssignFlag == 1);
                     }
                 } else {
                     this.MediServiceRequestList = data;
@@ -387,18 +392,18 @@ export class MediServiceRequestComponent implements OnInit {
                     this.MediServiceRequestList1 = data;
                     this.MediServiceRequestList1.reverse();
                     if (this.Approves == "Approve" && this.Head == true) {
-                        this.MediServiceRequestList = this.MediServiceRequestList1.filter(x => x.reviewerAssignFlag == 1);
+                        this.MediServiceRequestList = this.MediServiceRequestList1.filter((x:any)  => x.reviewerAssignFlag == 1);
                     }
                 }
 
                 // this.msService.totalCount = data[0].totalCount;
                 // this.msService.totalPages = data[0].totalPages;
                 
-                // this.MediServiceRequestlist = this.MediServiceRequestlist.sort((a, b) => {
+                // this.MediServiceRequestlist = this.MediServiceRequestlist.sort((a:any, b:any) => {
                 //     if (a.approveType != 'Submitted' && a.pendingApprover == 'No' && a.stage == '0' && (a.createdByDisplay == this.current || a.createdBy == this.currentUser.employeeId)) { return 1; }
                 //     else { return -1; }
                 // });
-                // this.MediServiceRequestList1 = this.MediServiceRequestList1.sort((a, b) => {
+                // this.MediServiceRequestList1 = this.MediServiceRequestList1.sort((a:any, b:any) => {
                 //     if (a.approveType != 'Submitted' && a.pendingApprover == 'No' && a.stage == '0' && (a.createdByDisplay == this.current || a.createdBy == this.currentUser.employeeId)) { return 1; }
                 //     else { return -1; }
                 // });
@@ -414,9 +419,9 @@ export class MediServiceRequestComponent implements OnInit {
             // this.reInitDatatable();
             this.isLoading = false;
             this.isGOLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             swal("Error", "Error fetching Medical Service Requests. Please check the console for error details.", "error");
-            console.log(error);
+            //console.log(error);
             this.isLoading = false;
             this.isGOLoading = false;
             this.MediServiceRequestList = [];
@@ -461,9 +466,9 @@ export class MediServiceRequestComponent implements OnInit {
 
     GetRequest(value: string) {
         if (value == "Approve") {
-            this.MediServiceRequestList = this.MediServiceRequestList1.filter(x => x.reviewerAssignFlag == 1 || (this.MedHeadID == this.currentUser.employeeId && x.pendingApprover != this.MedHeadID));
+            this.MediServiceRequestList = this.MediServiceRequestList1.filter((x:any)  => x.reviewerAssignFlag == 1 || (this.MedHeadID == this.currentUser.employeeId && x.pendingApprover != this.MedHeadID));
         } else if (value == "Assign") {
-            this.MediServiceRequestList = this.MediServiceRequestList1.filter(x => (x.reviewerAssignFlag == 0 || x.reviewerAssignFlag == null) && x.stage == '1' && x.approveType != 'Rejected' && x.inputType == 'scientific');
+            this.MediServiceRequestList = this.MediServiceRequestList1.filter((x:any)  => (x.reviewerAssignFlag == 0 || x.reviewerAssignFlag == null) && x.stage == '1' && x.approveType != 'Rejected' && x.inputType == 'scientific');
         }
 
         this.reInitDatatable();
@@ -481,26 +486,26 @@ export class MediServiceRequestComponent implements OnInit {
         this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
-    GetReviewersList(empId) {
+    GetReviewersList(empId:any) {
         this.httpService.post(APIURLS.BR_MED_HEAD_REVIEWERS_LIST_API, empId).then((data: MedicalReviewer[]) => {
             if (data.length > 0) {
                 this.ReviewerList = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             swal("Error", "Error fetching the reviewers list. Please check the console for error details.", "error");
-            console.log(error);
+            //console.log(error);
             this.isLoading = false;
             this.ReviewerList = [];
         });
@@ -510,10 +515,10 @@ export class MediServiceRequestComponent implements OnInit {
         this.httpService.get(APIURLS.BR_MED_HEAD_APPROVERS_LIST_API).then((data: any) => {
             if (data.length > 0) {
                 this.MedHeadList = data;
-                this.MedHead = this.MedHeadList.find(x => x.role == "Med_Head").name;
-                this.MedHeadID = this.MedHeadList.find(x => x.role == "Med_Head").employeeId;
+                this.MedHead = this.MedHeadList.find((x:any)  => x.role == "Med_Head").name;
+                this.MedHeadID = this.MedHeadList.find((x:any)  => x.role == "Med_Head").employeeId;
 
-                var temp = this.MedHeadList.find(x => x.employeeId == this.currentUser.employeeId);
+                var temp = this.MedHeadList.find((x:any)  => x.employeeId == this.currentUser.employeeId);
                 temp ? this.Head = true : this.Head = false;
 
                 if (this.Head) {
@@ -522,9 +527,9 @@ export class MediServiceRequestComponent implements OnInit {
                     this.GetReviewersList(this.currentUser.employeeId);
                 }
             }
-        }).catch(error => {
+        }).catch((error)=> {
             swal("Error", "Error fetching Medical Head data. Please check the console for error details.", "error");
-            console.log(error);
+            //console.log(error);
             this.isLoading = false;
             this.MedHeadList = [];
             this.MedHead = "";
@@ -547,7 +552,7 @@ export class MediServiceRequestComponent implements OnInit {
         }
 
         // File name validation
-        if (this.files.find(x => x.name == this.File.name) || this.attachments.find(x => x == this.File.name)) {
+        if (this.files.find((x:any)  => x.name == this.File.name) || this.attachments.find((x:any)  => x == this.File.name)) {
             swal("Message", "A file with the same name is already attached. Please choose a different file.", "warning");
 
             this.File = null;
@@ -580,7 +585,7 @@ export class MediServiceRequestComponent implements OnInit {
         this.reset();
     }
 
-    ReadAsBase64(file): Promise<any> {
+    ReadAsBase64(file:any): Promise<any> {
         const reader = new FileReader();
         const fileValue = new Promise((resolve, reject) => {
             reader.addEventListener('load', () => {
@@ -615,9 +620,9 @@ export class MediServiceRequestComponent implements OnInit {
             } else {
                 // swal("Error", data.error, "error");
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = "Error uploading files. Please check the console for error details.";
-            console.log(error);
+            //console.log(error);
         });
     }
 
@@ -629,7 +634,7 @@ export class MediServiceRequestComponent implements OnInit {
         this.MedCode = null;
     }
 
-    gettransactions(reqNo) {
+    gettransactions(reqNo:any) {
         this.httpService.getByParam(APIURLS.BR_MED_SERVICE_HISTORY_API, reqNo).then((data: any) => {
             this.isLoading = true;
 
@@ -637,7 +642,7 @@ export class MediServiceRequestComponent implements OnInit {
                 this.transactionslist = data;
 
                 if (this.MediServiceRequestmodel.reviewerAssignFlag = 1) {
-                    let pendingReviewer = this.transactionslist.filter(x => x.role == 'REVIEWER' && x.doneOn);
+                    let pendingReviewer = this.transactionslist.filter((x:any)  => x.role == 'REVIEWER' && x.doneOn);
 
                     if (pendingReviewer && pendingReviewer.length > 0) {
                         this.Reviewer = pendingReviewer[pendingReviewer.length - 1].doneBy;
@@ -651,29 +656,30 @@ export class MediServiceRequestComponent implements OnInit {
 
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
-            console.log(error);
+        }).catch((error)=> {
+            //console.log(error);
             this.isLoading = false;
             this.transactionslist = [];
         });
 
     }
 
-    getApproversList(value) {
+    getApproversList(value:any) {
         this.httpService.post(APIURLS.BR_MED_SERVICE_REQUEST_APPROVER_API, value).then((data: any) => {
             this.isLoading = true;
             if (data.employeeId > 0) {
                 this.ApprovingManager = data;
                 this.Approverslist.push(data);
-                this.Approverslist.forEach(element => {
+                this.Approverslist.forEach((element:any)=> {
+
                     element.type = "Approving Manager";
                 });
                 //this.transactionslist.reverse();
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
-            console.log(error);
+        }).catch((error)=> {
+            //console.log(error);
             this.isLoading = false;
             this.Approverslist = [];
         });
@@ -745,7 +751,7 @@ export class MediServiceRequestComponent implements OnInit {
         this.onUserActions(false, {} as MediServiceRequest, false, '');
     }
 
-    currentReviewerAssignFlag: number;
+    currentReviewerAssignFlag!: number;
     onUserActions(isedit: boolean, MediServiceRequest: MediServiceRequest, isprint: boolean, value: string) {
         this.isEdit = isedit;
         this.resetForm();
@@ -809,7 +815,7 @@ export class MediServiceRequestComponent implements OnInit {
             this.MediServiceRequestmodel.createdBy = this.currentUser.employeeId;
             this.MediServiceRequestmodel.createdByDisplay = this.currentUser.employeeId + ' - ' + this.currentUser.fullName;
             this.MediServiceRequestmodel.fullName = this.currentUser.fullName;
-            this.MediServiceRequestmodel.location = this.locListCon.find(x => x.id == this.currentUser.baselocation).code;
+            this.MediServiceRequestmodel.location = this.locListCon.find((x:any)  => x.id == this.currentUser.baselocation).code;
             this.MediServiceRequestmodel.designation = this.currentUser.designation;
             this.MediServiceRequestmodel.department = this.currentUser.department;
             this.MediServiceRequestmodel.division = this.currentUser.division;
@@ -833,7 +839,7 @@ export class MediServiceRequestComponent implements OnInit {
             this.MediServiceRequestmodel.createdBy = this.currentUser.employeeId;
             this.MediServiceRequestmodel.createdByDisplay = this.currentUser.employeeId + ' - ' + this.currentUser.fullName;
             this.MediServiceRequestmodel.fullName = this.currentUser.fullName;
-            this.MediServiceRequestmodel.location = this.locListCon.find(x => x.id == this.currentUser.baselocation).code;
+            this.MediServiceRequestmodel.location = this.locListCon.find((x:any)  => x.id == this.currentUser.baselocation).code;
             this.MediServiceRequestmodel.designation = this.currentUser.designation;
             this.MediServiceRequestmodel.department = this.currentUser.department;
             this.MediServiceRequestmodel.division = this.currentUser.division;
@@ -853,7 +859,7 @@ export class MediServiceRequestComponent implements OnInit {
         jQuery('#myModal').modal('show');
     }
 
-    onSaveEntry(status) {
+    onSaveEntry(status:any) {
         this.errMsg = "";
         let connection: any;
 
@@ -916,12 +922,12 @@ export class MediServiceRequestComponent implements OnInit {
                     this.resetForm();
                     // this.sendMailtoApprover(data);
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
 
                 swal("Error", "Error occurred while submitting request. Please check the console for error details.", "error");
                 this.errMsgPop = "Error saving Request. Please check the console for error details. ";
-                console.log(error);
+                //console.log(error);
 
                 jQuery("#myModal").modal('hide');
                 this.getAllEntries();
@@ -970,12 +976,12 @@ export class MediServiceRequestComponent implements OnInit {
                 this.resetForm();
                 // this.sendMailtoApprover(this.MediServiceRequestmodel);
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
 
             swal("Error", "Error occurred while submitting request. Please check the console for error details.", "error");
             this.errMsgPop = 'Error Submitting Request: ' + this.MediServiceRequestmodel.requestNo;
-            console.log(error);
+            //console.log(error);
 
             jQuery("#myModal").modal('hide');
             this.getAllEntries();
@@ -1035,7 +1041,7 @@ export class MediServiceRequestComponent implements OnInit {
         });
     }
 
-    onReview(status) {
+    onReview(status: any) {
         this.errMsg = "";
         let connection: any;
         this.isApproveLoading = true;
@@ -1069,28 +1075,28 @@ export class MediServiceRequestComponent implements OnInit {
                 } else if (this.MediServiceRequestmodel.stage == '1' && this.currentReviewerAssignFlag != 1) {
                     console.log("Stage 1 & ReviewerAssignFlag != 1");
                     this.MediServiceRequestmodel.pendingApprover = this.Reviewer;
-                    this.MediServiceRequestmodel.pendingApproverName = this.ReviewerList.find(x => x.employeeId == this.Reviewer).fullName;
+                    this.MediServiceRequestmodel.pendingApproverName = this.ReviewerList.find((x:any)  => x.employeeId == this.Reviewer).fullName;
                     this.MediServiceRequestmodel.stage = '2';
                     this.MediServiceRequestmodel.approveType = "In Process";
                     this.MediServiceRequestmodel.reviewerAssignFlag = 1;
                 } else if (this.MediServiceRequestmodel.stage == '1' && this.currentReviewerAssignFlag == 1) {
                     console.log("Stage 1 & ReviewerAssignFlag = 1");
-                    let temp = this.transactionslist.find(x => x.requestNo == this.MediServiceRequestmodel.requestNo && x.role == 'REVIEWER');
+                    let temp = this.transactionslist.find((x:any)  => x.requestNo == this.MediServiceRequestmodel.requestNo && x.role == 'REVIEWER');
                     this.MediServiceRequestmodel.pendingApprover = temp ? temp.doneBy : this.Reviewer;
-                    this.MediServiceRequestmodel.pendingApproverName = temp ? temp.approverName : this.ReviewerList.find(x => x.employeeId == this.Reviewer).fullName;
+                    this.MediServiceRequestmodel.pendingApproverName = temp ? temp.approverName : this.ReviewerList.find((x:any)  => x.employeeId == this.Reviewer).fullName;
                     this.MediServiceRequestmodel.stage = '2';
                     this.MediServiceRequestmodel.approveType = "In Process";
                     this.MediServiceRequestmodel.reviewerAssignFlag = 1;
                 } else if (this.MediServiceRequestmodel.stage == '2') {
                     console.log("Stage 2");
-                    let temp = this.transactionslist.find(x => x.requestNo == this.MediServiceRequestmodel.requestNo && x.approvalPriority == 1);
+                    let temp = this.transactionslist.find((x:any)  => x.requestNo == this.MediServiceRequestmodel.requestNo && x.approvalPriority == 1);
                     this.MediServiceRequestmodel.pendingApprover = temp.doneBy;
                     this.MediServiceRequestmodel.pendingApproverName = temp.approverName;
                     this.MediServiceRequestmodel.stage = '3';
                     this.MediServiceRequestmodel.approveType = "In Process";
                 } else if (this.MediServiceRequestmodel.stage == '3') {
                     console.log("Stage 3");
-                    let temp = this.transactionslist.find(x => x.requestNo == this.MediServiceRequestmodel.requestNo && x.approvalPriority == 2);
+                    let temp = this.transactionslist.find((x:any)  => x.requestNo == this.MediServiceRequestmodel.requestNo && x.approvalPriority == 2);
                     this.MediServiceRequestmodel.pendingApprover = temp.doneBy;
                     this.MediServiceRequestmodel.pendingApproverName = temp.approverName;
                     this.MediServiceRequestmodel.stage = '4';
@@ -1118,7 +1124,7 @@ export class MediServiceRequestComponent implements OnInit {
                 jQuery("#myModal").modal('hide');
 
                 if (this.MediServiceRequestmodel.approveType == 'Completed') {
-                    // var medcode = this.MediServiceRequestList.find(x => x.requestNo == this.MediServiceRequestmodel.requestNo).finalDocNo;
+                    // var medcode = this.MediServiceRequestList.find((x:any)  => x.requestNo == this.MediServiceRequestmodel.requestNo).finalDocNo;
                     this.errMsgPop1 = "Medical code generated successfully.!";
                 }
                 else {
@@ -1141,11 +1147,11 @@ export class MediServiceRequestComponent implements OnInit {
             }
 
             this.isApproveLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.isApproveLoading = false;
             this.errMsgPop = status == "Rejected" ? "Error Rejecting Request: "+ this.MediServiceRequestmodel.requestNo : "Error Approving Request: "+ this.MediServiceRequestmodel.requestNo;
-            console.log(error);
+            //console.log(error);
         });
     }
 
@@ -1162,7 +1168,7 @@ export class MediServiceRequestComponent implements OnInit {
         return this.Role;
     }
 
-    onRevertRequest(status) {
+   onRevertRequest(status:any) {
         this.errMsg = "";
         let connection: any;
         this.currentStage = this.MediServiceRequestmodel.stage;
@@ -1188,13 +1194,13 @@ export class MediServiceRequestComponent implements OnInit {
             }
         } else {
             //this.MediServiceRequestmodel.revertVersion==null ?this.MediServiceRequestmodel.revertVersion=1:this.MediServiceRequestmodel.revertVersion+1;
-            // this.MediServiceRequestmodel.pendingApprover = this.transactionslist.find(x => x.approvalPriority.toString() == this.MediServiceRequestmodel.stage).doneBy;
+            // this.MediServiceRequestmodel.pendingApprover = this.transactionslist.find((x:any)  => x.approvalPriority.toString() == this.MediServiceRequestmodel.stage).doneBy;
 
             if (this.MediServiceRequestmodel.stage == '4' && this.MediServiceRequestmodel.inputType != 'scientific') {
-                let pendingApproverTransactions = this.transactionslist.filter(x => x.role == "HOD");
+                let pendingApproverTransactions = this.transactionslist.filter((x:any)  => x.role == "HOD");
                 this.MediServiceRequestmodel.pendingApprover = pendingApproverTransactions[pendingApproverTransactions.length - 1].doneBy;
             } else {
-                let pendingApproverTransactions = this.transactionslist.filter(x => x.approvalPriority.toString() == this.MediServiceRequestmodel.stage);
+                let pendingApproverTransactions = this.transactionslist.filter((x:any)  => x.approvalPriority.toString() == this.MediServiceRequestmodel.stage);
                 this.MediServiceRequestmodel.pendingApprover = pendingApproverTransactions[pendingApproverTransactions.length - 1].doneBy;
             }
 
@@ -1246,8 +1252,8 @@ export class MediServiceRequestComponent implements OnInit {
                 this.resetForm();
                 //  this.sendRevertMail(this.MediServiceRequestmodel);
             }
-        }).catch(error => {
-            console.log(error);
+        }).catch((error)=> {
+            //console.log(error);
             this.isLoadingPop = false;
             this.errMsgPop = "Error Reverting Request " + this.MediServiceRequestmodel.requestNo;
         });
@@ -1311,7 +1317,7 @@ export class MediServiceRequestComponent implements OnInit {
         console.log(this.Reviewer);
     }
 
-    MassApprove(status) {
+    MassApprove(status:any) {
         this.isLoadingReq = true;
         this.isLoading = true;
         this.isApproveLoading = true;
@@ -1325,7 +1331,8 @@ export class MediServiceRequestComponent implements OnInit {
             return;
         }
 
-        this.checkedRequestList.forEach(element => {
+        this.checkedRequestList.forEach((element:any)=> {
+
             element.fullName = this.currentUser.fullName;
             element.comments = status;
 
@@ -1436,9 +1443,9 @@ export class MediServiceRequestComponent implements OnInit {
             this.isLoadingReq = false;
             this.isLoading = false;
             this.isApproveLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = "Error while mass approving requests. Please check the console for error details.";
-            console.log(error);
+            //console.log(error);
             this.isLoadingPop = false;
             this.isLoadingReq = false;
             this.isLoading = false;
@@ -1453,23 +1460,23 @@ export class MediServiceRequestComponent implements OnInit {
     //   connection.then((data: any) => {
     //     if (data == 200) {
     //     }
-    //   }).catch(error => {
+    //   }).catch((error)=> {
     //     this.errMsgPop = 'Error in sending mail..';
     //   });
 
     // }
 
-    downloadFile(reqNo, value) {
+    downloadFile(reqNo:any, value:any) {
         if (value.length > 0) {
             this.httpService.getFile(APIURLS.BR_MED_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
                 if (data != undefined) {
-                    var FileSaver = require('file-saver');
+                   // var FileSaver = require('file-saver');
                     const imageFile = new File([data], value);
-                    FileSaver.saveAs(imageFile);
+                //      FileSaver.saveAs(imageFile);
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
-                console.log(error);
+                //console.log(error);
             });
         } else {
             swal({
@@ -1486,7 +1493,7 @@ export class MediServiceRequestComponent implements OnInit {
         }
     }
 
-    deletefile(item, name) {
+    deletefile(item:any, name:any) {
         //let attach:any='';
         if (this.attachments.length > 0) {
             const index = this.attachments.indexOf(name);
@@ -1510,14 +1517,14 @@ export class MediServiceRequestComponent implements OnInit {
                     buttons: [false, true]
                 })
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error deleting file. Check the console for error details.';
-            console.log(error);
+            //console.log(error);
         });
     }
 
-    removefile(name) {
+    removefile(name:any) {
         const index = this.fileNamesList.indexOf(name);
         this.fileNamesList.splice(index, 1);
 
@@ -1599,14 +1606,14 @@ export class MediServiceRequestComponent implements OnInit {
         this.checkedRequestList = this.checkedlist;
     }
 
-    ShowHistory(data) {
+    ShowHistory(data:any) {
         this.transactionslist1 = [];
         this.MediServiceRequestmodel1 = data;
         this.httpService.getByParam(APIURLS.BR_MED_SERVICE_HISTORY_API, this.MediServiceRequestmodel1.requestNo).then((data: any) => {
             this.isLoading = true;
             if (data.length > 0) {
-                data.filter(x => x.processType == 'MedInput request');
-                this.transactionslist1 = data.sort((a, b) => {
+                data.filter((x:any)  => x.processType == 'MedInput request');
+                this.transactionslist1 = data.sort((a:any, b:any) => {
                     if (a.doneOn > b.doneOn) return 1;
                     if (a.doneOn < b.doneOn) return -1;
                     return 0;
@@ -1616,7 +1623,7 @@ export class MediServiceRequestComponent implements OnInit {
             //this.reInitDatatable();
             this.isLoadingPop = false;
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.transactionslist1 = [];
         });
@@ -1633,9 +1640,9 @@ export class MediServiceRequestComponent implements OnInit {
         connection.then((data: any) => {
             if (data == 200) {
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error sending email. Please check the console for error details';
-            console.log(error);
+            //console.log(error);
         });
 
     }
@@ -1648,9 +1655,9 @@ export class MediServiceRequestComponent implements OnInit {
             if (data == 200) {
 
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = "Error occurred while sending mail. Please check the console for error details.";
-            console.log(error);
+            //console.log(error);
         });
     }
 
@@ -1661,7 +1668,7 @@ export class MediServiceRequestComponent implements OnInit {
         connection.then((data: any) => {
             if (data == 200) {
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error in sending mail..';
         });
 
@@ -1674,7 +1681,7 @@ export class MediServiceRequestComponent implements OnInit {
         connection.then((data: any) => {
             if (data == 200) {
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error in sending mail..';
         });
 
@@ -1683,8 +1690,8 @@ export class MediServiceRequestComponent implements OnInit {
     GetMediServiceMasterDump() {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         // if (this.from_date == '' || this.from_date == null) {
         //   formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -1729,105 +1736,106 @@ export class MediServiceRequestComponent implements OnInit {
                 });
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.MasterDumpData = [];
-            console.log(error);
+            //console.log(error);
         });
     }
+//v10
+    // exportAsXLSX() {
 
-    exportAsXLSX() {
+    //     //Excel Title, Header, Data
+    //     const title = 'Medi Service Report';
+    //     const header = ["Input No", "Division", "Product", "Type of Input", "Input Received from PMT", "Input Reverted V1",
+    //         "Input Received V2", "Input Reverted V2", "Input Received V3", "Input Reverted V3", "Final Medical Code generated", "Final medical code"]
 
-        //Excel Title, Header, Data
-        const title = 'Medi Service Report';
-        const header = ["Input No", "Division", "Product", "Type of Input", "Input Received from PMT", "Input Reverted V1",
-            "Input Received V2", "Input Reverted V2", "Input Received V3", "Input Reverted V3", "Final Medical Code generated", "Final medical code"]
+    //     var exportList = [];
+    //     var ts: any = {};
+    //     let index = 0;
+    //     this.MasterDumpData.forEach((element:any)=> {
 
-        var exportList = [];
-        var ts: any = {};
-        let index = 0;
-        this.MasterDumpData.forEach(element => {
-            index = index + 1;
-            ts = {};
-            ts.input_No = (element.input_No),
-                ts.division = element.division,
-                ts.product = element.product,
-                ts.type_of_Input = element.type_of_Input,
-                ts.input_Received_from_PMT = element.input_Received_from_PMT;
-            ts.input_Reverted_V1 = element.input_Reverted_V1;
-            ts.input_Received_V2 = element.input_Received_V2;
-            ts.input_Reverted_V2 = element.input_Reverted_V2;
-            ts.input_Received_V3 = element.input_Received_V3;
-            ts.input_Reverted_V3 = element.input_Reverted_V3;
-            ts.final_Medical_Code_generated = element.final_Medical_Code_generated;
+    //         index = index + 1;
+    //         ts = {};
+    //         ts.input_No = (element.input_No),
+    //             ts.division = element.division,
+    //             ts.product = element.product,
+    //             ts.type_of_Input = element.type_of_Input,
+    //             ts.input_Received_from_PMT = element.input_Received_from_PMT;
+    //         ts.input_Reverted_V1 = element.input_Reverted_V1;
+    //         ts.input_Received_V2 = element.input_Received_V2;
+    //         ts.input_Reverted_V2 = element.input_Reverted_V2;
+    //         ts.input_Received_V3 = element.input_Received_V3;
+    //         ts.input_Reverted_V3 = element.input_Reverted_V3;
+    //         ts.final_Medical_Code_generated = element.final_Medical_Code_generated;
 
-            // ts.input_Received_from_PMT=this.datePipe.transform(element.input_Received_from_PMT,'dd/MM/yyyy HH:mm a');
-            // ts.input_Reverted_V1=this.datePipe.transform(element.input_Reverted_V1,'dd/MM/yyyy HH:mm a');
-            // ts.input_Received_V2=this.datePipe.transform(element.input_Received_V2,'dd/MM/yyyy HH:mm a');
-            // ts.input_Reverted_V2=this.datePipe.transform(element.input_Reverted_V2,'dd/MM/yyyy HH:mm a');
-            // ts.input_Received_V3=this.datePipe.transform(element.input_Received_V3,'dd/MM/yyyy HH:mm a');
-            // ts.input_Reverted_V3=this.datePipe.transform(element.input_Reverted_V3,'dd/MM/yyyy HH:mm a');
-            // ts.final_Medical_Code_generated=this.datePipe.transform(element.final_Medical_Code_generated,'dd/MM/yyyy HH:mm a');
+    //         // ts.input_Received_from_PMT=this.datePipe.transform(element.input_Received_from_PMT,'dd/MM/yyyy HH:mm a');
+    //         // ts.input_Reverted_V1=this.datePipe.transform(element.input_Reverted_V1,'dd/MM/yyyy HH:mm a');
+    //         // ts.input_Received_V2=this.datePipe.transform(element.input_Received_V2,'dd/MM/yyyy HH:mm a');
+    //         // ts.input_Reverted_V2=this.datePipe.transform(element.input_Reverted_V2,'dd/MM/yyyy HH:mm a');
+    //         // ts.input_Received_V3=this.datePipe.transform(element.input_Received_V3,'dd/MM/yyyy HH:mm a');
+    //         // ts.input_Reverted_V3=this.datePipe.transform(element.input_Reverted_V3,'dd/MM/yyyy HH:mm a');
+    //         // ts.final_Medical_Code_generated=this.datePipe.transform(element.final_Medical_Code_generated,'dd/MM/yyyy HH:mm a');
 
-            ts.final_medical_code = element.final_medical_code;
+    //         ts.final_medical_code = element.final_medical_code;
 
-            exportList.push(ts);
+    //         exportList.push(ts);
 
-        });
-        //var OrganisationName ="MICRO LABS LIMITED"+', '+this.locationname;
-        const data = exportList;
-        //Create workbook and worksheet
-        let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-        let worksheet = workbook.addWorksheet('Medi service Report');
+    //     });
+    //     //var OrganisationName ="MICRO LABS LIMITED"+', '+this.locationname;
+    //     const data = exportList;
+    //     //Create workbook and worksheet
+    //     //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+    //     let worksheet = workbook.addWorksheet('Medi service Report');
 
-        //Add Header Row
-        let headerRow = worksheet.addRow(header);
+    //     //Add Header Row
+    //     let headerRow = worksheet.addRow(header);
 
-        // Cell Style : Fill and Border
-        headerRow.eachCell((cell, number) => {
-            cell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'FFFFFF00' },
-                bgColor: { argb: 'FF0000FF' }
-            }
-            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
-        //  worksheet.addRows(data);
-        // Add Data and Conditional Formatting
-        //data.forEach()
+    //     // Cell Style : Fill and Border
+    //     headerRow.eachCell((cell, number) => {
+    //         cell.fill = {
+    //             type: 'pattern',
+    //             pattern: 'solid',
+    //             fgColor: { argb: 'FFFFFF00' },
+    //             bgColor: { argb: 'FF0000FF' }
+    //         }
+    //         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+    //     })
+    //     //  worksheet.addRows(data);
+    //     // Add Data and Conditional Formatting
+    //     //data.forEach()
 
-        for (let x1 of data) {
-            let x2 = Object.keys(x1);
-            let temp = []
-            for (let y of x2) {
-                temp.push(x1[y])
-            }
-            worksheet.addRow(temp)
-        }
+    //     for (let x1 of data) {
+    //         let x2 = Object.keys(x1);
+    //         let temp = []
+    //         for (let y of x2) {
+    //             temp.push(x1[y])
+    //         }
+    //         worksheet.addRow(temp)
+    //     }
 
-        worksheet.eachRow((cell, number) => {
-            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
-        worksheet.getColumn(1).width = 15;
-        worksheet.getColumn(2).width = 15;
-        worksheet.getColumn(3).width = 30;
-        worksheet.getColumn(4).width = 40;
-        worksheet.getColumn(5).width = 30;
-        worksheet.getColumn(6).width = 30;
-        worksheet.getColumn(7).width = 30;
-        worksheet.getColumn(8).width = 30;
-        worksheet.getColumn(9).width = 30;
-        worksheet.getColumn(10).width = 30;
-        worksheet.getColumn(11).width = 30;
-        worksheet.getColumn(12).width = 20;
-        worksheet.addRow([]);
+    //     worksheet.eachRow((cell, number) => {
+    //         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+    //     })
+    //     worksheet.getColumn(1).width = 15;
+    //     worksheet.getColumn(2).width = 15;
+    //     worksheet.getColumn(3).width = 30;
+    //     worksheet.getColumn(4).width = 40;
+    //     worksheet.getColumn(5).width = 30;
+    //     worksheet.getColumn(6).width = 30;
+    //     worksheet.getColumn(7).width = 30;
+    //     worksheet.getColumn(8).width = 30;
+    //     worksheet.getColumn(9).width = 30;
+    //     worksheet.getColumn(10).width = 30;
+    //     worksheet.getColumn(11).width = 30;
+    //     worksheet.getColumn(12).width = 20;
+    //     worksheet.addRow([]);
 
 
-        workbook.xlsx.writeBuffer().then((data) => {
-            let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            fs.saveAs(blob, 'MediServiceReport.xlsx');
-        })
+    //     workbook.xlsx.writeBuffer().then((data:any) => {
+    //         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    //         fs.saveAs(blob, 'MediServiceReport.xlsx');
+    //     })
 
-    }
+    // }
 }

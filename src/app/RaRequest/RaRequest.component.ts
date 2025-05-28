@@ -18,10 +18,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../shared/sharedmodule/sharedmodule.module';
 
 import { stringify } from 'querystring';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { RaRequest } from './RaRequest.model';
 // import { Transactions } from '../eMicro/ItemCodeCreation/transactions.model';
 // import { WorkFlowApprovers } from '../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -33,10 +33,10 @@ import { ExcelService } from '../shared/excel-service';
   styleUrls: ['./RaRequest.component.css']
 })
 export class RaRequestComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm, { static: false }) dataForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild(NgForm, { static: false }) dataForm!: NgForm;
 
-   @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+   @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();
@@ -58,25 +58,26 @@ export class RaRequestComponent implements OnInit {
   isEdit: boolean = false;
 
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   locationList1: any[] = [[]];
   selectedBaseLocation: any = [];
   baseLocationnotfirst = true;
 
-  materialtype: string;
-  comments: string;
-  filterAPI: string = null;
-  filterstatus: string = null;
-  filterlocation: string = null;
-  filterrequest: string = null;
+  materialtype!: string
+  comments: string
+  filterAPI: string = ' ';
+  filterstatus: string = ' ';
+  filterlocation: string = ' ';
+  filterrequest: string = ' ';
   today = new Date();
   today1: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate(),0,0,0);
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
-  emailid: string;
-  requestdate: Date;
+  emailid!: string
+
+  requestdate!: Date;
   Approver1: boolean = false;
   Approverid1: string = "";
   Approverid2: string = "";
@@ -84,12 +85,12 @@ export class RaRequestComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
+  userid: string
 
   Request = {} as RaRequest;
   storeData: any;
   jsonData: any;
-  fileUploaded: File;
+  fileUploaded!: File;
   worksheet: any;
   selectedDocuments:any[]=[];
   providedDocuments:any[]=[];
@@ -124,7 +125,8 @@ export class RaRequestComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //  this.baseLocation = this.currentUser.baselocation;
     this.emailid = this.currentUser.email;
     this.userid = this.currentUser.employeeId;
@@ -148,11 +150,11 @@ export class RaRequestComponent implements OnInit {
 
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
-  getloc(loc) {
+  getloc(loc:any) {
     let loccode = loc.keyValue.split('~');
     return loccode ? loccode[0] : '';
   }
@@ -177,8 +179,10 @@ export class RaRequestComponent implements OnInit {
     this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     this.to_date = this.today;
     this.filterAPI = null;
-    this.filterlocation = null;
-    this.filterstatus = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filterrequest = null;
 
   }
@@ -191,22 +195,22 @@ export class RaRequestComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.countrylist = [];
     });
   }
 
-  location(id) {
-    let loc = this.locationList.find(x => x.id == id);
+  location(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code : "";
   }
   RequestList:any[]=[];
   getAllEntries() {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -242,7 +246,7 @@ export class RaRequestComponent implements OnInit {
         // if(this.filterstatus==null)
         // {
         //   let user=this.currentUser.employeeId+'-'+this.currentUser.fullName;
-        //   this.RequestList=data.filter(x=>x.pendingWith==user);
+        //   this.RequestList=data.filter((x:any)=>x.pendingWith==user);
         //   this.RequestList.reverse();
         // }
         // else
@@ -254,7 +258,7 @@ export class RaRequestComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.RequestList = [];
     });
@@ -275,13 +279,13 @@ export class RaRequestComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -293,7 +297,7 @@ export class RaRequestComponent implements OnInit {
         this.apiList = data;
        
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.apiList = [];
     });
@@ -304,7 +308,7 @@ export class RaRequestComponent implements OnInit {
       if (data.length > 0) {
         this.APIManufacturerList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.APIManufacturerList = [];
     });
@@ -315,7 +319,7 @@ export class RaRequestComponent implements OnInit {
       if (data.length > 0) {
         this.GradeList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.GradeList = [];
     });
@@ -327,13 +331,13 @@ export class RaRequestComponent implements OnInit {
       if (data.length > 0) {
         this.DocumentList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.DocumentList = [];
     });
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngAfterViewInit() {
     this.initDatatable();
   }
@@ -372,10 +376,10 @@ export class RaRequestComponent implements OnInit {
 
   }
   //Approverslist: WorkFlowApprovers[] = [];
-  Aprlpriority: number;
+  Aprlpriority!: number;
   view: boolean = false;
  
-  empId: string;
+  empId: string
   dmfquery:boolean;
   attachments: any[] = [];
   onClickNewRequest(isedit: boolean, Request: RaRequest, isprint: boolean, value: string) {
@@ -404,7 +408,7 @@ export class RaRequestComponent implements OnInit {
         this.attachments = this.Request.attachments.split(',');
       }
       var docList = this.Request.documentRequired ? this.Request.documentRequired.split(',') : [];
-      this.selectedDocuments= this.DocumentList.filter(s => docList.includes(s.id.toString()));
+      this.selectedDocuments= this.DocumentList.filter((s:any) => docList.includes(s.id.toString()));
       let temp=docList.find(x=>x=='9');
       if(temp != undefined || temp != null)
       {
@@ -412,7 +416,7 @@ export class RaRequestComponent implements OnInit {
       }
       var pdocList = this.Request.documentShared ? this.Request.documentShared.split(',') : [];
       this.Request.additionalDoc?pdocList.push(this.Request.additionalDoc):null;     
-      this.providedDocuments= this.DocumentList.filter(s => pdocList.includes(s.id.toString()));
+      this.providedDocuments= this.DocumentList.filter((s:any) => pdocList.includes(s.id.toString()));
       this.DocumentList1=this.DocumentList.filter(o1 => docList.some(o2 => o1.id === +o2));
       let temp1=this.DocumentList1.find(x=>x.id==15);
       temp1 ? this.AddDoc=true:this.AddDoc=false;
@@ -427,7 +431,7 @@ export class RaRequestComponent implements OnInit {
         this.attachments = this.Request.attachments.split(',');
       }
       var docList = this.Request.documentRequired ? this.Request.documentRequired.split(',') : [];
-      this.selectedDocuments= this.DocumentList.filter(s => docList.includes(s.id.toString()));
+      this.selectedDocuments= this.DocumentList.filter((s:any) => docList.includes(s.id.toString()));
       let temp=docList.find(x=>x=='9');
       if(temp != undefined || temp != null)
       {
@@ -435,7 +439,7 @@ export class RaRequestComponent implements OnInit {
       }
       var pdocList = this.Request.documentShared ? this.Request.documentShared.split(',') : [];
       this.Request.additionalDoc?pdocList.push(this.Request.additionalDoc):null;     
-      this.providedDocuments= this.DocumentList.filter(s => pdocList.includes(s.id.toString()));
+      this.providedDocuments= this.DocumentList.filter((s:any) => pdocList.includes(s.id.toString()));
       this.DocumentList1=this.DocumentList.filter(o1 => docList.some(o2 => o1.id === +o2));
       let temp1=this.DocumentList1.find(x=>x.id==15);
       temp1 ? this.AddDoc=true:this.AddDoc=false;
@@ -446,9 +450,9 @@ export class RaRequestComponent implements OnInit {
       this.Request.requestedBy=this.currentUser.employeeId+'-'+this.currentUser.fullName;
       // this.Request.requestDate = new Date(this.today).toLocaleString();
       // var docList = this.Request.documentRequired ? this.Request.documentRequired.split(',') : [];
-      // this.selectedDocuments= this.DocumentList.filter(s => docList.includes(s.id));
+      // this.selectedDocuments= this.DocumentList.filter((s:any) => docList.includes(s.id));
       // var pdocList = this.Request.documentShared ? this.Request.documentShared.split(',') : [];
-      // this.providedDocuments= this.DocumentList.filter(s => pdocList.includes(s.id));
+      // this.providedDocuments= this.DocumentList.filter((s:any) => pdocList.includes(s.id));
     }
     if (isprint) {
       jQuery("#printModal").modal('show');
@@ -468,14 +472,14 @@ export class RaRequestComponent implements OnInit {
   isValid: boolean = false;
   validatedForm: boolean = true;
 
-  onSaveEntry(status) {
+  onSaveEntry(status:any) {
     this.errMsg = "";
     let connection: any;
    
       if (!this.isEdit) {
         this.Request.createdBy = this.currentUser.employeeId;
-        this.Request.documentRequired= this.selectedDocuments.map(x => x.id).join();
-       // this.Request.documentShared= this.selectedDocuments.map(x => x.id).join();
+        this.Request.documentRequired= this.selectedDocuments.map((x:any)  => x.id).join();
+       // this.Request.documentShared= this.selectedDocuments.map((x:any)  => x.id).join();
        // this.Request.createdOn = new Date().toLocaleString();
         this.Request.status = 'Submitted';
         this.Request.lastApprover='No';
@@ -493,7 +497,7 @@ export class RaRequestComponent implements OnInit {
       }
       else
       {
-        this.Request.documentShared= this.providedDocuments.map(x => x.id).join();
+        this.Request.documentShared= this.providedDocuments.map((x:any)  => x.id).join();
        // this.Request.modifiedBy = this.currentUser.employeeId;
         if(this.selectedDocuments.length==this.providedDocuments.length)
         {
@@ -529,7 +533,7 @@ export class RaRequestComponent implements OnInit {
           this.getAllEntries();
           this.resetForm();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error Saving Request..';
       });
@@ -543,7 +547,7 @@ export class RaRequestComponent implements OnInit {
     let connection: any;
    
      
-        this.Request.documentShared= this.providedDocuments.map(x => x.id).join();
+        this.Request.documentShared= this.providedDocuments.map((x:any)  => x.id).join();
         this.Request.modifiedBy = this.currentUser.employeeId; 
         this.Request.status='Pending';
         this.Request.pendingWith='77704-Kusuma Devi .G';
@@ -561,7 +565,7 @@ export class RaRequestComponent implements OnInit {
           this.getAllEntries();
           this.resetForm();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error Saving Request..';
       });
@@ -575,7 +579,7 @@ export class RaRequestComponent implements OnInit {
     let connection: any;
    
      
-        this.Request.documentShared= this.providedDocuments.map(x => x.id).join();
+        this.Request.documentShared= this.providedDocuments.map((x:any)  => x.id).join();
         this.Request.modifiedBy = this.currentUser.employeeId; 
         this.Request.status='Rejected';
         this.Request.pendingWith='No';
@@ -593,7 +597,7 @@ export class RaRequestComponent implements OnInit {
           this.getAllEntries();
           this.resetForm();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error Saving Request..';
       });
@@ -611,11 +615,11 @@ export class RaRequestComponent implements OnInit {
     return formateddate;
   }
  
-  exportList: any[];
+  exportList!: any[];
   exportAsXLSX(): void {
     this.exportList=[];
     let index=0;
-    this.RequestList.forEach(item => {
+    this.RequestList.forEach((item :any) => {
       index=index+1;
       var doclist:any;
       var docreq=item.documentRequired.split(',');
@@ -694,7 +698,7 @@ export class RaRequestComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error in sending mail..';
     });
 
@@ -706,7 +710,7 @@ export class RaRequestComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error in sending mail..';
     });
 
@@ -714,7 +718,7 @@ export class RaRequestComponent implements OnInit {
 
   fileToUpload: File | null = null;
   File: File | null = null;
-  name: string;
+  name: string
   files: File[] = []
   fileslist: any[] = [];
   handleFileInput(files: FileList) {
@@ -734,7 +738,7 @@ export class RaRequestComponent implements OnInit {
       this.myInputVariable.nativeElement.value = "";
     }
   }
-  id: string;
+  id: string
   uploadfile() {
     // debugger;
     // this.id='VM001';
@@ -750,13 +754,13 @@ export class RaRequestComponent implements OnInit {
         // console.log('copied file to server')
         //this.imageFlag = true;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
 
   }
 
-  removefile(name) {
+  removefile(name:any) {
     const index = this.fileslist.indexOf(name);
     this.fileslist.splice(index, 1);
   }
@@ -767,16 +771,16 @@ export class RaRequestComponent implements OnInit {
     if (value.length > 0) {
       this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, id, value).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], value, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
 
 
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
 

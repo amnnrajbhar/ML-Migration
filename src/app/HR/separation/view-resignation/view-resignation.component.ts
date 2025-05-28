@@ -21,7 +21,7 @@ declare var toastr: any;
   styleUrls: ['./view-resignation.component.css']
 })
 export class ViewResignationComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   resignationId: any;
   employeeId: any;
   urlPath: string = '';
@@ -40,7 +40,7 @@ export class ViewResignationComponent implements OnInit {
   tabsList: string[] = ["details", "attachments","checklist","exitinterview", "history"];
   objectType: string = "Resignation";
   fileList: any[] = [];
-  noticePeriod: string;
+  noticePeriod: string
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute, private location: Location) { }
@@ -50,7 +50,8 @@ export class ViewResignationComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.resignationId = this.route.snapshot.paramMap.get('id')!; 
       this.hrUser = this.route.snapshot.paramMap.get('id2')!; 
       if (this.hrUser==undefined)
@@ -62,7 +63,7 @@ export class ViewResignationComponent implements OnInit {
     }
   }
 
-  GetResignationDetailsById(id) {
+  GetResignationDetailsById(id:any) {
     this.isLoading = true;
    
     this.httpService.HRget(APIURLS.RESIGNATION_DETAILS_GET_BYID + "/" + id).then((data: any) => {
@@ -78,7 +79,7 @@ export class ViewResignationComponent implements OnInit {
           this.isRejected= true;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg= error;
     });
   }

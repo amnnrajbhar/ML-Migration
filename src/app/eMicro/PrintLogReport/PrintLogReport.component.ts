@@ -11,10 +11,10 @@ import { HttpService } from '../../shared/http-service';
 declare var $: any;
 declare var jQuery: any;
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient,HttpClientModule } from '@angular/common/http';
 
 @Component({
@@ -23,21 +23,25 @@ import { HttpClient,HttpClientModule } from '@angular/common/http';
   styleUrls: ['./PrintLogReport.component.css']
 })
 export class PrintLogReportComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   isLoading: boolean = false;
   tableWidget: any;
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private appServiceDate: AppService, private route: ActivatedRoute, private excelService: ExcelService,
-    private http: HttpClient,private datepipe:DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+    private http: HttpClient,private datepipe:DatePipe) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     // if (chkaccess == true) {
-    //   this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    //const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //   this.AuditLogs();
     // }
     this.AuditLogs();
@@ -68,14 +72,14 @@ export class PrintLogReportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data) {
-        this.locationList = data.filter(x=>{ return x.isActive;}).map((i) => { i.location = i.code + '-' + i.name; return i; });
+        this.locationList = data.filter((x:any)=>{ return x.isActive;}).map((i:any) => { i.location = i.code + '-' + i.name; return i; });
         let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-        this.locationList.sort((a,b)=>{return collator.compare(a.code,b.code)});
+        this.locationList.sort((a:any,b:any)=>{return collator.compare(a.code,b.code)});
         let temp=data.find(x=>x.id== this.currentUser.baselocation);
         this.locationname=temp.code +'-'+temp.name;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -107,7 +111,7 @@ export class PrintLogReportComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.printLogList = [];
     });
@@ -178,11 +182,11 @@ export class PrintLogReportComponent implements OnInit {
     this.selectedMaster = [];
     this.selectedActionType = [];
   }
-  exportList: any[];
+  exportList!: any[];
   exportAsXLSX(): void {
     this.exportList = [];
     let index = 0;
-    this.printLogList.forEach(item => {
+    this.printLogList.forEach((item :any) => {
       index = index + 1;
       let exportItem = {};
       // exportItem["SNo"] = index;
@@ -207,12 +211,13 @@ export class PrintLogReportComponent implements OnInit {
   {
     this.pdfdata=[];    
     let index = 0;
-    data.forEach(item => {
+    data.forEach((item :any) => {
       index = index + 1;
       let exportItem = {};
       // exportItem["SNo"] = index;
       if (this.objParser(item.changes).length > 0) {
-        this.objParser(item.changes).forEach(element => {
+        this.objParser(item.changes).forEach((element:any)=> {
+
           let newpdfdata = {id:0,MasterName:'',Action:'',ActionBy:'',DateTime:'',KeyField:'',FieldName:'',OldValue:'',NewValue:'',Reason:''};
           newpdfdata.MasterName = item.masterName;
           newpdfdata.Action = item.auditType;
@@ -268,14 +273,14 @@ export class PrintLogReportComponent implements OnInit {
   }
   downloadPdf()
   {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICROLABS LIMITED"+','+this.locationname;
     var ReportName = "AUDITLOG REPORT"
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate =this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -288,14 +293,14 @@ export class PrintLogReportComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:'AuditLog Report',
         },
       
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -313,7 +318,7 @@ export class PrintLogReportComponent implements OnInit {
       pageSize: 'A3',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -355,6 +360,6 @@ export class PrintLogReportComponent implements OnInit {
       },
   
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 }

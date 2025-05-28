@@ -19,10 +19,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
 import { ExcelService } from '../../shared/excel-service';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { AccountSubmission } from './AccountSubmission.model';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 //import { filter } from 'rxjs-compat/operator/filter';
 import { ExpenseUpdate } from '../ExpenseUpdate/ExpenseUpdate.model';
 import * as XLSX from 'xlsx';
@@ -36,12 +36,12 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 @Pipe({ name: 'groupBy' })
 export class AccountSubmissionComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-@ViewChild('accsubForm', { static: false }) accsubForm: NgForm;
-@ViewChild('SubmittedDetailsEditForm', { static: false }) SubmittedDetailsEditForm: NgForm;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
+@ViewChild('accsubForm', { static: false }) accsubForm!: NgForm;
+@ViewChild('SubmittedDetailsEditForm', { static: false }) SubmittedDetailsEditForm!: NgForm;
 
   accsubList: AccountSubmission[] = [];
   accsubItem: AccountSubmission = new AccountSubmission();
@@ -56,28 +56,28 @@ export class AccountSubmissionComponent implements OnInit {
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
-  path: string;
-  filterPayGroup: string = null;
+  path!: string
+  filterPayGroup: string = ' ';
   filterInvoiceNo: number = null;
-  filterVendorName: string = null;
-  // filterDepartment: string = null;
-  filterTypeOfGuest: string = null;
-  filtertypeOfEvent: string = null;
-  Amount: number;
-  filterEmployeeNo: string;
+  filterVendorName: string = ' ';
+  // filterDepartment: string = ' ';
+  filterTypeOfGuest: string = ' ';
+  filtertypeOfEvent: string = ' ';
+  Amount!: number;
+  filterEmployeeNo: string
   VendorMasterList: any;
-  vendorListCon: string;
+  vendorListCon: string
   filterInvoiceDate: Date;
-  AccountSubmission: string;
+  AccountSubmission: string
   filterCreatedDate: Date;
   reset: any;
-  filterNoOfPax: string = null;
-  Remarks: string;
-  Supportings: string = null;
-  AccSubmittedReferenceNo: string = null;
+  filterNoOfPax: string = ' ';
+  Remarks: string
+  Supportings: string = ' ';
+  AccSubmittedReferenceNo: string = ' ';
   advanceChequeNo: number = null;
-  supportings: string;
-  remarks: string;
+  supportings: string
+  remarks: string
   today = new Date();
   fromDate: Date = new Date(
     this.today.getFullYear(),
@@ -86,41 +86,43 @@ export class AccountSubmissionComponent implements OnInit {
   );
   toDate: Date = this.today;
   id: any;
-  TypeOfGuest: string;
-  Name: string;
-  EmployeeNo: string;
-  EmployeeName: string;
-  TypeOfEvent: string;
-  InvoiceNo: number;
+  TypeOfGuest: string
+  Name: string
+  EmployeeNo: string
+  EmployeeName: string
+  TypeOfEvent: string
+  InvoiceNo!: number;
   eventDate: Date;
-  invoiceDate: string;
-  NoOfPax: number;
-  VendorCity: string;
-  Hotel: string;
-  CreatedBy: number;
+  invoiceDate: string
+  NoOfPax!: number;
+  VendorCity: string
+  Hotel: string
+  CreatedBy!: number;
   createdOn: Date;
-  Division: string;
-  auditType: string;
-  vendorName: string;
+  Division: string
+  auditType: string
+  vendorName: string
   selectedVendor: any[] = [];
-  payGroup: string;
+  payGroup: string
   selectedPaygroup: any[] = [];
-  status: string;
+  status: string
   oldaccsubItem: AccountSubmission;
   expenseupdate: ExpenseUpdate = new ExpenseUpdate();
-  accSubmittedBy: number;
+  accSubmittedBy!: number;
   tableWidget3: any;
   tableWidget4: null;
-  exportList: any[];
+  exportList!: any[];
   columnNames: string[];
   allButLastColumnNames: any;
   rowSpans: any;
   rowSpanComputer: any;
-  lastColumnName: string;
+  lastColumnName: string
   groupbyAccRefNo;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private excelService: ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private excelService: ExcelService) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
 
   private initDatatable(): void {
@@ -202,7 +204,8 @@ export class AccountSubmissionComponent implements OnInit {
   ngOnInit() { 
     this.status = "Pending";
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
       this.getTypeOfGuestList();
@@ -268,7 +271,7 @@ export class AccountSubmissionComponent implements OnInit {
       }
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -280,13 +283,13 @@ export class AccountSubmissionComponent implements OnInit {
     this.httpService.get(APIURLS.BR_GET_TDVENDOR_DETAILS_API).then((data: any) => {
       if (data.length > 0) {
         this.VendorMasterList = data;
-        this.vendorListCon = data.map((i) => {
+        this.vendorListCon = data.map((i:any) => {
           i.name = i.name; return i;
         });
         this.isLoading = false;
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.VendorMasterList = [];
     });
@@ -314,7 +317,7 @@ export class AccountSubmissionComponent implements OnInit {
         this.PurposeList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PurposeList = [];
     });
@@ -326,20 +329,20 @@ export class AccountSubmissionComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.long_Desc > b.long_Desc) return 1;
           if (a.long_Desc < b.long_Desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
   }
 
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -386,7 +389,7 @@ export class AccountSubmissionComponent implements OnInit {
 
   }
 
-  checkUncheckAllSubmitted(id) {
+  checkUncheckAllSubmitted(id:any) {
     const index = this.AccountSubmissionList.indexOf(id)
     let checked = this.AccountSubmissionList[index].isSelected;
     for (var i = 0; i < this.AccountSubmissionList.length; i++) {
@@ -425,7 +428,7 @@ private processData(){
     ? taskComparator
     : a.refno.localeCompare(b.refno);
   })
-  .map((x) => {
+  .map((x:any) => {
     const taskColumnSpan = labelchecked[x.refno]
     ? 0
     : this.AccountSubmissionList.filter((y) => y.refno === x.refno).length;
@@ -492,7 +495,7 @@ private processData(){
       }
       this.reInitDatatable();
       this.clearFilter();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error saving Account Submission Details..';
     });
   }
@@ -516,7 +519,7 @@ private processData(){
         Model.balanceAmount = this.totalAmountPayable;
         Model.createdBy = this.currentUser.employeeId;
         Model.accSubmittedReferenceNoId = 1;
-        Model.id = this.checkedRequestList.map(x => x.id).join();
+        Model.id = this.checkedRequestList.map((x:any)  => x.id).join();
 
         let connection = this.httpService.post(APIURLS.BR_POST_TRAVEL_BALANCE, Model);
         connection.then((data: any) => {
@@ -546,7 +549,7 @@ private processData(){
 
           this.reInitDatatable();
           this.reInitExpenseEditTable();
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error saving Account Submission Details..';
         });
       }
@@ -558,7 +561,7 @@ private processData(){
   // }
 
   // onUserActions1() {
-  //   var printContents = document.getElementById('pdf').innerHTML;
+  //   var printContents = document.getElementById('pdf')!.innerHTML;
   //   var OrganisationName = "MICRO LABS LIMITED";
   //   var ReportName = "ACCOUNT SUBMISSION REPORT";
   //   var printedBy = this.currentUser.fullName;
@@ -603,7 +606,7 @@ private processData(){
   //     pageSize: 'A4',
   //     pageMargins: [40, 90, 40, 60],
   //     pageOrientation: 'landscape',
-  //     header: function (currentPage, pageCount) {
+  //     header: function (currentPage:any, pageCount:any) {
   //       return {
 
   //         columns: [
@@ -684,7 +687,7 @@ private processData(){
   //       }
   //     },
   //   };
-  //   pdfMake.createPdf(docDefinition).open();
+  //   //pdfMake.createPdf(docDefinition).open();
   // }
 
   PrintOnDuty() {
@@ -699,7 +702,7 @@ private processData(){
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -712,14 +715,14 @@ private processData(){
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Travel Expense Details Report',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -737,7 +740,7 @@ private processData(){
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -820,7 +823,7 @@ private processData(){
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
@@ -887,7 +890,8 @@ private processData(){
       this.errMsgPop = "";
       this.isLoading = false;
       if (this.isEdit) {
-        this.checkedRequestList.forEach(element => {
+        this.checkedRequestList.forEach((element:any)=> {
+
           this.amount = this.amount + element.amount;
 
         });
@@ -927,12 +931,12 @@ private processData(){
     }
   }
 
-  getTravelBalanceDetails(id) {
+  getTravelBalanceDetails(id:any) {
     let connection: any;
     this.isLoading = true;
 
     connection = this.httpService.getById(APIURLS.GET_BALANCE_DETAILS_BY_ID, id);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
         this.supportings = data[0].supportings;
         this.advanceAmountPaid = data[0].advanceAmountPaid;
@@ -948,11 +952,11 @@ private processData(){
   }
 
   checkedRequestList1: any[] = [];
-  getExpenseDetails(id) {
+  getExpenseDetails(id:any) {
     let connection: any;
     this.isLoading = true;
     connection = this.httpService.getByParam(APIURLS.GET_EXPENSE_DETAILS_BY_PARAM, id);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
         this.checkedRequestList1 = data;
       }
@@ -985,7 +989,7 @@ private processData(){
           let Id = !this.isEdit ? data.accSubmittedReferenceNoId : this.accsubItem.accSubmittedReferenceNoId;
         }
         this.reInitDatatable();
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error updating account details ..';
       });
@@ -1015,7 +1019,8 @@ private processData(){
             this.errMsgPop1 = ' Account details deleted successfully!';
             this.checkedRequestList1.splice(index, 1);
             this.amount = 0;
-            this.checkedRequestList1.forEach(element => {
+            this.checkedRequestList1.forEach((element:any)=> {
+
               this.amount = this.amount + element.amount;
             });
             this.totalAmountPayable = this.amount - this.advanceAmountPaid;
@@ -1030,7 +1035,7 @@ private processData(){
             }
           }
           this.reInitExpenseupdateTable();
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting account submission details..';
         });
@@ -1051,7 +1056,7 @@ private processData(){
       if (data == 200 || data.id > 0) {
         this.errMsgPop1 = ' Account details deleted successfully!';
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error deleting account submission details..';
     });
@@ -1083,7 +1088,7 @@ private processData(){
           let Id = !this.isEdit ? data.accSubmittedReferenceNoId : this.accsubItem.accSubmittedReferenceNoId;
         }
         this.reInitDatatable();
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error updating account details ..';
       });
@@ -1097,14 +1102,14 @@ private processData(){
   }
 
   onUserActions() {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED";
     var ReportName = "ACCOUNT SUBMISSION REPORT";
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1117,14 +1122,14 @@ private processData(){
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Travel Expense Details Report',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1142,7 +1147,7 @@ private processData(){
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -1223,7 +1228,7 @@ private processData(){
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
   exportAsXLSX(): void {
@@ -1234,7 +1239,8 @@ private processData(){
 
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

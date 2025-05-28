@@ -29,10 +29,10 @@ import { stringify } from 'querystring';
   styleUrls: ['./ExpenseUpdate.component.css']
 })
 export class ExpenseUpdateComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   // departmentList: any[] = [];
@@ -41,39 +41,39 @@ export class ExpenseUpdateComponent implements OnInit {
   isLoadingPop: boolean = false;
   errMsgPop: string = "";  
   isEdit: boolean = false;
-  path: string;
-  filterEmployeeName: string = null;
-  filterLocation: string = null;
+  path!: string
+  filterEmployeeName: string = ' ';
+  filterLocation: string = ' ';
   typeOfGuestList: any;
-  filterPayGroup: string = null;
+  filterPayGroup: string = ' ';
   filterInvoiceNo: number = null;
-  filterVendorName: string = null;
-  filterVendorCity: string = null;
-  Amount: number = null;
-  filterCheckInFavourOf: string = null;
-  filterNoOfPax: string = null;
+  filterVendorName: string = ' ';
+  filterVendorCity: string = ' ';
+  Amount: number = 0;
+  filterCheckInFavourOf: string = ' ';
+  filterNoOfPax: string = ' ';
   filterhotel:string = null;
-  filterRemarks: string = null;
-  // filterDepartment: string = null;
-  filterTypeOfGuest: string = null;
-  filterExpenseCategory: string = null;
+  filterRemarks: string = ' ';
+  // filterDepartment: string = ' ';
+  filterTypeOfGuest: string = ' ';
+  filterExpenseCategory: string = ' ';
   filterStatus: number = 1;
   filterType: any = null;
-  filterEmployeeNo: string;
-  filterGender: string;
+  filterEmployeeNo: string
+  filterGender: string
   userList: any;
   empListCon: any;
   VendorMasterList: any;
   vendorListCon: any;
-  filterEventDate: string;
-  filterInvoiceDate: string;
+  filterEventDate!: string
+  filterInvoiceDate!: string
   ExpenseUpdate: any;
   CreatedBy: any;
-  isSubmitting: boolean;
-  filtertypeOfEvent: string;
-  filtername: string;
+  isSubmitting!: boolean;
+  filtertypeOfEvent: string
+  filtername: string
   filterSupportings:string;
-  errorlist: string;
+  errorlist: string
   VendorMasterList1: any[]=[];
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
@@ -90,13 +90,15 @@ export class ExpenseUpdateComponent implements OnInit {
     this.filtertypeOfEvent = '';
     this.filterTypeOfGuest = '';
     this.filterType= '';
-    this.filterType = null;
+    //this.filterType = null;
+this.filterType = '';
     this.filterInvoiceNo = null;
     this.filterEventDate = '';
     this.filterInvoiceDate = '';
     this.filterVendorName = '';
     this.filterVendorCity = '';
-    this.Amount = null;
+   // this.Amount = null;
+      this.Amount = 0;
     this.filterCheckInFavourOf = '';
     this.filterNoOfPax = null;
     this.filterhotel = null;
@@ -110,7 +112,8 @@ export class ExpenseUpdateComponent implements OnInit {
   currentUser = {} as AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterLocation = this.currentUser.baselocation.toString();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
@@ -149,7 +152,8 @@ export class ExpenseUpdateComponent implements OnInit {
         if (data[0].type == 'E') {
            this.isLoading=false;
           this.errorlist = 'Error List';
-          data.forEach(element => {
+          data.forEach((element:any)=> {
+
             this.errorlist = this.errorlist + '\n' + element.message;  
             });
           alert(this.errorlist);
@@ -168,7 +172,7 @@ export class ExpenseUpdateComponent implements OnInit {
         }
         this.reset();
       }
-    }).catch(error => {
+    }).catch((error)=> {
         this.isLoading=false;
       this.errMsgPop = 'Error uploading file ..';
     });
@@ -193,7 +197,7 @@ export class ExpenseUpdateComponent implements OnInit {
       }
       // this.reInitDatatable();
        this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
        this.isLoading = false;
 
     });
@@ -205,13 +209,13 @@ export class ExpenseUpdateComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_EMPLOYEEMASTER_ACTIVE_API_GET_BY_ID,id).then((data: any) => {
       if (data.length > 0) {
         this.userList = data;
-        this.empListCon = data.map((i) => {
+        this.empListCon = data.map((i:any) => {
           i.name = i.firstName + '' + i.middleName + '' + i.lastName + '-' + i.employeeId; return i;
         });
 
           this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
         this.isLoading = false;
       this.userList = [];
     });
@@ -225,14 +229,14 @@ export class ExpenseUpdateComponent implements OnInit {
     }
     var data = this.empListCon;
     $('#filterEmployeeNo').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.employeeId.includes(mtrl));
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.employeeId.includes(mtrl));
+        response(result.map((i:any) => {
           i.label = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-'
           i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName, i.empNo = i.employeeId; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterEmployeeNo = ui.item.empNo;
         self.filterEmployeeName = ui.item.name;
 
@@ -247,13 +251,13 @@ export class ExpenseUpdateComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_EMPLOYEEMASTER_ACTIVE_API_GET_BY_NAME,mtrl).then((data: any) => {
       if (data.length > 0) {
         this.userList = data;
-        this.empListCon = data.map((i) => {
+        this.empListCon = data.map((i:any) => {
           i.name = i.firstName + '' + i.middleName + '' + i.lastName + '-' + i.employeeId; return i;
         });
 
           this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
         this.isLoading = false;
       this.userList = [];
     });
@@ -267,14 +271,14 @@ export class ExpenseUpdateComponent implements OnInit {
     }
     var data = this.empListCon;
     $('#EmployeeName').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.firstName.includes(mtrl));
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.firstName.includes(mtrl));
+        response(result.map((i:any) => {
           i.label = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-'
           i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName, i.empNo = i.employeeId; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterEmployeeNo = ui.item.empNo;
         self.filterEmployeeName = ui.item.name;
 
@@ -290,20 +294,20 @@ export class ExpenseUpdateComponent implements OnInit {
     this.httpService.get(APIURLS.BR_GET_TDVENDOR_DETAILS_API).then((data: any) => {
       if (data.length > 0) {
         this.VendorMasterList1 = data;
-        this.VendorMasterList = this.VendorMasterList1.filter(x=> x.isActive == true);
-        this.vendorListCon = data.map((i) => {
+        this.VendorMasterList = this.VendorMasterList1.filter((x:any)=> x.isActive == true);
+        this.vendorListCon = data.map((i:any) => {
           i.name = i.name; return i;
         });
          this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
        this.isLoading = false;
       this.VendorMasterList = [];
     });
   }
   // setDe(mtr) {
   //   this.isLoading = true;
-  //   this.filterVendorCity = this.VendorMasterList.find(x => x.name == mtr).city;
+  //   this.filterVendorCity = this.VendorMasterList.find((x:any)  => x.name == mtr).city;
   // }
 
 
@@ -330,7 +334,7 @@ export class ExpenseUpdateComponent implements OnInit {
     this.httpService.get(APIURLS.BR_GET_TYPEOFEVENT).then((data: any) => {
       if (data.length > 0) {
         this.TypeOfEventList1 = data;
-        this.TypeOfEventList = this.TypeOfEventList1.filter(x=> x.isActive == true);
+        this.TypeOfEventList = this.TypeOfEventList1.filter((x:any)=> x.isActive == true);
       }
       // this.reInitDatatable();
        this.isLoading = false;
@@ -348,7 +352,7 @@ export class ExpenseUpdateComponent implements OnInit {
         this.PurposeList = data;
       }
        this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
        this.isLoading = false;
       this.PurposeList = [];
     });
@@ -360,14 +364,14 @@ export class ExpenseUpdateComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.long_Desc > b.long_Desc) return 1;
           if (a.long_Desc < b.long_Desc) return -1;
           return 0;
         });
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
        this.isLoading = false;
       this.payGroupList = [];
     });
@@ -377,13 +381,13 @@ export class ExpenseUpdateComponent implements OnInit {
   //   this.errMsg = "";
   //   this.get("DepartmentMaster/GetAll").then((data: any) => {
   //     if (data.length > 0) {
-  //       this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+  //       this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
   //         if (a.name > b.name) return 1;
   //         if (a.name < b.name) return -1;
   //         return 0;
   //       });
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.departmentList = [];
   //     this.isLoading = false;
 
@@ -396,7 +400,7 @@ export class ExpenseUpdateComponent implements OnInit {
   }
   // onSelect(items: any) {
   //   this.isLoading = true;
-  //   this.filterVendorCity = this.VendorMasterList.find(x => x.name == this.filterVendorName[0]['name']).city;
+  //   this.filterVendorCity = this.VendorMasterList.find((x:any)  => x.name == this.filterVendorName[0]['name']).city;
   // }
   dropdownSettings = {
     singleSelection: true,
@@ -484,7 +488,7 @@ export class ExpenseUpdateComponent implements OnInit {
           }
         }
         this.clearFilter();
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error saving Expense Update ..';
       });
     }
@@ -524,7 +528,8 @@ export class ExpenseUpdateComponent implements OnInit {
   }
  
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

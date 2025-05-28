@@ -15,29 +15,29 @@ import { HttpService } from '../shared/http-service';
 import { Visitor } from '../visitorappointment/visitor.model';
 import { IfStmt } from '@angular/compiler';
 //import { forEach } from '@angular/router/src/utils/collection';
-import * as moment from 'moment';
+import moment from 'moment'
 import { AdditionalVisitor } from './additionvisitor.model';
 import { User } from '../masters/user/user.model';
 import { Observable, Subject } from 'rxjs';
 // import { FileSaver }  from 'angular-file-saver';
-// import { saveAs } from 'file-saver';
+// //import { saveAs } from 'file-saver';
 declare var $: any;
 declare var toastr: any;
 declare var jQuery: any;
 
 interface Belongings {
   id: number;
-  name: string;
+  name: string
   checked: boolean;
 }
 
 interface VisitorDetails {
   id: number;
-  name: string;
-  email: string;
-  mobile: string;
-  companyName: string;
-  carrying: string;
+  name: string
+  email: string,
+  mobile: string
+  companyName: string
+  carrying: string
   image: any;
   BelongingsList: any[];
   count: number;
@@ -50,18 +50,18 @@ interface VisitorDetails {
   encapsulation: ViewEncapsulation.None
 })
 export class VisitorentryComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
   // myForm = new FormGroup({}) // Instantiating our form
 
 
-  belongings: Belongings[];
+  belongings!: Belongings[];
 
 
-  visitorTypeList: any[];
+  visitorTypeList!: any[];
   purposeList: any[] = [];
   // searchTerm = new FormControl();
   numberOfPersonsEnt = new FormControl('', [Validators.required, Validators.pattern('[0-9]+'), Validators.min(1)]);
@@ -86,9 +86,9 @@ export class VisitorentryComponent implements OnInit {
   to_date: any;
   public tableWidget: any;
   addressId: number = 0;
-  competencyList: any[];
-  entityList: any[];
-  designationList: any[];
+  competencyList!: any[];
+  entityList!: any[];
+  designationList!: any[];
   selParentRole: any = [];
 
   uid: number = 0;
@@ -114,7 +114,7 @@ export class VisitorentryComponent implements OnInit {
   isEdit: boolean = false;
   employeeId: string = "";
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   todayDate: Date = new Date();
   visitorName: string = '';
@@ -123,12 +123,12 @@ export class VisitorentryComponent implements OnInit {
   private nextWebcam: Subject<boolean | string> = new Subject<boolean | string>();
   showWebcam: boolean = false;
   multipleWebcamsAvailable: boolean = false;
-  seconds: number;
+  seconds!: number;
   finYear = (new Date()).getFullYear();
   value = "hello";
   selectedFiles: any = [];
   fileName: any;
-  imageFile: string;
+  imageFile!: string
   empMList: any = [[]];
   visitorsList: any = [];
   typeOfVisitor: string = 'newvisit';
@@ -144,28 +144,28 @@ export class VisitorentryComponent implements OnInit {
   selectedAddNonBelongings: any[] = [];
   d: Date = new Date();
   outTime = new Date;
-  scannedCode: string;
+  scannedCode!: string
   selectedVisitorType: any;
   selectedPurpose: any;
   othersFlag: boolean = false;
-  dropdownSettings: {};
+  dropdownSettings!: {};
   popupWin: any;
   printContents: any;
   cal_id: any;
   additionalPersons: any[] = [];
   personIds: any = [];
   additionalVisitors: any[] = [[]];
-  personToMeetType: number;
+  personToMeetType!: number;
   recCount: any;
-  loggedUser: number;
+  loggedUser!: number;
   locationId: any = 0;
   LocationMasterList: any[] = [[]];
-  imageBlob: Blob;
+  imageBlob!: Blob;
   visitorId: any;
   visitorId1: any;
-  base64: string;
+  base64!: string
   vid: any;
-  imageFileContent: File;
+  imageFileContent!: File;
   imageFlag: boolean = false;
   empMListCon: any = [];
   empMListCon1: any = [];
@@ -175,12 +175,12 @@ export class VisitorentryComponent implements OnInit {
   pendingbook = 0;
   pendingCheckouts = 0;
   otherplantmovement = 0;
-  currentUser: AuthData;
+  currentUser!: AuthData;
 
   stringQrCode: any;
 
   length: number = 0;
-  emailMsg1: string;
+  emailMsg1!: string
 
   VisitorDetails: VisitorDetails[] = [];
 
@@ -221,13 +221,13 @@ export class VisitorentryComponent implements OnInit {
   getVisitorTypeList() {
     this.httpService.get(APIURLS.BR_MASTER_VISITOR_TYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.visitorTypeList = data.filter(x => x.isActive).sort((a, b) => {
+        this.visitorTypeList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.visitor_Type > b.visitor_Type) return 1;
           if (a.visitor_Type < b.visitor_Type) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.visitorTypeList = [];
     });
@@ -236,44 +236,44 @@ export class VisitorentryComponent implements OnInit {
   getPurposeList() {
     this.httpService.get(APIURLS.BR_MASTER_VISITOR_PURPOSE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.purposeList = data.filter(x => x.isActive).sort((a, b) => {
+        this.purposeList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.purpose > b.purpose) return 1;
           if (a.purpose < b.purpose) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.purposeList = [];
     });
   }
 
-  getPurpose(id) {
-    let temp = this.purposeList.find(s => s.id == id);
+  getPurpose(id:any) {
+    let temp = this.purposeList.find((s:any) => s.id == id);
     return temp ? temp.purpose : '';
   }
-  CheckOthers(value) {
+  CheckOthers(value:any) {
     if (value != null || value != undefined) {
-      let temp = this.purposeList.find(s => s.id == value.id);
+      let temp = this.purposeList.find((s:any) => s.id == value.id);
       return temp ? temp.purpose : '';
     }
   }
-  getType(id) {
+  getType(id:any) {
     if (id) {
-      let temp = this.visitorTypeList.find(s => s.id == id);
+      let temp = this.visitorTypeList.find((s:any) => s.id == id);
       return temp ? temp.visitor_Type : '';
     }
   }
   getBelongingsList() {
     this.httpService.get(APIURLS.BR_MASTER_VISITOR_BELONGINGS_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.belongings = data.filter(x => x.checked).sort((a, b) => {
+        this.belongings = data.filter((x:any)  => x.checked).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.belongings = [];
       this.isLoading = false;
     });
@@ -295,7 +295,8 @@ export class VisitorentryComponent implements OnInit {
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
       // console.log(chkaccess);
-      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+      //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
       this.currentUser = authData;
       this.loggedUser = authData.uid;
       this.route.paramMap.subscribe((params: ParamMap) => {
@@ -330,7 +331,7 @@ export class VisitorentryComponent implements OnInit {
       this.router.navigate(["/unauthorized"]);
     }
   }
-  addDays(date, daysToAdd) {
+  addDays(date:any, daysToAdd:any) {
     var _24HoursInMilliseconds = 86400000;
     return new Date(date.getTime() + daysToAdd * _24HoursInMilliseconds);
   };
@@ -345,8 +346,8 @@ export class VisitorentryComponent implements OnInit {
     var threemonthAgo = this.addDays(now, - 30 * 1);
     let td = new Date();
     let StartMnDate, EndMnDate;
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     StartMnDate = this.getFormatedDate(threemonthAgo);
     let formatedtodaydate: string = this.getFormatedDate(td);
     formatedTOdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" +
@@ -369,20 +370,20 @@ export class VisitorentryComponent implements OnInit {
             }
           }
         }
-        this.totaltodayvisits = this.todaysvisitorsList.filter(e => e.fromTime != null).length;
+        this.totaltodayvisits = this.todaysvisitorsList.filter((e:any) => e.fromTime != null).length;
         // console.log(this.pendingbook);
         // console.log(this.todaysvisitorsList1);
-        this.pendingbook = this.todaysvisitorsList1.filter(e => e.isPreShedualled == true && e.isCancelled == false).length;
+        this.pendingbook = this.todaysvisitorsList1.filter((e:any) => e.isPreShedualled == true && e.isCancelled == false).length;
         // console.log(this.pendingbook);
-        this.pendingCheckouts = visitors.filter(e => e.fromTime != null && (e.toTime == null || e.isActive == true)).length;
-        this.todayCheckouts = this.todaysvisitorsList.filter(e => e.toTime != null && e.isActive == false).length;
+        this.pendingCheckouts = visitors.filter((e:any) => e.fromTime != null && (e.toTime == null || e.isActive == true)).length;
+        this.todayCheckouts = this.todaysvisitorsList.filter((e:any) => e.toTime != null && e.isActive == false).length;
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
-  bookAppointment(ch) {
+  bookAppointment(ch:any) {
     this.isLoading = true;
     this.typeOfVisitor = ch;
     let td = new Date();
@@ -409,18 +410,18 @@ export class VisitorentryComponent implements OnInit {
       if (data.length > 0) {
         this.LocationMasterList = data;
         // console.log(this.LocationMasterList);
-        let code = this.LocationMasterList.find(x => x.id == this.currentUser.baselocation).code;
+        let code = this.LocationMasterList.find((x:any)  => x.id == this.currentUser.baselocation).code;
         // this.getApproversDetails(code);
       }
       //this.reInitDatatable(); Commented By shyam bOra
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.LocationMasterList = [];
     });
   }
 
-  getLocation(id) {
-    let lo = this.LocationMasterList.find(s => s.id == id);
+  getLocation(id:any) {
+    let lo = this.LocationMasterList.find((s:any) => s.id == id);
     return lo ? lo.code + '-' + lo.name : '';
   }
 
@@ -430,7 +431,7 @@ export class VisitorentryComponent implements OnInit {
       if (data.length > 0) {
         this.additionalVisitors = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.additionalVisitors = [];
     });
@@ -444,7 +445,7 @@ export class VisitorentryComponent implements OnInit {
         this.designationList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.designationList = [];
     });
@@ -482,7 +483,7 @@ export class VisitorentryComponent implements OnInit {
     return true;
   }
 
-  getApproversDetails(code) {
+  getApproversDetails(code:any) {
     // console.log(code);
     // console.log(this.selParentRole);
     this.httpService.getByParam(APIURLS.BR_GET_VMS_APPROVERS, code+',Visitor' + "," + this.currentUser.employeeId).then((data: any) => {
@@ -493,8 +494,8 @@ export class VisitorentryComponent implements OnInit {
       else {
         this.Approverslist = [];
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -504,28 +505,28 @@ export class VisitorentryComponent implements OnInit {
     // console.log(id);
     if (this.person.length == 0)
       this.showTable = false;
-    if (id != 0 && this.personIds.find(s => s == id)) this.deletedPersonIds.push(id);
+    if (id != 0 && this.personIds.find((s:any) => s == id)) this.deletedPersonIds.push(id);
     this.person.splice(position, 1);
     this.recCount--;
     // console.log(this.person.length);
     // this.getTotalWeightageNextYr();
   }
 
-  getFormatedDate(d) {
+  getFormatedDate(d:any) {
     let fd = new Date(d);
     let formateddate = fd.getFullYear() + "-" + ("00" + (fd.getMonth() + 1)).slice(-2) + "-" +
       ("00" + fd.getDate()).slice(-2);
     // return new Date(fd.getFullYear(),fd.getMonth(),fd.getDate());
     return formateddate;
   }
-  getNewFormatedDate(d) {
+  getNewFormatedDate(d:any) {
     let fd = new Date(d);
     let formateddate = ("00" + (fd.getMonth() + 1)).slice(-2) + "/" +
       ("00" + fd.getDate()).slice(-2) + "/" + fd.getFullYear();
     // return new Date(fd.getFullYear(),fd.getMonth(),fd.getDate());
     return formateddate;
   }
-  getTimeFormat(time) {
+  getTimeFormat(time:any) {
     return moment('1970-01-01 ' + time);
   }
 
@@ -547,24 +548,24 @@ export class VisitorentryComponent implements OnInit {
         this.visitorsList1 = data;
         this.visitorsList = [];
         if (this.typeOfVisitor == 'previsit') {
-          this.visitorsList = this.visitorsList1.filter(s => s.fromTime != null && (s.toTime == null || s.isActive == true));//Pending checkouts
+          this.visitorsList = this.visitorsList1.filter((s:any) => s.fromTime != null && (s.toTime == null || s.isActive == true));//Pending checkouts
         }
         else if (this.typeOfVisitor == 'bookvisit') {
-          this.visitorsList = this.visitorsList1.filter(s => s.isPreShedualled == true);//Today Bookings
+          this.visitorsList = this.visitorsList1.filter((s:any) => s.isPreShedualled == true);//Today Bookings
         }
         else if (this.typeOfVisitor == 'checkout') {
-          this.visitorsList = this.visitorsList1.filter(s => s.toTime != null && s.isActive == false);//Today checkouts
+          this.visitorsList = this.visitorsList1.filter((s:any) => s.toTime != null && s.isActive == false);//Today checkouts
         }
         else if (this.typeOfVisitor == 'revisit') {
           let tempRevisit = [];
           for (let e of this.visitorsList1) {
-            let fl = this.visitorsList1.find(s => s.mobile == e.mobile && s.id != e.id && e.isActive == true);
+            let fl = this.visitorsList1.find((s:any) => s.mobile == e.mobile && s.id != e.id && e.isActive == true);
             if (!fl) tempRevisit.push(e);
           }
-          this.visitorsList = tempRevisit.filter(s => s.isActive == false);
+          this.visitorsList = tempRevisit.filter((s:any) => s.isActive == false);
         }
         else if (this.typeOfVisitor == 'newvisit') {
-          this.visitorsList = this.visitorsList1.filter(e => e.fromTime != null);//Today's checkin
+          this.visitorsList = this.visitorsList1.filter((e:any) => e.fromTime != null);//Today's checkin
         }
         else {
           this.visitorsList = this.visitorsList1;
@@ -574,8 +575,8 @@ export class VisitorentryComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isGetVisitorsListLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.isGetVisitorsListLoading = false;
       this.visitorsList = [];
@@ -587,7 +588,7 @@ export class VisitorentryComponent implements OnInit {
     return obj == null;
   }
 
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {
@@ -608,15 +609,16 @@ export class VisitorentryComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_GETBY_ANY_API, this.currentUser.baselocation).then((data: any) => {
       // this.isLoading = false;
       if (data.length > 0) {
-        this.empMList = data.filter(x => x.isActive);
+        this.empMList = data.filter((x:any)  => x.isActive);
         // console.log(this.empMList);
         this.employeeList = data;
         // console.log(this.employeeList);
-        this.locationId = this.empMList.find(s => s.employeeId == this.currentUser.employeeId).baseLocation;
+        this.locationId = this.empMList.find((s:any) => s.employeeId == this.currentUser.employeeId).baseLocation;
         // console.log(this.locationId);
         // var empMList = [[]];
-        //this.empMList = this.empMList.filter(s => s.isActive && s.baseLocation == this.locationId);
-        this.empMList.forEach(element => {
+        //this.empMList = this.empMList.filter((s:any) => s.isActive && s.baseLocation == this.locationId);
+        this.empMList.forEach((element:any)=> {
+
           var t = { 'id': 0, 'name': '' };
           t.id = element.id;
           // let middleName = this.isEmpty(element.middleName.trim()) ? ' ' : ' ' + element.middleName + ' ';
@@ -634,7 +636,7 @@ export class VisitorentryComponent implements OnInit {
       }
       this.getVisitorsList();
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empMList = [];
     });
@@ -643,7 +645,8 @@ export class VisitorentryComponent implements OnInit {
   public triggerSnapshot(): void {
     this.seconds = 3;
     this.trigger.next();
-    this.seconds = null;
+    // this.seconds = null;
+      this.seconds = 0;
   }
   public showNextWebcam(directionOrDeviceId: boolean | string): void {
     // true => move forward through devices
@@ -765,13 +768,13 @@ export class VisitorentryComponent implements OnInit {
         // console.log('copied file to server')
         this.imageFlag = true;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg = 'Error uploading file ..';
     });
 
   }
 
-  dataURItoBlob(dataURI) {
+  dataURItoBlob(dataURI:any) {
     // console.log(dataURI);
     const byteString = window.atob(dataURI);
     // const byteString = atob(dataURI.split(',')[1]);
@@ -815,7 +818,7 @@ export class VisitorentryComponent implements OnInit {
   onSelectAll(items: any) {
     //debugger;
     //  console.log(items);
-    items.forEach(item => {
+    items.forEach((item :any) => {
       if (item.name.toLowerCase() == "others") {
         this.show_Others = true;
         this.requireState = true;
@@ -833,9 +836,9 @@ export class VisitorentryComponent implements OnInit {
     this.autocompleteTrigger.openPanel();
   }
 
-  qrCodeURL: string;
-  PlantCode: string;
-  printSetup(user) {
+  qrCodeURL!: string
+  PlantCode!: string
+  printSetup(user:any) {
     // debugger;
     this.downloadImage(user.id);
     this.printItem = user;
@@ -855,7 +858,7 @@ export class VisitorentryComponent implements OnInit {
         this.PlantCode = data ? data.code + "-" + data.name : "";
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PlantCode = "";
     });
@@ -863,9 +866,9 @@ export class VisitorentryComponent implements OnInit {
 
   image: any;
   imageStore = [];
-  downloadImage(id) {
-    let filename = this.imageStore.find(s => s.id == id).imgpath;
-    let folder = this.imageStore.find(s => s.id == id).folder;
+  downloadImage(id:any) {
+    let filename = this.imageStore.find((s:any) => s.id == id).imgpath;
+    let folder = this.imageStore.find((s:any) => s.id == id).folder;
 
     // **************************************************
     // CODE ONLY FOR DEV. DO NOT PUSH TO PROD.
@@ -883,8 +886,8 @@ export class VisitorentryComponent implements OnInit {
           this.image = event.target.result;
         };
         jQuery("#sModal").modal('show');
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoading = false;
       });
     } else {
@@ -902,7 +905,7 @@ export class VisitorentryComponent implements OnInit {
     }
   }
   AdditionalVisitorsList: AdditionalVisitor[] = [];
-  printall(value) {
+  printall(value:any) {
     // console.log(value);
     this.imageStore = [];
     this.AdditionalVisitorsList = [];
@@ -921,7 +924,8 @@ export class VisitorentryComponent implements OnInit {
             // this.AdditionalVisitorsList[i].temp2 = value.temp2;
           }
 
-          this.AdditionalVisitorsList.forEach(element => {
+          this.AdditionalVisitorsList.forEach((element:any)=> {
+
             let im = { id: 0, imgpath: '', folder: 0 };
             im.id = element.id;
             im.imgpath = element.temp3;
@@ -947,8 +951,8 @@ export class VisitorentryComponent implements OnInit {
           this.printSetup(value);
         }
         this.isLoading = false;
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoading = false;
         this.AdditionalVisitorsList = [];
       });
@@ -964,7 +968,7 @@ export class VisitorentryComponent implements OnInit {
     }
   }
 
-  printusers(value) {
+  printusers(value:any) {
     if (value.numberOfPerson > 1 && this.AdditionalVisitorsList.length > 0) {
       this.AdditionalVisitorsList;
       jQuery("#sModal").modal('hide');
@@ -983,7 +987,7 @@ export class VisitorentryComponent implements OnInit {
   printedOn: any;
   print(): void {
     let printContents, popupWin;
-    this.printContents = document.getElementById('print-section').innerHTML;
+    this.printContents = document.getElementById('print-section')!.innerHTML;
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
     popupWin.document.open();
     popupWin.document.write(`
@@ -1074,7 +1078,7 @@ export class VisitorentryComponent implements OnInit {
   }
 
 
-  openEntry(isEdit, data: Visitor) {
+  openEntry(isEdit:any, data: Visitor) {
     // debugger;
     this.isLoadingPop = true;
     this.empMListCon1 = this.empMListCon;
@@ -1122,7 +1126,7 @@ export class VisitorentryComponent implements OnInit {
         for (let i = 0; i < val.length; i++) {
           this.selParentRole.push(this.empMList.find(e => e.employeeId == val[i]).id);
         }
-        let te = this.empMList.find(s => s.employeeId == this.calendarItem.fkEmployeeId);
+        let te = this.empMList.find((s:any) => s.employeeId == this.calendarItem.fkEmployeeId);
         // this.selParentRole = te? this.empMListCon1.filter(s=>s.id==te.id):[];
         this.getApproversDetails(this.selParentRole[0]);
         this.imageFlag = this.calendarItem.temp ? true : false;
@@ -1132,14 +1136,14 @@ export class VisitorentryComponent implements OnInit {
         this.selParentRole = [];
         // this.personToMeetType = 2;
       }
-      this.selectedVisitorType = this.visitorTypeList.find(s => s.id == this.calendarItem.fkVisitorType);
-      this.selectedPurpose = this.purposeList.find(s => s.id == this.calendarItem.fkVisitorPurpose);
+      this.selectedVisitorType = this.visitorTypeList.find((s:any) => s.id == this.calendarItem.fkVisitorType);
+      this.selectedPurpose = this.purposeList.find((s:any) => s.id == this.calendarItem.fkVisitorPurpose);
       var belongingsList = this.calendarItem.temp2 ? this.calendarItem.temp2.split(',') : [];
-      this.selectedBelongings = this.belongings.filter(s => belongingsList.includes(s.name));
+      this.selectedBelongings = this.belongings.filter((s:any) => belongingsList.includes(s.name));
 
       var belongingsList1 = this.calendarItem.temp15 ? this.calendarItem.temp15.split(',') : [];
-      this.selectedNonBelongings = this.belongings.filter(s => belongingsList1.includes(s.name));
-      this.httpService.getById(APIURLS.GET_VISITOR_BELONGINGS, this.calendarItem.id).then((data) => {
+      this.selectedNonBelongings = this.belongings.filter((s:any) => belongingsList1.includes(s.name));
+      this.httpService.getById(APIURLS.GET_VISITOR_BELONGINGS, this.calendarItem.id).then((data:any) => {
         if (data) {
           let visitr: any = {};
           visitr.name = this.calendarItem.name;
@@ -1147,7 +1151,7 @@ export class VisitorentryComponent implements OnInit {
           visitr.email = this.calendarItem.email;
           visitr.companyName = this.calendarItem.companyName;
           visitr.carrying = this.calendarItem.temp17;
-          visitr.BelongingsList = data.filter(x => x.visitorName == this.calendarItem.name && x.mobileNo == this.calendarItem.mobile);
+          visitr.BelongingsList = data.filter((x:any)  => x.visitorName == this.calendarItem.name && x.mobileNo == this.calendarItem.mobile);
           visitr.count = visitr.BelongingsList.length
           this.VisitorDetails.push(visitr);
 
@@ -1178,12 +1182,12 @@ export class VisitorentryComponent implements OnInit {
                 vis.companyName = des.companyName;
                 vis.carrying = des.temp5;
                 var belongingsList = des.temp2 ? des.temp2.split(',') : [];
-                vis.BelongingsList = this.belongings.filter(s => belongingsList.includes(s.name));;
-                nextY.selectedAddBelongings = this.belongings.filter(s => belongingsList.includes(s.name));
+                vis.BelongingsList = this.belongings.filter((s:any) => belongingsList.includes(s.name));;
+                nextY.selectedAddBelongings = this.belongings.filter((s:any) => belongingsList.includes(s.name));
                 var belongingsList = des.temp4 ? des.temp4.split(',') : [];
-                nextY.selectedAddNonBelongings = this.belongings.filter(s => belongingsList.includes(s.name));
+                nextY.selectedAddNonBelongings = this.belongings.filter((s:any) => belongingsList.includes(s.name));
                 nextY.temp3 = des.temp3;
-                vis.BelongingsList = data.filter(x => x.visitorName == des.name && x.mobileNo == des.mobile);
+                vis.BelongingsList = data.filter((x:any)  => x.visitorName == des.name && x.mobileNo == des.mobile);
                 vis.count = vis.BelongingsList.length
                 this.person.push(nextY);
                 this.personIds.push(des.id);
@@ -1194,9 +1198,9 @@ export class VisitorentryComponent implements OnInit {
               // console.log(this.recCount+'-'+this.calendarItem.numberOfPerson);
             }
 
-          }).catch(error => {
+          }).catch((error)=> {
             //this.isLoadingPop = false;
-            this.errMsgPop = 'Error getting additional person details: ' + error;
+            this.errMsgPop = 'Error getting additional person details: ' + this.error;
           });
         }
       });
@@ -1231,15 +1235,15 @@ export class VisitorentryComponent implements OnInit {
     jQuery("#myModal").modal('show');
 
   }
-  getDesignation(id) {
+  getDesignation(id:any) {
     // console.log(id);
-    return this.designationList.find(s => s.id === id).name;
+    return this.designationList.find((s:any) => s.id === id).name;
   }
 
-  getStatus(mobile) {
-    return this.visitorsList.some(s => s.mobile == mobile && s.isActive == true);
+  getStatus(mobile:any) {
+    return this.visitorsList.some((s:any) => s.mobile == mobile && s.isActive == true);
   }
-  rescheduleEntry(isEdit, data: Visitor) {
+  rescheduleEntry(isEdit:any, data: Visitor) {
     this.calendarItem = data;
     this.isEdit = isEdit;
     this.isSaved = false;
@@ -1248,8 +1252,8 @@ export class VisitorentryComponent implements OnInit {
     this.personIds = [];
     this.person = [];
     this.showTable = false;
-    this.selectedVisitorType = this.visitorTypeList.find(s => s.id == 1);
-    this.selectedPurpose = this.purposeList.find(s => s.id == 1);
+    this.selectedVisitorType = this.visitorTypeList.find((s:any) => s.id == 1);
+    this.selectedPurpose = this.purposeList.find((s:any) => s.id == 1);
     this.personToMeetType = 1;
     this.calendarItem.numberOfPerson = 1;
     this.calendarItem.temp = '';
@@ -1272,7 +1276,7 @@ export class VisitorentryComponent implements OnInit {
 
   endDateTime = new Date();
 
-  checkOut(user) {
+  checkOut(user:any) {
     // debugger;
     this.calendarForm.form.markAsPristine();
     this.calendarForm.form.markAsUntouched();
@@ -1293,12 +1297,12 @@ export class VisitorentryComponent implements OnInit {
   }
 
   IndividualCheckoutList: any[] = [];
-  GetIndividualCheckoutList(user) {
+  GetIndividualCheckoutList(user:any) {
     let connection: any;
     connection = this.httpService.getById(APIURLS.GET_VISITOR_BELONGINGS, user.id);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
-        this.BelongingsCheckList = data.filter(x => x.checkoutDate == null);
+        this.BelongingsCheckList = data.filter((x:any)  => x.checkoutDate == null);
         var list = this.BelongingsCheckList.map(item => item.visitorName)
           .filter((value, index, self) => self.indexOf(value) === index)
         this.IndividualCheckoutList = list;
@@ -1311,12 +1315,12 @@ export class VisitorentryComponent implements OnInit {
   }
 
 
-  getBelongingsChecklist(id) {
+  getBelongingsChecklist(id:any) {
     let connection: any;
     connection = this.httpService.getById(APIURLS.GET_VISITOR_BELONGINGS, id);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
-        this.BelongingsCheckList = data.filter(x => x.checkoutDate == null && x.type == 'Returnable');
+        this.BelongingsCheckList = data.filter((x:any)  => x.checkoutDate == null && x.type == 'Returnable');
         this.processData();
       }
     }).catch((error) => {
@@ -1329,10 +1333,10 @@ export class VisitorentryComponent implements OnInit {
   private processData() {
     const namessSeen = {};
 
-    this.dataExt = this.BelongingsCheckList.sort((a, b) => {
+    this.dataExt = this.BelongingsCheckList.sort((a:any, b:any) => {
       const stateComp = a.visitorName.localeCompare(b.visitorName);
       return stateComp;
-    }).map(x => {
+    }).map((x:any)  => {
       const nameSpan = namessSeen[x.visitorName] ? 0 :
         this.BelongingsCheckList.filter(y => y.visitorName === x.visitorName).length;
 
@@ -1373,7 +1377,7 @@ export class VisitorentryComponent implements OnInit {
     this.checkedRequestList = this.checkedlist;
   }
 
-  barCode: string;
+  barCode!: string
   modalCheckout() {
     this.calendarForm.form.markAsPristine();
     this.calendarForm.form.markAsUntouched();
@@ -1382,7 +1386,7 @@ export class VisitorentryComponent implements OnInit {
     let searchStr = this.locationId + ',,,,,,,,,';
     this.httpService.getByParam(APIURLS.BR_MASTER_VISITOR_BYPARAM_API, searchStr).then((data: any) => {
       if (data) {
-        let item = data.map((i) => { i.barcode = i.id + '' + i.mobile; return i; }).filter(s => s.fromTime != null && s.toTime == null && s.isActive == true && s.barcode == this.barCode);
+        let item = data.map((i:any) => { i.barcode = i.id + '' + i.mobile; return i; }).filter((s:any) => s.fromTime != null && s.toTime == null && s.isActive == true && s.barcode == this.barCode);
         if (item.length > 0) {
           this.calendarItem = item[0];
           this.scannedCode = this.barCode;
@@ -1408,7 +1412,7 @@ export class VisitorentryComponent implements OnInit {
         }
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -1485,7 +1489,7 @@ export class VisitorentryComponent implements OnInit {
               this.barCode = '';
               // this.router.navigateByUrl('welcome-page');
             }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.isLoading = false;
             this.errMsgPop = 'Error saving Appointment data..';
@@ -1576,7 +1580,7 @@ export class VisitorentryComponent implements OnInit {
             this.barCode = '';
             // this.router.navigateByUrl('welcome-page');
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.isLoading = false;
           this.errMsgPop = 'Error saving Appointment data..';
@@ -1614,14 +1618,14 @@ export class VisitorentryComponent implements OnInit {
   }
 
 
-  checkValue(event) {
+  checkValue(event:any) {
     // console.log('value'+event.target.value);
     if (event.target.value <= 0)
       return false;
     else
       return true;
   }
-  typeChange(val) {
+  typeChange(val:any) {
     if (val == "2") {
       this.selParentRole = null;
     }
@@ -1726,14 +1730,14 @@ export class VisitorentryComponent implements OnInit {
       //  this.calendarItem.fkVisitorType = this.selectedVisitorType.id;
       this.calendarItem.fkVisitorPurpose = this.selectedPurpose.id;
       if (this.personToMeetType == 1) {
-        let tem = this.empMList.find(s => s.id == this.selParentRole[0]);
+        let tem = this.empMList.find((s:any) => s.id == this.selParentRole[0]);
         this.calendarItem.fkEmployeeId = tem.employeeId;
         this.calendarItem.temp8 = tem.baseLocation;
 
         this.calendarItem.fkEmployeeName = tem.firstName + ' ' + tem.lastName;
         this.calendarItem.employeeEmail = tem.email;
         for (let i = 1; i < this.selParentRole.length; i++) {
-          let tem1 = this.empMList.find(s => s.id == this.selParentRole[i]);
+          let tem1 = this.empMList.find((s:any) => s.id == this.selParentRole[i]);
           this.calendarItem.fkEmployeeId = this.calendarItem.fkEmployeeId + ',' + tem1.employeeId;
           this.calendarItem.temp8 = this.calendarItem.temp8 + ',' + tem1.baseLocation;
 
@@ -1767,12 +1771,12 @@ export class VisitorentryComponent implements OnInit {
       this.calendarItem.temp17 = this.VisitorDetails[0].carrying;
 
       //save belongings
-      //this.calendarItem.temp2 = this.selectedBelongings.map(x => x.name).join();
-      var belong = this.VisitorDetails[0].BelongingsList ? this.VisitorDetails[0].BelongingsList.filter(x => x.type == "Returnable") : [];
-      this.calendarItem.temp2 = belong.length > 0 ? belong.map(x => x.belongings).join() : '';
-      //  this.calendarItem.temp15 = this.selectedNonBelongings.map(x => x.name).join();
-      var NonRetbelong = this.VisitorDetails[0].BelongingsList ? this.VisitorDetails[0].BelongingsList.filter(x => x.type == "Non Returnable") : [];
-      this.calendarItem.temp15 = NonRetbelong.length > 0 ? NonRetbelong.map(x => x.belongings).join() : '';
+      //this.calendarItem.temp2 = this.selectedBelongings.map((x:any)  => x.name).join();
+      var belong = this.VisitorDetails[0].BelongingsList ? this.VisitorDetails[0].BelongingsList.filter((x:any)  => x.type == "Returnable") : [];
+      this.calendarItem.temp2 = belong.length > 0 ? belong.map((x:any)  => x.belongings).join() : '';
+      //  this.calendarItem.temp15 = this.selectedNonBelongings.map((x:any)  => x.name).join();
+      var NonRetbelong = this.VisitorDetails[0].BelongingsList ? this.VisitorDetails[0].BelongingsList.filter((x:any)  => x.type == "Non Returnable") : [];
+      this.calendarItem.temp15 = NonRetbelong.length > 0 ? NonRetbelong.map((x:any)  => x.belongings).join() : '';
 
       //Code added for VMS Approval
       if (!this.calendarItem.isPreShedualled) {
@@ -1789,11 +1793,11 @@ export class VisitorentryComponent implements OnInit {
       this.calendarItem.numberOfPerson = this.calendarItem.numberOfPerson <= 0 ? 1 : this.calendarItem.numberOfPerson;
       var checkAlready = false, otherCheckAlready = true;
       // if (this.personToMeetType == 1)
-      //   checkAlready = this.visitorsList.find(s => s.mobile == this.calendarItem.mobile && s.id != this.calendarItem.id && s.isActive == true);
+      //   checkAlready = this.visitorsList.find((s:any) => s.mobile == this.calendarItem.mobile && s.id != this.calendarItem.id && s.isActive == true);
       // else
       //   checkAlready = false;
       if (!this.isEdit)
-        checkAlready = this.todaysvisitorsList.find(s => s.mobile == this.calendarItem.mobile && s.isActive == true);
+        checkAlready = this.todaysvisitorsList.find((s:any) => s.mobile == this.calendarItem.mobile && s.isActive == true);
 
       if (!checkAlready) {
         if (this.isEdit) {
@@ -1845,20 +1849,20 @@ export class VisitorentryComponent implements OnInit {
                   if (nextY.temp5.toLocaleLowerCase() == "yes") {
                     this.InsertAdditionalVisitorBelongings(this.VisitorDetails[i].BelongingsList, this.VisitorDetails[i]);
                     if (this.VisitorDetails[i].BelongingsList != undefined && this.VisitorDetails[i].BelongingsList.length > 0) {
-                      var belong = this.VisitorDetails[i].BelongingsList ? this.VisitorDetails[i].BelongingsList.filter(x => x.type == "Returnable") : [];
-                      nextY.temp2 = belong.length > 0 ? belong.map(x => x.belongings).join() : '';
+                      var belong = this.VisitorDetails[i].BelongingsList ? this.VisitorDetails[i].BelongingsList.filter((x:any)  => x.type == "Returnable") : [];
+                      nextY.temp2 = belong.length > 0 ? belong.map((x:any)  => x.belongings).join() : '';
 
                       if (this.selectedAddBelongings.length > 0) {
-                        this.selectedAddNonBelongings = this.VisitorDetails[i].BelongingsList.filter(x => x.type == 'Non Returnable');
+                        this.selectedAddNonBelongings = this.VisitorDetails[i].BelongingsList.filter((x:any)  => x.type == 'Non Returnable');
                       }
                         
-                      nextY.temp4 = this.selectedAddNonBelongings.length > 0 ? this.selectedAddNonBelongings.map(x => x.belongings).join() : null;
+                      nextY.temp4 = this.selectedAddNonBelongings.length > 0 ? this.selectedAddNonBelongings.map((x:any)  => x.belongings).join() : null;
                     }
                   }
 
                   nextY.temp3 = this.VisitorDetails[i].image;
 
-                  let createupdateflag = this.personIds.some(s => s == this.VisitorDetails[i].id);
+                  let createupdateflag = this.personIds.some((s:any) => s == this.VisitorDetails[i].id);
                   if (createupdateflag) {
                     nextY.id = this.VisitorDetails[i].id;
                     connection = this.httpService.put(APIURLS.BR_MASTER_ADDITIONAL_VISITOR_POST_API, this.cal_id, nextY);
@@ -1869,8 +1873,9 @@ export class VisitorentryComponent implements OnInit {
                 }
 
                 if (this.deletedPersonIds.length > 0) {
-                  this.deletedPersonIds.forEach(element => {
-                    let findOldIdNext = this.deletedPersonIds.some(s => s == element);
+                  this.deletedPersonIds.forEach((element:any)=> {
+
+                    let findOldIdNext = this.deletedPersonIds.some((s:any) => s == element);
                     if (findOldIdNext) {
                       connection = this.httpService.delete(APIURLS.BR_MASTER_ADDITIONAL_VISITOR_POST_API, element);
                     }
@@ -1905,7 +1910,7 @@ export class VisitorentryComponent implements OnInit {
             jQuery("#saveModal").modal('show');
             // this.getVisitorsList();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving Visitor Entry...';
         });
@@ -1928,7 +1933,8 @@ export class VisitorentryComponent implements OnInit {
 
   }
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -1972,7 +1978,7 @@ getHeader(): { headers: HttpHeaders } {
         this.barCode = '';
         // this.router.navigateByUrl('welcome-page');
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.isLoading = false;
       this.errMsgPop = 'Error closing entry..';
@@ -1983,21 +1989,21 @@ getHeader(): { headers: HttpHeaders } {
   GetVisitorDetails(visit, i) {
     var self = this;
     $('#visitor_' + i).autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm1 = request.term + ',' + self.currentUser.baselocation;
         let connection = self.httpService.getByParam(APIURLS.BR_GET_VISITOR_BASED_ON_NAME, searchTerm1);
         connection.then((data: any) => {
           if (data) {
             let result = data;
-            response(result.map((i) => {
+            response(result.map((i:any) => {
               i.label = i.name + '-' + i.mobile + '-' + i.companyName, i.name = i.name, i.mobile = i.mobile
                 , i.companyName = i.companyName, i.email = i.email; return i;
             }));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         visit.name = ui.item.name;
         visit.mobile = ui.item.mobile;
         visit.companyName = ui.item.companyName;
@@ -2011,13 +2017,13 @@ getHeader(): { headers: HttpHeaders } {
   GetEmployeeDetails(visit, i) {
     var self = this;
     $('#EmployeeID_' + i).autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm1 = request.term + ',' + self.currentUser.baselocation;
         let connection = self.httpService.get(APIURLS.BR_GET_EMPLOYEE_BASED_ON_SEARCHTEXT + "/" + request.term)
         connection.then((data: any) => {
           if (data) {
             let result = data;
-            response(result.map((i) => {
+            response(result.map((i:any) => {
               // i.label = i.name + '-' + i.mobile + '-' + i.companyName, i.name = i.name, i.mobile = i.mobile
               //  , i.companyName = i.companyName, i.email = i.email; return i;
               i.label = i.fullName + " (" + i.employeeId + ")", i.value = i.employeeId, i.name = i.name,
@@ -2025,10 +2031,10 @@ getHeader(): { headers: HttpHeaders } {
                 i.email = i.emailId, i.plant = i.plant; return i;
             }));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         visit.name = ui.item.name;
         visit.mobile = ui.item.mobile;
         visit.companyName = ui.item.plant;
@@ -2051,7 +2057,7 @@ getHeader(): { headers: HttpHeaders } {
         let connection = self.httpService.getByParam(APIURLS.BR_GET_VISITOR_BASED_ON_NAME, searchTerm1);
         connection.then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return {
                 label: item.name + '-' + item.mobile + '-' + item.companyName,
@@ -2067,7 +2073,7 @@ getHeader(): { headers: HttpHeaders } {
                 "ui-menu-item": "list-group-item"
               },
 
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#visitor_" + i).val(ui.item.name);
                   $("#mobile_" + i).val(ui.item.mobile);
@@ -2100,7 +2106,7 @@ getHeader(): { headers: HttpHeaders } {
                 }
               },
 
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#visitor_" + i).val(ui.item.name);
                   $("#mobile_" + i).val(ui.item.mobile);
@@ -2150,21 +2156,21 @@ getHeader(): { headers: HttpHeaders } {
     let text = this.VisitorDetails[i].name;
     if (text.length > 3) {
       $('#EmployeeID_' + i).autocomplete({
-        source: function (request, response) {
+        source: function (request:any, response:any) {
           self.httpService.get(APIURLS.BR_GET_EMPLOYEE_BASED_ON_SEARCHTEXT + "/" + request.term).then((data: any) => {
             if (data.length > 0) {
 
-              var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
-              response(sortedList.map((item) => {
+              var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+              response(sortedList.map((item :any) => {
                 item.label = item.fullName + " (" + item.employeeId + ")", item.value = item.employeeId, item.name = item.name,
                   item.mobile = item.mobileNo,
                   item.email = item.emailId, item.plant = item.plant; return i;
               }));
             }
-          }).catch(error => {
+          }).catch((error)=> {
           });
           //   if (data.length > 0) {
-          //     var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+          //     var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
           //     var list = $.map(sortedList, function (item) {
           //       return {
           //         label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId, name: item.name, mobile: item.mobileNo,
@@ -2177,7 +2183,7 @@ getHeader(): { headers: HttpHeaders } {
           //         "ui-autocomplete": "highlight",
           //         "ui-menu-item": "list-group-item"
           //       },
-          //       change: function (event, ui) {
+          //       change: function (event:any, ui:any) {
           //         if (ui.item) {
           //           this.VisitorDetails[i].name = ui.item.name;
           //           this.VisitorDetails[i].mobile = ui.item.mobile;
@@ -2195,7 +2201,7 @@ getHeader(): { headers: HttpHeaders } {
           //           //this.interviewerList[i].employeeId = '';
           //         }
           //       },
-          //       select: function (event, ui) {
+          //       select: function (event:any, ui:any) {
           //         if (ui.item) {
           //           this.VisitorDetails[i].name = ui.item.name;
           //           this.VisitorDetails[i].mobile = ui.item.mobile;
@@ -2216,7 +2222,7 @@ getHeader(): { headers: HttpHeaders } {
           //       }
           //     });
         },
-        select: function (event, ui) {
+        select: function (event:any, ui:any) {
           this.VisitorDetails[i].name = ui.item.name;
           this.VisitorDetails[i].mobile = ui.item.mobile;
           this.VisitorDetails[i].companyName = ui.item.companyName;
@@ -2245,7 +2251,7 @@ getHeader(): { headers: HttpHeaders } {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error in sending mail..';
     });
   }
@@ -2253,13 +2259,13 @@ getHeader(): { headers: HttpHeaders } {
   WIDTH = 240;
   HEIGHT = 160;
 
-@ViewChild("video", { static: false }) public video: ElementRef;
+@ViewChild("video", { static: false }) public video!: ElementRef;
 
-@ViewChild("canvas", { static: false }) public canvas: ElementRef;
+@ViewChild("canvas", { static: false }) public canvas!: ElementRef;
 
   captures: string[] = [];
   error: any;
-  isCaptured: boolean;
+  isCaptured!: boolean;
 
   async setupDevices() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -2280,7 +2286,7 @@ getHeader(): { headers: HttpHeaders } {
     }
   }
 
-  capture(data) {
+  capture(data:any) {
     if (data.name == null || data.name == "") {
       toastr.error("Please enter visitor name")
     }
@@ -2345,7 +2351,8 @@ getHeader(): { headers: HttpHeaders } {
   InsertBelongings() {
     let List: any[] = [];
     let connection: any;
-    this.selectedBelongings.forEach(element => {
+    this.selectedBelongings.forEach((element:any)=> {
+
       let belonging: any = {};
       belonging.belongings = element.name;
       belonging.fkVisitorId = this.vid;
@@ -2360,10 +2367,11 @@ getHeader(): { headers: HttpHeaders } {
     connection = this.httpService.post(APIURLS.INSERT_VISITOR_BELONGINGS, List)
 
   }
-  InsertAdditionalVisitorBelongings(add, visitor) {
+  InsertAdditionalVisitorBelongings(add:any, visitor:any) {
     let List: any[] = [];
     let connection: any;
-    add.forEach(element => {
+    add.forEach((element:any)=> {
+
       let belonging: any = {};
       belonging.id = element.id;
       belonging.belongings = element.belongings;
@@ -2382,12 +2390,13 @@ getHeader(): { headers: HttpHeaders } {
   onPartialcheckout() {
     this.isLoading = true;
     let connection: any;
-    this.checkedRequestList.forEach(element => {
+    this.checkedRequestList.forEach((element:any)=> {
+
       element.remarks = this.calendarItem.temp5;
       connection = this.httpService.put(APIURLS.UPDATE_VISITOR_BELONGINGS, element.id, element)
     })
     this.isLoading = false;
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data == 200 || data.id > 0) {
         if (this.isMasterSel == false) {
           this.errMsgPop1 = 'Checkout done partially';
@@ -2423,7 +2432,7 @@ getHeader(): { headers: HttpHeaders } {
     this.isLoading = false;
   }
 
-  RemoveLine(no, id) {
+  RemoveLine(no:any, id:any) {
     this.isLoading = true;
     this.VisitorDetails.splice(no, 1);
     // console.log(this.departmentList);
@@ -2467,13 +2476,13 @@ getHeader(): { headers: HttpHeaders } {
 
   BelongingEdit: boolean = false;
   editIndex: number = -1;
-  EditLine(item, index) {
+  EditLine(item:any, index:any) {
     this.Type = item.type;
     this.Belonging = item.belongings;
     this.modelNo = item.modelNo;
     this.Details = item.details;
     this.SerialNo = item.serialNo;
-    let temp = this.belongings.find(x => x.name == this.Belonging);
+    let temp = this.belongings.find((x:any)  => x.name == this.Belonging);
     if (temp) {
       this.Belonging = temp.name;
     }
@@ -2515,7 +2524,7 @@ getHeader(): { headers: HttpHeaders } {
     this.BelongingEdit = false;
   }
 
-  deleteData(data, no) {
+  deleteData(data:any, no:any) {
     this.isLoading = true;
     this.BelongingsList.splice(no, 1);
     // console.log(this.departmentList);

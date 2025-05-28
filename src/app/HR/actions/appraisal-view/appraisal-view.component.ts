@@ -25,7 +25,7 @@ declare var toastr: any;
 export class AppraisalViewComponent implements OnInit {
 @ViewChild(ReadonlyemployeeSalaryComponent, { static: false }) employeeSalaryComponent: ReadonlyemployeeSalaryComponent;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   appraisalId: any;
   objectType: string = "Appraisal";
   employeeId: any;
@@ -83,7 +83,8 @@ export class AppraisalViewComponent implements OnInit {
     this.employeeInitialAppraisalDetailId = this.route.snapshot.paramMap.get('id')!;
     this.taskId = this.route.snapshot.paramMap.get('id2')!; 
     this.employeeId = this.route.snapshot.paramMap.get('id3')!;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));  
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;  
     this.util.canApproveTask(this.taskId, this.currentUser.uid);
     this.loadEmployeeData();
   }
@@ -96,7 +97,7 @@ export class AppraisalViewComponent implements OnInit {
     //this.isLoading = false;
   }
 
-  loadEmployeeDetails(id) {
+  loadEmployeeDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_GET_APPRAISAL_DETAILS, id).then((data: any) => {
@@ -107,68 +108,68 @@ export class AppraisalViewComponent implements OnInit {
         if(this.employeeDetail.appraisalDetails.secondSignatoryId > 0){
           this.secondSignatoryRequired = true;          
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Role") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Role") != null)
         {
-        this.oldRole = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Role").oldValueText
-        this.newRole = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Role").newValueText
+        this.oldRole = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Role").oldValueText
+        this.newRole = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Role").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "StaffCategory") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "StaffCategory") != null)
         {
-        this.oldCategory = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "StaffCategory").oldValueText
-        this.newCategory = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "StaffCategory").newValueText
+        this.oldCategory = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "StaffCategory").oldValueText
+        this.newCategory = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "StaffCategory").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "State") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "State") != null)
         { 
-        this.oldState = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "State").oldValueText
-        this.newState = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "State").newValueText
+        this.oldState = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "State").oldValueText
+        this.newState = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "State").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Department") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Department") != null)
         {
-        this.oldDepartment = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Department").oldValueText
-        this.newDepartment = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Department").newValueText
+        this.oldDepartment = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Department").oldValueText
+        this.newDepartment = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Department").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Designation") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Designation") != null)
         {
-        this.oldDesignation = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Designation").oldValueText
+        this.oldDesignation = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Designation").oldValueText
         console.log('got data1');
-        this.newDesignation = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Designation").newValueText
+        this.newDesignation = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Designation").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "PayGroup") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "PayGroup") != null)
         {
-        this.oldPayGroup = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "PayGroup").oldValueText
-        this.newPayGroup = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "PayGroup").newValueText
+        this.oldPayGroup = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "PayGroup").oldValueText
+        this.newPayGroup = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "PayGroup").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Location") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Location") != null)
         {
-        this.oldLocation = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Location").oldValueText
-        this.newLocation = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Location").newValueText
+        this.oldLocation = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Location").oldValueText
+        this.newLocation = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Location").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "SubDepartment") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "SubDepartment") != null)
         {
-        this.oldSubDepartment = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "SubDepartment").oldValueText
-        this.newSubDepartment = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "SubDepartment").newValueText
+        this.oldSubDepartment = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "SubDepartment").oldValueText
+        this.newSubDepartment = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "SubDepartment").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Plant") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Plant") != null)
         {
-        this.oldPlant = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Plant").oldValueText
-        this.newPlant = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Plant").newValueText
+        this.oldPlant = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Plant").oldValueText
+        this.newPlant = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Plant").newValueText
         // console.log(this.employeeDetail.AppraisalDetails.IsDesignationChange);
         // console.log(this.IsDesignationChange);
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "RM") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "RM") != null)
         {
-        this.oldReportingManager = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "RM").oldValueText
-        this.newReportingManager = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "RM").newValueText
+        this.oldReportingManager = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "RM").oldValueText
+        this.newReportingManager = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "RM").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "HOD") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "HOD") != null)
         {
-        this.oldHod = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "HOD").oldValueText
-        this.newHod = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "HOD").newValueText
+        this.oldHod = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "HOD").oldValueText
+        this.newHod = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "HOD").newValueText
         }
-        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Notice Period") != null)
+        if(this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Notice Period") != null)
           {
-          this.oldNoticePeriod = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Notice Period").oldValueText
-          this.newNoticePeriod = this.employeeDetail.appraisalDetails.jobChangeDetails.find(x => x.type == "Notice Period").newValueText
+          this.oldNoticePeriod = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Notice Period").oldValueText
+          this.newNoticePeriod = this.employeeDetail.appraisalDetails.jobChangeDetails.find((x:any)  => x.type == "Notice Period").newValueText
           }
         if(this.employeeDetail.appraisalDetails.isDesignationChange) {this.IsDesignationChange = "Yes" ;} else {this.IsDesignationChange = "No";}
         if(this.employeeDetail.appraisalDetails.isRoleChange) {this.IsRoleChange = "Yes"; }else {this.IsRoleChange = "No";}
@@ -177,20 +178,20 @@ export class AppraisalViewComponent implements OnInit {
         if(this.employeeDetail.appraisalDetails.isStaffCategoryChange) {this.IsStaffCategoryChange = "Yes";} else{this.IsStaffCategoryChange =  "No";}
         if(this.employeeDetail.appraisalSalaryHeadDetails && this.employeeDetail.appraisalSalaryHeadDetails.length > 0){
           for(var item of this.employeeDetail.appraisalSalaryHeadDetails){            
-            item.salaryTypeName = this.headTypes.find(x => x.type == item.salaryType).value;
-            item.frequencyName = this.frequency.find(x => x.type == item.frequency).value;
+            item.salaryTypeName = this.headTypes.find((x:any)  => x.type == item.salaryType).value;
+            item.frequencyName = this.frequency.find((x:any)  => x.type == item.frequency).value;
           }
-          this.monthlyComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter(x=>x.salaryType=="I" && x.frequency == "M");
-          this.reimbursementComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter(x=>x.salaryType=="R");          
-          this.annualComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter(x=>x.salaryType!="V" && x.frequency == "A");
-          this.variableComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter(x=>x.salaryType =="V");
-          this.onetimeComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter(x=>x.salaryType =="O" && x.frequency == "O");
+          this.monthlyComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter((x:any)=>x.salaryType=="I" && x.frequency == "M");
+          this.reimbursementComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter((x:any)=>x.salaryType=="R");          
+          this.annualComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter((x:any)=>x.salaryType!="V" && x.frequency == "A");
+          this.variableComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter((x:any)=>x.salaryType =="V");
+          this.onetimeComponents = this.employeeDetail.appraisalSalaryHeadDetails.filter((x:any)=>x.salaryType =="O" && x.frequency == "O");
           this.calculateTotals();
         }
         console.log(this.employeeDetail.recommendationDetails.oldResponsibilities);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -256,7 +257,7 @@ export class AppraisalViewComponent implements OnInit {
             this.location.back();
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error("Error occured.");
       });
     }
@@ -285,7 +286,7 @@ export class AppraisalViewComponent implements OnInit {
             this.location.back();
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
       });
     }

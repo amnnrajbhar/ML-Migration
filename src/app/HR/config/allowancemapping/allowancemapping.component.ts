@@ -22,13 +22,13 @@ declare var toastr: any;
 })
 export class AllowancemappingComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
     private excelService: ExcelService, private masterDataService: MasterDataService, private util: Util) { }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   filterData: any = {};
   filterModel: any = {};
@@ -47,7 +47,8 @@ export class AllowancemappingComponent implements OnInit {
   metroList = [{type: "Yes"}, {type: "No"}];
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageNo = 1;
     this.filterModel.pageSize = 10;
     //this.filterModel.employeeId = this.currentUser.uid;
@@ -115,7 +116,7 @@ export class AllowancemappingComponent implements OnInit {
         }
         console.log(data);
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error adding details...' + error);
       })
@@ -143,7 +144,7 @@ export class AllowancemappingComponent implements OnInit {
           toastr.error(data.message);
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error updating details...' + error);
       })
@@ -171,7 +172,7 @@ export class AllowancemappingComponent implements OnInit {
       this.filterData = data;
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the list. Error: " + error);
       this.isLoading = false;
     });
@@ -182,7 +183,7 @@ export class AllowancemappingComponent implements OnInit {
     $("#detailsModal").modal("show");
   }
 
-  EditLine(item, index) {
+  EditLine(item:any, index:any) {
     this.item = Object.assign({}, item);
     this.onPlantChange();
     this.isEdit = true;
@@ -197,7 +198,7 @@ export class AllowancemappingComponent implements OnInit {
       this.filterModel.export = false;
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index = index + 1;
         let exportItem = {
           "Sl No": index,
@@ -218,7 +219,7 @@ export class AllowancemappingComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'AllowanceMappingConfig_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -234,7 +235,7 @@ export class AllowancemappingComponent implements OnInit {
 
   errorCount = 0;
   delete() {
-    var selectedList = this.filterData.list.filter(x => x.selected);
+    var selectedList = this.filterData.list.filter((x:any)  => x.selected);
     if (selectedList.length <= 0) {
       toastr.error("Please select at least one record to delete.");
       return;
@@ -255,7 +256,7 @@ export class AllowancemappingComponent implements OnInit {
             toastr.info("Records deleted successfully");
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errorCount++;
       });
     }
@@ -272,9 +273,9 @@ export class AllowancemappingComponent implements OnInit {
     if (this.item.plantId > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.item.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -287,9 +288,9 @@ export class AllowancemappingComponent implements OnInit {
     this.httpService.HRget(APIURLS.BR_GET_ALLOWANCE_MAPPING_CONFIG_GET_ALLOWANCE)
       .then((data: any) => {
         if (data.length > 0) {
-          this.allowanceList = data.sort((a, b) => { if (a.allowanceType > b.allowanceType) return 1; if (a.allowanceType < b.allowanceType) return -1; return 0; });
+          this.allowanceList = data.sort((a:any, b:any) => { if (a.allowanceType > b.allowanceType) return 1; if (a.allowanceType < b.allowanceType) return -1; return 0; });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.allowanceList = [];
       });
   }
@@ -297,7 +298,7 @@ export class AllowancemappingComponent implements OnInit {
   onPlantChange(){
     if(this.item.plantId > 0){
       let plant = this.plantList.find(x=>x.id == this.item.plantId)
-      this.payGroupList = this.payGroupFullList.filter(x=>x.plant == plant.code);
+      this.payGroupList = this.payGroupFullList.filter((x:any)=>x.plant == plant.code);
     }
     else
       this.payGroupList = [];
@@ -306,7 +307,7 @@ export class AllowancemappingComponent implements OnInit {
   onFilterPlantChange(){
     if(this.filterModel.plantId > 0){
       let plant = this.plantList.find(x=>x.id == this.filterModel.plantId)
-      this.filterPayGroupList = this.payGroupFullList.filter(x=>x.plant == plant.code);
+      this.filterPayGroupList = this.payGroupFullList.filter((x:any)=>x.plant == plant.code);
     }
     else
       this.filterPayGroupList = [];

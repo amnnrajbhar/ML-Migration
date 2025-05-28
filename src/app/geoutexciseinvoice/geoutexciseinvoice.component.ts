@@ -25,27 +25,27 @@ export class GEOutExciseInvoiceComponent implements OnInit {
  @ViewChild('userForm', { static: false }) userForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
-  fiscalYear: string;
+  path!: string
+  fiscalYear: string
   errMsg: string = "";
   errMsgPop: string = "";
   errMsgModalPop: string = "";
-  isEdit: boolean;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  isLoadingBAPI: boolean;
+  isEdit!: boolean;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  isLoadingBAPI!: boolean;
   gateOutwardMModel = {} as GateOutwardMaster;
   gateOutwardDModel = {} as GateOutwardD;
   gateEntryHeaderModel = {} as RFCSTOHeader;
   gateOutwardMList: GateOutwardMaster[] = [];
   gateOutwardDList: GateOutwardD[] = [];
-  pO_No: string;
+  pO_No: string
   qtY_RCVD: any;
   entryDateTime: Date = new Date();
-  reason: string;
-  gateNo: string;
+  reason: string
+  gateNo: string
   invNO:string;
   sendingPersonName:string;
   mindate:Date=new Date();
@@ -74,7 +74,8 @@ export class GEOutExciseInvoiceComponent implements OnInit {
     this.fiscalYear = this.getCurrentFinancialYear();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getPlantsassigned(this.currentUser.fkEmpId);
       this.getLocationById(this.currentUser.baselocation);
       //this.getGateList();
@@ -153,7 +154,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
                       if (data[0].werks == this.plant) {
                         this.gateEntryHeaderModel = data[0];
                         this.gateEntryMaterial= Object.assign([],this.gateEntryHeaderModel.gestoitems);
-                        // this.gateEntryHeaderModel.gestoitems.forEach(mtrl => {
+                        // this.gateEntryHeaderModel.gestoitems.forEach((mtrl:any) => {
                         //   this.gateEntryMaterial.push(mtrl);
                         // });
                         this.isLoadingBAPI = false;
@@ -189,7 +190,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
                   }
                 }
                 this.isLoadingBAPI = false;
-              }).catch(error => {
+              }).catch((error)=> {
                 this.isLoadingBAPI = false;
                 this.gateEntryHeaderModel = {} as RFCSTOHeader;
                 this.gateEntryMaterial = [];
@@ -206,15 +207,15 @@ export class GEOutExciseInvoiceComponent implements OnInit {
             }
           }
           this.isLoadingBAPI = false;
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingBAPI = false;
           this.errMsgPop = "Error to retrive Invoice Details";
         });
       }
     }
   }
-  locationName: string;
-  plant: string;
+  locationName: string
+  plant!: string
   getLocationById(lId: number) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_LOCATION_MASTER_API, lId).then((data: any) => {
@@ -224,7 +225,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
         this.loadGateOutwardList('load');
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plant = '';
       this.locationName = '';
@@ -233,7 +234,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
   plantList:any[]=[];
   location:any[]=[]; 
   baseloc={fkPlantId:0,code:'',name:''}
-  getPlantsassigned(id)
+  getPlantsassigned(id:any)
   {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
@@ -242,7 +243,8 @@ export class GEOutExciseInvoiceComponent implements OnInit {
         let temp=this.plantList.find(x=>x.fkPlantId == this.currentUser.baselocation);
         if(temp == null || temp == undefined)
         {
-          this.location.forEach(element => {
+          this.location.forEach((element:any)=> {
+
             this.baseloc.fkPlantId=element.id;
             this.baseloc.code=element.code;
             this.baseloc.name=element.name;
@@ -254,7 +256,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
       }
         
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -266,13 +268,13 @@ export class GEOutExciseInvoiceComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_MASTER_LOCATIONGATE_MASTER_ANY_API, this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
         this.locationGateList = data;
-        this.selGateLocation = this.locationGateList.find(x => x.gateNo == '1');
+        this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == '1');
         //this.selGateLocation = null;
-        // this.selGateLocation = this.locationGateList.find(x => x.gateNo == 'G1');
+        // this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == 'G1');
         // this.gateNo = this.selGateLocation.id;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationGateList = [];
     });
@@ -283,11 +285,11 @@ export class GEOutExciseInvoiceComponent implements OnInit {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_GETBY_ANY_API,this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
-        this.employeeList = data.map((i) => { i.empfull = i.firstName +' '+i.middleName +' '+ i.lastName + '-'+i.employeeId + '-' + i.designation; return i; });
-        this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.currentUser.employeeId);
+        this.employeeList = data.map((i:any) => { i.empfull = i.firstName +' '+i.middleName +' '+ i.lastName + '-'+i.employeeId + '-' + i.designation; return i; });
+        this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.currentUser.employeeId);
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.employeeList = [];
     });
@@ -299,9 +301,9 @@ export class GEOutExciseInvoiceComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
         this.departmentList = data;
-        this.sendingDEPTNAME=this.departmentList.find(x => x.id == this.currentUser.fK_Department);
+        this.sendingDEPTNAME=this.departmentList.find((x:any)  => x.id == this.currentUser.fK_Department);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.departmentList = [];
     });
@@ -343,9 +345,9 @@ export class GEOutExciseInvoiceComponent implements OnInit {
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   delete: boolean = false;
-  fltrGONO: string;
-  fltrInvoiceNo: string;
-  fltrDCNO: string;
+  fltrGONO: string
+  fltrInvoiceNo: string
+  fltrDCNO: string
   loadGateOutwardList(action) {
     this.isLoading = true;
     var genericGateEntryM = {} as GenericGateEntryM;
@@ -373,7 +375,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
         }
         this.reInitDatatable();
         this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
         this.isLoading = false;
         this.gateOutwardMList = [];
     });
@@ -404,14 +406,14 @@ export class GEOutExciseInvoiceComponent implements OnInit {
       this.gateEntryHeaderModel.eI_CUSTOMER=gateOutwardM.destinatioN_NM;
       var loc = this.plantList.find(x=>x.code == this.gateOutwardMModel.planT_ID)
       this.locationName=loc.code +'-'+loc.name;
-      this.sendingPERSON = this.employeeList.find(x => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
+      this.sendingPERSON = this.employeeList.find((x:any)  => x.employeeId == this.gateOutwardMModel.sendinG_PERSON);
       this.sendingPersonName = this.gateOutwardMModel.sendingPersonName;
       // this.sendingPersonName=this.sendingPERSON.firstName +' '+this.sendingPERSON.middleName +' '+ this.sendingPERSON.lastName;
-      this.sendingDEPTNAME=this.departmentList.find(x => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
+      this.sendingDEPTNAME=this.departmentList.find((x:any)  => x.name == this.gateOutwardMModel.sendinG_DEPT_NM);
       this.fiscalYear = this.gateOutwardMModel.fiN_YEAR;
       this.httpService.getById(APIURLS.BR_MASTER_GATEOUTWARDD_ANY_API, gateOutwardM.id).then((data: any) => {
         if (data) {
-          data.forEach(mtrl => {
+          data.forEach((mtrl:any) => {
             var geMaterialModel = {} as RFCSTOMaterial;
             geMaterialModel.matnr = mtrl.iteM_CODE;
             geMaterialModel.maktx = mtrl.iteM_DESC;
@@ -421,7 +423,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
             this.gateEntryMaterial.push(geMaterialModel);
           });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.gateEntryMaterial= [];
       });
     }
@@ -489,13 +491,13 @@ export class GEOutExciseInvoiceComponent implements OnInit {
     return formateddate;
   }
   Approverslist: any[] = [];
-  getApproversDetails(code) {
+  getApproversDetails(code:any) {
     this.httpService.getByParam(APIURLS.BR_GET_VMS_APPROVERS, code+',Gate' + "," + this.currentUser.employeeId).then((data: any) => {
             // this.isLoading = false;
       if (data.length > 0) {
         this.Approverslist = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -524,7 +526,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
     //Insert Material
     var index = 0;
     let lstgateOutwardD:GateOutwardD[]=[];
-    this.gateEntryMaterial.forEach(mtrl => {
+    this.gateEntryMaterial.forEach((mtrl:any) => {
       index = index + 1;
       this.gateOutwardDModel = {} as GateOutwardD;
       this.gateOutwardDModel.mandt = '450'
@@ -560,7 +562,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
         });
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error saving Header...';
       this.isLoadingPop = false;
     });
@@ -586,7 +588,7 @@ export class GEOutExciseInvoiceComponent implements OnInit {
         });
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Delete Gate Entry...';
     });

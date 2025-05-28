@@ -20,7 +20,7 @@ export class DisposeAssetComponent implements OnInit {
   public tableWidget: any;
   dashboard: any = {};
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   errMsg: string = "";
   isLoadingPop: boolean = false;
   isLoadPop: boolean = false;
@@ -45,7 +45,7 @@ export class DisposeAssetComponent implements OnInit {
   assetList: any;
   Comments: any;
   DisposeAsset = {} as DisposeAsset;
-  newassState: string;
+  newassState: string
   monType: any[] = [];
   departmentList: any;
 
@@ -70,7 +70,8 @@ export class DisposeAssetComponent implements OnInit {
   ngOnInit() {
     this.path = this.router.url;
     console.log(this.path);
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     this.getAssetStateList();
     this.getLocationMaster();
@@ -90,30 +91,30 @@ export class DisposeAssetComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList:any[]=[];
-  getPlantsassigned(id)
+  getPlantsassigned(id:any)
   {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x=>{ return x.isActive;}).map((i) => { i.location = i.code + '-' + i.name; return i; });;          
+        this.plantList = data.filter((x:any)=>{ return x.isActive;}).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;          
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });          
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -128,27 +129,27 @@ export class DisposeAssetComponent implements OnInit {
         this.assStateList = data;
         console.log(this.assStateList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.assStateList = [];
     });
   }
 
-  getAssetState(id) {
-    let temp = this.assStateList.find(x => x.id == id);
+  getAssetState(id:any) {
+    let temp = this.assStateList.find((x:any)  => x.id == id);
     return temp ? temp.status : '';
   }
 
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -167,15 +168,17 @@ export class DisposeAssetComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.assetList = [];
     });
   }
 
   clearFilter() {
-    this.filterlocation = null;
-    this.filterstatus = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
+  // this.filterstatus = null;
+  this.filterstatus = '';
   }
 
   resetForm() {
@@ -194,14 +197,14 @@ export class DisposeAssetComponent implements OnInit {
         this.sizeList = data;
         console.log(this.sizeList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.sizeList = [];
     });
   }
 
-  getStorageSize(id) {
-    let temp = this.sizeList.find(x => x.storId == id);
+  getStorageSize(id:any) {
+    let temp = this.sizeList.find((x:any)  => x.storId == id);
     return temp ? temp.storTxt : '';
   }
 
@@ -212,13 +215,13 @@ export class DisposeAssetComponent implements OnInit {
         this.monType = data;
         console.log(this.monType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.monType = [];
     });
   }
 
-  getMonitorType(id) {
-    let temp = this.monType.find(x => x.id == id);
+  getMonitorType(id:any) {
+    let temp = this.monType.find((x:any)  => x.id == id);
     return temp ? temp.type : '';
   }
 
@@ -254,7 +257,7 @@ export class DisposeAssetComponent implements OnInit {
     jQuery('#myModal1').modal('show');
   }
 
-  onSaveEntry(status) {
+  onSaveEntry(status:any) {
     this.errMsg = "";
     let connection: any;
     if (this.DisposeAsset.newassState != '6') {
@@ -294,7 +297,7 @@ export class DisposeAssetComponent implements OnInit {
           this.reInitDatatable();
           this.isLoading = false;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving status..';
       });
@@ -325,7 +328,7 @@ export class DisposeAssetComponent implements OnInit {
     })
   }
 
-  strassetId : string;
+  strassetId : string
   checkedRequestList: any;
   checkedlist: any[] = [];
   getCheckedItemList() {

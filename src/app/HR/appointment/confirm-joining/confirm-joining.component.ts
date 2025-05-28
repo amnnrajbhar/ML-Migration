@@ -32,7 +32,7 @@ declare var toastr: any;
 
 export class ConfirmJoiningComponent implements OnInit {
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   appointmentId: any;
   urlPath: string = '';
   successMsg: string = "";
@@ -62,7 +62,8 @@ export class ConfirmJoiningComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser')); 
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null; 
       this.appointmentId = this.route.snapshot.paramMap.get('id')!;      
       this.confirmJoining.joined = false;
       this.confirmJoining.joiningDate = new Date();
@@ -95,7 +96,7 @@ export class ConfirmJoiningComponent implements OnInit {
         this.isLoading = false;
         toastr.error("Appointment details not found.");
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details.");
     });
@@ -119,7 +120,7 @@ export class ConfirmJoiningComponent implements OnInit {
         //this.errMsg = "Offer details not found.";
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = "Error occurred while fetching details, please check the link.";
       this.offerDetails = {} as OfferDetails;
@@ -184,7 +185,7 @@ onTabClick(index){
         this.isLoading = false;
         toastr.error('Error occured while submitting the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while submitting the details. Error:' + error);
       });
@@ -208,7 +209,7 @@ onTabClick(index){
           toastr.error(data.message); 
         }else
         toastr.error("Error occurred.");
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });
@@ -247,8 +248,8 @@ onTabClick(index){
         this.onAddLineClick();
         toastr.success("Successfully uploaded the file.");
       }
-    }).catch(error => {
-      //console.log(error);
+    }).catch((error)=> {
+      ////console.log(error);
       toastr.error('Error uploading Files...'+ error);
     })
   }
@@ -257,20 +258,20 @@ onTabClick(index){
     if(id <= 0) return;
     this.httpService.HRdownloadFile(APIURLS.APPOINTMENT_GET_ATTACHMENT_FILE+ "/" + this.offerId + "/" + this.guid+"/"+ id).then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
       // }
 
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

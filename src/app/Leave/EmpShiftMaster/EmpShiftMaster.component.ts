@@ -13,29 +13,29 @@ import swal from 'sweetalert';
 import { DatePipe } from '@angular/common';
 declare var jQuery: any;
 declare var $: any;
-import * as moment from 'moment';
+import moment from 'moment'
 import { AuditLogChange } from '../../masters/auditlogchange.model';
 import { AuditLog } from '../../masters/auditlog.model';
 //import { L } from '@angular/core/src/render3';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
 import { ExcelService } from '../../shared/excel-service';
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 
 export class actionItemModel {
-  shiftCode: string;
-  shiftName: string;
-  nightShift: boolean;
-  shiftStartTime: string;
-  firstHalfEndTime: string;
-  shStartTime: string;
-  shiftEndTime: string;
-  punchStartTime: string;
-  punchEndTime: string;
-  comeLate: string;
-  goEarly: string;
-  shiftGraceTime: string;
+  shiftCode: string
+  shiftName: string
+  nightShift!: boolean;
+  shiftStartTime: string
+  firstHalfEndTime: string
+  shStartTime: string
+  shiftEndTime: string
+  punchStartTime: string
+  punchEndTime: string
+  comeLate: string
+  goEarly: string
+  shiftGraceTime: string
 }
 @Component({
   selector: 'app-EmpShiftMaster',
@@ -46,7 +46,7 @@ export class actionItemModel {
 
 export class EmpShiftMasterComponent implements OnInit {
   public tableWidget: any;
-  @ViewChild(NgForm  , { static: false }) EmpShiftMasterForm: NgForm;
+  @ViewChild(NgForm  , { static: false }) EmpShiftMasterForm!: NgForm;
   EmpShiftMasterList: any[] = [[]];
   EmpShiftMasterItem: EmpShiftMaster = new EmpShiftMaster();
   isLoading: boolean = false;
@@ -57,10 +57,10 @@ export class EmpShiftMasterComponent implements OnInit {
   isEdit: boolean = false;
   checkAll: boolean = false;
   path: string = '';
-  currentUser: AuthData;
+  currentUser!: AuthData;
   oldEmpShiftMasterItem: EmpShiftMaster = new EmpShiftMaster();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private datePipe: DatePipe, private excelService: ExcelService) { }
 
@@ -93,7 +93,8 @@ export class EmpShiftMasterComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getEmpShiftMasterList();
     }
     else
@@ -156,7 +157,7 @@ export class EmpShiftMasterComponent implements OnInit {
     this.isLoading = true;
     this.httpService.LAget(APIURLS.BR_GET_ALL_SHIFTS).then((data: any) => {
       if (data.length > 0) {
-        this.EmpShiftMasterList = data.filter(x => x.isActive == 1).sort((a, b) => {
+        this.EmpShiftMasterList = data.filter((x:any)  => x.isActive == 1).sort((a:any, b:any) => {
           if (a.shiftCode > b.shiftCode) return 1;
           if (a.shiftCode < b.shiftCode) return -1;
           return 0;
@@ -164,7 +165,7 @@ export class EmpShiftMasterComponent implements OnInit {
       }
       this.isLoading = false;
       this.reInitDatatable();
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.EmpShiftMasterList = [];
     });
@@ -191,7 +192,7 @@ export class EmpShiftMasterComponent implements OnInit {
     if (!this.isEdit) {
       this.auditType = "Create";
       this.validatedForm = true;
-      let validName = this.EmpShiftMasterList.some(s => s.shiftName == this.EmpShiftMasterItem.shiftName && s.isActive == true);
+      let validName = this.EmpShiftMasterList.some((s:any) => s.shiftName == this.EmpShiftMasterItem.shiftName && s.isActive == true);
       if (validName == true) {
         this.isLoadingPop = false;
         this.validatedForm = false;
@@ -261,7 +262,7 @@ export class EmpShiftMasterComponent implements OnInit {
           buttons: [false, true]
         });
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Shift..';
     });
@@ -284,7 +285,7 @@ export class EmpShiftMasterComponent implements OnInit {
         })
         jQuery("#deleteModal").modal('hide');
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error deleting Shift..';
     });
@@ -322,7 +323,7 @@ export class EmpShiftMasterComponent implements OnInit {
             this.getEmpShiftMasterList();
             this.insertAuditLog(this.EmpShiftMasterItem, this.oldEmpShiftMasterItem, this.EmpShiftMasterItem.id);
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Location..';
         });
@@ -422,12 +423,12 @@ export class EmpShiftMasterComponent implements OnInit {
     connection = this.httpService.LApost(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.LAgetByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -436,7 +437,7 @@ export class EmpShiftMasterComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }
@@ -476,86 +477,86 @@ export class EmpShiftMasterComponent implements OnInit {
     let formateddate = dt.getFullYear() + "-" + ("00" + (dt.getMonth() + 1)).slice(-2) + '-' + ("00" + dt.getDate()).slice(-2);
     return formateddate;
   }
+ //v10
+  // exportExcelShifts() {
+  //   const title = 'Shift Masters';
+  //   const header = ["SNo", "Shift Code", "Shift Name", "Night Shift", "Shift Start Time", "First Half End Time", "Second Half Start Time", "Shift End Time",
+  //     "Come Late By", "Go Early By", "Punch Start Time", "Punch End Time", "Created By", "Created Date/Time", "Active"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.EmpShiftMasterList.forEach((item :any) => {
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slno = index;
+  //     ts.shiftCode = item.shiftCode;
+  //     ts.shiftName = item.shiftName;
+  //     if (item.nightShift == true) {
+  //       ts.nightShift = "Yes";
+  //     }
+  //     else {
+  //       ts.nightShift = "No";
+  //     }
+  //     ts.shiftStartTime = item.shiftStartTime;
+  //     ts.firstHalfEndTime = item.firstHalfEndTime;
+  //     ts.shStartTime = item.shStartTime;
+  //     ts.shiftEndTime = item.shiftEndTime;
+  //     ts.comeLate = item.comeLate;
+  //     ts.goEarly = item.goEarly;
+  //     ts.punchStartTime = item.punchStartTime;
+  //     ts.punchEndTime = item.punchEndTime;
+  //     ts.createdBy = +item.createdBy;
+  //     ts.createdOn = this.setFormatedDate(item.createdOn);
+  //     if (item.isActive == true) {
+  //       ts.isActive = "YES";
+  //     }
+  //     else {
+  //       ts.isActive = "NO";
+  //     }
+  //     exportList.push(ts);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED";
+  //   const data = exportList;
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Shift Masters');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:O1');
+  //   worksheet.mergeCells('A2:O2');
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-  exportExcelShifts() {
-    const title = 'Shift Masters';
-    const header = ["SNo", "Shift Code", "Shift Name", "Night Shift", "Shift Start Time", "First Half End Time", "Second Half Start Time", "Shift End Time",
-      "Come Late By", "Go Early By", "Punch Start Time", "Punch End Time", "Created By", "Created Date/Time", "Active"]
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.EmpShiftMasterList.forEach(item => {
-      index = index + 1;
-      ts = {};
-      ts.slno = index;
-      ts.shiftCode = item.shiftCode;
-      ts.shiftName = item.shiftName;
-      if (item.nightShift == true) {
-        ts.nightShift = "Yes";
-      }
-      else {
-        ts.nightShift = "No";
-      }
-      ts.shiftStartTime = item.shiftStartTime;
-      ts.firstHalfEndTime = item.firstHalfEndTime;
-      ts.shStartTime = item.shStartTime;
-      ts.shiftEndTime = item.shiftEndTime;
-      ts.comeLate = item.comeLate;
-      ts.goEarly = item.goEarly;
-      ts.punchStartTime = item.punchStartTime;
-      ts.punchEndTime = item.punchEndTime;
-      ts.createdBy = +item.createdBy;
-      ts.createdOn = this.setFormatedDate(item.createdOn);
-      if (item.isActive == true) {
-        ts.isActive = "YES";
-      }
-      else {
-        ts.isActive = "NO";
-      }
-      exportList.push(ts);
-    });
-    var OrganisationName = "MICRO LABS LIMITED";
-    const data = exportList;
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Shift Masters');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:O1');
-    worksheet.mergeCells('A2:O2');
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'Shift_Master.xlsx');
-    });
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'Shift_Master.xlsx');
+  //   });
+  // }
 }

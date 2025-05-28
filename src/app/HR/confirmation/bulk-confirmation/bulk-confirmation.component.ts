@@ -13,8 +13,8 @@ type excelData = any[][];
   styleUrls: ['./bulk-confirmation.component.css']
 })
 export class BulkConfirmationComponent implements OnInit {
-  currentUser: AuthData;
- @ViewChild('file', { static: false }) file: ElementRef;
+  currentUser!: AuthData;
+ @ViewChild('file', { static: false }) file!: ElementRef;
 
   data: excelData = [[1, 2], [3, 4]];
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
@@ -28,7 +28,8 @@ export class BulkConfirmationComponent implements OnInit {
   ngOnInit() {
     var chkaccess = true;
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
 
     }
   }
@@ -62,10 +63,10 @@ export class BulkConfirmationComponent implements OnInit {
     this.httpService.HRpostAttachmentFileWithReturn(APIURLS.HR_EMPLOYEE_BULK_UPLOAD_CONFIRMATION, this.data).then((data: any) => {
       // this.filterData = data;
       // for (var item of this.filterData.list) {
-      //   item.statusColor = this.statusList.find(x => x.type == item.employeeAppraisalStatus).color;
+      //   item.statusColor = this.statusList.find((x:any)  => x.type == item.employeeAppraisalStatus).color;
       // }
       //this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       //this.isLoading = false;
     });
     /* generate worksheet */
@@ -101,10 +102,10 @@ export class BulkConfirmationComponent implements OnInit {
       if (data.length > 0) {
         this.errorData = data;
         swal('Invalid data encountered in Upload file, The error file is being downloaded for review');
-        if (this.errorData.find(x => x.employeeNo == "Invalid Columns") != null
-          || this.errorData.find(x => x.employeeNo == "Duplicate Employees Found") != null
-          || this.errorData.find(x => x.employeeNo == "Blank Values Found") != null
-          || this.errorData.find(x => x.employeeNo == "Unexpected Error") != null) {
+        if (this.errorData.find((x:any)  => x.employeeNo == "Invalid Columns") != null
+          || this.errorData.find((x:any)  => x.employeeNo == "Duplicate Employees Found") != null
+          || this.errorData.find((x:any)  => x.employeeNo == "Blank Values Found") != null
+          || this.errorData.find((x:any)  => x.employeeNo == "Unexpected Error") != null) {
           this.getInitialErrorFile();
         }
         else {
@@ -115,7 +116,7 @@ export class BulkConfirmationComponent implements OnInit {
         swal('Details saved successfully!');
       console.log(data);
       console.log(data.length);
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -127,7 +128,7 @@ export class BulkConfirmationComponent implements OnInit {
     // this.filterModel.export = false;
     var exportList = [];
     let index = 0;
-    this.errorData.forEach(item => {
+    this.errorData.forEach((item :any) => {
       index = index + 1;
       let exportItem = {
         "Row No": item.rowNo,
@@ -147,7 +148,7 @@ export class BulkConfirmationComponent implements OnInit {
     // this.filterModel.export = false;
     var exportList = [];
     let index = 0;
-    this.errorData.forEach(item => {
+    this.errorData.forEach((item :any) => {
       index = index + 1;
       let exportItem = {
         "Row No": item.rowNo,

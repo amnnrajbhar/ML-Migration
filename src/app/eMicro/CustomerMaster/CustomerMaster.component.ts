@@ -25,14 +25,14 @@ import { stringify } from 'querystring';
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { CustomerMaster } from './CustomerMaster.model';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 import { HttpClient } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 declare var require: any;
 
@@ -42,20 +42,20 @@ declare var require: any;
   styleUrls: ['./CustomerMaster.component.css']
 })
 export class CustomerMasterComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
-  // @ViewChild(NgForm  , { static: false })dataForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })FGNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })LCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })OSENGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PPCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })dataForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })FGNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })LCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })OSENGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PPCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMForm!: NgForm;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();
@@ -77,7 +77,7 @@ export class CustomerMasterComponent implements OnInit {
   isEdit: boolean = false;
 
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   selectedBaseLocation: any = [];
@@ -90,21 +90,22 @@ export class CustomerMasterComponent implements OnInit {
   CustomerMastermodel = {} as CustomerMaster
   customermasterlist: CustomerMaster[] = [];
   //  ItemCodeExtensionlist:ItemCodeExtension[]=[];
-  materialtype: string;
-  comments: string;
-  filterMaterialCode: string = null;
-  filterstatus: string = null;
-  filterlocation: string = null;
-  filterrequest: string = null;
-  filterplace: string = null;
+  materialtype!: string
+  comments: string
+  filterMaterialCode: string = ' ';
+  filterstatus: string = ' ';
+  filterlocation: string = ' ';
+  filterrequest: string = ' ';
+  filterplace: string = ' ';
 
   today = new Date();
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   CustomerMastersearchlist: CustomerMaster[] = [];
   CustomerMasterFilter: CustomerMaster[] = [];
-  emailid: string;
-  requestdate: Date;
+  emailid!: string
+
+  requestdate!: Date;
   Approver1: boolean = false;
   Approverid1: string = "";
   Approverid2: string = "";
@@ -112,18 +113,20 @@ export class CustomerMasterComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
-  tdseligible: boolean;
+  userid: string
+  tdseligible!: boolean;
 
   storeData: any;
   jsonData: any;
-  fileUploaded: File;
+  fileUploaded!: File;
   worksheet: any;
   isEligibleForTds: any;
   // CustomerMastermodeldata = {} as ItemCodeExtension;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router
-    , private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    , private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -142,7 +145,8 @@ export class CustomerMasterComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //  this.baseLocation = this.currentUser.baselocation;
     this.emailid = this.currentUser.email;
     this.filterstatus = 'Pending';
@@ -208,7 +212,7 @@ export class CustomerMasterComponent implements OnInit {
   }
 
 
-  ReadAsBase64(file): Promise<any> {
+  ReadAsBase64(file:any): Promise<any> {
     const reader = new FileReader();
     const fileValue = new Promise((resolve, reject) => {
       reader.addEventListener('load', () => {
@@ -227,7 +231,7 @@ export class CustomerMasterComponent implements OnInit {
 
     return fileValue;
   }
-  id: string;
+  id: string
   uploadfile() {
     // debugger;
     // this.id='VM001';
@@ -244,18 +248,18 @@ export class CustomerMasterComponent implements OnInit {
         // console.log('copied file to server')
         //this.imageFlag = true;
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error uploading file: ' + error;
     });
 
   }
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
-  getloc(loc) {
+  getloc(loc:any) {
     let loccode = loc.keyValue.split('~');
     return loccode ? loccode[0] : '';
   }
@@ -298,14 +302,17 @@ export class CustomerMasterComponent implements OnInit {
   clearFilter() {
     this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     this.to_date = this.today;
-    this.filterlocation = null;
-    this.filterstatus = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filterrequest = null;
-    this.filterplace = null;
+  //    this.filterplace = null;
+      this.filterplace = '';
 
   }
-  location(id) {
-    let loc = this.locationList.find(x => x.id == id);
+  location(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code : "";
   }
   PaymentTermList: any[] = [];
@@ -315,8 +322,8 @@ export class CustomerMasterComponent implements OnInit {
         this.PaymentTermList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.PaymentTermList = [];
     });
@@ -328,8 +335,8 @@ export class CustomerMasterComponent implements OnInit {
         this.pricegrouplist = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.pricegrouplist = [];
     });
@@ -341,8 +348,8 @@ export class CustomerMasterComponent implements OnInit {
         this.pricelist = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.pricelist = [];
     });
@@ -354,8 +361,8 @@ export class CustomerMasterComponent implements OnInit {
         this.CustomerGroupList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.CustomerGroupList = [];
     });
@@ -367,8 +374,8 @@ export class CustomerMasterComponent implements OnInit {
         this.taxclassList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.taxclassList = [];
     });
@@ -380,8 +387,8 @@ export class CustomerMasterComponent implements OnInit {
         this.TdsSectionList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.TdsSectionList = [];
     });
@@ -395,8 +402,8 @@ export class CustomerMasterComponent implements OnInit {
         this.AccGroupList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.AccGroupList = [];
     });
@@ -408,8 +415,8 @@ export class CustomerMasterComponent implements OnInit {
         this.AccClerckList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.AccClerckList = [];
     });
@@ -424,8 +431,8 @@ export class CustomerMasterComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.countrylist = [];
     });
@@ -438,14 +445,14 @@ export class CustomerMasterComponent implements OnInit {
         this.stateList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.stateList = [];
     });
   }
-  getstatelist(id) {
-    this.stateList1 = this.stateList.filter(x => x.land1 == id);
+  getstatelist(id:any) {
+    this.stateList1 = this.stateList.filter((x:any)  => x.land1 == id);
   }
   currencyList: any[] = [];
   getCurrencyList() {
@@ -454,8 +461,8 @@ export class CustomerMasterComponent implements OnInit {
         this.currencyList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.currencyList = [];
     });
@@ -465,8 +472,8 @@ export class CustomerMasterComponent implements OnInit {
   getAllEntries() {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -495,14 +502,14 @@ export class CustomerMasterComponent implements OnInit {
     // filterModel.materialCode =this.filterMaterialCode;
     filterModel.requestNo = this.filterrequest;
     filterModel.place = this.filterplace;
-    filterModel.location = this.filterlocation == null ? '' : this.locationList.find(x => x.id == this.filterlocation).code;
+    filterModel.location = this.filterlocation == null ? '' : this.locationList.find((x:any)  => x.id == this.filterlocation).code;
     filterModel.status = this.filterstatus == 'Pending' ? 'Created,InProcess,Submitted,ReSubmitted,Reverted,Reverted to initiator' : this.filterstatus;
     filterModel.fromDate = this.getFormatedDateTime(this.from_date);
     filterModel.toDate = this.getFormatedDateTime(this.to_date);
     this.httpService.post(APIURLS.BR_CUSTOMER_MASTER_FILTER_API, filterModel).then((data: any) => {
       if (data) {
         if (this.filterstatus == 'Pending') {
-          this.CustomerMasterFilter = data.filter(x => x.pendingApprover == this.currentUser.fullName || x.requestedBy == this.currentUser.employeeId);
+          this.CustomerMasterFilter = data.filter((x:any)  => x.pendingApprover == this.currentUser.fullName || x.requestedBy == this.currentUser.employeeId);
           this.CustomerMasterFilter.reverse();
         }
         else {
@@ -512,8 +519,8 @@ export class CustomerMasterComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.CustomerMasterFilter = [];
     });
@@ -524,8 +531,8 @@ export class CustomerMasterComponent implements OnInit {
     this.isLoading = true;
     let td = new Date();
     this.continue = false;
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -565,8 +572,8 @@ export class CustomerMasterComponent implements OnInit {
       this.continue = true;
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.CustomerMastersearchlist = [];
     });
@@ -577,15 +584,15 @@ export class CustomerMasterComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.locationList = [];
     });
@@ -593,7 +600,7 @@ export class CustomerMasterComponent implements OnInit {
 
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngAfterViewInit() {
     this.initDatatable();
   }
@@ -614,8 +621,8 @@ export class CustomerMasterComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.transactionslist = [];
     });
@@ -623,9 +630,9 @@ export class CustomerMasterComponent implements OnInit {
   }
   Approverslist: WorkFlowApprovers[] = [];
 
-  Aprlpriority: number;
+  Aprlpriority!: number;
 
-  getApproversList(value) {
+  getApproversList(value:any) {
 
     // this.Approver1 = false;
     // this.Approver2 = false;
@@ -634,13 +641,13 @@ export class CustomerMasterComponent implements OnInit {
     // this.Closure = false;
     this.CustomerMastermodel = Object.assign({}, value);
     if (!this.isEdit) {
-      var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+      var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
     }
     else {
-      var loc = this.locationList.find(x => x.code == this.CustomerMastermodel.plantCode);
+      var loc = this.locationList.find((x:any)  => x.code == this.CustomerMastermodel.plantCode);
     }
 
-    //var mat = this.materialList.find(x => x.id == +this.ItemCodeRequestModel.materialTypeId);
+    //var mat = this.materialList.find((x:any)  => x.id == +this.ItemCodeRequestModel.materialTypeId);
     // var matgrp=this.materialgroupList.find(x=>x.materialGroupId==this.ItemCodeRequestModel.materialGroupId);
     var keyvalue = loc.code + '~' + this.CustomerMastermodel.customerType + ',' + 4;
     this.KeyValue = keyvalue;
@@ -648,10 +655,10 @@ export class CustomerMasterComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.Approverslist = data;
-        this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+        this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
         let empid = this.currentUser.employeeId
         let empName = this.currentUser.fullName;
-        let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+        let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -661,7 +668,7 @@ export class CustomerMasterComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr1.priority;
         }
-        let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+        let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr2 != null || Appr2 != undefined) {
@@ -671,7 +678,7 @@ export class CustomerMasterComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr2.priority;
         }
-        let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+        let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr3 != null || Appr3 != undefined) {
@@ -691,7 +698,7 @@ export class CustomerMasterComponent implements OnInit {
           }
         }
         this.transactionslist.forEach((ad) => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority &&
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority &&
             (ad.doneBy == x.approverId || ad.doneBy == x.parllelApprover1 || ad.doneBy == x.parllelApprover2));
           if (temp != undefined) {
             if (ad.transactionType == 1) {
@@ -705,7 +712,7 @@ export class CustomerMasterComponent implements OnInit {
                 ad.status = 'Approved'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 0) {
@@ -725,7 +732,7 @@ export class CustomerMasterComponent implements OnInit {
 
         });
         this.Approverslist.forEach((ad) => {
-          let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority &&
+          let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority &&
             (x.doneBy == ad.approverId || x.doneBy == ad.parllelApprover1 || x.doneBy == ad.parllelApprover2));
           if (temp1 == undefined) {
             let trans = {} as Transactions;
@@ -738,12 +745,12 @@ export class CustomerMasterComponent implements OnInit {
           }
 
         });
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.doneOn > b.doneOn) return 1;
           if (a.doneOn < b.doneOn) return -1;
           if (a.approvalPriority > b.approvalPriority) return 1;
@@ -757,8 +764,8 @@ export class CustomerMasterComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -820,10 +827,10 @@ export class CustomerMasterComponent implements OnInit {
   }
 
 
-  empId: string;
+  empId: string
   view: boolean = false;
   attachments: any[] = [];
-  locationname: string;
+  locationname!: string
   onUserActions(isedit: boolean, customermaster: CustomerMaster, isprint: boolean, value: string) {
     this.isEdit = isedit;
     this.continue = false;
@@ -850,11 +857,11 @@ export class CustomerMasterComponent implements OnInit {
     if (isedit) {
       //   this.getApproversList(ItemCodeExtension);
       this.getApproversList(customermaster);
-      this.stateList1 = this.stateList.filter(x => x.land1 == customermaster.countryId);
+      this.stateList1 = this.stateList.filter((x:any)  => x.land1 == customermaster.countryId);
       if (customermaster.attachments != null || customermaster.attachments != undefined) {
         this.attachments = customermaster.attachments.split(',');
       }
-      this.attachments.filter(x => x.name != null || undefined)
+      this.attachments.filter((x:any)  => x.name != null || undefined)
       this.CustomerMastermodel = Object.assign({}, customermaster);
       this.empId = this.CustomerMastermodel.createdBy;
     }
@@ -873,22 +880,22 @@ export class CustomerMasterComponent implements OnInit {
     if (customermaster.attachments != null || customermaster.attachments != undefined) {
       this.attachments = customermaster.attachments.split(',');
     }
-    this.stateList1 = this.stateList.filter(x => x.land1 == customermaster.countryId);
+    this.stateList1 = this.stateList.filter((x:any)  => x.land1 == customermaster.countryId);
     this.CustomerMastermodel = Object.assign({}, customermaster);
     this.getApproversList(customermaster);
     if (isprint) {
-      let ln = this.locationList.find(x => x.code == this.CustomerMastermodel.plantCode);
+      let ln = this.locationList.find((x:any)  => x.code == this.CustomerMastermodel.plantCode);
       this.locationname = ln.code + '-' + ln.name;
-      this.CustomerMastermodel.accountGroupId = this.AccGroupList.find(x => x.accountGroupId == this.CustomerMastermodel.accountGroupId).accountGroupName;
-      this.CustomerMastermodel.countryId = this.countrylist.find(x => x.land1 == this.CustomerMastermodel.countryId).landx;
-      this.CustomerMastermodel.state = this.stateList.find(x => x.id == this.CustomerMastermodel.state).bezei;
-      this.CustomerMastermodel.currencyId = this.currencyList.find(x => x.waers == this.CustomerMastermodel.currencyId).isocd;
-      this.CustomerMastermodel.paymentTermId = this.PaymentTermList.find(x => x.paymentTermId == this.CustomerMastermodel.paymentTermId).paymentTermName;
-      this.CustomerMastermodel.accountClerkId = this.AccClerckList.find(x => x.accClerkId == this.CustomerMastermodel.accountClerkId).accClerkDesc;
-      this.CustomerMastermodel.customerGroup = this.CustomerGroupList.find(x => x.cGroupId == this.CustomerMastermodel.customerGroup).cGroupName;
-      this.CustomerMastermodel.priceGroup = this.pricegrouplist.find(x => x.pGroupId == this.CustomerMastermodel.priceGroup).pGroupName;
-      this.CustomerMastermodel.priceList = this.pricelist.find(x => x.pListId == this.CustomerMastermodel.priceList).pListName;
-      this.CustomerMastermodel.taxType = this.taxclassList.find(x => x.tClassId == this.CustomerMastermodel.taxType).tClassName;
+      this.CustomerMastermodel.accountGroupId = this.AccGroupList.find((x:any)  => x.accountGroupId == this.CustomerMastermodel.accountGroupId).accountGroupName;
+      this.CustomerMastermodel.countryId = this.countrylist.find((x:any)  => x.land1 == this.CustomerMastermodel.countryId).landx;
+      this.CustomerMastermodel.state = this.stateList.find((x:any)  => x.id == this.CustomerMastermodel.state).bezei;
+      this.CustomerMastermodel.currencyId = this.currencyList.find((x:any)  => x.waers == this.CustomerMastermodel.currencyId).isocd;
+      this.CustomerMastermodel.paymentTermId = this.PaymentTermList.find((x:any)  => x.paymentTermId == this.CustomerMastermodel.paymentTermId).paymentTermName;
+      this.CustomerMastermodel.accountClerkId = this.AccClerckList.find((x:any)  => x.accClerkId == this.CustomerMastermodel.accountClerkId).accClerkDesc;
+      this.CustomerMastermodel.customerGroup = this.CustomerGroupList.find((x:any)  => x.cGroupId == this.CustomerMastermodel.customerGroup).cGroupName;
+      this.CustomerMastermodel.priceGroup = this.pricegrouplist.find((x:any)  => x.pGroupId == this.CustomerMastermodel.priceGroup).pGroupName;
+      this.CustomerMastermodel.priceList = this.pricelist.find((x:any)  => x.pListId == this.CustomerMastermodel.priceList).pListName;
+      this.CustomerMastermodel.taxType = this.taxclassList.find((x:any)  => x.tClassId == this.CustomerMastermodel.taxType).tClassName;
 
       jQuery("#printModal").modal('show');
     }
@@ -901,7 +908,7 @@ export class CustomerMasterComponent implements OnInit {
   isValid: boolean = false;
   validatedForm: boolean = true;
 
-  onSaveEntry(status) {
+  onSaveEntry(status:any) {
     this.errMsg = "";
     let connection: any;
     if (this.Approverslist.length == 0) {
@@ -923,7 +930,7 @@ export class CustomerMasterComponent implements OnInit {
         this.CustomerMastermodel.sapCodeExists = null;
         this.CustomerMastermodel.sapCreationDate = null;
         this.CustomerMastermodel.sapCreatedBy = null;
-        var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+        var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
         this.CustomerMastermodel.plantCode = loc.code;
         this.CustomerMastermodel.createdBy = this.currentUser.employeeId;
         this.CustomerMastermodel.requestedBy = this.currentUser.employeeId;
@@ -942,7 +949,7 @@ export class CustomerMasterComponent implements OnInit {
         }
         //this.CustomerMastermodel.attachments=file;
         this.CustomerMastermodel.lastApprover = this.CustomerMastermodel.approveStatus == "Reverted to initiator" ? this.CustomerMastermodel.lastApprover : "No";
-        this.CustomerMastermodel.pendingApprover = status == "Submit" ? this.Approverslist.find(x => x.priority == 1).approverId : this.currentUser.employeeId;
+        this.CustomerMastermodel.pendingApprover = status == "Submit" ? this.Approverslist.find((x:any)  => x.priority == 1).approverId : this.currentUser.employeeId;
         this.CustomerMastermodel.approveStatus = status == "Submit" ? "Submitted" : "Created";
 
         connection = this.httpService.post(APIURLS.BR_CUSTOMER_MASTER_POST_API, this.CustomerMastermodel);
@@ -963,8 +970,8 @@ export class CustomerMasterComponent implements OnInit {
           this.getAllEntries();
           this.reset();
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoadingPop = false;
         this.errMsgPop = 'Error Saving Request: ' + error;
       });
@@ -991,7 +998,7 @@ export class CustomerMasterComponent implements OnInit {
     }
     this.CustomerMastermodel.modifiedBy = this.currentUser.employeeId;
 
-    this.CustomerMastermodel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+    this.CustomerMastermodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
     this.CustomerMastermodel.approvers = this.Approverslist;
     
     connection = this.httpService.put(APIURLS.BR_CUSTOMER_MASTER_CREATESAVEDENTRY, this.CustomerMastermodel.id, this.CustomerMastermodel);
@@ -1008,29 +1015,29 @@ export class CustomerMasterComponent implements OnInit {
         this.getAllEntries();
         this.reset();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Submitting Request ' + this.CustomerMastermodel.requestNo + ": " + error;
     });
   }
   Role: any;
-  onreview(status) {
+  onreview(status:any) {
     this.errMsg = "";
     let connection: any;
     let uid = this.currentUser.employeeId;
     if (status == "Rejected") {
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
       this.CustomerMastermodel.pendingApprover = '';
-      this.priority = this.Approverslist.find(x => x.priority == temp.approvalPriority).priority;
+      this.priority = this.Approverslist.find((x:any)  => x.priority == temp.approvalPriority).priority;
     }
     else {
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
 
-      this.CustomerMastermodel.pendingApprover = this.transactionsHistory.find(x => x.approvalPriority == temp.approvalPriority + 1).doneBy;
-      this.priority = this.Approverslist.find(x => x.priority == temp.approvalPriority).priority;
+      this.CustomerMastermodel.pendingApprover = this.transactionsHistory.find((x:any)  => x.approvalPriority == temp.approvalPriority + 1).doneBy;
+      this.priority = this.Approverslist.find((x:any)  => x.priority == temp.approvalPriority).priority;
     }
 
 
@@ -1060,32 +1067,32 @@ export class CustomerMasterComponent implements OnInit {
         this.Updatetransactions(this.CustomerMastermodel, id)
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = status == "Rejected" ? "Error Rejecting Request " + this.CustomerMastermodel.requestNo + ": " + error : "Error Reviewing Request " + this.CustomerMastermodel.requestNo + ": " + error;
     });
   }
 
-  onRevertRequest(status) {
+ onRevertRequest(status:any) {
     this.errMsg = "";
     let connection: any;
     if (status == "ReverttoInitiator") {
       let uid = this.currentUser.employeeId;
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
 
       this.CustomerMastermodel.pendingApprover = temp.doneBy;
       this.CustomerMastermodel.approveStatus = "Reverted to initiator";
-      this.priority = this.Approverslist.find(x => x.priority == temp.approvalPriority).priority;
+      this.priority = this.Approverslist.find((x:any)  => x.priority == temp.approvalPriority).priority;
     }
     else {
       let uid = this.CustomerMastermodel.modifiedBy;
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
 
       this.CustomerMastermodel.pendingApprover = temp.doneBy;
-      this.priority = this.Approverslist.find(x => x.priority == temp.approvalPriority).priority;
+      this.priority = this.Approverslist.find((x:any)  => x.priority == temp.approvalPriority).priority;
       this.CustomerMastermodel.approveStatus = "Reverted";
     }
 
@@ -1109,8 +1116,8 @@ export class CustomerMasterComponent implements OnInit {
         this.Updatetransactions(this.CustomerMastermodel, id)
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Reverting Request " + this.CustomerMastermodel.requestNo + ": " + error;
     });
@@ -1121,12 +1128,12 @@ export class CustomerMasterComponent implements OnInit {
     let connection: any;
     let uid = this.currentUser.employeeId;
 
-    let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+    let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
       || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
 
     if (temp != null || temp != undefined) {
 
-      let appr = this.transactionsHistory.find(x => x.approvalPriority == temp.approvalPriority + 1);
+      let appr = this.transactionsHistory.find((x:any)  => x.approvalPriority == temp.approvalPriority + 1);
       if (appr != null || appr != undefined) {
         this.CustomerMastermodel.pendingApprover = appr.doneBy;
       }
@@ -1135,7 +1142,7 @@ export class CustomerMasterComponent implements OnInit {
         this.CustomerMastermodel.approveStatus = 'Completed';
       }
     }
-    this.priority = this.Approverslist.find(x => x.priority == temp.approvalPriority).priority;
+    this.priority = this.Approverslist.find((x:any)  => x.priority == temp.approvalPriority).priority;
     this.CustomerMastermodel.lastApprover = this.currentUser.fullName;
     this.CustomerMastermodel.modifiedBy = this.currentUser.employeeId;
     //this.CustomerMastermodel.modifiedDate = new Date().toLocaleString();
@@ -1155,21 +1162,21 @@ export class CustomerMasterComponent implements OnInit {
         this.Updatetransactions(this.CustomerMastermodel, 1)
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Creating Customer Code " + this.CustomerMastermodel.sapCodeNo + ": " + error;
     });
 
   }
-  priority: number;
+  priority!: number;
   oncloserequest(status) {
     this.errMsg = "";
     let connection: any;
 
     if (status == 'Completed') {
       let uid = this.currentUser.employeeId;
-      let temp = this.transactionsHistory.find(x => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
+      let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == uid || x.parallelApprover1 == uid || x.parallelApprover2 == uid
         || x.parallelApprover3 == uid || x.parallelApprover4 == uid) && x.transactionType == null);
 
       this.CustomerMastermodel.pendingApprover = temp.doneBy;
@@ -1191,8 +1198,8 @@ export class CustomerMasterComponent implements OnInit {
         // this.sendMail('Created', this.ItemCodeRequestModel)
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Closing Request " + this.CustomerMastermodel.sapCodeNo + ": " + error;
     });
@@ -1219,8 +1226,8 @@ export class CustomerMasterComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error in sending mail: ' + error;
     });
 
@@ -1232,29 +1239,29 @@ export class CustomerMasterComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error in sending mail: ' + error;
     });
 
   }
-  downloadFile(reqNo, value) {
+  downloadFile(reqNo:any, value:any) {
 
     // console.log(filename);
     if (value.length > 0) {
       this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], value, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
 
 
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoading = false;
       });
 
@@ -1272,7 +1279,7 @@ export class CustomerMasterComponent implements OnInit {
       });
     }
   }
-  deletefile(item, name) {
+  deletefile(item:any, name:any) {
 
     if (this.attachments.length > 1) {
       const index = this.attachments.indexOf(name);
@@ -1296,14 +1303,14 @@ export class CustomerMasterComponent implements OnInit {
           buttons: [false, true]
         })
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = 'Error deleting file: ' + error;
     });
   }
 
-  removefile(name) {
+  removefile(name:any) {
     const index = this.fileslist.indexOf(name);
     this.fileslist.splice(index, 1);
   }
@@ -1356,7 +1363,7 @@ export class CustomerMasterComponent implements OnInit {
     this.printModel = Object.assign({}, data);
     jQuery("#printReasonModal").modal('show');
   }
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -1382,7 +1389,7 @@ export class CustomerMasterComponent implements OnInit {
     this.InsertPrintLog();
     jQuery("#printModal").modal('hide');
     jQuery("#printReasonModal").modal('hide');
-    let locid = this.locationList.find(x => x.code == value.plantCode);
+    let locid = this.locationList.find((x:any)  => x.code == value.plantCode);
     // var temp=this.materialList.find(x=>x.id==this.filtermaterialtype);
     var printContents = document.getElementById('print-section').innerHTML;
     // var temp1=this.locationList.find(x=>x.id==this.currentUser.baselocation);
@@ -1394,7 +1401,7 @@ export class CustomerMasterComponent implements OnInit {
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1407,14 +1414,14 @@ export class CustomerMasterComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Customer Master request form',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1432,7 +1439,7 @@ export class CustomerMasterComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -1487,7 +1494,7 @@ export class CustomerMasterComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
@@ -1548,8 +1555,8 @@ export class CustomerMasterComponent implements OnInit {
 
 
   //excel upload methods
-  isSubmitting: boolean;
-  errorlist: string;
+  isSubmitting!: boolean;
+  errorlist: string
   uploadfiles(files: File) {
     // this.id='VM001';
     this.file = files[0];
@@ -1569,7 +1576,8 @@ export class CustomerMasterComponent implements OnInit {
         if (data[0].type == 'E') {
           this.isLoading = false;
           this.errorlist = 'Error List';
-          data.forEach(element => {
+          data.forEach((element:any)=> {
+
             this.errorlist = this.errorlist + '\n' + element.message;
 
           });
@@ -1582,9 +1590,10 @@ export class CustomerMasterComponent implements OnInit {
           let reqNoList: any[] = [];
           let reqnumber: string = '';
           if (data.length > 0) {
-            reqNoList = data.filter(x => x.id > 0);
+            reqNoList = data.filter((x:any)  => x.id > 0);
           }
-          reqNoList.forEach(element => {
+          reqNoList.forEach((element:any)=> {
+
             reqnumber = reqnumber + "\n" + element.requestNo;
           });
 
@@ -1600,8 +1609,8 @@ export class CustomerMasterComponent implements OnInit {
         this.reset();
       }
 
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.errMsgPop = 'Error uploading file: ' + error;
     });
@@ -1635,7 +1644,8 @@ export class CustomerMasterComponent implements OnInit {
   bulkApprove(status) {
     this.errMsg = "";
     let dt: any;
-    this.checkedRequestList.forEach(element => {
+    this.checkedRequestList.forEach((element:any)=> {
+
       element.approveStatus = status;
       let connection = this.httpService.post(APIURLS.BR_UPDATE_BULKCS, element);
       connection.then((data: any) => {
@@ -1645,14 +1655,14 @@ export class CustomerMasterComponent implements OnInit {
         }
         this.isLoadingPop = false;
         this.getAllEntries();
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoadingPop = false;
         this.errMsgPop = 'Error in bulk approve: ' + error;
       });
     });
     if (dt == 200) {
-      var req = this.checkedRequestList.map(x => x.requestNo).join();
+      var req = this.checkedRequestList.map((x:any)  => x.requestNo).join();
       this.errMsgPop1 = "Requests " + req + " approved successfully."
     }
   }
@@ -1666,8 +1676,8 @@ export class CustomerMasterComponent implements OnInit {
 
       }
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
     });
   }
@@ -1675,21 +1685,21 @@ export class CustomerMasterComponent implements OnInit {
   Updatetransactions(data, id) {
     this.errMsg = "";
     let connection: any;
-    let temp = this.transactionsHistory.find(x => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
+    let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
       || x.parallelApprover2 == this.currentUser.employeeId || x.parallelApprover3 == this.currentUser.employeeId ||
       x.parallelApprover4 == this.currentUser.employeeId) && x.transactionType == null);
     temp.comments = this.comments;
     temp.doneBy = this.currentUser.employeeId;
     temp.transactionType = id;
     connection = this.httpService.put(APIURLS.BR_ITEMCODE_APPROVAL_TRANSACTIONS_POST_API, temp.id, temp);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data == 200) {
         if (id == '4') {
           if (this.isEdit) {
-            var loc = this.locationList.find(x => x.code == this.CustomerMastermodel.plantCode);
+            var loc = this.locationList.find((x:any)  => x.code == this.CustomerMastermodel.plantCode);
           }
           else {
-            var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+            var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
           }
 
           var keyvalue = loc.code + '~' + this.CustomerMastermodel.customerType + ',' + 4;
@@ -1713,7 +1723,7 @@ export class CustomerMasterComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionsHistory = data;
-        let temp = this.transactionsHistory.find(x => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
+        let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
           || x.parallelApprover2 == this.currentUser.employeeId || x.parallelApprover3 == this.currentUser.employeeId ||
           x.parallelApprover4 == this.currentUser.employeeId) && x.transactionType == null);
 
@@ -1759,8 +1769,8 @@ export class CustomerMasterComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.transactionsHistory = [];
     });

@@ -4,11 +4,11 @@ export interface OfficialDetails{
     employeeNo: any;
     employmentType: any;
     isConfidential: boolean;
-    title: string;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    initial: string;
+    title: string
+    firstName: string
+    middleName: string
+    lastName: string
+    initial: string
     plantId: number;
     payGroupId: number;
     employeeCategoryId: number;
@@ -16,8 +16,8 @@ export interface OfficialDetails{
     departmentId: number;
     roleId: number;
     gradeId: number;
-    grade: string;
-    band: string;
+    grade: string
+    band: string
     subDepartmentId: number;
     reportingGroupId: number;
     countryId: number;
@@ -30,20 +30,20 @@ export interface OfficialDetails{
     dateOfConfirmation: any;
     probationPeriod: any;
     reportingManagerId: number;
-    reportingManagerName: string;
+    reportingManagerName: string
     approvingManagerId: number;
-    approvingManagerName: string;
-    officialEmailID: string;
-    isSharedEmailID: string;
-    roomOrBlock: string;
-    floor: string;
-    building: string;
-    telephoneNo: string;
-    extension: string;
-    mobileNo: string;
+    approvingManagerName: string
+    officialEmailID: string
+    isSharedEmailID: string
+    roomOrBlock: string
+    floor: string
+    building: string
+    telephoneNo: string
+    extension: string
+    mobileNo: string
     printTemplateId: number;
     signatoryId: number;
-    aoLocation: string;
+    aoLocation: string
     secondSignatoryId: number;
     enteredById: number;
 }

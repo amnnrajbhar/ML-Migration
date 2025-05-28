@@ -17,11 +17,11 @@ declare var toastr: any;
   providers: [AppointmentService]
 })
 export class AddressesComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) addressForm: NgForm;
+@ViewChild(NgForm, { static: false }) addressForm!: NgForm;
 
   @Input() appointmentId: number = 0;
-  @Input() offerId: number;
-  @Input() guid: string;  
+  @Input() offerId!: number;
+  @Input() guid: string  
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
@@ -72,7 +72,7 @@ export class AddressesComponent implements OnInit {
         this.count = data.length;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       this.addressList = [];
@@ -119,7 +119,7 @@ export class AddressesComponent implements OnInit {
         //this.isLoading = false;
         toastr.error('Error occured while saving address details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         toastr.error('Error occured while saving address details. Error:' + error);
       });

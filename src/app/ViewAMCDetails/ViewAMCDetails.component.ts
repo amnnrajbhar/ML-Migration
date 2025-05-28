@@ -22,7 +22,7 @@ export class ViewAMCDetailsComponent implements OnInit {
 
   VisitorId: any;
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -39,7 +39,8 @@ export class ViewAMCDetailsComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.VisitorId = this.route.snapshot.paramMap.get('id');
       this.getVisitorDetails();
     }
@@ -49,7 +50,7 @@ export class ViewAMCDetailsComponent implements OnInit {
     this.isLoading = true;
     let connection: any;
     connection = this.httpService.getById(APIURLS.BR_MASTER_VISITOR_POST_API, this.VisitorId);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
         this.VisitorDetails = data;
         this.getAMCDetailsById();
@@ -65,10 +66,11 @@ export class ViewAMCDetailsComponent implements OnInit {
     this.isLoading = true;
     let connection: any;
     connection = this.httpService.getById(APIURLS.GET_AMC_VISIT_DETAILS_BY_ID, this.VisitorId);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data.length>0) {
         this.amcdetailsmodel= Object.assign({},data[0])
-        data.forEach(element => {
+        data.forEach((element:any)=> {
+
           let equip = new AmcvisitDetails();
           equip.equipmentId = element.equipmentId;
           equip.equipmentName = element.equipmentName;

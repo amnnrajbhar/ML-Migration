@@ -18,9 +18,9 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
 import { ExcelService } from '../../shared/excel-service';
-import htmlToPdfmake from 'html-to-pdfmake';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import htmlToPdfmake from 'html-to-pdfmake';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { ExpenseUpdate } from '../ExpenseUpdate/ExpenseUpdate.model';
 
 @Component({
@@ -29,9 +29,9 @@ import { ExpenseUpdate } from '../ExpenseUpdate/ExpenseUpdate.model';
   styleUrls: ['./FinancialReport.component.css']
 })
 export class FinancialReportComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-@ViewChild(NgForm, { static: false }) financialForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
+@ViewChild(NgForm, { static: false }) financialForm!: NgForm;
 
 
   // accsubList: AccountReports[] = [];
@@ -45,36 +45,38 @@ export class FinancialReportComponent implements OnInit {
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
-  path: string;
+  path!: string
   filterPayGroup: any[] = [];
   filterTypeOfGuest: any[] = [];
-  amount: number;
-  TotalAmount: number;  
-  reportType: string;
-  yearMonth: string;
-  financialYear: string;
+  amount!: number;
+  TotalAmount!: number;  
+  reportType: string
+  yearMonth: string
+  financialYear: string
   groupbyList = [];
-  filtergroupby: string = null;
+  filtergroupby: string = ' ';
   groupbyList1: any[] = [];
-  submitting: boolean;
-  isSubmitting: boolean;
-  exportList: any[];
-  aduitpurpose: string; 
+  submitting!: boolean;
+  isSubmitting!: boolean;
+  exportList!: any[];
+  aduitpurpose: string 
   accexpItem: ExpenseUpdate = new ExpenseUpdate();
-  payGroup: string;
-  Division: string;
+  payGroup: string
+  Division: string
   groupbyDivision:any[]=[];
-  selectedYear: number;
+  selectedYear!: number;
   years: number[] = [];
-  fullYear: string;  
-  month: string;
-  year: string;
+  fullYear: string  
+  month: string
+  year: string
   selectedItems: any[] = [];
-  fiscalYear: string;
-  calYear: string;
+  fiscalYear: string
+  calYear: string
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private excelService: ExcelService) { pdfMake.vfs = pdfFonts.pdfMake.vfs;} 
+    private http: HttpClient, private https: HttpClient, private excelService: ExcelService) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+} 
       
   dropdownList = [];
 
@@ -132,7 +134,8 @@ export class FinancialReportComponent implements OnInit {
       { item_id: 12, item_text: 'Dec' }
     ];
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);      
     if (chkaccess == true) {
       this.getTypeOfGuestList();
@@ -159,13 +162,13 @@ export class FinancialReportComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.long_Desc > b.long_Desc) return 1;
           if (a.long_Desc < b.long_Desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -180,13 +183,13 @@ export class FinancialReportComponent implements OnInit {
       }
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -206,7 +209,8 @@ export class FinancialReportComponent implements OnInit {
     this.TotalAmount = 0;
     this.errMsgPop = "";
     this.isLoading = false;
-    this.groupbyDivision.forEach(element => {
+    this.groupbyDivision.forEach((element:any)=> {
+
       this.amount = this.amount + element.total;
     });
     this.TotalAmount = this.amount;
@@ -315,7 +319,7 @@ export class FinancialReportComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error fetching Details..';
       this.groupbyDivision = []
       this.AccountSubmissionList = [];
@@ -343,28 +347,28 @@ export class FinancialReportComponent implements OnInit {
           var now = new Date();
           var jsDate = this.setFormatedDateTime(now);
           var logo = this.image;
-          var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div>     
-  </div>
-  </body>  
-  </html>`,
-            {
-              tableAutoSize: true,
-              headerRows: 1,
-              dontBreakRows: true,
-              keepWithHeaderRows: true,
-            })
+  //         var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div>     
+  // </div>
+  // </body>  
+  // </html>`,
+  //           {
+  //             tableAutoSize: true,
+  //             headerRows: 1,
+  //             dontBreakRows: true,
+  //             keepWithHeaderRows: true,
+  //           })
           var docDefinition = {
             info: {
               title: 'FINANCIAL Report',
             },
 
             content: [
-              htmnikhitml,
+             // htmnikhitml,
             ],
             defaultStyle: {
               fontSize: 9,
@@ -385,7 +389,7 @@ export class FinancialReportComponent implements OnInit {
 
             // pageMargins: [40, 80, 40, 60],
             pageOrientation: 'landscape',
-            header: function (currentPage, pageCount) {
+            header: function (currentPage:any, pageCount:any) {
               return {
 
                 columns: [
@@ -463,7 +467,7 @@ export class FinancialReportComponent implements OnInit {
               }
             },
           };
-          pdfMake.createPdf(docDefinition).open();
+          //pdfMake.createPdf(docDefinition).open();
         }
       })
   }
@@ -524,7 +528,8 @@ export class FinancialReportComponent implements OnInit {
   }
  
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -558,13 +563,13 @@ getHeader(): { headers: HttpHeaders } {
     const labelchecked = {};
 
     this.dataTable = this.groupbyDivision
-      .sort((a, b) => {
+      .sort((a:any, b:any) => {
         const taskComparator = a.division.localeCompare(b.division);
         return taskComparator
           ? taskComparator
           : a.division.localeCompare(b.division);
       })
-      .map((x) => {
+      .map((x:any) => {
         const taskColumnSpan = labelchecked[x.division]
           ? 0
           : this.groupbyDivision.filter((y) => y.division === x.division).length;

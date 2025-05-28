@@ -16,11 +16,11 @@ declare var $: any;
 export class PageboardComponent implements OnInit {
   _albums = [];
   j = 1;
-  empData: AuthData;
-  roleId: number;
-  usrid: number;
-  errMsg: string;
-  isLoading: boolean;
+  empData!: AuthData;
+  roleId!: number;
+  usrid!: number;
+  errMsg: string
+  isLoading!: boolean;
   EmployeeList1: any;
   location: any;
 
@@ -54,7 +54,8 @@ export class PageboardComponent implements OnInit {
     this._lightbox.close();
   }
   ngOnInit() {
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+    //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
     // console.log('Pageboad:'); 
     // console.log(authData);
     this.roleId = authData.roleId;
@@ -86,14 +87,15 @@ export class PageboardComponent implements OnInit {
   //         // this.generateChart();
   //         // this.getLocwiseList();
   //     }
-  // }).catch(error => {
+  // }).catch((error)=> {
   //     this.isLoading = false;
   //     this.EmployeeList1 = [];
   // });
 
   // }
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

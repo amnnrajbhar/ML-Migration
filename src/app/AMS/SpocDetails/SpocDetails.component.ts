@@ -13,9 +13,9 @@ import * as _ from "lodash";
 declare var jQuery: any;
 declare var $: any;
 export class actionItemModel {
-  description: string;
-  id: number;
-  uname: string;
+  description: string
+  id!: number;
+  uname: string
 }
 @Component({
   selector: 'app-SpocDetails',
@@ -26,7 +26,7 @@ export class actionItemModel {
 
 export class SpocDetailsComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
+@ViewChild(NgForm, { static: false }) leaveForm!: NgForm;
 
   public tableWidget: any;
   SpocDetailsItem: SpocDetails = new SpocDetails();
@@ -41,8 +41,8 @@ export class SpocDetailsComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldSpocDetailsItem: SpocDetails = new SpocDetails();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   id: any;
   checkdup: any;
   checkdup1: any;
@@ -71,7 +71,8 @@ export class SpocDetailsComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getSpocDetailsList();
       this.getPlantsassigned(this.currentUser.fkEmpId);
     }
@@ -81,16 +82,16 @@ export class SpocDetailsComponent implements OnInit {
 
   locationList: any[] = [[]];
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -105,7 +106,7 @@ export class SpocDetailsComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.employeeName > b.employeeName) return 1; if (a.employeeName < b.employeeName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.employeeName > b.employeeName) return 1; if (a.employeeName < b.employeeName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.employeeName + " (" + item.employeeId + ")", value: item.employeeId, label1: item.employeeName};
             })
@@ -115,7 +116,7 @@ export class SpocDetailsComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -127,7 +128,7 @@ export class SpocDetailsComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -157,7 +158,7 @@ export class SpocDetailsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.SpocDetailsList = [];
     });
@@ -208,7 +209,7 @@ export class SpocDetailsComponent implements OnInit {
     let connection: any;
 
     if (!this.isEdit) {
-      if (this.SpocDetailsList.find(x => x.employeeNo == this.SpocDetailsItem.employeeNo
+      if (this.SpocDetailsList.find((x:any)  => x.employeeNo == this.SpocDetailsItem.employeeNo
         && x.location == this.SpocDetailsItem.location)) {
         this.isLoadingPop = false;
         swal({
@@ -240,7 +241,7 @@ export class SpocDetailsComponent implements OnInit {
       }
       else
         this.errMsgPop = data;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving IT Contact data..';
     });
@@ -269,7 +270,7 @@ export class SpocDetailsComponent implements OnInit {
             jQuery("#saveModal").modal('show');
             this.getSpocDetailsList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Details..';
         });
@@ -299,7 +300,7 @@ export class SpocDetailsComponent implements OnInit {
             jQuery("#saveModal").modal('show');
             this.getSpocDetailsList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error updating Details..';
         });
@@ -326,7 +327,8 @@ export class SpocDetailsComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

@@ -15,10 +15,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { stringify } from 'querystring';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 // import { Transactions } from '../eMicro/ItemCodeCreation/transactions.model';
 // import { WorkFlowApprovers } from '../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
 import { ExcelService } from '../../shared/excel-service';
@@ -29,10 +29,10 @@ import { MediServiceBrand } from '../../MedicalServices/MediServiceBrand/MediSer
 import { MediServiceRequestHistory } from '../../MedicalServices/MediServiceRequestHistory/MediServiceRequestHistory.model';
 
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 //import { MediServiceBrand } from '../MediServiceBrand/MediServiceBrand.model';
 
@@ -42,9 +42,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     styleUrls: ['./AssignApprover.component.css']
 })
 export class AssignApproverComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     public tableWidget: any;
@@ -62,24 +62,24 @@ export class AssignApproverComponent implements OnInit {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File; successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
     baseLocationnotfirst = true;
 
-    filterbarcode: string = null;
-    filterBrand: string = null;
+    filterbarcode: string = ' ';
+    filterBrand: string = ' ';
 
     AssignApprovermodel = {} as AssignApprover;
     AssignApproverlist: AssignApprover[] = [];
     // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-    materialtype: string;
-    filterMaterialCode: string = null;
-    filterstatus: string = null;
-    filterlocation: string = null;
-    filterdocno: string = null;
-    filterplace: string = null;
+    materialtype!: string
+    filterMaterialCode: string = ' ';
+    filterstatus: string = ' ';
+    filterlocation: string = ' ';
+    filterdocno: string = ' ';
+    filterplace: string = ' ';
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     to_date: any = this.today;
@@ -88,8 +88,9 @@ export class AssignApproverComponent implements OnInit {
     DocCreateFilter: AssignApprover[] = [];
     DocCreatesearchlist: AssignApprover[] = [];
 
-    emailid: string;
-    requestdate: Date;
+    emailid!: string
+
+    requestdate!: Date;
     Approver1: boolean = false;
     Approverid1: string = "";
     Approverid2: string = "";
@@ -97,17 +98,20 @@ export class AssignApproverComponent implements OnInit {
     Creator: boolean = false;
     Review: boolean = false;
     Closure: boolean = false;
-    userid: string;
+    userid!: string
+
 
     storeData: any;
     jsonData: any;
-    fileUploaded: File;
+    fileUploaded!: File;
     worksheet: any;
 
     //AssignApprovermodeldata = {} as ItemCodeExtension;
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-        private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+        private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
     private initDatatable(): void {
         let exampleId: any = jQuery('#USERSTable');
@@ -126,7 +130,8 @@ export class AssignApproverComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //  this.baseLocation = this.currentUser.baselocation;
         this.emailid = this.currentUser.email;
         this.userid = this.currentUser.employeeId;
@@ -144,12 +149,12 @@ export class AssignApproverComponent implements OnInit {
         this.httpService.DLSgetByParam(APIURLS.BR_GET_TYP_CAT_GET_BYPARAM_MASTER,code).then((data: any) => {
             if (data.length > 0) {
                 this.CategoryList = data
-                this.CategoryListfilterd=this.CategoryList.filter(x=>x.location==code);
+                this.CategoryListfilterd=this.CategoryList.filter((x:any)=>x.location==code);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.CategoryListfilterd.sort((a, b) => { return collator.compare(a.type, b.type) });
+                this.CategoryListfilterd.sort((a:any, b:any) => { return collator.compare(a.type, b.type) });
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CategoryList = [];
         });
@@ -163,14 +168,14 @@ export class AssignApproverComponent implements OnInit {
         this.httpService.DLSget(APIURLS.BR_LOC_RACK_DETAILS_MASTER).then((data: any) => {
             if (data.length > 0) {
 
-                this.LocRackList = data.filter(x => (x.location).toLocaleLowerCase() == this.locationCode.toLocaleLowerCase());
+                this.LocRackList = data.filter((x:any)  => (x.location).toLocaleLowerCase() == this.locationCode.toLocaleLowerCase());
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.LocRackList.sort((a, b) => { return collator.compare(a.type, b.type) });
-                // this.CategoryList.filter(x=>x.location==this.locationCode);
+                this.LocRackList.sort((a:any, b:any) => { return collator.compare(a.type, b.type) });
+                // this.CategoryList.filter((x:any)=>x.location==this.locationCode);
                 //this.RoomList = this.DocRackMasterList.filter((item, i, arr) => arr.findIndex((t) => t.room === item.room) === i);
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.CategoryList = [];
         });
@@ -180,7 +185,7 @@ export class AssignApproverComponent implements OnInit {
 
     CategoryList1: any[] = [];
     GetCategory(type) {
-        this.CategoryList1 = this.CategoryList.filter(x => x.type == type && x.category != null);
+        this.CategoryList1 = this.CategoryList.filter((x:any)  => x.type == type && x.category != null);
     }
     CategoryListfilterd:any[]=[];
     GetTypes(loc)
@@ -211,10 +216,13 @@ export class AssignApproverComponent implements OnInit {
     clearFilter() {
         this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
         this.to_date = this.today;
-        this.filterlocation = null;
-        this.filterstatus = null;
+       // this.filterlocation = null;
+ this.filterlocation = '';
+      // this.filterstatus = null;
+  this.filterstatus = '';
         this.filterdocno = null;
-        this.filterplace = null;
+      //    this.filterplace = null;
+      this.filterplace = '';
         this.filterbarcode = null;
         this.filterBrand = null;
 
@@ -234,7 +242,7 @@ export class AssignApproverComponent implements OnInit {
              }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.DocCreateFilter = [];
         });
@@ -248,46 +256,46 @@ export class AssignApproverComponent implements OnInit {
         this.newDynamic = { id: this.rowcount, competitorBrand: "", competitorDetails: "", competitorExistingmarketshare: "", competitorMrp: "", stored: "0" };
         this.dynamicArray.push(this.newDynamic);
     }
-    removeRows(item) {
+    removeRows(item:any) {
         if (this.dynamicArray.length > 1) {
             const index = this.dynamicArray.indexOf(item);
             this.dynamicArray.splice(index, 1);
         }
     }
 
-    locationCode: string;
+    locationCode: string
     getLocationMaster() {
         this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locationCode = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locationCode = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
                 //this.getCategoryList(this.locationCode);
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
-    EmpCode: string;
+    EmpCode: string
     EmpMaster: any []= [];
-    getEmployeeMaster(id) {
+    getEmployeeMaster(id:any) {
         this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_GETBY_ANY_API,id).then((data: any) => {
             if (data.length > 0) {
                 this.EmpMaster = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
         this.initDatatable();
     }
@@ -298,9 +306,9 @@ export class AssignApproverComponent implements OnInit {
         this.BinsList=[];
     }
 
-    empId: string;
+    empId: string
     view: boolean = false;
-    locationName: string;
+    locationName: string
     onUserActions(isedit: boolean, AssignApprover: AssignApprover, isprint: boolean, value: string) {
         this.isEdit = isedit;
         this.resetForm();
@@ -324,7 +332,7 @@ export class AssignApproverComponent implements OnInit {
     isValid: boolean = false;
     validatedForm: boolean = true;
 
-    onSaveEntry(status) {
+    onSaveEntry(status:any) {
         this.errMsg = "";
         let connection: any;
      
@@ -353,7 +361,7 @@ export class AssignApproverComponent implements OnInit {
                     
                     // this.reset();
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
                 this.errMsgPop = 'Error saving Request..';
             });

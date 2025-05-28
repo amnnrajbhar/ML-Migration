@@ -30,29 +30,29 @@ export class GateentryWithoutPOComponent implements OnInit {
 
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
-  fiscalYear: string;
+  path: string
+  fiscalYear: string
   errMsg: string = "";
   errMsgPop: string = "";
   errMsgModalPop: string = "";
-  isEdit: boolean;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  isLoadingBAPI: boolean;
+  isEdit!: boolean;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  isLoadingBAPI!: boolean;
   gateEntryMModel = {} as GateEntryM;
   gateEntryDModel = {} as GateEntryD;
   gateEntryMList: GateEntryM[] = [];
   gateEntryDList: GateEntryD[] = [];
-  pO_No: string;
+  pO_No: string
   qtY_RCVD: any;
   entryDateTime: Date = new Date();
-  userName: string;
+  userName: string
   iN_TIME: any;
-  reason: string;
-  gateNo: string;
-  gINo: string;
+  reason: string
+  gateNo: string
+  gINo: string
   max: Date = new Date();
 
   elementtype:string;
@@ -76,7 +76,8 @@ export class GateentryWithoutPOComponent implements OnInit {
     this.fiscalYear = this.getCurrentFinancialYear();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.userName = this.currentUser.fullName;
       this.getGateList();
      // this.getPlantsassigned(this.currentUser.fkEmpId);
@@ -94,10 +95,10 @@ export class GateentryWithoutPOComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.locationGateList = data;
-        this.selGateLocation = this.locationGateList.find(x => x.gateNo == '1');
+        this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == '1');
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationGateList = [];
     });
@@ -130,7 +131,7 @@ export class GateentryWithoutPOComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.httpService.get(APIURLS.BR_GET_EMPLOYEE_BASED_ON_SEARCHTEXT + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return {
                 label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId, name: item.name, mobile: item.mobileNo,
@@ -143,7 +144,7 @@ export class GateentryWithoutPOComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#persoN_NAME").val(ui.item.name);
                   self.gateEntryMModel.persoN_NAME=ui.item.name;
@@ -153,7 +154,7 @@ export class GateentryWithoutPOComponent implements OnInit {
                   $("#persoN_NAME").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#persoN_NAME").val(ui.item.name);
                   self.gateEntryMModel.persoN_NAME=ui.item.name;
@@ -172,8 +173,8 @@ export class GateentryWithoutPOComponent implements OnInit {
     }
   }
   
-  locationName: string;
-  plant: string;
+  locationName: string
+  plant!: string
   plantList:any[]=[];
   location:any[]=[];
   getLocationById(lId: number) {
@@ -187,14 +188,14 @@ export class GateentryWithoutPOComponent implements OnInit {
         this.getAllGateEntries("load");  
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plant = '';
       this.locationName = '';
     });
   }
   baseloc={fkPlantId:0,code:'',name:''}
-  getPlantsassigned(id)
+  getPlantsassigned(id:any)
   {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
@@ -203,7 +204,8 @@ export class GateentryWithoutPOComponent implements OnInit {
         let temp=this.plantList.find(x=>x.fkPlantId == this.currentUser.baselocation);
         if(temp == null || temp == undefined)
         {
-          this.location.forEach(element => {
+          this.location.forEach((element:any)=> {
+
             this.baseloc.fkPlantId=element.id;
             this.baseloc.code=element.code;
             this.baseloc.name=element.name;
@@ -214,7 +216,7 @@ export class GateentryWithoutPOComponent implements OnInit {
        //this.getAllGateEntries("load");   
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -272,8 +274,8 @@ export class GateentryWithoutPOComponent implements OnInit {
   to_date: any = this.today;
   acknowledge: boolean = false;
   delete: boolean = false;
-  fltrGINO: string;
-  fltrInvoice: string;
+  fltrGINO: string
+  fltrInvoice: string
   gIacknowledge: any = null;
   getAllGateEntries(msg) {
     this.isLoading = true;
@@ -303,7 +305,7 @@ export class GateentryWithoutPOComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.gateEntryMList = [];
     });
@@ -316,10 +318,10 @@ export class GateentryWithoutPOComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_SUPPLIER_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.supplierMasterList = data;//.map((i) => { i.vendorcode = i.code + '-' + i.name; return i; });
+        this.supplierMasterList = data;//.map((i:any) => { i.vendorcode = i.code + '-' + i.name; return i; });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.supplierMasterList = [];
     });
@@ -354,7 +356,7 @@ export class GateentryWithoutPOComponent implements OnInit {
   saveSupplier(status: boolean) {
     let connection: any;
     this.supplierItem.isActive = true;
-    if (!this.supplierMasterList.some(s => s.code.trim().toLowerCase() === this.supplierItem.code.trim().toLowerCase() && s.id != this.supplierItem.id)) {
+    if (!this.supplierMasterList.some((s:any) => s.code.trim().toLowerCase() === this.supplierItem.code.trim().toLowerCase() && s.id != this.supplierItem.id)) {
       if (status) {
         this.supplierItem.createdBy = this.currentUser.uid;
         this.supplierItem.createdDate = new Date().toLocaleString();
@@ -370,7 +372,7 @@ export class GateentryWithoutPOComponent implements OnInit {
           jQuery("#supplierModal").modal('hide');
           this.getSupplierMasterList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Supplier data..';
       });
@@ -431,7 +433,7 @@ export class GateentryWithoutPOComponent implements OnInit {
           }
         }
         this.isLoadingBAPI = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingBAPI = false;
       });
     }
@@ -439,7 +441,7 @@ export class GateentryWithoutPOComponent implements OnInit {
   getGIMaterialDetails(fkID) {
     this.httpService.getById(APIURLS.BR_MASTER_GATEINWARDD_ANY_API, fkID).then((data: any) => {
       if (data) {
-        data.forEach(mtrl => {
+        data.forEach((mtrl:any) => {
           let newDynamic = { id: 0, iteM_CODE: null, iteM_DESC: "", uom: null, qtY_RCVD: "", stored: "0" };
           newDynamic.iteM_CODE = mtrl.materiaL_TYPE;
           newDynamic.iteM_DESC = mtrl.iteM_DESC;
@@ -448,7 +450,7 @@ export class GateentryWithoutPOComponent implements OnInit {
           this.dynamicArray.push(newDynamic);
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.dynamicArray = [];
     });
   }
@@ -460,7 +462,7 @@ export class GateentryWithoutPOComponent implements OnInit {
   }
   dynamicArray: any = [];
   newDynamic: any = {};
-  isAcknowledge: boolean;
+  isAcknowledge!: boolean;
   onGateEntryActions(isedit: boolean, gateEntryM: GateEntryM, action: string) {
     this.isEdit = isedit;
     this.resetForm();
@@ -478,9 +480,9 @@ export class GateentryWithoutPOComponent implements OnInit {
     }
     if (isedit) {
       this.gateEntryMModel = Object.assign({}, gateEntryM);
-      this.selGateLocation = this.locationGateList.find(x => x.gateNo == this.gateEntryMModel.gI_GATENO);
+      this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == this.gateEntryMModel.gI_GATENO);
       this.fiscalYear = this.gateEntryMModel.fiN_YEAR;
-      this.selectedSupplier = this.supplierMasterList.find(x => x.code == this.gateEntryMModel.lifnr);
+      this.selectedSupplier = this.supplierMasterList.find((x:any)  => x.code == this.gateEntryMModel.lifnr);
       this.userName = this.gateEntryMModel.persoN_NAME;
       this.iN_TIME = this.gateEntryMModel.iN_TIME;
       this.isAcknowledge = gateEntryM.receiveD_DATE != null ? true : false;
@@ -489,7 +491,7 @@ export class GateentryWithoutPOComponent implements OnInit {
 
       this.httpService.getById(APIURLS.BR_MASTER_GATEINWARDD_ANY_API, gateEntryM.id).then((data: any) => {
         if (data) {
-          data.forEach(mtrl => {
+          data.forEach((mtrl:any) => {
             let newDynamic = { id: 0, iteM_CODE: null, iteM_DESC: "", uom: null, qtY_RCVD: "", stored: "0" };
             newDynamic.id = mtrl.id;
             newDynamic.iteM_CODE = mtrl.materiaL_TYPE;
@@ -499,7 +501,7 @@ export class GateentryWithoutPOComponent implements OnInit {
             this.dynamicArray.push(newDynamic);
           });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.dynamicArray = [];
       });
     }
@@ -544,10 +546,10 @@ export class GateentryWithoutPOComponent implements OnInit {
         if (this.isEdit)
           this.UOMList = data;
         else
-          this.UOMList = data.filter(x => x.isActive);
+          this.UOMList = data.filter((x:any)  => x.isActive);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UOMList = [];
     });
@@ -560,10 +562,10 @@ export class GateentryWithoutPOComponent implements OnInit {
         if (this.isEdit)
           this.materialList = data;
         else
-          this.materialList = data.filter(x => x.isActive);
+          this.materialList = data.filter((x:any)  => x.isActive);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -578,8 +580,8 @@ export class GateentryWithoutPOComponent implements OnInit {
     jQuery("#materialModal").modal('show');
   }
   saveMaterial(materials: any) {
-    materials.forEach(mtrl => {
-      let matId = this.materialList.find(s => s.type == mtrl.iteM_CODE).id;
+    materials.forEach((mtrl:any) => {
+      let matId = this.materialList.find((s:any) => s.type == mtrl.iteM_CODE).id;
       let materialItem = new Material();
       materialItem.fkMaterialType = matId;
       materialItem.description = mtrl.iteM_DESC;
@@ -589,7 +591,7 @@ export class GateentryWithoutPOComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200 || data.id > 0) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
 
       });
     });
@@ -600,29 +602,29 @@ export class GateentryWithoutPOComponent implements OnInit {
     this.newDynamic = { id: this.rowcount, iteM_CODE: null, iteM_DESC: "", uom: null, qtY_RCVD: "", stored: "0" };
     this.dynamicArray.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.dynamicArray.length > 1) {
       const index = this.dynamicArray.indexOf(item);
       this.dynamicArray.splice(index, 1);
     }
   }
   setDesc(mtrl) {
-    let matId = this.materialList.find(s => s.type == mtrl.iteM_CODE).id;
+    let matId = this.materialList.find((s:any) => s.type == mtrl.iteM_CODE).id;
     var self = this;
     $('#iteM_DESC' + mtrl.id).autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm = 'description'+';'+request.term + ';' + matId;
         let connection = self.httpService.getByParam(APIURLS.BR_MASTER_MATERIAL_GETBYPARAM_API, searchTerm);
         connection.then((data: any) => {
           if (data) {
-            const uniqueset = new Set(data.map(x => x.description))
+            const uniqueset = new Set(data.map((x:any)  => x.description))
             let result = Array.from(uniqueset);
             response(result.map(item => ({ 'label': item, 'val': item })));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         mtrl.iteM_DESC = ui.item.label;
         mtrl.stored = "1";
         return false;
@@ -635,8 +637,8 @@ export class GateentryWithoutPOComponent implements OnInit {
 
   onSaveEntry() {
     if (!this.isEdit) {
-      let usermatlist = this.dynamicArray.filter(x => { return x.stored == "0" });
-      let zeroQTYMatList = this.dynamicArray.filter(x => { return x.qtY_RCVD <= 0 });
+      let usermatlist = this.dynamicArray.filter((x:any)  => { return x.stored == "0" });
+      let zeroQTYMatList = this.dynamicArray.filter((x:any)  => { return x.qtY_RCVD <= 0 });
       if (zeroQTYMatList.length > 0) {
         swal({
           title: "Message",
@@ -713,7 +715,7 @@ export class GateentryWithoutPOComponent implements OnInit {
     this.gateEntryMModel.isActive = true;
     //Insert Material
     var index = 0;
-    this.dynamicArray.forEach(mtrl => {
+    this.dynamicArray.forEach((mtrl:any) => {
       if (+mtrl.qtY_RCVD > 0) {
         index = index + 1;
         this.gateEntryDModel = {} as GateEntryD;
@@ -741,14 +743,14 @@ export class GateentryWithoutPOComponent implements OnInit {
       if (data == 200 || data.id > 0) {
         this.sendGEPOtoCreateBAPI(data);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error saving Header...';
       this.isLoadingPop = false;
     });
   }
   sendGEPOtoCreateBAPI(model) {
     this.gateEntryMModel = Object.assign({}, model);
-    this.gateEntryDList.forEach(x => {
+    this.gateEntryDList.forEach((x:any)  => {
       x.gI_NO = model.gI_NO;
     });
     let rfcCreateGEPO = {} as RFCCreateGEPO;
@@ -793,7 +795,7 @@ export class GateentryWithoutPOComponent implements OnInit {
       }
       // jQuery("#saveModal").modal('show');
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Successfully inserted in gate entry system,Could not connect to SAP';
       this.isLoadingPop = false;
     });
@@ -810,7 +812,7 @@ export class GateentryWithoutPOComponent implements OnInit {
       if (data == 200 || data.id > 0) {
         this.isLoadingPop = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error update acknowledgement in GE Header';
       this.isLoadingPop = false;
     });
@@ -860,7 +862,7 @@ export class GateentryWithoutPOComponent implements OnInit {
       }
       //jQuery("#saveModal").modal('show');
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Could not connect to SAP.Please try after sometime or contact to administrator';
       // jQuery("#saveModal").modal('show');
       this.isLoadingPop = false;
@@ -873,7 +875,7 @@ export class GateentryWithoutPOComponent implements OnInit {
       if (data == 200 || data.id > 0) {
         this.isLoadingPop = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Delete Without PO...';
     });
@@ -898,7 +900,7 @@ export class GateentryWithoutPOComponent implements OnInit {
         this.isLoadingPop = false;
         //this.sendGEPOtoCreateBAPI(data);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Acknowledge Without PO...';
     });

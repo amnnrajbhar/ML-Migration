@@ -21,9 +21,9 @@ declare var jQuery: any;
 export class RatingComponent implements OnInit {
     
     public tableWidget: any;
-    ratingList: any[];
+    ratingList!: any[];
     calendarList:any[]=[[]];
-    parentList: any[];
+    parentList!: any[];
     selParentRole: any;
     ratingItem: Rating = new Rating(0, '','', '', 0, 0,'',true);;
     calendarItem: Calendar  = new Calendar(0, '','', 0, '', '', '', 0, 0, 0);
@@ -78,11 +78,11 @@ export class RatingComponent implements OnInit {
       this.isLoadingPop = false;
       if (this.isEdit) {
         this.ratingItem = data;
-        this.parentList = this.calendarList.filter(s => s.isActive != false);
-        this.selParentRole = this.calendarList.find(s => s.id == this.ratingItem.fkCalendarId);
+        this.parentList = this.calendarList.filter((s:any) => s.isActive != false);
+        this.selParentRole = this.calendarList.find((s:any) => s.id == this.ratingItem.fkCalendarId);
       }
       else {
-        this.parentList = this.calendarList.filter(s => s.isActive != false);;
+        this.parentList = this.calendarList.filter((s:any) => s.isActive != false);;
         this.ratingItem = new Rating(0, '','', '', 0,0,'', true);
         this.selParentRole = null;
       }
@@ -117,14 +117,14 @@ export class RatingComponent implements OnInit {
           // for(let des of this.ratingList) {
           //   this.httpService.getById(APIURLS.BR_MASTER_CALENDAR_INSERT_API,des.fkCalendarId).then((datam:any) => {
           //   this.calendarItem = datam;
-          //   this.ratingList.find(s => s.fkCalendarId === this.calendarItem.id)['fkCalendarId'] = this.calendarItem.fiscalYear;
+          //   this.ratingList.find((s:any) => s.fkCalendarId === this.calendarItem.id)['fkCalendarId'] = this.calendarItem.fiscalYear;
           //  });  
           // }
           ////console.log('this.ratingList');
           ////console.log(this.ratingList);
           this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.ratingList = [];
       });
@@ -132,7 +132,7 @@ export class RatingComponent implements OnInit {
 
     getCalNames(id: number){
       var temp: any;
-      temp = this.calendarList.find(s => s.id == id);
+      temp = this.calendarList.find((s:any) => s.id == id);
       var fiscalname = (typeof temp != 'undefined')? temp.fiscalYear : '';
       return fiscalname;
     }
@@ -144,7 +144,7 @@ export class RatingComponent implements OnInit {
       this.ratingItem.fkCalendarId = this.selParentRole.id;
       let connection: any;
       // debugger;
-        if(!this.ratingList.some(s => s.scale == this.ratingItem.scale && s.fkCalendarId == this.ratingItem.fkCalendarId && s.id != this.ratingItem.id)){
+        if(!this.ratingList.some((s:any) => s.scale == this.ratingItem.scale && s.fkCalendarId == this.ratingItem.fkCalendarId && s.id != this.ratingItem.id)){
         if (!this.isEdit)
          connection = this.httpService.post(APIURLS.BR_MASTER_RATING_API, this.ratingItem);
         else
@@ -159,7 +159,7 @@ export class RatingComponent implements OnInit {
  jQuery("#saveModal").modal('show');
            this.getRatingList();
          }
-        }).catch(error => {
+        }).catch((error)=> {
          this.isLoadingPop = false;
          this.errMsgPop = 'Error saving Rating data..';
         });

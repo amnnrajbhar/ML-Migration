@@ -17,7 +17,7 @@ declare var toastr: any;
 })
 export class ConfirmationHodRecommendationsComponent implements OnInit {
   details: any = {};
-  @Input() employeeConfirmationId: number;
+  @Input() employeeConfirmationId!: number;
   isLoading: boolean = false;
 
   constructor(private appService: AppComponent, private httpService: HttpService,
@@ -28,7 +28,7 @@ export class ConfirmationHodRecommendationsComponent implements OnInit {
     this.loadRecommendationsData(this.employeeConfirmationId);
   }
 
-  loadRecommendationsData(id) {
+  loadRecommendationsData(id:any) {
     this.isLoading = true;
     this.httpService.HRgetById(APIURLS.CONFIRMATION_GET_HOD_RECOMMENDATIONS_DETAILS, id).then((data: any) => {
       if (data) {
@@ -36,7 +36,7 @@ export class ConfirmationHodRecommendationsComponent implements OnInit {
 
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

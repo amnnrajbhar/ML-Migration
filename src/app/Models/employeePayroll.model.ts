@@ -1,10 +1,10 @@
 export class EmployeePayroll {
-    id: number;
-    employeeId: string;
+    id!: number;
+    employeeId: string
     currentAnnualCtc: number | null;
     fixedCtc: number | null;
     veriablePay: number | null;
-    currentWorkStatus: string;
+    currentWorkStatus: string
     billingRate: number | null;
     previousAppraisalDate: string | null;
     appraisalDueDate: string | null;

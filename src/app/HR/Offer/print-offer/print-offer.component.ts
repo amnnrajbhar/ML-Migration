@@ -11,10 +11,10 @@ import { NgForm } from '@angular/forms';
 import swal from 'sweetalert';
 declare var $: any;
 declare var toastr: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { OfferDetails } from '../../models/offerdetails.model';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
@@ -30,7 +30,7 @@ import { Util } from '../../Services/util.service';
 })
 export class PrintOfferComponent implements OnInit {
   offerId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -49,13 +49,16 @@ export class PrintOfferComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
-    private http: HttpClient, private util: Util) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private util: Util) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.offerId = this.route.snapshot.paramMap.get('id')!;      
       this.canPrint = this.util.hasPermission(PERMISSIONS.HR_PRINT_LETTERS);
       this.canEmail = this.util.hasPermission(PERMISSIONS.HR_EMAIL_LETTERS);
@@ -74,7 +77,7 @@ export class PrintOfferComponent implements OnInit {
         this.offerDetails = data;   
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -96,7 +99,7 @@ export class PrintOfferComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -132,10 +135,10 @@ export class PrintOfferComponent implements OnInit {
   getPrintTemplates(){
     this.httpService.HRget(APIURLS.OFFER_GET_PRINT_TEMPLATES).then((data: any) => {
       if (data.length > 0) {
-        this.printTemplates = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
+        this.printTemplates = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
         this.selectedTemplateId = this.printTemplates.find(x=>x.templateName.contains("Without CTC")).printTemplateId;
       }
-    }).catch(error => {      
+    }).catch(()=> {      
     });
   }
   
@@ -152,7 +155,7 @@ export class PrintOfferComponent implements OnInit {
     //$("#print-me").empty();
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -183,7 +186,7 @@ export class PrintOfferComponent implements OnInit {
   }
 
   download() {
-    this.createPDF(false).open();    
+   // this.createPDF(false).open();    
     this.saveLetterActivity("Downloaded");
   }
 
@@ -233,25 +236,25 @@ export class PrintOfferComponent implements OnInit {
       //pageMarginsConfig =  [40, 40, 40, 50];
     }
     
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}  
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-      defaultStyles: {      
-        td: {         
-         border: undefined
-         },
-         img: undefined,
-         p: undefined       
-       }
-    });
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}  
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //     defaultStyles: {      
+  //       td: {         
+  //        border: undefined
+  //        },
+  //        img: undefined,
+  //        p: undefined       
+  //      }
+  //   });
     var docDefinition = {
       info: {
         title: 'Offer Letter',
@@ -259,7 +262,7 @@ export class PrintOfferComponent implements OnInit {
 
       content: [
         header,
-        htmnikhitml,
+       // htmnikhitml,
       ],
       defaultStyle: {
         //font: 'TimesNewRoman',
@@ -355,25 +358,25 @@ export class PrintOfferComponent implements OnInit {
         bolditalics: "https://db.onlinewebfonts.com/t/00cecb8a39000cd7562b4c9fd1ae33cb.ttf"     
       }
     };
-    return pdfMake.createPdf(docDefinition, null);
+    //return pdfMake.createPdf(docDefinition, null);
   }
 
   saveLetter(){
     console.log("saving letter...");    
-    this.createPDF(false).getBase64((encodedString) => {
-      if (encodedString) {
-        var request: any = {};
-        request.attachment = encodedString;      
-        request.objectId = this.offerDetails.offerId;
-        request.objectType = "Offer Letter";
-        request.letterType = "Offer Letter";
-        request.submittedById = this.currentUser.uid;
-        request.submittedByName = this.currentUser.fullName;
-        this.util.saveLetter(request);
-      }
-      else
-        console.log("Create PDF failed, cannot save letter.");
-    });
+    // this.createPDF(false).getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     var request: any = {};
+    //     request.attachment = encodedString;      
+    //     request.objectId = this.offerDetails.offerId;
+    //     request.objectType = "Offer Letter";
+    //     request.letterType = "Offer Letter";
+    //     request.submittedById = this.currentUser.uid;
+    //     request.submittedByName = this.currentUser.fullName;
+    //     this.util.saveLetter(request);
+    //   }
+    //   else
+    //     console.log("Create PDF failed, cannot save letter.");
+    // });
   }
 
   
@@ -400,24 +403,24 @@ export class PrintOfferComponent implements OnInit {
       request.submittedByName = this.currentUser.fullName;
       request.emailId = this.offerDetails.personalEmailId;
 
-      this.createPDF(false).getBase64((encodedString) => {
-        if (encodedString) {
-          request.attachment = encodedString;
-          swal("Sending email...");
-          this.httpService.HRpost(APIURLS.OFFER_DETAILS_SEND_EMAIL, request).then((data: any) => {
-            if (data == 200 || data.success) {
-              swal("Successfully emailed the offer letter to the candidate.");              
-              this.saveLetterActivity("Emailed");
-            } else if (!data.success) {
-              swal(data.message);
-            } else
-              swal("Error occurred.");
-          }
-          ).catch(error => {
-            swal(error);
-          });
-        }
-      });
+      // this.createPDF(false).getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     request.attachment = encodedString;
+      //     swal("Sending email...");
+      //     this.httpService.HRpost(APIURLS.OFFER_DETAILS_SEND_EMAIL, request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         swal("Successfully emailed the offer letter to the candidate.");              
+      //         this.saveLetterActivity("Emailed");
+      //       } else if (!data.success) {
+      //         swal(data.message);
+      //       } else
+      //         swal("Error occurred.");
+      //     }
+      //     ).catch((error)=> {
+      //       swal(error);
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -426,7 +429,7 @@ export class PrintOfferComponent implements OnInit {
   }
 
 print1(): void {
-  this.createPDF(true).print();
+ // this.createPDF(true).print();
   this.saveLetterActivity("Printed");
   return;
 

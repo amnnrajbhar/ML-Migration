@@ -14,14 +14,14 @@ declare var $: any;
   styleUrls: ['./clearance-checklist.component.css']
 })
 export class ClearanceChecklistComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   plantList: any[] = [];
   payGroupList: any[] = [];
   employeeCategoryList: any[] = [];
 
   checklistItemId: number = 0;
-  comments: string;
-  action: string;
+  comments: string
+  action: string
   name: string = "";    
   from_date: any = null;
   to_date: any = null;
@@ -42,7 +42,8 @@ statusList = [
     private router: Router, private excelService: ExcelService, private dataStore: DataStorageService) { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.pageNo = 1;
     this.filterModel.SPOCEmployeeId = this.currentUser.uid;
@@ -63,9 +64,9 @@ statusList = [
   getPlantList() {
     this.httpService.HRget(APIURLS.RESIGNATION_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -77,9 +78,9 @@ statusList = [
     if (this.filterModel.selectedPlantId > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.filterModel.selectedPlantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -91,9 +92,9 @@ statusList = [
     this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
       .then((data: any) => {
         if (data.length > 0) {
-          this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+          this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.employeeCategoryList = [];
       });
   }
@@ -137,7 +138,7 @@ statusList = [
         swal(data.message);
       } else
         swal("Error occurred.");
-    }).catch(error => {
+    }).catch((error)=> {
       swal(error);
     });
   }
@@ -161,7 +162,7 @@ statusList = [
         item.statusColor = this.statusList.find(x=>x.type == item.status).color;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }

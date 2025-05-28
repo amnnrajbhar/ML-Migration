@@ -15,14 +15,14 @@ declare var jQuery: any;
 })
 export class MaterialmasterComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) materialForm: NgForm;
+@ViewChild(NgForm, { static: false }) materialForm!: NgForm;
 
   public tableWidget: any;
-  companyId: number;
+  companyId!: number;
   materialList: MaterialMaster[] = [];
   materialItem: MaterialMaster = new MaterialMaster();
   isLoading: boolean = false;
-  entityTabHeader: string;
+  entityTabHeader: string
   errMsg: string = "";
   isLoadingPop: boolean = false;
   errMsgPop: string = "";
@@ -89,7 +89,7 @@ export class MaterialmasterComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -97,7 +97,7 @@ export class MaterialmasterComponent implements OnInit {
   onSaveMaterial(status: boolean) {
     this.errMsg = "";
     let connection: any;
-    if (!this.materialList.some(s => s.materialCode.trim().toLowerCase() === this.materialItem.materialCode.trim().toLowerCase() && s.id != this.materialItem.id)) {
+    if (!this.materialList.some((s:any) => s.materialCode.trim().toLowerCase() === this.materialItem.materialCode.trim().toLowerCase() && s.id != this.materialItem.id)) {
       if (!this.isEdit)
         connection = this.httpService.post(APIURLS.BR_MASTER_MATERIAL_POST_PUT_API, this.materialItem);
       else
@@ -111,7 +111,7 @@ export class MaterialmasterComponent implements OnInit {
           jQuery("#saveModal").modal('show');
           this.getMaterialMasterList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving material data..';
       });

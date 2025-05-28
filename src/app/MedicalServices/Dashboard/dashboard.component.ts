@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 // import { Lightbox } from 'ngx-lightbox';
 declare var jQuery: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
 import * as _ from "lodash";
 import { AuthData } from '../../auth/auth.model';
 import { AppComponent } from '../../app.component';
@@ -14,7 +14,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ExcelService } from '../../shared/excel-service';
 declare var $: any;
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 //import { debug } from 'util';
 import { MediServiceRequest } from '../MediServiceRequest/MediServiceRequest.model';
 import { DatePipe } from '@angular/common';
@@ -26,17 +26,17 @@ import { DatePipe } from '@angular/common';
     styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-    currentUser: AuthData;
-    current: string;
+    currentUser!: AuthData;
+    current: string
     newVisitorsMonth: any;
     todayDate = new Date();
     today: Date = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), this.todayDate.getDate());
     chart1: any;
-    errMsg: string;
+    errMsg: string
     EmployeeList1: any;
     location: any;
-    usrid: number;
-    path: string;
+    usrid!: number;
+    path: string
     employeeId: any;
     additionalVisitorItem: any[] = [[]];
     additionalVisitors: any[] = [[]]
@@ -46,8 +46,8 @@ export class DashboardComponent implements OnInit {
     errMsgPop = '';
     //[x: string]: any;
     // [x: string]: any;
-    public tableWidget;
-    public tableWidget1;
+    public tableWidget:any;
+   public tableWidget1:any;
     chart: any;
     visitorsList: any[] = [[]];
     totalnewvisits: number = 0;
@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
     visitorsInside: any;
     myDate = new Date();
     todaysvisitorsList: any = [];
-    roleId: number;
+    roleId!: number;
     //today report filter
     fromDate = '';
     toDate = '';
@@ -65,7 +65,7 @@ export class DashboardComponent implements OnInit {
     visitorsListAllCount = 0;
     private _albums = [];
     j = 1;
-    empData: AuthData;
+    empData!: AuthData;
     pendingCheckouts = 0;
     visitorsFilteredList1: any[] = [];
     visitorsFilteredList: any[] = [];
@@ -101,14 +101,14 @@ export class DashboardComponent implements OnInit {
     isGoLoading: boolean = false;
     checkedInCount: any = 0;
     todaysVisitorCount: any = 0;
-    exportList: any[];
+    exportList!: any[];
     newVisitors: any[] = [];
     submitted = 0;
     inprocess = 0;
     rejected: any = 0;
     completed = 0;
     directcheckedInCount = 0;
-    public chartPlugins = [ChartDataLabels];
+   // public chartPlugins = [ChartDataLabels];
     
     MediServiceRequestMasterList: MediServiceRequest[] = [];
     MediServiceRequestDisplayList: MediServiceRequest[] = [];
@@ -133,12 +133,14 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         this.current = this.currentUser.employeeId + ' - ' + this.currentUser.fullName;
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         // console.log('Access:'+chkaccess);
         if (chkaccess == true) {
-            let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+            //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
             // console.log(authData);
 
             this.roleId = authData.roleId;
@@ -173,7 +175,7 @@ export class DashboardComponent implements OnInit {
         this.initDatatable();
     }
 
-    toggleDataSeries(e) {
+    toggleDataSeries(e :any) {
         if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
             e.dataSeries.visible = false;
         } else {
@@ -182,7 +184,7 @@ export class DashboardComponent implements OnInit {
         e.chart.render();
     }
 
-    getFormatedDate(d) {
+    getFormatedDate(d:any) {
         let fd = new Date(d);
         let formateddate = fd.getFullYear() + "-" + ("00" + (fd.getMonth() + 1)).slice(-2) + "-" +
             ("00" + fd.getDate()).slice(-2);
@@ -198,8 +200,8 @@ export class DashboardComponent implements OnInit {
         this.isLoading = true;
         this.isGoLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
 
         if (this.from_date == '' || this.from_date == null) {
@@ -232,25 +234,25 @@ export class DashboardComponent implements OnInit {
 
         this.httpService.getByParam(APIURLS.BR_MEDISERVICEREQUEST_GETMSREQUESTSFORDASHBOARD, params).then((data: MediServiceRequest[]) => {
             if (data) {
-                this.MediServiceRequestMasterList = data.sort((a, b) => {
+                this.MediServiceRequestMasterList = data.sort((a:any, b:any) => {
                     if (a.id < b.id) { return 1; }
                     else if (a.id > b.id) { return -1; }
                     return 0;
                 });
                 this.MediServiceRequestDisplayList = this.MediServiceRequestMasterList;
 
-                this.submitted = this.MediServiceRequestMasterList.filter(x => x.approveType == 'Submitted').length;
-                this.inprocess = this.MediServiceRequestMasterList.filter(x => x.approveType == 'In Process').length;
-                this.completed = this.MediServiceRequestMasterList.filter(x => x.approveType == 'Completed').length;
-                this.rejected = this.MediServiceRequestMasterList.filter(x => x.approveType == 'Rejected').length;
+                this.submitted = this.MediServiceRequestMasterList.filter((x:any)  => x.approveType == 'Submitted').length;
+                this.inprocess = this.MediServiceRequestMasterList.filter((x:any)  => x.approveType == 'In Process').length;
+                this.completed = this.MediServiceRequestMasterList.filter((x:any)  => x.approveType == 'Completed').length;
+                this.rejected = this.MediServiceRequestMasterList.filter((x:any)  => x.approveType == 'Rejected').length;
             }
 
             this.reInitDatatable();
             this.isLoading = false;
             this.isGoLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             swal("Error", "Error fetching Medical Service requests. Please check the console for error details.", "error");
-            console.log(error);
+            //console.log(error);
 
             this.MediServiceRequestMasterList = [];
             this.MediServiceRequestDisplayList = [];
@@ -271,7 +273,7 @@ export class DashboardComponent implements OnInit {
     onClickCard(status: string) {
         // console.log(status);
         
-        this.MediServiceRequestDisplayList = this.MediServiceRequestMasterList.filter(x => x.approveType == status);
+        this.MediServiceRequestDisplayList = this.MediServiceRequestMasterList.filter((x:any)  => x.approveType == status);
         console.log(this.MediServiceRequestDisplayList);
         
         this.reInitDatatable();
@@ -293,14 +295,14 @@ export class DashboardComponent implements OnInit {
         return formateddate;
     }
 
-    addDays(date, daysToAdd) {
+    addDays(date:any, daysToAdd:any) {
         var _24HoursInMilliseconds = 86400000;
 
         return new Date(date.getTime() + daysToAdd * _24HoursInMilliseconds);
     };
 
-    getLocationName(id) {
-        let temp = this.locationList.find(s => s.id == id);
+    getLocationName(id:any) {
+        let temp = this.locationList.find((s:any) => s.id == id);
 
         return temp ? temp.name : '';
     }
@@ -313,14 +315,15 @@ export class DashboardComponent implements OnInit {
             }
             //this.getVisitorTypeList();
 
-        }).catch(error => {
+        }).catch((error)=> {
             // this.isLoading = false;
             this.locationList = [];
         });
     }
 
     ClearFilter() {
-        this.filterstatus = null;
+      // this.filterstatus = null;
+  this.filterstatus = '';
         // this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
         this.from_date = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), 1);
         this.to_date = this.today;
@@ -369,7 +372,7 @@ export class DashboardComponent implements OnInit {
   return { headers };
 }
 
-    getTimeFormat(time) {
+    getTimeFormat(time:any) {
         return moment('1970-01-01 ' + time);
     }
 }

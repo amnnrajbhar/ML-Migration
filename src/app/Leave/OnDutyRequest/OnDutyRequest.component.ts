@@ -22,10 +22,10 @@ import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { OnDutyDetails } from './OnDutyRequest.model';
-import * as moment from 'moment';
-import htmlToPdfmake from 'html-to-pdfmake';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import moment from 'moment'
+// import htmlToPdfmake from 'html-to-pdfmake';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { logWarnings } from 'protractor/built/driverProviders';
 import { formatDate } from '@angular/common';
 
@@ -39,11 +39,11 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./OnDutyRequest.component.css']
 })
 export class OnDutyRequestComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -59,9 +59,9 @@ export class OnDutyRequestComponent implements OnInit {
   locListCon1 = [];
   genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -70,9 +70,9 @@ export class OnDutyRequestComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   userMasterItem: any = {};
@@ -80,17 +80,17 @@ export class OnDutyRequestComponent implements OnInit {
 
   CalenderYear: string = '';
   CalYear: any;
-  OnDutyType: string = null;
-  OnDutyAddress: string = null;
-  OnDutyContactNo: string = null;
-  approverStatus: string = null;
+  OnDutyType: string = ' ';
+  OnDutyAddress: string = ' ';
+  OnDutyContactNo: string = ' ';
+  approverStatus: string = ' ';
   approvedDate: any;
   StartDate: any;
   EndDate: any;
-  Duration1: string = null;
-  Duration2: string = null;
+  Duration1: string = ' ';
+  Duration2: string = ' ';
   NoOfDays: number = 0;
-  LvReason: string = null;
+  LvReason: string = ' ';
   personResponsible: any;
   personName: any;
   DetailedReason: string = '';
@@ -103,7 +103,7 @@ export class OnDutyRequestComponent implements OnInit {
   toTime: any;
   Plant: any = null;
   ApplyFor: any = null;
-  userId: string = null;
+  userId: string = ' ';
   onType: any;
   location: any;
   strDate: any;
@@ -115,7 +115,9 @@ export class OnDutyRequestComponent implements OnInit {
   Areaorlocation: any;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -154,43 +156,43 @@ export class OnDutyRequestComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
   getLocationMaster() {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationAllList = data.filter(x => x.isActive);
+        this.locationAllList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationAllList = this.locationAllList.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locationAllList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationAllList = this.locationAllList.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locationAllList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         this.getPayGroupList();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
   }
 
-  getLocationName(id) {
-    let temp = this.locationList.find(x => x.fkPlantId == id);
+  getLocationName(id:any) {
+    let temp = this.locationList.find((x:any)  => x.fkPlantId == id);
     return temp ? temp.code + ' - ' + temp.name : '';
   }
 
@@ -198,27 +200,28 @@ export class OnDutyRequestComponent implements OnInit {
   getPayGroupList() {
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.PayGroupList = data.sort((a, b) => {
+        this.PayGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
   }
 
-  getPay(id) {
-    let tempPg = this.PayGroupList.find(x => x.id == id);
+  getPay(id:any) {
+    let tempPg = this.PayGroupList.find((x:any)  => x.id == id);
     return tempPg ? tempPg.short_desc : '';
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
@@ -257,18 +260,18 @@ export class OnDutyRequestComponent implements OnInit {
     this.httpService.LApost(APIURLS.GET_HOLIDAYS_LIST_BASED_ON_EMPLOYEES, filterModel).then((data: any) => {
       if (data.length > 0) {
         this.holidaysList = data;
-        this.holidaysList = this.holidaysList.sort((a, b) => {
+        this.holidaysList = this.holidaysList.sort((a:any, b:any) => {
           if (a.date > b.date) return 1;
           if (a.date < b.date) return -1;
           return 0;
 
         });
-        let temp = this.holidaysList.find(x => new Date(x.date) > new Date());
+        let temp = this.holidaysList.find((x:any)  => new Date(x.date) > new Date());
         this.Holiday = temp ? temp.holidayName : 'No Holidays.'
         this.HolidayDate = temp ? temp.date : null;
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.holidaysList = [];
     });
@@ -279,22 +282,22 @@ export class OnDutyRequestComponent implements OnInit {
     this.errMsg = "";
     this.get("RoleMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.Rolelist = data.filter(x => x.isActive);
+        this.Rolelist = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Rolelist = [];
     });
   }
 
-  getRole(id) {
-    let temp = this.Rolelist.find(x => x.id == id);
+  getRole(id:any) {
+    let temp = this.Rolelist.find((x:any)  => x.id == id);
     return temp ? temp.role_Stxt : '';
   }
 
 
   ApproversList: any[] = [];
-  getApproversList(id) {
+  getApproversList(id:any) {
     if (this.ApplyFor == "Others" && (this.userId == null || this.userId == '')) {
       toastr.error("Please enter Employee no...!");
       return;
@@ -317,7 +320,7 @@ export class OnDutyRequestComponent implements OnInit {
         }
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -331,7 +334,7 @@ export class OnDutyRequestComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -341,7 +344,7 @@ export class OnDutyRequestComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#userId").val(ui.item.value);
                   $("#userId").val(ui.item.value);
@@ -351,7 +354,7 @@ export class OnDutyRequestComponent implements OnInit {
                   $("#userId").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#userId").val(ui.item.value);
                   $("#userId").val(ui.item.value);
@@ -395,7 +398,7 @@ export class OnDutyRequestComponent implements OnInit {
 
   fileToUpload: File | null = null;
   File: File | null = null;
-  name: string;
+  name: string
   files: File[] = []
   handleFileInput(files: FileList) {
 
@@ -443,7 +446,7 @@ export class OnDutyRequestComponent implements OnInit {
   }
 
 
-  id: string;
+  id: string
   formData = new FormData();
   fileslist1: any[] = [];
   errMsg1: string = '';
@@ -464,7 +467,7 @@ export class OnDutyRequestComponent implements OnInit {
         // console.log('copied file to server')
         //this.imageFlag = true;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
 
@@ -483,9 +486,9 @@ export class OnDutyRequestComponent implements OnInit {
     this.ReasonList = [];
     this.httpService.LAget(APIURLS.BR_GET_ALL_ONDUTY_REASONS_LIST).then((data: any) => {
       if (data.length > 0) {
-        this.ReasonList = data.filter(x => x.isActive && x.leavType == 100);
+        this.ReasonList = data.filter((x:any)  => x.isActive && x.leavType == 100);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReasonList = [];
     });
@@ -499,7 +502,7 @@ export class OnDutyRequestComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -509,7 +512,7 @@ export class OnDutyRequestComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -519,7 +522,7 @@ export class OnDutyRequestComponent implements OnInit {
                   $("#personName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -554,15 +557,15 @@ export class OnDutyRequestComponent implements OnInit {
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_ONDUTY_REQUESTS, srchstr).then((data: any) => {
       if (data) {
         this.OnDutyRequestList = data;
-        this.OnDutyRequestList = this.OnDutyRequestList.sort((a, b) => {
+        this.OnDutyRequestList = this.OnDutyRequestList.sort((a:any, b:any) => {
           if (a.requestNo < b.requestNo) return 1;
           if (a.requestNo > b.requestNo) return -1;
         });
-        this.upcomingRequests = this.OnDutyRequestList.filter(x => new Date(x.startDate) > new Date() && (x.approverStatus == 'Pending' || x.approverStatus == 'In Process' || x.approverStatus == 'Approved'));
+        this.upcomingRequests = this.OnDutyRequestList.filter((x:any)  => new Date(x.startDate) > new Date() && (x.approverStatus == 'Pending' || x.approverStatus == 'In Process' || x.approverStatus == 'Approved'));
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.OnDutyRequestList = [];
     });
@@ -663,7 +666,7 @@ export class OnDutyRequestComponent implements OnInit {
     let connection = this.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, val);
     connection.then((data: any) => {
       if (data) {
-        let result = data.filter(x => { return x.employeeId != null });
+        let result = data.filter((x:any)  => { return x.employeeId != null });
         this.Plant = result[0].baselocation;
         this.PayGroup = result[0].division;
         this.Department = result[0].department;
@@ -673,24 +676,24 @@ export class OnDutyRequestComponent implements OnInit {
         this.JoiningDate = result[0].joiningDate;
         this.RoleId = result[0].roleId;
       }
-    }).catch(error => {
+    }).catch((error)=> {
     });
   }
 
-  downloadFile(reqNo, value) {
+  downloadFile(reqNo:any, value:any) {
 
     // console.log(filename);
     if (value.length > 0) {
       this.httpService.LAgetFile(APIURLS.BR_ONDUTY_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], value, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
 
@@ -855,7 +858,7 @@ export class OnDutyRequestComponent implements OnInit {
         this.getEmpOnDutyRequests();
       }
       this.reset();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error Cancelling OnDuty ..';
     });
 
@@ -902,7 +905,7 @@ export class OnDutyRequestComponent implements OnInit {
           }
           this.getEmpOnDutyRequests();
           this.reset();
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error Cancelling OnDuty ..';
         });
       }
@@ -924,7 +927,7 @@ export class OnDutyRequestComponent implements OnInit {
 
       //this.getEmpleaveRequests();
       this.reset();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Failure Sending Mail ..';
     });
   }
@@ -950,7 +953,8 @@ export class OnDutyRequestComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -1017,7 +1021,7 @@ getHeader(): { headers: HttpHeaders } {
     return formateddate;
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -1071,7 +1075,7 @@ getHeader(): { headers: HttpHeaders } {
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1084,14 +1088,14 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'On Duty Detail',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1109,7 +1113,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -1164,7 +1168,7 @@ getHeader(): { headers: HttpHeaders } {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
   ApprovedLeaveList: any[] = [];
@@ -1180,18 +1184,18 @@ getHeader(): { headers: HttpHeaders } {
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_ONDUTY_REQUESTS, srchstr).then((data: any) => {
       if (data) {
         this.OnDutyRequestList = data;
-        this.OnDutyRequestList = this.OnDutyRequestList.filter(x => new Date(x.startDate) > new Date(stdate) &&
+        this.OnDutyRequestList = this.OnDutyRequestList.filter((x:any)  => new Date(x.startDate) > new Date(stdate) &&
           (x.approverStatus != 'Rejected' && x.approverStatus != 'Self Cancelled'));
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.OnDutyRequestList = [];
     });
   }
 
-  getCAncelApproversList(id) {
+  getCAncelApproversList(id:any) {
     this.errMsg = "";
     this.httpService.LAgetByParam(APIURLS.GET_CANCEL_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
       if (data) {
@@ -1210,7 +1214,7 @@ getHeader(): { headers: HttpHeaders } {
         }
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -1316,7 +1320,7 @@ getHeader(): { headers: HttpHeaders } {
           }
           this.reset();
           this.getEmpOnDutyRequests();
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error Cancelling OnDuty...';
         });
       }

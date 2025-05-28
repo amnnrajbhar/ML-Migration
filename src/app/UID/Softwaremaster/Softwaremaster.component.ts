@@ -12,8 +12,8 @@ import * as _ from "lodash";
 import { SoftwareMaster } from './Softwaremaster.model';
 declare var jQuery: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 @Component({
   selector: 'app-Softwaremaster',
@@ -22,16 +22,16 @@ export class actionItemModel {
 })
 export class SoftwareMasterComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
   public tableWidget: any;
   selParentId: any;
-  softwareList: any[];
+  softwareList!: any[];
   softwareList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -47,8 +47,8 @@ export class SoftwareMasterComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldsoftware: SoftwareMaster = new SoftwareMaster();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent) { }
 
   private initDatatable(): void {
@@ -69,7 +69,8 @@ export class SoftwareMasterComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getsoftwareMasterList();
     this.getLocationMaster();
 
@@ -88,9 +89,9 @@ export class SoftwareMasterComponent implements OnInit {
   getLocationMaster() {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -113,7 +114,7 @@ export class SoftwareMasterComponent implements OnInit {
     //this.softwareList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.softwareList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
                                     if(a.name > b.name) return 1;
                                     if(a.name < b.name) return -1;
                                     return 0;
@@ -121,7 +122,7 @@ export class SoftwareMasterComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareList = [];
     });
@@ -154,7 +155,7 @@ export class SoftwareMasterComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-   // if (!this.softwareList.some(s => s.name.toLowerCase() == this.software.name.toLowerCase() && s.id != this.software.id)) {
+   // if (!this.softwareList.some((s:any) => s.name.toLowerCase() == this.software.name.toLowerCase() && s.id != this.software.id)) {
       if (!this.isEdit) {
         this.auditType="Create";
         this.software.isActive = true;
@@ -182,7 +183,7 @@ export class SoftwareMasterComponent implements OnInit {
         else
           this.errMsgPop = data;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving department data..';
       });
@@ -218,7 +219,7 @@ export class SoftwareMasterComponent implements OnInit {
             this.insertAuditLog(this.software,this.oldsoftware,this.software.id);
             this.getsoftwareMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting software..';
         });
@@ -285,12 +286,12 @@ export class SoftwareMasterComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -299,7 +300,7 @@ export class SoftwareMasterComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

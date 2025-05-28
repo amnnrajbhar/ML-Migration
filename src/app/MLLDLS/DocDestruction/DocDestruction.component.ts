@@ -15,10 +15,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { SharedmoduleModule } from '../../shared/sharedmodule/sharedmodule.module';
 
 import { stringify } from 'querystring';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 //import { DocCreate } from './DocCreate.model';
 // import { Transactions } from '../eMicro/ItemCodeCreation/transactions.model';
 // import { WorkFlowApprovers } from '../eMicro/Masters/WorkFlowApprovers/WorkFlowApprovers.model';
@@ -30,10 +30,10 @@ import { MediServiceBrand } from '../../MedicalServices/MediServiceBrand/MediSer
 import { MediServiceRequestHistory } from '../../MedicalServices/MediServiceRequestHistory/MediServiceRequestHistory.model';
 
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DocDestruction } from './DocDestruction.model';
 //import { MediServiceBrand } from '../MediServiceBrand/MediServiceBrand.model';
@@ -44,9 +44,9 @@ import { DocDestruction } from './DocDestruction.model';
     styleUrls: ['./DocDestruction.component.css']
 })
 export class DocDestructionComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
     public tableWidget: any;
@@ -64,25 +64,25 @@ export class DocDestructionComponent implements OnInit {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File; successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
     baseLocationnotfirst = true;
 
-    filterbarcode: string = null;
-    filterBrand: string = null;
+    filterbarcode: string = ' ';
+    filterBrand: string = ' ';
 
     DocCreatemodel = {} as DocCreate;
 
     DocCreatelist: DocCreate[] = [];
     // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-    materialtype: string;
-    filterMaterialCode: string = null;
-    filterstatus: string = null;
-    filterlocation: string = null;
-    filterdocno: string = null;
-    filterplace: string = null;
+    materialtype!: string
+    filterMaterialCode: string = ' ';
+    filterstatus: string = ' ';
+    filterlocation: string = ' ';
+    filterdocno: string = ' ';
+    filterplace: string = ' ';
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     to_date: any = this.today;
@@ -91,8 +91,9 @@ export class DocDestructionComponent implements OnInit {
     DocCreateFilter: DocCreate[] = [];
     DocCreatesearchlist: DocCreate[] = [];
 
-    emailid: string;
-    requestdate: Date;
+    emailid!: string
+
+    requestdate!: Date;
     Approver1: boolean = false;
     Approverid1: string = "";
     Approverid2: string = "";
@@ -100,27 +101,31 @@ export class DocDestructionComponent implements OnInit {
     Creator: boolean = false;
     Review: boolean = false;
     Closure: boolean = false;
-    userid: string;
+    userid!: string
 
 
-    MedHead: string = 'Manjula  Suresh';
+
+    MedHead: string
+ = 'Manjula  Suresh';
     MedHeadList: any[] = [];
-    Reviewer: string = null;
+    Reviewer: string = ' ';
     ReviewerList: any[] = [];
     MediRequestFilter: any[] = [];
     Approves: any;
-    Comments: string;
+    Comments!: string
 
     storeData: any;
     jsonData: any;
-    fileUploaded: File;
+    fileUploaded!: File;
     worksheet: any;
     Librarian:boolean=false;
 
     //DocCreatemodeldata = {} as ItemCodeExtension;
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-        private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+        private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
     private initDatatable(): void {
         let exampleId: any = jQuery('#userTable');
@@ -154,7 +159,8 @@ export class DocDestructionComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //  this.baseLocation = this.currentUser.baselocation;
         this.emailid = this.currentUser.email;
         this.userid = this.currentUser.employeeId;
@@ -195,11 +201,11 @@ export class DocDestructionComponent implements OnInit {
 
 
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationList.find(e => e.id == id);
         return temp ? temp.code : '';
     }
-    getloc(loc) {
+    getloc(loc:any) {
         let loccode = loc.keyValue.split('~');
         return loccode ? loccode[0] : '';
     }
@@ -231,10 +237,13 @@ export class DocDestructionComponent implements OnInit {
     clearFilter() {
         this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
         this.to_date = this.today;
-        this.filterlocation = null;
-        this.filterstatus = null;
+       // this.filterlocation = null;
+ this.filterlocation = '';
+      // this.filterstatus = null;
+  this.filterstatus = '';
         this.filterdocno = null;
-        this.filterplace = null;
+      //    this.filterplace = null;
+      this.filterplace = '';
         this.filterbarcode = null;
         this.filterBrand = null;
         this.Approves = null;
@@ -245,8 +254,8 @@ export class DocDestructionComponent implements OnInit {
     getAllEntries() {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         if (this.from_date == '' || this.from_date == null) {
             formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -285,7 +294,7 @@ export class DocDestructionComponent implements OnInit {
              }
             this.reInitDatatable1();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.DocCreateFilter = [];
         });
@@ -296,8 +305,8 @@ export class DocDestructionComponent implements OnInit {
     getAllEntries1() {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         if (this.from_date == '' || this.from_date == null) {
             formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -338,7 +347,7 @@ export class DocDestructionComponent implements OnInit {
              }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.DocCreateFilter = [];
         });
@@ -359,7 +368,7 @@ export class DocDestructionComponent implements OnInit {
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.Approverslist = [];
         });
@@ -368,27 +377,27 @@ export class DocDestructionComponent implements OnInit {
 
    
 
-    locationCode: string;
+    locationCode: string
     getLocationMaster() {
         this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locationCode = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locationCode = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
                // this.getCategoryList();
                // this.getRackList();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
         this.initDatatable();
     }
@@ -396,7 +405,9 @@ export class DocDestructionComponent implements OnInit {
     resetForm() {
         this.errMsg1 = "";
         this.DocCreatemodel = {} as DocCreate;
-        this.Comments = null;
+        
+//this.Comments = null;
+  this.Comments = '';
     }
 
 
@@ -411,7 +422,7 @@ export class DocDestructionComponent implements OnInit {
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.transactionslist = [];
         });
@@ -419,13 +430,13 @@ export class DocDestructionComponent implements OnInit {
     }
     Approverslist: any[] = [];
     accountGroupList: any[] = [];
-    Aprlpriority: number;
+    Aprlpriority!: number;
     ApprovingManager: any;
     ApprvrM: boolean = false;
   
-    empId: string;
+    empId: string
     view: boolean = false;
-    locationName: string;
+    locationName: string
     attachments: any[] = [];
     status:string;
     onUserActions(isedit: boolean, DocCreate: DocCreate, isprint: boolean, value: string) {
@@ -447,7 +458,7 @@ export class DocDestructionComponent implements OnInit {
             this.getLibrarianDetails(this.DocCreatemodel);
             this.gettransactions(this.DocCreatemodel);  
   //          this.CategoryList1 = this.CategoryList;    
-           this.docDestRequest=this.DocCreateFilter1.filter(x=>x.initialDocNo==this.DocCreatemodel.initialDocNo);    
+           this.docDestRequest=this.DocCreateFilter1.filter((x:any)=>x.initialDocNo==this.DocCreatemodel.initialDocNo);    
         }
         if(value == 'Saved')
         {
@@ -456,13 +467,13 @@ export class DocDestructionComponent implements OnInit {
             this.getLibrarianDetails(this.DocCreatemodel);
             this.gettransactions(this.DocCreatemodel);  
   //          this.CategoryList1 = this.CategoryList;    
-           this.docDestRequest=this.DocCreateFilter1.filter(x=>x.initialDocNo==this.DocCreatemodel.initialDocNo); 
+           this.docDestRequest=this.DocCreateFilter1.filter((x:any)=>x.initialDocNo==this.DocCreatemodel.initialDocNo); 
         }
         else {
 
             this.DocCreatemodel = {} as DocCreate;
             this.DocCreatemodel.empCode = this.currentUser.employeeId;
-            this.DocCreatemodel.location = this.locationCode + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+            this.DocCreatemodel.location = this.locationCode + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
             this.DocCreatemodel.fromDept = this.currentUser.department;
             this.DocCreatemodel.initialDocDate = new Date().toLocaleString();
             this.getLibrarianDetails(this.DocCreatemodel);
@@ -502,7 +513,7 @@ export class DocDestructionComponent implements OnInit {
             this.docdestructionModel = Object.assign({}, DocDest);
             this.getLibrarianDetails(this.docdestructionModel);
             this.gettransactions(this.docdestructionModel); 
-            this.docDestRequest=this.DocCreateFilter1.filter(x=>x.initialDocNo==this.docdestructionModel.initialDocNo); 
+            this.docDestRequest=this.DocCreateFilter1.filter((x:any)=>x.initialDocNo==this.docdestructionModel.initialDocNo); 
   //          this.CategoryList1 = this.CategoryList;       
         }
 
@@ -510,7 +521,7 @@ export class DocDestructionComponent implements OnInit {
 
             this.docdestructionModel = {} as DocDestruction;
             this.docdestructionModel.empCode = this.currentUser.employeeId;
-            this.docdestructionModel.location = this.locationCode + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+            this.docdestructionModel.location = this.locationCode + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
             this.docdestructionModel.fromDept = this.currentUser.department;
             this.docdestructionModel.initialDocDate = new Date().toLocaleString();
             this.getLibrarianDetails(this.docdestructionModel);
@@ -535,7 +546,7 @@ export class DocDestructionComponent implements OnInit {
     isValid: boolean = false;
     validatedForm: boolean = true;
 
-    onSaveEntry(status) {
+    onSaveEntry(status:any) {
         this.errMsg = "";
         let connection: any;
         if (this.Approverslist.length == 0) {
@@ -551,7 +562,7 @@ export class DocDestructionComponent implements OnInit {
             if (!this.isEdit) {
                 this.DocCreatemodel.location=this.locationCode;
                 this.DocCreatemodel.empCode = this.currentUser.employeeId;
-                this.DocCreatemodel.docNo=this.checkedRequestList.map(x => x.docNo).join();
+                this.DocCreatemodel.docNo=this.checkedRequestList.map((x:any)  => x.docNo).join();
                 this.DocCreatemodel.reqStatus = status;
                 this.DocCreatemodel.comments=this.Comments;
                 connection = this.httpService.DLSpost(APIURLS.BR_DOC_DESTR_REQUEST_INSERT, this.DocCreatemodel);
@@ -585,7 +596,7 @@ export class DocDestructionComponent implements OnInit {
                     // this.reset();
                 }
                 this.getAllEntries1();
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
                 this.errMsgPop = 'Error saving Request..';
             });
@@ -633,13 +644,13 @@ export class DocDestructionComponent implements OnInit {
                 this.getAllEntries1();
                 // this.reset();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error Submitting Request' + '' + this.DocCreatemodel.barcode;
         });
     }
 
-    onreview(status) {
+    onreview(status:any) {
         this.errMsg = "";
         let connection: any;
         let uid = this.currentUser.employeeId;
@@ -727,13 +738,13 @@ export class DocDestructionComponent implements OnInit {
              
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = status == "Rejected" ? "Error Rejecting Request.." + '' + this.DocCreatemodel.barcode : "Error Approving Request" + '' + this.DocCreatemodel.barcode;
         });
     }
 
-    onRevertRequest(status) {
+   onRevertRequest(status:any) {
         this.errMsg = "";
         let connection: any;
 
@@ -756,7 +767,7 @@ export class DocDestructionComponent implements OnInit {
                 // this.Inserttransactions(this.DocCreatemodel, 'Revert')
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = "Error Reverting Request " + '' + this.DocCreatemodel.barcode;
         });
@@ -780,34 +791,34 @@ export class DocDestructionComponent implements OnInit {
     downloadPdf()
   {
     let temp=this.locationList.find(x=>x.id==this.currentUser.baselocation);
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICRO LABS LIMITED"+', '+temp.code+' - '+temp.name;
     var ReportName = "DOCUMENT DESTRUCTION REPORT"
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate =new Date().toDateString();
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div> 
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      tablebordered:true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-    })
+//     var htmnikhitml = htmlToPdfmake(`<html>
+//   <head>
+//   </head>
+//   <body>
+//   ${printContents}
+//   <div> 
+//   </div>
+//   </body>  
+//   </html>`, {
+//       tableAutoSize: true,
+//       tablebordered:true,
+//       headerRows: 1,
+//       dontBreakRows: true,
+//       keepWithHeaderRows: true,
+//     })
     var docDefinition = {
       info: {
         title: ReportName,
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -825,7 +836,7 @@ export class DocDestructionComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
         // pageMargins: [40, 80, 40, 60],
          style: 'tableExample',
@@ -875,7 +886,7 @@ export class DocDestructionComponent implements OnInit {
       },
      
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
    
 }

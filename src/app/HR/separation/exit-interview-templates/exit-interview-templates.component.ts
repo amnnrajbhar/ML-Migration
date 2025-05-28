@@ -21,7 +21,7 @@ declare var toastr: any;
 })
 export class ExitInterviewTemplatesComponent implements OnInit {
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   isLoading: boolean = false;
@@ -37,7 +37,8 @@ export class ExitInterviewTemplatesComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getTemplates();
     }
   }
@@ -48,10 +49,10 @@ export class ExitInterviewTemplatesComponent implements OnInit {
 
     this.httpService.HRget(APIURLS.RESIGNATION_GET_PRINT_TEMPLATES + "/Exit Interview").then((data: any) => {
       if (data.length > 0) {
-        this.templatesList = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
+        this.templatesList = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -69,7 +70,7 @@ export class ExitInterviewTemplatesComponent implements OnInit {
         this.templateName = this.templatesList.find(x=>x.printTemplateId == this.selectedTemplateId).templateName;
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = error;
     });
@@ -98,7 +99,7 @@ export class ExitInterviewTemplatesComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while saving details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving details. Error:' + error);
       });

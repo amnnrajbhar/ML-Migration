@@ -35,15 +35,15 @@ import { stringify } from 'querystring';
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 
 import * as XLSX from 'xlsx';  
-import * as FileSaver from 'file-saver';
-import { saveAs } from 'file-saver';
+//import * as FileSaver from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -53,20 +53,20 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./CodeCreatorsSummaryReportMail.component.css']
 })
 export class CodeCreatorsSummaryReportMailComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   
-  // @ViewChild(NgForm  , { static: false })dataForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })FGNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })LCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })OSENGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PPCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })dataForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })FGNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })LCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })OSENGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PPCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMForm!: NgForm;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();
@@ -90,7 +90,7 @@ export class CodeCreatorsSummaryReportMailComponent implements OnInit {
   isEdit: boolean = false;
   
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   selectedBaseLocation: any = [];
@@ -107,7 +107,9 @@ export class CodeCreatorsSummaryReportMailComponent implements OnInit {
  // CustomerMastermodeldata = {} as ItemCodeExtension;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-     private http: HttpClient,private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+     private http: HttpClient,private datePipe: DatePipe) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -126,7 +128,8 @@ export class CodeCreatorsSummaryReportMailComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
   //  this.baseLocation = this.currentUser.baselocation;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
    // if (chkaccess == true) {
@@ -178,8 +181,8 @@ Total:any=0;
     var filterModel: any = {};
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
       this.from_date = new Date(td.getFullYear(), td.getMonth(), 1);
@@ -195,13 +198,14 @@ Total:any=0;
     //filterModel.toDate = this.getFormatedDateTime(this.to_date);
     this.httpService.get(APIURLS.BR_GET_SAP_CREATOR_COUNT_Mail).then((data: any) => {
       if (data) {
-       this.PendingList=data.filter(x=>x.status=='Pending');
-       this.CompletedList=data.filter(x=>x.status=='Completed');
+       this.PendingList=data.filter((x:any)=>x.status=='Pending');
+       this.CompletedList=data.filter((x:any)=>x.status=='Completed');
        this.CreatorsList = this.CompletedList
        .map(item => item.saP_CREATED_BY)
        .filter((value, index, self) => self.indexOf(value) === index);
 
-       this.CreatorsList.forEach(element => {
+       this.CreatorsList.forEach((element:any)=> {
+
         let list={Creator:null, RM:null, PM:null,BULK:null, FG:null, OSE:null, LC:null, PPC:null, CodeExtension:null, Customer:null
             , Vendor:null, Service:null,Total:0}
 
@@ -233,7 +237,8 @@ Total:any=0;
             this.CreatorWiseCompletedList.push(list);
        });
 
-       this.CreatorWiseCompletedList.forEach(element => {
+       this.CreatorWiseCompletedList.forEach((element:any)=> {
+
             this.TotalRM=+this.TotalRM + +element.RM;
             this.TotalPM=+this.TotalPM + +element.PM;
             this.TotalBULK=+this.TotalBULK + +element.BULK;
@@ -255,7 +260,7 @@ Total:any=0;
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
  
@@ -287,7 +292,7 @@ Total:any=0;
   }
   downloadPdf()
   {
-    var printContents = document.getElementById('pdf').innerHTML;   
+    var printContents = document.getElementById('pdf')!.innerHTML;   
    // var temp1=this.locationList.find(x=>x.id==this.currentUser.baselocation);
     var OrganisationName ="MICRO LABS LIMITED";
     //var name=this.requestType.toLocaleUpperCase();
@@ -295,7 +300,7 @@ Total:any=0;
     var now = new Date();
     var jsDate =this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -308,14 +313,14 @@ Total:any=0;
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:'Creators Summary',
         },
       
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -333,7 +338,7 @@ Total:any=0;
       pageSize: 'A4',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -364,7 +369,7 @@ Total:any=0;
       },
      
     };
-    pdfMake.createPdf(docDefinition).download();
+   // pdfMake.createPdf(docDefinition).download();
   } 
   
  

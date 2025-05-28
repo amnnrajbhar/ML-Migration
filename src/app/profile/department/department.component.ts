@@ -13,8 +13,8 @@ import { AuditLog } from '../../masters/auditlog.model';
 import { AuditLogChange } from '../../masters/auditlogchange.model';
 declare var jQuery: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 @Component({
   selector: 'app-department',
@@ -23,14 +23,14 @@ export class actionItemModel {
 })
 export class DepartmentComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) depForm: NgForm;
+@ViewChild(NgForm, { static: false }) depForm!: NgForm;
 
   currentUser = {} as AuthData;
   public tableWidget: any;
-  depList: any[];
-  depList1: any[];
+  depList!: any[];
+  depList1!: any[];
   public filteredItems = [];
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any;
   depItem: Department = new Department(0, '', '', 0, '', true);
   isLoading: boolean = false;
@@ -42,8 +42,8 @@ export class DepartmentComponent implements OnInit {
   checkAll: boolean = false;
   path: string = '';
   olddepItem: Department = new Department(0, '', '', 0, '', true);// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
   private initDatatable(): void {
@@ -65,7 +65,8 @@ export class DepartmentComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.isLoading = true;
       this.getDepartList();
       this.isLoading = false;
@@ -104,11 +105,11 @@ export class DepartmentComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        this.depList = data.filter(x => x.isActive);
+        this.depList = data.filter((x:any)  => x.isActive);
       }
       this.isLoading = false;
       this.reInitDatatable();
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.depList = [];
     });
@@ -118,7 +119,7 @@ export class DepartmentComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-    if (!this.depList.some(s => s.name.trim().toLowerCase() == this.depItem.name.trim().toLowerCase() && s.id != this.depItem.id)) {
+    if (!this.depList.some((s:any) => s.name.trim().toLowerCase() == this.depItem.name.trim().toLowerCase() && s.id != this.depItem.id)) {
       if (!this.isEdit)
       {
         this.auditType="Create";
@@ -139,7 +140,7 @@ export class DepartmentComponent implements OnInit {
           this.insertAuditLog(this.olddepItem,this.depItem,Id);
           this.getDepartList();
         }
-      }).catch(() => {
+      }).catch((error) => {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving department data..';
       });
@@ -174,7 +175,7 @@ export class DepartmentComponent implements OnInit {
             this.insertAuditLog(this.depItem,this.olddepItem,this.depItem.id);
             this.getDepartList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Department..';
         });
@@ -241,12 +242,12 @@ export class DepartmentComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -255,7 +256,7 @@ export class DepartmentComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

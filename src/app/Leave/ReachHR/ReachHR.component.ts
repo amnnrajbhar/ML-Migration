@@ -22,10 +22,10 @@ import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ReachHRDetails } from './ReachHR.model';
-import * as moment from 'moment';
-import htmlToPdfmake from 'html-to-pdfmake';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import moment from 'moment'
+// import htmlToPdfmake from 'html-to-pdfmake';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { UserIdRequest } from '../../UID/UserIdRequest/UserIdRequest.model';
 declare var ActiveXObject: (type: string) => void;
 
@@ -37,11 +37,11 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./ReachHR.component.css']
 })
 export class ReachHRComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
   protected aFormGroup: FormGroup;
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -53,28 +53,28 @@ export class ReachHRComponent implements OnInit {
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   year: any;
   CalenderYear: string = '';
   CalYear: any;
   filtermonth: any;
-  StartDate: string = null;
-  EndDate: string = null;
+  StartDate: string = ' ';
+  EndDate: string = ' ';
   ReachHRList: any[] = [];
   fromDate: any;
   toDate: any;
-  userId: string = null;
+  userId: string = ' ';
   requestPSList: any[] = [];
   requestHRQList: any[] = [];
   filterRequest: any = null;
   MonthorYear: any = null;
   Year: any = [];
-  upcomingPSList: any[];
-  upcomingHRQList: any[];
+  upcomingPSList!: any[];
+  upcomingHRQList!: any[];
   filterYear: any;
   locationId: any;
   catList: any[] = [];
@@ -90,8 +90,8 @@ export class ReachHRComponent implements OnInit {
   locationAllList: any;
   locListCon: any;
   ApproversList: any[] = [];
-  captchaValue: string;
-  UserInput: string;
+  captchaValue: string
+  UserInput: string
   captchaStatus: any = '';
   captchaConfig: any = {
     type: 1,
@@ -112,7 +112,7 @@ export class ReachHRComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private http: HttpClient, private https: HttpClient, private route: ActivatedRoute, private formBuilder: FormBuilder) {
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ //   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   }
 
   private initDatatable(): void {
@@ -272,10 +272,11 @@ export class ReachHRComponent implements OnInit {
   }
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
@@ -308,16 +309,16 @@ export class ReachHRComponent implements OnInit {
     this.reInitDatatable();
   }
 
-  CategoryList: any[];
+  CategoryList!: any[];
   getCatList() {
     this.httpService.LAget(APIURLS.BR_GET_QUERY_CATEGORY).then((data: any) => {
       // this.isLoading = false;
       if (data.length > 0) {
         this.catList = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.catList.sort((a, b) => { return collator.compare(a.name, b.name) });
+        this.catList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.catList = [];
     });
   }
@@ -344,7 +345,8 @@ export class ReachHRComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -395,11 +397,11 @@ getHeader(): { headers: HttpHeaders } {
       this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_PAYSLIP_REQUESTS, srchstr).then((data: any) => {
         if (data) {
           this.requestPSList = data;
-          this.upcomingPSList = this.requestPSList.filter(x => new Date(x.startDate) > new Date());
+          this.upcomingPSList = this.requestPSList.filter((x:any)  => new Date(x.startDate) > new Date());
         }
         this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.requestPSList = [];
       });
@@ -418,11 +420,11 @@ getHeader(): { headers: HttpHeaders } {
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_PAYSLIP_REQUESTS, srchstr).then((data: any) => {
       if (data) {
         this.requestPSList = data;
-        this.upcomingPSList = this.requestPSList.filter(x => new Date(x.startDate) > new Date());
+        this.upcomingPSList = this.requestPSList.filter((x:any)  => new Date(x.startDate) > new Date());
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.requestPSList = [];
     });
@@ -446,11 +448,11 @@ getHeader(): { headers: HttpHeaders } {
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_QUERY_REQUESTS, srchstr).then((data: any) => {
       if (data) {
         this.requestHRQList = data;
-        this.upcomingHRQList = this.requestHRQList.filter(x => new Date(x.startDate) > new Date());
+        this.upcomingHRQList = this.requestHRQList.filter((x:any)  => new Date(x.startDate) > new Date());
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.requestHRQList = [];
     });
@@ -532,7 +534,7 @@ getHeader(): { headers: HttpHeaders } {
           this.ClearData();
           this.generaterPaySlip(output)
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error Uploading Request...';
       });
     }
@@ -542,7 +544,7 @@ getHeader(): { headers: HttpHeaders } {
     let requestList: any[] = [];
     let filterModel: any = {};
     filterModel.pernr = this.currentUser.employeeId;
-    filterModel.werks = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+    filterModel.werks = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
     filterModel.reqno = Id.reqId;
     let year = new Date(this.filterYear).getFullYear();
     let month = this.filtermonth.length > 1 ? this.filtermonth : '0' + this.filtermonth
@@ -581,7 +583,7 @@ getHeader(): { headers: HttpHeaders } {
         this.UpdatePaySlipRequest(Id);
         this.ClearData();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error generating Request...';
     });
   }
@@ -604,7 +606,7 @@ getHeader(): { headers: HttpHeaders } {
 
         // this.generaterPaySlip(output.reqId)
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error Uploading Request...';
     });
   }
@@ -662,7 +664,7 @@ getHeader(): { headers: HttpHeaders } {
           this.ClearData();
           this.generateForm16(output)
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error Uploading Request...';
       });
     }
@@ -672,7 +674,7 @@ getHeader(): { headers: HttpHeaders } {
     let requestList: any[] = [];
     let filterModel: any = {};
     filterModel.pernr = this.currentUser.employeeId;
-    filterModel.werks = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+    filterModel.werks = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
     filterModel.reqno = Id.reqId;
     let year = new Date(this.filterYear).getFullYear();
     // let month = this.filtermonth.length > 1 ? this.filtermonth : '0' + this.filtermonth
@@ -711,7 +713,7 @@ getHeader(): { headers: HttpHeaders } {
         this.UpdateForm16Request(Id);
         this.ClearData();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error generating Request...';
     });
   }
@@ -734,7 +736,7 @@ getHeader(): { headers: HttpHeaders } {
 
         // this.generaterPaySlip(output.reqId)
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error Uploading Request...';
     });
   }
@@ -772,7 +774,7 @@ getHeader(): { headers: HttpHeaders } {
       }
       // this.reInitDatatable();()
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.currentUser = {} as AuthData;
     });
@@ -783,16 +785,16 @@ getHeader(): { headers: HttpHeaders } {
     this.errMsg = "";
     this.get("RoleMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.Rolelist = data.filter(x => x.isActive);
+        this.Rolelist = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Rolelist = [];
     });
   }
 
-  getRole(id) {
-    let temp = this.Rolelist.find(x => x.id == id);
+  getRole(id:any) {
+    let temp = this.Rolelist.find((x:any)  => x.id == id);
     return temp ? temp.role_Stxt : '';
   }
 
@@ -812,7 +814,7 @@ getHeader(): { headers: HttpHeaders } {
       // this.filtercomments = userIdRequest.comments;
     }
     else {
-      let loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+      let loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
       this.userIdRequest.plant = loc.code + " - " + loc.name;
       this.userIdRequest.employeeId = this.currentUser.employeeId;
       this.userIdRequest.fullName = this.currentUser.fullName;
@@ -860,7 +862,7 @@ getHeader(): { headers: HttpHeaders } {
           jQuery("#myModal2").modal('hide');
           this.ClearData();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error Uploading Request...';
       });
     }
@@ -892,13 +894,13 @@ getHeader(): { headers: HttpHeaders } {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -927,7 +929,7 @@ getHeader(): { headers: HttpHeaders } {
         this.ApproversList = data;
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });

@@ -22,12 +22,12 @@ declare var toastr: any;
   providers: [AppointmentService, Util]
 })
 export class OfficialComponent implements OnInit {
-  @ViewChild('officialDetailsForm' , { static: false }) private officialDetailsForm: NgForm;
-  @Input() appointmentId: number;
+  @ViewChild('officialDetailsForm' , { static: false }) private officialDetailsForm!: NgForm;
+  @Input() appointmentId!: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   details:OfficialDetails = {} as OfficialDetails;    
   isLoading: boolean = false;
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
@@ -63,7 +63,8 @@ export class OfficialComponent implements OnInit {
     
     
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));     
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;     
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
       this.isLoading = true;
@@ -135,7 +136,7 @@ export class OfficialComponent implements OnInit {
             this.dataLoaded.emit(data.appointmentOfficialDetailsId);
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
       });
@@ -190,7 +191,7 @@ export class OfficialComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while saving the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving the details. Error:' + error);
       });
@@ -234,10 +235,10 @@ export class OfficialComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
         this.getData();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });2    
   }
@@ -247,11 +248,11 @@ export class OfficialComponent implements OnInit {
     if (this.details.plantId > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.details.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
           this.getEmployeeCategoryList();
           this.getPrintTemplates();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -264,11 +265,11 @@ export class OfficialComponent implements OnInit {
       this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/" + this.details.plantId + "/" + this.details.payGroupId)
         .then((data: any) => {
           if (data.length > 0) {
-            this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+            this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
             this.getSignatories();
             this.getPrintTemplates();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.employeeCategoryList = [];
         });
     }
@@ -279,10 +280,10 @@ export class OfficialComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a,b)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1; return 0;});
+        this.locationFullList = data.sort((a:any,b:any)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1; return 0;});
         this.loadStateAndLocations();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -290,9 +291,9 @@ export class OfficialComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a,b)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1; return 0;});        
+        this.designationList = data.sort((a:any,b:any)=>{if(a.name > b.name) return 1; if(a.name < b.name) return -1; return 0;});        
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -300,9 +301,9 @@ export class OfficialComponent implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a,b)=>{if(a.role_ltxt > b.role_ltxt) return 1; if(a.role_ltxt < b.role_ltxt) return -1; return 0;});
+        this.roleList = data.sort((a:any,b:any)=>{if(a.role_ltxt > b.role_ltxt) return 1; if(a.role_ltxt < b.role_ltxt) return -1; return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -310,9 +311,9 @@ export class OfficialComponent implements OnInit {
   getDepartments(){
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -320,9 +321,9 @@ export class OfficialComponent implements OnInit {
   getSubDepartments(){
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        this.subDepartmentFullList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        this.subDepartmentFullList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.subDepartmentFullList = [];
     });
   }
@@ -330,9 +331,9 @@ export class OfficialComponent implements OnInit {
   getReportingGroups(){
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_REPORTING_GROUPS).then((data: any) => {
       if (data.length > 0) {
-        this.reportingGroupsList = data.sort((a, b) => { if (a.reportingGroupLt > b.reportingGroupLt) return 1; if (a.reportingGroupLt < b.reportingGroupLt) return -1; return 0; });
+        this.reportingGroupsList = data.sort((a:any, b:any) => { if (a.reportingGroupLt > b.reportingGroupLt) return 1; if (a.reportingGroupLt < b.reportingGroupLt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.reportingGroupsList = [];
     });
   }
@@ -341,9 +342,9 @@ export class OfficialComponent implements OnInit {
     if(this.appointmentId > 0){
       this.httpService.HRget(APIURLS.APPOINTMENT_GET_ADDRESS_LIST+"/"+this.appointmentId).then((data: any) => {
         if (data.length > 0) {
-          this.addressList = data.sort((a, b) => { if (a.addressType > b.addressType) return 1; if (a.addressType < b.addressType) return -1; return 0; });
+          this.addressList = data.sort((a:any, b:any) => { if (a.addressType > b.addressType) return 1; if (a.addressType < b.addressType) return -1; return 0; });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.addressList = [];
       });
     }
@@ -355,9 +356,9 @@ export class OfficialComponent implements OnInit {
       this.httpService.HRget(APIURLS.APPOINTMENT_GET_PRINT_TEMPLATES+ "/" + this.details.plantId + "/" + this.details.payGroupId +"/"+this.details.employeeCategoryId)
       .then((data: any) => {
         if (data.length > 0) {
-          this.printTemplates = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });          
+          this.printTemplates = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });          
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.printTemplates = [];
       });
     }
@@ -368,9 +369,9 @@ export class OfficialComponent implements OnInit {
       this.httpService.HRget(APIURLS.APPOINTMENT_GET_SIGNATORIES + "/" + this.details.plantId + "/" + this.details.payGroupId +"/"+this.details.employeeCategoryId)
       .then((data: any) => {
         if (data.length > 0 && this.signatoryList.length == 0) {
-          this.signatoryList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+          this.signatoryList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.signatoryList = [];
       });
     }
@@ -381,7 +382,7 @@ export class OfficialComponent implements OnInit {
       if (data.length > 0) {
         this.pnPeriodList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.pnPeriodList = [];
     });
   }
@@ -430,7 +431,7 @@ export class OfficialComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
@@ -441,7 +442,7 @@ export class OfficialComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -451,7 +452,7 @@ export class OfficialComponent implements OnInit {
                   $("#reportingManager").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -479,7 +480,7 @@ export class OfficialComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
@@ -490,7 +491,7 @@ export class OfficialComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManagerId").val(ui.item.value);
                   $("#approvingManager").val(ui.item.label);
@@ -500,7 +501,7 @@ export class OfficialComponent implements OnInit {
                   $("#approvingManager").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManagerId").val(ui.item.value);
                   $("#approvingManager").val(ui.item.label);
@@ -537,15 +538,15 @@ export class OfficialComponent implements OnInit {
   loadStateAndLocations(){
     if(this.details.countryId > 0){
       var country = this.countryList.find(x=>x.id == this.details.countryId);
-      this.stateList = this.stateFullList.filter(x => x.land1 == country.land1);
+      this.stateList = this.stateFullList.filter((x:any)  => x.land1 == country.land1);
     }   
     var selectedState = this.stateList.find(x=>x.id == this.details.stateId);
     if(selectedState)
-      this.locationList = this.locationFullList.filter(x=>x.stateId == selectedState.bland);
+      this.locationList = this.locationFullList.filter((x:any)=>x.stateId == selectedState.bland);
   }
 
   onDepartmentChange(){
-    this.subDepartmentList = this.subDepartmentFullList.filter(x=>x.departmentId == this.details.departmentId);
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)=>x.departmentId == this.details.departmentId);
     this.updateProbationNoticePeriods();
   }
   
@@ -565,7 +566,7 @@ onCountryChange(){
   this.details.locationId = "";
   if(this.details.countryId > 0){
     var country = this.countryList.find(x=>x.id == this.details.countryId);
-    this.stateList = this.stateFullList.filter(x => x.land1 == country.land1);
+    this.stateList = this.stateFullList.filter((x:any)  => x.land1 == country.land1);
   }  
 }
 
@@ -574,7 +575,7 @@ onStateChange(){
   this.details.locationId = "";
   var selectedState = this.stateList.find(x=>x.id == this.details.stateId);
   if(selectedState)
-    this.locationList = this.locationFullList.filter(x=>x.stateId == selectedState.bland);
+    this.locationList = this.locationFullList.filter((x:any)=>x.stateId == selectedState.bland);
     // if(this.details.stateId == 1649)  // Nepal
     // {
     //   this.details.countryId = 160;  // Nepal

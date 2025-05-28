@@ -16,12 +16,13 @@ export class SelectEmployeeComponent implements OnInit {
   id: number = 0;
   isLoading: boolean = false;
   transfer:any = {};
-  currentUser: AuthData;
+  currentUser!: AuthData;
   constructor(private httpService: HttpService,
     private router: Router,private location: Location) { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
   }
 
   viewEmployeeDetails(employeeId: any) {
@@ -48,7 +49,7 @@ export class SelectEmployeeComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_TRANSFER_EMPLOYEEMASTER_GET_LIST +"/"+this.currentUser.uid+ "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
@@ -59,7 +60,7 @@ export class SelectEmployeeComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#employeeId").val(ui.item.value);
                   $("#employeeName").val(ui.item.label);
@@ -69,7 +70,7 @@ export class SelectEmployeeComponent implements OnInit {
                   $("#employeeName").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#employeeId").val(ui.item.value);
                   $("#employeeName").val(ui.item.label);

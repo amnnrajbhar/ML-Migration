@@ -20,7 +20,7 @@ declare var toastr: any;
 })
 export class AppraisalHodRecommendationsComponent implements OnInit {
   employeeDetail: any = {};
-  @Input() employeeInitialAppraisalDetail: number;
+  @Input() employeeInitialAppraisalDetail!: number;
   recommendedDesignation: any;
   recommendedRole: any;
   isLoading: boolean = false;
@@ -42,11 +42,11 @@ export class AppraisalHodRecommendationsComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
         this.loadRecommendationsData();
   
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -55,28 +55,28 @@ export class AppraisalHodRecommendationsComponent implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
 
-  loadEmployeeDetails(id) {
+  loadEmployeeDetails(id:any) {
     this.isLoading = true;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_GET_HOD_RECOMMENDATIONS_DETAILS, id).then((data: any) => {
       if (data) {
         console.log('inside hod');
         this.employeeDetail = data;
         console.log(this.employeeDetail.recommendationDetails);
-       // this.recommendedDesignation = this.designationList.find(x => x.id == this.employeeDetail.recommendationDetails.recommendedDesignationId).name;
-        //this.recommendedRole = this.roleList.find(x => x.id == this.employeeDetail.recommendationDetails.recommendedRoleId).role_ltxt;
+       // this.recommendedDesignation = this.designationList.find((x:any)  => x.id == this.employeeDetail.recommendationDetails.recommendedDesignationId).name;
+        //this.recommendedRole = this.roleList.find((x:any)  => x.id == this.employeeDetail.recommendationDetails.recommendedRoleId).role_ltxt;
   console.log(this.recommendedDesignation);
   console.log(this.recommendedRole);
   this.isLoading = false;
         }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

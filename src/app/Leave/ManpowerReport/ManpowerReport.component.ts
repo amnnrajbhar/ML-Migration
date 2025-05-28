@@ -30,10 +30,10 @@ import { ManpowerReport } from './ManpowerReport.model';
   styleUrls: ['./ManpowerReport.component.css']
 })
 export class ManpowerReportComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
   public tableWidget: any;
@@ -44,7 +44,7 @@ export class ManpowerReportComponent implements OnInit {
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
-  path: string;
+  path!: string
   filterPlant: any = null;
   filterPayGroup: any = null;
   filterDepartment: any = null;
@@ -83,7 +83,7 @@ export class ManpowerReportComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -92,10 +92,11 @@ export class ManpowerReportComponent implements OnInit {
 
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
 
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
@@ -118,13 +119,13 @@ export class ManpowerReportComponent implements OnInit {
   getpayGroupList() {
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.PayGroupList = data.sort((a, b) => {
+        this.PayGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
@@ -135,7 +136,7 @@ export class ManpowerReportComponent implements OnInit {
         this.StaffCategoryList = data;
         //this.filterStaffcat=this.StaffCategoryList.find(x=>x.id==8).catltxt;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.StaffCategoryList = [];
     });
@@ -144,29 +145,29 @@ export class ManpowerReportComponent implements OnInit {
   payGroupList1: any[] = [];
   getPaygroupsBasedOnPlant() {
     //this.filterPaygroup = null;
-    let temp = this.locationList.find(x => x.code == this.filterPlant);
-    this.payGroupList1 = temp ? this.PayGroupList.filter(x => x.plant == temp.code) : [];
+    let temp = this.locationList.find((x:any)  => x.code == this.filterPlant);
+    this.payGroupList1 = temp ? this.PayGroupList.filter((x:any)  => x.plant == temp.code) : [];
   }
 
   getPaygroupsBasedOnPlant1() {
     //this.filterPaygroup = null;
-    let temp = this.locationList.find(x => x.code == this.manPowerReport.plant);
-    this.payGroupList1 = temp ? this.PayGroupList.filter(x => x.plant == temp.code) : [];
+    let temp = this.locationList.find((x:any)  => x.code == this.manPowerReport.plant);
+    this.payGroupList1 = temp ? this.PayGroupList.filter((x:any)  => x.plant == temp.code) : [];
   }
 
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         // this.filterPlant=this.locationList.find(x=>x.fkPlantId==this.currentUser.baselocation).code;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -175,13 +176,13 @@ export class ManpowerReportComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -193,7 +194,7 @@ export class ManpowerReportComponent implements OnInit {
       if (data.length > 0) {
         this.subDepartmentList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.subDepartmentList = [];
     });
@@ -208,7 +209,7 @@ export class ManpowerReportComponent implements OnInit {
       if ($event.timeStamp - this.lastcontractkeydown > 400) {
         this.httpService.LAgetByParam(APIURLS.BR_API_GET_CONTRACTORS, text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.name + " (" + item.sapCodeNo + ")", value: item.sapCodeNo };
             })
@@ -218,7 +219,7 @@ export class ManpowerReportComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#contractorId").val(ui.item.value);
                   $("#contractor").val(ui.item.label);
@@ -229,7 +230,7 @@ export class ManpowerReportComponent implements OnInit {
                   $("#contractor").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#contractorId").val(ui.item.value);
                   $("#contractor").val(ui.item.label);
@@ -281,13 +282,13 @@ export class ManpowerReportComponent implements OnInit {
     let connection = this.httpService.LApost(APIURLS.GET_CONTRACT_MAN_POWER_REPORT, filterModel);
     connection.then((data: any) => {
       if (data) {
-        this.Contractorwiselist = data.manpowerplannig.filter(x => x.type == 'ContractorWise');
+        this.Contractorwiselist = data.manpowerplannig.filter((x:any)  => x.type == 'ContractorWise');
       }
       else {
         toastr.error("<i>No data found.</i>")
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
       this.PaygroupwiseList = [];
       this.Contractorwiselist = [];
@@ -296,7 +297,9 @@ export class ManpowerReportComponent implements OnInit {
 
   ClearData() {
     this.filterStaffcat = null;
-    this.filterPayGroup = null;
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
     this.filterDepartment = null;
     this.filterSubDepartment = null;
     this.filterContractor = null;
@@ -366,7 +369,8 @@ export class ManpowerReportComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -430,7 +434,7 @@ getHeader(): { headers: HttpHeaders } {
         this.ClearData1();
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving planning data..';
     });

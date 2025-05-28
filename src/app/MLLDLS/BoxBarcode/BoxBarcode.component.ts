@@ -13,14 +13,14 @@ import { AuditLog } from '../../masters/auditlog.model';
 import { DocCreate } from '../DocCreate/DocCreate.model';
 declare var jQuery: any;
 export class actionItemModel {
-    location: string;
-    boxNo: string;
-    boxDescription: string;
-    boxBarcode1: string;
-    boxStatus: string;
-    room: string;
-    rack: string;
-    bin: string;
+    location: string
+    boxNo: string
+    boxDescription: string
+    boxBarcode1: string
+    boxStatus: string
+    room: string
+    rack: string
+    bin: string
 }
 @Component({
   selector: 'app-BoxBarcode',
@@ -29,7 +29,7 @@ export class actionItemModel {
 })
 export class BoxBarcodeComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
@@ -37,10 +37,10 @@ export class BoxBarcodeComponent implements OnInit {
   public tableWidget1: any;
 
   selParentId: any;
-  BoxBarcodeList: any[];
+  BoxBarcodeList!: any[];
   BoxBarcodeList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -56,8 +56,8 @@ export class BoxBarcodeComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldboxbarcodeItem: BoxBarcode = new BoxBarcode();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   locListCon = [];
   locListCon1 = [];
   Barcode:string;
@@ -102,7 +102,8 @@ export class BoxBarcodeComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationMaster();
     }
     else
@@ -126,23 +127,23 @@ export class BoxBarcodeComponent implements OnInit {
 
   locationAllList: any[] = [[]];
   locationList: any[] = [[]];
-  locationCode: string;
+  locationCode: string
   getLocationMaster() {
       this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
           if (data.length > 0) {
               this.locationAllList = data;
-              this.locationList = data.filter(x => x.isActive);
+              this.locationList = data.filter((x:any)  => x.isActive);
               let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-              this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-              this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-              this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-              this.locationCode = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-              let temp=this.locationList.find(x => x.id == this.currentUser.baselocation);
+              this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+              this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+              this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+              this.locationCode = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+              let temp=this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
               this.filterLocation=temp.code+' - '+temp.name;
               //this.getBoxBarcodeMasterList();
               this.getLocRackList();
           }
-      }).catch(error => {
+      }).catch((error)=> {
           this.isLoading = false;
           this.locationList = [];
       });
@@ -153,7 +154,7 @@ export class BoxBarcodeComponent implements OnInit {
     let searchStr=this.filterBarcode+'~'+this.filterBoxNo+'~'+this.locationCode;
     this.httpService.DLSgetByParam(APIURLS.BR_BOX_DETAILS_GET_LOC_API,searchStr).then((data: any) => {
       if (data.length > 0) {
-        this.BoxBarcodeList = data.sort((a,b)=>{
+        this.BoxBarcodeList = data.sort((a:any,b:any)=>{
                                     if(a.boxNo > b.boxNo) return 1;
                                     if(a.boxNo < b.boxNo) return -1;
                                     return 0;
@@ -161,7 +162,7 @@ export class BoxBarcodeComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.BoxBarcodeList = [];
     });
@@ -176,12 +177,12 @@ export class BoxBarcodeComponent implements OnInit {
 
             this.LocRackList = data;
             let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-            this.LocRackList.sort((a, b) => { return collator.compare(a.name, b.name) });
-            // this.CategoryList.filter(x=>x.location==this.locationCode);
+            this.LocRackList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
+            // this.CategoryList.filter((x:any)=>x.location==this.locationCode);
             this.RoomList = this.LocRackList.filter((item, i, arr) => arr.findIndex((t) => t.room === item.room) === i);
         }
         this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
         this.isLoading = false;
         this.LocRackList = [];
     });
@@ -189,11 +190,11 @@ export class BoxBarcodeComponent implements OnInit {
 }
     GetRacMasterkList(room)
     {
-        this.RackList=this.LocRackList.filter(x=>x.room==room).filter((item, i, arr) => arr.findIndex((t) => t.rack === item.rack) === i);
+        this.RackList=this.LocRackList.filter((x:any)=>x.room==room).filter((item, i, arr) => arr.findIndex((t) => t.rack === item.rack) === i);
     }
     GetBins(item)
     {
-        this.BinList=this.LocRackList.filter(x=>x.room==item.room && x.rack==item.rack);
+        this.BinList=this.LocRackList.filter((x:any)=>x.room==item.room && x.rack==item.rack);
     }
   onAddBoxBarcode(isEdit: boolean, data: BoxBarcode) {
     this.desigForm.form.markAsPristine();
@@ -226,7 +227,7 @@ export class BoxBarcodeComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-    // if (!this.BoxBarcodeList.some(s => s.boxNo.toLowerCase() == this.boxbarcodeItem.boxNo.toLowerCase() && s.boxBarcode1 == this.boxbarcodeItem.boxBarcode1
+    // if (!this.BoxBarcodeList.some((s:any) => s.boxNo.toLowerCase() == this.boxbarcodeItem.boxNo.toLowerCase() && s.boxBarcode1 == this.boxbarcodeItem.boxBarcode1
     //                                 && s.location==this.locationCode)) {
       if (!this.isEdit) {
         this.auditType="Create";
@@ -256,7 +257,7 @@ export class BoxBarcodeComponent implements OnInit {
         else
           this.errMsgPop = data;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving department data..';
       });
@@ -291,7 +292,7 @@ export class BoxBarcodeComponent implements OnInit {
             this.insertAuditLog(this.boxbarcodeItem,this.oldboxbarcodeItem,this.boxbarcodeItem.id);
             this.getBoxBarcodeMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting BoxBarcode..';
         });
@@ -313,7 +314,7 @@ export class BoxBarcodeComponent implements OnInit {
       jQuery("#BoxViewModel").modal('show');
       this.reInitDatatable1();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.dynamicArray = [];
     });
@@ -332,7 +333,7 @@ export class BoxBarcodeComponent implements OnInit {
     //  jQuery("#BoxViewModel").modal('show');
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.DocList = [];
     });
@@ -372,7 +373,7 @@ export class BoxBarcodeComponent implements OnInit {
          // this.getBoxDetails(this.boxbarcodeItem.boxNo);
         }
       
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error removing from box..';
       });
@@ -404,7 +405,7 @@ export class BoxBarcodeComponent implements OnInit {
         else
           this.errMsgPop = data;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error adding to box..';
       });
@@ -480,12 +481,12 @@ export class BoxBarcodeComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -494,7 +495,7 @@ export class BoxBarcodeComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

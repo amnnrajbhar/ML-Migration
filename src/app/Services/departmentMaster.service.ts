@@ -19,12 +19,12 @@ export class DepartmentMasterService {
         
         this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: DepartmentMaster[]) => {
             if (data.length > 0) {
-                this.departments = data.filter(x => x.isActive == true).sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+                this.departments = data.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
             }
             
             this.isServiceLoading = false;
-        }).catch(error => {
-            console.log(error);
+        }).catch((error)=> {
+            //console.log(error);
             this.departments = [];
             
             this.isServiceLoading = false;

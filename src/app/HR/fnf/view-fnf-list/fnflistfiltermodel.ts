@@ -1,13 +1,13 @@
 export class FNFListFilter {
-    selectedPlantId: number;
-    selectedEmployeeCategoryId: number;
-    selectedPayGroupId: number;
-    selectedLocationId: number;
-    selectedStatus: string;
-    selectedFromdate: string;
-    selectedTodate: string;
-    name: string;
-    employeeId: number;
+    selectedPlantId!: number;
+    selectedEmployeeCategoryId!: number;
+    selectedPayGroupId!: number;
+    selectedLocationId!: number;
+    selectedStatus: string
+    selectedFromdate: string
+    selectedTodate: string
+    name: string
+    employeeId!: number;
     pageNo:number;
     pageSize:number;
     export:boolean;

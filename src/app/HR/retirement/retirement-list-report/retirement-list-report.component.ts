@@ -19,7 +19,7 @@ declare var toastr: any;
 })
 export class RetirementListReportComponent implements OnInit {
   id: number = 0;
-  action: string;
+  action: string
   isLoading: boolean = false;
   plantList: any[] = [];
   payGroupList: any[] = [];
@@ -29,9 +29,9 @@ export class RetirementListReportComponent implements OnInit {
   locationFullList: any[] = [];
   stateList: any[] = [];
   filterData: any = {};
-  currentUser: AuthData;
+  currentUser!: AuthData;
   retirementId: number = 0;
-  comments: string;
+  comments: string
   reisinationList1: any[] = [];
   genderList: any[] = [
     { id: 1, name: 'Any' },
@@ -55,7 +55,8 @@ export class RetirementListReportComponent implements OnInit {
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.selectedDepartmentId = "";
     this.filterModel.pageNo = 1;
@@ -85,9 +86,9 @@ export class RetirementListReportComponent implements OnInit {
       if (this.filterModel.selectedPlantId > 0) {
         this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.filterModel.selectedPlantId).then((data: any) => {
           if (data.length > 0) {
-            this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+            this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.payGroupList = [];
         });
       }
@@ -99,9 +100,9 @@ export class RetirementListReportComponent implements OnInit {
       this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
         .then((data: any) => {
           if (data.length > 0) {
-            this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+            this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.employeeCategoryList = [];
         });
     }
@@ -109,7 +110,7 @@ export class RetirementListReportComponent implements OnInit {
       getLocationList(){
       this.filterModel.selectedLocationId = "";
       if(this.filterModel.selectedStateId > 0)
-        this.locationList = this.locationFullList.filter(x=>x.stateID == this.filterModel.selectedStateId);
+        this.locationList = this.locationFullList.filter((x:any)=>x.stateID == this.filterModel.selectedStateId);
       else 
         this.locationList = [];    
     }
@@ -117,16 +118,16 @@ export class RetirementListReportComponent implements OnInit {
     onStateChanged() {
      var selectedState = this.stateList.find(x=>x.id == this.filterModel.selectedStateId);
     if(selectedState)
-      this.locationList = this.locationFullList.filter(x => x.stateId == selectedState.bland);
+      this.locationList = this.locationFullList.filter((x:any)  => x.stateId == selectedState.bland);
   }
 
   designationList: any[] = [];
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -154,7 +155,7 @@ export class RetirementListReportComponent implements OnInit {
       this.filterData = data;
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -184,7 +185,7 @@ export class RetirementListReportComponent implements OnInit {
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      this.retirementList1.forEach(item => {
+      this.retirementList1.forEach((item :any) => {
         index=index+1;
                                                                                                 
 
@@ -218,7 +219,7 @@ export class RetirementListReportComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Retirement_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       toastr.error('Error occurred while fetching data.');   
@@ -226,7 +227,7 @@ export class RetirementListReportComponent implements OnInit {
     });    
   }
 
-  submitForApproval(id) {
+  submitForApproval(id:any) {
     if (confirm("Are you sure you want to submit this for approval?")) {
       var request: any = {};
       request.retirementId = id;
@@ -242,7 +243,7 @@ export class RetirementListReportComponent implements OnInit {
             toastr.error(data.message);
           } else
           toastr.error("Error occurred.");
-        }).catch(error => {
+        }).catch((error)=> {
           toastr.error(error);
         });
     }

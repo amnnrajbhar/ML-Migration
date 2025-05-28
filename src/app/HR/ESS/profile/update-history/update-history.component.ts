@@ -18,13 +18,13 @@ declare var toastr: any;
 })
 export class UpdateHistoryComponent implements OnInit {
 
-  @Input() employeeId: number;
+  @Input() employeeId!: number;
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
     private dataStore: DataStorageService, private excelService: ExcelService) { }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   updateList: any = {};
   
@@ -37,7 +37,8 @@ export class UpdateHistoryComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     if(this.employeeId > 0)
       this.getData();    
   }
@@ -49,11 +50,11 @@ export class UpdateHistoryComponent implements OnInit {
       if (data) {
         this.updateList = data;
         for (var item of data) {
-          item.statusColor = this.statusList.find(x => x.type == item.status).color;
+          item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
         }          
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

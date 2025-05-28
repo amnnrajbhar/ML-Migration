@@ -16,20 +16,20 @@ export class AccountSubmission{
    invoiceNo:number;
    invoiceDate:string;
    createdDate:string;
-   createdBy: number;
-   modifiedBy: number;
+   createdBy!: number;
+   modifiedBy!: number;
    id: any;
-  isSelected: boolean;
-  isActive: boolean;
-  name: string;
-  employeeNo: string;
-  employeeName: string;
+  isSelected!: boolean;
+  isActive!: boolean;
+  name: string
+  employeeNo: string
+  employeeName: string
   eventDate: Date;
-  noOfPax: number;
-  amount: number;
-  hotelName: string;
-  vendorCity: string;
+  noOfPax!: number;
+  amount!: number;
+  hotelName: string
+  vendorCity: string
   createdOn: Date;
   accSubmittedReferenceNoId: any;
-  accountStatus: number;
+  accountStatus!: number;
 }

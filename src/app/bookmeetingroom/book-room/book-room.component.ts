@@ -21,8 +21,8 @@ import { Lightbox } from 'ngx-lightbox';
   styleUrls: ['./book-room.component.css']
 })
 export class BookRoomComponent implements OnInit {
-  currentUser: AuthData;
-  isLoading: boolean;
+  currentUser!: AuthData;
+  isLoading!: boolean;
   urlPath: string = '';
   locationList = [];
   roomInformation = {} as RoomInformation;
@@ -37,7 +37,8 @@ export class BookRoomComponent implements OnInit {
 
   ngOnInit() {
 
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.route.paramMap.subscribe((params:ParamMap)=>{
       this.roomId=params.get('id')?parseInt(params.get('id')):0;
       if(this.roomId==0)
@@ -54,19 +55,19 @@ export class BookRoomComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x=>x.isActive);
+        this.locationList = data.filter((x:any)=>x.isActive);
         let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-        this.locationList.sort((a,b)=>{return collator.compare(a.code,b.code)});
+        this.locationList.sort((a:any,b:any)=>{return collator.compare(a.code,b.code)});
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
   getAllroomsTypes() {
     this.httpService.get(APIURLS.BR_MASTER_ROOMTYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roomsTypeList = data.sort((a,b)=>
+        this.roomsTypeList = data.sort((a:any,b:any)=>
                                   {
                                     if(a.type > b.type) return 1;
                                     if(a.type < b.type) return -1;
@@ -74,7 +75,7 @@ export class BookRoomComponent implements OnInit {
                                   });
         this.roomType=null;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomsTypeList = [];
     });
   }
@@ -87,7 +88,7 @@ export class BookRoomComponent implements OnInit {
     this.roomsInfoList = [];
     this.roomType=rmType;
     this.getRoomsByLocation(this.baseLocation);
-    this.roomsInfoList= this.roomsInfoList.filter(x=>x.fk_Type==rmType);
+    this.roomsInfoList= this.roomsInfoList.filter((x:any)=>x.fk_Type==rmType);
   }
   getRoomsByLocation(lId: number) {
    let roomInfo:any;
@@ -95,9 +96,9 @@ export class BookRoomComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_ROOM_MASTER_GetBYANY_API, lId).then((data: any) => {
       if (data) {
         if (this.roomType != null)
-          this.roomsInfoList = data.filter(x => x.fk_Type == this.roomType && x.isActive);
+          this.roomsInfoList = data.filter((x:any)  => x.fk_Type == this.roomType && x.isActive);
         else
-          this.roomsInfoList = data.filter(x => x.isActive);
+          this.roomsInfoList = data.filter((x:any)  => x.isActive);
         if (this.roomId == 0)
           roomInfo = this.roomsInfoList[0];
         else
@@ -105,7 +106,7 @@ export class BookRoomComponent implements OnInit {
         this.showRoomDetails(roomInfo);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomsInfoList = [];
       this.isLoading = false;
     });
@@ -129,7 +130,7 @@ export class BookRoomComponent implements OnInit {
       if (data) {
         this.selectedRoomType = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }
@@ -142,12 +143,12 @@ export class BookRoomComponent implements OnInit {
         selectedFacilities = data;
         for (let index = 0; index < selectedFacilities.length; index++) {
           let element = selectedFacilities[index];
-          let facility = this.roomsFacilityList.find(x => x.id == element.fk_FacilityId);
+          let facility = this.roomsFacilityList.find((x:any)  => x.id == element.fk_FacilityId);
           rmFacilities.push(facility);
         }
         this.selectedItems = rmFacilities;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }
@@ -156,9 +157,9 @@ export class BookRoomComponent implements OnInit {
   getRoomfacilities() {
     this.httpService.get(APIURLS.BR_MASTER_ROOM_FACILITY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roomsFacilityList = data.filter(x => x.type == this.type);
+        this.roomsFacilityList = data.filter((x:any)  => x.type == this.type);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomsFacilityList = [];
     });
   }
@@ -184,7 +185,7 @@ export class BookRoomComponent implements OnInit {
           this.images.push(image);
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       console.log('Error loading..');
     });
   }

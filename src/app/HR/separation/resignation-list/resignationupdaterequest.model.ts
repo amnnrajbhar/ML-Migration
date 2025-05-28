@@ -1,6 +1,6 @@
 export interface ResignationUpdateRequest{
     id: number;
-    comments: string;
+    comments: string
     modifiedById: number;
-    status: string;
+    status: string
 }

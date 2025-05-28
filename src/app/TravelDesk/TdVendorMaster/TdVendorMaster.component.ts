@@ -18,23 +18,23 @@ declare var jQuery: any;
 })
 export class TdVendorMasterComponent implements OnInit {
 
- @ViewChild(NgForm, { static: false }) TdVendorMasterForm: NgForm;
+ @ViewChild(NgForm, { static: false }) TdVendorMasterForm!: NgForm;
 
   public tableWidget: any;
-  id: number;
+  id!: number;
   TdVendorMasterList: TdVendorMaster[] = [];
   TdVendorMasterItem: TdVendorMaster = new TdVendorMaster();
   isLoading: boolean = false;
-  entityTabHeader: string;
+  entityTabHeader: string
   errMsg: string = "";
   isLoadingPop: boolean = false;
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
   path: string = '';
-    masterName: string;
+    masterName: string
     reinitPOUPDatatable: any;
-    isActive: boolean;
+    isActive!: boolean;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
@@ -56,7 +56,8 @@ export class TdVendorMasterComponent implements OnInit {
   currentUser = {} as AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
       this.getTdVendorMasterList();
@@ -90,7 +91,7 @@ export class TdVendorMasterComponent implements OnInit {
 
   //auditLogList: AuditLog[] = [];
 
-//   openAuditLogs(id) {
+//   openAuditLogs(id:any) {
 //     jQuery("#auditModal").modal('show');
 //     let stringparms = this.masterName + ',' + id;
 //     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -99,7 +100,7 @@ export class TdVendorMasterComponent implements OnInit {
 //         this.auditLogList.reverse();
 //       }
 //       this.reinitPOUPDatatable();
-//     }).catch(() => {
+//     }).catch((error) => {
 //     });
 
 //   }
@@ -112,7 +113,7 @@ export class TdVendorMasterComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.TdVendorMasterList = [];
     });
@@ -121,7 +122,7 @@ export class TdVendorMasterComponent implements OnInit {
   onSaveTdVendorMaster(status: boolean) {
     this.errMsg = "";
     let connection: any;
-    if (!this.TdVendorMasterList.some(s => s.name.trim().toLowerCase() === this.TdVendorMasterItem.name.trim().toLowerCase() && s.id != this.TdVendorMasterItem.id)) {
+    if (!this.TdVendorMasterList.some((s:any) => s.name.trim().toLowerCase() === this.TdVendorMasterItem.name.trim().toLowerCase() && s.id != this.TdVendorMasterItem.id)) {
       if (!this.isEdit)
        {
            if (this.TdVendorMasterItem.IsActive == true)
@@ -152,7 +153,7 @@ export class TdVendorMasterComponent implements OnInit {
           jQuery("#saveModal").modal('show');
           this.getTdVendorMasterList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving tdvendor data..';
       });

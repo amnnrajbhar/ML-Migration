@@ -9,10 +9,10 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 declare var $: any;
 declare var toastr: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Recall } from '../recall/recall.model';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
@@ -25,7 +25,7 @@ import {Pipe, PipeTransform} from "@angular/core";
 })
 export class PrintRecallComponent implements OnInit {
   recallId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -41,13 +41,16 @@ export class PrintRecallComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
-    private http: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.recallId = this.route.snapshot.paramMap.get('id')!;      
       this.getbase64image();
       this.getPrintTemplates();
@@ -64,7 +67,7 @@ export class PrintRecallComponent implements OnInit {
         this.recallDetails = data;   
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -79,7 +82,7 @@ export class PrintRecallComponent implements OnInit {
         this.LoadrecallDetails();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -102,9 +105,9 @@ export class PrintRecallComponent implements OnInit {
     //console.log(event.target.value);
     this.httpService.HRget(APIURLS.RECALL_GET_PRINT_TEMPLATES).then((data: any) => {
       if (data.length > 0) {
-        this.printTemplates = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
+        this.printTemplates = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.printTemplates = [];
     });
   }
@@ -122,7 +125,7 @@ export class PrintRecallComponent implements OnInit {
     //$("#print-me").empty();
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -153,7 +156,7 @@ export class PrintRecallComponent implements OnInit {
   }
 
   download() {
-    this.createPDF().open();
+   // this.createPDF().open();
   }
 
   createPDF() {
@@ -170,7 +173,7 @@ export class PrintRecallComponent implements OnInit {
     //     bolditalics: 'Times-BoldItalic'
     //   }
     // };
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -183,14 +186,14 @@ export class PrintRecallComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    });
+    })*/;
     var docDefinition = {
       info: {
         title: 'Recall Letter',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -217,7 +220,7 @@ export class PrintRecallComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 130, 40, 10],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           columns: [
             {
@@ -238,7 +241,7 @@ export class PrintRecallComponent implements OnInit {
       },
     };
     
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
   isEmailValid:any;
   validateEmail(email:any)
@@ -264,26 +267,26 @@ export class PrintRecallComponent implements OnInit {
       request.letterType = 'Recall';//this.printTemplates.find(x=>x.printTemplateId==this.selectedTemplateId).templateType;
 
       this.isLoading = true;
-      this.createPDF().getBase64((encodedString) => {
-        if (encodedString) {
-          request.attachment = encodedString;
-          toastr.info("Sending email...");
-          this.isLoading = true;
-          this.httpService.HRpost(APIURLS.RECALL_DETAILS_SEND_EMAIL, request).then((data: any) => {
-            if (data == 200 || data.success) {
-              toastr.success("Successfully emailed the recall letter to the candidate.");
-            } else if (!data.success) {
-              toastr.error(data.message);
-            } else
-            toastr.error("Error occurred.");
-            this.isLoading = false;
-          }
-          ).catch(error => {
-            toastr.error(error);
-            this.isLoading = false;
-          });
-        }
-      });
+      // this.createPDF().getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     request.attachment = encodedString;
+      //     toastr.info("Sending email...");
+      //     this.isLoading = true;
+      //     this.httpService.HRpost(APIURLS.RECALL_DETAILS_SEND_EMAIL, request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         toastr.success("Successfully emailed the recall letter to the candidate.");
+      //       } else if (!data.success) {
+      //         toastr.error(data.message);
+      //       } else
+      //       toastr.error("Error occurred.");
+      //       this.isLoading = false;
+      //     }
+      //     ).catch((error)=> {
+      //       toastr.error(error);
+      //       this.isLoading = false;
+      //     });
+      //   }
+      // });
     }
   }
 

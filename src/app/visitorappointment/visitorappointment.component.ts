@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, LOCALE_ID, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 declare var jQuery: any;
-import * as _ from "lodash";
+// import * as _ from "lodash";
 import swal from 'sweetalert';
 declare var $: any;
 
@@ -17,20 +17,20 @@ import {
   endOfDay,
   addMonths,
 } from 'date-fns';
-import {
-  SchedulerViewDay,
-  SchedulerViewHour,
-  SchedulerViewHourSegment,
-  CalendarSchedulerEvent,
-  CalendarSchedulerEventAction,
-  startOfPeriod,
-  endOfPeriod,
-  addPeriod,
-  subPeriod,
-  SchedulerDateFormatter,
-  SchedulerEventTimesChangedEvent,
-  CalendarSchedulerEventStatus
-} from 'angular-calendar-scheduler';
+// import {
+//   SchedulerViewDay,
+//   SchedulerViewHour,
+//   SchedulerViewHourSegment,
+//   CalendarSchedulerEvent,
+//   CalendarSchedulerEventAction,
+//   startOfPeriod,
+//   endOfPeriod,
+//   addPeriod,
+//   subPeriod,
+//   SchedulerDateFormatter,
+//   SchedulerEventTimesChangedEvent,
+//   CalendarSchedulerEventStatus
+// } from 'angular-calendar-scheduler';
 import {
   CalendarView,
   CalendarDateFormatter,
@@ -48,6 +48,7 @@ import { Visitor } from './visitor.model';
 import { AuthData } from '../auth/auth.model';
 import { NgForm } from '@angular/forms';
 import { colors } from '../shared/colors';
+import { error } from 'console';
 
 export class MyCalendarUtils extends CalendarUtils {
   getMonthView(args: GetMonthViewArgs): MonthView {
@@ -63,17 +64,17 @@ export class MyCalendarUtils extends CalendarUtils {
   styleUrls: ['./visitorappointment.component.css'],
   providers: [{
     provide: CalendarDateFormatter,
-    useClass: SchedulerDateFormatter
+    //useClass: SchedulerDateFormatter
   }]
 })
 export class VisitorappointmentComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
   title = 'Schedule a meeting';
   selectedVisitorType: any;
   selectedPurpose: any;
-  visitorTypeList: any[];
-  purposeList: any[];
+  visitorTypeList!: any[];
+  purposeList!: any[];
   CalendarView = CalendarView;
   errMsgPop1: string = 'saved';
   errMsgPop: string = '';
@@ -104,10 +105,10 @@ export class VisitorappointmentComponent implements OnInit {
   inMonth: boolean = true;
   minDate: Date = new Date();
   maxDate: Date = endOfDay(addMonths(new Date(), 12));
-  dayModifier: Function;
-  hourModifier: Function;
-  segmentModifier: Function;
-  eventModifier: Function;
+  dayModifier!: Function;
+  hourModifier!: Function;
+  segmentModifier!: Function;
+  eventModifier!: Function;
   prevBtnDisabled: boolean = false;
   nextBtnDisabled: boolean = false;
   start_date = new Date();
@@ -117,8 +118,8 @@ export class VisitorappointmentComponent implements OnInit {
   time = { hour: 13, minute: 30 };
   meridian = true;
   selectedEvent: any;
-  otherinformation: string ;
-  companyName: string ;
+  otherinformation!: string ;
+  companyName!: string ;
   usrid: number = 0;
   employeeItem: any;
   employeeName: any;
@@ -135,8 +136,8 @@ export class VisitorappointmentComponent implements OnInit {
     this.meridian = !this.meridian;
   }
 
-  events: CalendarSchedulerEvent[];
-  isLoading: boolean;
+  //events: CalendarSchedulerEvent[];
+  isLoading!: boolean;
   calendarList: any;
   companyItem: any;
   // calendarItem: Visitor = new Visitor(0, '', '', '', '', '', '', '', '', true, '', '', '', '', true, true, 0, 0, '', 0, '', true, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 0, 0,'', '', '');
@@ -151,44 +152,45 @@ export class VisitorappointmentComponent implements OnInit {
     fkVisitorType: 0,
     fkVisitorPurpose: 0
   } as Visitor;
-  isLoadingPop: boolean;
+  isLoadingPop!: boolean;
   isEdit: any = false;
   selectedId: any;
-  dayView: SchedulerViewDay[];
+  // dayView: SchedulerViewDay[];
   selectedDayViewDate: Date;
 
   NoOfPersons:any=1;
   Allowby:any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
 
   fromTime: any;
   toTime: any;
-  actions: CalendarSchedulerEventAction[];
+  //actions: CalendarSchedulerEventAction[];
 
-  constructor(@Inject(LOCALE_ID) locale: string, private appService: AppService, private dateAdapter: DateAdapter, private httpService: HttpService) {
+  constructor(@Inject(LOCALE_ID) locale: string,private appService: AppService, private dateAdapter: DateAdapter, private httpService: HttpService) {
     this.locale = locale;
 
-    this.dayModifier = ((day: SchedulerViewDay): void => {
-      day.cssClass = this.isDateValid(day.date) ? '' : 'cal-disabled';
-    }).bind(this);
-    this.hourModifier = ((hour: SchedulerViewHour): void => {
-      hour.cssClass = this.isDateValid(hour.date) ? '' : 'cal-disabled';
-    }).bind(this);
+    // this.dayModifier = ((day: SchedulerViewDay): void => {
+    //   day.cssClass = this.isDateValid(day.date) ? '' : 'cal-disabled';
+    // }).bind(this);
+    // this.hourModifier = ((hour: SchedulerViewHour): void => {
+    //   hour.cssClass = this.isDateValid(hour.date) ? '' : 'cal-disabled';
+    // }).bind(this);
 
-    this.segmentModifier = ((segment: SchedulerViewHourSegment): void => {
-      segment.isDisabled = !this.isDateValid(segment.date);
-    }).bind(this);
+    // this.segmentModifier = ((segment: SchedulerViewHourSegment): void => {
+    //   segment.isDisabled = !this.isDateValid(segment.date);
+    // }).bind(this);
 
-    this.eventModifier = ((event: CalendarSchedulerEvent): void => {
-      event.isDisabled = !this.isDateValid(event.start);
-    }).bind(this);
+    // this.eventModifier = ((event: CalendarSchedulerEvent): void => {
+    //   event.isDisabled = !this.isDateValid(event.start);
+    // }).bind(this);
 
     this.dateOrViewChanged();
   }
 
   ngOnInit(): void {
 
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+    //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
     this.usrid = authData.uid;
     this.currentUser=authData;
     this.employeeId = authData.userName;
@@ -196,7 +198,7 @@ export class VisitorappointmentComponent implements OnInit {
 
     this.getLocationList();
     this.getEmployee();
-    this.getEvents();
+    // this.getEvents();
     this.getVisitorTypeList();
     this.getPurposeList();
     this.getVisitorList();
@@ -212,15 +214,16 @@ export class VisitorappointmentComponent implements OnInit {
   //   this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_GETBY_ANY_API, this.currentUser.baselocation).then((data: any) => {
   //     // this.isLoading = false;
   //     if (data.length > 0) {
-  //       this.empMList = data.filter(x => x.isActive);
+  //       this.empMList = data.filter((x:any)  => x.isActive);
   //       // console.log(this.empMList);
   //       this.employeeList = data;
   //       // console.log(this.employeeList);
-  //       this.locationId = this.empMList.find(s => s.employeeId == this.currentUser.employeeId).baseLocation;
+  //       this.locationId = this.empMList.find((s:any) => s.employeeId == this.currentUser.employeeId).baseLocation;
   //       // console.log(this.locationId);
   //       // var empMList = [[]];
-  //       //this.empMList = this.empMList.filter(s => s.isActive && s.baseLocation == this.locationId);
-  //       this.empMList.forEach(element => {
+  //       //this.empMList = this.empMList.filter((s:any) => s.isActive && s.baseLocation == this.locationId);
+  //       this.empMList.forEach((element:any)=> {
+
   //         var t = { 'id': 0, 'name': '' };
   //         t.id = element.id;
   //         // let middleName = this.isEmpty(element.middleName.trim()) ? ' ' : ' ' + element.middleName + ' ';
@@ -238,14 +241,14 @@ export class VisitorappointmentComponent implements OnInit {
   //     }
   //     // this.getVisitorsList();
 
-  //   }).catch(error => {
-  //     console.log(error);
+  //   }).catch((error)=> {
+  //     //console.log(error);
   //     this.isLoading = false;
   //     this.empMList = [];
   //   });
   // }
 
-  getLocationName(id) {
+  getLocationName(id:any) {
     let temp = this.LocationMasterList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -258,7 +261,7 @@ export class VisitorappointmentComponent implements OnInit {
   getLocationList() {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.LocationMasterList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.LocationMasterList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
           if(a.name > b.name) return 1;
           if(a.name < b.name) return -1;
           return 0;
@@ -270,7 +273,7 @@ export class VisitorappointmentComponent implements OnInit {
           allowSearchFilter: true
         };
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.LocationMasterList = [];
     });
@@ -280,12 +283,12 @@ export class VisitorappointmentComponent implements OnInit {
       if (data.length > 0) {
         this.visitorsList = data;
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.visitorsList = [];
     });
   }
 
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode >= 32 && (charCode < 48 || charCode > 57)) {
@@ -297,13 +300,13 @@ export class VisitorappointmentComponent implements OnInit {
   getVisitorTypeList() {
     this.httpService.get(APIURLS.BR_MASTER_VISITOR_TYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.visitorTypeList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.visitorTypeList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
           if(a.visitor_Type > b.visitor_Type) return 1;
           if(a.visitor_Type < b.visitor_Type) return -1;
           return 0;
         });
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.visitorTypeList = [];
     });
   }
@@ -311,13 +314,13 @@ export class VisitorappointmentComponent implements OnInit {
   getPurposeList() {
     this.httpService.get(APIURLS.BR_MASTER_VISITOR_PURPOSE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.purposeList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.purposeList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
           if(a.purpose > b.purpose) return 1;
           if(a.purpose < b.purpose) return -1;
           return 0;
         });
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.purposeList = [];
     });
   }
@@ -334,7 +337,7 @@ export class VisitorappointmentComponent implements OnInit {
         this.locationId = this.employeeItem.baseLocation;
         this.selLoc = this.locationId;
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.errMsgPop = 'Error getting employee data..';
     });
   }
@@ -356,73 +359,73 @@ export class VisitorappointmentComponent implements OnInit {
 
   }
 
-  getEvents() {
+//   getEvents() {
     
-    // this.appService.getEvents(this.employeeId, this.actions)
-    // .then((events: CalendarSchedulerEvent[]) => this.events = events);
-   let events = [];
-    this.httpService.getById(APIURLS.BR_MASTER_VISITOR_API, this.employeeId).then((data: any) => {
-      // console.log(usrid);
-      this.isLoading = false;
-      if (data.length > 0) {
-        // console.log(data);
-        this.calendarList = data;
-        for (let cal of this.calendarList) {
-          // console.log(cal);
-          // if(cal.temp8!=null){
-          // if(events.length == 0){
-          // let datestring = cal.date+ ' '+cal.fromTime;
-          let d = new Date(cal.date);
-          let ed = new Date(cal.endDateTime);
-          // console.log(d);
-          // let fromTime = cal.fromTime;
-          // let toTime = (cal.toTime);
-          // let temp = (ed)?  Math.abs(+ed.getTime() - +d.getTime()) / 3600000 : 1;
-          // console.log(d);
-          // console.log(ed);
-          // console.log(temp);
-          let diff = Math.abs(+ed - +d);
-          var seconds = Math.floor(diff / 1000); //ignore any left over units smaller than a second
-          var minutes = Math.floor(seconds / 60);
-          seconds = seconds % 60;
-          var hours = Math.floor(minutes / 60);
-          minutes = minutes % 60;
-          // this.isDisabled = ed < new Date();
-          // console.log("Diff = "+ cal.id+" :-"+ hours + ":" + minutes + ":" + seconds)
-          events.push(
-            <CalendarSchedulerEvent>{
-              id: cal.id,
-              start: d,//startOfHour(d),
-              end: ed,//addHours(d, hours),
-              title: cal.name,//+'<br><br>'+cal.purpose!=null?cal.purpose:'',
-              content: cal.purpose ? cal.purpose : '',
-              // color: { primary: '#E0E0E0', secondary: '#EEEEEE' },
-              color: cal.isPreShedualled ? colors.blue:colors.yellow,
-              actions: this.actions,
-              status: 'ok' as CalendarSchedulerEventStatus,
-              isClickable: true,
-              isDisabled: false,
-              draggable: true,
+//     // this.appService.getEvents(this.employeeId, this.actions)
+//     // .then((events: CalendarSchedulerEvent[]) => this.events = events);
+//    let events = [];
+//     this.httpService.getById(APIURLS.BR_MASTER_VISITOR_API, this.employeeId).then((data: any) => {
+//       // console.log(usrid);
+//       this.isLoading = false;
+//       if (data.length > 0) {
+//         // console.log(data);
+//         this.calendarList = data;
+//         for (let cal of this.calendarList) {
+//           // console.log(cal);
+//           // if(cal.temp8!=null){
+//           // if(events.length == 0){
+//           // let datestring = cal.date+ ' '+cal.fromTime;
+//           let d = new Date(cal.date);
+//           let ed = new Date(cal.endDateTime);
+//           // console.log(d);
+//           // let fromTime = cal.fromTime;
+//           // let toTime = (cal.toTime);
+//           // let temp = (ed)?  Math.abs(+ed.getTime() - +d.getTime()) / 3600000 : 1;
+//           // console.log(d);
+//           // console.log(ed);
+//           // console.log(temp);
+//           let diff = Math.abs(+ed - +d);
+//           var seconds = Math.floor(diff / 1000); //ignore any left over units smaller than a second
+//           var minutes = Math.floor(seconds / 60);
+//           seconds = seconds % 60;
+//           var hours = Math.floor(minutes / 60);
+//           minutes = minutes % 60;
+//           // this.isDisabled = ed < new Date();
+//           // console.log("Diff = "+ cal.id+" :-"+ hours + ":" + minutes + ":" + seconds)
+//           events.push(
+//             <CalendarSchedulerEvent>{
+//               id: cal.id,
+//               start: d,//startOfHour(d),
+//               end: ed,//addHours(d, hours),
+//               title: cal.name,//+'<br><br>'+cal.purpose!=null?cal.purpose:'',
+//               content: cal.purpose ? cal.purpose : '',
+//               // color: { primary: '#E0E0E0', secondary: '#EEEEEE' },
+//               color: cal.isPreShedualled ? colors.blue:colors.yellow,
+//               actions: this.actions,
+//               status: 'ok' as CalendarSchedulerEventStatus,
+//               isClickable: true,
+//               isDisabled: false,
+//               draggable: true,
 
-              resizable: {
-                beforeStart: true,
-                afterEnd: true
-              }
-            });
+//               resizable: {
+//                 beforeStart: true,
+//                 afterEnd: true
+//               }
+//             });
 
-        }
-        this.events=events;
-      }
-      else
-      {
-        this.events=events;
-      }
-      this.isLoading = false;
-    }).catch(error => {
-      this.isLoading = false;
-      this.calendarList = [];
-    });
- }
+//         }
+//         this.events=events;
+//       }
+//       else
+//       {
+//         this.events=events;
+//       }
+//       this.isLoading = false;
+//     }).catch((error)=> {
+//       this.isLoading = false;
+//       this.calendarList = [];
+//     });
+//  }
   reInitDatatable() {
     throw new Error("Method not implemented.");
   }
@@ -442,13 +445,14 @@ export class VisitorappointmentComponent implements OnInit {
   }
 
   dateOrViewChanged(): void {
-    if (this.startsWithToday) {
-      this.prevBtnDisabled = !this.isDateValid(subPeriod(this.dateAdapter, this.view, this.viewDate, 1));
-      this.nextBtnDisabled = !this.isDateValid(addPeriod(this.dateAdapter, this.view, this.viewDate, 2));
-    } else {
-      this.prevBtnDisabled = !this.isDateValid(endOfPeriod(this.dateAdapter, this.view, subPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
-      this.nextBtnDisabled = !this.isDateValid(startOfPeriod(this.dateAdapter, this.view, addPeriod(this.dateAdapter, this.view, this.viewDate, 2)));
-    }
+    //v10
+    // if (this.startsWithToday) {
+    //   this.prevBtnDisabled = !this.isDateValid(subPeriod(this.dateAdapter, this.view, this.viewDate, 1));
+    //   this.nextBtnDisabled = !this.isDateValid(addPeriod(this.dateAdapter, this.view, this.viewDate, 2));
+    // } else {
+    //   this.prevBtnDisabled = !this.isDateValid(endOfPeriod(this.dateAdapter, this.view, subPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
+    //   this.nextBtnDisabled = !this.isDateValid(startOfPeriod(this.dateAdapter, this.view, addPeriod(this.dateAdapter, this.view, this.viewDate, 2)));
+    // }
 
     if (this.viewDate < this.minDate) {
       this.changeDate(this.minDate);
@@ -467,127 +471,127 @@ export class VisitorappointmentComponent implements OnInit {
   hourClicked(): void {
   }
 
-  segmentClicked(segment: SchedulerViewHourSegment): void {
-    this.VisitorDetails=[];
-    this.calendarForm.form.markAsPristine();
-    this.calendarForm.form.markAsUntouched();
-    this.calendarForm.form.updateValueAndValidity();
-    // this.calendarItem = new Visitor(0, '', '', '', '', '', '', '', '', true, '', '', '', '', true, true, 0, 0, '', 0, '', true, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 0, 0,'', '', '');
-    this.calendarItem = {
-      id: 0,
-      isCancelled: true,
-      isApproved: true,
-      isPreShedualled: true,
-      numberOfPerson: 0,
-      createdBy: this.currentUser.fkEmpId,
-      modifiedBy: 0,
-      isActive: true,
-      fkVisitorType: 0,
-      fkVisitorPurpose: 0
-    } as Visitor;
-    this.isEdit = false;
-    this.errMsgPop = '';
-    this.errMsgPop1 = '';
-    this.appDate = segment.date;
-    this.pastEvent = false;
-    this.selectedPurpose = null;
-    this.selectedVisitorType = null;
-    this.selectedPurpose = null;
-    this.visitorName = '';
-    this.code = '91';
-    this.selLoc = this.locationId;
-    this.selLocationId = this.LocationMasterList.filter(e => e.id == this.locationId);
+  // segmentClicked(segment: SchedulerViewHourSegment): void {
+  //   this.VisitorDetails=[];
+  //   this.calendarForm.form.markAsPristine();
+  //   this.calendarForm.form.markAsUntouched();
+  //   this.calendarForm.form.updateValueAndValidity();
+  //   // this.calendarItem = new Visitor(0, '', '', '', '', '', '', '', '', true, '', '', '', '', true, true, 0, 0, '', 0, '', true, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 0, 0,'', '', '');
+  //   this.calendarItem = {
+  //     id: 0,
+  //     isCancelled: true,
+  //     isApproved: true,
+  //     isPreShedualled: true,
+  //     numberOfPerson: 0,
+  //     createdBy: this.currentUser.fkEmpId,
+  //     modifiedBy: 0,
+  //     isActive: true,
+  //     fkVisitorType: 0,
+  //     fkVisitorPurpose: 0
+  //   } as Visitor;
+  //   this.isEdit = false;
+  //   this.errMsgPop = '';
+  //   this.errMsgPop1 = '';
+  //   this.appDate = segment.date;
+  //   this.pastEvent = false;
+  //   this.selectedPurpose = null;
+  //   this.selectedVisitorType = null;
+  //   this.selectedPurpose = null;
+  //   this.visitorName = '';
+  //   this.code = '91';
+  //   this.selLoc = this.locationId;
+  //   this.selLocationId = this.LocationMasterList.filter((e:any) => e.id == this.locationId);
 
-    this.getApproversDetails();
+  //   this.getApproversDetails();
 
-    jQuery("#myModal").modal('show');
-  }
+  //   jQuery("#myModal").modal('show');
+  // }
 
-  eventClicked(action: string,event: CalendarSchedulerEvent): void {
-    this.VisitorDetails=[];
-    this.selectedEvent = event;
-    if (this.selectedEvent.start < new Date()) {
-      this.pastEvent = true;
-    }
-    else
-      this.pastEvent = false;
+  // eventClicked(action: string,event: CalendarSchedulerEvent): void {
+  //   this.VisitorDetails=[];
+  //   this.selectedEvent = event;
+  //   if (this.selectedEvent.start < new Date()) {
+  //     this.pastEvent = true;
+  //   }
+  //   else
+  //     this.pastEvent = false;
 
-    this.errMsgPop = '';
-    this.errMsgPop1 = '';
-    this.isEdit = true;
-    let connection: any;
-    connection = this.httpService.getById(APIURLS.BR_MASTER_VISITOR_POST_API, +event.id);
+  //   this.errMsgPop = '';
+  //   this.errMsgPop1 = '';
+  //   this.isEdit = true;
+  //   let connection: any;
+  //   connection = this.httpService.getById(APIURLS.BR_MASTER_VISITOR_POST_API, +event.id);
 
-    connection.then((data: any) => {
-      if (data == 200 || data.id > 0) {
-        this.calendarItem = data;
-        this.selectedId = event;
-        this.appDate = event.start;
-        this.purpose = this.calendarItem.purpose ? this.calendarItem.purpose : '';
-        this.visiting = this.employeeName;
-        this.appDate = new Date(this.calendarItem.date);
-        this.visitorName = this.calendarItem.name;
-        this.mobile = (this.calendarItem.mobile) + '';
-        this.code = this.calendarItem.temp1;
-        this.email = this.calendarItem.email;
-        this.selectedVisitorType = this.visitorTypeList.find(s => s.id == this.calendarItem.fkVisitorType);
-        this.selectedPurpose = this.purposeList.find(s => s.id == this.calendarItem.fkVisitorPurpose);
-        this.selLocationId = this.LocationMasterList.filter(s => s.id == this.calendarItem.temp7);
-        this.selLoc = this.calendarItem.temp7;
-        this.fromTime = this.calendarItem.date;
-        this.toTime = this.calendarItem.endDateTime;
+  //   connection.then((data: any) => {
+  //     if (data == 200 || data.id > 0) {
+  //       this.calendarItem = data;
+  //       this.selectedId = event;
+  //       this.appDate = event.start;
+  //       this.purpose = this.calendarItem.purpose ? this.calendarItem.purpose : '';
+  //       this.visiting = this.employeeName;
+  //       this.appDate = new Date(this.calendarItem.date);
+  //       this.visitorName = this.calendarItem.name;
+  //       this.mobile = (this.calendarItem.mobile) + '';
+  //       this.code = this.calendarItem.temp1;
+  //       this.email = this.calendarItem.email;
+  //       this.selectedVisitorType = this.visitorTypeList.find((s:any) => s.id == this.calendarItem.fkVisitorType);
+  //       this.selectedPurpose = this.purposeList.find((s:any) => s.id == this.calendarItem.fkVisitorPurpose);
+  //       this.selLocationId = this.LocationMasterList.filter((s:any) => s.id == this.calendarItem.temp7);
+  //       this.selLoc = this.calendarItem.temp7;
+  //       this.fromTime = this.calendarItem.date;
+  //       this.toTime = this.calendarItem.endDateTime;
 
-        let visitr:any={};
-        visitr.name = this.calendarItem.name;
-        visitr.mobile=this.calendarItem.mobile;
-        visitr.email=this.calendarItem.email;
-        visitr.companyName =this.calendarItem.companyName;
-        this.VisitorDetails.push(visitr);
+  //       let visitr:any={};
+  //       visitr.name = this.calendarItem.name;
+  //       visitr.mobile=this.calendarItem.mobile;
+  //       visitr.email=this.calendarItem.email;
+  //       visitr.companyName =this.calendarItem.companyName;
+  //       this.VisitorDetails.push(visitr);
 
 
-        if( data.additionalVisitors.length>0)
-        {
-          for(let i=0;i<data.additionalVisitors.length;i++)
-          {
-            let visitr1:any={};
-            visitr1.id = data.additionalVisitors[i].id;
-            visitr1.name = data.additionalVisitors[i].name;
-            visitr1.mobile=data.additionalVisitors[i].mobile;
-            visitr1.email=data.additionalVisitors[i].email;
-            visitr1.companyName =data.additionalVisitors[i].companyName;
-            this.VisitorDetails.push(visitr1);
-          }
+  //       if( data.additionalVisitors.length>0)
+  //       {
+  //         for(let i=0;i<data.additionalVisitors.length;i++)
+  //         {
+  //           let visitr1:any={};
+  //           visitr1.id = data.additionalVisitors[i].id;
+  //           visitr1.name = data.additionalVisitors[i].name;
+  //           visitr1.mobile=data.additionalVisitors[i].mobile;
+  //           visitr1.email=data.additionalVisitors[i].email;
+  //           visitr1.companyName =data.additionalVisitors[i].companyName;
+  //           this.VisitorDetails.push(visitr1);
+  //         }
          
-        }
+  //       }
 
-        this.getApproversDetails();
+  //       this.getApproversDetails();
 
-        jQuery("#myModal").modal('show');
-      }
-    }).catch(error => {
-      this.isLoadingPop = false;
-      this.errMsgPop = 'Error saving Appointment data: ' + error;
-    });
-  }
+  //       jQuery("#myModal").modal('show');
+  //     }
+  //   }).catch((error)=> {
+  //     this.isLoadingPop = false;
+  //     this.errMsgPop = 'Error saving Appointment data: ' + error;
+  //   });
+  // }
 
-  GetVisitorDetails(visit,i) {
+  GetVisitorDetails(visit:any,i:any) {
     var self = this;
     $('#visitor_' + i).autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm1 = request.term + ',' + self.currentUser.baselocation;
         let connection = self.httpService.getByParam(APIURLS.BR_GET_VISITOR_BASED_ON_NAME, searchTerm1);
         connection.then((data: any) => {
           if (data) {
             let result = data;
-            response(result.map((i) => {
+            response(result.map((i:any) => {
               i.label = i.name + '-' + i.mobile + '-' + i.companyName, i.name = i.name, i.mobile = i.mobile
                 , i.companyName = i.companyName, i.email = i.email; return i;
             }));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         visit.name = ui.item.name;
         visit.mobile = ui.item.mobile;
         visit.companyName = ui.item.companyName;
@@ -598,112 +602,112 @@ export class VisitorappointmentComponent implements OnInit {
 
   }
 
-  eventTimesChanged({ event, newStart, newEnd }: SchedulerEventTimesChangedEvent): void {
-    if (event.start < new Date()) {
-      swal({
-        title: "Message",
-        text: "Cannot change time for past appointments",
-        icon: "warning",
-        dangerMode: false,
-        buttons: [false, true]
-      }).then((willDelete) => {
-        if (willDelete) {
-          this.isLoading = false;
-        }
-      });
-    }
-    else if (new Date() > newStart) {
-      swal({
-        title: "Message",
-        text: "Cannot move appointment to past time",
-        icon: "warning",
-        dangerMode: false,
-        buttons: [false, true]
-      }).then((willDelete) => {
-        if (willDelete) {
-          this.isLoading = false;
-        }
-      });
-    }
-    else {
-      const ev: CalendarSchedulerEvent = this.events.find(e => e.id === event.id);
-      ev.start = newStart;
-      ev.end = newEnd;
-      this.refresh.next();
-      this.calendarItem.fkEmployeeId = this.employeeId;
-      this.selectedEvent = event;
-      let connection: any;
-      connection = this.httpService.getById(APIURLS.BR_MASTER_VISITOR_POST_API, +event.id);
-      connection.then((data: any) => {
-        if (data == 200 || data.id > 0) {
-          this.calendarItem = data;
-          this.selectedId = event;
-          this.appDate = event.start;
-          this.purpose = this.calendarItem.purpose ? this.calendarItem.purpose : '';
-          this.visiting = this.employeeName;
-          this.appDate = new Date(this.calendarItem.date);
-          this.visitorName = this.calendarItem.name;
-          this.mobile = (this.calendarItem.mobile) + '';
-          this.code = this.calendarItem.temp1;
-          this.email = this.calendarItem.email;
-          this.selectedVisitorType = this.visitorTypeList.find(s => s.id == this.calendarItem.fkVisitorType);
-          this.selectedPurpose = this.purposeList.find(s => s.id == this.calendarItem.fkVisitorPurpose);
-          var d = new Date(newStart);
-          let formateddate: string = d.getFullYear() + "-" + ("00" + (d.getMonth() + 1)).slice(-2) + "-" +
-            ("00" + d.getDate()).slice(-2) + " " +
-            ("00" + d.getHours()).slice(-2) + ":" +
-            ("00" + d.getMinutes()).slice(-2) + ":" +
-            ("00" + d.getSeconds()).slice(-2);
+  // eventTimesChanged({ event, newStart, newEnd }: SchedulerEventTimesChangedEvent): void {
+  //   if (event.start < new Date()) {
+  //     swal({
+  //       title: "Message",
+  //       text: "Cannot change time for past appointments",
+  //       icon: "warning",
+  //       dangerMode: false,
+  //       buttons: [false, true]
+  //     }).then((willDelete) => {
+  //       if (willDelete) {
+  //         this.isLoading = false;
+  //       }
+  //     });
+  //   }
+  //   else if (new Date() > newStart) {
+  //     swal({
+  //       title: "Message",
+  //       text: "Cannot move appointment to past time",
+  //       icon: "warning",
+  //       dangerMode: false,
+  //       buttons: [false, true]
+  //     }).then((willDelete) => {
+  //       if (willDelete) {
+  //         this.isLoading = false;
+  //       }
+  //     });
+  //   }
+  //   else {
+  //    // const ev: CalendarSchedulerEvent = this.events.find(e => e.id === event.id);
+  //     // ev.start = newStart;
+  //     // ev.end = newEnd;
+  //     this.refresh.next();
+  //     this.calendarItem.fkEmployeeId = this.employeeId;
+  //     this.selectedEvent = event;
+  //     let connection: any;
+  //     connection = this.httpService.getById(APIURLS.BR_MASTER_VISITOR_POST_API, +event.id);
+  //     connection.then((data: any) => {
+  //       if (data == 200 || data.id > 0) {
+  //         this.calendarItem = data;
+  //         this.selectedId = event;
+  //         this.appDate = event.start;
+  //         this.purpose = this.calendarItem.purpose ? this.calendarItem.purpose : '';
+  //         this.visiting = this.employeeName;
+  //         this.appDate = new Date(this.calendarItem.date);
+  //         this.visitorName = this.calendarItem.name;
+  //         this.mobile = (this.calendarItem.mobile) + '';
+  //         this.code = this.calendarItem.temp1;
+  //         this.email = this.calendarItem.email;
+  //         this.selectedVisitorType = this.visitorTypeList.find((s:any) => s.id == this.calendarItem.fkVisitorType);
+  //         this.selectedPurpose = this.purposeList.find((s:any) => s.id == this.calendarItem.fkVisitorPurpose);
+  //         var d = new Date(newStart);
+  //         let formateddate: string = d.getFullYear() + "-" + ("00" + (d.getMonth() + 1)).slice(-2) + "-" +
+  //           ("00" + d.getDate()).slice(-2) + " " +
+  //           ("00" + d.getHours()).slice(-2) + ":" +
+  //           ("00" + d.getMinutes()).slice(-2) + ":" +
+  //           ("00" + d.getSeconds()).slice(-2);
 
-          var d2 = new Date(newEnd);
-          let formatedenddate: string = d2.getFullYear() + "-" + ("00" + (d2.getMonth() + 1)).slice(-2) + "-" +
-            ("00" + (d2.getDate())).slice(-2) + " " +
-            ("00" + (d2.getHours())).slice(-2) + ":" +
-            ("00" + (d2.getMinutes())).slice(-2) + ":" +
-            ("00" + d2.getSeconds()).slice(-2);
+  //         var d2 = new Date(newEnd);
+  //         let formatedenddate: string = d2.getFullYear() + "-" + ("00" + (d2.getMonth() + 1)).slice(-2) + "-" +
+  //           ("00" + (d2.getDate())).slice(-2) + " " +
+  //           ("00" + (d2.getHours())).slice(-2) + ":" +
+  //           ("00" + (d2.getMinutes())).slice(-2) + ":" +
+  //           ("00" + d2.getSeconds()).slice(-2);
 
-          var fromTime = ("00" + d.getHours()).slice(-2) + ":" +
-            ("00" + d.getMinutes()).slice(-2) + ":" +
-            ("00" + d.getSeconds()).slice(-2);
+  //         var fromTime = ("00" + d.getHours()).slice(-2) + ":" +
+  //           ("00" + d.getMinutes()).slice(-2) + ":" +
+  //           ("00" + d.getSeconds()).slice(-2);
 
-          this.calendarItem.fromTime = fromTime;
-          //  this.calendarItem.toTime = toTime;
-          this.calendarItem.fkEmployeeName = this.employeeName;
-          this.calendarItem.employeeEmail = this.employeeEmail;
-          this.calendarItem.purpose = this.purpose;
-          this.calendarItem.name = this.visitorName;
-          this.calendarItem.mobile = this.mobile;
-          this.calendarItem.temp1 = this.code;
-          this.calendarItem.otherInformation = this.otherinformation;
-          this.calendarItem.email = this.email;
-          this.calendarItem.date = formateddate;
-          this.calendarItem.endDateTime = formatedenddate;
-          this.calendarItem.fkVisitorPurpose = this.selectedPurpose.id;
-          this.calendarItem.fkVisitorType = this.selectedVisitorType.id;
-          this.calendarItem.id = +this.selectedEvent.id;
-          this.calendarItem.isActive = true;
-          connection = this.httpService.put(APIURLS.BR_MASTER_VISITOR_POST_API, this.calendarItem.id, this.calendarItem);
-          this.errMsgPop1 = 'Appointment updated!';
+  //         this.calendarItem.fromTime = fromTime;
+  //         //  this.calendarItem.toTime = toTime;
+  //         this.calendarItem.fkEmployeeName = this.employeeName;
+  //         this.calendarItem.employeeEmail = this.employeeEmail;
+  //         this.calendarItem.purpose = this.purpose;
+  //         this.calendarItem.name = this.visitorName;
+  //         this.calendarItem.mobile = this.mobile;
+  //         this.calendarItem.temp1 = this.code;
+  //         this.calendarItem.otherInformation = this.otherinformation;
+  //         this.calendarItem.email = this.email;
+  //         this.calendarItem.date = formateddate;
+  //         this.calendarItem.endDateTime = formatedenddate;
+  //         this.calendarItem.fkVisitorPurpose = this.selectedPurpose.id;
+  //         this.calendarItem.fkVisitorType = this.selectedVisitorType.id;
+  //         this.calendarItem.id = +this.selectedEvent.id;
+  //         this.calendarItem.isActive = true;
+  //         connection = this.httpService.put(APIURLS.BR_MASTER_VISITOR_POST_API, this.calendarItem.id, this.calendarItem);
+  //         this.errMsgPop1 = 'Appointment updated!';
 
-          connection.then((data: any) => {
-            if (data == 200 || data.id > 0) {
-              this.getApproversDetails();
+  //         connection.then((data: any) => {
+  //           if (data == 200 || data.id > 0) {
+  //             this.getApproversDetails();
 
-              jQuery("#myModal").modal('hide');
-              jQuery("#saveModal").modal('show');
-              this.getEvents();
-            }
-          }).catch(() => {
-            this.isLoadingPop = false;
-            this.errMsgPop = 'Error saving Appointment data..';
-          });
-        }
-      }).catch(() => {
-        this.isLoadingPop = false;
-        this.errMsgPop = 'Error saving Appointment data..';
-      });
-    }
-  }
+  //             jQuery("#myModal").modal('hide');
+  //             jQuery("#saveModal").modal('show');
+  //             this.getEvents();
+  //           }
+  //         }).catch((error) => {
+  //           this.isLoadingPop = false;
+  //           this.errMsgPop = 'Error saving Appointment data..';
+  //         });
+  //       }
+  //     }).catch((error) => {
+  //       this.isLoadingPop = false;
+  //       this.errMsgPop = 'Error saving Appointment data..';
+  //     });
+  //   }
+  // }
 
   handleEvent(): void {
   }
@@ -841,26 +845,27 @@ export class VisitorappointmentComponent implements OnInit {
               }
 
               // if (this.deletedPersonIds.length > 0) {
-              //   this.deletedPersonIds.forEach(element => {
-              //     let findOldIdNext = this.deletedPersonIds.some(s => s == element);
+              //   this.deletedPersonIds.forEach((element:any)=> {
+
+              //     let findOldIdNext = this.deletedPersonIds.some((s:any) => s == element);
               //     if (findOldIdNext)
               //       connection = this.httpService.delete(APIURLS.BR_MASTER_ADDITIONAL_VISITOR_POST_API, element);
               //   });
               // }
             }
           }
-          this.getEvents();
+          //this.getEvents();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Appointment data: ' + error;
       });
     }
   }
 
-  getType(id) {
+  getType(id:any) {
     if (id) {
-      let temp = this.visitorTypeList.find(s => s.id == id);
+      let temp = this.visitorTypeList.find((s:any) => s.id == id);
       return temp ? temp.visitor_Type : '';
     }
   }
@@ -888,10 +893,10 @@ export class VisitorappointmentComponent implements OnInit {
     });
   }
 
-  beforeDayViewRender(dayView: SchedulerViewDay[]) {
-    this.dayView = dayView;
-    this.addSelectedDayViewClass();
-  }
+  // beforeDayViewRender(dayView: SchedulerViewDay[]) {
+  //   this.dayView = dayView;
+  //   this.addSelectedDayViewClass();
+  // }
 
   // private addSelectedDayViewClass() {
   //   this.dayView.forEach(hourSegment => {
@@ -907,17 +912,17 @@ export class VisitorappointmentComponent implements OnInit {
   //   });
   // }
 private addSelectedDayViewClass() {
-  this.dayView.forEach((hourSegment: any) => {
-    hourSegment.segments.forEach((segment: any) => {
-      delete segment.cssClass;
-      if (
-        this.selectedDayViewDate &&
-        segment.date.getTime() === this.selectedDayViewDate.getTime()
-      ) {
-        segment.cssClass = 'cal-day-selected';
-      }
-    });
-  });
+  // this.dayView.forEach((hourSegment: any) => {
+  //   hourSegment.segments.forEach((segment: any) => {
+  //     delete segment.cssClass;
+  //     if (
+  //       this.selectedDayViewDate &&
+  //       segment.date.getTime() === this.selectedDayViewDate.getTime()
+  //     ) {
+  //       segment.cssClass = 'cal-day-selected';
+  //     }
+  //   });
+  // });
 }
 
 
@@ -968,7 +973,7 @@ private addSelectedDayViewClass() {
       this.selectedVisitorType = null;
       this.selectedPurpose = null;
       this.selLoc = this.locationId;
-      this.selLocationId = this.LocationMasterList.filter(s => s.id == this.locationId);
+      this.selLocationId = this.LocationMasterList.filter((s:any) => s.id == this.locationId);
       this.fromTime = date;
       let endTime = new Date(date);
       endTime.setHours(endTime.getHours() + +this.durationHours);
@@ -981,7 +986,7 @@ private addSelectedDayViewClass() {
   }
 
   deleteCalendarEntry() {
-    let cantDelete = this.visitorsList.find(s => s.id == this.selectedEvent && (s.numberOfPerson > 0 || s.isActive == false));
+    let cantDelete = this.visitorsList.find((s:any) => s.id == this.selectedEvent && (s.numberOfPerson > 0 || s.isActive == false));
     if (cantDelete) {
       swal({
         title: "Message",
@@ -1004,9 +1009,9 @@ private addSelectedDayViewClass() {
           jQuery("#myModal").modal('hide');
           this.errMsgPop1 = 'Appointment removed!';
           jQuery("#saveModal").modal('show');
-          this.getEvents();
+         // this.getEvents();
         }
-      }).catch(() => {
+      }).catch((error) => {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Appointment data..';
       });
@@ -1023,7 +1028,7 @@ private addSelectedDayViewClass() {
     this.isLoading = false;
   }
 
-  RemoveLine(no, id) {
+  RemoveLine(no:any, id:any) {
     this.isLoading = true;
     this.VisitorDetails.splice(no, 1);
     // console.log(this.departmentList);
@@ -1083,8 +1088,8 @@ private addSelectedDayViewClass() {
         else {
           this.Approverslist = [];
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoading = false;
         this.Approverslist = [];
       });

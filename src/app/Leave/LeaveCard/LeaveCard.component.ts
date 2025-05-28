@@ -25,10 +25,10 @@ import { LeaveDetails } from './LeaveCard.model';
 
 declare var ActiveXObject: (type: string) => void;
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe, DecimalPipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 
 @Component({
@@ -37,11 +37,11 @@ import htmlToPdfmake from 'html-to-pdfmake';
   styleUrls: ['./LeaveCard.component.css']
 })
 export class LeaveCardComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -57,9 +57,9 @@ export class LeaveCardComponent implements OnInit {
   locListCon1 = [];
   genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -68,9 +68,9 @@ export class LeaveCardComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   userMasterItem: any = {};
@@ -79,25 +79,27 @@ export class LeaveCardComponent implements OnInit {
   CalenderYear: string = '';
   CalYear: any;
   lvType: number = null;
-  StartDate: string = null;
-  EndDate: string = null;
-  Duration1: string = null;
-  Duration2: string = null;
+  StartDate: string = ' ';
+  EndDate: string = ' ';
+  Duration1: string = ' ';
+  Duration2: string = ' ';
   NoOfDays: number = 0;
-  LvReason: string = null;
+  LvReason: string = ' ';
   personResponsible: any;
   personName: any;
   DetailedReason: string = '';
   LeaveRequestList: any[] = [];
   ApplyFor: any = null;
-  userId: string = null;
+  userId: string = ' ';
   LeaveAddress: any;
   LeaveContactNo: any;
   approvalStatus: any;
   approvedDate: any;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -136,7 +138,7 @@ export class LeaveCardComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -144,13 +146,13 @@ export class LeaveCardComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -158,8 +160,8 @@ export class LeaveCardComponent implements OnInit {
   onSelectAll() {
 
   }
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
@@ -174,10 +176,11 @@ export class LeaveCardComponent implements OnInit {
 
   BloodGroupList: any[] = [];
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
     this.year = today.getFullYear();
@@ -203,7 +206,7 @@ export class LeaveCardComponent implements OnInit {
   totClbal: number = 0;
   totAvbal: number = 0;
   lvbalaneList: any[] = [];
-  getUsersList(id) {
+  getUsersList(id:any) {
     this.errMsg = "";
     this.lvbalaneList = [];
     this.totOpbal = 0;
@@ -218,7 +221,7 @@ export class LeaveCardComponent implements OnInit {
         this.totUsbal = 0;
         this.totAvbal = 0;
         this.totClbal = 0;
-        this.lvbalaneList = data.sort((a, b) => {
+        this.lvbalaneList = data.sort((a:any, b:any) => {
           if (a.lvTypeid > b.lvTypeid) return 1;
           if (a.lvTypeid < b.lvTypeid) return -1;
           return 0;
@@ -227,7 +230,8 @@ export class LeaveCardComponent implements OnInit {
         this.totUsbal = 0;
         this.totClbal = 0;
         this.totAvbal = 0;
-        this.lvbalaneList.forEach(element => {
+        this.lvbalaneList.forEach((element:any)=> {
+
           this.totOpbal = this.totOpbal + element.lvOpbal;
           this.totUsbal = this.totUsbal + element.lvAvailed;
           this.totClbal = this.totClbal + element.lvClbal;
@@ -235,14 +239,14 @@ export class LeaveCardComponent implements OnInit {
         });
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.lvbalaneList = [];  
     });
   }
 
   ApproversList: any[] = [];
-  getApproversList(id) {
+  getApproversList(id:any) {
     this.errMsg = "";
     this.httpService.LAgetByParam(APIURLS.GET_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
       if (data) {
@@ -256,7 +260,7 @@ export class LeaveCardComponent implements OnInit {
 
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -267,9 +271,9 @@ export class LeaveCardComponent implements OnInit {
     this.errMsg = "";
     this.get("RoleMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.Rolelist = data.filter(x => x.isActive);
+        this.Rolelist = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Rolelist = [];
     });
@@ -290,13 +294,13 @@ export class LeaveCardComponent implements OnInit {
         this.lvTypeList = data;
         this.getUsersList(this.employeeId);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.lvTypeList = [];
     });
   }
-  getType(id) {
-    let temp = this.lvTypeList.find(x => x.lvTypeid == id);
+  getType(id:any) {
+    let temp = this.lvTypeList.find((x:any)  => x.lvTypeid == id);
     return temp ? temp.lvType : '';
   }
 
@@ -306,7 +310,7 @@ export class LeaveCardComponent implements OnInit {
     this.httpService.LAgetByParam(APIURLS.GET_EMP_OF_REPORTING, this.currentUser.employeeId).then((data: any) => {
       if (data.length > 0) {
         this.EmployeeList = data;
-        this.EmployeeList.sort((a, b) => {
+        this.EmployeeList.sort((a:any, b:any) => {
           if (a.fullName > b.fullName) return 1;
           if (a.fullName < b.fullName) return -1;
           return 0;
@@ -316,7 +320,7 @@ export class LeaveCardComponent implements OnInit {
       else {
         this.EmployeeList = [];
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList = [];
     });
@@ -329,7 +333,7 @@ export class LeaveCardComponent implements OnInit {
     if (this.isEdit) {
       //   let data=Object.assign({},value)
 
-      this.lvType = this.lvTypeList.find(x => x.lvType == data.leaveType).lvTypeid;
+      this.lvType = this.lvTypeList.find((x:any)  => x.lvType == data.leaveType).lvTypeid;
       this.getLvReasonList(this.lvType);
       this.CalenderYear = this.CalYear;
       this.StartDate = data.startDate;
@@ -360,16 +364,16 @@ export class LeaveCardComponent implements OnInit {
     this.ReasonList = [];
     this.httpService.LAgetByParam(APIURLS.BR_GET_LEAVE_REASONS, type).then((data: any) => {
       if (data.length > 0) {
-        this.ReasonList = data.filter(x => x.isActive);
+        this.ReasonList = data.filter((x:any)  => x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReasonList = [];
     });
   }
 
   checklvbalance(type) {
-    let temp = this.lvbalaneList.find(x => x.lvTypeid == type);
+    let temp = this.lvbalaneList.find((x:any)  => x.lvTypeid == type);
     if (temp) {
       temp
     }
@@ -386,7 +390,7 @@ export class LeaveCardComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -396,7 +400,7 @@ export class LeaveCardComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -406,7 +410,7 @@ export class LeaveCardComponent implements OnInit {
                   $("#personName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -434,7 +438,7 @@ export class LeaveCardComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -444,7 +448,7 @@ export class LeaveCardComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -454,7 +458,7 @@ export class LeaveCardComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -478,7 +482,7 @@ export class LeaveCardComponent implements OnInit {
   validatedForm: boolean = true;
   LeaveRequestList1: any[] = [];
   upcomingLeaves: any[] = [];
-  EmployeeNo: string = null;
+  EmployeeNo: string = ' ';
   getEmpleaveRequests() {
     let srchstr: any = {};
     if (this.EmployeeNo == null || this.EmployeeNo == '') {
@@ -496,12 +500,12 @@ export class LeaveCardComponent implements OnInit {
       if (data) {
         this.LeaveRequestList = data;
         //this.LeaveRequestList.reverse();
-        this.LeaveRequestList1 = data.filter(x => x.approvelStatus == 'Completed');
-        this.upcomingLeaves = this.LeaveRequestList.filter(x => new Date(x.startDate) > new Date());
+        this.LeaveRequestList1 = data.filter((x:any)  => x.approvelStatus == 'Completed');
+        this.upcomingLeaves = this.LeaveRequestList.filter((x:any)  => new Date(x.startDate) > new Date());
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.LeaveRequestList = [];
     });
@@ -514,7 +518,7 @@ export class LeaveCardComponent implements OnInit {
     if (this.isEdit) {
       //   let data=Object.assign({},value)
 
-      this.lvType = this.lvTypeList.find(x => x.lvType == data.leaveType).lvTypeid;
+      this.lvType = this.lvTypeList.find((x:any)  => x.lvType == data.leaveType).lvTypeid;
       this.getLvReasonList(this.lvType);
       this.CalenderYear = this.CalYear;
       this.StartDate = data.startDate;
@@ -542,7 +546,7 @@ export class LeaveCardComponent implements OnInit {
     let connection = this.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, val);
     connection.then((data: any) => {
       if (data) {
-        let result = data.filter(x => { return x.employeeId != null });
+        let result = data.filter((x:any)  => { return x.employeeId != null });
         this.Department = result[0].department;
         this.Designation = result[0].designation;
         this.FullName = result[0].fullName;
@@ -551,7 +555,7 @@ export class LeaveCardComponent implements OnInit {
         this.RoleId = result[0].roleId;
         this.getEmpleaveRequests();
       }
-    }).catch(error => {
+    }).catch((error)=> {
     });
   }
 
@@ -576,7 +580,8 @@ export class LeaveCardComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -605,7 +610,7 @@ getHeader(): { headers: HttpHeaders } {
     return new Date(mdy[0], mdy[1] - 1, mdy[2]);
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -636,7 +641,7 @@ getHeader(): { headers: HttpHeaders } {
     return formateddate;
   }
 
-  Print(id) {
+  Print(id:any) {
     // if(this.LeaveRequestList.length = 0) {
     //   swal({
     //     title: "Message",
@@ -648,14 +653,14 @@ getHeader(): { headers: HttpHeaders } {
     //   return;
     // }
     this.GetEmpDetails(id);
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED";
     var ReportName = "EMPLOYEE LEAVE CARD";
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -668,14 +673,14 @@ getHeader(): { headers: HttpHeaders } {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Leave card',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -693,7 +698,7 @@ getHeader(): { headers: HttpHeaders } {
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -748,7 +753,7 @@ getHeader(): { headers: HttpHeaders } {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 }

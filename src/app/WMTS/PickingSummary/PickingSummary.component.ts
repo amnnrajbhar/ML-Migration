@@ -9,13 +9,13 @@ import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
 import { ExcelService } from '../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+//import * as fs from 'file-saver';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 
 @Component({
@@ -29,14 +29,14 @@ export class PickingSummaryComponent implements OnInit {
 
 
   public tableWidget: any;
-  DCLabel: string;
+  DCLabel!: string;
   ItemList: LineItem[] = [];
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  filterplant: string;
-  path: string;
-  currentUser: AuthData;
-  filteruser: string;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  filterplant!: string;
+  path!: string;
+  currentUser!: AuthData;
+  filteruser!: string;
   locationList: any[] = [];
   filteredModel: any;
   pickedmodel: any[] = [];
@@ -46,30 +46,33 @@ export class PickingSummaryComponent implements OnInit {
   errMsg: string = "";
   date: any;
   today = new Date();
-  filtermatType: string;
-  Barcode: string;
-  ItemDesc: string;
-  BatchNo: string;
-  ItemCode: string;
-  filterPONo: string;
-  DCNo: string;
-  Qty: number;
-  plant: string;
-  locationname: string;
-  image: string;
-  Type: string;
-  City: string;
-  CustomerName: string;
-  Total: number;
+  filtermatType!: string;
+  Barcode!: string;
+  ItemDesc!: string;
+  BatchNo!: string;
+  ItemCode!: string;
+  filterPONo!: string;
+  DCNo!: string;
+  Qty!: number;
+  plant!: string;
+  locationname!: string;
+  image!: string;
+  Type!: string;
+  City!: string;
+  CustomerName!: string;
+  Total!: number;
 
   dtOptions = {};
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private datePipe: DatePipe
-    , private http: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    , private http: HttpClient) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getLocationMaster();
     this.getbase64image();
   }
@@ -106,13 +109,13 @@ export class PickingSummaryComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         // this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
-        this.plant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        this.locationname = this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.locationList = data.filter((x:any)  => x.isActive);
+        this.plant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        this.locationname = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
 
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -142,7 +145,7 @@ export class PickingSummaryComponent implements OnInit {
         this.Total = this.summary[0].totalqty;
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filteredModel = [];
     });
@@ -155,7 +158,7 @@ export class PickingSummaryComponent implements OnInit {
   }
 
   downloadPDF() {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.plant + ' - ' + this.locationname;
     var ReportName = "PICKED SUMMARY REPORT"
     var printedBy = this.currentUser.fullName;
@@ -163,27 +166,27 @@ export class PickingSummaryComponent implements OnInit {
     var now = Date.now();
     var date = pipe.transform(now, 'short');
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
-    <head>
-    </head>
-    <body>
-    ${printContents}
-    <div> 
-    </div>
-    </body>  
-    </html>`, {
-      tableAutoSize: true,
-      tablebordered: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-    })
+    // var htmnikhitml = htmlToPdfmake(`<html>
+    // <head>
+    // </head>
+    // <body>
+    // ${printContents}
+    // <div> 
+    // </div>
+    // </body>  
+    // </html>`, {
+    //   tableAutoSize: true,
+    //   tablebordered: true,
+    //   headerRows: 1,
+    //   dontBreakRows: true,
+    //   keepWithHeaderRows: true,
+    // })
     var docDefinition = {
       info: {
         title: ReportName,
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -198,7 +201,7 @@ export class PickingSummaryComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [80, 100, 100, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -250,6 +253,6 @@ export class PickingSummaryComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 }

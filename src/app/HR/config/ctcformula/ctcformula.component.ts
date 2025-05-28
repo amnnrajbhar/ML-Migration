@@ -18,10 +18,10 @@ declare var toastr: any;
   providers: [Util]
 })
 export class CtcformulaComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   filterModel: any = {};
   filterData: any = {}
   item: any = {};
@@ -39,7 +39,8 @@ export class CtcformulaComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.packageType = '';
     this.filterModel.employeeCategoryId = '';
@@ -65,7 +66,7 @@ export class CtcformulaComponent implements OnInit {
       this.filterData = data;
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the list. Error: " + error);
       this.isLoading = false;
     });
@@ -104,7 +105,7 @@ export class CtcformulaComponent implements OnInit {
           this.getData();
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error adding details...' + error);
       })
@@ -129,7 +130,7 @@ export class CtcformulaComponent implements OnInit {
           this.getData();
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error updating details...' + error);
       })
@@ -148,7 +149,7 @@ export class CtcformulaComponent implements OnInit {
     this.clearInput();
   }
 
-  EditLine(item, index) {
+  EditLine(item:any, index:any) {
     this.item = Object.assign({}, item);
     this.isEdit = true;
     this.editIndex = index;
@@ -185,7 +186,7 @@ export class CtcformulaComponent implements OnInit {
       this.filterModel.export = false;
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index = index + 1;
         let exportItem = {
           "Sl No": index,
@@ -211,7 +212,7 @@ export class CtcformulaComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'CTCBreakup_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -247,7 +248,7 @@ export class CtcformulaComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + error);
       });

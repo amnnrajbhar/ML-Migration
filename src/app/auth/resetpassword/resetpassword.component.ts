@@ -11,7 +11,7 @@ import { HttpService } from './../../shared/http-service';
 })
 export class ResetPasswordComponent implements OnInit {
     hideLoginForm: boolean = false;
-    resetPwdToken: string;
+    resetPwdToken: string
     isLoading: boolean = false;
     userItem: User = new User(0, 0, '', '', '', 0, 0, 0, '', 0, '', '', '', '', '', '', '', '', '', 0, 0, true, '', '', true);;
     public sucessMsg: string = '';
@@ -56,7 +56,7 @@ export class ResetPasswordComponent implements OnInit {
                     this.pwdMsg1 = data;
                     this.rePwdMsg1 = '';
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
                 this.pwdMsg1 = error.message;
                 this.rePwdMsg1 = '';

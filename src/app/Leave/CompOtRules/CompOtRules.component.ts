@@ -12,9 +12,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 declare var jQuery: any;
 export class actionItemModel {
-  description: string;
-  id: number;
-  uname: string;
+  description: string
+  id!: number;
+  uname: string
 }
 @Component({
   selector: 'app-CompOtRules',
@@ -23,7 +23,7 @@ export class actionItemModel {
 })
 export class CompOtRulescomponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
+@ViewChild(NgForm, { static: false }) leaveForm!: NgForm;
 
   public tableWidget: any;
   compotrulesItem: CompOtRules = new CompOtRules();
@@ -38,8 +38,8 @@ export class CompOtRulescomponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldcompotrulesItem: CompOtRules = new CompOtRules();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   id: any;
   locationAllList: any;
   locationList: any[] = [];
@@ -72,7 +72,8 @@ export class CompOtRulescomponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getCompOtRulesList();
       this.getempCatList();
       this.getplantMaster();
@@ -89,38 +90,38 @@ export class CompOtRulescomponent implements OnInit {
     this.errMsg = "";
     this.httpService.LAget(APIURLS.BR_COMPOTRULES_GETALL).then((data: any) => {
       if (data.length > 0) {
-        this.CompOtRulesList = data.filter(x => x.isActive == true);
+        this.CompOtRulesList = data.filter((x:any)  => x.isActive == true);
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.CompOtRulesList = [];
     });
   }
 
-  getPlantname(id) {
-    let temp = this.locationList.find(x => x.id == id);
+  getPlantname(id:any) {
+    let temp = this.locationList.find((x:any)  => x.id == id);
     return temp ? temp.code : '';
   }
 
-  getPaygroupname(id) {
-    let temp = this.payGroupList.find(x => x.id == id);
+  getPaygroupname(id:any) {
+    let temp = this.payGroupList.find((x:any)  => x.id == id);
     return temp ? temp.short_desc : '';
   }
 
-  getStaffcatname(id) {
-    let temp = this.empCatList.find(x => x.id == id);
+  getStaffcatname(id:any) {
+    let temp = this.empCatList.find((x:any)  => x.id == id);
     return temp ? temp.catltxt : '';
   }
 
-  getGradeName(id) {
-    let temp = this.gradeList.find(x => x.id == id)
+  getGradeName(id:any) {
+    let temp = this.gradeList.find((x:any)  => x.id == id)
     return temp ? (temp.grdid + ' -- ' + temp.grdtxt) : '';
   }
 
-  getWorkType(id) {
-    let temp = this.workTypeList.find(x => x.id == id)
+  getWorkType(id:any) {
+    let temp = this.workTypeList.find((x:any)  => x.id == id)
     return temp ? (temp.workTypeLongDesc) : '';
   }
 
@@ -190,7 +191,7 @@ export class CompOtRulescomponent implements OnInit {
     this.isLoadingPop = true;
     let connection: any;
     if (!this.isEdit) {
-      if (this.CompOtRulesList.find(x => x.plant == this.compotrulesItem.plant && x.paygroup == this.compotrulesItem.paygroup && x.staffcategory == this.compotrulesItem.staffcategory &&
+      if (this.CompOtRulesList.find((x:any)  => x.plant == this.compotrulesItem.plant && x.paygroup == this.compotrulesItem.paygroup && x.staffcategory == this.compotrulesItem.staffcategory &&
         x.grade == this.compotrulesItem.grade &&
         x.workType == this.compotrulesItem.workType && x.type == this.compotrulesItem.type)) {
         this.isLoadingPop = false;
@@ -207,7 +208,7 @@ export class CompOtRulescomponent implements OnInit {
       connection = this.httpService.LApost(APIURLS.BR_COMPOTRULES_INSERT_API, this.compotrulesItem);
     }
     else {
-      if (this.CompOtRulesList.find(x => x.plant == this.compotrulesItem.plant && x.paygroup == this.compotrulesItem.paygroup && x.staffcategory == this.compotrulesItem.staffcategory &&
+      if (this.CompOtRulesList.find((x:any)  => x.plant == this.compotrulesItem.plant && x.paygroup == this.compotrulesItem.paygroup && x.staffcategory == this.compotrulesItem.staffcategory &&
         x.grade == this.compotrulesItem.grade &&
         x.workType == this.compotrulesItem.workType && x.type == this.compotrulesItem.type)) {
         this.isLoadingPop = false;
@@ -241,7 +242,7 @@ export class CompOtRulescomponent implements OnInit {
       else
         this.errMsgPop = data;
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving CompOtRules data..';
     });
@@ -276,7 +277,7 @@ export class CompOtRulescomponent implements OnInit {
             this.isLoading = false;
             this.getCompOtRulesList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Comp OT Rules..';
         });
@@ -289,13 +290,13 @@ export class CompOtRulescomponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -308,7 +309,7 @@ export class CompOtRulescomponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
@@ -318,13 +319,13 @@ export class CompOtRulescomponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -335,7 +336,7 @@ export class CompOtRulescomponent implements OnInit {
       if (data.length > 0) {
         this.workTypeList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.workTypeList = [];
     });
@@ -348,7 +349,7 @@ export class CompOtRulescomponent implements OnInit {
       if (data.length > 0) {
         this.gradeList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.gradeList = [];
     });
@@ -372,7 +373,8 @@ export class CompOtRulescomponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

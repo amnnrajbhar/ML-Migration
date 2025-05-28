@@ -30,10 +30,10 @@ import { now } from 'moment';
   styleUrls: ['./ManualEntry.component.css']
 })
 export class ManualEntryComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
   public tableWidget: any;
@@ -64,15 +64,15 @@ export class ManualEntryComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  path: string;
-  filterEmployeeName: string = null;
-  filterEmployeeId: string = null;
-  filterLocation: string = null;;
-  filterPayGroup: string = null;
-  filterDepartment: string = null;
-  filterSubDepartment: string = null;
-  filterReportingGroup: string = null;
-  filterCategory: string = null;
+  path!: string
+  filterEmployeeName: string = ' ';
+  filterEmployeeId: string = ' ';
+  filterLocation: string = ' ';;
+  filterPayGroup: string = ' ';
+  filterDepartment: string = ' ';
+  filterSubDepartment: string = ' ';
+  filterReportingGroup: string = ' ';
+  filterCategory: string = ' ';
   filterStatus: number = 1;
   filterType: any = null;
   filterweek: any = null;
@@ -119,7 +119,7 @@ export class ManualEntryComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -127,16 +127,16 @@ export class ManualEntryComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        //this.filterLocation = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        //this.filterLocation = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
         this.getpayGroupList();
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -156,21 +156,23 @@ export class ManualEntryComponent implements OnInit {
     this.filterCategory = '';
     this.calYear = new Date().getFullYear().toString();
     this.filterStatus = 1;
-    this.filterType = null;
+    //this.filterType = null;
+this.filterType = '';
     this.ManualEntryList = [];
     this.reInitDatatable();
     this.attendanceDetails = [];
     this.ManualEntryEmpList = [];
   }
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     let today = new Date();
     this.calYear = new Date().getFullYear().toString();
     //this.filterLocation = this.currentUser.baselocation.toString();
@@ -222,7 +224,7 @@ export class ManualEntryComponent implements OnInit {
           this.ManualEntryEmpList = data;
         }
         this.reInitDatatable();
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error uploading file ..';
       });
     }
@@ -233,25 +235,27 @@ export class ManualEntryComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
-        let temp = this.locationList.find(x => x.id == this.currentUser.baselocation);
-        this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+        let temp = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
+        this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
       }
       // this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
   }
   payGroupList1: any[] = [];
   onlocationSelect() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.id == this.filterLocation);
-    this.payGroupList1 = this.payGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.id == this.filterLocation);
+    this.payGroupList1 = this.payGroupList.filter((x:any)  => x.plant == temp.code);
   }
   empCatList: any[] = [];
   getempCatList() {
@@ -260,7 +264,7 @@ export class ManualEntryComponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
@@ -268,13 +272,13 @@ export class ManualEntryComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -287,7 +291,7 @@ export class ManualEntryComponent implements OnInit {
       if (data.length > 0) {
         this.subDeptList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.subDeptList = [];
     });
@@ -298,22 +302,22 @@ export class ManualEntryComponent implements OnInit {
   GetEmpDetails(val) {
     var self = this;
     $('#EmployeeId').autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm1 = val;
         let connection = self.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, searchTerm1);
         connection.then((data: any) => {
           if (data) {
-            let result = data.filter(x => { return x.employeeId != null });
-            response(result.map((i) => {
+            let result = data.filter((x:any)  => { return x.employeeId != null });
+            response(result.map((i:any) => {
               i.label = i.fullName + '-' + i.department + '-' + i.designation,
                 i.fullName = i.fullName, i.baseLocation = i.baseLocation, i.baseLocation = i.baseLocation,
                 i.division = i.division; return i;
             }));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterEmployeeName = ui.item.fullName;
         self.filterLocation = ui.item.baselocation;
         self.filterCategory = ui.item.roleId;
@@ -337,14 +341,14 @@ export class ManualEntryComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.attendanceDetails = [];
     });
   }
 
   formData: FormData = new FormData();
-  file: File;
+  file!: File;
 
   getDateFormate(date: any): string {
     let d1 = new Date(date);
@@ -393,7 +397,7 @@ export class ManualEntryComponent implements OnInit {
           }
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.attendanceDetails = [];
       });
@@ -427,7 +431,7 @@ export class ManualEntryComponent implements OnInit {
     this.checkedRequestList = this.checkedlist;
   }
 
-  weekCount: number;
+  weekCount!: number;
   GetWeeksCount(year, month_number) {
     var firstOfMonth = new Date(year, month_number - 1, 1);
     var day = firstOfMonth.getDay() || 6;
@@ -459,7 +463,7 @@ export class ManualEntryComponent implements OnInit {
         filterModel.pernr = this.filterEmployeeId;
       }
       else {
-        filterModel.pernr = this.checkedRequestList.map(x => x.employeeId).join();
+        filterModel.pernr = this.checkedRequestList.map((x:any)  => x.employeeId).join();
       }
       //  filterModel.shiftCode = this.attendanceDetails[0].shift;
       filterModel.date = this.setFormatedDate(this.fromDate);
@@ -483,7 +487,7 @@ export class ManualEntryComponent implements OnInit {
         else {
           toastr.error("Error updating data ..");
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error uploading file ..';
       });
     }
@@ -532,7 +536,7 @@ export class ManualEntryComponent implements OnInit {
         });
         this.reset();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
   }
@@ -568,7 +572,7 @@ export class ManualEntryComponent implements OnInit {
       dt.getFullYear() + "-" + ("00" + (dt.getMonth() + 1)).slice(-2) + '-' + ("00" + dt.getDate()).slice(-2);
     return formateddate;
   }
-  exportList: any[];
+  exportList!: any[];
   exportExcel() {
     let filterModel: any = {};
     filterModel.plant = this.filterLocation;
@@ -585,7 +589,7 @@ export class ManualEntryComponent implements OnInit {
         this.ManualEntryList1 = data;
         this.exportList = [];
         let index = 0;
-        this.ManualEntryList1.forEach(item => {
+        this.ManualEntryList1.forEach((item :any) => {
           index = index + 1;
           let exportItem = {
             "SNo": index,
@@ -610,7 +614,7 @@ export class ManualEntryComponent implements OnInit {
         toastr.error("No data to export for selected filters.")
       }
       //this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error exporting to excel..';
     });
   }
@@ -654,7 +658,8 @@ export class ManualEntryComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

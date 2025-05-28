@@ -1,12 +1,12 @@
 export class AbsentIntimation {
-    id: number;
-    empId: string;
-    intimationType: string = null;
-    intimationOver: string = null;
-    reason: string;
-    fromDate: string;
-    toDate: string;
-    duration: string = null;
-    updatedBy: string;
+    id!: number;
+    empId: string
+    intimationType: string = ' ';
+    intimationOver: string = ' ';
+    reason: string
+    fromDate: string
+    toDate: string
+    duration: string = ' ';
+    updatedBy: string
     updatedOn: string
 }

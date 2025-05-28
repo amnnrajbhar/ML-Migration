@@ -1,7 +1,7 @@
 ﻿export class AuthData {
-    EmployeeNumber: string;
-    Id: number;
-    profileIDs: string[];
+    EmployeeNumber!: string
+    Id!: number;
+    profileIDs!: string[];
     constructor(
         public isAuth: boolean,
         public uid: number,

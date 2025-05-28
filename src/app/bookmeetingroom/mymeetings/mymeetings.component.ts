@@ -15,9 +15,9 @@ declare var $: any;
   styleUrls: ['./mymeetings.component.css']
 })
 export class MymeetingsComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgPop: string = "";
@@ -34,7 +34,8 @@ export class MymeetingsComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.loadTilesCount();
       this.getMyMeetings();
     }
@@ -57,7 +58,7 @@ export class MymeetingsComponent implements OnInit {
     this.httpService.post(APIURLS.BR_ROOM_BOOKING_BY_FILTER_API, genericBookingFilters).then((data: any) => {
       if (data) {
         if (filter == 'cancel'){
-          this.myMeetings = data.filter(x => { return x.isCancelled == true });
+          this.myMeetings = data.filter((x:any)  => { return x.isCancelled == true });
         }
         else
           this.myMeetings = data;
@@ -65,7 +66,7 @@ export class MymeetingsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.myMeetings = [];
     });
@@ -86,13 +87,13 @@ export class MymeetingsComponent implements OnInit {
     this.httpService.post(APIURLS.BR_ROOM_BOOKING_BY_FILTER_API, genericBookingFilters).then((data: any) => {
       if (data) {
         this.allMeetings = data.length;
-        this.todayMeetings = data.filter(x => { return this.getDateFormate(x.toDate)== this.getDateFormate(todaydate)}).length;
-        this.cancelledMeetings = data.filter(x => { return x.isCancelled == true }).length;
-        this.approvedMeetings = data.filter(x => { return x.status == 'Approved' }).length;
-        this.rejectedMeetings = data.filter(x => { return ( x.status == 'Rejected by Admin' || x.status == 'Rejected by Manager') }).length;
+        this.todayMeetings = data.filter((x:any)  => { return this.getDateFormate(x.toDate)== this.getDateFormate(todaydate)}).length;
+        this.cancelledMeetings = data.filter((x:any)  => { return x.isCancelled == true }).length;
+        this.approvedMeetings = data.filter((x:any)  => { return x.status == 'Approved' }).length;
+        this.rejectedMeetings = data.filter((x:any)  => { return ( x.status == 'Rejected by Admin' || x.status == 'Rejected by Manager') }).length;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -179,7 +180,7 @@ export class MymeetingsComponent implements OnInit {
         this.loadTilesCount();
         this.getMyMeetings();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error in Booking Room';
     });

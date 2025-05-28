@@ -22,7 +22,7 @@ export class ExitInterviewComponent implements OnInit {
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading = false;
   questions: any[] = [];
@@ -40,7 +40,8 @@ export class ExitInterviewComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       if (this.resignationId==undefined)
       {
         this.resignationId = this.route.snapshot.paramMap.get('id')!; 
@@ -57,12 +58,12 @@ export class ExitInterviewComponent implements OnInit {
       this.httpService.HRget(APIURLS.RESIGNATION_GET_EXIT_INTERVIEW_ANSWERS+"/"+ this.resignationId).then((data: any) => {
         if (data) {
           this.questions = data;
-          this.isAnswered = (data.filter(x=>x.answer != "" && x.answer != null && x.answer != undefined).length > 0);
+          this.isAnswered = (data.filter((x:any)=>x.answer != "" && x.answer != null && x.answer != undefined).length > 0);
           this.editAllowed = !this.isAnswered;
           this.isDeclared = this.isAnswered;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.errMsg = "Error occurred while fetching details, please check the link.";
       });
@@ -95,7 +96,7 @@ export class ExitInterviewComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while submitting details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while submitting details. Error:' + error);
       });

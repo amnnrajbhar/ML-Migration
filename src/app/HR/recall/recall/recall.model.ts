@@ -18,9 +18,9 @@ export interface Recall{
     IsTransfer: boolean;
     IsSalaryChange: boolean;
     IsStaffCategoryChange: boolean;
-    EffectiveDate: string;
-    PerformanceRating: string;
+    EffectiveDate: string
+    PerformanceRating: string
     JobChangeDetails: JobChangeDetails[];
-    recruitmentType: string;
-    replacingEmployeeNumber: string;
+    recruitmentType: string
+    replacingEmployeeNumber: string
     }

@@ -18,7 +18,7 @@ declare var jQuery: any;
   styleUrls: ['./passwordpolicy.component.css']
 })
 export class PasswordpolicyComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) passwordPolicyForm: NgForm;
+@ViewChild(NgForm, { static: false }) passwordPolicyForm!: NgForm;
 
   policyItem: any = {};
   passwordPolicy: PasswordPolicy = new PasswordPolicy();
@@ -28,11 +28,11 @@ export class PasswordpolicyComponent implements OnInit {
   errMsgPop: string = "";
   neverExpire: boolean = false;
   path: string = '';
-  currentUser: AuthData;
+  currentUser!: AuthData;
   expiryDays: any;
   oldpasswordPolicy: PasswordPolicy = new PasswordPolicy();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) {
 
   }
@@ -41,7 +41,8 @@ export class PasswordpolicyComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getPasswordPolicy();
     }
     else
@@ -56,7 +57,7 @@ export class PasswordpolicyComponent implements OnInit {
         this.expiryDays = data.expiryDays;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -116,7 +117,7 @@ export class PasswordpolicyComponent implements OnInit {
           }
         });
       }
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving password policy..';
     });
@@ -162,12 +163,12 @@ export class PasswordpolicyComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -176,7 +177,7 @@ export class PasswordpolicyComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

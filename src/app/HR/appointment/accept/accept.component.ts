@@ -71,7 +71,7 @@ export class AcceptComponent implements OnInit {
           this.details = data;
           this.showData = true;
         }  
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while fetching details.");
     });
@@ -106,7 +106,7 @@ export class AcceptComponent implements OnInit {
         this.isLoading = false;
         swal("Error occurred: "+err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         swal("Error occurred: "+error);
       });

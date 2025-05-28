@@ -22,19 +22,19 @@ import {
   endOfDay,
   addMonths,
 } from 'date-fns';
-import {
-  SchedulerViewDay,
-  SchedulerViewHour,
-  SchedulerViewHourSegment,
-  CalendarSchedulerEvent,
-  CalendarSchedulerEventAction,
-  startOfPeriod,
-  endOfPeriod,
-  addPeriod,
-  subPeriod,
-  SchedulerDateFormatter,
-  SchedulerEventTimesChangedEvent
-} from 'angular-calendar-scheduler';
+// import {
+//   SchedulerViewDay,
+//   SchedulerViewHour,
+//   SchedulerViewHourSegment,
+//   CalendarSchedulerEvent,
+//   CalendarSchedulerEventAction,
+//   startOfPeriod,
+//   endOfPeriod,
+//   addPeriod,
+//   subPeriod,
+//   SchedulerDateFormatter,
+//   SchedulerEventTimesChangedEvent
+// } from 'angular-calendar-scheduler';
 import {
   CalendarView,
   CalendarDateFormatter,
@@ -65,11 +65,11 @@ import { RoomInformation } from '../room-maintenance/room.model';
   styleUrls: ['./room-booking.component.css'],
   providers: [{
     provide: CalendarDateFormatter,
-    useClass: SchedulerDateFormatter
+    //useClass: SchedulerDateFormatter
   }]
 })
 export class RoomBookingComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
   CalendarView = CalendarView;
 
@@ -88,20 +88,20 @@ export class RoomBookingComponent implements OnInit {
 
   minDate: Date = new Date();
   maxDate: Date = endOfDay(addMonths(new Date(), 11));
-  dayModifier: Function;
-  hourModifier: Function;
-  segmentModifier: Function;
+  dayModifier!: Function;
+  hourModifier!: Function;
+  segmentModifier!: Function;
   prevBtnDisabled: boolean = false;
   nextBtnDisabled: boolean = false;
-  actions: CalendarSchedulerEventAction[] = [];
+  // actions: CalendarSchedulerEventAction[] = [];
 
-  events: CalendarSchedulerEvent[];
+  //events: CalendarSchedulerEvent[];
   //Above are calendar properties
-  roomId: number;
-  baseLocation: number;
-  roomLocationCode: string;
-  roomName: string;
-  roomLocation: string;
+  roomId!: number;
+  baseLocation!: number;
+  roomLocationCode: string
+  roomName: string
+  roomLocation: string
   isEdit: boolean = false;
   errMsg: string = "";
   errMsgPop: string = "";
@@ -110,33 +110,35 @@ export class RoomBookingComponent implements OnInit {
   calendarMeeting = {} as BookMeeting;
   roomInformation = {} as RoomInformation;
   pastEvent: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   min = new Date();
   constructor(@Inject(LOCALE_ID) locale: string, private appService: AppService, private dateAdapter: DateAdapter, private router: Router, private route: ActivatedRoute, private httpService: HttpService) {
     this.locale = locale;
 
-    this.dayModifier = ((day: SchedulerViewDay): void => {
-      if (!this.isDateValid(day.date)) {
-        day.cssClass = 'cal-disabled';
-      }
-    }).bind(this);
-    this.hourModifier = ((hour: SchedulerViewHour): void => {
-      if (!this.isDateValid(hour.date)) {
-        hour.cssClass = 'cal-disabled';
-      }
-    }).bind(this);
-    this.segmentModifier = ((segment: SchedulerViewHourSegment): void => {
-      if (!this.isDateValid(segment.date)) {
-        segment.isDisabled = true;
-      }
-    }).bind(this);
+     //v10
+    // this.dayModifier = ((day: SchedulerViewDay): void => {
+    //   if (!this.isDateValid(day.date)) {
+    //     day.cssClass = 'cal-disabled';
+    //   }
+    // }).bind(this);
+    // this.hourModifier = ((hour: SchedulerViewHour): void => {
+    //   if (!this.isDateValid(hour.date)) {
+    //     hour.cssClass = 'cal-disabled';
+    //   }
+    // }).bind(this);
+    // this.segmentModifier = ((segment: SchedulerViewHourSegment): void => {
+    //   if (!this.isDateValid(segment.date)) {
+    //     segment.isDisabled = true;
+    //   }
+    // }).bind(this);
 
 
     this.dateOrViewChanged();
   }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.roomId = parseInt(params.get('id'));
       this.getRoomInfoById(this.roomId);
@@ -165,13 +167,15 @@ export class RoomBookingComponent implements OnInit {
     // if (this.view == 'week')
     //   this.startDayOfWeek(this.viewDate);
     //console.log(this.viewDate);
-    if (this.startsWithToday) {
-      this.prevBtnDisabled = !this.isDateValid(subPeriod(this.dateAdapter, this.view, this.viewDate, 1));
-      this.nextBtnDisabled = !this.isDateValid(addPeriod(this.dateAdapter, this.view, this.viewDate, 1));
-    } else {
-      this.prevBtnDisabled = !this.isDateValid(endOfPeriod(this.dateAdapter, this.view, subPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
-      this.nextBtnDisabled = !this.isDateValid(startOfPeriod(this.dateAdapter, this.view, addPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
-    }
+
+    //v10
+    // if (this.startsWithToday) {
+    //   this.prevBtnDisabled = !this.isDateValid(subPeriod(this.dateAdapter, this.view, this.viewDate, 1));
+    //   this.nextBtnDisabled = !this.isDateValid(addPeriod(this.dateAdapter, this.view, this.viewDate, 1));
+    // } else {
+    //   this.prevBtnDisabled = !this.isDateValid(endOfPeriod(this.dateAdapter, this.view, subPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
+    //   this.nextBtnDisabled = !this.isDateValid(startOfPeriod(this.dateAdapter, this.view, addPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
+    // }
 
     if (this.viewDate < this.minDate) {
       this.changeDate(this.minDate);
@@ -206,19 +210,19 @@ export class RoomBookingComponent implements OnInit {
       jQuery("#myModal").modal('show');
     }
   }
-  eventClicked(action: string, event: CalendarSchedulerEvent): void { //Edit
-    console.log('eventClicked Action', action);
-    console.log('eventClicked Event', event);
-  }
+  // eventClicked(action!: string; event: CalendarSchedulerEvent): void { //Edit
+  //   console.log('eventClicked Action', action);
+  //   console.log('eventClicked Event', event);
+  // }
 
-  eventTimesChanged({ event, newStart, newEnd }: SchedulerEventTimesChangedEvent): void { //Edit
-    console.log('eventTimesChanged Event', event);
-    console.log('eventTimesChanged New Times', newStart, newEnd);
-    let ev = this.events.find(e => e.id === event.id);
-    ev.start = newStart;
-    ev.end = newEnd;
-    this.refresh.next();
-  }
+  // eventTimesChanged({ event, newStart, newEnd }: SchedulerEventTimesChangedEvent): void { //Edit
+  //   console.log('eventTimesChanged Event', event);
+  //   console.log('eventTimesChanged New Times', newStart, newEnd);
+  //   let ev = this.events.find(e => e.id === event.id);
+  //   ev.start = newStart;
+  //   ev.end = newEnd;
+  //   this.refresh.next();
+  // }
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
       if (
@@ -248,7 +252,7 @@ export class RoomBookingComponent implements OnInit {
         this.getLocationById(this.baseLocation);
         this.getBaseLocationAdmin();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.baseLocation = 0;
     });
   }
@@ -258,7 +262,7 @@ export class RoomBookingComponent implements OnInit {
         this.roomLocationCode=data.code;
         this.roomLocation = data ? data.code + '-' + data.name : '';
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomLocation = '';
     });
   }
@@ -267,14 +271,14 @@ export class RoomBookingComponent implements OnInit {
   getPurposeList() {
     this.httpService.get(APIURLS.BR_BOOK_PURPOSE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.purposeList = data.filter(x=>x.type=="Room Booking" && x.isActive).sort((a,b)=>
+        this.purposeList = data.filter((x:any)=>x.type=="Room Booking" && x.isActive).sort((a:any,b:any)=>
                                                                                 {
                                                                                   if(a.purpose > b.purpose) return 1;
                                                                                   if(a.purpose < b.purpose) return -1;
                                                                                   return 0;
                                                                                 });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.purposeList = [];
     });
   }
@@ -310,14 +314,15 @@ export class RoomBookingComponent implements OnInit {
   removePersonDetails(id: number, position: number) {
     if (this.person.length == 0)
       this.showTable = false;
-    if (id != 0 && this.personIds.find(s => s == id)) this.deletedPersonIds.push(id);
+   //v10 if (id != 0 && this.personIds.find((s:any) => s == id)) this.deletedPersonIds.push(id);
     this.person.splice(position, 1);
     this.recCount--;
   }
   //page Load methods here..
   getAllRoombookings() {
-    this.appService.getRoomMeetings(this.currentUser.employeeId, this.roomId, this.actions)
-      .then((events: CalendarSchedulerEvent[]) => this.events = events);
+    //v10
+   // this.appService.getRoomMeetings(this.currentUser.employeeId, this.roomId, this.actions)
+     // .then((events: CalendarSchedulerEvent[]) => this.events = events);
   }
   getCurrentEmployeeDetails() {
     this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_API, this.currentUser.uid).then((data: any) => {
@@ -326,8 +331,8 @@ export class RoomBookingComponent implements OnInit {
         this.getCurrentUserManager(managerId);
 
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
     });
   }
   managerInfo: any = {};
@@ -336,7 +341,7 @@ export class RoomBookingComponent implements OnInit {
       if (data) {
         this.managerInfo = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.managerInfo = {};
     });
   }
@@ -347,7 +352,7 @@ export class RoomBookingComponent implements OnInit {
       if (data.length > 0) {
         this.adminInfo = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.adminInfo = [];
     });
   }
@@ -386,20 +391,20 @@ export class RoomBookingComponent implements OnInit {
         let stDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), dtStartTime.getHours(), dtStartTime.getMinutes());
         let edDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), dtEndTime.getHours(), dtEndTime.getMinutes());
 
-        crrstcount = this.events.filter(x => stDate <= x.start && x.start < edDate).length;
-        crrendcount = this.events.filter(x => stDate < x.end && x.end <= edDate).length;
-        pstcount = this.events.filter(x => x.start < stDate && stDate < x.end).length;
-        pendcount = this.events.filter(x => x.start < edDate && edDate < x.end).length;
+        // crrstcount = this.events.filter((x:any)  => stDate <= x.start && x.start < edDate).length;
+        // crrendcount = this.events.filter((x:any)  => stDate < x.end && x.end <= edDate).length;
+        // pstcount = this.events.filter((x:any)  => x.start < stDate && stDate < x.end).length;
+        // pendcount = this.events.filter((x:any)  => x.start < edDate && edDate < x.end).length;
 
         if (crrstcount > 0 || crrendcount > 0 || pstcount > 0 || pendcount > 0) { break; }
       }
     }
     else { // All Day, Same Day
-      crrstcount = this.events.filter(x => x.start >= dtStartDate && x.start < dtEndDate).length;
-      crrendcount = this.events.filter(x => x.end > dtStartDate  && x.end <= dtEndDate).length;
+      // crrstcount = this.events.filter((x:any)  => x.start >= dtStartDate && x.start < dtEndDate).length;
+      // crrendcount = this.events.filter((x:any)  => x.end > dtStartDate  && x.end <= dtEndDate).length;
 
-      pstcount = this.events.filter(x => dtStartDate > x.start && dtStartDate < x.end).length;
-      pendcount = this.events.filter(x => dtEndDate > x.start && dtEndDate < x.end).length;
+      // pstcount = this.events.filter((x:any)  => dtStartDate > x.start && dtStartDate < x.end).length;
+      // pendcount = this.events.filter((x:any)  => dtEndDate > x.start && dtEndDate < x.end).length;
     }
     if (dtStartDate < new Date() && !this.calendarMeeting.allDay) {
      // let msg = "Cannot book room for past time";
@@ -450,7 +455,7 @@ export class RoomBookingComponent implements OnInit {
       });
     }
     else {
-      let bookingId: number;
+      let bookingId!: number;
       let connection: any;
       if (!this.isEdit) {
         let formdate: string = d1.getFullYear() + "-" + ("00" + (d1.getMonth() + 1)).slice(-2) + "-" +
@@ -530,7 +535,7 @@ export class RoomBookingComponent implements OnInit {
           jQuery("#saveModal").modal('show');
           this.getAllRoombookings();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error in Booking Room';
       });
@@ -552,7 +557,7 @@ export class RoomBookingComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200 || data.id > 0) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error saving ROOM BOOKING PARTICIPANTS ...';
       });
     }
@@ -565,12 +570,12 @@ export class RoomBookingComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error in sending mail..';
       });
     }
   }
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {

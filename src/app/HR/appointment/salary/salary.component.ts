@@ -19,13 +19,13 @@ declare var toastr: any;
 })
 
 export class SalaryComponent implements OnInit {
-  @Input() appointmentId: number;
+  @Input() appointmentId!: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
 
-  currentUser: AuthData;
-  isLoading: boolean;
+  currentUser!: AuthData;
+  isLoading!: boolean;
   salaryTypes = [{ type: "Annual" }, { type: "Monthly" }];
   packageTypes = [{ type: "Annual CTC" }, { type: "Monthly Gross" }, { type: "Monthly Takehome" }];
   officialDetails: any = {};
@@ -47,7 +47,8 @@ export class SalaryComponent implements OnInit {
     private service: AppointmentService, private util: Util) { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));     
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;     
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
       this.isLoading = true;
@@ -77,14 +78,14 @@ export class SalaryComponent implements OnInit {
             this.onSalaryHeadChange(index);
             index++;
           }
-          this.benefitsList = this.salaryList.filter(x=>x.salaryTypeShortCode == 'B'); 
-          this.salaryList = this.salaryList.filter(x=>x.salaryTypeShortCode != 'B');           
+          this.benefitsList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == 'B'); 
+          this.salaryList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode != 'B');           
           this.onAllowanceChange();          
           this.calculateTotals();
         }          
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       throw error;
@@ -100,7 +101,7 @@ export class SalaryComponent implements OnInit {
         this.statutoryDetails = data;                
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       this.statutoryDetails = {};
@@ -149,7 +150,7 @@ export class SalaryComponent implements OnInit {
     this.details.appointmentId = this.appointmentId;
     this.details.updatedById = this.currentUser.uid;
     this.details.headDetails = this.salaryList.concat(this.benefitsList);
-    this.details.payableDetails = this.payableList.filter(x => this.salaryList.some(y =>y.salaryHeadId ==  x.salaryHeadId));
+    this.details.payableDetails = this.payableList.filter((x:any)  => this.salaryList.some(y =>y.salaryHeadId ==  x.salaryHeadId));
     connection = this.httpService.HRpost(APIURLS.APPOINTMENT_SAVE_SALARY_DETAILS, this.details);
     
     toastr.info('Saving...');
@@ -169,7 +170,7 @@ export class SalaryComponent implements OnInit {
         //this.isLoading = false;
         toastr.error('Error occured while saving the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         toastr.error('Error occured while saving the details. Error:' + error);
       });
@@ -187,19 +188,19 @@ export class SalaryComponent implements OnInit {
           this.onSalaryHeadChange(index);
           index++;
         }             
-        this.benefitsList = this.salaryList.filter(x=>x.salaryTypeShortCode == 'B'); 
-        this.salaryList = this.salaryList.filter(x=>x.salaryTypeShortCode != 'B');         
+        this.benefitsList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == 'B'); 
+        this.salaryList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode != 'B');         
         this.calculateTotals();
 
         // if salary head is annual type then add March as default payable month
         for(var item of this.salaryList){
           var head = this.salaryHeads.find(x=>x.id == item.salaryHeadId);          
-          if(head && head.salaryPayableFrequency == "A" && this.payableList.filter(x=>x.salaryHeadId == item.salaryHeadId).length <= 0)
+          if(head && head.salaryPayableFrequency == "A" && this.payableList.filter((x:any)=>x.salaryHeadId == item.salaryHeadId).length <= 0)
             this.payableList.push({month:"March", payable: true, salaryHeadId: item.salaryHeadId, appointmentId: this.appointmentId});
         }          
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details.");
     });
@@ -216,19 +217,19 @@ export class SalaryComponent implements OnInit {
           this.onSalaryHeadChange(index);
           index++;
         }             
-        this.benefitsList = this.salaryList.filter(x=>x.salaryTypeShortCode == 'B'); 
-        this.salaryList = this.salaryList.filter(x=>x.salaryTypeShortCode != 'B'); 
+        this.benefitsList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == 'B'); 
+        this.salaryList = this.salaryList.filter((x:any)=>x.salaryTypeShortCode != 'B'); 
         this.calculateTotals();
 
         // if salary head is annual type then add March as default payable month
         for(var item of this.salaryList){
           var head = this.salaryHeads.find(x=>x.id == item.salaryHeadId);          
-          if(head && head.salaryPayableFrequency == "A" && this.payableList.filter(x=>x.salaryHeadId == item.salaryHeadId).length <= 0)
+          if(head && head.salaryPayableFrequency == "A" && this.payableList.filter((x:any)=>x.salaryHeadId == item.salaryHeadId).length <= 0)
             this.payableList.push({month:"March", payable: true, salaryHeadId: item.salaryHeadId, appointmentId: this.appointmentId});
         }       
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details.");
     });
@@ -250,16 +251,16 @@ export class SalaryComponent implements OnInit {
           var head = this.salaryHeads.find(x=>x.id == lineItem.salaryHeadId);
           if(head){
             this.benefitsList[index].description = head.descriptionInPaySlip;
-            this.benefitsList[index].salaryType = this.headTypes.find(x => x.type == head.salaryType).value;
+            this.benefitsList[index].salaryType = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
             this.benefitsList[index].salaryTypeShortCode = head.salaryType;
-            this.benefitsList[index].frequency = this.frequency.find(x => x.type == head.salaryPayableFrequency).value;
+            this.benefitsList[index].frequency = this.frequency.find((x:any)  => x.type == head.salaryPayableFrequency).value;
           }
           index++;
         }        
         this.calculateTotals();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while gettting details.");
     });
@@ -274,7 +275,7 @@ export class SalaryComponent implements OnInit {
       this.salaryDetails = this.benefitsList;      
     }
     else{
-      this.salaryDetails = this.salaryList.filter(x=>x.salaryTypeShortCode == type);      
+      this.salaryDetails = this.salaryList.filter((x:any)=>x.salaryTypeShortCode == type);      
     }
     $("#salaryDetailsModal").modal("show");
   }
@@ -289,9 +290,9 @@ export class SalaryComponent implements OnInit {
       var head = this.salaryHeads.find(x=>x.id == lineItem.salaryHeadId);
       if(head){
         this.salaryList[index].description = head.descriptionInPaySlip;
-        this.salaryList[index].salaryType = this.headTypes.find(x => x.type == head.salaryType).value;
+        this.salaryList[index].salaryType = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
         this.salaryList[index].salaryTypeShortCode = head.salaryType;
-        this.salaryList[index].frequency = this.frequency.find(x => x.type == head.salaryPayableFrequency).value;
+        this.salaryList[index].frequency = this.frequency.find((x:any)  => x.type == head.salaryPayableFrequency).value;
       }
     }
   }
@@ -305,7 +306,7 @@ export class SalaryComponent implements OnInit {
 
   onPayableSelect(index){
     this.payableSelectedIndex = index;
-    this.payableSelectedHead = this.salaryHeads.find(x => x.id == this.salaryList[index].salaryHeadId).salaryLT;
+    this.payableSelectedHead = this.salaryHeads.find((x:any)  => x.id == this.salaryList[index].salaryHeadId).salaryLT;
     var salaryHeadId = this.salaryList[this.payableSelectedIndex].salaryHeadId;
     for(var item of this.payableSelectedList){
       var data = this.payableList.find(x=>x.month == item.month && x.salaryHeadId == salaryHeadId);
@@ -322,12 +323,12 @@ export class SalaryComponent implements OnInit {
     var head = this.salaryHeads.find(x=>x.id == salaryHeadId);
     var payableNoOfMonths = this.frequencyValues.find(x=>x.type == head.salaryPayableFrequency).value;
     
-    if(this.payableSelectedList.filter(x=>x.payable).length != payableNoOfMonths){
+    if(this.payableSelectedList.filter((x:any)=>x.payable).length != payableNoOfMonths){
       swal("Please select "+ payableNoOfMonths + " months.");
       return;
     }
     // clear out old values
-    this.payableList = this.payableList.filter(x =>x.salaryHeadId != salaryHeadId);
+    this.payableList = this.payableList.filter((x:any)  =>x.salaryHeadId != salaryHeadId);
     for(var item of this.payableSelectedList){
       if(item.payable)
         this.payableList.push({month:item.month, payable: item.payable, salaryHeadId: salaryHeadId, appointmentId: this.appointmentId});
@@ -336,7 +337,7 @@ export class SalaryComponent implements OnInit {
   }
 
   onAllowanceChange(){
-    var allowance = this.allowanceList.find(x => x.id == this.details.allowanceId);
+    var allowance = this.allowanceList.find((x:any)  => x.id == this.details.allowanceId);
     if(allowance)
       this.allowanceDetails = "HQ:"+allowance.hq + " HS:"+allowance.hs + " IA:"+allowance.ia + " MA:"+allowance.ma + " OS:"+allowance.os + " SA:"+allowance.sa+" EXHQ:"+allowance.exhq;
   }
@@ -368,7 +369,7 @@ export class SalaryComponent implements OnInit {
       var head = this.salaryHeads.find(x=>x.id == salaryHeadId);
       var payableNoOfMonths = this.frequencyValues.find(x=>x.type == head.salaryPayableFrequency).value;
       if(payableNoOfMonths != 12){
-        if(this.payableList.filter(x =>x.salaryHeadId == salaryHeadId && x.payable == true).length != payableNoOfMonths){
+        if(this.payableList.filter((x:any)  =>x.salaryHeadId == salaryHeadId && x.payable == true).length != payableNoOfMonths){
           toastr.error("Please select "+ payableNoOfMonths + " payable month(s) for "+head.salaryLT+".");
           valid = false;
         }
@@ -430,7 +431,7 @@ export class SalaryComponent implements OnInit {
         this.getAllowanceList();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching official details.");
       this.officialDetails = {};
@@ -441,10 +442,10 @@ export class SalaryComponent implements OnInit {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_ALLOWANCE_TYPES+ "?plantId="+this.officialDetails.plantId+"&payGroupId="+this.officialDetails.payGroupId+"&empCategoryId="+this.officialDetails.employeeCategoryId+"&designationId="+this.officialDetails.designationId+"&isMetro="+this.officialDetails.isMetroCity)
     .then((data: any) => {
       if (data.length > 0) {
-        this.allowanceList = data.sort((a, b) => { if (a.allowanceType > b.allowanceType) return 1; if (a.allowanceType < b.allowanceType) return -1; return 0; });        
+        this.allowanceList = data.sort((a:any, b:any) => { if (a.allowanceType > b.allowanceType) return 1; if (a.allowanceType < b.allowanceType) return -1; return 0; });        
         this.onAllowanceChange();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.allowanceList = [];
     }); 
   }
@@ -452,13 +453,13 @@ export class SalaryComponent implements OnInit {
   getSalaryHeadsList() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SALARY_HEADS).then((data: any) => {
       if (data.length > 0) {
-        this.salaryHeads = data.sort((a, b) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });        
+        this.salaryHeads = data.sort((a:any, b:any) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });        
         for (var head of this.salaryHeads) {
-          head.salaryTypeDescription = this.headTypes.find(x => x.type == head.salaryType).value;
+          head.salaryTypeDescription = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
         }
         this.LoadData();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.salaryHeads = [];
     }); 
   }
@@ -471,7 +472,7 @@ export class SalaryComponent implements OnInit {
   RemoveLine(no){
     var salaryHeadId = this.salaryList[no].salaryHeadId;
     // clear out the payable values
-    this.payableList = this.payableList.filter(x =>x.salaryHeadId != salaryHeadId);
+    this.payableList = this.payableList.filter((x:any)  =>x.salaryHeadId != salaryHeadId);
     this.salaryList.splice(no,1);
     this.count--;
     this.calculateTotals();

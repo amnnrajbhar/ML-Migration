@@ -11,11 +11,11 @@ import { NgForm } from '@angular/forms';
 import swal from 'sweetalert';
 declare var $: any;
 declare var toastr: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import { SafeHtmlPipe } from '../../Services/safe-html.pipe';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import {Pipe, PipeTransform} from "@angular/core";
 import { Util } from '../../Services/util.service';
@@ -29,7 +29,7 @@ import { Util } from '../../Services/util.service';
 
 export class PrintComponent implements OnInit {
   appointmentId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -48,14 +48,15 @@ export class PrintComponent implements OnInit {
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
     private http: HttpClient, private util: Util) { 
-      pdfMake.vfs = pdfFonts.pdfMake.vfs;       
+    //  pdfMake.vfs = pdfFonts.pdfMake.vfs;       
     }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.appointmentId = this.route.snapshot.paramMap.get('id')!;          
       this.canPrint = this.util.hasPermission(PERMISSIONS.HR_PRINT_LETTERS);
       this.canEmail = this.util.hasPermission(PERMISSIONS.HR_EMAIL_LETTERS);
@@ -71,9 +72,9 @@ export class PrintComponent implements OnInit {
       this.httpService.HRget(APIURLS.APPOINTMENT_GET_PRINT_TEMPLATES+ "/" + this.appointmentDetails.plantId + "/" + this.appointmentDetails.payGroupId +"/"+this.appointmentDetails.employeeCategoryId)
       .then((data: any) => {
         if (data.length > 0) {
-          this.printTemplates = data.sort((a, b) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
+          this.printTemplates = data.sort((a:any, b:any) => { if (a.templateName > b.templateName) return 1; if (a.templateName < b.templateName) return -1; return 0; });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.printTemplates = [];
       });
     }
@@ -94,7 +95,7 @@ export class PrintComponent implements OnInit {
           this.getLetter();    
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         swal("Error occurred while fetching details, please check the link.");
       });
@@ -114,7 +115,7 @@ export class PrintComponent implements OnInit {
           this.personalDetails = data;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         swal("Error occurred while fetching details, please check the link.");
       });
@@ -137,25 +138,25 @@ export class PrintComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
 
   saveLetter(){
-    this.createPDF(false).getBase64((encodedString) => {
-      if (encodedString) {
-        var request: any = {};
-        request.attachment = encodedString;      
-        request.employeeId = this.personalDetails.employeeId;
-        request.objectId = this.appointmentId;
-        request.objectType = "Appointment Letter";
-        request.letterType = "Appointment Letter";
-        request.submittedById = this.currentUser.uid;
-        request.submittedByName = this.currentUser.fullName;
-        this.util.saveLetter(request);
-      }
-    });
+    // this.createPDF(false).getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     var request: any = {};
+    //     request.attachment = encodedString;      
+    //     request.employeeId = this.personalDetails.employeeId;
+    //     request.objectId = this.appointmentId;
+    //     request.objectType = "Appointment Letter";
+    //     request.letterType = "Appointment Letter";
+    //     request.submittedById = this.currentUser.uid;
+    //     request.submittedByName = this.currentUser.fullName;
+    //     this.util.saveLetter(request);
+    //   }
+    // });
   }
   
   saveLetterActivity(activity: string){
@@ -210,7 +211,7 @@ export class PrintComponent implements OnInit {
     //$("#print-me").empty();
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -241,7 +242,7 @@ export class PrintComponent implements OnInit {
   }
 
   download() {
-    this.createPDF(false).open();
+   // this.createPDF(false).open();
     this.saveLetterActivity("Downloaded");
   }
   
@@ -283,25 +284,25 @@ export class PrintComponent implements OnInit {
       //pageMarginsConfig =  [40, 40, 40, 50];
     }
   
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>  
-  ${printContents}  
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      headerRows: 1,      
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-      defaultStyles: {      
-       td: {         
-        border: undefined
-        },
-        img: undefined,
-        p: undefined       
-      }
-    });
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>  
+  // ${printContents}  
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     headerRows: 1,      
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //     defaultStyles: {      
+  //      td: {         
+  //       border: undefined
+  //       },
+  //       img: undefined,
+  //       p: undefined       
+  //     }
+  //   });
 
     var docDefinition = {
       info: {
@@ -309,7 +310,7 @@ export class PrintComponent implements OnInit {
       },
       content: [
         header,
-        htmnikhitml
+        //htmnikhitml
       ],
       defaultStyle: {
         //font: 'TimesNewRoman',
@@ -372,7 +373,7 @@ export class PrintComponent implements OnInit {
       pageMargins:  pageMarginsConfig,
       pageOrientation: 'portrait',
       imagesByReference: true,      
-      header: function (currentPage, pageCount) {        
+      header: function (currentPage:any, pageCount:any) {        
           if(currentPage != 1){
             return {
               columns: [
@@ -421,7 +422,7 @@ export class PrintComponent implements OnInit {
       }
     };
 
-    return pdfMake.createPdf(docDefinition, null);
+    //return pdfMake.createPdf(docDefinition, null);
   }
   
   sendEmail() {
@@ -431,24 +432,24 @@ export class PrintComponent implements OnInit {
       request.submittedById = this.currentUser.uid;
       request.submittedByName = this.currentUser.fullName;
 
-      this.createPDF(false).getBase64((encodedString) => {
-        if (encodedString) {
-          request.attachment = encodedString;
-          swal("Sending email...");
-          this.httpService.HRpost(APIURLS.APPOINTMENT_SEND_LETTER, request).then((data: any) => {
-            if (data == 200 || data.success) {
-              swal("Successfully emailed the appointment letter to the candidate.");
-              this.saveLetterActivity("Emailed");
-            } else if (!data.success) {
-              swal(data.message);
-            } else
-              swal("Error occurred.");
-          }
-          ).catch(error => {
-            swal(error);
-          });
-        }
-      });
+      // this.createPDF(false).getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     request.attachment = encodedString;
+      //     swal("Sending email...");
+      //     this.httpService.HRpost(APIURLS.APPOINTMENT_SEND_LETTER, request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         swal("Successfully emailed the appointment letter to the candidate.");
+      //         this.saveLetterActivity("Emailed");
+      //       } else if (!data.success) {
+      //         swal(data.message);
+      //       } else
+      //         swal("Error occurred.");
+      //     }
+      //     ).catch((error)=> {
+      //       swal(error);
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -458,7 +459,8 @@ export class PrintComponent implements OnInit {
 
   
 print1(): void {
-  this.createPDF(true).print();
+   //v10
+  // this.createPDF(true).print();
   this.saveLetterActivity("Printed");
   return;
   // this.printElement(document.getElementById("print-section"));

@@ -10,9 +10,9 @@ import swal from 'sweetalert';
 import { DataStorageService } from '../../Services/data-storage.service';
 import { HttpClient } from '@angular/common/http';
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import htmlToPdfmake from 'html-to-pdfmake';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { Util } from '../../Services/util.service';
 import { PERMISSIONS } from '../../../shared/permissions';
 declare var $: any;
@@ -28,13 +28,15 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute, private http: HttpClient,
-    private dataStore: DataStorageService, private excelService: ExcelService, private util: Util) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private dataStore: DataStorageService, private excelService: ExcelService, private util: Util) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
-  action: string;
-  employeeId: number;
-  comment: string;
+  action: string
+  employeeId!: number;
+  comment: string
   filterData: any = {};
   filterModel: any = {};
   plantList: any[] = [];
@@ -90,7 +92,8 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   appraisalPeriodDates = [{ type: "2023-24" }, { type: "2024-25" }, { type: "2025-26" }, { type: "2026-27" }, { type: "2027-28" }];
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageNo = 1;
     this.filterModel.pageSize = 10;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -135,9 +138,9 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -146,9 +149,9 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
     this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
       .then((data: any) => {
         if (data.length > 0) {
-          this.empCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+          this.empCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.empCategoryList = [];
       });
   }
@@ -158,9 +161,9 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
     if (this.filterModel.plantId > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.filterModel.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -172,9 +175,9 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -183,9 +186,9 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -195,9 +198,9 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -206,9 +209,9 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -218,19 +221,19 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   getSubDepartments() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        this.subDepartmentFullList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        this.subDepartmentFullList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.subDepartmentFullList = [];
     });
   }
 
   onDepartmentChange() {
-    this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.filterModel.departmentId);
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.filterModel.departmentId);
   }
 
   onStateChange() {
-    this.locationList = this.locationFullList.filter(x => x.stateId == this.filterModel.stateId);
+    this.locationList = this.locationFullList.filter((x:any)  => x.stateId == this.filterModel.stateId);
   }
 
   selectAll = false;
@@ -242,7 +245,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
 
   request: any = {};
   sendEmail() {
-    var selectedList = this.filterData.list.filter(x => x.selected && (x.status == "Approved" || x.status == "Email Sent"));
+    var selectedList = this.filterData.list.filter((x:any)  => x.selected && (x.status == "Approved" || x.status == "Email Sent"));
     if (selectedList.length <= 0) {
       swal("Please select at least one Approved Appraisal record to send letter.");
       return;
@@ -259,7 +262,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       return;
     }
     this.getbase64image();
-    this.selectedList = this.filterData.list.filter(x => x.selected && (x.status == "Approved" || x.status == "Email Sent"));
+    this.selectedList = this.filterData.list.filter((x:any)  => x.selected && (x.status == "Approved" || x.status == "Email Sent"));
     this.errorCount = 0;
     if (confirm("Are you sure you want to send bulk appraisal letter email?")) {
       this.sending = true;
@@ -320,7 +323,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
             this.index++;
             this.sendLetterEmail();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.index++;
           this.sendLetterEmail();
           this.errorCount++;
@@ -329,37 +332,37 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   }
 
   createPdfAndSendEmail(pdfContent, employeeInitialAppraisalDetailId, name) {
-    this.createPDF(pdfContent, false).getBase64((encodedString) => {
-      if (encodedString) {
-        this.request.employeeInitialAppraisalDetailId = employeeInitialAppraisalDetailId;
-        this.request.submittedById = this.currentUser.uid;
-        this.request.submittedByName = this.currentUser.fullName;
-        this.request.attachment = encodedString;
-        swal("Sending email for " + name);
-        this.httpService.HRpost(APIURLS.HR_EMPLOYEE_APPRAISAL_SEND_LETTER_EMAIL, this.request).then((data: any) => {
-          if (data == 200 || data.success) {
-            swal("Successfully emailed the Appraisal letter for " + name);
-          } else if (!data.success) {
-            swal(data.message); this.errorCount++;
-          } else { swal("Error occurred."); this.errorCount++; }
-          // send next letter email
-          this.index++;
-          this.sendLetterEmail();
-        }
-        ).catch(error => {
-          this.index++;
-          this.sendLetterEmail();
-          swal(error);
-          this.errorCount++;
-        });
-      } else {
-        this.index++;
-        this.sendLetterEmail();
-      }
-    });
+    // this.createPDF(pdfContent, false).getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     this.request.employeeInitialAppraisalDetailId = employeeInitialAppraisalDetailId;
+    //     this.request.submittedById = this.currentUser.uid;
+    //     this.request.submittedByName = this.currentUser.fullName;
+    //     this.request.attachment = encodedString;
+    //     swal("Sending email for " + name);
+    //     this.httpService.HRpost(APIURLS.HR_EMPLOYEE_APPRAISAL_SEND_LETTER_EMAIL, this.request).then((data: any) => {
+    //       if (data == 200 || data.success) {
+    //         swal("Successfully emailed the Appraisal letter for " + name);
+    //       } else if (!data.success) {
+    //         swal(data.message); this.errorCount++;
+    //       } else { swal("Error occurred."); this.errorCount++; }
+    //       // send next letter email
+    //       this.index++;
+    //       this.sendLetterEmail();
+    //     }
+    //     ).catch((error)=> {
+    //       this.index++;
+    //       this.sendLetterEmail();
+    //       swal(error);
+    //       this.errorCount++;
+    //     });
+    //   } else {
+    //     this.index++;
+    //     this.sendLetterEmail();
+    //   }
+    // });
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -387,17 +390,17 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       .then((data: any) => {
         this.filterData = data;
         for (var item of this.filterData.list) {
-          if (this.statusList.find(x => x.type == item.status) != null)
-            item.statusColor = this.statusList.find(x => x.type == item.status).color;
+          if (this.statusList.find((x:any)  => x.type == item.status) != null)
+            item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
             
-            var empStatusData = this.empStatusList.find(x => x.type == item.employeeStatus);
+            var empStatusData = this.empStatusList.find((x:any)  => x.type == item.employeeStatus);
             if (empStatusData)
               item.empStatusColor = empStatusData.color;
         }
         // store the filter model
         this.dataStore.SetData("AppraisalReviewList", this.filterModel);
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
   }
@@ -430,7 +433,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
 
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
 
         index = index + 1;
         let exportItem = {
@@ -475,7 +478,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Appraisal_Review_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -492,7 +495,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
 
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
 
         index = index + 1;
         let exportItem = {
@@ -534,7 +537,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Appraisal_Review_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -597,34 +600,34 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       //printContents = $(html).html();
     }
 
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div>     
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-      defaultStyles: {
-        td: {
-          border: undefined
-        },
-        img: undefined,
-        p: undefined
-      }
-    });
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div>     
+  // </div>
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //     defaultStyles: {
+  //       td: {
+  //         border: undefined
+  //       },
+  //       img: undefined,
+  //       p: undefined
+  //     }
+  //   });
 
     var docDefinition = {
       info: {
         title: 'Appraisal Letter',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -686,7 +689,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 140, 40, 40],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         if (forPrinting == true) return { height: 120, text: "" };
         return {
           alignment: 'center',
@@ -730,11 +733,11 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       }
     };
 
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
 
   approvalSubmitBulk() {
-    var selectedList = this.filterData.list.filter(x => x.selected && x.isBulkUpload == "Yes" && x.status == "Appraisal Initiated");
+    var selectedList = this.filterData.list.filter((x:any)  => x.selected && x.isBulkUpload == "Yes" && x.status == "Appraisal Initiated");
     if (selectedList.length <= 0) {
       toastr.error("Please select at least one Appraisal Initiated record to submit for approval.");
       return;
@@ -755,7 +758,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
             toastr.info("Approval Request submitted successfully");
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errorCount++;
       });
     }
@@ -765,7 +768,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
 
   selectedList: any[] = [];
   BulkPrint() {
-    this.selectedList = this.filterData.list.filter(x => x.selected);
+    this.selectedList = this.filterData.list.filter((x:any)  => x.selected);
     if (this.selectedList.length <= 0) {
       swal("Please select at least one appraisal record to print letters.");
       return;
@@ -786,7 +789,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
   getLetterContentForPrinting() {
 
     if (this.index >= this.selectedList.length) {
-      this.createPDF(this.letterContent, true).print();
+      //this.createPDF(this.letterContent, true).print();
       swal("Opening letters for printing...");
       if (this.errorCount > 0)
         swal("Error occurred while generating the letter for " + this.errorCount + " employees.");
@@ -813,7 +816,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
           // get next letter content
           this.index++;
           this.getLetterContentForPrinting();
-        }).catch(error => {
+        }).catch((error)=> {
           this.index++;
           this.getLetterContentForPrinting();
           this.errorCount++;
@@ -836,7 +839,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
         for (var details of item.salaryHeads) {
           if (details.salaryType == "I") {
             console.log('Inside 01');
-            if (!this.earningHeads.some(x => x.salaryHeadId == details.salaryHeadId)) {
+            if (!this.earningHeads.some((x:any)  => x.salaryHeadId == details.salaryHeadId)) {
               console.log('Inside 001');
               this.earningHeads.push(
                 {
@@ -850,7 +853,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
           }
           else if (details.salaryType == "D") {
             console.log('Inside 02');
-            if (!this.deductionHeads.some(x => x.salaryHeadId == details.salaryHeadId)) {
+            if (!this.deductionHeads.some((x:any)  => x.salaryHeadId == details.salaryHeadId)) {
               console.log('Inside 002');
               this.deductionHeads.push(
                 {
@@ -864,7 +867,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
           }
           else if (details.salaryType == "R") {
             console.log('Inside 03');
-            if (!this.reimbursementHeads.some(x => x.salaryHeadId == details.salaryHeadId)) {
+            if (!this.reimbursementHeads.some((x:any)  => x.salaryHeadId == details.salaryHeadId)) {
               console.log('Inside 003');
               this.reimbursementHeads.push(
                 {
@@ -878,7 +881,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
           }
           else if (details.salaryType == "B") {
             console.log('Inside 04');
-            if (!this.benefitHeads.some(x => x.salaryHeadId == details.salaryHeadId)) {
+            if (!this.benefitHeads.some((x:any)  => x.salaryHeadId == details.salaryHeadId)) {
               console.log('Inside 004');
               this.benefitHeads.push(
                 {
@@ -895,7 +898,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       console.log('Inside 2');
       var exportList = [];
       let index = 0;
-      data.forEach(item => {
+      data.forEach((item :any) => {
         index = index + 1;
         let exportItem = {
           "Sl No": index,
@@ -913,36 +916,36 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
         var reimbursementsTotal = 0;
         var benefitsTotal = 0;
         for (var head of this.earningHeads) {
-          if (item.salaryHeads.some(x => x.salaryHeadId == head.salaryHeadId)) {
-            exportItem[head.salaryHeadName] = item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
-            earningsTotal += item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
+          if (item.salaryHeads.some((x:any)  => x.salaryHeadId == head.salaryHeadId)) {
+            exportItem[head.salaryHeadName] = item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
+            earningsTotal += item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
           }
           else
             exportItem[head.salaryHeadName] = "";
         }
         exportItem["Total Earnings"] = earningsTotal;
         for (var head of this.deductionHeads) {
-          if (item.salaryHeads.some(x => x.salaryHeadId == head.salaryHeadId)) {
-            exportItem[head.salaryHeadName] = item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
-            deductionsTotal += item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
+          if (item.salaryHeads.some((x:any)  => x.salaryHeadId == head.salaryHeadId)) {
+            exportItem[head.salaryHeadName] = item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
+            deductionsTotal += item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
           }
           else
             exportItem[head.salaryHeadName] = "";
         }
         exportItem["Total Deductions"] = deductionsTotal;
         for (var head of this.reimbursementHeads) {
-          if (item.salaryHeads.some(x => x.salaryHeadId == head.salaryHeadId)) {
-            exportItem[head.salaryHeadName] = item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
-            reimbursementsTotal += item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
+          if (item.salaryHeads.some((x:any)  => x.salaryHeadId == head.salaryHeadId)) {
+            exportItem[head.salaryHeadName] = item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
+            reimbursementsTotal += item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
           }
           else
             exportItem[head.salaryHeadName] = "";
         }
         exportItem["Total Reimbursements"] = reimbursementsTotal;
         for (var head of this.benefitHeads) {
-          if (item.salaryHeads.some(x => x.salaryHeadId == head.salaryHeadId)) {
-            exportItem[head.salaryHeadName] = item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
-            benefitsTotal += item.salaryHeads.find(x => x.salaryHeadId == head.salaryHeadId).annualAmount;
+          if (item.salaryHeads.some((x:any)  => x.salaryHeadId == head.salaryHeadId)) {
+            exportItem[head.salaryHeadName] = item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
+            benefitsTotal += item.salaryHeads.find((x:any)  => x.salaryHeadId == head.salaryHeadId).annualAmount;
           }
           else
             exportItem[head.salaryHeadName] = "";
@@ -952,7 +955,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Appraisal_CTC_Report');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');
@@ -968,7 +971,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
 
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
 
         index = index + 1;
         let exportItem = {
@@ -1032,7 +1035,7 @@ export class AppraisalInitialreviewlistComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Appraisal_Recommendation_Review_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');

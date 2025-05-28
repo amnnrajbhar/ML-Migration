@@ -1,6 +1,6 @@
 export interface emailpreferencemodel{
     emailpreferenceId:number;
-    emailType: string;
+    emailType: string
     employeeId:number;
     enabled:boolean;
 

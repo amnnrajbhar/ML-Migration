@@ -57,7 +57,7 @@ export class EditFullComponent implements OnInit {
   confirmSubmit: boolean = false;
   completedTabIndex: number = 0;
   currentTab:string = "initial";
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   successMsg: string = "";
@@ -73,7 +73,8 @@ export class EditFullComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.appointmentId = this.route.snapshot.paramMap.get('id')!; 
       this.showData = true;
     }
@@ -189,7 +190,7 @@ onSubmit(){
       this.isLoading = false;
       toastr.error('Error occured while submitting the details. Error:' + err);
     })
-    .catch(error => {
+    .catch((error)=> {
       this.isLoading = false;
       toastr.error('Error occured while submitting the details. Error:' + error);
     });

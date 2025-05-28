@@ -16,9 +16,9 @@ declare var $: any;
   styleUrls: ['./gh-managerapproval.component.css']
 })
 export class GhManagerapprovalComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgPop: string = "";
@@ -35,7 +35,8 @@ export class GhManagerapprovalComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.loadTilesCount();
       this.getApprovalMeetings();
     }
@@ -55,12 +56,12 @@ export class GhManagerapprovalComponent implements OnInit {
       genericBookingFilters.status = 'Pending with Admin,Approved,Rejected by Admin,Rejected by Manager';
     this.httpService.post(APIURLS.BR_GUESTHOUSE_BOOKING_BY_FILTER_API, genericBookingFilters).then((data: any) => {
       if (data) {
-        this.myMeetings = data.filter(x => { return x.isCancelled == false });
+        this.myMeetings = data.filter((x:any)  => { return x.isCancelled == false });
         this.myMeetings.reverse();
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.myMeetings = [];
     });
@@ -78,13 +79,13 @@ export class GhManagerapprovalComponent implements OnInit {
 
     this.httpService.post(APIURLS.BR_GUESTHOUSE_BOOKING_BY_FILTER_API, genericBookingFilters).then((data: any) => {
       if (data) {
-        this.allMeetings = data.filter(x => { return x.isCancelled == false }).length;
-        // this.todayMeetings = data.filter(x => { return x.isCancelled == false && new Date(x.toDate).getDate() == todaydate.getDate() && x.status == 'Pending with Manager' }).length;
-        this.todayMeetings = data.filter(x => { return x.isCancelled == false && x.status == 'Pending with Manager' }).length;
-        this.approvedMeetings = data.filter(x => { return x.isCancelled == false && (x.status == 'Approved' || x.status == 'Pending with Admin' || x.status == 'Rejected by Admin' || x.status == 'Rejected by Manager') }).length;
+        this.allMeetings = data.filter((x:any)  => { return x.isCancelled == false }).length;
+        // this.todayMeetings = data.filter((x:any)  => { return x.isCancelled == false && new Date(x.toDate).getDate() == todaydate.getDate() && x.status == 'Pending with Manager' }).length;
+        this.todayMeetings = data.filter((x:any)  => { return x.isCancelled == false && x.status == 'Pending with Manager' }).length;
+        this.approvedMeetings = data.filter((x:any)  => { return x.isCancelled == false && (x.status == 'Approved' || x.status == 'Pending with Admin' || x.status == 'Rejected by Admin' || x.status == 'Rejected by Manager') }).length;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -175,14 +176,14 @@ export class GhManagerapprovalComponent implements OnInit {
         this.loadTilesCount();
         this.getApprovalMeetings();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error in Booking';
     });
   }
   sendMail(bookingData: BookGuestHouse) {
     let connection: any;
-    let type: string;
+    let type: string
     if (bookingData.status == "Pending with Admin") {
       type = "GH-2ndLevelApproval";
     }
@@ -196,7 +197,7 @@ export class GhManagerapprovalComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error in sending mail..';
     });
   }

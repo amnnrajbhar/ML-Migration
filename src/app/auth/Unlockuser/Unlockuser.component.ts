@@ -10,8 +10,8 @@ import swal from 'sweetalert';
 import * as _ from "lodash";
 declare var jQuery: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 @Component({
   selector: 'app-Unlockuser',
@@ -20,16 +20,16 @@ export class actionItemModel {
 })
 export class UnlockuserComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
   public tableWidget: any;
   selParentId: any;
-  UnlockuserList: any[];
+  UnlockuserList!: any[];
   UnlockuserList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -45,8 +45,8 @@ export class UnlockuserComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldUnlockuserItem: Lockout = new Lockout();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent) { }
 
   private initDatatable(): void {
@@ -67,7 +67,8 @@ export class UnlockuserComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getUnlockuserMasterList();
     }
     else
@@ -87,7 +88,7 @@ export class UnlockuserComponent implements OnInit {
     this.isLoading = true;
     this.httpService.getByParam(APIURLS.BR_MASTER_LOCKOUT_BY_PARAM_API, this.EmployeeID).then((data: any) => {
       if (data.length > 0) {
-        this.UnlockuserList = data.filter(x => x.isActive).sort((a, b) => {
+        this.UnlockuserList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -103,7 +104,7 @@ export class UnlockuserComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UnlockuserList = [];
     });
@@ -136,7 +137,7 @@ export class UnlockuserComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-    // if (!this.UnlockuserList.some(s => s.name.toLowerCase() == this.UnlockuserItem.name.toLowerCase() && s.id != this.UnlockuserItem.id)) {
+    // if (!this.UnlockuserList.some((s:any) => s.name.toLowerCase() == this.UnlockuserItem.name.toLowerCase() && s.id != this.UnlockuserItem.id)) {
     this.UnlockuserItem = Object.assign({}, data);
     this.auditType = "Update";
     this.UnlockuserItem.count = 0;
@@ -159,7 +160,7 @@ export class UnlockuserComponent implements OnInit {
       else
         this.errMsgPop = data;
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error unlocking user..';
     });
@@ -170,7 +171,7 @@ export class UnlockuserComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-    // if (!this.UnlockuserList.some(s => s.name.toLowerCase() == this.UnlockuserItem.name.toLowerCase() && s.id != this.UnlockuserItem.id)) {
+    // if (!this.UnlockuserList.some((s:any) => s.name.toLowerCase() == this.UnlockuserItem.name.toLowerCase() && s.id != this.UnlockuserItem.id)) {
     if (!this.isEdit) {
       this.auditType = "Create";
       this.UnlockuserItem.isActive = true;
@@ -201,7 +202,7 @@ export class UnlockuserComponent implements OnInit {
       else
         this.errMsgPop = data;
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error unlocking user..';
     });
@@ -231,7 +232,7 @@ export class UnlockuserComponent implements OnInit {
             jQuery("#saveModal").modal('show');
             this.getUnlockuserMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Unlockuser..';
         });

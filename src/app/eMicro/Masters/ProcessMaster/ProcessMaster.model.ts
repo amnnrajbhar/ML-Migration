@@ -1,10 +1,10 @@
 ﻿export class ProcessMaster {
-    processId: number;
+    processId!: number;
     processName:string;
-    description: string;
-    createdBy: string;
-    createdOn: string;
-    lastModifiedBy: string;
-    lastModifiedOn: string;
-    isActive: boolean;
+    description: string
+    createdBy: string
+    createdOn: string
+    lastModifiedBy: string
+    lastModifiedOn: string
+    isActive!: boolean;
 }

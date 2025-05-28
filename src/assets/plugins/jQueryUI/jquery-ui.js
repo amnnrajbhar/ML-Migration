@@ -4724,7 +4724,7 @@ $.extend(Datepicker.prototype, {
 	},
 
 	/* Action for current link. */
-	_gotoToday: function(id) {
+	_gotoToday: function(id:any) {
 		var date,
 			target = $(id),
 			inst = this._getInst(target[0]);
@@ -4774,7 +4774,7 @@ $.extend(Datepicker.prototype, {
 	},
 
 	/* Erase the input field and hide the date picker. */
-	_clearDate: function(id) {
+	_clearDate: function(id:any) {
 		var target = $(id);
 		this._selectDate(target, "");
 	},

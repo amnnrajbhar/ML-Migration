@@ -21,10 +21,10 @@ import { AppComponent } from '../../app.component';
 import { Router } from '@angular/router';
 import { ExcelService } from '../../shared/excel-service';
 import { HttpClient } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 
 
@@ -35,9 +35,9 @@ import htmlToPdfmake from 'html-to-pdfmake';
 
 })
 export class UserReportComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
 
@@ -61,26 +61,28 @@ export class UserReportComponent implements OnInit {
     userIdRequest = {} as UserIdRequest
     userIdRequestlist: UserIdRequest[] = [];
     userIdRequestlist1: UserIdRequest[] = [];
-    filterMaterialCode: string = null;
-    filterstatus: string = null;
-    filtersoftware: string = null;
-    filtersoftwareType: string = null;
-    filterrequest: string = null;
-    filterType: string = null;
-    filterEmployee: string = null;
-    filterlocation: string = null;
-    filterEquipName: string = null;
+    filterMaterialCode: string = ' ';
+    filterstatus: string = ' ';
+    filtersoftware: string = ' ';
+    filtersoftwareType: string = ' ';
+    filterrequest: string = ' ';
+    filterType: string = ' ';
+    filterEmployee: string = ' ';
+    filterlocation: string = ' ';
+    filterEquipName: string = ' ';
 
 
     //new Dev
-    softType: string;
-    locationCode: string;
+    softType: string
+    locationCode: string
     filteredSoftwareList: any[] = [];
-    Software: string = null;
-    ReportType: string = null;
+    Software: string = ' ';
+    ReportType: string = ' ';
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router
-        , private http: HttpClient, private excelService: ExcelService,private datePipe:DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+        , private http: HttpClient, private excelService: ExcelService,private datePipe:DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
     private initDatatable(): void {
         let exampleId: any = jQuery('#userTable');
@@ -99,7 +101,8 @@ export class UserReportComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //  this.baseLocation = this.currentUser.baselocation;
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         if (chkaccess == true) {
@@ -159,27 +162,31 @@ export class UserReportComponent implements OnInit {
     clearFilter() {
 
         this.filtersoftware = null;
-        this.filterstatus = null;
+      // this.filterstatus = null;
+  this.filterstatus = '';
         this.filtersoftwareType = null;
-        this.filterrequest = null;
-        this.filterType = null;
-        this.filterEmployee = null;
-        this.filterlocation = null;
+   //    this.filterrequest = null;
+     this.filterrequest = '';
+        //this.filterType = null;
+this.filterType = '';
+        this.filterEmployee = '';
+       // this.filterlocation = null;
+ this.filterlocation = '';
         this.filterEquipName = null;
         this.ReportType = null;
 
     }
     plantAssignedList: any[] = [];
-    getPlantsassigned(id) {
+    getPlantsassigned(id:any) {
         this.isLoading = true;
         this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
             if (data) {
                 this.plantAssignedList = data;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.plantAssignedList.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.plantAssignedList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.plantAssignedList = [];
         });
@@ -193,7 +200,7 @@ export class UserReportComponent implements OnInit {
         //this.softwareList=[];
         this.httpService.get(APIURLS.BR_SOFTWARE_API).then((data: any) => {
             if (data.length > 0) {
-                this.AllsoftwareList = data.filter(x => x.isActive).sort((a, b) => {
+                this.AllsoftwareList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
                     if (a.name > b.name) return 1;
                     if (a.name < b.name) return -1;
                     return 0;
@@ -202,7 +209,7 @@ export class UserReportComponent implements OnInit {
             }
             // this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.AllsoftwareList = [];
         });
@@ -212,10 +219,10 @@ export class UserReportComponent implements OnInit {
         if(this.filtersoftwareType=='Plant Level')
         {
             let temp = this.plantAssignedList.find(x=>x.fkPlantId == this.filterlocation).code;
-            this.softwareList = this.AllsoftwareList.filter(x=>x.location == temp);
+            this.softwareList = this.AllsoftwareList.filter((x:any)=>x.location == temp);
         }
         else{
-            this.softwareList = this.AllsoftwareList.filter(x=>x.location == 'ML00');
+            this.softwareList = this.AllsoftwareList.filter((x:any)=>x.location == 'ML00');
         }
        
     }
@@ -223,8 +230,8 @@ export class UserReportComponent implements OnInit {
     getAllEntries() {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         filterModel.location = this.filterlocation;
         filterModel.software = this.filtersoftware;
@@ -244,7 +251,7 @@ export class UserReportComponent implements OnInit {
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.userIdRequestlist = [];
         });
@@ -253,8 +260,8 @@ export class UserReportComponent implements OnInit {
     exportData(val) {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         filterModel.location = this.filterlocation;
         filterModel.software = this.filtersoftware;
@@ -283,7 +290,7 @@ export class UserReportComponent implements OnInit {
                     else {
                         var exportList = [];
                         let index = 0;
-                        list.forEach(item => {
+                        list.forEach((item :any) => {
                             index = index + 1;
                             let exportItem = {
                                 "Sl No": index,
@@ -309,7 +316,7 @@ export class UserReportComponent implements OnInit {
                 }
             });
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             swal('Error occurred while fetching data.');
             return;
@@ -318,7 +325,7 @@ export class UserReportComponent implements OnInit {
     }
     pageSize: any = 10;
     pageNo: any;
-    totalCount: number;
+    totalCount!: number;
     totalPages: number
     gotoPage(no) {
         if (this.pageNo == no) return;
@@ -355,7 +362,7 @@ export class UserReportComponent implements OnInit {
     }
 
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
         this.initDatatable();
     }
@@ -381,7 +388,7 @@ export class UserReportComponent implements OnInit {
             }
             // this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.currentUser = {} as AuthData;
         });
@@ -393,7 +400,7 @@ export class UserReportComponent implements OnInit {
             this.isLoading = true;
             if (data.length > 0) {
                 this.transactionsHistory = data;
-                let temp = this.transactionsHistory.find(x => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
+                let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
                     || x.parallelApprover2 == this.currentUser.employeeId || x.parallelApprover3 == this.currentUser.employeeId ||
                     x.parallelApprover4 == this.currentUser.employeeId) && x.transactionType == null);
 
@@ -401,13 +408,13 @@ export class UserReportComponent implements OnInit {
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.transactionsHistory = [];
         });
     }
 
-    image: string;
+    image!: string
     getbase64image() {
         this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
             .subscribe(blob => {
@@ -434,7 +441,7 @@ export class UserReportComponent implements OnInit {
         //generalpdf
         var printContents: any;
         printContents = document.getElementById('pdf').innerHTML;
-        var temp1 = this.plantAssignedList.find(x => x.fkPlantId == this.currentUser.baselocation);
+        var temp1 = this.plantAssignedList.find((x:any)  => x.fkPlantId == this.currentUser.baselocation);
         var OrganisationName = "MICRO LABS LIMITED" + ', ' + temp1.code + '-' + temp1.name;
         var ReportName = 'USER BASED REPORT';
         var printedBy = this.currentUser.employeeId + ' - ' + this.currentUser.fullName;
@@ -442,27 +449,27 @@ export class UserReportComponent implements OnInit {
         var jsDate = this.setFormatedDateTime(now);
         var logo = this.image;
         var reason = '';
-        var htmnikhitml = htmlToPdfmake(`<html>
-      <head>
-      </head>
-      <body>
-      ${printContents}
-      <div>     
-      </div>
-      </body>  
-      </html>`, {
-            tableAutoSize: true,
-            headerRows: 1,
-            dontBreakRows: true,
-            keepWithHeaderRows: true,
-        })
+    //     var htmnikhitml = htmlToPdfmake(`<html>
+    //   <head>
+    //   </head>
+    //   <body>
+    //   ${printContents}
+    //   <div>     
+    //   </div>
+    //   </body>  
+    //   </html>`, {
+    //         tableAutoSize: true,
+    //         headerRows: 1,
+    //         dontBreakRows: true,
+    //         keepWithHeaderRows: true,
+    //     })
         var docDefinition = {
             info: {
                 title: 'User Id Report',
             },
 
             content: [
-                htmnikhitml,
+                //htmnikhitml,
             ],
             defaultStyle: {
                 fontSize: 9,
@@ -480,7 +487,7 @@ export class UserReportComponent implements OnInit {
             pageSize: 'A4',
             pageMargins: [40, 100, 40, 60],
             pageOrientation: 'landscape',
-            header: function (currentPage, pageCount) {
+            header: function (currentPage:any, pageCount:any) {
                 return {
 
                     columns: [
@@ -535,7 +542,7 @@ export class UserReportComponent implements OnInit {
                 }
             },
         };
-        pdfMake.createPdf(docDefinition).open();
+        //pdfMake.createPdf(docDefinition).open();
     }
 
 

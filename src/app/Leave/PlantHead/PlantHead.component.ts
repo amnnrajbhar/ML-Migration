@@ -13,9 +13,9 @@ import * as _ from "lodash";
 declare var jQuery: any;
 declare var $: any;
 export class actionItemModel {
-  description: string;
-  id: number;
-  uname: string;
+  description: string
+  id!: number;
+  uname: string
 }
 @Component({
   selector: 'app-PlantHead',
@@ -24,7 +24,7 @@ export class actionItemModel {
 })
 export class PlantHeadcomponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
+@ViewChild(NgForm, { static: false }) leaveForm!: NgForm;
 
   public tableWidget: any;
   plantHeadItem: PlantHead = new PlantHead();
@@ -39,8 +39,8 @@ export class PlantHeadcomponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldPlantHeadItem: PlantHead = new PlantHead();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   id: any;
   checkdup: any;
   checkdup1: any;
@@ -69,7 +69,8 @@ export class PlantHeadcomponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getplantHeadList();
       this.getPlantsassigned(this.currentUser.fkEmpId);
     }
@@ -79,16 +80,16 @@ export class PlantHeadcomponent implements OnInit {
 
   locationList: any[] = [[]];
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -103,7 +104,7 @@ export class PlantHeadcomponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.httpService.getByParam(APIURLS.BR_GET_EMP_DETAILS, text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.firstName > b.firstName) return 1; if (a.firstName < b.firstName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.firstName > b.firstName) return 1; if (a.firstName < b.firstName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return {
                 label: item.firstName ? item.firstName : '' + item.middleName ? item.middleName : '' + item.lastName ? item.lastName : '' + " (" + item.employeeId + ")",
@@ -116,7 +117,7 @@ export class PlantHeadcomponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#phempNo").val(ui.item.value);
                   $("#phempNo").val(ui.item.value);
@@ -128,7 +129,7 @@ export class PlantHeadcomponent implements OnInit {
                   $("#phempNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#phempNo").val(ui.item.value);
                   $("#phempNo").val(ui.item.value);
@@ -160,7 +161,7 @@ export class PlantHeadcomponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantHeadList = [];
     });
@@ -214,7 +215,7 @@ export class PlantHeadcomponent implements OnInit {
     let connection: any;
 
     if (!this.isEdit) {
-      if (this.plantHeadList.find(x => x.pernr == this.plantHeadItem.pernr
+      if (this.plantHeadList.find((x:any)  => x.pernr == this.plantHeadItem.pernr
         && x.plant == this.plantHeadItem.plant)) {
         this.isLoadingPop = false;
         swal({
@@ -223,7 +224,7 @@ export class PlantHeadcomponent implements OnInit {
           dangerMode: true
         });
       }
-      else if (this.plantHeadList.find(x => x.plant == this.plantHeadItem.plant)) {
+      else if (this.plantHeadList.find((x:any)  => x.plant == this.plantHeadItem.plant)) {
         this.isLoadingPop = false;
         swal({
           title: "Multiple Plant Heads cannot be assigned to a single location",
@@ -261,7 +262,7 @@ export class PlantHeadcomponent implements OnInit {
       }
       else
         this.errMsgPop = data;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving plant head data..';
     });
@@ -295,7 +296,7 @@ export class PlantHeadcomponent implements OnInit {
             });
             this.getplantHeadList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting PlantHead..';
         });
@@ -330,7 +331,7 @@ export class PlantHeadcomponent implements OnInit {
             });
             this.getplantHeadList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error updating PlantHead..';
         });
@@ -357,7 +358,8 @@ export class PlantHeadcomponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

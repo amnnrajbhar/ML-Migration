@@ -14,11 +14,11 @@ import { setActionValue } from 'sweetalert/typings/modules/state';
 import { Resignation } from '../../separation/resignation/resignation.model';
 import { AuthData } from '../../../auth/auth.model';
 import { MOMENT } from 'angular-calendar';
-import * as moment from 'moment';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import moment from 'moment'
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 declare var $: any;
@@ -32,7 +32,7 @@ declare var toastr: any;
   providers:[Util]
 })
 export class PrintFnfComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   fnfId: any;
   urlPath: string = '';
@@ -52,7 +52,9 @@ export class PrintFnfComponent implements OnInit {
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,private fb: FormBuilder,
     private util: Util,private location: Location,private http: HttpClient)
-     { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+     {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   ngOnInit() {
     this.DateToday=new Date();
@@ -60,7 +62,8 @@ export class PrintFnfComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;  
       this.fnfId = this.route.snapshot.paramMap.get('id2')!;  
       
@@ -82,7 +85,7 @@ export class PrintFnfComponent implements OnInit {
       }
     }
   }
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     this.isLoading = true;
    // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -91,7 +94,7 @@ export class PrintFnfComponent implements OnInit {
         console.log(this.employeeDetails);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -100,14 +103,14 @@ export class PrintFnfComponent implements OnInit {
   settlementDetails: any[] = [];
   headList: any[] = [];
   migratedDetails: any[] = [];
-  GetFNFDetailsById(id) {
+  GetFNFDetailsById(id:any) {
     this.migratedDetails = [];
     this.httpService.HRget(APIURLS.FNF_GET_DETAILS_BY_ID+"/"+id).then((data: any) => {
       if (data) {
          this.fnfDetails=data;
          this.settlementDetails=data.fnfSettlementDetailsViewModel;
-         var earningsList = this.settlementDetails.filter(x=>x.type=='Earnings');
-         var deductionsList = this.settlementDetails.filter(x=>x.type=='Deductions');
+         var earningsList = this.settlementDetails.filter((x:any)=>x.type=='Earnings');
+         var deductionsList = this.settlementDetails.filter((x:any)=>x.type=='Deductions');
          var maxCount = earningsList.length > deductionsList.length ? earningsList.length : deductionsList.length;
          for(var i=0; i < maxCount; i++){
           var obj: any = {};
@@ -132,7 +135,7 @@ export class PrintFnfComponent implements OnInit {
          setTimeout(()=>{this.saveLetter();}, 100);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }
@@ -182,7 +185,7 @@ export class PrintFnfComponent implements OnInit {
         this.joiningDate = this.getDateFormate(this.resignationDetails.dateOfJoining);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -215,33 +218,33 @@ export class PrintFnfComponent implements OnInit {
       request.letterType = "FNF Settlement";
 
       this.isLoading = true;
-      this.createPDF().getBase64((encodedString) => {
-        if (encodedString) {
-          request.attachment = encodedString;
-          toastr.info("Sending email...");
-          this.isLoading = true;
-          this.httpService.HRpost(APIURLS.FNF_DETAILS_SEND_EMAIL, request).then((data: any) => {
-            if (data == 200 || data.success) {
-              toastr.success("Successfully emailed  letter to the candidate.");
-              this.saveLetterActivity("Emailed");
-            } else if (!data.success) {
-              toastr.error(data.message);
-            } else
-            toastr.error("Error occurred.");
-            this.isLoading = false;
-          }
-          ).catch(error => {
-            toastr.error(error);
-            this.isLoading = false;
-          });
-        }
-      });
+      // this.createPDF().getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     request.attachment = encodedString;
+      //     toastr.info("Sending email...");
+      //     this.isLoading = true;
+      //     this.httpService.HRpost(APIURLS.FNF_DETAILS_SEND_EMAIL, request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         toastr.success("Successfully emailed  letter to the candidate.");
+      //         this.saveLetterActivity("Emailed");
+      //       } else if (!data.success) {
+      //         toastr.error(data.message);
+      //       } else
+      //       toastr.error("Error occurred.");
+      //       this.isLoading = false;
+      //     }
+      //     ).catch((error)=> {
+      //       toastr.error(error);
+      //       this.isLoading = false;
+      //     });
+      //   }
+      // });
     }
   }
 
  
   download() {
-    this.createPDF().open();
+   // this.createPDF().open();
     this.saveLetterActivity("Downloaded");
   }
 
@@ -252,7 +255,7 @@ export class PrintFnfComponent implements OnInit {
     var contactInfo = "Tel. : +91- 80-2237 0451- 57 Fax : +91-80-2237 0463 CIN: U24232KA1973PLC002d01 Website: www.microlabsltd.com Email : info@microlabs.in";
     var logo = this.image;
 
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -265,14 +268,14 @@ export class PrintFnfComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    });
+    })*/;
     var docDefinition = {
       info: {
         title: 'Full And Final Settlement',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -299,7 +302,7 @@ export class PrintFnfComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 130, 40, 10],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           columns: [
             {
@@ -320,7 +323,7 @@ export class PrintFnfComponent implements OnInit {
       },
     };
     
-    return pdfMake.createPdf(docDefinition);
+//    return pdfMake.createPdf(docDefinition);
   }
   print1(): void {
     // this.printElement(document.getElementById("print-section"));
@@ -364,7 +367,7 @@ export class PrintFnfComponent implements OnInit {
       this.saveLetterActivity("Printed");
     }
 
-    image: string;
+    image!: string
   getbase64image() {
     this.http.get('../../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -385,19 +388,19 @@ export class PrintFnfComponent implements OnInit {
   
   
   saveLetter(){
-    this.createPDF().getBase64((encodedString) => {
-      if (encodedString) {
-        var request: any = {};
-        request.attachment = encodedString;      
-        request.objectId = this.fnfId;
-        request.employeeId = this.employeeId;
-        request.objectType = "FNF";
-        request.letterType = "FNF Letter";
-        request.submittedById = this.currentUser.uid;
-        request.submittedByName = this.currentUser.fullName;
-        this.util.saveLetter(request);
-      }
-    });
+    // this.createPDF().getBase64((encodedString) => {
+    //   if (encodedString) {
+    //     var request: any = {};
+    //     request.attachment = encodedString;      
+    //     request.objectId = this.fnfId;
+    //     request.employeeId = this.employeeId;
+    //     request.objectType = "FNF";
+    //     request.letterType = "FNF Letter";
+    //     request.submittedById = this.currentUser.uid;
+    //     request.submittedByName = this.currentUser.fullName;
+    //     this.util.saveLetter(request);
+    //   }
+    // });
   }
  
   

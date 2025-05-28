@@ -21,7 +21,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,private excelService: ExcelService) { }
   @Input() editAllowed: boolean = true;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   from_date: any = null;
   to_date: any = null;
@@ -51,7 +51,8 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
 
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageNo = 1;
     this.filterModel.pageSize = 10;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -119,9 +120,9 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantlist = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantlist = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantlist = [];
     });
   }
@@ -132,9 +133,9 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
     if (this.filterModel.plantId > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.filterModel.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -152,9 +153,9 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
     if (this.updateModel.plantId > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.updateModel.plantId).then((data: any) => {
         if (data.length > 0) {
-          this.updatePayGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.updatePayGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.updatePayGroupList = [];
       });
     }
@@ -164,9 +165,9 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
     this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
       .then((data: any) => {
         if (data.length > 0) {
-          this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+          this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.employeeCategoryList = [];
       });
   }
@@ -174,9 +175,9 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
   getReportingGroups(){
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_REPORTING_GROUPS).then((data: any) => {
       if (data.length > 0) {
-        this.reportingGroupsList = data.sort((a, b) => { if (a.reportingGroupLt > b.reportingGroupLt) return 1; if (a.reportingGroupLt < b.reportingGroupLt) return -1; return 0; });
+        this.reportingGroupsList = data.sort((a:any, b:any) => { if (a.reportingGroupLt > b.reportingGroupLt) return 1; if (a.reportingGroupLt < b.reportingGroupLt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.reportingGroupsList = [];
     });
   }
@@ -185,9 +186,9 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -197,9 +198,9 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -208,23 +209,23 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
   getDepartments(){
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
 
   onDepartmentChange(){
-    this.subDepartmentList = this.subDepartmentFullList.filter(x=>x.departmentId == this.filterModel.departmentId);
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)=>x.departmentId == this.filterModel.departmentId);
     this.filterModel.subDepartmentId = "";
   }
   getSubDepartments(){
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        this.subDepartmentFullList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        this.subDepartmentFullList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.subDepartmentFullList = [];
     });
   }
@@ -238,10 +239,10 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
       this.filterData = data;
 
       for (var item of this.filterData.list) {
-        item.statusColor = this.statusList.find(x => x.type == item.status).color;
+        item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -289,9 +290,9 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -300,7 +301,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
     var selectedState = this.stateList.find(x=>x.id == this.filterModel.stateId);
     this.filterModel.locationId = "";
     if(selectedState)
-      this.locationList = this.locationFullList.filter(x => x.stateId == selectedState.bland);
+      this.locationList = this.locationFullList.filter((x:any)  => x.stateId == selectedState.bland);
   }
 
   lastApprovingkeydown = 0;
@@ -311,7 +312,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
@@ -322,7 +323,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManagerPlantPayGroup").val(ui.item.value);
                   $("#fltApprovingManagerIdPlantPaygroup").val(ui.item.label);
@@ -332,7 +333,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
                   $("#fltApprovingManagerIdPlantPaygroup").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManagerPlantPayGroup").val(ui.item.value);
                   $("#fltApprovingManagerIdPlantPaygroup").val(ui.item.label);
@@ -360,7 +361,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
@@ -371,7 +372,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#fltreportingManagerPlantPayGroup").val(ui.item.value);
                   $("#reportingManagerPlantPayGroup").val(ui.item.label);
@@ -381,7 +382,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
                   $("#reportingManagerPlantPayGroup").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#fltreportingManagerPlantPayGroup").val(ui.item.value);
                   $("#reportingManagerPlantPayGroup").val(ui.item.label);
@@ -403,7 +404,7 @@ export class PlantPayGroupBulkUpdateComponent implements OnInit {
 
 
   updateSelected(){
-    var selectedList = this.filterData.list.filter(x => x.selected == true);
+    var selectedList = this.filterData.list.filter((x:any)  => x.selected == true);
     if(selectedList.length <= 0)
     {
       toastr.error("Please select atleast one employee to update");
@@ -457,7 +458,7 @@ var EmployeeIds : any[]= [];
           toastr.error(data.message);
         } else
           toastr.error("Error occurred while Updating.");
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
       });
     
@@ -506,7 +507,7 @@ var EmployeeIds : any[]= [];
             toastr.error(data.message);
           } else
             toastr.error("Error occurred while Updating.");
-        }).catch(error => {
+        }).catch((error)=> {
           toastr.error(error);
         });
       

@@ -18,22 +18,23 @@ declare var toastr: any;
   providers: [AppointmentService, Util]
 })
 export class StatutoryComponent implements OnInit {
-  @ViewChild('statutoryDetailsForm' , { static: false }) private statutoryDetailsForm: NgForm;
-  @Input() appointmentId: number;
+  @ViewChild('statutoryDetailsForm' , { static: false }) private statutoryDetailsForm!: NgForm;
+  @Input() appointmentId!: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   details:any = {};
   officialDetails: any = {};
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
     private service: AppointmentService, private util: Util) { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));     
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;     
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
       this.isLoading = true;
@@ -53,7 +54,7 @@ export class StatutoryComponent implements OnInit {
           this.dataLoaded.emit(data.appointmentStatutoryDetailsId);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       this.details = {};
@@ -91,7 +92,7 @@ export class StatutoryComponent implements OnInit {
         //this.isLoading = false;
         toastr.error('Error occured while saving the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         toastr.error('Error occured while saving the details. Error:' + error);
       });
@@ -108,7 +109,7 @@ export class StatutoryComponent implements OnInit {
           this.officialDetails = data;          
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching official details.");
       });
@@ -130,7 +131,7 @@ export class StatutoryComponent implements OnInit {
 //         toastr.error("Offer details not found, please check the link.");
 
 //       this.isLoading = false;
-//     }).catch(error => {
+//     }).catch((error)=> {
 //       this.isLoading = false;
 //       toastr.error("Error occurred while fetching details, please check the link.");
 //     });    

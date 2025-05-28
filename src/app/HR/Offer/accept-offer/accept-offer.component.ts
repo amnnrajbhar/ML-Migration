@@ -49,7 +49,7 @@ export class AcceptOfferComponent implements OnInit {
     }
   }
 
-  LoadOfferDetails(id) {
+  LoadOfferDetails(id:any) {
     this.isLoading = true;
 
     this.service.getData(APIURLS.CANDIDATE_GET_OFFER_BY_ID + "/" + id + "/" + this.guid).then((data: any) => {
@@ -65,7 +65,7 @@ export class AcceptOfferComponent implements OnInit {
         this.errMsg = "Offer details not found, please check the link.";
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = "Error occurred while fetching details, please check the link.";
       this.offerDetails = {} as OfferDetails;
@@ -102,7 +102,7 @@ export class AcceptOfferComponent implements OnInit {
         this.errMsgModalPop = 'Error occured while submitting the details. Error:' + err;
         swal(this.errMsgModalPop);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         this.errMsgModalPop = 'Error occured while submitting the details. Error:' + error;
         swal(this.errMsgModalPop);

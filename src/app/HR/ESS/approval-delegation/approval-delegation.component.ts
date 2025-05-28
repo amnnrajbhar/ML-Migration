@@ -18,7 +18,7 @@ declare var toastr: any;
   providers: [Util]
 })
 export class ApprovalDelegationComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   urlPath: string = '';
   isLoading: boolean = false;
@@ -36,7 +36,8 @@ export class ApprovalDelegationComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.currentUser.uid;
       this.GetDelegationDetails();
     }
@@ -49,18 +50,18 @@ export class ApprovalDelegationComponent implements OnInit {
         this.delegationsList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });
   }
 
-  edit(id) {
+  edit(id:any) {
     this.action = "edit";
-    this.details = Object.assign({}, this.delegationsList.find(x => x.approvalDelegationId == id));
+    this.details = Object.assign({}, this.delegationsList.find((x:any)  => x.approvalDelegationId == id));
   }
 
-  delete(id) {
+  delete(id:any) {
     if (confirm("Are you sure you want to delete this?")) {
       this.httpService.HRdelete(APIURLS.APPROVAL_DELEGATION_API, id)
         .then(
@@ -79,7 +80,7 @@ export class ApprovalDelegationComponent implements OnInit {
             this.isLoading = false;
             toastr.error('Error occured while deleting details. Error:' + err);
           })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while deleting details. Error:' + error);
         });
@@ -112,7 +113,7 @@ export class ApprovalDelegationComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while saving details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving details. Error:' + error);
       });
@@ -131,7 +132,7 @@ export class ApprovalDelegationComponent implements OnInit {
       if ($event.timeStamp - this.lastKeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if (item.fullName != null)
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
@@ -142,7 +143,7 @@ export class ApprovalDelegationComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#delegatedToId").val(ui.item.value);
                   $("#delegatedToName").val(ui.item.label);
@@ -152,7 +153,7 @@ export class ApprovalDelegationComponent implements OnInit {
                   $("#delegatedToName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#delegatedToId").val(ui.item.value);
                   $("#delegatedToName").val(ui.item.label);

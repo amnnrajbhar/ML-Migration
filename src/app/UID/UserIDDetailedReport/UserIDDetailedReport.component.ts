@@ -21,24 +21,24 @@ import { AppComponent } from '../../app.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExcelService } from '../../shared/excel-service';
 import { HttpClient } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 
 interface task {
-    value: string;
-    viewValue: string;
+    value: string
+    viewValue: string
 }
 
 interface taskGroup {
     disabled?: boolean;
-    name: string;
+    name: string
     task: task[];
 }
 
-interface UGrpsList { id: number, UserGroup: string, sid: number, UserSubGroups: any[] }
+interface UGrpsList { id: number, UserGroup: string; sid: number, UserSubGroups: any[] }
 
 
 @Component({
@@ -48,9 +48,9 @@ interface UGrpsList { id: number, UserGroup: string, sid: number, UserSubGroups:
 
 })
 export class UserIDDetailedReportComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
 
@@ -75,7 +75,7 @@ export class UserIDDetailedReportComponent implements OnInit {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File; successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
@@ -85,16 +85,16 @@ export class UserIDDetailedReportComponent implements OnInit {
     userIdRequest = {} as UserIdRequest
     userIdRequestlist: UserIdRequest[] = [];
     // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-    materialtype: string;
-    comments: string;
-    filterMaterialCode: string = null;
-    filterstatus: string = null;
-    filtersoftware: string = null;
-    filterrequest: string = null;
-    filterType: string = null;
-    filterEmployee: string = null;
-    filterlocation: string = null;
-    filterEquipName: string = null;
+    materialtype!: string
+    comments: string
+    filterMaterialCode: string = ' ';
+    filterstatus: string = ' ';
+    filtersoftware: string = ' ';
+    filterrequest: string = ' ';
+    filterType: string = ' ';
+    filterEmployee: string = ' ';
+    filterlocation: string = ' ';
+    filterEquipName: string = ' ';
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     to_date: any = this.today;
@@ -108,7 +108,9 @@ export class UserIDDetailedReportComponent implements OnInit {
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router
         , private http: HttpClient, private excelService: ExcelService, 
-        private route: ActivatedRoute,private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+        private route: ActivatedRoute,private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
     private initDatatable(): void {
         let exampleId: any = jQuery('#userTable');
@@ -127,7 +129,8 @@ export class UserIDDetailedReportComponent implements OnInit {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
         this.filterModel.pageSize = 10;
         this.filterModel.pageNo = 1;
@@ -182,7 +185,7 @@ softwareRolesList: any[] = [];
     //this.softwareRolesList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_ROLES_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareRolesList = data.filter(x => x.isActive).sort((a, b) => {
+        this.softwareRolesList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -190,7 +193,7 @@ softwareRolesList: any[] = [];
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareRolesList = [];
     });
@@ -215,11 +218,15 @@ softwareRolesList: any[] = [];
         this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
         this.to_date = this.today;
         this.filtersoftware = null;
-        this.filterstatus = null;
-        this.filterrequest = null;
-        this.filterType = null;
-        this.filterEmployee = null;
-        this.filterlocation = null;
+      // this.filterstatus = null;
+  this.filterstatus = '';
+   //    this.filterrequest = null;
+     this.filterrequest = '';
+        //this.filterType = null;
+this.filterType = '';
+        this.filterEmployee = '';
+       // this.filterlocation = null;
+ this.filterlocation = '';
         this.filterEquipName = null;
 
     }
@@ -228,29 +235,29 @@ softwareRolesList: any[] = [];
         this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
     
     plantAssignedList: any[] = [];
-    getPlantsassigned(id) {
+    getPlantsassigned(id:any) {
         this.isLoading = true;
         this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
             if (data) {
                 this.plantAssignedList = data;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.plantAssignedList.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.plantAssignedList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.plantAssignedList = [];
         });
@@ -265,7 +272,7 @@ softwareRolesList: any[] = [];
         //this.softwareList=[];
         this.httpService.get(APIURLS.BR_SOFTWARE_API).then((data: any) => {
             if (data.length > 0) {
-                this.softwareList = data.filter(x => x.isActive).sort((a, b) => {
+                this.softwareList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
                     if (a.name > b.name) return 1;
                     if (a.name < b.name) return -1;
                     return 0;
@@ -273,7 +280,7 @@ softwareRolesList: any[] = [];
             }
             // this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.softwareList = [];
         });
@@ -281,8 +288,8 @@ softwareRolesList: any[] = [];
 
     softwareList1: any[] = [];
     GetSoftwareList() {
-        let temp = this.locationList.find(x => x.id == this.filterModel.locationId);
-        this.softwareList1 = this.softwareList.filter(x => x.location == temp.code);
+        let temp = this.locationList.find((x:any)  => x.id == this.filterModel.locationId);
+        this.softwareList1 = this.softwareList.filter((x:any)  => x.location == temp.code);
     }
     getfilteredDate() {
         this.filterModel.pageNo = 1;
@@ -306,7 +313,7 @@ softwareRolesList: any[] = [];
         this.httpService.post(APIURLS.USERID_REQUEST_DETAILED_REPORT, this.filterModel).then((data: any) => {
             this.filterData = data.result;
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
         });
     }
@@ -321,7 +328,7 @@ softwareRolesList: any[] = [];
             let list = data.result;
             var exportList = [];
             let index = 0;
-            list.list.forEach(item => {
+            list.list.forEach((item :any) => {
                 index = index + 1;
                 let exportItem = {
                     "Sl No": index,
@@ -343,7 +350,7 @@ softwareRolesList: any[] = [];
             });
             this.excelService.exportAsExcelFile(exportList, 'UserId_Detailed');
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.filterModel.export = false;
             swal('Error occurred while fetching data.');
@@ -353,7 +360,7 @@ softwareRolesList: any[] = [];
 
 
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
         this.initDatatable();
     }
@@ -362,7 +369,7 @@ softwareRolesList: any[] = [];
     isValid: boolean = false;
     validatedForm: boolean = true;
 
-    image: string;
+    image!: string
     getbase64image() {
         this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
             .subscribe(blob => {
@@ -398,14 +405,14 @@ softwareRolesList: any[] = [];
         this.router.navigate([route]);
     }
 
-    locationname: string;
+    locationname!: string
     downloadPdf() {
         // var temp=this.materialList.find(x=>x.id==this.filtermaterialtype);
         //generalpdf
 
         var printContents: any;
         printContents = document.getElementById('pdf').innerHTML;
-        var temp1 = this.locationList.find(x => x.id == this.currentUser.baselocation);
+        var temp1 = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
         var OrganisationName = "MICRO LABS LIMITED";
         var ReportName = 'USER ID DETAILED REPORT';
         var printedBy = this.currentUser.employeeId + ' - ' + this.currentUser.fullName;
@@ -413,27 +420,27 @@ softwareRolesList: any[] = [];
         var jsDate = this.setFormatedDateTime(now);
         var logo = this.image;
         var reason = '';
-        var htmnikhitml = htmlToPdfmake(`<html>
-    <head>
-    </head>
-    <body>
-    ${printContents}
-    <div>     
-    </div>
-    </body>  
-    </html>`, {
-            tableAutoSize: true,
-            headerRows: 1,
-            dontBreakRows: true,
-            keepWithHeaderRows: true,
-        })
+    //     var htmnikhitml = htmlToPdfmake(`<html>
+    // <head>
+    // </head>
+    // <body>
+    // ${printContents}
+    // <div>     
+    // </div>
+    // </body>  
+    // </html>`, {
+    //         tableAutoSize: true,
+    //         headerRows: 1,
+    //         dontBreakRows: true,
+    //         keepWithHeaderRows: true,
+    //     })
         var docDefinition = {
             info: {
                 title: 'User Id Form',
             },
 
             content: [
-                htmnikhitml,
+                //htmnikhitml,
             ],
             defaultStyle: {
                 fontSize: 9,
@@ -451,7 +458,7 @@ softwareRolesList: any[] = [];
             pageSize: 'A4',
             pageMargins: [40, 100, 40, 60],
             pageOrientation: 'landscape',
-            header: function (currentPage, pageCount) {
+            header: function (currentPage:any, pageCount:any) {
                 return {
 
                     columns: [
@@ -506,7 +513,7 @@ softwareRolesList: any[] = [];
                 }
             },
         };
-        pdfMake.createPdf(docDefinition).open();
+        //pdfMake.createPdf(docDefinition).open();
     }
 
 }

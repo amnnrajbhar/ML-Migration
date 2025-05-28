@@ -20,10 +20,10 @@ declare var toastr: any;
 })
 export class LetterTemplatesComponent implements OnInit {
   id: number = 0;
-  action: string;
+  action: string
   isLoading: boolean = false;
   filterData: any = {};
-  currentUser: AuthData;
+  currentUser!: AuthData;
   letterTemplateDetails= {} as LetterTemplate;
   filterModel: LetterTemplateFilter = {} as LetterTemplateFilter;
   letterTemplateList: any[] = [];
@@ -1125,7 +1125,8 @@ keywordsFullList = [
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.templateType = "";
     this.getPrintTemplateList();
@@ -1155,7 +1156,7 @@ keywordsFullList = [
      console.log(this.filterData.list);
      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     }); 
   }
@@ -1171,7 +1172,7 @@ keywordsFullList = [
     this.isEdit = true; 
     this.item = Object.assign({}, item);
     this.editIndex = index;
-    this.keywordsList = this.keywordsFullList.filter(x=>this.item.templateType.includes(x.templateType));
+    this.keywordsList = this.keywordsFullList.filter((x:any)=>this.item.templateType.includes(x.templateType));
     $("#detailsModal").modal("show");
   }
 
@@ -1194,7 +1195,7 @@ keywordsFullList = [
           this.isEdit =false;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error updating details...' + error);
       })
@@ -1216,7 +1217,7 @@ keywordsFullList = [
           this.getData();
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error('Error updating details...' + error);
       })

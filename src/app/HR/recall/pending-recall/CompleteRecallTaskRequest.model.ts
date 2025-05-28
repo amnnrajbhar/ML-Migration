@@ -1,5 +1,5 @@
 export interface CompleteRecallTaskRequest{
     flowTaskId: number;
-    comments: string;
+    comments: string
     completedById: number;
 }

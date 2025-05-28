@@ -16,12 +16,12 @@ import { Router } from '@angular/router';
 export class MsgBoardComponent implements OnInit {
     
     public tableWidget: any;
-    divisionList: any[];
+    divisionList!: any[];
     selDiv: any;
     messageBoardList: MessageBoard[];
     messageBoardItem: MessageBoard = new MessageBoard(0, '', '','', '', false);
     isLoading: boolean = false;
-    msgHeaderList: any[];
+    msgHeaderList!: any[];
     errMsg: string = "";
     startDate:string="";
     addDays: Date = new Date();
@@ -79,7 +79,7 @@ export class MsgBoardComponent implements OnInit {
           ////console.log(this.messageBoardList)
           this.reInitDatatable();
         
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.messageBoardList = [];
       });
@@ -167,7 +167,7 @@ export class MsgBoardComponent implements OnInit {
             else {
                 this.errMsgPop = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving calendar data..';
         });
@@ -185,7 +185,7 @@ export class MsgBoardComponent implements OnInit {
             else {
                 this.errMsgPop = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving calendar data..';
         });
@@ -203,7 +203,7 @@ export class MsgBoardComponent implements OnInit {
           else {
             this.errMsgPop = data;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving message..';
         });
@@ -246,7 +246,7 @@ export class MsgBoardComponent implements OnInit {
           else {
             this.errMsgPop = data;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving message..';
         });
@@ -257,10 +257,10 @@ export class MsgBoardComponent implements OnInit {
             if (data.status == 200) {
                 this.msgHeaderList = data;
                 // debugger;
-         //     this.msgHeaderList = data.find(s => s == '19'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
+         //     this.msgHeaderList = data.find((s:any) => s == '19'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
             //  ////console.log(this.msgHeaderList);
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.msgHeaderList = null;
         });
     }

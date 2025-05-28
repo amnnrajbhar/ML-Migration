@@ -17,9 +17,9 @@ declare var $: any;
   styleUrls: ['./attachments.component.css']
 })
 export class AttachmentsComponent implements OnInit {
-  @Input() appointmentId: number;
-  @Input() offerId: number;
-  @Input() guid: string;
+  @Input() appointmentId!: number;
+  @Input() offerId!: number;
+  @Input() guid: string
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();  
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
@@ -74,7 +74,7 @@ export class AttachmentsComponent implements OnInit {
         this.getOfficialData();       
       }   
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       this.fileList = [];
@@ -92,7 +92,7 @@ export class AttachmentsComponent implements OnInit {
           this.officialDetails = data;          
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
       });
@@ -117,7 +117,7 @@ export class AttachmentsComponent implements OnInit {
         //   toastr.error("Offer details not found, please check the link.");
 
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
       });    
@@ -169,8 +169,8 @@ export class AttachmentsComponent implements OnInit {
         this.onAddLineClick();
         toastr.success("Successfully uploaded the file.");
       }
-    }).catch(error => {
-      //console.log(error);
+    }).catch((error)=> {
+      ////console.log(error);
       toastr.error('Error uploading Files...'+ error);
     })
   }
@@ -189,7 +189,7 @@ export class AttachmentsComponent implements OnInit {
 
     connection.then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
@@ -203,15 +203,15 @@ export class AttachmentsComponent implements OnInit {
           this.showPdfInViewer(data);
         }
         else{
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }        
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -232,14 +232,14 @@ export class AttachmentsComponent implements OnInit {
     connection.then((data: any) => {
             
       if (data != undefined) {        
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -333,7 +333,7 @@ showPdfInViewer(file: Blob) {
         this.isLoading = false;
         toastr.error('Error occured while deleting the file. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while deleting the file. Error:' + error);
       });

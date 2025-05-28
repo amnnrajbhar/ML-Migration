@@ -10,10 +10,10 @@ import { GenericCabBookingFilters } from '../cabrequest/genericcabbookingfilters
 import { ExcelService } from '../shared/excel-service';
 declare var $: any;
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -23,7 +23,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./cabbooking-report.component.css']
 })
 export class CabbookingReportComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   isLoading: boolean = false;
@@ -31,13 +31,15 @@ export class CabbookingReportComponent implements OnInit {
   cabBookings: CabBooking[] = [];
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private appServiceDate: AppService, private route: ActivatedRoute, private excelService: ExcelService,
-    private http: HttpClient) {pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient) {// pdfMake.vfs = pdfFonts.pdfMake.vfs; 
+      }
 
   ngOnInit() {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationList();
       this.getPurposeList();
       this.getbase64image();
@@ -119,7 +121,7 @@ export class CabbookingReportComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.cabBookings = [];
     });
@@ -149,15 +151,15 @@ export class CabbookingReportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data) {
-        this.locationList = data.filter(x=>{return x.isActive}).map((i) => { i.location = i.code + '-' + i.name; return i; });
+        this.locationList = data.filter((x:any)=>{return x.isActive}).map((i:any) => { i.location = i.code + '-' + i.name; return i; });
         let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-        this.locationList.sort((a,b)=>{return collator.compare(a.code,b.code)});
+        this.locationList.sort((a:any,b:any)=>{return collator.compare(a.code,b.code)});
 
         let temp=data.find(x=>x.id== this.currentUser.baselocation);
         this.locationname=temp.code +'-'+temp.name;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -231,9 +233,9 @@ export class CabbookingReportComponent implements OnInit {
   getPurposeList() {
     this.httpService.get(APIURLS.BR_BOOK_PURPOSE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.purposeList = data.filter(x=>x.type=="Cab Request" && x.isActive).sort((a,b)=>{if(a.purpose > b.purpose) return 1; if(a.purpose < b.purpose) return -1; return 0;});
+        this.purposeList = data.filter((x:any)=>x.type=="Cab Request" && x.isActive).sort((a:any,b:any)=>{if(a.purpose > b.purpose) return 1; if(a.purpose < b.purpose) return -1; return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.purposeList = [];
     });
   }
@@ -304,11 +306,11 @@ export class CabbookingReportComponent implements OnInit {
     return ("00" + d1.getDate()).slice(-2) + "-" + ("00" + (d1.getMonth() + 1)).slice(-2) + "-" +
       d1.getFullYear() +' ' +'23' + ":" +'59'+ ":" +'59';
   }
-  exportList: any[];
+  exportList!: any[];
   exportAsXLSX(): void {
     this.exportList = [];
     let index = 0;
-    this.cabBookings.forEach(item => {
+    this.cabBookings.forEach((item :any) => {
       index = index + 1;
       let exportItem = {
         "SNo": index,
@@ -364,14 +366,14 @@ export class CabbookingReportComponent implements OnInit {
   }
   downloadPdf()
   {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICROLABS LIMITED"+','+this.locationname;
     var ReportName = "CAB BOOKING REPORT"
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -384,14 +386,14 @@ export class CabbookingReportComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:'CabBooking Report',
         },
      
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -409,7 +411,7 @@ export class CabbookingReportComponent implements OnInit {
       pageSize: 'A3',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -451,6 +453,6 @@ export class CabbookingReportComponent implements OnInit {
       },
   
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 }

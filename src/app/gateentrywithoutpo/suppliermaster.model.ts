@@ -1,13 +1,13 @@
 export class SupplierMaster {
-    id: number;
-    code: string;
-    name: string;
-    placeCode: string;
-    place: string;
-    country: string;
-    createdBy: number;
+    id!: number;
+    code: string
+    name: string
+    placeCode: string
+    place: string
+    country: string
+    createdBy!: number;
     createdDate: any;
-    modifiedBy: number;
+    modifiedBy!: number;
     modifiedDate:any;
-    isActive: boolean;
+    isActive!: boolean;
 }

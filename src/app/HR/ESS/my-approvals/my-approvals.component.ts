@@ -20,7 +20,7 @@ export class MyApprovalsComponent implements OnInit {
   constructor(private masterDataService: MasterDataService, private httpService: HttpService,
     private router: Router, private excelService: ExcelService, private dataStore: DataStorageService) { }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   statuses: any[] = [{type:"Pending", color:"warning"},{type:"Completed", color:"success"},{type:"Queued", color:"info"}];
   results: any[] = [{type:"Approved", color:"success"},{type:"Rejected", color:"danger"},{type:"Cancelled", color:"warning"},];
   flowTypes: any[] = [{type:"Offer Approval"},{type:"Offer Exception Approval"},{type:"Appointment Verification"},{type:"Appointment Approval"},{type:"Confirmation Recommendation"},
@@ -31,7 +31,8 @@ export class MyApprovalsComponent implements OnInit {
   filterModel:any = {};
   isLoading: boolean = false;
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.pageNo = 1;
 
@@ -86,7 +87,7 @@ export class MyApprovalsComponent implements OnInit {
       // store the filter model
       this.dataStore.SetData("MyApprovalsList", this.filterModel);
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }

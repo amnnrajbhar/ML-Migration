@@ -7,8 +7,8 @@ import { HttpService } from '../../shared/http-service';
 import { AuthData } from '../../auth/auth.model';
 import { FormControl } from '@angular/forms';
 import { UserAcknowledgement } from './UserAcknowledgement.model';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import swal from 'sweetalert';
@@ -26,7 +26,7 @@ export class UserAcknowledgementComponent implements OnInit {
 @ViewChild('filterForm', { static: false }) filterForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   public tableWidget: any;
   isLoading: boolean = false;
   isLoadPop: boolean = false;
@@ -41,7 +41,7 @@ export class UserAcknowledgementComponent implements OnInit {
   locationAllList: any;
   locListCon: any;
   UserAcknowledgement = {} as UserAcknowledgement;
-  catCode: any[];
+  catCode!: any[];
   departmentList: any;
   filteredModel: any;
   catList1: any[] = [];
@@ -56,11 +56,14 @@ export class UserAcknowledgementComponent implements OnInit {
   filterusageType: any;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getEmpAssetData();
     this.getAssetStateList();
     this.getPlantsassigned(this.currentUser.fkEmpId);
@@ -69,16 +72,16 @@ export class UserAcknowledgementComponent implements OnInit {
     this.getMonType();
   }
 
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -119,16 +122,16 @@ export class UserAcknowledgementComponent implements OnInit {
     return formateddate;
   }
 
-  CategoryList: any[];
+  CategoryList!: any[];
   getCatList() {
     this.httpService.amsget(APIURLS.BR_GET_AMS_CAT_MASTER).then((data: any) => {
       if (data.length > 0) {
         this.catList = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.catList.sort((a, b) => { return collator.compare(a.name, b.name) });
+        this.catList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
         this.catList1 = this.catList.filter((item, i, arr) => arr.findIndex((t) => t.catCode === item.catCode) === i);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.catList = [];
     });
   }
@@ -136,13 +139,13 @@ export class UserAcknowledgementComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -154,13 +157,13 @@ export class UserAcknowledgementComponent implements OnInit {
       if (data.length > 0) {
         this.assStateList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.assStateList = [];
     });
   }
 
-  getAssetState(id) {
-    let temp = this.assStateList.find(x => x.id == id);
+  getAssetState(id:any) {
+    let temp = this.assStateList.find((x:any)  => x.id == id);
     return temp ? temp.status : '';
   }
 
@@ -170,7 +173,8 @@ export class UserAcknowledgementComponent implements OnInit {
   }
 
   clearFilter() {
-    this.filterlocation = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
     this.filterassetType = null;
     this.filterusageType = null;
     this.filterassetState = null;
@@ -184,14 +188,14 @@ export class UserAcknowledgementComponent implements OnInit {
         this.sizeList = data;
         console.log(this.sizeList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.sizeList = [];
     });
   }
 
-  getStorageSize(id) {
-    let temp = this.sizeList.find(x => x.storId == id);
+  getStorageSize(id:any) {
+    let temp = this.sizeList.find((x:any)  => x.storId == id);
     return temp ? temp.storTxt : '';
   }
 
@@ -202,19 +206,19 @@ export class UserAcknowledgementComponent implements OnInit {
         this.monType = data;
         console.log(this.monType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.monType = [];
     });
   }
 
-  getMonitorType(id) {
-    let temp = this.monType.find(x => x.id == id);
+  getMonitorType(id:any) {
+    let temp = this.monType.find((x:any)  => x.id == id);
     return temp ? temp.type : '';
   }
 
   subCategorylist: any[] = []
   GetSubCategory(type) {
-    this.subCategorylist = this.catList.filter(x => x.catCode == type);
+    this.subCategorylist = this.catList.filter((x:any)  => x.catCode == type);
   }
 
   getSoftType() {
@@ -224,13 +228,13 @@ export class UserAcknowledgementComponent implements OnInit {
         this.softType = data;
         console.log(this.softType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.softType = [];
     });
   }
 
-  getSoftTypename(id) {
-    let temp = this.softType.find(x => x.softId == id);
+  getSoftTypename(id:any) {
+    let temp = this.softType.find((x:any)  => x.softId == id);
     return temp ? temp.softStxt : '';
   }
 
@@ -241,17 +245,17 @@ export class UserAcknowledgementComponent implements OnInit {
         this.licType = data;
         console.log(this.licType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.licType = [];
     });
   }
 
-  getLicTypename(id) {
-    let temp = this.licType.find(x => x.licId == id);
+  getLicTypename(id:any) {
+    let temp = this.licType.find((x:any)  => x.licId == id);
     return temp ? temp.licStxt : '';
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -280,11 +284,11 @@ export class UserAcknowledgementComponent implements OnInit {
     this.softwaresList1=[];
     this.errMsgPop = "";
     if (this.isEdit) {
-      this.softwaresList1=this.softwaresList.filter(x=>x.asset_ID == UserAcknowledgement.asset_ID);
+      this.softwaresList1=this.softwaresList.filter((x:any)=>x.asset_ID == UserAcknowledgement.asset_ID);
     }
     if (value == 'View') {
       this.view = true;
-      this.softwaresList1=this.softwaresList.filter(x=>x.asset_ID == UserAcknowledgement.asset_ID)
+      this.softwaresList1=this.softwaresList.filter((x:any)=>x.asset_ID == UserAcknowledgement.asset_ID)
       this.UserAcknowledgement = Object.assign({}, UserAcknowledgement);
     }
     jQuery('#myModal').modal('show');
@@ -312,7 +316,7 @@ export class UserAcknowledgementComponent implements OnInit {
         this.router.navigate(["/vms-homepage"]);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -337,7 +341,7 @@ export class UserAcknowledgementComponent implements OnInit {
         this.closeSaveModal();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

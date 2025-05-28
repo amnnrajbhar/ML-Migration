@@ -22,7 +22,7 @@ declare var require: any;
 export class ViewOfferComponent implements OnInit {
   offerId: any;
   objectType: string = "Offer Letter";
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -62,13 +62,14 @@ export class ViewOfferComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.offerId = this.route.snapshot.paramMap.get('id')!;      
       this.LoadOfferDetails(this.offerId);
     }
   }
 
-  LoadOfferDetails(id) {
+  LoadOfferDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.OFFER_DETAILS_API, id).then((data: any) => {
@@ -81,7 +82,7 @@ export class ViewOfferComponent implements OnInit {
         this.offerDetails.statusColor = this.statusList.find(x=>x.type == data.status).color;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.offerDetails = {} as OfferDetails;
     });
@@ -91,20 +92,20 @@ export class ViewOfferComponent implements OnInit {
     if(id <= 0) return;
     this.httpService.HRdownloadFile(APIURLS.OFFER_DETAILS_GET_ATTACHMENT_FILE+ "/" + this.offerId + "/"+ id).then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
       // }
   
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

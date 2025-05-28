@@ -1,21 +1,21 @@
 export interface AppraisalInitialDetailModel{
-    rating: string;
+    rating: string
     oldresponsibilities: string[];
     newresponsibilities: string[];
-    specialAchievement: string;
+    specialAchievement: string
     nextyearkra: string[];
     recommendeddesignationid: number;
     recommendedRoleid: number;
     recommendedSalary: number;
-    status: string;
+    status: string
     employeeid: number;
-    salaryType: string;
+    salaryType: string
     isPromotionRecommended: boolean;
-    promotionComment: string;
+    promotionComment: string
     employeeInitialAppraisalDetailId: number;
-    hodAdditionalNotes: string;
+    hodAdditionalNotes: string
     oneTimeSalaryAmount: number;
-    oneTimeSalaryType: string;
+    oneTimeSalaryType: string
     completedById: number;
     flowTaskId: number;
     sales: number;

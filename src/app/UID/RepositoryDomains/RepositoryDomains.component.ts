@@ -12,8 +12,8 @@ import * as _ from "lodash";
 import { RepositoryDomains } from './RepositoryDomains.model';
 declare var jQuery: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
   softwareid:number;
 }
 @Component({
@@ -23,7 +23,7 @@ export class actionItemModel {
 })
 export class RepositoryDomainsComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
@@ -32,7 +32,7 @@ export class RepositoryDomainsComponent implements OnInit {
   RepositoryDomainsList: any[]=[];
   RepositoryDomainsList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -48,8 +48,8 @@ export class RepositoryDomainsComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldRepositoryDomains: RepositoryDomains = new RepositoryDomains();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent) { }
 
   private initDatatable(): void {
@@ -70,7 +70,8 @@ export class RepositoryDomainsComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getRepositoryDomainsList();
     this.getsoftwareMasterList();
     }
@@ -95,7 +96,7 @@ export class RepositoryDomainsComponent implements OnInit {
       }
      // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareList = [];
     });
@@ -112,7 +113,7 @@ export class RepositoryDomainsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.RepositoryDomainsList = [];
     });
@@ -149,7 +150,7 @@ export class RepositoryDomainsComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-   // if (!this.RepositoryDomainsList.some(s => s.name.toLowerCase() == this.RepositoryDomains.name.toLowerCase() && s.id != this.RepositoryDomains.id)) {
+   // if (!this.RepositoryDomainsList.some((s:any) => s.name.toLowerCase() == this.RepositoryDomains.name.toLowerCase() && s.id != this.RepositoryDomains.id)) {
       if (!this.isEdit) {
         this.auditType="Create";
         this.RepositoryDomains.isActive = true;
@@ -177,7 +178,7 @@ export class RepositoryDomainsComponent implements OnInit {
         else
           this.errMsgPop = data;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving department data..';
       });
@@ -215,7 +216,7 @@ export class RepositoryDomainsComponent implements OnInit {
             this.insertAuditLog(this.RepositoryDomains,this.oldRepositoryDomains,this.RepositoryDomains.id);
             this.getRepositoryDomainsList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Designation..';
         });
@@ -285,12 +286,12 @@ export class RepositoryDomainsComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -299,7 +300,7 @@ export class RepositoryDomainsComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

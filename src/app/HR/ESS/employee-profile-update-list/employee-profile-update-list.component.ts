@@ -19,7 +19,7 @@ declare var toastr: any;
   styleUrls: ['./employee-profile-update-list.component.css']
 })
 export class EmployeeProfileUpdateListComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   myTasks: any[] = [];
   isLoading: boolean = false;
@@ -31,7 +31,7 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
   selectedState: any = "";
   selectedLocation: any = "";
   taskId: number = 0;
-  comments: string;
+  comments: string
   types = [{ type: "Employee Profile Approval" }];
   plantList: any[] = [];
   payGroupList: any[] = [];
@@ -53,7 +53,8 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
     this.filterModel.pageSize = 10;
     this.filterModel.pageNo = 1;
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.LoadDropDowns();
       this.filterModel.employeeId = this.currentUser.uid;
       this.getData();
@@ -72,9 +73,9 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_PLANT_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.filter(x => x.isActive).sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -90,9 +91,9 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
   getPayGroupList() {
     this.httpService.HRget(APIURLS.OFFER_PAYGROUP_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });
+        this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.payGroupList = [];
     });
   }
@@ -100,9 +101,9 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
   getEmployeeCategoryList() {
     this.httpService.HRget(APIURLS.OFFER_EMPLOYEE_CATEGORY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.empCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });
+        this.empCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.empCategoryList = [];
     });
   }
@@ -111,9 +112,9 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
       this.filterModel.locationId = "";
     });
@@ -124,9 +125,9 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -135,9 +136,9 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -146,7 +147,7 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
     this.filterModel.locationId = "";
     //console.log(this.locationFullList);
     if (this.selectedState)
-      this.locationList = this.locationFullList.filter(x => x.stateId == this.selectedState);
+      this.locationList = this.locationFullList.filter((x:any)  => x.stateId == this.selectedState);
     console.log(this.locationList);
   }
 
@@ -167,12 +168,12 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
     this.httpService.HRpost(APIURLS.TEMPORARY_EMPLOYEE_PROFILE_LIST, this.filterModel).then((data: any) => {
       this.filterData = data;
       for (var item of this.filterData.list) {
-        item.statusColor = this.statusList.find(x => x.type == item.status).color;
+        item.statusColor = this.statusList.find((x:any)  => x.type == item.status).color;
       }
       // store the filter model
       this.dataStore.SetData("ProfileList", this.filterModel);
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -198,7 +199,7 @@ export class EmployeeProfileUpdateListComponent implements OnInit {
         toastr.error(data.message); 
       }else
       toastr.error("Error occurred while submitting.");
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });    
 }

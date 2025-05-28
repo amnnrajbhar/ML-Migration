@@ -19,7 +19,7 @@ declare var toastr: any;
   styleUrls: ['./complete-exit.component.css']
 })
 export class CompleteExitComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   resignationId: any;
   employeeId: any;
   urlPath: string = '';
@@ -30,9 +30,9 @@ export class CompleteExitComponent implements OnInit {
   resignationStatus: any;
   resignationDetails: any = {};
   employeeDetails: any = {};
-  DateLastWorkingDay: string;
-  ResignationDate: string;
-  noticePeriod: string;
+  DateLastWorkingDay: string
+  ResignationDate: string
+  noticePeriod: string
   currentTab:string = "details";
   tabIndex: number = 0;
   tabsList: string[] = ["details", "attachments","checklist","exitinterview", "history"];
@@ -50,7 +50,8 @@ export class CompleteExitComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.resignationId = this.route.snapshot.paramMap.get('id')!;
       if (!this.resignationId || this.resignationId <= 0) {
         toastr.error("Invalid ID passed.");
@@ -61,7 +62,7 @@ export class CompleteExitComponent implements OnInit {
   }
 
   
-  GetResignationDetailsById(id) {
+  GetResignationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible = true;
 
@@ -77,7 +78,7 @@ export class CompleteExitComponent implements OnInit {
         this.noticePeriod = this.resignationDetails.noticePeriod + ' Month(s)';        
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = error;
     });
@@ -114,7 +115,7 @@ export class CompleteExitComponent implements OnInit {
         } else
         toastr.error("Error occurred.");
           this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });

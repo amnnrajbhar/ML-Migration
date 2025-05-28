@@ -27,10 +27,10 @@ import { ExcelService } from '../../shared/excel-service';
   styleUrls: ['./PayrollRegularization.component.css']
 })
 export class PayrollRegularizationComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
   public tableWidget: any;
@@ -61,15 +61,15 @@ export class PayrollRegularizationComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  path: string;
-  filterEmployeeName: string = null;
-  filterEmployeeId: string = null;
-  filterLocation: string = null;;
-  filterPayGroup: string = null;
-  filterDepartment: string = null;
-  filterSubDepartment: string = null;
-  filterReportingGroup: string = null;
-  filterCategory: string = null;
+  path!: string
+  filterEmployeeName: string = ' ';
+  filterEmployeeId: string = ' ';
+  filterLocation: string = ' ';;
+  filterPayGroup: string = ' ';
+  filterDepartment: string = ' ';
+  filterSubDepartment: string = ' ';
+  filterReportingGroup: string = ' ';
+  filterCategory: string = ' ';
   filterStatus: number = 1;
   filterType: any = null;
   filterweek: any = null;
@@ -115,7 +115,7 @@ export class PayrollRegularizationComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -123,32 +123,32 @@ export class PayrollRegularizationComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        //this.filterLocation = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        //this.filterLocation = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.plantList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         this.getpayGroupList();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -168,23 +168,25 @@ export class PayrollRegularizationComponent implements OnInit {
     this.filterCategory = '';
     this.calYear = new Date().getFullYear().toString();
     this.filterStatus = 1;
-    this.filterType = null;
+    //this.filterType = null;
+this.filterType = '';
     this.ManualEntryList = [];
     this.attendanceDetails = [];
     this.reInitDatatable();
   }
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
 
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.calYear = new Date().getFullYear().toString();
     this.filterLocation = this.currentUser.baselocation.toString();
     let today = new Date();
@@ -236,7 +238,7 @@ export class PayrollRegularizationComponent implements OnInit {
           this.ManualEntryEmpList = data;
         }
         this.reInitDatatable();
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error uploading file ..';
       });
     }
@@ -247,7 +249,7 @@ export class PayrollRegularizationComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
@@ -255,7 +257,7 @@ export class PayrollRegularizationComponent implements OnInit {
 
       }
       // this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -267,7 +269,7 @@ export class PayrollRegularizationComponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
@@ -275,13 +277,13 @@ export class PayrollRegularizationComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -294,7 +296,7 @@ export class PayrollRegularizationComponent implements OnInit {
       if (data.length > 0) {
         this.subDeptList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.subDeptList = [];
     });
@@ -305,22 +307,22 @@ export class PayrollRegularizationComponent implements OnInit {
   GetEmpDetails(val) {
     var self = this;
     $('#EmployeeId').autocomplete({
-      source: function (request, response) {
+      source: function (request:any, response:any) {
         var searchTerm1 = val;
         let connection = self.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, searchTerm1);
         connection.then((data: any) => {
           if (data) {
-            let result = data.filter(x => { return x.employeeId != null });
-            response(result.map((i) => {
+            let result = data.filter((x:any)  => { return x.employeeId != null });
+            response(result.map((i:any) => {
               i.label = i.fullName + '-' + i.department + '-' + i.designation,
                 i.fullName = i.fullName, i.baseLocation = i.baseLocation, i.baseLocation = i.baseLocation,
                 i.division = i.division; return i;
             }));
           }
-        }).catch(error => {
+        }).catch((error)=> {
         });
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterEmployeeName = ui.item.fullName;
         self.filterLocation = ui.item.baselocation;
         self.filterCategory = ui.item.roleId;
@@ -344,14 +346,14 @@ export class PayrollRegularizationComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.attendanceDetails = [];
     });
   }
 
   formData: FormData = new FormData();
-  file: File;
+  file!: File;
 
   getDateFormate(date: any): string {
     let d1 = new Date(date);
@@ -413,7 +415,7 @@ export class PayrollRegularizationComponent implements OnInit {
           }
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.attendanceDetails = [];
       });
@@ -446,7 +448,7 @@ export class PayrollRegularizationComponent implements OnInit {
     this.checkedRequestList = this.checkedlist;
   }
 
-  weekCount: number;
+  weekCount!: number;
   GetWeeksCount(year, month_number) {
     var firstOfMonth = new Date(year, month_number - 1, 1);
     var day = firstOfMonth.getDay() || 6;
@@ -472,7 +474,7 @@ export class PayrollRegularizationComponent implements OnInit {
     }
     else {
       let filterModel: any = {};
-      filterModel.employeeId = this.checkedRequestList.map(x => x.employeeId).join();
+      filterModel.employeeId = this.checkedRequestList.map((x:any)  => x.employeeId).join();
       filterModel.shift = this.AssignedShift;
       filterModel.swipecount = this.AssignedCount;
       filterModel.doneBy = this.currentUser.employeeId;
@@ -487,7 +489,7 @@ export class PayrollRegularizationComponent implements OnInit {
           toastr.error("Error updating data ..");
         }
         this.reset();
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error uploading file ..';
       });
     }
@@ -559,7 +561,7 @@ export class PayrollRegularizationComponent implements OnInit {
         });
         this.clearFilter();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error uploading file ..';
     });
   }
@@ -631,7 +633,8 @@ export class PayrollRegularizationComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

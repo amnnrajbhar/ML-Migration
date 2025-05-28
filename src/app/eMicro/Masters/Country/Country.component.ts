@@ -16,9 +16,9 @@ declare var jQuery: any;
 
 
 export class actionItemModel {  
-  countrycode: string;
-  countryname: string;
-  isActive: boolean;
+  countrycode: string
+  countryname: string
+  isActive!: boolean;
 }
 
 @Component({
@@ -28,21 +28,21 @@ export class actionItemModel {
 })
 export class CountryComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) materialForm: NgForm;
+@ViewChild(NgForm, { static: false }) materialForm!: NgForm;
 
   public tableWidget: any;
-  companyId: number;
+  companyId!: number;
   materialList: MaterialMaster[] = [];
   materialItem: MaterialMaster = new MaterialMaster();
 
   countrylist: Country[] = [];
   country: Country = new Country();
   oldcountry: Country = new Country();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
 
   isLoading: boolean = false;
-  entityTabHeader: string;
+  entityTabHeader: string
   errMsg: string = "";
   isLoadingPop: boolean = false;
   errMsgPop: string = "";
@@ -73,7 +73,8 @@ export class CountryComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     //if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getCountryList();
    // }
     //else
@@ -113,7 +114,7 @@ export class CountryComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -127,7 +128,7 @@ export class CountryComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.countrylist = [];
     });
@@ -163,7 +164,7 @@ export class CountryComponent implements OnInit {
           this.insertAuditLog(this.oldcountry,this.country,Id);
           this.getCountryList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Country..';
       });
@@ -236,12 +237,12 @@ export class CountryComponent implements OnInit {
      connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
      connection.then((data: any) => {
        this.isLoadingPop = false;
-     }).catch(() => {
+     }).catch((error) => {
        this.isLoadingPop = false;
      });
    }
    auditLogList: AuditLog[] = [];
-   openAuditLogs(id) {
+   openAuditLogs(id:any) {
      jQuery("#auditModal").modal('show');
      let stringparms = this.masterName + ',' + id;
      this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -250,7 +251,7 @@ export class CountryComponent implements OnInit {
          this.auditLogList.reverse();
        }
        this.reinitPOUPDatatable();
-     }).catch(() => {
+     }).catch((error) => {
      });
  
    }

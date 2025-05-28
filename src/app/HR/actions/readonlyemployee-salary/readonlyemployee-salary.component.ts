@@ -15,7 +15,7 @@ declare var require: any;
 })
 
 export class ReadonlyemployeeSalaryComponent implements OnInit {
-  @Input() employeeId: number;
+  @Input() employeeId!: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
@@ -53,18 +53,18 @@ export class ReadonlyemployeeSalaryComponent implements OnInit {
         this.allowanceDetails =  data.alowanceText;
         if(this.details.headDetails && this.details.headDetails.length > 0){
           for(var item of this.details.headDetails){            
-            item.salaryTypeName = this.headTypes.find(x => x.type == item.salaryType).value;
-            item.frequencyName = this.frequency.find(x => x.type == item.frequency).value;
+            item.salaryTypeName = this.headTypes.find((x:any)  => x.type == item.salaryType).value;
+            item.frequencyName = this.frequency.find((x:any)  => x.type == item.frequency).value;
           }
-          this.monthlyComponents = this.details.headDetails.filter(x=>x.salaryType=="I" && x.frequency == "M");
-          this.annualComponents = this.details.headDetails.filter(x=>x.salaryType!="V" && x.frequency == "A");
-          this.variableComponents = this.details.headDetails.filter(x=>x.salaryType =="V");
-          this.onetimeComponents = this.details.headDetails.filter(x=>x.salaryType =="O" && x.frequency == "O");
+          this.monthlyComponents = this.details.headDetails.filter((x:any)=>x.salaryType=="I" && x.frequency == "M");
+          this.annualComponents = this.details.headDetails.filter((x:any)=>x.salaryType!="V" && x.frequency == "A");
+          this.variableComponents = this.details.headDetails.filter((x:any)=>x.salaryType =="V");
+          this.onetimeComponents = this.details.headDetails.filter((x:any)=>x.salaryType =="O" && x.frequency == "O");
           this.calculateTotals();
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while fetching details, please check the link.");
     });

@@ -36,9 +36,9 @@ export class ProfilePageComponent implements OnInit {
   isLoading: boolean = false;
   isLoading1: boolean = false;
   isLoading2: boolean = false;
-  public itemList: any[];
-  roleid: number;
-  usrid: number;
+  public itemList!: any[];
+  roleid!: number;
+  usrid!: number;
   joining1: Date = new Date;
   path: string = '';
   profileItem: Profile =
@@ -66,8 +66,8 @@ export class ProfilePageComponent implements OnInit {
   userEntityList: any[] = [[]];
   entitySelected = [];
 
-  addressList: any[];
-  empOtherDetailList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
   // employeePayrollList: any[] ;
   uid: number = 0;
   userItem: Employee = new Employee(0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', '', '', 0, '', '', 0, '', 0, '', true, 0, 0, 0);
@@ -88,7 +88,7 @@ export class ProfilePageComponent implements OnInit {
   payrollNtest: any;
   employeeId: string = "";
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   authData:AuthData;
 
   moduledisplay:any;
@@ -132,7 +132,7 @@ export class ProfilePageComponent implements OnInit {
       this.router.navigate(["/unauthorized"]);
   }
 
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {
@@ -147,7 +147,7 @@ export class ProfilePageComponent implements OnInit {
        // console.log(data);
         this.baselocation=data.code+' - '+data.name;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.baselocation=null;
     });
   }
@@ -164,17 +164,17 @@ export class ProfilePageComponent implements OnInit {
       //     this.userItem = data;
       // var temp = 
       //console.log('............................................herer in editi'+this.userItem.fkManager);
-      this.SelempDesignation = this.authData.designation;//this.designationList.find(s => s.id === this.userItem.fkDesignation);
-      // this.SelempSBUList = this.entityList.find(s => s.id === this.userItem.fkSbuId);
-      // this.selProfile = this.profileList.find(s => s.id === this.userItem.fkProfileId);
-      // this.selManager = this.managerList.find(s => s.id === this.userItem.fkManager);
+      this.SelempDesignation = this.authData.designation;//this.designationList.find((s:any) => s.id === this.userItem.fkDesignation);
+      // this.SelempSBUList = this.entityList.find((s:any) => s.id === this.userItem.fkSbuId);
+      // this.selProfile = this.profileList.find((s:any) => s.id === this.userItem.fkProfileId);
+      // this.selManager = this.managerList.find((s:any) => s.id === this.userItem.fkManager);
       //     this.selReportingManager = this.reporting_managerList.find(s=> s.id == this.userItem.fkReportingManager);
       //     this.selReportingManager = this.selManager;
-      this.selParentRole = this.roleList.find(s => s.id === this.userItem.fkRoleId);
-      this.selDepartment = this.authData.department;//this.departmentList.find(s => s.id === this.userItem.fkDepartment);
-      // this.selApprovalTemp = this.AapprovalTempList.find(s => s.id === this.userItem.fkApprovalTemplateId);
-      // this.SelCompetency = this.competencyList.find(s => s.id === this.userItem.fkCompetency);
-      // this.SelProject = this.projectList.find(s => s.id === this.userItem.fkProjectId);
+      this.selParentRole = this.roleList.find((s:any) => s.id === this.userItem.fkRoleId);
+      this.selDepartment = this.authData.department;//this.departmentList.find((s:any) => s.id === this.userItem.fkDepartment);
+      // this.selApprovalTemp = this.AapprovalTempList.find((s:any) => s.id === this.userItem.fkApprovalTemplateId);
+      // this.SelCompetency = this.competencyList.find((s:any) => s.id === this.userItem.fkCompetency);
+      // this.SelProject = this.projectList.find((s:any) => s.id === this.userItem.fkProjectId);
       //     this.userItem.id = data.id;
       //     this.employeeId = this.userItem.employeeId;
       //console.log(this.userItem.fkAddressId+ ', '+this.userItem.fkOtherDetailsId );
@@ -183,7 +183,7 @@ export class ProfilePageComponent implements OnInit {
         if (data.id > 0) {
           this.addressItem = data;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.addressItem = null;
       });
@@ -193,7 +193,7 @@ export class ProfilePageComponent implements OnInit {
         if (data.id > 0) {
           this.empOtherDetailsItem = data;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.empOtherDetailsItem = null;
       });
@@ -204,7 +204,7 @@ export class ProfilePageComponent implements OnInit {
           // this.userMasterItem.id = data.id;
           ////console.log(this.userMasterItem.password);
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.userMasterItem = null;
       });
@@ -242,7 +242,7 @@ export class ProfilePageComponent implements OnInit {
       if (data.length > 0) {
         this.designationList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.designationList = [[]];
     });
@@ -256,7 +256,7 @@ export class ProfilePageComponent implements OnInit {
       if (data.length > 0) {
         this.projectList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.projectList = [];
     });
@@ -274,13 +274,13 @@ export class ProfilePageComponent implements OnInit {
           if (data.id > 0) {
             this.addressItem = data;
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoading = false;
           this.addressItem = null;
         });
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userItem = null;
     });
@@ -294,7 +294,7 @@ export class ProfilePageComponent implements OnInit {
         //     this.reporting_managerList = dataem;
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.managerList = [[]];
     });
@@ -304,7 +304,7 @@ export class ProfilePageComponent implements OnInit {
       if (data.length > 0) {
         this.entityList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.entityList = [];
     });
   }
@@ -313,7 +313,7 @@ export class ProfilePageComponent implements OnInit {
       if (data.length > 0) {
         this.competencyList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.competencyList = [];
     });
   }
@@ -322,7 +322,7 @@ export class ProfilePageComponent implements OnInit {
       if (data.length > 0) {
         this.roleList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -331,7 +331,7 @@ export class ProfilePageComponent implements OnInit {
       if (data.length > 0) {
         this.departmentList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [[]];
     });
   }
@@ -340,7 +340,7 @@ export class ProfilePageComponent implements OnInit {
       if (data.length > 0) {
         this.AapprovalTempList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.AapprovalTempList = [];
     });
   }
@@ -350,7 +350,7 @@ export class ProfilePageComponent implements OnInit {
       if (data.length > 0) {
         this.profileList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.profileList = [];
     });
   }
@@ -490,7 +490,7 @@ export class ProfilePageComponent implements OnInit {
    {id:2 ,name:'NON-GXP'},
  ]
 
-  onSelect(id) {   
+  onSelect(id:any) {   
     this.addressItem.module_enableId=id;
     // let connection = 
     // this.httpService.put(APIURLS.BR_MASTER_EMPLOYEEADDRESS_API, this.userItem.fkAddressId, this.addressItem)
@@ -502,7 +502,7 @@ export class ProfilePageComponent implements OnInit {
         if (data == 200 || data.id > 0) {
           this.appService.getFormList()
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;        
       });
   }

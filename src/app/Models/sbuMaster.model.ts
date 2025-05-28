@@ -1,8 +1,8 @@
 export class SbuMaster {
-    id: number;
-    name: string;
-    code: string;
-    description: string;
+    id!: number;
+    name: string
+    code: string
+    description: string
     headEmpId: number | null;
     fkParentId: number | null;
     createdBy: number | null;

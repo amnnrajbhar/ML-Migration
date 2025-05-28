@@ -12,7 +12,7 @@ import swal from 'sweetalert';
 //import { forEach } from '@angular/router/src/utils/collection';
 //import { filter } from 'rxjs-compat/operator/filter';
 // import { FileSaver }  from 'angular-file-saver';
-// import { saveAs } from 'file-saver';
+// //import { saveAs } from 'file-saver';
 declare var $: any;
 
 @Component({
@@ -25,7 +25,7 @@ export class SparesReceiptComponent implements OnInit {
 @ViewChild('filterForm', { static: false }) filterForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   public tableWidget: any;
   dashboard: any = {};
   isLoading: boolean = false;
@@ -43,7 +43,7 @@ export class SparesReceiptComponent implements OnInit {
   receiptList: any;
   filtermatCode: any;
   filterrecno: any;
-  newDynamic: {};
+  newDynamic!: {};
   materialList: any[] = [];
   filtermaterialCode: any;
   filtermaterialDesc: any;
@@ -90,7 +90,7 @@ export class SparesReceiptComponent implements OnInit {
     this.newDynamic = { id: this.rowcount, filtermaterialCode: null, filtermaterialDesc: null, filterquantity: null };
     this.materialList.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.materialList.length > 1) {
       const index = this.materialList.indexOf(item);
       this.materialList.splice(index, 1);
@@ -120,8 +120,8 @@ export class SparesReceiptComponent implements OnInit {
   getAllEntries() {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -153,7 +153,7 @@ export class SparesReceiptComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -177,13 +177,13 @@ export class SparesReceiptComponent implements OnInit {
 
   sparesList: any[] = [];
 
-  onSaveEntry(status) {
+  onSaveEntry(status:any) {
     this.errMsg = "";
     let connection: any;
 
     if (!this.isEdit) {
      
-      this.materialList.forEach(mtrl => {
+      this.materialList.forEach((mtrl:any) => {
         let filtermodel: any = {};
         filtermodel.materialCode = mtrl.filtermaterialCode;
         filtermodel.materialDesc = mtrl.filtermaterialDesc;
@@ -209,7 +209,7 @@ export class SparesReceiptComponent implements OnInit {
           buttons: [false, true]
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });

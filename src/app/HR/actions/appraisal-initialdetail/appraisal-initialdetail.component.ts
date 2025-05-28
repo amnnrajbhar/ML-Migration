@@ -19,7 +19,7 @@ import { Util } from '../../Services/util.service';
 })
 export class AppraisalInitialdetailComponent implements OnInit {
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   employeeInitialAppraisalDetailId: any;
   flowTaskId: any;
@@ -61,7 +61,8 @@ export class AppraisalInitialdetailComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;
       this.employeeInitialAppraisalDetailId = this.route.snapshot.paramMap.get('id2')!; 
       this.flowTaskId = this.route.snapshot.paramMap.get('id3')!; 
@@ -78,7 +79,7 @@ export class AppraisalInitialdetailComponent implements OnInit {
     }
   }
 
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     this.isLoading = true;
     // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -88,7 +89,7 @@ export class AppraisalInitialdetailComponent implements OnInit {
         this.employeeName = this.employeeDetails.firstName + ' ' + this.employeeDetails.middleName + ' ' + this.employeeDetails.lastName;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -120,7 +121,7 @@ export class AppraisalInitialdetailComponent implements OnInit {
         this.initiaAppraisalDetail.hodAdditionalNotes = data.hodAdditionalNotes;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -140,9 +141,9 @@ export class AppraisalInitialdetailComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -152,9 +153,9 @@ export class AppraisalInitialdetailComponent implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -202,7 +203,7 @@ export class AppraisalInitialdetailComponent implements OnInit {
         this.isLoading = false;
         swal('Error occured while saving resignation details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         swal('Error occured while saving resignation details. Error:' + error);
       });

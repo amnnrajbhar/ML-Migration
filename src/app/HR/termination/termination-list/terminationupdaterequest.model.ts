@@ -1,6 +1,6 @@
 export interface TerminationUpdateRequest{
     id: number;
-    comments: string;
+    comments: string
     modifiedById: number;
-    status: string;
+    status: string
 }

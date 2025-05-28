@@ -17,10 +17,10 @@ import { Subject, Observable } from 'rxjs';
 
 import { Visitor } from '../visitorappointment/visitor.model';
 import { AppService } from '../shared/app.service';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { AuthData } from '../auth/auth.model';
 // import { FileSaver }  from 'angular-file-saver';
-// import { saveAs } from 'file-saver';
+// //import { saveAs } from 'file-saver';
 declare var $:any;
 
 @Component({
@@ -34,28 +34,28 @@ export class GevisitorpassComponent implements OnInit {
   public webcamImage: WebcamImage = null;
   public tableWidget: any;
   addressId: number = 0;
-  competencyList: any[];
-  entityList: any[];
-  designationList: any[];
+  competencyList!: any[];
+  entityList!: any[];
+  designationList!: any[];
   selParentRole: any;
   selDepartment: any;
   selApprovalTemp: any;
   selProfile: any; selManager: any;selReportingManager: any;
-  roleList: any[];
-  departmentList: any[];
-  AapprovalTempList: any[];
-  profileList: any[]; managerList: any; reporting_managerList: any;
-  projectList: any[];
-  userDivisionList: any[];
-  FilteredDivList: any[];
-  divSelectedItem: any[];
-  entitySelectedItem: any[];
-  userEntityList: any[];
+  roleList!: any[];
+  departmentList!: any[];
+  AapprovalTempList!: any[];
+  profileList!: any[]; managerList: any; reporting_managerList: any;
+  projectList!: any[];
+  userDivisionList!: any[];
+  FilteredDivList!: any[];
+  divSelectedItem!: any[];
+  entitySelectedItem!: any[];
+  userEntityList!: any[];
   entitySelected=[];
   userList: Visitor[];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   uid: number = 0;
   // userItem: Employee =  new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true,0,0,0);
   // calendarItem: Visitor = new Visitor(0, '', '', '', '', '', '', '', '', true, '', '', '', '', true, true, 0, 0, '', 0, '', true, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '','',0,0,'', '', '');
@@ -90,23 +90,23 @@ export class GevisitorpassComponent implements OnInit {
   payrollNtest: any;
   employeeId:string ="";
   formData: FormData = new FormData();
-  file: File;successMsg: string = "";
+  file!: File;successMsg: string = "";
   path:string = '';
   todayDate: Date = new Date();
   visitorName: string = '';
   private trigger: Subject<void> = new Subject<void>();
-  seconds: number;
+  seconds!: number;
   finYear = (new Date()).getFullYear();
   value="hello";
   selectedFiles: any = [];
   fileName: any;
-  imageFile: string;
+  imageFile!: string
   empMList: any=[[]];
   visitorsList: any=[[]];
   typeOfVisitor: string='newvisit';
   visitorsList1: any;
   isSaved: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private appServiceDate: AppService, private route: ActivatedRoute) { }
 
@@ -128,7 +128,8 @@ export class GevisitorpassComponent implements OnInit {
     console.log(this.path);
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if(chkaccess == true){
-      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+      //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
       this.currentUser = authData;
       console.log(chkaccess);
       this.typeOfVisitor = localStorage.getItem("categoryVMS");
@@ -187,7 +188,7 @@ export class GevisitorpassComponent implements OnInit {
       console.log('list length'+this.visitorsList.length);
       this.reInitDatatable();
     }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.visitorsList = [];
       this.visitorsList1 = [];
@@ -211,7 +212,7 @@ export class GevisitorpassComponent implements OnInit {
         this.empMList = data;
         console.log(this.empMList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.empMList = [];
     });
@@ -246,7 +247,7 @@ const imageBlob = this.dataURItoBlob(base64);
 const imageFile = new File([imageBlob], imageName, { type: 'image/jpeg' });
 console.log(imageFile);
 this.imageFile = imageFile.name;
-FileSaver.saveAs(imageFile);
+//FileSaver.saveAs(imageFile);
 }
 
 dataURItoBlob(dataURI) {
@@ -322,7 +323,7 @@ dataURItoBlob(dataURI) {
             this.reInitDatatable();
 
           }
-      }).catch(error => {
+      }).catch((error)=> {
           this.isLoading = false;
           this.userList = [];
       });
@@ -373,7 +374,7 @@ uploadCustInv() {
       if (data==200) {
 
       }
-  }).catch(error => {
+  }).catch((error)=> {
 
        this.errMsg = 'Error uploading file ..';
   });
@@ -423,7 +424,7 @@ completeVisit(user){
         jQuery("#saveModal").modal('show');
         this.getVisitorsList();
     }
-}).catch(error => {
+}).catch((error)=> {
     this.isLoadingPop = false;
     this.errMsgPop = 'Error saving Appointment data..';
 });
@@ -433,7 +434,7 @@ onSaveEntry(){
   console.log(event);
   debugger;
   let connection: any;
-  // if(!this.calendarList.some(s => s.fiscalYear === this.calendarItem.fiscalYear && s.id != this.calendarItem.id)){
+  // if(!this.calendarList.some((s:any) => s.fiscalYear === this.calendarItem.fiscalYear && s.id != this.calendarItem.id)){
   // if (!this.isEdit)
   // this.id = this.events[this.events.length - 1].id;
   // console.log("last id assigned:"+this.id);
@@ -503,7 +504,7 @@ onSaveEntry(){
           this.getVisitorsList();
           // this.router.navigateByUrl('/welcome-page');
       }
-  }).catch(error => {
+  }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Appointment data..';
   });

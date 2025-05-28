@@ -36,21 +36,21 @@ import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 import { ExcelService } from '../../shared/excel-service';
 
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { ServiceMaster } from '../ServiceMasterCreation/ServiceMasterCreation.model';
 import { VendorMaster } from '../VendorMaster/VendorMaster.model';
 import { CustomerMaster } from '../CustomerMaster/CustomerMaster.model';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 import { ItemCodeCreationComponent } from '../ItemCodeCreation/ItemCodeCreation.component';
 import { Serialization } from '../ItemCodeCreation/Serialization.model';
 declare var require: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
 import { HttpClient } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 @Component({
   selector: 'app-DetailedReport',
@@ -58,7 +58,7 @@ import htmlToPdfmake from 'html-to-pdfmake';
   styleUrls: ['./DetailedReport.component.css',]
 })
 export class DetailedReportComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
@@ -83,12 +83,12 @@ export class DetailedReportComponent implements OnInit {
   path: string = '';
   locationList: any[] = [[]];
 
-  exportList: any[];
-  filterstatus: string = null;
-  filterlocation: string = null;
-  filterrequest: string = null;
-  filtercreator: string = null;
-  filtermaterialtype: string = null;
+  exportList!: any[];
+  filterstatus: string = ' ';
+  filterlocation: string = ' ';
+  filterrequest: string = ' ';
+  filtercreator: string = ' ';
+  filtermaterialtype: string = ' ';
   PWS:boolean=false;
   CCS:boolean=false;
 
@@ -98,7 +98,7 @@ export class DetailedReportComponent implements OnInit {
   to_date: any = this.today;
   SAP_from_date: any = null;
   SAP_to_date: any = null;
-  filtertype: string = null;
+  filtertype: string = ' ';
   reportdata: any[] = [];
   comments: any;
   tdseligible: any;
@@ -109,7 +109,7 @@ export class DetailedReportComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
+  userid: string
   emailid: any;
 
   servicegrouplist: any[] = [];
@@ -134,7 +134,9 @@ export class DetailedReportComponent implements OnInit {
   // ItemCodeExtensionModeldata = {} as ItemCodeExtension;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private excelService: ExcelService, 
-    private router: Router, private http: HttpClient,private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+    private router: Router, private http: HttpClient,private datePipe: DatePipe) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -153,7 +155,8 @@ export class DetailedReportComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //  this.baseLocation = this.currentUser.baselocation;    
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     // if (chkaccess == true) {
@@ -200,11 +203,11 @@ export class DetailedReportComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_MATERIALTYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.materialList = data.filter(x => x.isActive);
+        this.materialList = data.filter((x:any)  => x.isActive);
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -218,7 +221,7 @@ export class DetailedReportComponent implements OnInit {
     }
     else {
       this.ItemCodeRequestModel.dmfGradeId = undefined;
-      this.DmfGradelist1 = this.DmfGradelist.filter(x => x.dmfGradeId != '0');
+      this.DmfGradelist1 = this.DmfGradelist.filter((x:any)  => x.dmfGradeId != '0');
     }
   }
  
@@ -226,9 +229,9 @@ export class DetailedReportComponent implements OnInit {
     { id: 'Printed', name: 'Printed Material' },
     { id: 'Plain', name: 'Plain Material' }
   ];
-  serializer: boolean;
-  serializerid: boolean;
-  Aprlpriority: number;
+  serializer!: boolean;
+  serializerid!: boolean;
+  Aprlpriority!: number;
 
   dynamicArray: any = [];
   newDynamic: any = {};
@@ -241,7 +244,7 @@ export class DetailedReportComponent implements OnInit {
     };
     this.dynamicArray.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.dynamicArray.length > 1) {
       const index = this.dynamicArray.indexOf(item);
       this.dynamicArray.splice(index, 1);
@@ -287,7 +290,8 @@ export class DetailedReportComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.masterslist = data;
-        this.masterslist.forEach(element => {
+        this.masterslist.forEach((element:any)=> {
+
           this.servicegrouplist = element.servicegrouplist;
           this.PaymentTermList = element.servicegrouplist;
           this.ReconciliationAccList = element.reconciliationAccList;
@@ -311,7 +315,7 @@ export class DetailedReportComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.masterslist = {};
     });
@@ -320,11 +324,11 @@ export class DetailedReportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_UOM_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        this.uomMasterList = data.filter(x => x.isActive);
+        this.uomMasterList = data.filter((x:any)  => x.isActive);
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.uomMasterList = [];
     });
@@ -332,13 +336,13 @@ export class DetailedReportComponent implements OnInit {
   getLocationMaster() {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -348,9 +352,11 @@ export class DetailedReportComponent implements OnInit {
     this.to_date = this.today;
     this.SAP_from_date = null;
     this.SAP_to_date = null;
-    this.filterlocation = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
     this.filtermaterialtype=null;
-    this.filterstatus = null;
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filterrequest = null;
     this.filtercreator = null;
     this.filtertype = null;
@@ -375,7 +381,7 @@ export class DetailedReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.storagelocationlist = [];
     });
@@ -386,25 +392,25 @@ export class DetailedReportComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         //this.materialgroupList = data;
-        this.materialgroupList = data.filter(x => x.stxt != null);
+        this.materialgroupList = data.filter((x:any)  => x.stxt != null);
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialgroupList = [];
     });
   }
-  location(id) {
-    let loc = this.locationList.find(x => x.id == id);
+  location(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code : "";
   }
 
   getAllEntries() {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -455,7 +461,7 @@ export class DetailedReportComponent implements OnInit {
 
     
     filterModel.materialType = this.filtermaterialtype;
-    filterModel.location = this.filterlocation == null ? null : this.locationList.find(x => x.code == this.filterlocation).id;
+    filterModel.location = this.filterlocation == null ? null : this.locationList.find((x:any)  => x.code == this.filterlocation).id;
     filterModel.requestNo = this.filterrequest;
     this.filterstatus = this.filterstatus == 'InProcess' ? 'InProcess,Reverted' : this.filterstatus;
     //this.filterstatus=this.filterstatus=='Created'?'Created,':this.filterstatus;
@@ -474,7 +480,7 @@ export class DetailedReportComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.reportdata = [];
     });
@@ -512,7 +518,7 @@ export class DetailedReportComponent implements OnInit {
   }
   
   
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngAfterViewInit() {
     this.initDatatable();
   }
@@ -526,7 +532,7 @@ export class DetailedReportComponent implements OnInit {
     let status: any;
     let index = 0;
     var name = this.filtertype + ' ' + 'Report';
-    this.reportdata.forEach(item => {
+    this.reportdata.forEach((item :any) => {
       index = index + 1;
       if (this.filtertype == 'Service Master') {
         status = item.appSatus;
@@ -560,11 +566,11 @@ export class DetailedReportComponent implements OnInit {
 
     this.excelService.exportAsExcelFile(this.exportList, name);
   }
-  getloc(loc) {
+  getloc(loc:any) {
     let loccode = loc.keyValue.split('~');
     return loccode ? loccode[0] : '';
   }
-  selCoated(id) {
+  selCoated(id:any) {
     if (id == '84') {
       this.ItemCodeRequestModel.isCoated = 'NotApplicable';
     }
@@ -583,7 +589,7 @@ export class DetailedReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist = [];
     });
@@ -594,7 +600,7 @@ export class DetailedReportComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionslist = data;
-        this.transactionslist = this.transactionslist.filter(x => x.approvalPriority != null && x.processType == 'Item Code Request');
+        this.transactionslist = this.transactionslist.filter((x:any)  => x.approvalPriority != null && x.processType == 'Item Code Request');
         this.getApproversList1(value);
       }
       else {
@@ -602,7 +608,7 @@ export class DetailedReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist = [];
     });
@@ -617,8 +623,8 @@ export class DetailedReportComponent implements OnInit {
     this.Closure = false;
     this.Approverslist = [];
     this.ItemCodeRequestModel = Object.assign({}, value);
-    var loc = this.locationList.find(x => x.id == this.ItemCodeRequestModel.locationId);
-    var mat = this.materialList.find(x => x.id == +this.ItemCodeRequestModel.materialTypeId);
+    var loc = this.locationList.find((x:any)  => x.id == this.ItemCodeRequestModel.locationId);
+    var mat = this.materialList.find((x:any)  => x.id == +this.ItemCodeRequestModel.materialTypeId);
 
     if (mat.type == 'FG') {
       var keyvalue = loc.code + '~' + mat.type + '~' + this.ItemCodeRequestModel.storageLocationId + '~' + this.ItemCodeRequestModel.domesticOrExports + '~' + this.ItemCodeRequestModel.market + ',' + 1;
@@ -634,8 +640,8 @@ export class DetailedReportComponent implements OnInit {
         let empid = this.currentUser.employeeId
         let empName = this.currentUser.fullName;
         if (mat.type == 'FG') {
-          let temp = this.Approverslist.find(x => x.role == 'Creator');
-          let temp1 = this.Approverslist.find(x => x.priority == temp.priority - 1);
+          let temp = this.Approverslist.find((x:any)  => x.role == 'Creator');
+          let temp1 = this.Approverslist.find((x:any)  => x.priority == temp.priority - 1);
           if (temp1.approverId == empid || temp1.parllelApprover1 == empid || temp1.parllelApprover2 == empid ||
             temp1.parllelApprover3 == empid || temp1.parllelApprover4 == empid) {
             this.serializer = true;
@@ -643,7 +649,7 @@ export class DetailedReportComponent implements OnInit {
             this.ItemCodeRequestModel.serializedFromDate = new Date().toLocaleString();
           }
         }
-        let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+        let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -653,7 +659,7 @@ export class DetailedReportComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr1.priority;
         }
-        let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+        let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr2 != null || Appr2 != undefined) {
@@ -663,7 +669,7 @@ export class DetailedReportComponent implements OnInit {
           this.Review = true;
           this.Aprlpriority = Appr2.priority;
         }
-        let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+        let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
           x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
           x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         if (Appr3 != null || Appr3 != undefined) {
@@ -688,14 +694,14 @@ export class DetailedReportComponent implements OnInit {
 
 
         this.transactionslist.forEach((ad) => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority);
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority);
           if (temp != undefined) {
             if (ad.transactionType == 1) {
               if (temp.role == 'Creator') {
                 ad.status = 'Completed'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 3 || ad.transactionType == 4) {
@@ -712,7 +718,7 @@ export class DetailedReportComponent implements OnInit {
 
         });
         this.Approverslist.forEach((ad) => {
-          let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority);
+          let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority);
           if (temp1 == undefined) {
             let trans = {} as Transactions;
             trans.doneBy = ad.approverId;
@@ -724,12 +730,12 @@ export class DetailedReportComponent implements OnInit {
           }
 
         });
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.approvalPriority > b.approvalPriority) return 1;
           if (a.approvalPriority < b.approvalPriority) return -1;
           return 0;
@@ -741,7 +747,7 @@ export class DetailedReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -752,18 +758,18 @@ export class DetailedReportComponent implements OnInit {
   ItemCodeRequestModel = {} as ItemCodeRequest
   Approverslist: WorkFlowApprovers[] = [];
   weightUomlist: any[] = [];
-  getApproversList(value) {
+  getApproversList(value:any) {
     if (this.filtertype == 'Service Master') {
       var keyvalue = value.plantCode + ',' + 5;
     }
     else if (this.filtertype == 'Vendor Master') {
-      var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
-      var accgrp = this.AccGroupList.find(x => x.accountGroupId == value.accountGroupId);
+      var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
+      var accgrp = this.AccGroupList.find((x:any)  => x.accountGroupId == value.accountGroupId);
       var group = accgrp.accountGroupName == 'Import' ? 'Import' : 'Local';
       var keyvalue = loc.code + '~' + group + ',' + 3;
     }
     else {
-      var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+      var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
       var keyvalue = loc.code + '~' + value.customerType + ',' + 4;
     }
     this.Approverslist = [];
@@ -772,10 +778,10 @@ export class DetailedReportComponent implements OnInit {
       if (data.length > 0) {
         this.Approverslist = data;
         this.Approverslist.forEach((ad) => {
-          let temp = this.transactionslist.find(x => x.approvalPriority == ad.priority);
+          let temp = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority);
           if (temp != undefined) {
             if (temp.transactionType == 1) {
-              ad.status = this.approverstatuslist.find(x => x.id == ad.priority).name;
+              ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.priority).name;
             }
             else if (temp.transactionType == 3 || temp.transactionType == 4) {
               ad.status = temp.transactionType == 3 ? "Reverted To Previous Approver " : " Reverted to Initiator";
@@ -788,12 +794,12 @@ export class DetailedReportComponent implements OnInit {
           }
 
         });
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.approvalPriority > b.approvalPriority) return 1;
           if (a.approvalPriority < b.approvalPriority) return -1;
           return 0;
@@ -805,13 +811,13 @@ export class DetailedReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
   }
-  getstatelist(id) {
-    this.stateList1 = this.stateList.filter(x => x.land1 == id);
+  getstatelist(id:any) {
+    this.stateList1 = this.stateList.filter((x:any)  => x.land1 == id);
   }
   clearvalue(value) {
     if (value == 'NotApplicable') {
@@ -885,7 +891,7 @@ export class DetailedReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.masterdatalist = [];
     });
@@ -901,7 +907,7 @@ export class DetailedReportComponent implements OnInit {
     { id: 5, name: 'Item Code Extension' }
   ];
   
-  empId: string;
+  empId: string
   view: boolean = false;
   attachments: any[] = [];
   onUserActions(isedit: boolean, ItemCodeRequest: ItemCodeRequest, isprint: boolean, view) {
@@ -924,15 +930,15 @@ export class DetailedReportComponent implements OnInit {
       if (ItemCodeRequest.attachements != null || ItemCodeRequest.attachements != undefined) {
         this.attachments = ItemCodeRequest.attachements.split(',');
       }
-      let type = this.materialList.find(x => x.id.toString() == ItemCodeRequest.materialTypeId);
-      this.storagelocationlist1 = this.storagelocationlist.filter(x => x.matType == type.type);
-      this.ValuationClasslist1 = this.ValuationClasslist.filter(x => x.matType == type.type);
+      let type = this.materialList.find((x:any)  => x.id.toString() == ItemCodeRequest.materialTypeId);
+      this.storagelocationlist1 = this.storagelocationlist.filter((x:any)  => x.matType == type.type);
+      this.ValuationClasslist1 = this.ValuationClasslist.filter((x:any)  => x.matType == type.type);
       if (ItemCodeRequest.packingMaterialGroup != null || ItemCodeRequest.packingMaterialGroup != undefined) {
         ItemCodeRequest.packingMaterialGroup = ItemCodeRequest.packingMaterialGroup.trim();
       }
-      var name = this.materialList.find(x => x.id == +ItemCodeRequest.materialTypeId).type;
+      var name = this.materialList.find((x:any)  => x.id == +ItemCodeRequest.materialTypeId).type;
       if (ItemCodeRequest.pharmacopGrade != null || ItemCodeRequest.pharmacopGrade != undefined) {
-        ItemCodeRequest.qcSpecification = this.pharmagradelist.find(x => x.pharmaGradeDesc == ItemCodeRequest.pharmacopGrade).pharmaGradeId.toString();
+        ItemCodeRequest.qcSpecification = this.pharmagradelist.find((x:any)  => x.pharmaGradeDesc == ItemCodeRequest.pharmacopGrade).pharmaGradeId.toString();
       }
 
 
@@ -968,13 +974,13 @@ export class DetailedReportComponent implements OnInit {
       //this.ItemCodeRequestModel.locationId = this.currentUser.baselocation.toString();
 
       ItemCodeRequest.locationId = this.currentUser.baselocation.toString();
-      let type = this.materialList.find(x => x.id.toString() == ItemCodeRequest.materialTypeId);
-      this.ValuationClasslist1 = this.ValuationClasslist.filter(x => x.matType == type.type);
-      this.storagelocationlist1 = this.storagelocationlist.filter(x => x.matType == type.type);
-      //this.ValuationClasslist=this.ValuationClasslist.filter(x=>x.matType==type.type);
+      let type = this.materialList.find((x:any)  => x.id.toString() == ItemCodeRequest.materialTypeId);
+      this.ValuationClasslist1 = this.ValuationClasslist.filter((x:any)  => x.matType == type.type);
+      this.storagelocationlist1 = this.storagelocationlist.filter((x:any)  => x.matType == type.type);
+      //this.ValuationClasslist=this.ValuationClasslist.filter((x:any)=>x.matType==type.type);
       this.getApproversList(ItemCodeRequest);
       this.ItemCodeRequestModel = Object.assign({}, ItemCodeRequest);
-      var name = this.materialList.find(x => x.id == +this.ItemCodeRequestModel.materialTypeId).type;
+      var name = this.materialList.find((x:any)  => x.id == +this.ItemCodeRequestModel.materialTypeId).type;
       if (name == 'FG') {
         this.getserializationdetails(ItemCodeRequest.requestNo);
       }
@@ -986,7 +992,7 @@ export class DetailedReportComponent implements OnInit {
       this.view = true;
     }
 
-    let locid = this.locationList.find(x => x.id == this.currentUser.baselocation);
+    let locid = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
     if (locid.plantType == 0) {
       var modal = '#' + name + 'NGXPModal';
       jQuery(modal).modal('show');
@@ -1004,16 +1010,16 @@ export class DetailedReportComponent implements OnInit {
     if (name.length > 0) {
       this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, reqNo, name).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], name, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
 
 
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
 
@@ -1036,7 +1042,7 @@ export class DetailedReportComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_SERIALIZATION_DATA_GETBY_PARAM_API, reqNo).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        data.forEach(mtrl => {
+        data.forEach((mtrl:any) => {
           let serializedata = {} as Serialization;
           serializedata.id = mtrl.id;
           serializedata.aun = mtrl.aun;
@@ -1053,7 +1059,7 @@ export class DetailedReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -1062,7 +1068,7 @@ export class DetailedReportComponent implements OnInit {
   ItemCodeExtensionModel = {} as ItemCodeExtension;
   //ItemCodeRequestModel = {} as ItemCodeRequest;
   ItemCodeRequestModelList: ItemCodeRequest[] = [];
-  materialtype: string;
+  materialtype!: string
   locationList1: any[] = [[]];
 
   GetMaterialDetails(code) {
@@ -1072,7 +1078,7 @@ export class DetailedReportComponent implements OnInit {
         //  this.ItemCodeRequestModel=data;
         this.ItemCodeRequestModelList = data;
         Object.assign(this.ItemCodeRequestModel, data);
-        let value = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code)
+        let value = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code)
         Object.assign(this.ItemCodeRequestModel, value);
         if (this.ItemCodeRequestModel.sapCodeExists == '1') {
           this.ItemCodeRequestModel.sapCodeExists = 'Yes';
@@ -1080,16 +1086,16 @@ export class DetailedReportComponent implements OnInit {
         else {
           this.ItemCodeRequestModel.sapCodeExists = 'No';
         }
-        this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).locationId;
-        this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code).hsnCode;
-        let strloc = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code);
-        let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-        //this.storagelocationlist = this.storagelocationlist.filter(x => x.storageLocationId == strloc.storageLocationId &&  x.matType == type.type);
-        //let type = this.materialList.find(x => x.id == +strloc.materialTypeId)
-       // this.storagelocationlist2 = this.storagelocationlist.filter(x => x.matType == type.type);
-        let temp = this.ItemCodeRequestModelList.find(x => x.sapCodeNo == code);
-        this.locationList1 = this.locationList.filter(x => x.id == temp.locationId);
-        this.materialtype = this.materialList.find(x => x.id == +temp.materialTypeId).type;
+        this.ItemCodeExtensionModel.plant1 = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).locationId;
+        this.ItemCodeExtensionModel.hsnCode = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code).hsnCode;
+        let strloc = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code);
+        let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+        //this.storagelocationlist = this.storagelocationlist.filter((x:any)  => x.storageLocationId == strloc.storageLocationId &&  x.matType == type.type);
+        //let type = this.materialList.find((x:any)  => x.id == +strloc.materialTypeId)
+       // this.storagelocationlist2 = this.storagelocationlist.filter((x:any)  => x.matType == type.type);
+        let temp = this.ItemCodeRequestModelList.find((x:any)  => x.sapCodeNo == code);
+        this.locationList1 = this.locationList.filter((x:any)  => x.id == temp.locationId);
+        this.materialtype = this.materialList.find((x:any)  => x.id == +temp.materialTypeId).type;
         this.ItemCodeExtensionModel.materialTypeId = temp.materialTypeId;
         //this.ItemCodeExtensionModel.hsnCode=this.ItemCodeRequestModel.storageLocationId;
         //  this.ItemCodeExtensionModel.storageLocationId1=this.ItemCodeRequestModel.storageLocationId;
@@ -1105,7 +1111,7 @@ export class DetailedReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ItemCodeRequestModelList = [];
     });
@@ -1113,7 +1119,7 @@ export class DetailedReportComponent implements OnInit {
   }
  // transactionslist: Transactions[] = [];
  
-  //empId: string;
+  //empId: string
   resetForm() {
     this.ItemCodeExtensionModel = {} as ItemCodeExtension;
     this.ItemCodeRequestModel = {} as ItemCodeRequest;
@@ -1162,7 +1168,7 @@ export class DetailedReportComponent implements OnInit {
     var now = new Date();
     var jsDate =this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1175,14 +1181,14 @@ export class DetailedReportComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:temp.description+' Report',
         },
       
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1200,7 +1206,7 @@ export class DetailedReportComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -1250,7 +1256,7 @@ export class DetailedReportComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 

@@ -18,7 +18,7 @@ declare var $: any;
 export class StatusChangeComponent implements OnInit {
 
   public tableWidget: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   dashboard: any = {};
   isLoading: boolean = false;
   errMsg: string = "";
@@ -51,7 +51,7 @@ export class StatusChangeComponent implements OnInit {
   filterversion: any;
   filterexpDate: any;
   dynamicArray: any[] = [];
-  newDynamic: { id: number; filtersoftType: any; filtersoftName: string; filterlicType: any; filterprodKey: string; filterversion: string; filterexpDate: any; };
+  newDynamic!: { id: number; filtersoftType: any; filtersoftName: string ;filterlicType: any; filterprodKey: string; filterversion: string; filterexpDate: any; };
   filterval: any;
   filtersuppName: any;
   filterinsDate: any;
@@ -88,7 +88,8 @@ export class StatusChangeComponent implements OnInit {
   ngOnInit() {
     this.path = this.router.url;
     console.log(this.path);
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     this.getAssetStateList();
     this.getLocationMaster();
@@ -103,30 +104,30 @@ export class StatusChangeComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList:any[]=[];
-  getPlantsassigned(id)
+  getPlantsassigned(id:any)
   {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x=>{ return x.isActive;}).map((i) => { i.location = i.code + '-' + i.name; return i; });;          
+        this.plantList = data.filter((x:any)=>{ return x.isActive;}).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;          
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });          
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -139,7 +140,7 @@ export class StatusChangeComponent implements OnInit {
         this.assStateList = data;
         console.log(this.assStateList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.assStateList = [];
     });
@@ -148,13 +149,13 @@ export class StatusChangeComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -168,14 +169,14 @@ export class StatusChangeComponent implements OnInit {
         this.sizeList = data;
         console.log(this.sizeList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.sizeList = [];
     });
   }
 
-  getStorageSize(id) {
-    let temp = this.sizeList.find(x => x.storId == id);
+  getStorageSize(id:any) {
+    let temp = this.sizeList.find((x:any)  => x.storId == id);
     return temp ? temp.storTxt : '';
   }
 
@@ -186,13 +187,13 @@ export class StatusChangeComponent implements OnInit {
         this.monType = data;
         console.log(this.monType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.monType = [];
     });
   }
 
-  getMonitorType(id) {
-    let temp = this.monType.find(x => x.id == id);
+  getMonitorType(id:any) {
+    let temp = this.monType.find((x:any)  => x.id == id);
     return temp ? temp.type : '';
   }
 
@@ -205,30 +206,30 @@ export class StatusChangeComponent implements OnInit {
   //       this.initDatatable();
   //       this.isLoading = false;
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.isLoading = false;
   //     this.assetList = [];
   //   });
   // }
 
-  setList(asset) {
+  setList(asset:any) {
     if (asset.length > 5) {
       var self = this;
       var filterModel: any = {};
       $('#assetNo').autocomplete({
-        source: function (request, response) {
+        source: function (request:any, response:any) {
           filterModel.input = asset;
           let connection = self.httpService.amspost(APIURLS.BR_GET_AMS_ASSET_HARD_DETAILED, filterModel);
           connection.then((data: any) => {
             if (data) {
               let result = data;
               self.assetList = data;
-              response(result.map((i) => { i.label = i.assetNo; return i; }));
+              response(result.map((i:any) => { i.label = i.assetNo; return i; }));
             }
-          }).catch(error => {
+          }).catch((error)=> {
           });
         },
-        select: function (event, ui) {
+        select: function (event:any, ui:any) {
           self.filterassetId = ui.item.assetId;
           self.filterlocation = ui.item.location;
           self.filtercategory = ui.item.category;
@@ -252,7 +253,8 @@ export class StatusChangeComponent implements OnInit {
   clearFilter() {
     this.filterassetNo = null;
     this.filterassetId = null;
-    this.filterlocation = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
     this.filtercategory = null;
     this.filtermodel = null;
     this.filtermanufacturer = null;
@@ -264,7 +266,8 @@ export class StatusChangeComponent implements OnInit {
     this.filteripAddress = null;
     this.filterconfig = null;
     this.filtercurrstate = null;
-    this.filterstatus = null;
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filternature = null;
   }
 
@@ -279,8 +282,8 @@ export class StatusChangeComponent implements OnInit {
     { id: 8, name: 'Sold' }
   ];
 
-  getstatus(id) {
-    let temp = this.statuslist.find(x => x.id == id);
+  getstatus(id:any) {
+    let temp = this.statuslist.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
 
@@ -291,14 +294,14 @@ export class StatusChangeComponent implements OnInit {
     this.errMsg = "";
     let connection: any;
     if (!this.isEdit) {
-      let value = this.assetList.find(x => x.assetId == this.filterassetId);
+      let value = this.assetList.find((x:any)  => x.assetId == this.filterassetId);
       this.StatusChange = Object.assign({}, value);
-      this.StatusChange.assetState = this.statuslist.find(x => x.name == this.filterstatus).id;
+      this.StatusChange.assetState = this.statuslist.find((x:any)  => x.name == this.filterstatus).id;
       this.StatusChange.natureofActivities = this.filternature;
-      this.StatusChange.monitorType = this.StatusChange.monitorType != '' ? this.monType.find(x => x.type == this.StatusChange.monitorType).id : null;
-      this.StatusChange.ramSize = this.StatusChange.ramSize != '' ? this.sizeList.find(x => x.storTxt == this.StatusChange.ramSize).id : null;
-      this.StatusChange.sizeType = this.StatusChange.sizeType != '' ? this.sizeList.find(x => x.storTxt == this.StatusChange.sizeType).id : null;
-      this.StatusChange.comDept = this.StatusChange.comDept != '' ? this.departmentList.find(x => x.name == this.StatusChange.comDept).id : null;
+      this.StatusChange.monitorType = this.StatusChange.monitorType != '' ? this.monType.find((x:any)  => x.type == this.StatusChange.monitorType).id : null;
+      this.StatusChange.ramSize = this.StatusChange.ramSize != '' ? this.sizeList.find((x:any)  => x.storTxt == this.StatusChange.ramSize).id : null;
+      this.StatusChange.sizeType = this.StatusChange.sizeType != '' ? this.sizeList.find((x:any)  => x.storTxt == this.StatusChange.sizeType).id : null;
+      this.StatusChange.comDept = this.StatusChange.comDept != '' ? this.departmentList.find((x:any)  => x.name == this.StatusChange.comDept).id : null;
       this.StatusChange.modifiedBy = this.currentUser.employeeId;
       this.StatusChange.viewStatusApprover = null;
       this.StatusChange.statusApprovedDate = null;
@@ -317,7 +320,7 @@ export class StatusChangeComponent implements OnInit {
         });
         this.clearFilter();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });

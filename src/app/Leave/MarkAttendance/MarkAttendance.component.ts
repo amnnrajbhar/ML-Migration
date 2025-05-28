@@ -11,9 +11,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 declare var jQuery: any;
 export class actionItemModel {
-  description: string;
-  id: number;
-  uname: string;
+  description: string
+  id!: number;
+  uname: string
 }
 @Component({
   selector: 'app-MarkAttendance',
@@ -22,7 +22,7 @@ export class actionItemModel {
 })
 export class MarkAttendancecomponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
+@ViewChild(NgForm, { static: false }) leaveForm!: NgForm;
 
   public tableWidget: any;
   isLoading: boolean = false;
@@ -35,8 +35,8 @@ export class MarkAttendancecomponent implements OnInit {
   path: string = '';
   notFirst = true;
   currentUser = {} as AuthData;
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   id: any;
   locationAllList: any;
   locationList: any[] = [];
@@ -70,7 +70,8 @@ export class MarkAttendancecomponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getempCatList();
       this.getplantMaster();
       this.getpayGroupList();
@@ -82,18 +83,18 @@ export class MarkAttendancecomponent implements OnInit {
   }
 
 
-  getPlantname(id) {
-    let temp = this.locationList.find(x => x.id == id);
+  getPlantname(id:any) {
+    let temp = this.locationList.find((x:any)  => x.id == id);
     return temp ? temp.code : '';
   }
 
-  getPaygroupname(id) {
-    let temp = this.payGroupList.find(x => x.id == id);
+  getPaygroupname(id:any) {
+    let temp = this.payGroupList.find((x:any)  => x.id == id);
     return temp ? temp.short_desc : '';
   }
 
-  getStaffcatname(id) {
-    let temp = this.empCatList.find(x => x.id == id);
+  getStaffcatname(id:any) {
+    let temp = this.empCatList.find((x:any)  => x.id == id);
     return temp ? temp.catltxt : '';
   }
 
@@ -110,13 +111,13 @@ export class MarkAttendancecomponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -129,7 +130,7 @@ export class MarkAttendancecomponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
@@ -139,13 +140,13 @@ export class MarkAttendancecomponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -169,7 +170,8 @@ export class MarkAttendancecomponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

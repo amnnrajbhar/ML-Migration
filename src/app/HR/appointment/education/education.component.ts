@@ -18,11 +18,11 @@ declare var $: any;
   styleUrls: ['./education.component.css']
 })
 export class EducationComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) educationForm: NgForm;
+@ViewChild(NgForm, { static: false }) educationForm!: NgForm;
 
-  @Input() appointmentId: number;
-  @Input() offerId: number;
-  @Input() guid: string;
+  @Input() appointmentId!: number;
+  @Input() offerId!: number;
+  @Input() guid: string
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
@@ -78,7 +78,7 @@ export class EducationComponent implements OnInit {
           this.dataLoaded.emit("loaded");
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
       });
@@ -96,7 +96,7 @@ onStateChange(){
 onLevelChange(){
   if(this.selectedEducationLevel){
     // filter course list based on level
-    this.courseList = this.courseListFull.filter(x=>x.educationLId == this.selectedEducationLevel.id);
+    this.courseList = this.courseListFull.filter((x:any)=>x.educationLId == this.selectedEducationLevel.id);
 
     if(this.selectedEducationLevel.id == 1){  // School
       this.selectedCourse = this.courseListFull.find(x=>x.courseId==5);  //Matriculation/Secondary
@@ -166,8 +166,8 @@ onLevelChange(){
           this.onAddLine();
           toastr.success("Successfully added the details.");
         }
-      }).catch(error => {
-        //console.log(error);
+      }).catch((error)=> {
+        ////console.log(error);
         toastr.error('Error adding details...'+ error);
       })
     }
@@ -221,8 +221,8 @@ onLevelChange(){
           this.onUpdateLine();
           toastr.success("Successfully updated the details.");
         }
-      }).catch(error => {
-        //console.log(error);
+      }).catch((error)=> {
+        ////console.log(error);
         toastr.error('Error updating details...'+ error);
       })
     }
@@ -257,7 +257,7 @@ onLevelChange(){
           this.isLoading = false;
           toastr.error('Error occured while deleting the details. Error:' + err);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while deleting the details. Error:' + error);
         });
@@ -273,20 +273,20 @@ onLevelChange(){
 
       conn.then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
         // if(data){
         //   var downloadURL = URL.createObjectURL(data);
         //   window.open(downloadURL);
         // }
   
         if (data != undefined) {
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     }
@@ -374,7 +374,7 @@ onLevelChange(){
 
     connection.then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
@@ -388,15 +388,15 @@ onLevelChange(){
           this.showPdfInViewer(data);
         }
         else{
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }        
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -415,14 +415,14 @@ onLevelChange(){
     connection.then((data: any) => {
             
       if (data != undefined) {        
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

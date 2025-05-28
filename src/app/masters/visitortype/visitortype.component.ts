@@ -14,7 +14,7 @@ import { AuditLogChange } from '../auditlogchange.model';
 import { AuditLog } from '../auditlog.model';
 declare var jQuery: any;
 export class actionItemModel {
-  visitorType: string;
+  visitorType: string
 }
 @Component({
   selector: 'app-visitortype',
@@ -24,12 +24,12 @@ export class actionItemModel {
 })
 
 export class VisitorTypeComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) visitortypeForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) visitortypeForm!: NgForm;
 
   searchTerm: FormControl = new FormControl();
   public tableWidget: any;
-  visitorTypeList: any[];
+  visitorTypeList!: any[];
   visitorTypeItem: VisitorType = new VisitorType();
   isLoading: boolean = false;
   errMsg: string = "";
@@ -40,8 +40,8 @@ export class VisitorTypeComponent implements OnInit {
   path: string = '';
   currentUser = {} as AuthData;
   oldvisitorTypeItem: VisitorType = new VisitorType();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
   clearForm() {
@@ -68,7 +68,8 @@ export class VisitorTypeComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getVisitorTypeList();
     }
     else
@@ -102,7 +103,7 @@ export class VisitorTypeComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_VISITORTYPE_ALL).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        this.visitorTypeList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.visitorTypeList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
                                     if(a.visitor_Type > b.visitor_Type) return 1;
                                     if(a.visitor_Type < b.visitor_Type) return -1;
                                     return 0;
@@ -110,7 +111,7 @@ export class VisitorTypeComponent implements OnInit {
       }
       this.isLoading = false;
       this.reInitDatatable();
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.visitorTypeList = [];
     });
@@ -126,7 +127,7 @@ export class VisitorTypeComponent implements OnInit {
     let connection: any;
     this.validatedForm = true;
     let blankName = this.visitorTypeItem.visitor_Type.trim() == '' || this.visitorTypeItem.visitor_Type.trim() == null;
-    let validName = this.visitorTypeList.some(s => s.visitor_Type.toLowerCase() == this.visitorTypeItem.visitor_Type.toLowerCase() && s.id != this.visitorTypeItem.id);
+    let validName = this.visitorTypeList.some((s:any) => s.visitor_Type.toLowerCase() == this.visitorTypeItem.visitor_Type.toLowerCase() && s.id != this.visitorTypeItem.id);
     if (blankName) {
       this.isLoadingPop = false;
       this.validatedForm = false;
@@ -162,7 +163,7 @@ export class VisitorTypeComponent implements OnInit {
           this.getVisitorTypeList();
           this.isLoadingPop = false;
         }
-      }).catch(() => {
+      }).catch((error) => {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving visitor type..';
       });
@@ -194,7 +195,7 @@ export class VisitorTypeComponent implements OnInit {
             this.insertAuditLog(this.visitorTypeItem,this.oldvisitorTypeItem,this.visitorTypeItem.id);
             this.getVisitorTypeList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting visitor type..';
         });
@@ -257,12 +258,12 @@ export class VisitorTypeComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -271,7 +272,7 @@ export class VisitorTypeComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

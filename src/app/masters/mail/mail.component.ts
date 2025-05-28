@@ -21,13 +21,13 @@ export class MailComponent implements OnInit {
     
     public tableWidget: any;
     indexI: number = 0;
-    emailList: any[];
+    emailList!: any[];
     empList: any;
     dispErrTable: boolean = false;
-    empMList: any[];
+    empMList!: any[];
     successMsg: string = "";
-    parentList: any[];
-    employeeList: any[];
+    parentList!: any[];
+    employeeList!: any[];
     selParentRole: any;
     selHeadEmpId: any;
     mailItem: Mail= new Mail(0,0,'','','','','','','','','','','','', '','', 0,'', 0, '',true);
@@ -38,7 +38,7 @@ export class MailComponent implements OnInit {
     isEdit: boolean = false;
     checkAll: boolean = false;
     formData: FormData = new FormData();
-    file: File;
+    file!: File;
     constructor(private appService: AppComponent, private httpService: HttpService, private http:HttpClient) { }
 
     private initDatatable(): void {
@@ -69,12 +69,12 @@ export class MailComponent implements OnInit {
       if (this.isEdit) {
         
         this.mailItem =data;
-        // this.emailList = this.emailList.filter(s => s.isActive != false);
+        // this.emailList = this.emailList.filter((s:any) => s.isActive != false);
      
       }
       else {
         //this.mailItem =data;
-        // this.emailList = this.emailList.filter(s => s.isActive != false);
+        // this.emailList = this.emailList.filter((s:any) => s.isActive != false);
       }
 
       jQuery("#myModal").modal('show');
@@ -101,7 +101,7 @@ export class MailComponent implements OnInit {
           this.emailList = data;
         this.reInitDatatable();
       }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.emailList = [];
       });
@@ -131,7 +131,7 @@ export class MailComponent implements OnInit {
         else {
            this.errMsgPop = 'Error saving sbu data..';
         }
-        }).catch(error => {
+        }).catch((error)=> {
          this.isLoadingPop = false;
          this.errMsgPop = 'Error saving sbu data..';
         });

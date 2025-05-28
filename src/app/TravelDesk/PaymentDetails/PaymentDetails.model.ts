@@ -21,8 +21,8 @@ export class PaymentDetails{
    invoiceNo:number;
    invoiceDate:string;
    createdDate:string;
-   createdBy: number;
-   modifiedBy: number;
-  isSelected: boolean;
+   createdBy!: number;
+   modifiedBy!: number;
+  isSelected!: boolean;
     
 }

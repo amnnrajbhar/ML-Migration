@@ -1,16 +1,16 @@
 export class HolidaysReports {
-    id: number;
-    location: number;
-    holidayName: string;
-    dayName: string;
-    holidayDate: string;
-    year: number;
-    date: string;
-    createdBy: string;
-    createdOn: string;
-    modifiedBy: string;
-    modifiedOn: string;
-    isActive: boolean;
+    id!: number;
+    location!: number;
+    holidayName: string
+    dayName: string
+    holidayDate: string
+    year!: number;
+    date: string
+    createdBy: string
+    createdOn: string
+    modifiedBy: string
+    modifiedOn: string
+    isActive!: boolean;
     payGroup:number;
     type:string;
     typeCode:string

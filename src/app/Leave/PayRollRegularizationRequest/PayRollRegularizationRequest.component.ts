@@ -32,11 +32,11 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./PayRollRegularizationRequest.component.css']
 })
 export class PayRollRegularizationRequestComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -48,7 +48,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  path: string;
+  path!: string
   employeeId: any = null;
   year: any;
 
@@ -56,20 +56,20 @@ export class PayRollRegularizationRequestComponent implements OnInit {
   CalYear: any;
   lvType: number = null;
   Date: any = null;
-  Date1: string = null;
+  Date1: string = ' ';
 
-  Duration1: string = null;
-  Duration2: string = null;
+  Duration1: string = ' ';
+  Duration2: string = ' ';
   NoOfDays: number = 0;
-  LvReason: string = null;
+  LvReason: string = ' ';
   personResponsible: any;
   personName: any;
   DetailedReason: string = '';
   LeaveRequestList: any[] = [];
   ApplyFor: any = null;
-  userId: string = null;
-  ReasonType: string = null;
-  SwipeType: string = null;
+  userId: string = ' ';
+  ReasonType: string = ' ';
+  SwipeType: string = ' ';
   filterStatus: any = null;
   today = new Date();
   approvalStatus: any;
@@ -101,7 +101,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -109,8 +109,8 @@ export class PayRollRegularizationRequestComponent implements OnInit {
   onSelectAll() {
 
   }
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
@@ -125,10 +125,11 @@ export class PayRollRegularizationRequestComponent implements OnInit {
 
   BloodGroupList: any[] = [];
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
     this.year = today.getFullYear();
@@ -143,7 +144,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
   }
 
   ApproversList: any[] = [];
-  getApproversList(id) {
+  getApproversList(id:any) {
     this.errMsg = "";
     this.httpService.LAgetByParam(APIURLS.GET_PERMISSION_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
       if (data) {
@@ -154,7 +155,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
           this.ApproversList = data;
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -178,7 +179,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -188,7 +189,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -198,7 +199,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
                   $("#personName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#person").val(ui.item.value);
                   $("#personName").val(ui.item.label);
@@ -244,7 +245,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
           this.attendanceDetails.push(data);
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.attendanceDetails = [];
       });
@@ -273,7 +274,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
 
   isValid: boolean = false;
   validatedForm: boolean = true;
-  name: string;
+  name: string
   getEmpPermissionRequests() {
     this.errMsg = "";
     this.isLoading = true;
@@ -286,7 +287,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.LeaveRequestList = [];
     });
@@ -384,7 +385,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
           this.ClearData();
         }
         this.getEmpPermissionRequests();
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error submitting request ..';
       });
     }
@@ -430,7 +431,7 @@ export class PayRollRegularizationRequestComponent implements OnInit {
             });
           }
           this.getEmpPermissionRequests();
-        }).catch(error => {
+        }).catch((error)=> {
           this.errMsgPop = 'Error Cancelling Payroll Regularization Request ..';
         });
       }
@@ -457,7 +458,8 @@ export class PayRollRegularizationRequestComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

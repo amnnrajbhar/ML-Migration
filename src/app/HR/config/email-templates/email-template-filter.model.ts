@@ -1,8 +1,8 @@
 export class EmailTemplateFilter {
-    emailTemplateName: string;
-    subject: string;
-    createdBy: string;
-    modifiedBy: string;
+    emailTemplateName: string
+    subject: string
+    createdBy: string
+    modifiedBy: string
     pageNo:number;
     pageSize:number;
     export:boolean;

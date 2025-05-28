@@ -17,9 +17,9 @@ declare var $: any;
   styleUrls: ['./book-cab.component.css']
 })
 export class BookCabComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgPop: string = "";
@@ -39,7 +39,8 @@ export class BookCabComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationById(this.currentUser.baselocation);
       this.getCurrentEmployeeDetails();
       this.getBaseLocationAdmin();
@@ -64,9 +65,9 @@ export class BookCabComponent implements OnInit {
   getPurposeList() {
     this.httpService.get(APIURLS.BR_BOOK_PURPOSE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.purposeList = data.filter(x=>x.type=="Cab Request" && x.isActive).sort((a,b)=>{if(a.purpose > b.purpose) return 1; if(a.purpose < b.purpose) return -1; return 0;});
+        this.purposeList = data.filter((x:any)=>x.type=="Cab Request" && x.isActive).sort((a:any,b:any)=>{if(a.purpose > b.purpose) return 1; if(a.purpose < b.purpose) return -1; return 0;});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.purposeList = [];
     });
   }
@@ -88,14 +89,14 @@ export class BookCabComponent implements OnInit {
     this.httpService.post(APIURLS.BR_CAB_BOOKING_BY_FILTER_API, genericBookingFilters).then((data: any) => {
       if (data) {
         if (filter == 'cancel')
-          this.mycabRequests = data.filter(x => { return x.isCancelled == true });
+          this.mycabRequests = data.filter((x:any)  => { return x.isCancelled == true });
         else
           this.mycabRequests = data;
         this.mycabRequests.reverse();
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.mycabRequests = [];
     });
@@ -116,13 +117,13 @@ export class BookCabComponent implements OnInit {
     this.httpService.post(APIURLS.BR_CAB_BOOKING_BY_FILTER_API, genericBookingFilters).then((data: any) => {
       if (data) {
         this.allBookings = data.length;
-        this.todayBookings = data.filter(x => { return this.getDateFormate(x.fromDateTime) == this.getDateFormate(todaydate) }).length;
-        this.cancelledBookings = data.filter(x => { return x.isCancelled == true }).length;
-        this.approvedBookings = data.filter(x => { return x.status == 'Approved' }).length;
-        this.rejectedBookings = data.filter(x => { return ( x.status == 'Rejected by Admin' || x.status == 'Rejected by Manager') }).length;
+        this.todayBookings = data.filter((x:any)  => { return this.getDateFormate(x.fromDateTime) == this.getDateFormate(todaydate) }).length;
+        this.cancelledBookings = data.filter((x:any)  => { return x.isCancelled == true }).length;
+        this.approvedBookings = data.filter((x:any)  => { return x.status == 'Approved' }).length;
+        this.rejectedBookings = data.filter((x:any)  => { return ( x.status == 'Rejected by Admin' || x.status == 'Rejected by Manager') }).length;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -132,7 +133,7 @@ export class BookCabComponent implements OnInit {
         this.empLocatonCode=data.code;
         // this.roomLocation = data ? data.code + '-' + data.name : '';
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.empLocatonCode = '';
     });
   }
@@ -186,9 +187,9 @@ export class BookCabComponent implements OnInit {
     this.calendarForm.form.updateValueAndValidity();
     if (isEdit) {
       this.cabRequest = Object.assign({}, cabbooking);
-      this.selectedTrip = this.selectedTripList.find(x => x.type == cabbooking.typeofTrip);
-      this.selectedService = this.serviceTypeList.find(x => x.type == cabbooking.serviceType);
-      this.selectedPurpose = this.purposeList.find(x => x.id == cabbooking.fkPurpose);
+      this.selectedTrip = this.selectedTripList.find((x:any)  => x.type == cabbooking.typeofTrip);
+      this.selectedService = this.serviceTypeList.find((x:any)  => x.type == cabbooking.serviceType);
+      this.selectedPurpose = this.purposeList.find((x:any)  => x.id == cabbooking.fkPurpose);
     }
     $("#myModal").modal('show');
   }
@@ -208,8 +209,8 @@ export class BookCabComponent implements OnInit {
         this.getCurrentUserManager(managerId);
 
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
     });
   }
   managerInfo: any = {};
@@ -218,7 +219,7 @@ export class BookCabComponent implements OnInit {
       if (data) {
         this.managerInfo = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.managerInfo = {};
     });
   }
@@ -229,7 +230,7 @@ export class BookCabComponent implements OnInit {
       if (data.length > 0) {
         this.adminInfo = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.adminInfo = [];
     });
   }
@@ -274,7 +275,7 @@ export class BookCabComponent implements OnInit {
     }
   }
   saveCabBooking() {
-    let bookingId: number;
+    let bookingId!: number;
     let connection: any;
     if (!this.isEdit) {
       this.cabRequest.fkEmployeeId = parseInt(this.currentUser.employeeId);
@@ -326,7 +327,7 @@ export class BookCabComponent implements OnInit {
         this.loadTilesCount();
         this.getMyRequests();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error in Cab Request';
     });
@@ -360,7 +361,7 @@ export class BookCabComponent implements OnInit {
         this.loadTilesCount();
         this.getMyRequests();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error in Cab request';
     });
@@ -369,7 +370,7 @@ export class BookCabComponent implements OnInit {
   bookedCabs(filter: string) {
     this.getMyRequests(filter);
   }
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {
@@ -385,7 +386,7 @@ export class BookCabComponent implements OnInit {
       connection.then((data: any) => {
         if (data == 200) {
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = 'Error in sending mail..';
       });
     }

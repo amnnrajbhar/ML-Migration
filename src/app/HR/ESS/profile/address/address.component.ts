@@ -23,12 +23,12 @@ declare var $: any;
   providers: [Util, AppointmentService],
 })
 export class AddressComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) addressForm: NgForm;
+@ViewChild(NgForm, { static: false }) addressForm!: NgForm;
 
-  @Input() employeeId: number;
+  @Input() employeeId!: number;
   @Input() profileDetails: TemporaryProfile;
-  @Input() editAllowed: boolean;
-  @Input() profileId: number;
+  @Input() editAllowed!: boolean;
+  @Input() profileId!: number;
   @Output() dataSaved: EventEmitter<any> = new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> = new EventEmitter();
   @Output() addressValues: EventEmitter<TemporaryProfile> = new EventEmitter();
@@ -44,7 +44,7 @@ export class AddressComponent implements OnInit {
   selectedAddressType: any = null;
   selectedState: any = null;
   selectedCountry: any = null;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -67,12 +67,13 @@ export class AddressComponent implements OnInit {
     this.service.getStates().then((data: any) => { this.states = data; });
     this.service.getCountries().then((data: any) => {
       this.countryList = data;
-      this.selectedCountry = this.countryList.find(x => x.id == 100);
+      this.selectedCountry = this.countryList.find((x:any)  => x.id == 100);
     });
 
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getData(this.employeeId);
     }
     if (this.profileId > 0) {
@@ -89,24 +90,24 @@ export class AddressComponent implements OnInit {
   }
 
 
-  getProfileData(id) {
+  getProfileData(id:any) {
     this.isLoading = true;
 
     this.httpService.HRget(APIURLS.TEMPORARY_EMPLOYEE_PROFILE_GET_DETAILS + "/" + id).then((data: any) => {
       if (data) {
         this.profileDetailsList = data;
-        this.profileDetailsList.addressDetails = this.profileDetailsList.addressDetails.filter(x => x.action != "None");
+        this.profileDetailsList.addressDetails = this.profileDetailsList.addressDetails.filter((x:any)  => x.action != "None");
         for (var item of this.profileDetailsList.addressDetails) {
-          item.statusColor = this.statusList.find(x => x.type == item.action).color;
+          item.statusColor = this.statusList.find((x:any)  => x.type == item.action).color;
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
 
-  getData(id) {
+  getData(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_GET_ADDRESS, id).then((data: any) => {
@@ -116,7 +117,7 @@ export class AddressComponent implements OnInit {
         //console.log(this.addressList);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -139,7 +140,7 @@ export class AddressComponent implements OnInit {
         let item2 = Object.assign({}, this.item);
         item2.addressTypeId = 3;
         item2.addressType = "mailing address";
-        var item3 = this.addressList.find(x => x.addressTypeId == 3);
+        var item3 = this.addressList.find((x:any)  => x.addressTypeId == 3);
         if (item3 != null)
           item3 = item2;
         else
@@ -153,10 +154,10 @@ export class AddressComponent implements OnInit {
     this.clearInput();
   }
 
-  EditLine(item, index) {
-    this.selectedAddressType = this.addressTypes.find(x => x.id == item.addressTypeId);
-    this.selectedState = this.states.find(x => x.id == item.stateId);
-    this.selectedCountry = this.countryList.find(x => x.id == item.countryId);
+  EditLine(item:any, index:any) {
+    this.selectedAddressType = this.addressTypes.find((x:any)  => x.id == item.addressTypeId);
+    this.selectedState = this.states.find((x:any)  => x.id == item.stateId);
+    this.selectedCountry = this.countryList.find((x:any)  => x.id == item.countryId);
 
     this.item = Object.assign({}, item);
     this.isEdit = true;
@@ -177,7 +178,7 @@ export class AddressComponent implements OnInit {
         let item2 = Object.assign({}, this.item);
         item2.addressTypeId = 3;
         item2.addressType = "mailing address";
-        var item3 = this.addressList.find(x => x.addressTypeId == 3);
+        var item3 = this.addressList.find((x:any)  => x.addressTypeId == 3);
         if (item3 != null)
           item3 = item2;
         else
@@ -192,14 +193,14 @@ export class AddressComponent implements OnInit {
   onStateChange() {
     if (this.selectedState.id == 1649)  // Nepal
     {
-      this.selectedCountry = this.countryList.find(x => x.id == 160); // Nepal
+      this.selectedCountry = this.countryList.find((x:any)  => x.id == 160); // Nepal
     }
     else
-      this.selectedCountry = this.countryList.find(x => x.id == 100); // India
+      this.selectedCountry = this.countryList.find((x:any)  => x.id == 100); // India
   }
   copyMailingAddress(event) {
     if (event.target.checked) {
-      var mailingAddress = this.addressList.find(x => x.addressTypeId == 3);
+      var mailingAddress = this.addressList.find((x:any)  => x.addressTypeId == 3);
       if (mailingAddress) {
         this.item = mailingAddress;
       }
@@ -208,7 +209,7 @@ export class AddressComponent implements OnInit {
 
   copyPermanentAddress(event) {
     if (event.target.checked) {
-      var permanentAddress = this.addressList.find(x => x.addressTypeId == 1);
+      var permanentAddress = this.addressList.find((x:any)  => x.addressTypeId == 1);
       if (permanentAddress) {
         this.item = permanentAddress;
       }

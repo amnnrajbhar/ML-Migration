@@ -9,10 +9,10 @@ import { HttpService } from '../shared/http-service';
 declare var jQuery: any;
 declare var $: any;
 
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient,HttpClientModule } from '@angular/common/http';
 
 
@@ -23,21 +23,24 @@ import { HttpClient,HttpClientModule } from '@angular/common/http';
 })
 export class GesubcontractreportComponent implements OnInit {
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
+  path!: string
   errMsg: string = "";
-  isLoading: boolean;
+  isLoading!: boolean;
   gateOutwardMList: any=[];
   gateOutwardDList: any;
-  exportList: any[];
+  exportList!: any[];
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,private excelService:ExcelService,
-    private http: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+    private http: HttpClient) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
   ngOnInit() {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLocationList();
       this.getbase64image();
       this.getDepartmentList();
@@ -71,9 +74,9 @@ export class GesubcontractreportComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x=>x.isActive);
+        this.departmentList = data.filter((x:any)=>x.isActive);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.departmentList = [];
     });
@@ -103,15 +106,15 @@ export class GesubcontractreportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data) {
-        this.locationList = data.filter(x=>{ return x.isActive;}).map((i) => { i.location = i.code + '-' + i.name; return i; });
+        this.locationList = data.filter((x:any)=>{ return x.isActive;}).map((i:any) => { i.location = i.code + '-' + i.name; return i; });
         let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-        this.locationList.sort((a,b)=>{return collator.compare(a.code,b.code)});
-        this.selectedLocations=this.locationList.filter(x=>x.id== this.currentUser.baselocation);
+        this.locationList.sort((a:any,b:any)=>{return collator.compare(a.code,b.code)});
+        this.selectedLocations=this.locationList.filter((x:any)=>x.id== this.currentUser.baselocation);
         let temp=data.find(x=>x.id== this.currentUser.baselocation);
         this.locationname=temp.code +'-'+temp.name;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -131,8 +134,8 @@ export class GesubcontractreportComponent implements OnInit {
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   status: string=null;
-  fltrGONO: string;
-  fltrInvoiceNo: string;
+  fltrGONO: string
+  fltrInvoiceNo: string
   fltrDCNo:string;
   loadGateOutwardList() {
     this.isLoading = true;
@@ -161,7 +164,7 @@ export class GesubcontractreportComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.gateOutwardMList = [];
     });
@@ -188,7 +191,7 @@ export class GesubcontractreportComponent implements OnInit {
   exportAsXLSX(): void {
     this.exportList=[];
     let index=0;
-    this.gateOutwardMList.forEach(item => {
+    this.gateOutwardMList.forEach((item :any) => {
       index=index+1;
       let exportItem={
         "SNo":index,
@@ -235,14 +238,14 @@ export class GesubcontractreportComponent implements OnInit {
   }
   downloadPdf()
   {
-    var printContents = document.getElementById('pdf').innerHTML;
+    var printContents = document.getElementById('pdf')!.innerHTML;
     var OrganisationName ="MICROLABS LIMITED"+','+this.locationname;
     var ReportName = "SUBCONTRAC RECONCILIATION REPORT"
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate =this.setFormatedDateTime(now);
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -255,14 +258,14 @@ export class GesubcontractreportComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title:'SubContract Report',
         },
       
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -280,7 +283,7 @@ export class GesubcontractreportComponent implements OnInit {
       pageSize: 'A3',
       pageMargins: [40, 80, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           
           columns: [
@@ -322,7 +325,7 @@ export class GesubcontractreportComponent implements OnInit {
       },
   
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 }

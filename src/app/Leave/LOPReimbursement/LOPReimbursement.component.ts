@@ -21,10 +21,10 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
-import * as moment from 'moment';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import htmlToPdfmake from 'html-to-pdfmake';
+import moment from 'moment'
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 
 
@@ -35,11 +35,11 @@ import htmlToPdfmake from 'html-to-pdfmake';
 })
 
 export class LOPReimbursementComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   isLoading: boolean = false;
@@ -50,20 +50,22 @@ export class LOPReimbursementComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  path: string;
+  path!: string
   employeeId: any = null;
   year: any;
 
   CalenderYear: string = '';
   CalYear: any;
-  StartDate: string = null;
-  EndDate: string = null;
+  StartDate: string = ' ';
+  EndDate: string = ' ';
   DetailedReason: string = '';
   RequestList: any[] = [];
   ApplyFor: any = null;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -81,7 +83,7 @@ export class LOPReimbursementComponent implements OnInit {
   }
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -90,26 +92,27 @@ export class LOPReimbursementComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
     //this.employeeId = this.currentUser.employeeId;
     let today = new Date();
@@ -142,7 +145,7 @@ export class LOPReimbursementComponent implements OnInit {
   }
 
   ApproversList: any[] = [];
-  getApproversList(id) {
+  getApproversList(id:any) {
     if (this.ApplyFor == 'Others') {
       this.GetReimbursementList();
     }
@@ -165,7 +168,7 @@ export class LOPReimbursementComponent implements OnInit {
 
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -180,7 +183,7 @@ export class LOPReimbursementComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -190,7 +193,7 @@ export class LOPReimbursementComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#userId").val(ui.item.value);
                   $("#userId").val(ui.item.value);
@@ -200,7 +203,7 @@ export class LOPReimbursementComponent implements OnInit {
                   $("#userId").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#userId").val(ui.item.value);
                   $("#userId").val(ui.item.value);
@@ -222,7 +225,7 @@ export class LOPReimbursementComponent implements OnInit {
   getReimbursementData() {
     this.isLoading = true;
     let srcstr = this.CalYear + "," + this.currentUser.employeeId;
-    this.httpService.LAgetByParam(APIURLS.GET_REIMBURSEMENT_REQUESTS, srcstr).then((data) => {
+    this.httpService.LAgetByParam(APIURLS.GET_REIMBURSEMENT_REQUESTS, srcstr).then((data:any) => {
       if (data) {
         this.RequestList = data;
       }
@@ -245,7 +248,8 @@ export class LOPReimbursementComponent implements OnInit {
     else {
       filterModel.employeeId = this.currentUser.employeeId;
     }
-    this.checkedRequestList.forEach(element => {
+    this.checkedRequestList.forEach((element:any)=> {
+
       filterModel.fromDate = this.setFormatedDateTime(element.fromDate);
       // filterModel.toDate = this.setFormatedDateTime(this.EndDate);
       filterModel.reason = element.remarks;
@@ -254,7 +258,7 @@ export class LOPReimbursementComponent implements OnInit {
       connection = this.httpService.LApost(APIURLS.INSERT_LOP_REIMBURSEMENT_REQUEST, filterModel);
     });
 
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
         swal({
           title: "Message",
@@ -311,7 +315,7 @@ export class LOPReimbursementComponent implements OnInit {
     }
 
     let connection = this.httpService.LApost(APIURLS.GET_REIMBURSEMENT_LIST, filterModel);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data[0].type == 'S') {
         this.Lopdateslist = data;
         jQuery("#myModal").modal('show');
@@ -354,7 +358,8 @@ export class LOPReimbursementComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

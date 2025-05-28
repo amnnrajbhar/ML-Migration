@@ -16,7 +16,7 @@ import swal from 'sweetalert';
   styleUrls: ['./confirmationpendingtask.component.css']
 })
 export class ConfirmationpendingtaskComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   myTasks: any[] = [];
   isLoading: boolean = false;
@@ -24,7 +24,7 @@ export class ConfirmationpendingtaskComponent implements OnInit {
   selectedPayGroup: any = "";
   selectedEmpCategory: any = "";
   taskId: number = 0;
-  comments: string;
+  comments: string
   plantList: any[] = [];
   payGroupList: any[] = [];
   empCategoryList: any[] = [];
@@ -38,7 +38,8 @@ export class ConfirmationpendingtaskComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.LoadDropDowns();
       this.LoadMyPendingTasks();
     }
@@ -53,9 +54,9 @@ export class ConfirmationpendingtaskComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_PLANT_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.filter(x => x.isActive).sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -63,9 +64,9 @@ export class ConfirmationpendingtaskComponent implements OnInit {
   getPayGroupList() {
     this.httpService.HRget(APIURLS.OFFER_PAYGROUP_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });
+        this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.payGroupList = [];
     });
   }
@@ -73,9 +74,9 @@ export class ConfirmationpendingtaskComponent implements OnInit {
   getEmployeeCategoryList() {
     this.httpService.HRget(APIURLS.OFFER_EMPLOYEE_CATEGORY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.empCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });
+        this.empCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.empCategoryList = [];
     });
   }
@@ -94,7 +95,7 @@ export class ConfirmationpendingtaskComponent implements OnInit {
         }
         //this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
   }
@@ -110,7 +111,7 @@ export class ConfirmationpendingtaskComponent implements OnInit {
   }
 
   approveBulk() {
-    var selectedList = this.myTasks.filter(x => x.selected);
+    var selectedList = this.myTasks.filter((x:any)  => x.selected);
     if (selectedList.length <= 0) {
       swal("Please select at least one task to approve.");
       return;
@@ -128,7 +129,7 @@ export class ConfirmationpendingtaskComponent implements OnInit {
             this.errorCount++;
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errorCount++;
       });
     }
@@ -148,7 +149,7 @@ export class ConfirmationpendingtaskComponent implements OnInit {
   //   this.router.navigate([route]);
   // }
 
-  approve(id) {
+  approve(id:any) {
     this.taskId = id;
     if (confirm("Are you sure you want to approve this?")) {
       var request: any = {};
@@ -165,13 +166,13 @@ export class ConfirmationpendingtaskComponent implements OnInit {
             this.LoadMyPendingTasks();
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         swal("Error occured.");
       });
     }
   }
 
-  reject(id) {
+  reject(id:any) {
     this.taskId = id;
     this.comments = "";
   }
@@ -199,7 +200,7 @@ export class ConfirmationpendingtaskComponent implements OnInit {
           this.LoadMyPendingTasks();
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       swal(error);
     });
   }
@@ -213,7 +214,7 @@ export class ConfirmationpendingtaskComponent implements OnInit {
    
     var exportList=[];
     let index=0;
-    this.myTasks.forEach(item => {
+    this.myTasks.forEach((item :any) => {
       index=index+1;
       let exportItem={
         "Sl No": index,

@@ -35,11 +35,11 @@ import { stringify } from 'querystring';
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 
 import * as XLSX from 'xlsx';  
-import * as FileSaver from 'file-saver';
-import { saveAs } from 'file-saver';
+//import * as FileSaver from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
 
 @Component({
   selector: 'app-CodeCreatorsSummaryReport',
@@ -47,20 +47,20 @@ import { ChartDataLabels } from 'chartjs-plugin-datalabels';
   styleUrls: ['./CodeCreatorsSummaryReport.component.css']
 })
 export class CodeCreatorsSummaryReportComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   
-  // @ViewChild(NgForm  , { static: false })dataForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })FGNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })LCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })OSENGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PPCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })dataForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })FGNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })LCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })OSENGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PPCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMForm!: NgForm;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();
@@ -84,7 +84,7 @@ export class CodeCreatorsSummaryReportComponent implements OnInit {
   isEdit: boolean = false;
   
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   selectedBaseLocation: any = [];
@@ -119,7 +119,8 @@ export class CodeCreatorsSummaryReportComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
   //  this.baseLocation = this.currentUser.baselocation;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
    // if (chkaccess == true) {
@@ -170,8 +171,8 @@ Total:any=0;
     var filterModel: any = {};
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
       this.from_date = new Date(td.getFullYear(), td.getMonth(), 1);
@@ -187,13 +188,14 @@ Total:any=0;
     filterModel.toDate = this.getFormatedDateTime(this.to_date);
     this.httpService.post(APIURLS.BR_GET_SAP_CREATOR_COUNT,filterModel).then((data: any) => {
       if (data) {
-       this.PendingList=data.filter(x=>x.status=='Pending');
-       this.CompletedList=data.filter(x=>x.status=='Completed');
+       this.PendingList=data.filter((x:any)=>x.status=='Pending');
+       this.CompletedList=data.filter((x:any)=>x.status=='Completed');
        this.CreatorsList = this.CompletedList
        .map(item => item.saP_CREATED_BY)
        .filter((value, index, self) => self.indexOf(value) === index);
 
-       this.CreatorsList.forEach(element => {
+       this.CreatorsList.forEach((element:any)=> {
+
         let list={Creator:null, RM:null, PM:null,BULK:null, FG:null, OSE:null, LC:null, PPC:null, CodeExtension:null, Customer:null
             , Vendor:null, Service:null,Total:0}
 
@@ -225,7 +227,8 @@ Total:any=0;
             this.CreatorWiseCompletedList.push(list);
        });
 
-       this.CreatorWiseCompletedList.forEach(element => {
+       this.CreatorWiseCompletedList.forEach((element:any)=> {
+
             this.TotalRM=+this.TotalRM + +element.RM;
             this.TotalPM=+this.TotalPM + +element.PM;
             this.TotalBULK=+this.TotalBULK + +element.BULK;
@@ -245,7 +248,7 @@ Total:any=0;
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
  

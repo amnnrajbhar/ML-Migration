@@ -19,7 +19,7 @@ import { AuditLogChange } from '../auditlogchange.model';
 import { AuditLog } from '../auditlog.model';
 // import { Subject, Observable } from 'rxjs';
 export class actionItemModel {
-  name: string;
+  name: string
 }
 
 @Component({
@@ -30,17 +30,17 @@ export class actionItemModel {
 })
 
 export class BelongingsComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
- @ViewChild(NgForm, { static: false }) belongingsForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+ @ViewChild(NgForm, { static: false }) belongingsForm!: NgForm;
 
   searchTerm: FormControl = new FormControl();
   // private trigger: Subject<void> = new Subject<void>();
   public tableWidget: any;
   indexI: number = 0;
-  belongingsList: any[];
+  belongingsList!: any[];
   empMList: any[] = [[]];
-  parentList: any[];
-  // employeeList: any[];
+  parentList!: any[];
+  // employeeList!: any[];
   selParentRole: any;
   selHeadEmpId: any;
   belongingsItem: Belongings = new Belongings();
@@ -59,8 +59,8 @@ export class BelongingsComponent implements OnInit {
 
   public employeeList: any[] = [[]];
   oldbelongingsItem: Belongings = new Belongings();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private http: HttpClient, private router: Router) { }
 
   private initDatatable(): void {
@@ -85,7 +85,8 @@ export class BelongingsComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getBelongingsList();
       this.getEmpList();
     }
@@ -139,7 +140,7 @@ export class BelongingsComponent implements OnInit {
 
   getHeadBelongingsName(id: number) {
     let temp: any;
-    temp = this.empMList.find(s => s.id == id);
+    temp = this.empMList.find((s:any) => s.id == id);
     var name = (typeof temp != 'undefined') ? temp.firstName + ' ' + temp.lastName : '';
     return name;
   }
@@ -151,7 +152,7 @@ export class BelongingsComponent implements OnInit {
         this.empMList = data;
         this.employeeList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.empMList = [];
       this.employeeList = [];
@@ -162,7 +163,7 @@ export class BelongingsComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_VISITORBELONGING_ALL).then((data: any) => {
       // this.isLoading = false;
       if (data.length > 0) {
-        this.belongingsList = data.filter(s => s.checked).sort((a,b)=>{
+        this.belongingsList = data.filter((s:any) => s.checked).sort((a:any,b:any)=>{
                                   if(a.name > b.name) return 1;
                                   if(a.name < b.name) return -1;
                                   return 0;
@@ -170,7 +171,7 @@ export class BelongingsComponent implements OnInit {
         // console.log(this.belongingsList);
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.belongingsList = [];
     });
@@ -193,8 +194,8 @@ export class BelongingsComponent implements OnInit {
     // this.belongingsItem.headEmpId = this.selHeadEmpId.id;
     let connection: any;
     this.validatedForm = true;
-    let validName = this.belongingsList.some(s => s.name.toLowerCase() == this.belongingsItem.name.toLowerCase() && s.id != this.belongingsItem.id);
-    // let validCode = this.belongingsList.some(s => s.code == this.belongingsItem.code && s.id != this.belongingsItem.id);
+    let validName = this.belongingsList.some((s:any) => s.name.toLowerCase() == this.belongingsItem.name.toLowerCase() && s.id != this.belongingsItem.id);
+    // let validCode = this.belongingsList.some((s:any) => s.code == this.belongingsItem.code && s.id != this.belongingsItem.id);
     if (validName) {
       this.isLoadingPop = false;
       this.validatedForm = false;
@@ -234,7 +235,7 @@ export class BelongingsComponent implements OnInit {
           this.insertAuditLog(this.oldbelongingsItem,this.belongingsItem,Id);
           this.getBelongingsList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving visitor belonging..';
       });
@@ -270,7 +271,7 @@ export class BelongingsComponent implements OnInit {
             this.insertAuditLog(this.belongingsItem,this.oldbelongingsItem,this.belongingsItem.id);
             this.getBelongingsList();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting visitor belonging..';
         });
@@ -334,12 +335,12 @@ export class BelongingsComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -348,7 +349,7 @@ export class BelongingsComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

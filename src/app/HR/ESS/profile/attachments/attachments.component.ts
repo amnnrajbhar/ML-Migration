@@ -16,7 +16,7 @@ declare var require: any;
   styleUrls: ['./attachments.component.css']
 })
 export class AttachmentsComponent implements OnInit {
-  @Input() employeeId: number;
+  @Input() employeeId!: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();

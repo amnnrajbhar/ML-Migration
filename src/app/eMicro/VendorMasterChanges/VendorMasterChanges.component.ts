@@ -35,14 +35,14 @@ import { stringify } from 'querystring';
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
+//import * as FileSaver from 'file-saver';
 import { VendorMasterChanges } from './VendorMasterChanges.model';
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 import { HttpClient } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 declare var require: any;
 
@@ -53,22 +53,22 @@ declare var require: any;
     styleUrls: ['./VendorMasterChanges.component.css']
 })
 export class VendorMasterChangesComponent {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
-    // @ViewChild(NgForm  , { static: false })dataForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })PMForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })BULKForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })RMNGXPForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })PMNGXPForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })BULKNGXPForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })FGNGXPForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })LCNGXPForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })OSENGXPForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })PPCNGXPForm: NgForm;
-    // @ViewChild(NgForm  , { static: false })RMForm: NgForm;
+    // @ViewChild(NgForm  , { static: false })dataForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })PMForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })BULKForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })RMNGXPForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })PMNGXPForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })BULKNGXPForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })FGNGXPForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })LCNGXPForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })OSENGXPForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })PPCNGXPForm!: NgForm;
+    // @ViewChild(NgForm  , { static: false })RMForm!: NgForm;
     searchTermBaseLoc = new FormControl();
     public filteredItemsBaseLoc = [];
     searchTermMgr = new FormControl();
@@ -90,7 +90,7 @@ export class VendorMasterChangesComponent {
     isEdit: boolean = false;
 
     formData: FormData = new FormData();
-    file: File; successMsg: string = "";
+    file!: File; successMsg: string = "";
     path: string = '';
     locationList: any[] = [[]];
     selectedBaseLocation: any = [];
@@ -103,13 +103,13 @@ export class VendorMasterChangesComponent {
     vendormasterchangesmodel = {} as VendorMasterChanges
     vendormasterchangeslist: VendorMasterChanges[] = [];
     // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-    materialtype: string;
-    comments: string;
-    filterMaterialCode: string = null;
-    filterstatus: string = null;
-    filterlocation: string = null;
-    filterrequest: string = null;
-    filterplace: string = null;
+    materialtype!: string
+    comments: string
+    filterMaterialCode: string = ' ';
+    filterstatus: string = ' ';
+    filterlocation: string = ' ';
+    filterrequest: string = ' ';
+    filterplace: string = ' ';
     today = new Date();
     from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     to_date: any = this.today;
@@ -118,8 +118,9 @@ export class VendorMasterChangesComponent {
     VendorMasterFilter: VendorMasterChanges[] = [];
     vendormastersearchlist: VendorMasterChanges[] = [];
 
-    emailid: string;
-    requestdate: Date;
+    emailid!: string
+
+    requestdate!: Date;
     Approver1: boolean = false;
     Approverid1: string = "";
     Approverid2: string = "";
@@ -127,19 +128,22 @@ export class VendorMasterChangesComponent {
     Creator: boolean = false;
     Review: boolean = false;
     Closure: boolean = false;
-    userid: string;
+    userid!: string
+
     storeData: any;
     jsonData: any;
-    fileUploaded: File;
+    fileUploaded!: File;
     worksheet: any;
-    vendorCode: string;
-    status: string;
-    vendorName: string;
+    vendorCode: string
+    status: string
+    vendorName: string
 
     //vendormastermodeldata = {} as ItemCodeExtension;
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router
-        , private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+        , private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
     private initDatatable(): void {
         let exampleId: any = jQuery('#userTable');
         this.tableWidget = exampleId.DataTable({
@@ -157,7 +161,8 @@ export class VendorMasterChangesComponent {
 
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         //  this.baseLocation = this.currentUser.baselocation;
         this.emailid = this.currentUser.email;
         this.userid = this.currentUser.employeeId;
@@ -210,7 +215,7 @@ export class VendorMasterChangesComponent {
                 this.VendorTypeList = data;
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.VendorTypeList = [];
         });
@@ -226,7 +231,7 @@ export class VendorMasterChangesComponent {
             }
             // this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.countrylist = [];
         });
@@ -239,21 +244,21 @@ export class VendorMasterChangesComponent {
                 this.stateList = data;
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.stateList = [];
         });
     }
-    getstatelist(id) {
-        this.stateList1 = this.stateList.filter(x => x.land1 == id);
+    getstatelist(id:any) {
+        this.stateList1 = this.stateList.filter((x:any)  => x.land1 == id);
     }
 
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationAllList.find(e => e.id == id);
         return temp ? temp.code : '';
     }
-    getloc(loc) {
+    getloc(loc:any) {
         let loccode = loc.keyValue.split('~');
         return loccode ? loccode[0] : '';
     }
@@ -320,16 +325,16 @@ export class VendorMasterChangesComponent {
     }
 
 
-    location(id) {
-        let loc = this.locationList.find(x => x.id == id);
+    location(id:any) {
+        let loc = this.locationList.find((x:any)  => x.id == id);
         return loc ? loc.code : "";
     }
 
     getAllEntries() {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         if (this.from_date == '' || this.from_date == null) {
             formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -364,7 +369,7 @@ export class VendorMasterChangesComponent {
         this.httpService.post(APIURLS.GET_FILTERED_RESULT_OF_VMC, filterModel).then((data: any) => {
             if (data) {
                 if (this.status == 'Pending') {
-                    this.VendorMasterFilter = data.filter(x => x.pendingApprover == this.currentUser.fullName || x.requestedBy == this.currentUser.employeeId);
+                    this.VendorMasterFilter = data.filter((x:any)  => x.pendingApprover == this.currentUser.fullName || x.requestedBy == this.currentUser.employeeId);
                     this.VendorMasterFilter.reverse();
                 }
                 else {
@@ -374,7 +379,7 @@ export class VendorMasterChangesComponent {
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.VendorMasterFilter = [];
         });
@@ -384,8 +389,8 @@ export class VendorMasterChangesComponent {
     getSearchResult() {
         this.isLoading = true;
         let td = new Date();
-        let formatedFROMdate: string;
-        let formatedTOdate: string;
+        let formatedFROMdate: string
+        let formatedTOdate: string
         var filterModel: any = {};
         if (this.from_date == '' || this.from_date == null) {
             formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -425,7 +430,7 @@ export class VendorMasterChangesComponent {
             this.continue = true;
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.vendormastersearchlist = [];
         });
@@ -437,13 +442,13 @@ export class VendorMasterChangesComponent {
         this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-                this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+                this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
@@ -451,7 +456,7 @@ export class VendorMasterChangesComponent {
 
     fileToUpload: File | null = null;
     File: File | null = null;
-    name: string;
+    name: string
     files: File[] = []
     handleFileInput(files: FileList) {
         this.errMsg1 = "";
@@ -465,7 +470,7 @@ export class VendorMasterChangesComponent {
     }
 
 
-    ReadAsBase64(file): Promise<any> {
+    ReadAsBase64(file:any): Promise<any> {
         const reader = new FileReader();
         const fileValue = new Promise((resolve, reject) => {
             reader.addEventListener('load', () => {
@@ -484,7 +489,7 @@ export class VendorMasterChangesComponent {
 
         return fileValue;
     }
-    id: string;
+    id: string
     uploadfile() {
         // debugger;
         // this.id='VM001';
@@ -501,14 +506,14 @@ export class VendorMasterChangesComponent {
                 // console.log('copied file to server')
                 //this.imageFlag = true;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error uploading file ..';
         });
 
     }
 
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngAfterViewInit() {
         this.initDatatable();
     }
@@ -524,16 +529,16 @@ export class VendorMasterChangesComponent {
 
 
     transactionslist: Transactions[] = [];
-    gettransactions(reqNo) {
+    gettransactions(reqNo:any) {
         this.httpService.getByParam(APIURLS.BR_ITEMCODE_APPROVAL_TRANSACTIONS_GETBY_PARAM_API, reqNo).then((data: any) => {
             this.isLoading = true;
             if (data.length > 0) {
-                this.transactionslist = data.filter(x=>x.processType=='Vendor Master Changes');;
+                this.transactionslist = data.filter((x:any)=>x.processType=='Vendor Master Changes');;
                 //this.transactionslist.reverse();
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.transactionslist = [];
         });
@@ -541,8 +546,8 @@ export class VendorMasterChangesComponent {
     }
     Approverslist: WorkFlowApprovers[] = [];
     accountGroupList: any[] = [];
-    Aprlpriority: number;
-    getApproversList(value) {
+    Aprlpriority!: number;
+    getApproversList(value:any) {
 
         // this.Approver1 = false;
         // this.Approver2 = false;
@@ -551,13 +556,13 @@ export class VendorMasterChangesComponent {
         // this.Closure = false;
         //this.vendormasterchangesmodel = Object.assign({}, value);
         if (!this.isEdit) {
-            var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+            var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
         }
         else {
-            var loc = this.locationList.find(x => x.id == value.locationId);
+            var loc = this.locationList.find((x:any)  => x.id == value.locationId);
         }
 
-        // var accgrp = this.AccGroupList.find(x => x.accountGroupId == this.vendormasterchangesmodel.accountGroupId);
+        // var accgrp = this.AccGroupList.find((x:any)  => x.accountGroupId == this.vendormasterchangesmodel.accountGroupId);
         // var matgrp=this.materialgroupList.find(x=>x.materialGroupId==this.ItemCodeRequestModel.materialGroupId);
         // var group = accgrp.accountGroupName == 'Import' ? 'Import' : 'Local';
         //var keyvalue = loc.code + '~' + group + ',' + 3;
@@ -568,11 +573,11 @@ export class VendorMasterChangesComponent {
             this.isLoading = true;
             if (data.length > 0) {
                 this.Approverslist = data;
-                this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+                this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
                 let empid = this.currentUser.employeeId
                 let empName = this.currentUser.fullName;
 
-                let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+                let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
                     x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
                     x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -582,7 +587,7 @@ export class VendorMasterChangesComponent {
                     this.Review = true;
                     this.Aprlpriority = Appr1.priority;
                 }
-                let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+                let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
                     x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
                     x.parllelApprover3 == empid || x.parllelApprover4 == empid);
                 if (Appr2 != null || Appr2 != undefined) {
@@ -592,7 +597,7 @@ export class VendorMasterChangesComponent {
                     this.Review = true;
                     this.Aprlpriority = Appr2.priority;
                 }
-                let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+                let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
                     x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
                     x.parllelApprover3 == empid || x.parllelApprover4 == empid);
                 if (Appr3 != null || Appr3 != undefined) {
@@ -614,7 +619,7 @@ export class VendorMasterChangesComponent {
                 }
 
                 this.transactionslist.forEach((ad) => {
-                    let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority &&
+                    let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority &&
                         (ad.doneBy == x.approverId || ad.doneBy == x.parllelApprover1 || ad.doneBy == x.parllelApprover2));
                     if (temp != undefined) {
                         if (ad.transactionType == 1) {
@@ -628,7 +633,7 @@ export class VendorMasterChangesComponent {
                                 ad.status = 'Approved'
                             }
                             else {
-                                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
                             }
                         }
                         else if (ad.transactionType == 0) {
@@ -648,7 +653,7 @@ export class VendorMasterChangesComponent {
 
                 });
                 this.Approverslist.forEach((ad) => {
-                    let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority &&
+                    let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority &&
                         (x.doneBy == ad.approverId || x.doneBy == ad.parllelApprover1 || x.doneBy == ad.parllelApprover2));
                     if (temp1 == undefined) {
                         let trans = {} as Transactions;
@@ -662,12 +667,12 @@ export class VendorMasterChangesComponent {
 
 
                 });
-                this.Approverslist = this.Approverslist.sort((a, b) => {
+                this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
                     if (a.priority > b.priority) return 1;
                     if (a.priority < b.priority) return -1;
                     return 0;
                 });
-                this.transactionslist = this.transactionslist.sort((a, b) => {
+                this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
                     if (a.doneOn > b.doneOn) return 1;
                     if (a.doneOn < b.doneOn) return -1;
                     if (a.approvalPriority > b.approvalPriority) return 1;
@@ -681,7 +686,7 @@ export class VendorMasterChangesComponent {
             }
             //this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.Approverslist = [];
         });
@@ -743,9 +748,9 @@ export class VendorMasterChangesComponent {
             .catch(err => this.errMsg1 = err);
     }
 
-    empId: string;
+    empId: string
     view: boolean = false;
-    locationName: string;
+    locationName: string
     attachments: any[] = [];
     onUserActions(isedit: boolean, vendormasterchanges: VendorMasterChanges, isprint: boolean, value: string) {
         this.isEdit = isedit;
@@ -780,7 +785,7 @@ export class VendorMasterChangesComponent {
                 this.attachments = vendormasterchanges.attachments.split(',');
             }
             this.vendormasterchangesmodel = Object.assign({}, vendormasterchanges);
-            this.stateList1 = this.stateList.filter(x => x.land1 == this.vendormasterchangesmodel.country);
+            this.stateList1 = this.stateList.filter((x:any)  => x.land1 == this.vendormasterchangesmodel.country);
             // this.vendormasterchangesmodel.accountGroupId=this.AccGroupList.find(x=>x.accountGroupId == vendormasterchanges.accountGroupId).accountGroupId;
             this.empId = this.vendormasterchangesmodel.createdBy;
         }
@@ -795,7 +800,7 @@ export class VendorMasterChangesComponent {
             this.attachments = vendormasterchanges.attachments.split(',');
         }
         this.vendormasterchangesmodel = Object.assign({}, vendormasterchanges);
-        this.stateList1 = this.stateList.filter(x => x.land1 == this.vendormasterchangesmodel.country);
+        this.stateList1 = this.stateList.filter((x:any)  => x.land1 == this.vendormasterchangesmodel.country);
         if (this.vendormasterchangesmodel.vendorCat != null || this.vendormasterchangesmodel.vendorCat != undefined) {
             this.getApproversList(vendormasterchanges);
         }
@@ -806,13 +811,13 @@ export class VendorMasterChangesComponent {
         }
 
         if (isprint) {
-            let ln = this.locationList.find(x => x.id == this.vendormasterchangesmodel.locationId)
+            let ln = this.locationList.find((x:any)  => x.id == this.vendormasterchangesmodel.locationId)
             this.locationName = ln.code + '-' + ln.name;
-            this.vendormasterchangesmodel.vendorCat = this.vendorcatlist.find(x => x.id == this.vendormasterchangesmodel.vendorCat).name;
-            this.vendormasterchangesmodel.vendorSubCat = this.vendorsubcatlist.find(x => x.id == this.vendormasterchangesmodel.vendorSubCat).name;
-            this.vendormasterchangesmodel.typeOfVendor = this.VendorTypeList.find(x => x.vCode == this.vendormasterchangesmodel.typeOfVendor).vDescription;
-            this.vendormasterchangesmodel.country = this.countrylist.find(x => x.land1 == this.vendormasterchangesmodel.country).landx;
-            this.vendormasterchangesmodel.state = this.stateList.find(x => x.id == this.vendormasterchangesmodel.state).bezei;
+            this.vendormasterchangesmodel.vendorCat = this.vendorcatlist.find((x:any)  => x.id == this.vendormasterchangesmodel.vendorCat).name;
+            this.vendormasterchangesmodel.vendorSubCat = this.vendorsubcatlist.find((x:any)  => x.id == this.vendormasterchangesmodel.vendorSubCat).name;
+            this.vendormasterchangesmodel.typeOfVendor = this.VendorTypeList.find((x:any)  => x.vCode == this.vendormasterchangesmodel.typeOfVendor).vDescription;
+            this.vendormasterchangesmodel.country = this.countrylist.find((x:any)  => x.land1 == this.vendormasterchangesmodel.country).landx;
+            this.vendormasterchangesmodel.state = this.stateList.find((x:any)  => x.id == this.vendormasterchangesmodel.state).bezei;
             jQuery("#printModal").modal('show');
         }
         else {
@@ -825,7 +830,7 @@ export class VendorMasterChangesComponent {
     isValid: boolean = false;
     validatedForm: boolean = true;
 
-    onSaveEntry(status) {
+    onSaveEntry(status:any) {
         this.errMsg = "";
         let connection: any;
         if (this.Approverslist.length == 0) {
@@ -855,7 +860,7 @@ export class VendorMasterChangesComponent {
                     this.vendormasterchangesmodel.attachments = file;
                 }
                 this.vendormasterchangesmodel.lastApprover = 'No';
-                this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+                this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
                 this.vendormasterchangesmodel.status = status == "Submit" ? "Submitted" : "Created";
                 connection = this.httpService.post(APIURLS.BR_VENDOR_MASTER_CHANGES_CREATION_POST_API, this.vendormasterchangesmodel);
             }
@@ -874,7 +879,7 @@ export class VendorMasterChangesComponent {
                     this.getAllEntries();
                     this.reset();
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoadingPop = false;
                 this.errMsgPop = 'Error saving Request..';
             });
@@ -917,28 +922,28 @@ export class VendorMasterChangesComponent {
                 this.getAllEntries();
                 this.reset();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error Submitting Request ' + '' + this.vendormasterchangesmodel.id;
         });
     }
     Role: any;
-    onreview(status) {
+    onreview(status:any) {
         this.errMsg = "";
         let connection: any;
         let uid = this.currentUser.employeeId;
         if (status == "Rejected") {
-            let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+            let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
                 || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
             this.vendormasterchangesmodel.pendingApprover = '';
-            this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         }
         else {
-            let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+            let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
                 || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
             this.Role = user.role;
-            this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == user.priority + 1).approverId;
-            this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+            this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).approverId;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         }
 
 
@@ -968,31 +973,31 @@ export class VendorMasterChangesComponent {
                 this.Inserttransactions(this.vendormasterchangesmodel, id)
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = status == "Rejected" ? "Error Rejecting Request.." + '' + this.vendormasterchangesmodel.id : "Error Reviewing Request " + '' + this.vendormasterchangesmodel.id;
         });
     }
 
-    onRevertRequest(status) {
+   onRevertRequest(status:any) {
         this.errMsg = "";
         let connection: any;
         if (status == "ReverttoInitiator") {
             let usid = this.currentUser.employeeId;
-            let user = this.Approverslist.find(x => x.approverId == usid || x.parllelApprover1 == usid || x.parllelApprover2 == usid
+            let user = this.Approverslist.find((x:any)  => x.approverId == usid || x.parllelApprover1 == usid || x.parllelApprover2 == usid
                 || x.parllelApprover3 == usid || x.parllelApprover4 == usid);
 
-            this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+            this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
             this.vendormasterchangesmodel.status = "Reverted to initiator";
-            this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         }
         else {
             let uid = this.vendormasterchangesmodel.modifiedBy;
-            let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+            let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
                 || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-            this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == user.priority).approverId;
-            this.priority = this.Approverslist.find(x => x.priority == user.priority + 1).priority;
+            this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == user.priority).approverId;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).priority;
             this.vendormasterchangesmodel.status = "Reverted";
         }
 
@@ -1015,7 +1020,7 @@ export class VendorMasterChangesComponent {
                 this.Inserttransactions(this.vendormasterchangesmodel, id)
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = "Error Reverting Request " + '' + this.vendormasterchangesmodel.id;
         });
@@ -1026,10 +1031,10 @@ export class VendorMasterChangesComponent {
         let connection: any;
         let uid = this.currentUser.employeeId;
 
-        let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+        let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
             || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-        let temp = this.Approverslist.find(x => x.priority == user.priority + 1);
+        let temp = this.Approverslist.find((x:any)  => x.priority == user.priority + 1);
         if (temp != null || temp != undefined) {
             this.vendormasterchangesmodel.pendingApprover = temp.approverId;
             this.vendormasterchangesmodel.status = 'InProcess';
@@ -1038,7 +1043,7 @@ export class VendorMasterChangesComponent {
             this.vendormasterchangesmodel.pendingApprover = 'No';
             this.vendormasterchangesmodel.status = 'Completed';
         }
-       // this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+       // this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         this.vendormasterchangesmodel.lastApprover = this.currentUser.fullName;
         this.vendormasterchangesmodel.modifiedBy = this.currentUser.employeeId;
         this.vendormasterchangesmodel.modifiedDate = new Date().toLocaleString();
@@ -1057,24 +1062,24 @@ export class VendorMasterChangesComponent {
                 this.Inserttransactions(this.vendormasterchangesmodel, 1)
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = "Error Creating Vendor Code..";
         });
 
     }
-    priority: number;
+    priority!: number;
     oncloserequest(status) {
         this.errMsg = "";
         let connection: any;
 
         if (status == 'Completed') {
             let uid = this.currentUser.employeeId;
-            let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+            let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
                 || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-            this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find(x => x.priority == user.priority + 1).approverId;
-            this.priority = this.Approverslist.find(x => x.priority == user.priority).priority;
+            this.vendormasterchangesmodel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == user.priority + 1).approverId;
+            this.priority = this.Approverslist.find((x:any)  => x.priority == user.priority).priority;
         }
         this.vendormasterchangesmodel.lastApprover = this.currentUser.fullName;
         this.vendormasterchangesmodel.modifiedBy = this.currentUser.employeeId;
@@ -1093,7 +1098,7 @@ export class VendorMasterChangesComponent {
                 //this.sendMail('VM-Created', this.vendormasterchangesmodel)
                 this.getAllEntries();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = "Error Closing Request" + '' + this.vendormasterchangesmodel.id;
         });
@@ -1120,7 +1125,7 @@ export class VendorMasterChangesComponent {
         connection.then((data: any) => {
             if (data == 200) {
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error in sending mail..';
         });
 
@@ -1133,27 +1138,27 @@ export class VendorMasterChangesComponent {
         connection.then((data: any) => {
             if (data == 200) {
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.errMsgPop = 'Error in sending mail..';
         });
 
     }
-    downloadFile(reqNo, value) {
+    downloadFile(reqNo:any, value:any) {
 
         // console.log(filename);
         if (value.length > 0) {
             this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
                 // console.log(data);
-                // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+                // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
                 if (data != undefined) {
-                    var FileSaver = require('file-saver');
+                   // var FileSaver = require('file-saver');
                     const imageFile = new File([data], value, { type: 'application/doc' });
                     // console.log(imageFile);
-                    FileSaver.saveAs(imageFile);
+                //      FileSaver.saveAs(imageFile);
 
 
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
             });
 
@@ -1171,7 +1176,7 @@ export class VendorMasterChangesComponent {
             });
         }
     }
-    deletefile(item, name) {
+    deletefile(item:any, name:any) {
         //let attach:any='';
         if (this.attachments.length > 1) {
             const index = this.attachments.indexOf(name);
@@ -1195,12 +1200,12 @@ export class VendorMasterChangesComponent {
                     buttons: [false, true]
                 })
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error deleteing file..';
         });
     }
-    removefile(name) {
+    removefile(name:any) {
         const index = this.fileslist.indexOf(name);
         this.fileslist.splice(index, 1);
     }
@@ -1254,7 +1259,7 @@ export class VendorMasterChangesComponent {
         this.printModel = Object.assign({}, data);
         jQuery("#printReasonModal").modal('show');
     }
-    image: string;
+    image!: string
     getbase64image() {
         this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
             .subscribe(blob => {
@@ -1280,7 +1285,7 @@ export class VendorMasterChangesComponent {
         jQuery("#printModal").modal('hide');
         jQuery("#printReasonModal").modal('hide');
         this.InsertPrintLog();
-        let locid = this.locationList.find(x => x.id == value.locationId);
+        let locid = this.locationList.find((x:any)  => x.id == value.locationId);
         // var temp=this.materialList.find(x=>x.id==this.filtermaterialtype);
         var printContents = document.getElementById('print-section').innerHTML;
         // var temp1=this.locationList.find(x=>x.id==this.currentUser.baselocation);
@@ -1292,7 +1297,7 @@ export class VendorMasterChangesComponent {
         var reason = this.printReason;
         var jsDate = this.setFormatedDateTime(now);
         var logo = this.image;
-        var htmnikhitml = htmlToPdfmake(`<html>
+        /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1305,14 +1310,14 @@ export class VendorMasterChangesComponent {
             headerRows: 1,
             dontBreakRows: true,
             keepWithHeaderRows: true,
-        })
+        })*/
         var docDefinition = {
             info: {
                 title: 'Vendor Master request form',
             },
 
             content: [
-                htmnikhitml,
+                //htmnikhitml,
             ],
             defaultStyle: {
                 fontSize: 9,
@@ -1330,7 +1335,7 @@ export class VendorMasterChangesComponent {
             pageSize: 'A4',
             pageMargins: [40, 80, 40, 60],
             pageOrientation: 'portrait',
-            header: function (currentPage, pageCount) {
+            header: function (currentPage:any, pageCount:any) {
                 return {
 
                     columns: [
@@ -1385,7 +1390,7 @@ export class VendorMasterChangesComponent {
                 }
             },
         };
-        pdfMake.createPdf(docDefinition).open();
+        //pdfMake.createPdf(docDefinition).open();
     }
 
     InsertPrintLog() {
@@ -1428,7 +1433,7 @@ export class VendorMasterChangesComponent {
         let connection: any;
         this.isLoading = true;
         connection = this.httpService.getByParam(APIURLS.BR_VENDOR_MASTERCHANGES_APPROVERS_GETBY_PARAM_ALL, this.vendorCode)
-        connection.then((data) => {
+        connection.then((data:any) => {
             if (data.length > 0) {
                 this.vendormasterchangesmodel.vendorCode = data[0].sapCodeNo
                 this.vendormasterchangesmodel.vendorType = data[0].typeOfVendor;

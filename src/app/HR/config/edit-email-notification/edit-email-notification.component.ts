@@ -19,7 +19,7 @@ declare var toastr: any;
 })
 export class EditEmailNotificationComponent implements OnInit {
   id: number = 0;
-  action: string;
+  action: string
   isLoading: boolean = false;
   plantList: any[] = [];
   payGroupList: any[] = [];
@@ -27,7 +27,7 @@ export class EditEmailNotificationComponent implements OnInit {
   employeeCategoryList: any[] = [];
   filterData: any = {};
   emailNotificationDetails= {} as EmailNotification;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   selectedEmailType: any = null;
   employeeName: any;
   emailPattern: any = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
@@ -55,7 +55,8 @@ export class EditEmailNotificationComponent implements OnInit {
   canEdit:boolean = false;
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.offerEmailNotitifactionId = this.route.snapshot.paramMap.get('id')!;
    
     this.masterService.getPlantList().then((data: any) => { this.plantList = data; });
@@ -70,7 +71,7 @@ export class EditEmailNotificationComponent implements OnInit {
     }
   }
 
-  GetEmailNotificationDetailsById(id) {
+  GetEmailNotificationDetailsById(id:any) {
     this.isLoading = true;
 
     this.httpService.HRget(APIURLS.EMAIL_NOTIFICATION_GET_EMAIL_BY_ID+"/"+id).then((data: any) => {
@@ -88,7 +89,7 @@ export class EditEmailNotificationComponent implements OnInit {
          this.getState();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }
@@ -98,9 +99,9 @@ export class EditEmailNotificationComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -226,7 +227,7 @@ export class EditEmailNotificationComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while saving email details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving email details. Error:' + error);
       });
@@ -256,7 +257,7 @@ export class EditEmailNotificationComponent implements OnInit {
       if ($event.timeStamp - this.lastApproverEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -266,7 +267,7 @@ export class EditEmailNotificationComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#employeeId").val(ui.item.value);
                   $("#employeeName").val(ui.item.label);
@@ -276,7 +277,7 @@ export class EditEmailNotificationComponent implements OnInit {
                   $("#employeeName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#employeeId").val(ui.item.value);
                   $("#employeeName").val(ui.item.label);
@@ -298,7 +299,7 @@ export class EditEmailNotificationComponent implements OnInit {
   onPlantChange(){
     if(this.emailNotificationDetails.plantId > 0){
       let plant = this.plantList.find(x=>x.id == this.emailNotificationDetails.plantId)
-      this.payGroupList = this.payGroupFullList.filter(x=>x.plant == plant.code);
+      this.payGroupList = this.payGroupFullList.filter((x:any)=>x.plant == plant.code);
     }
     else
       this.payGroupList = [];

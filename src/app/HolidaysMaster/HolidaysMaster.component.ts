@@ -29,10 +29,10 @@ import { error } from 'console';
 })
 export class HolidaysMasterComponent implements OnInit {
     searchTerm: FormControl = new FormControl();
-  @ViewChild(NgForm, { static: false }) desigForm: NgForm;
+  @ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
 
-@ViewChild(MatAccordion, { static: false }) accordion: MatAccordion;
+@ViewChild(MatAccordion, { static: false }) accordion!: MatAccordion;
 
 
     public filteredItems = [];
@@ -42,7 +42,7 @@ export class HolidaysMasterComponent implements OnInit {
     HolidaysMasterList: any[] = [];
     HolidaysMasterList1: any = [];
     desgList: any;
-    parentList: any[];
+    parentList!: any[];
     selParentRole: any = [];
     selParentRoleList: any;
     requiredField: boolean = true;
@@ -59,19 +59,19 @@ export class HolidaysMasterComponent implements OnInit {
     notFirst = true;
     currentUser = {} as AuthData;
     oldHolidaysMaster: HolidayMaster = new HolidayMaster();// For aduit log
-    auditType: string;// set ActionTypes: Create,Update,Delete
-    aduitpurpose: string;
-    calYear: string;
-    filterLocation: string = null;
-    filterPayGroup: string = null;
-    filterType: string = null;
-    filterTypeCode: string = null;
-    filterTypeName: string = null;
-    Type: string = null;
-    TypeCode: string = null;
-    TypeName: string = null;
-    PayGroup: string = null;
-    Location: string = null;
+    auditType!: string// set ActionTypes: Create,Update,Delete
+    aduitpurpose!: string
+    calYear!: string
+    filterLocation: string = ' ';
+    filterPayGroup: string = ' ';
+    filterType: string = ' ';
+    filterTypeCode: string = ' ';
+    filterTypeName: string = ' ';
+    Type: string = ' ';
+    TypeCode: string = ' ';
+    TypeName: string = ' ';
+    PayGroup: string = ' ';
+    Location: string = ' ';
     min = new Date();
     max = new Date();
     holidayList: any[] = [];
@@ -105,7 +105,8 @@ export class HolidaysMasterComponent implements OnInit {
             let currentYear = new Date().getFullYear();
             this.min = new Date(currentYear - 0, 0, 1);
             this.max = new Date(currentYear + 0, 11, 31);
-            this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+         const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
             this.calYear = new Date().getFullYear().toString();
             //  this.filterLocation = this.currentUser.baselocation.toString();
 
@@ -125,9 +126,9 @@ export class HolidaysMasterComponent implements OnInit {
         if (this.dynamicArray.length > 0) {
             // let dupDate = null;
             let count: number = 0;
-            // dupDate = this.dynamicArray.some(x => x.date._d == d);
+            // dupDate = this.dynamicArray.some((x:any)  => x.date._d == d);
 
-            this.dynamicArray.forEach((value, index) => {
+            this.dynamicArray.forEach((value:any, index:any) => {
                 if (index < this.dynamicArray.length - 1) {
                     let tempDate1 = new Date(value.date);
                     let tempDate2 = new Date(d);
@@ -159,9 +160,9 @@ export class HolidaysMasterComponent implements OnInit {
             if (data.length > 0) {
                 this.locationList11 = data;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList11.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList11.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList11 = [];
         });
@@ -175,9 +176,12 @@ export class HolidaysMasterComponent implements OnInit {
         this.filterLocation = '';
         this.filterPayGroup = '';
         this.calYear = new Date().getFullYear().toString();
-        this.filterType = null;
-        this.filterTypeCode = null;
-        this.filterTypeName = null;
+        //this.filterType = null;
+this.filterType = '';
+     //   this.filterTypeCode = null;
+   this.filterTypeCode = '';
+       //   this.filterTypeName = null;
+ this.filterTypeName = '';
         this.HolidaysMasterList = [];
     }
 
@@ -197,7 +201,7 @@ export class HolidaysMasterComponent implements OnInit {
         this.dynamicArray.push(this.newDynamic);
     }
 
-    removeRows(item) {
+    removeRows(item:any) {
         if (this.dynamicArray.length > 1) {
             const index = this.dynamicArray.indexOf(item);
             this.dynamicArray.splice(index, 1);
@@ -236,7 +240,7 @@ export class HolidaysMasterComponent implements OnInit {
                     this.filterType = ''
                     this.filterPayGroup = ''
                 }
-            }).catch(error => {
+            }).catch((error)=> {
             });
         }
     }
@@ -251,14 +255,14 @@ export class HolidaysMasterComponent implements OnInit {
         this.httpService.LApost(APIURLS.GET_HOLIDAYS_LIST_BASED_ON_EMPLOYEES, filterModel).then((data: any) => {
           if (data.length > 0) {
             this.HolidaysMasterList = data;
-            this.HolidaysMasterList = this.HolidaysMasterList.sort((a, b) => {
+            this.HolidaysMasterList = this.HolidaysMasterList.sort((a:any, b:any) => {
                 if (a.date > b.date) return 1;
                 if (a.date < b.date) return -1;
                 return 0;
     
               });
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoading = false;
           this.holidaysList = [];
         });
@@ -293,7 +297,7 @@ export class HolidaysMasterComponent implements OnInit {
         let searchTerm = this.filterLocation + ',' + this.filterPayGroup + ',' + this.calYear + ',' + this.filterType + ',' + this.filterTypeCode;
         this.httpService.LAgetByParam(APIURLS.GET_HOLIDAYS_LIST, searchTerm).then((data: any) => {
             if (data.length > 0) {
-                this.HolidaysMasterList = data.filter(x => x.isActive == true).sort((a, b) => {
+                this.HolidaysMasterList = data.filter((x:any)  => x.isActive == true).sort((a:any, b:any) => {
                     if (a.date > b.date) return 1;
                     if (a.date < b.date) return -1;
                     return 0;
@@ -311,14 +315,14 @@ export class HolidaysMasterComponent implements OnInit {
             }
             this.reInitDatatable();
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.HolidaysMasterList = [];
         });
     }
 
-    getTypeName(code) {
-        let temp = this.AdditionalTypesList.find(x => x.typeCode == code);
+    getTypeName(code:any) {
+        let temp = this.AdditionalTypesList.find((x:any)  => x.typeCode == code);
         return temp ? this.filterTypeName = temp.typeName : '';
     }
     TypecodeList: any[] = [];
@@ -331,24 +335,24 @@ export class HolidaysMasterComponent implements OnInit {
             if (data) {
                 this.TypecodeList = data
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.HolidaysMasterList = [];
         });
     }
     locationList: any[] = [];
     plantList: any[] = [];
-    getPlantsassigned(id) {
+    getPlantsassigned(id:any) {
         this.isLoading = true;
         this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
             if (data) {
-                this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+                this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
                 this.getPayGroupList();
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.plantList = [];
         });
@@ -358,47 +362,51 @@ export class HolidaysMasterComponent implements OnInit {
     getPayGroupList() {
         this.get("PayGroupMaster/GetAll").then((data: any) => {
             if (data.length > 0) {
-                this.PayGroupList = data.sort((a, b) => {
+                this.PayGroupList = data.sort((a:any, b:any) => {
                     if (a.short_desc > b.short_desc) return 1;
                     if (a.short_desc < b.short_desc) return -1;
                     return 0;
                 });
-                this.filterPayGroup = this.PayGroupList.find(x => x.short_desc == this.currentUser.division).id;
+                this.filterPayGroup = this.PayGroupList.find((x:any)  => x.short_desc == this.currentUser.division).id;
                 //this.filterLocation = this.currentUser.baselocation.toString();
-                let temp = this.locationList.find(x => x.fkPlantId == this.filterLocation);
-                this.payGroupList1 = temp ? this.PayGroupList.filter(x => x.plant == temp.code) : [];
+                let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterLocation);
+                this.payGroupList1 = temp ? this.PayGroupList.filter((x:any)  => x.plant == temp.code) : [];
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.PayGroupList = [];
         });
     }
 
-    getPay(id) {
-        let tempPg = this.PayGroupList.find(x => x.id == id);
+    getPay(id:any) {
+        let tempPg = this.PayGroupList.find((x:any)  => x.id == id);
         return tempPg ? tempPg.short_desc : '';
     }
 
 
     payGroupList1: any[] = [];
     getPaygroupsBasedOnPlant() {
-        this.filterPayGroup = null;
-        let temp = this.locationList.find(x => x.fkPlantId == this.filterLocation);
-        this.payGroupList1 = temp ? this.PayGroupList.filter(x => x.plant == temp.code) : [];
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+        let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterLocation);
+        this.payGroupList1 = temp ? this.PayGroupList.filter((x:any)  => x.plant == temp.code) : [];
     }
-    getLoc(id) {
-        let temp = this.locationList.find(x => x.fkPlantId == id);
+    getLoc(id:any) {
+        let temp = this.locationList.find((x:any)  => x.fkPlantId == id);
         return temp ? temp.code + ' - ' + temp.name : '';
     }
 
     payGroupList11: any[] = [];
     getPaygroupsBasedOnPlant1() {
-        this.filterPayGroup = null;
-        let temp = this.locationList.find(x => x.fkPlantId == this.Location);
-        this.payGroupList11 = temp ? this.PayGroupList.filter(x => x.plant == temp.code) : [];
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+        let temp = this.locationList.find((x:any)  => x.fkPlantId == this.Location);
+        this.payGroupList11 = temp ? this.PayGroupList.filter((x:any)  => x.plant == temp.code) : [];
     }
-    getLoc1(id) {
-        let temp = this.locationList.find(x => x.fkPlantId == id);
+    getLoc1(id:any) {
+        let temp = this.locationList.find((x:any)  => x.fkPlantId == id);
         return temp ? temp.code : '';
     }
 
@@ -419,10 +427,33 @@ export class HolidaysMasterComponent implements OnInit {
         if (this.isEdit) {
             Object.assign(this.oldHolidaysMaster, data);
             this.HolidaysMaster = Object.assign({}, data);
-            let holiday = this.HolidaysMasterList.filter(x => x.location == this.HolidaysMaster.location && x.year == this.HolidaysMaster.year);
+            let holiday = this.HolidaysMasterList.filter((x:any)  => x.location == this.HolidaysMaster.location && x.year == this.HolidaysMaster.year);
             let index = 0;
-            holiday.forEach(element => {
-                let newDynamic = { id: this.rowcount, location: null, paygroup: null, type: null, typecode: null, typename: null, day: "", date: null, occasion: "" };
+            holiday.forEach((element:any)=> {
+
+                // let newDynamic = { id: this.rowcount, location: null, paygroup: null, type: null, typecode: null, typename: null, day: "", date: null, occasion: "" };
+             let newDynamic: {
+  id: number;
+  location: string | null;
+  paygroup: string | null;
+  type: string | null;
+  typecode: string | null;
+  typename: string | null;
+  day: string;
+  date: string | null;
+  occasion: string;
+} = {
+  id: this.rowcount,
+  location: null,
+  paygroup: null,
+  type: null,
+  typecode: null,
+  typename: null,
+  day: "",
+  date: null,
+  occasion: ""
+};
+
                 newDynamic.id = element.id;
                 newDynamic.location = this.filterLocation;
                 newDynamic.paygroup = this.filterPayGroup;
@@ -490,7 +521,8 @@ export class HolidaysMasterComponent implements OnInit {
             }
             else {
 
-                this.dynamicArray.forEach(element => {
+                this.dynamicArray.forEach((element:any)=> {
+
                     let Holiday = {} as HolidayMaster;
 
                     Holiday.date = this.getDateFormate(element.date);
@@ -528,9 +560,9 @@ export class HolidaysMasterComponent implements OnInit {
                 this.auditType = "Update";
                 this.HolidaysMaster.modifiedBy = this.currentUser.employeeId;
                 this.HolidaysMaster.modifiedOn = this.getDateFormate(new Date());
-                this.dynamicArray.forEach(element => {
+                this.dynamicArray.forEach((element:any) => {
                     let Holiday = {} as HolidayMaster;
-                    let temp = this.HolidaysMasterList.find(x => x.id == element.id);
+                    let temp = this.HolidaysMasterList.find((x:any)  => x.id == element.id);
                     if (temp) {
                         Holiday.id = element.id;
                     }
@@ -589,7 +621,7 @@ export class HolidaysMasterComponent implements OnInit {
                 this.clearFilter;
             }
 
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving holiday data..';
         });
@@ -662,7 +694,7 @@ export class HolidaysMasterComponent implements OnInit {
                             });
                             this.getHolidayMasterList();
                         }
-                    }).catch(() => {
+                    }).catch((error) => {
                         this.isLoadingPop = false;
                         this.errMsgPop = 'Error deleting holiday..';
                     });
@@ -691,7 +723,9 @@ export class HolidaysMasterComponent implements OnInit {
     }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -702,7 +736,7 @@ export class HolidaysMasterComponent implements OnInit {
   return { headers };
 }
 
-    getDayName(per) {
+    getDayName(per:any) {
         var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         var d = new Date(per.date);
         var dayName = days[d.getDay()];
@@ -722,7 +756,7 @@ export class HolidaysMasterComponent implements OnInit {
         return ("00" + d1.getDate()).slice(-2) + "-" + ("00" + (d1.getMonth() + 1)).slice(-2) + "-" +
             d1.getFullYear();
     }
-    exportList: any[];
+    exportList!: any[];
     exportExcel() {
         if (this.HolidaysMasterList.length < 0) {
             toastr.error("Pease filter some data...");
@@ -730,7 +764,7 @@ export class HolidaysMasterComponent implements OnInit {
         }
         this.exportList = [];
         let index = 0;
-        this.HolidaysMasterList.forEach(item => {
+        this.HolidaysMasterList.forEach((item :any) => {
             index = index + 1;
             let midName = '';
             let lastName = '';
@@ -739,8 +773,8 @@ export class HolidaysMasterComponent implements OnInit {
             if (item.type == 'Regular') {
                 let exportItemRH = {
                     "SNo": index,
-                    "Plant": item.location ? this.locationList11.find(x => x.id == item.location).code : '',
-                    "Pay Group": item.payGroup ? this.PayGroupList.find(x => x.id == item.payGroup).short_desc : '',
+                    "Plant": item.location ? this.locationList11.find((x:any)  => x.id == item.location).code : '',
+                    "Pay Group": item.payGroup ? this.PayGroupList.find((x:any)  => x.id == item.payGroup).short_desc : '',
                     "Holiday Date": this.setDateFormate(item.date),
                     "Day Name": item.dayName,
                     "Occasion": item.holidayName,
@@ -751,8 +785,8 @@ export class HolidaysMasterComponent implements OnInit {
             else {
                 let exportItemAH = {
                     "SNo": index,
-                    "Plant": item.location ? this.locationList11.find(x => x.id == item.location).code : '',
-                    "Pay Group": item.payGroup ? this.PayGroupList.find(x => x.id == item.payGroup).short_desc : '',
+                    "Plant": item.location ? this.locationList11.find((x:any)  => x.id == item.location).code : '',
+                    "Pay Group": item.payGroup ? this.PayGroupList.find((x:any)  => x.id == item.payGroup).short_desc : '',
                     "Holiday Date": this.setDateFormate(item.date),
                     "Day Name": item.dayName,
                     "Occasion": item.holidayName,
@@ -768,7 +802,8 @@ export class HolidaysMasterComponent implements OnInit {
     }
 
 
-    toggleAccordian(event, index) {
+    toggleAccordian(event:any, index:any) {
+
         var element = event.target;
         element.classList.toggle("active");
         if (this.AdditionalTypesList[index].isActive) {

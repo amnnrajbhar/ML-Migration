@@ -21,20 +21,20 @@ import { AppComponent } from '../../app.component';
 import { Router } from '@angular/router';
 import { ExcelService } from '../../shared/excel-service';
 import { HttpClient } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 
 
 interface task {
-  value: string;
-  viewValue: string;
+  value: string
+  viewValue: string
 }
 
 interface taskGroup {
   disabled?: boolean;
-  name: string;
+  name: string
   task: task[];
 }
 
@@ -49,9 +49,9 @@ interface UGrpsList
 
 })
 export class UserIdRequestReportComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
 
   searchTermBaseLoc = new FormControl();
@@ -75,7 +75,7 @@ export class UserIdRequestReportComponent implements OnInit {
   isEdit: boolean = false;
 
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   selectedBaseLocation: any = [];
@@ -85,13 +85,13 @@ export class UserIdRequestReportComponent implements OnInit {
   userIdRequest = {} as UserIdRequest
   userIdRequestlist: UserIdRequest[] = [];
   // ItemCodeExtensionlist:ItemCodeExtension[]=[];
-  materialtype: string;
-  comments: string;
-  filterMaterialCode: string = null;
-  filterstatus: string = null;
-  filtersoftware: string = null;
-  filterrequest: string = null;
-  filterType: string = null;
+  materialtype!: string
+  comments: string
+  filterMaterialCode: string = ' ';
+  filterstatus: string = ' ';
+  filtersoftware: string = ' ';
+  filterrequest: string = ' ';
+  filterType: string = ' ';
   filterEmployee:string=null;
   filterlocation:string=null;
   filterEquipName:string=null;
@@ -103,7 +103,8 @@ export class UserIdRequestReportComponent implements OnInit {
   UserIdRequestList: UserIdRequest[] = [];
   userIdRequestsearchlist: UserIdRequest[] = [];
 
-  emailid: string;
+  emailid!: string
+
   requestdate: any;
   Approver1: boolean = false;
   Approverid1: string = "";
@@ -112,26 +113,28 @@ export class UserIdRequestReportComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
+  userid: string
   UserIdRequestist: UserIdRequest[] = [];
 
   storeData: any;
   jsonData: any;
-  fileUploaded: File;
+  fileUploaded!: File;
   worksheet: any;
   requestfor: any;
   selectedSoftwares: any[] = [];
   //userIdRequestmodeldata = {} as ItemCodeExtension;
 
     //new Dev
-    softType: string;
-    locationCode: string;
+    softType: string
+    locationCode: string
     filteredSoftwareList: any[] = [];
-    Software: string = null;
+    Software: string = ' ';
     ReportType:string=null;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router
-    , private http: HttpClient, private excelService: ExcelService, private datePipe:DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    , private http: HttpClient, private excelService: ExcelService, private datePipe:DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -150,7 +153,8 @@ export class UserIdRequestReportComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //  this.baseLocation = this.currentUser.baselocation;
     this.emailid = this.currentUser.email;
     this.userid = this.currentUser.employeeId;
@@ -178,11 +182,11 @@ export class UserIdRequestReportComponent implements OnInit {
       this.router.navigate(["/unauthorized"]);
   }
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.code : '';
   }
-  getloc(loc) {
+  getloc(loc:any) {
     let loccode = loc.keyValue.split('~');
     return loccode ? loccode[0] : '';
   }
@@ -281,7 +285,7 @@ export class UserIdRequestReportComponent implements OnInit {
     this.userIdRequest.sid = item.id;
     this.getApproversList(this.userIdRequest);
   }
-  sid: number;
+  sid!: number;
   isActiveTab(idx: number, selectedRoom: any) {
     if (this.sid != 0)
       return this.sid === selectedRoom.id;
@@ -334,9 +338,11 @@ export class UserIdRequestReportComponent implements OnInit {
     this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     this.to_date = this.today;
     this.filtersoftware = null;
-    this.filterstatus = null;
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filterrequest = null;
-    this.filterType = null;
+    //this.filterType = null;
+this.filterType = '';
     this.filterEmployee=null;
     this.filterlocation=null;
     this.filterEquipName=null;
@@ -344,24 +350,24 @@ export class UserIdRequestReportComponent implements OnInit {
 
   }
   plantAssignedList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
         this.plantAssignedList = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantAssignedList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantAssignedList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantAssignedList = [];
     });
   }
 
 
-  location(id) {
-    let loc = this.locationList.find(x => x.id == id);
+  location(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code : "";
   }
 
@@ -369,8 +375,8 @@ export class UserIdRequestReportComponent implements OnInit {
   getAllEntries() {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     filterModel.location = this.filterlocation;
     filterModel.requestNo = this.filterrequest;
@@ -395,7 +401,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UserIdRequestList = [];
     });
@@ -408,8 +414,8 @@ export class UserIdRequestReportComponent implements OnInit {
   {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     filterModel.location = this.filterlocation;
     filterModel.requestNo = this.filterrequest;
@@ -446,7 +452,7 @@ export class UserIdRequestReportComponent implements OnInit {
         
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UserIdRequestList = [];
     });
@@ -456,7 +462,7 @@ export class UserIdRequestReportComponent implements OnInit {
   export(){
     var exportList=[];
     let index=0;
-    this.UserIdRequestList1.forEach(item => {
+    this.UserIdRequestList1.forEach((item :any) => {
       index=index+1;
       let exportItem={
         "SNo":index,
@@ -491,7 +497,7 @@ export class UserIdRequestReportComponent implements OnInit {
 
  pageSize: any = 10;
   pageNo: any;
-  totalCount: number;
+  totalCount!: number;
   totalPages: number
   gotoPage(no) {
     if (this.pageNo == no) return;
@@ -521,26 +527,27 @@ export class UserIdRequestReportComponent implements OnInit {
     var softwareList1=[]
     if(this.filtersoftware !=null)
     {
-      softwareList1=this.softwareList.filter(x=>x.id==this.filtersoftware);
+      softwareList1=this.softwareList.filter((x:any)=>x.id==this.filtersoftware);
     }
     else
     {
       softwareList1=this.softwareList;
     }    
-    softwareList1.forEach(element => {
+    softwareList1.forEach((element:any)=> {
+
       let newSummary = { id: 0, type: '', Created: null, Submitted: null, InProcess: null, rejected: null, Completed: null, Total: null };
       newSummary.type = element.name ;
-      let cre = data.filter(x => x.sid == element.id && x.status == 'Created');
+      let cre = data.filter((x:any)  => x.sid == element.id && x.status == 'Created');
       newSummary.Created = cre.length;
-      let sub = data.filter(x => x.sid == element.id && x.status == 'Submitted');
+      let sub = data.filter((x:any)  => x.sid == element.id && x.status == 'Submitted');
       newSummary.Submitted = sub.length ;
-      let inp = data.filter(x => x.sid == element.id && x.status == 'InProcess');
+      let inp = data.filter((x:any)  => x.sid == element.id && x.status == 'InProcess');
       newSummary.InProcess = inp.length ;
-      let rej = data.filter(x => x.sid == element.id && x.status == 'Rejected');
+      let rej = data.filter((x:any)  => x.sid == element.id && x.status == 'Rejected');
       newSummary.rejected = rej.length;
-      let com = data.filter(x => x.sid == element.id && x.status == 'Completed');
+      let com = data.filter((x:any)  => x.sid == element.id && x.status == 'Completed');
       newSummary.Completed = com.length;
-      let tot = data.filter(x => x.sid == element.id && x.status != 'Created');
+      let tot = data.filter((x:any)  => x.sid == element.id && x.status != 'Created');
       newSummary.Total = cre.length + sub.length + inp.length + rej.length + com.length ;
       this.summarylist.push(newSummary);
     });
@@ -574,14 +581,14 @@ export class UserIdRequestReportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locationId = this.locListCon.find(x => x.id == this.currentUser.baselocation).name1
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locationId = this.locListCon.find((x:any)  => x.id == this.currentUser.baselocation).name1
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -597,7 +604,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.RepositoryDomainsList = [];
     });
@@ -609,7 +616,7 @@ export class UserIdRequestReportComponent implements OnInit {
     //this.softwareList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareList = data.filter(x => x.isActive).sort((a, b) => {
+        this.softwareList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -617,7 +624,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareList = [];
     });
@@ -633,7 +640,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.SoftwareModulesList = [];
     });
@@ -645,7 +652,7 @@ export class UserIdRequestReportComponent implements OnInit {
     //this.softwareUserProfilesList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_USER_PROFILES_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareUserProfilesList = data.filter(x => x.isActive).sort((a, b) => {
+        this.softwareUserProfilesList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -653,7 +660,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareUserProfilesList = [];
     });
@@ -666,7 +673,7 @@ export class UserIdRequestReportComponent implements OnInit {
     //this.softwareRolesList=[];
     this.httpService.get(APIURLS.BR_SOFTWARE_ROLES_API).then((data: any) => {
       if (data.length > 0) {
-        this.softwareRolesList = data.filter(x => x.isActive).sort((a, b) => {
+        this.softwareRolesList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
@@ -674,7 +681,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.softwareRolesList = [];
     });
@@ -692,7 +699,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UserGroupsList = [];
     });
@@ -703,14 +710,14 @@ export class UserIdRequestReportComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       this.isLoading = false;
       if (data.length >0) {
-        this.DepartmentList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.DepartmentList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
           if(a.name > b.name) return 1;
           if(a.name < b.name) return -1;
           return 0;
         });
      
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.DepartmentList = [];
     });
@@ -729,11 +736,12 @@ export class UserIdRequestReportComponent implements OnInit {
       if (data.length > 0) {
         this.UserSubGroupsList = data;
 
-        this.UserGroupsList.forEach(element => {
+        this.UserGroupsList.forEach((element:any)=> {
+
           let groups= {} as UGrpsList;
           groups.UserGroup=element.name;
           groups.sid=element.fkSoftwareId;
-          let temp=this.UserSubGroupsList.filter(x=>x.fkUserGroupId==element.id);
+          let temp=this.UserSubGroupsList.filter((x:any)=>x.fkUserGroupId==element.id);
           groups.UserSubGroups=temp;
           this.usergroupsList.push(groups);
         });
@@ -742,7 +750,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.UserSubGroupsList = [];
     });
@@ -750,16 +758,16 @@ export class UserIdRequestReportComponent implements OnInit {
 
  
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngAfterViewInit() {
     this.initDatatable();
   }
-  getsoft(id) {
-    let temp = this.softwareList.find(x => x.id == id);
+  getsoft(id:any) {
+    let temp = this.softwareList.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
-  getrole(id) {
-    let temp = this.softwareRolesList.find(x => x.id == id);
+  getrole(id:any) {
+    let temp = this.softwareRolesList.find((x:any)  => x.id == id);
     return temp ? temp.role : '';
   }
  
@@ -776,7 +784,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist = [];
     });
@@ -792,7 +800,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionslist1 = [];
     });
@@ -800,19 +808,19 @@ export class UserIdRequestReportComponent implements OnInit {
   }
   Approverslist: WorkFlowApprovers[] = [];
   accountGroupList: any[] = [];
-  Aprlpriority: number;
-  getroleslist(id) {
-    this.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == id);
+  Aprlpriority!: number;
+  getroleslist(id:any) {
+    this.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == id);
   }
-  getusergroups(id) {
-    this.UserGroupsList1 = this.UserGroupsList.filter(x => x.fkSoftwareId == id);
-    this.usergroupsList1=this.usergroupsList.filter(x=>x.sid==id);
+  getusergroups(id:any) {
+    this.UserGroupsList1 = this.UserGroupsList.filter((x:any)  => x.fkSoftwareId == id);
+    this.usergroupsList1=this.usergroupsList.filter((x:any)=>x.sid==id);
   }
-  getusersubgroups(id) {
+  getusersubgroups(id:any) {
     this.userIdRequestlist.forEach(req=>{
       if(req.userGroups == id)
       {
-        req.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkUserGroupId == id);
+        req.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkUserGroupId == id);
       }
     })
    
@@ -820,7 +828,7 @@ export class UserIdRequestReportComponent implements OnInit {
 
  
   closePriority:any;
-  getApproversList(value) {
+  getApproversList(value:any) {
     this.getusergroups(value.sid);
      this.getroleslist(value.sid);
      this.Approver1 = false;
@@ -831,12 +839,12 @@ export class UserIdRequestReportComponent implements OnInit {
     // let request:any;
      //request = Object.assign({}, value);
      if (this.isEdit) {
-       var loc = this.locationList.find(x => x.id == value.locationId);
+       var loc = this.locationList.find((x:any)  => x.id == value.locationId);
      }
      else {
-       var loc = this.locationList.find(x => x.id == this.currentUser.baselocation);
+       var loc = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
      }
-     var software = this.softwareList.find(x => x.id == value.sid);
+     var software = this.softwareList.find((x:any)  => x.id == value.sid);
      if(software.name !='SAP UserId')
      {
        var keyvalue = loc.code + '~' + software.name + ',' + 6;
@@ -883,7 +891,7 @@ export class UserIdRequestReportComponent implements OnInit {
          if(this.requestType != "Creation"  && this.requestType !="Password Reset/Unlocking" && software.name !='Others' && software.name !='SAP UserId'
          && software.name!='SAP Roles' && software.name!='SAP Authorization')
          { 
-          let apprs=data.filter(x=>x.priority !=1 && x.closure !=1);
+          let apprs=data.filter((x:any)=>x.priority !=1 && x.closure !=1);
           let reviewer:any; 
           if(this.isEdit)
            {
@@ -899,13 +907,14 @@ export class UserIdRequestReportComponent implements OnInit {
            {
              this.Approverslist.push(reviewer);
            }
-          // this.Approverslist = data.filter(x=>x.closure !=1);
-           this.Approverslist.forEach(element => {
+          // this.Approverslist = data.filter((x:any)=>x.closure !=1);
+           this.Approverslist.forEach((element:any)=> {
+
              element.role = element.role=="Creator"?"Closure":element.role;
            });
          }
          else if(software.name !='Others'  && this.requestType !="Password Reset/Unlocking"  && software.name !='SAP UserId' && software.name!='SAP Roles' && software.name!='SAP Authorization'){
-           let apprs=data.filter(x=>x.priority !=1);
+           let apprs=data.filter((x:any)=>x.priority !=1);
            let reviewer:any; 
            if(this.isEdit)
            {
@@ -928,16 +937,16 @@ export class UserIdRequestReportComponent implements OnInit {
          this.userIdRequestlist.forEach(req=>{
            if(value.sid==req.sid)
            {
-             req.UserGroupsList1 = this.UserGroupsList.filter(x => x.fkSoftwareId == req.sid);
+             req.UserGroupsList1 = this.UserGroupsList.filter((x:any)  => x.fkSoftwareId == req.sid);
              if (this.requestType != "Password Reset/Unlocking") {
              if(software.name=='SAP UserId')
              {
                if(software.name=='SAP UserId')
                {
-                 req.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == req.sid && x.location==loc.code && req.catogery.includes(x.description));
+                 req.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == req.sid && x.location==loc.code && req.catogery.includes(x.description));
                }
                else{
-                 req.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == req.sid);
+                 req.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == req.sid);
                }              
                if(this.ApprovingManager[0].employeeId != data.find(x=>x.priority==2).approverId)
                {
@@ -954,7 +963,8 @@ export class UserIdRequestReportComponent implements OnInit {
                  
                }
                else{
-                 data.forEach(element => {
+                 data.forEach((element:any)=> {
+
                    element.priority=element.priority-1
                  });
                  req.Approverslist=data;
@@ -965,11 +975,11 @@ export class UserIdRequestReportComponent implements OnInit {
              {
               if(software.name=='SAP Roles' || software.name=='SAP Authorization')
               {
-                req.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == req.sid && x.location==loc.code);
+                req.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == req.sid && x.location==loc.code);
               }
               if(software.name=='Others')
               {
-                let apprs=data.filter(x=>x.priority !=1);
+                let apprs=data.filter((x:any)=>x.priority !=1);
                 let reviewer:any; 
                 if(this.isEdit)
                 {
@@ -987,16 +997,17 @@ export class UserIdRequestReportComponent implements OnInit {
                 }
               }
               else{
-                this.Approverslist=data.filter(x=>x.isActive==1);
+                this.Approverslist=data.filter((x:any)=>x.isActive==1);
               }
               req.Approverslist=this.Approverslist;
              }
              else{
-               req.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == req.sid);
+               req.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == req.sid);
                if(this.requestType != "Creation")
                {
                  req.Approverslist=this.Approverslist;
-                 req.Approverslist.forEach(element => {
+                 req.Approverslist.forEach((element:any)=> {
+
                    element.role = element.role=="Creator"?"Closure":element.role;
                  });
                }
@@ -1006,26 +1017,27 @@ export class UserIdRequestReportComponent implements OnInit {
              }
             }
             else {
-              req.Approverslist = data.filter(x => x.role == 'Creator');
-              req.Approverslist.forEach(element => {
+              req.Approverslist = data.filter((x:any)  => x.role == 'Creator');
+              req.Approverslist.forEach((element:any)=> {
+
                 element.role = element.role == "Creator" ? "Closure" : element.role;
                 element.priority = 1;
               });
               this.Approverslist = req.Approverslist;
             }
             //req.Approverslist=data;
-             req.Approverslist = req.Approverslist.sort((a, b) => {
+             req.Approverslist = req.Approverslist.sort((a:any, b:any) => {
                if (a.priority > b.priority) return 1;
                if (a.priority < b.priority) return -1;
                return 0;
              });
            }
          })
-         this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+         this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
          let empid = this.currentUser.employeeId
          let empName = this.currentUser.fullName;
  
-         let Appr1 = this.Approverslist.find(x =>  x.approverId == empid ||
+         let Appr1 = this.Approverslist.find((x:any)  =>  x.approverId == empid ||
            x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
            x.parllelApprover3 == empid || x.parllelApprover4 == empid && x.role != 'Creator');
  
@@ -1035,7 +1047,7 @@ export class UserIdRequestReportComponent implements OnInit {
            this.Review = true;
            this.Aprlpriority = Appr1.priority;
          }
-         let Appr2 = this.Approverslist.find(x => x.approverId == empid ||
+         let Appr2 = this.Approverslist.find((x:any)  => x.approverId == empid ||
            x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
            x.parllelApprover3 == empid || x.parllelApprover4 == empid && x.role != 'Creator');
          if (Appr2 != null || Appr2 != undefined) {
@@ -1045,10 +1057,10 @@ export class UserIdRequestReportComponent implements OnInit {
            this.Review = true;
            this.Aprlpriority = Appr2.priority;
          }
-         let Appr3 = this.Approverslist.find(x => (x.approverId == empid ||
+         let Appr3 = this.Approverslist.find((x:any)  => (x.approverId == empid ||
            x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
            x.parllelApprover3 == empid || x.parllelApprover4 == empid) && x.role=='Creator');  
-           let Appr4 = this.Approverslist.find(x => (x.approverId == empid ||
+           let Appr4 = this.Approverslist.find((x:any)  => (x.approverId == empid ||
              x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
              x.parllelApprover3 == empid || x.parllelApprover4 == empid) && x.role=='Closure');        
          let clos=this.transactionslist.find(x=>x.approvalPriority==3 && x.transactionType==1 )
@@ -1117,7 +1129,7 @@ export class UserIdRequestReportComponent implements OnInit {
         
  
          this.transactionslist.forEach((ad) => {
-           let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority);
+           let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority);
            if (temp != undefined) {
              if (ad.transactionType == 1) {
                if (temp.role == 'Creator') {
@@ -1130,7 +1142,7 @@ export class UserIdRequestReportComponent implements OnInit {
                  ad.status = 'Approved'
                }
                else {
-                 ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                 ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
                }
              }
              else if (ad.transactionType == 3 || ad.transactionType == 4) {
@@ -1146,7 +1158,7 @@ export class UserIdRequestReportComponent implements OnInit {
  
          });
          this.Approverslist.forEach((ad) => {
-           let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority && x.transactionType==1);
+           let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority && x.transactionType==1);
            if (temp1 == undefined) {
              let trans = {} as Transactions;
              trans.doneBy = ad.approverId;
@@ -1159,12 +1171,12 @@ export class UserIdRequestReportComponent implements OnInit {
  
  
          });
-         this.Approverslist = this.Approverslist.sort((a, b) => {
+         this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
            if (a.priority > b.priority) return 1;
            if (a.priority < b.priority) return -1;
            return 0;
          });
-         this.transactionslist = this.transactionslist.sort((a, b) => {
+         this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
            if (a.doneOn > b.doneOn) return 1;
            if (a.doneOn < b.doneOn) return -1;
            if (a.approvalPriority > b.approvalPriority) return 1;
@@ -1178,14 +1190,14 @@ export class UserIdRequestReportComponent implements OnInit {
        }
        //this.reInitDatatable();
        this.isLoading = false;
-     }).catch(error => {
+     }).catch((error)=> {
        this.isLoading = false;
        this.Approverslist = [];
      });
    }
 
-   getloc1(id) {
-    let loc = this.locationList.find(x => x.id == id);
+   getloc1(id:any) {
+    let loc = this.locationList.find((x:any)  => x.id == id);
     return loc ? loc.code + '-' + loc.name : "";
   }
   currentUser1: AuthData;
@@ -1222,7 +1234,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       // this.reInitDatatable();()
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.currentUser = {} as AuthData;
     });
@@ -1249,7 +1261,8 @@ export class UserIdRequestReportComponent implements OnInit {
       if (data.employeeId > 0) {
         this.ApprovingManager.push(data);
       //   this.Approverslist.push(data);
-      //   this.Approverslist.forEach(element => {
+      //   this.Approverslist.forEach((element:any)=> {
+
       //     element.type="Approving Manager";
       //   });
       //   //this.transactionslist.reverse();
@@ -1260,7 +1273,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -1278,7 +1291,7 @@ export class UserIdRequestReportComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionsHistory = data;
-        let temp = this.transactionsHistory.find(x => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
+        let temp = this.transactionsHistory.find((x:any)  => (x.doneBy == this.currentUser.employeeId || x.parallelApprover1 == this.currentUser.employeeId
           || x.parallelApprover2 == this.currentUser.employeeId || x.parallelApprover3 == this.currentUser.employeeId ||
           x.parallelApprover4 == this.currentUser.employeeId) && x.transactionType == null);
 
@@ -1317,7 +1330,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.transactionsHistory = [];
     });
@@ -1339,7 +1352,7 @@ export class UserIdRequestReportComponent implements OnInit {
 
       // this.reInitDatatable();()
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.currentUser = {} as AuthData;
     });
@@ -1347,17 +1360,17 @@ export class UserIdRequestReportComponent implements OnInit {
 
 
   others:boolean=false;
-  empId: string;
+  empId: string
   view: boolean = false;
-  locationName: string;
+  locationName: string
   attachments: any[] = [];
   room ={} as UserIdRequest;
   software:any;
   softwarerole:any;
   newRole:any;
   Plantsassigned:any[]=[];
-  requestType: string;
-  onBehalfEmp: string;
+  requestType: string
+  onBehalfEmp: string
   plants:any[]=[];
   Error:any;
   userIdRequest1 ={} as UserIdRequest;
@@ -1419,54 +1432,54 @@ export class UserIdRequestReportComponent implements OnInit {
       if (this.getsoft(userIdRequest.sid) == 'Trackwise') {
         var rolesList = userIdRequest.newRoleInQams ? userIdRequest.newRoleInQams.split(',') : [];
         for (let i = 0; i < rolesList.length; i++) {
-          let temp = this.softwareRolesList.find(x => x.id == rolesList[i]);
+          let temp = this.softwareRolesList.find((x:any)  => x.id == rolesList[i]);
           this.roles.push(temp);
         }
-        this.printRoles = this.roles.map(x => x.role).join();
+        this.printRoles = this.roles.map((x:any)  => x.role).join();
         var newroleslist = userIdRequest.newRoleUpdated ? userIdRequest.newRoleUpdated.split(',') : [];
         for (let i = 0; i < newroleslist.length; i++) {
-          let temp = this.softwareRolesList.find(x => x.id == newroleslist[i]);
+          let temp = this.softwareRolesList.find((x:any)  => x.id == newroleslist[i]);
           this.Newroles.push(temp);
         }
       }
       this.software = this.getsoft(userIdRequest.sid);
       var plantList = userIdRequest.assignedPlants ? userIdRequest.assignedPlants.split(',') : [];
       for (let i = 0; i < plantList.length; i++) {
-        let temp = this.locListCon.find(x => x.id == plantList[i]);
+        let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
         this.plants.push(temp);
       }
       var RepDom = userIdRequest.repositoryDomains ? userIdRequest.repositoryDomains.split(',') : [];
       for (let i = 0; i < RepDom.length; i++) {
-        let temp = this.RepositoryDomainsList.find(x => x.id == RepDom[i]);
+        let temp = this.RepositoryDomainsList.find((x:any)  => x.id == RepDom[i]);
         this.RepDomains.push(temp);
       }
-      this.printDomains = this.RepDomains.map(x => x.name).join();
+      this.printDomains = this.RepDomains.map((x:any)  => x.name).join();
 
       var mas = userIdRequest.masterAssignment ? userIdRequest.masterAssignment.split(',') : [];
       for (let i = 0; i < mas.length; i++) {
-        let temp = this.mastersList.find(x => x.id == mas[i]);
+        let temp = this.mastersList.find((x:any)  => x.id == mas[i]);
         this.masterList.push(temp);
       }
-      this.printMasters = this.masterList.map(x => x.name).join();
+      this.printMasters = this.masterList.map((x:any)  => x.name).join();
 
       var mod = userIdRequest.userModules ? userIdRequest.userModules.split(',') : [];
       for (let i = 0; i < mod.length; i++) {
-        let temp = this.SoftwareModulesList.find(x => x.id == mod[i]);
+        let temp = this.SoftwareModulesList.find((x:any)  => x.id == mod[i]);
         this.ModuleList.push(temp);
       }
-      this.printModules = this.ModuleList.map(x => x.name).join();
+      this.printModules = this.ModuleList.map((x:any)  => x.name).join();
 
       var pro = userIdRequest.userProfiles ? userIdRequest.userProfiles.split(',') : [];
       for (let i = 0; i < pro.length; i++) {
-        let temp = this.softwareUserProfilesList.find(x => x.id == pro[i]);
+        let temp = this.softwareUserProfilesList.find((x:any)  => x.id == pro[i]);
         this.ProfileList.push(temp);
       }
-      this.printProfiles = this.ProfileList.map(x => x.name).join();
+      this.printProfiles = this.ProfileList.map((x:any)  => x.name).join();
 
       if (this.getsoft(userIdRequest.sid) != 'Trackwise') {
         if (userIdRequest.newRoleInQams) {
           if (userIdRequest.newRoleInQams != '') {
-            this.softwarerole = this.softwareRolesList.find(x => x.id == userIdRequest.newRoleInQams).role;
+            this.softwarerole = this.softwareRolesList.find((x:any)  => x.id == userIdRequest.newRoleInQams).role;
           }
         }
       }
@@ -1480,10 +1493,10 @@ export class UserIdRequestReportComponent implements OnInit {
       userIdRequest.Plantsassigned = this.plants;
       this.softType = userIdRequest.softwareType;
       // userIdRequest.sid=this.selectedSoftwares[0].id;
-      this.printplats = this.plants.map(x => x.code).join();
+      this.printplats = this.plants.map((x:any)  => x.code).join();
       var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-      userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
-      this.printgroups = userIdRequest.usergroupsList.map(x => x.name).join();
+      userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
+      this.printgroups = userIdRequest.usergroupsList.map((x:any)  => x.name).join();
       var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
       let subList: number[]
       // subList=USGList;
@@ -1492,20 +1505,20 @@ export class UserIdRequestReportComponent implements OnInit {
       });
       userIdRequest.activity = userIdRequest.isActive ? 'true' : 'false';
       // userIdRequest.usersubgroupsList=subList;
-      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
-      let temp1 = userIdRequest.usersubgroupsList.find(x => x.name == 'Others');
+      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
+      let temp1 = userIdRequest.usersubgroupsList.find((x:any)  => x.name == 'Others');
       temp1 ? this.others = true : this.others = false;
-      this.printsubgroups = userIdRequest.usersubgroupsList.map(x => x.name).join();
+      this.printsubgroups = userIdRequest.usersubgroupsList.map((x:any)  => x.name).join();
       var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-      userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
+      userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
       var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
-      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
+      userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
       if (userIdRequest.attachments != null || userIdRequest.attachments != null) {
         userIdRequest.attachmentsList = userIdRequest.attachments.split(',');
       }
-      this.usergroupsList1 = this.usergroupsList.filter(x => x.sid == userIdRequest.sid);
-      userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid);
-      this.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid);
+      this.usergroupsList1 = this.usergroupsList.filter((x:any)  => x.sid == userIdRequest.sid);
+      userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid);
+      this.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid);
       this.userIdRequest = Object.assign({}, userIdRequest);
       // }
 
@@ -1523,47 +1536,47 @@ export class UserIdRequestReportComponent implements OnInit {
         if (this.getsoft(userIdRequest.sid) == 'Trackwise') {
           var rolesList = userIdRequest.newRoleInQams ? userIdRequest.newRoleInQams.split(',') : [];
           for (let i = 0; i < rolesList.length; i++) {
-            let temp = this.softwareRolesList.find(x => x.id == rolesList[i]);
+            let temp = this.softwareRolesList.find((x:any)  => x.id == rolesList[i]);
             this.roles.push(temp);
           }
-          this.printRoles = this.roles.map(x => x.role).join();
+          this.printRoles = this.roles.map((x:any)  => x.role).join();
           var newroleslist = userIdRequest.newRoleUpdated ? userIdRequest.newRoleUpdated.split(',') : [];
           for (let i = 0; i < newroleslist.length; i++) {
-            let temp = this.softwareRolesList.find(x => x.id == newroleslist[i]);
+            let temp = this.softwareRolesList.find((x:any)  => x.id == newroleslist[i]);
             this.Newroles.push(temp);
           }
         }
 
         var plantList = userIdRequest.assignedPlants ? userIdRequest.assignedPlants.split(',') : [];
         for (let i = 0; i < plantList.length; i++) {
-          let temp = this.locListCon.find(x => x.id == plantList[i]);
+          let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
           this.plants.push(temp);
         }
         var RepDom = userIdRequest.repositoryDomains ? userIdRequest.repositoryDomains.split(',') : [];
         for (let i = 0; i < RepDom.length; i++) {
-          let temp = this.RepositoryDomainsList.find(x => x.id == RepDom[i]);
+          let temp = this.RepositoryDomainsList.find((x:any)  => x.id == RepDom[i]);
           this.RepDomains.push(temp);
         }
         var mas = userIdRequest.masterAssignment ? userIdRequest.masterAssignment.split(',') : [];
         for (let i = 0; i < mas.length; i++) {
-          let temp = this.mastersList.find(x => x.id == mas[i]);
+          let temp = this.mastersList.find((x:any)  => x.id == mas[i]);
           this.masterList.push(temp);
         }
-        this.printMasters = this.masterList.map(x => x.name).join();
+        this.printMasters = this.masterList.map((x:any)  => x.name).join();
 
         var mod = userIdRequest.userModules ? userIdRequest.userModules.split(',') : [];
         for (let i = 0; i < mod.length; i++) {
-          let temp = this.SoftwareModulesList.find(x => x.id == mod[i]);
+          let temp = this.SoftwareModulesList.find((x:any)  => x.id == mod[i]);
           this.ModuleList.push(temp);
         }
-        this.printModules = this.ModuleList.map(x => x.name).join();
+        this.printModules = this.ModuleList.map((x:any)  => x.name).join();
 
         var pro = userIdRequest.userProfiles ? userIdRequest.userProfiles.split(',') : [];
         for (let i = 0; i < pro.length; i++) {
-          let temp = this.softwareUserProfilesList.find(x => x.id == pro[i]);
+          let temp = this.softwareUserProfilesList.find((x:any)  => x.id == pro[i]);
           this.ProfileList.push(temp);
         }
-        this.printProfiles = this.ProfileList.map(x => x.name).join();
+        this.printProfiles = this.ProfileList.map((x:any)  => x.name).join();
         userIdRequest.selMasters = this.masterList;
         userIdRequest.selModules = this.ModuleList;
         userIdRequest.selProfiles = this.ProfileList;
@@ -1573,12 +1586,12 @@ export class UserIdRequestReportComponent implements OnInit {
         userIdRequest.Plantsassigned = this.plants;
         // userIdRequest.sid=this.selectedSoftwares[0].id;
         var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-        userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
+        userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
         var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
-        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
+        userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
 
-        this.usergroupsList1 = this.usergroupsList.filter(x => x.sid == userIdRequest.sid);
-        userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid);
+        this.usergroupsList1 = this.usergroupsList.filter((x:any)  => x.sid == userIdRequest.sid);
+        userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid);
 
       }
       else {
@@ -1594,7 +1607,7 @@ export class UserIdRequestReportComponent implements OnInit {
       }
 
       this.submit = true;
-      var selectedSoftwares = this.softwareList.find(x => x.id == this.Software);
+      var selectedSoftwares = this.softwareList.find((x:any)  => x.id == this.Software);
       userIdRequest.name = selectedSoftwares.name;
       // this.getApproversList(userIdRequest);
       if (userIdRequest.status == 'Reverted to initiator') {
@@ -1611,32 +1624,32 @@ export class UserIdRequestReportComponent implements OnInit {
         this.getEmpDetails(this.currentUser.employeeId);
         this.getApprovingManager(this.currentUser.employeeId);
       }
-      this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
+      this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
       // this.userIdRequest = Object.assign({}, userIdRequest);
 
       // var plantList = userIdRequest.assignedPlants ? userIdRequest.assignedPlants.split(',') : [];
       // for (let i = 0; i < plantList.length; i++) {
-      //   let temp = this.locListCon.find(x => x.id == plantList[i]);
+      //   let temp = this.locListCon.find((x:any)  => x.id == plantList[i]);
       //   this.plants.push(temp);
       // }
       // userIdRequest.Plantsassigned = this.plants;
       // var UGList = userIdRequest.userGroups ? userIdRequest.userGroups.split(',') : [];
-      // userIdRequest.usergroupsList = this.UserGroupsList.filter(s => UGList.includes((s.id.toString())));
+      // userIdRequest.usergroupsList = this.UserGroupsList.filter((s:any) => UGList.includes((s.id.toString())));
       // var USGList = userIdRequest.userSubGroups ? userIdRequest.userSubGroups.split(',') : [];
-      // userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter(s => USGList.includes(s.id.toString()));
+      // userIdRequest.usersubgroupsList = this.UserSubGroupsList.filter((s:any) => USGList.includes(s.id.toString()));
       if (userIdRequest.attachments != null || userIdRequest.attachments != null) {
         userIdRequest.attachmentsList = userIdRequest.attachments.split(',');
       }
 
-      userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == this.Software);
-      userIdRequest.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid);
-      let loc = this.locationList.find(x => x.id == userIdRequest.locationId)
+      userIdRequest.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == this.Software);
+      userIdRequest.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid);
+      let loc = this.locationList.find((x:any)  => x.id == userIdRequest.locationId)
       if (this.softType == 'Plant Level') {
-        this.softwareRolesList1 = this.softwareRolesList.filter(x => x.sid == userIdRequest.sid && x.location == loc.code);
+        this.softwareRolesList1 = this.softwareRolesList.filter((x:any)  => x.sid == userIdRequest.sid && x.location == loc.code);
       }
       this.getApproversList(userIdRequest);
 
-      this.UserSubGroupsList1 = this.UserSubGroupsList.filter(x => x.fkSoftwareId == userIdRequest.sid);
+      this.UserSubGroupsList1 = this.UserSubGroupsList.filter((x:any)  => x.fkSoftwareId == userIdRequest.sid);
       this.userIdRequest = Object.assign({}, userIdRequest);
       // }
     }
@@ -1646,7 +1659,7 @@ export class UserIdRequestReportComponent implements OnInit {
     }
     // if(this.Error == null)
     // {
-    let soft = this.softwareList.find(x => x.id == userIdRequest.sid);
+    let soft = this.softwareList.find((x:any)  => x.id == userIdRequest.sid);
 
 
 
@@ -1714,7 +1727,7 @@ export class UserIdRequestReportComponent implements OnInit {
   isValid: boolean = false;
   validatedForm: boolean = true;
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -1744,13 +1757,13 @@ export class UserIdRequestReportComponent implements OnInit {
       ("00" + dt.getSeconds()).slice(-2);
     return formateddate;
   }
-  locationname: string;
+  locationname!: string
   downloadPdf() {
     // var temp=this.materialList.find(x=>x.id==this.filtermaterialtype);
     //generalpdf
     var printContents: any;
     printContents = document.getElementById('pdf').innerHTML;
-    var temp1 = this.locationList.find(x => x.id == this.currentUser.baselocation);
+    var temp1 = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation);
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + temp1.code + '-' + temp1.name;
     var ReportName = 'USER ID REQUEST REPORT';
     var printedBy = this.currentUser.employeeId + ' - ' + this.currentUser.fullName;
@@ -1758,7 +1771,7 @@ export class UserIdRequestReportComponent implements OnInit {
     var jsDate = this.setFormatedDateTime(now);
     var logo = this.image;
     var reason='';
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -1771,14 +1784,14 @@ export class UserIdRequestReportComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'User Id Form',
       },
 
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -1796,7 +1809,7 @@ export class UserIdRequestReportComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
 
           columns: [
@@ -1851,16 +1864,16 @@ export class UserIdRequestReportComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
   EquipmentDetails:any[]=[];
 
-  GetEquipDetailsById(id) {
+  GetEquipDetailsById(id:any) {
     this.isLoading = true;
     let connection: any;
     connection = this.httpService.getById(APIURLS.USERID_EQUIPDETAILS_GETBYID, id);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data.length > 0) {
         data.forEach((element)=>{
           let equip:any = {};

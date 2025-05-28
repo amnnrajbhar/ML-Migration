@@ -22,7 +22,7 @@ declare var toastr: any;
   providers:[Util]
 })
 export class ViewExtensionComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   appraisalId: any;
   objectType: string = "Retirement";
   employeeId: any;
@@ -51,7 +51,8 @@ export class ViewExtensionComponent implements OnInit {
   ngOnInit() {
     this.employeeRetirementId = this.route.snapshot.paramMap.get('id')!;
     this.employeeId = this.route.snapshot.paramMap.get('id2')!;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));  
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;  
     this.getRetirementDetails(this.employeeRetirementId);
     this.GetEmployeeRetirementDate(this.employeeId);
   }
@@ -64,7 +65,7 @@ export class ViewExtensionComponent implements OnInit {
   }
 
 
-  getRetirementDetails(id) {
+  getRetirementDetails(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.RETIREMENT_GET_DETAILS_BY_ID, id).then((data: any) => {
@@ -73,7 +74,7 @@ export class ViewExtensionComponent implements OnInit {
         
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -85,7 +86,7 @@ export class ViewExtensionComponent implements OnInit {
 
   extensionDetails= {} as any;
   extensionStartDate:Date;
-  GetEmployeeRetirementDate(id) {
+  GetEmployeeRetirementDate(id:any) {
     this.isLoading = true;
    // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.RETIREMENT_EMPLOYEE_GET_DATE, id).then((data: any) => {
@@ -96,7 +97,7 @@ export class ViewExtensionComponent implements OnInit {
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });

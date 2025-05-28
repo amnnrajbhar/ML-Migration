@@ -1,5 +1,5 @@
 export interface CompleteFNFTaskRequest{
     flowTaskId: number;
-    comments: string;
+    comments: string
     completedById: number;
 }

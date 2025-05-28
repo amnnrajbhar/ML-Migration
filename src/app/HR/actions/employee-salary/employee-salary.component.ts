@@ -20,26 +20,26 @@ declare var toastr: any;
 
 
 export class EmployeeSalaryComponent implements OnInit {
-  @Input() employeeId: number;
-  @Input() employeeInitialAppraisalDetailId: number;
+  @Input() employeeId!: number;
+  @Input() employeeInitialAppraisalDetailId!: number;
   @Input() isSalaryChange: any;
-  @Input() packageType: string;
+  @Input() packageType: string
   @Input() editAllowed: boolean = true;
-  @Input() offeredSalary: number;
-  @Input() salaryType: string;
-  @Input() salaryAmount: number;
-  @Input() oneTimeSalaryType: string;
-  @Input() oneTimeSalaryAmount: number;
-  @Input() newDesignationId: number;
-  @Input() newPlantId: number;
-  @Input() newPayGroupId: number;
-  @Input() newEmployeeCategoryId: number;
-  @Input() effectiveDate: string;
+  @Input() offeredSalary!: number;
+  @Input() salaryType: string
+  @Input() salaryAmount!: number;
+  @Input() oneTimeSalaryType: string
+  @Input() oneTimeSalaryAmount!: number;
+  @Input() newDesignationId!: number;
+  @Input() newPlantId!: number;
+  @Input() newPayGroupId!: number;
+  @Input() newEmployeeCategoryId!: number;
+  @Input() effectiveDate: string
   @Output() dataSaved: EventEmitter<any> = new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> = new EventEmitter();
 
-  currentUser: AuthData;
-  isLoading: boolean;
+  currentUser!: AuthData;
+  isLoading!: boolean;
   details: any = {};
   salaryList: any[] = [];
   count = 0;
@@ -59,7 +59,8 @@ export class EmployeeSalaryComponent implements OnInit {
 
   ngOnInit() {
     //this.employeeId = 25;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
       this.isLoading = true;
@@ -91,12 +92,12 @@ export class EmployeeSalaryComponent implements OnInit {
             index++;
           }
         }
-        this.benefitsList = this.salaryList.filter(x => x.salaryTypeShortCode == 'B');
-        this.salaryList = this.salaryList.filter(x => x.salaryTypeShortCode != 'B');
+        this.benefitsList = this.salaryList.filter((x:any)  => x.salaryTypeShortCode == 'B');
+        this.salaryList = this.salaryList.filter((x:any)  => x.salaryTypeShortCode != 'B');
         this.calculateTotals();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -121,13 +122,13 @@ export class EmployeeSalaryComponent implements OnInit {
               index++;
             }
           }
-          this.benefitsList = this.salaryList.filter(x => x.salaryTypeShortCode == 'B');
-          this.salaryList = this.salaryList.filter(x => x.salaryTypeShortCode != 'B');
+          this.benefitsList = this.salaryList.filter((x:any)  => x.salaryTypeShortCode == 'B');
+          this.salaryList = this.salaryList.filter((x:any)  => x.salaryTypeShortCode != 'B');
           this.calculateTotals();
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while fetching details, please check the link.");
     });
@@ -142,7 +143,7 @@ export class EmployeeSalaryComponent implements OnInit {
         this.getAllowanceList();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
@@ -171,19 +172,19 @@ export class EmployeeSalaryComponent implements OnInit {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_ALLOWANCE_TYPES+ "?plantId="+this.newPlantId+"&payGroupId="+this.newPayGroupId+"&empCategoryId="+this.newEmployeeCategoryId+"&designationId="+this.newDesignationId+"&isMetro="+this.employeeDetails.isMetroCity)
     .then((data: any) => {
       if (data.length > 0) {
-        this.allowanceList = data.sort((a, b) => { if (a.allowanceType > b.allowanceType) return 1; if (a.allowanceType < b.allowanceType) return -1; return 0; });        
+        this.allowanceList = data.sort((a:any, b:any) => { if (a.allowanceType > b.allowanceType) return 1; if (a.allowanceType < b.allowanceType) return -1; return 0; });        
         this.onAllowanceChange();
         this.disableAllowance = false;
       }
       else
         this.disableAllowance = true;
-    }).catch(error => {
+    }).catch((error)=> {
       this.allowanceList = [];
     }); 
   }
 
   onAllowanceChange(){
-    var allowance = this.allowanceList.find(x => x.id == this.details.allowanceId);
+    var allowance = this.allowanceList.find((x:any)  => x.id == this.details.allowanceId);
     if(allowance)
       this.allowanceDetails = "HQ:"+allowance.hq + " HS:"+allowance.hs + " IA:"+allowance.ia + " MA:"+allowance.ma + " OS:"+allowance.os + " SA:"+allowance.sa+" EXHQ:"+allowance.exhq;
   }
@@ -239,7 +240,7 @@ export class EmployeeSalaryComponent implements OnInit {
         //this.isLoading = false;
         swal('Error occured while saving the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         //this.isLoading = false;
         swal('Error occured while saving the details. Error:' + error);
       });
@@ -258,9 +259,9 @@ export class EmployeeSalaryComponent implements OnInit {
     for (var i = 0; i < this.salaryList.length; i++) {
       var salaryHeadId = this.salaryList[i].salaryHeadId;
       if (salaryHeadId > 0) {
-        var head = this.salaryHeads.find(x => x.id == salaryHeadId);
+        var head = this.salaryHeads.find((x:any)  => x.id == salaryHeadId);
         if (head) {
-          var payableNoOfMonths = this.frequencyValues.find(x => x.type == head.salaryPayableFrequency).value;
+          var payableNoOfMonths = this.frequencyValues.find((x:any)  => x.type == head.salaryPayableFrequency).value;
           this.salaryList[i].annualAmount = this.salaryList[i].amount * payableNoOfMonths;
           
           if(head.salaryType == "I" && head.salaryPayableFrequency == 'M')
@@ -284,7 +285,7 @@ export class EmployeeSalaryComponent implements OnInit {
     for (var i = 0; i < this.benefitsList.length; i++) {
       var salaryHeadId = this.benefitsList[i].salaryHeadId;
       if (salaryHeadId > 0) {
-        var head = this.salaryHeads.find(x => x.id == salaryHeadId);
+        var head = this.salaryHeads.find((x:any)  => x.id == salaryHeadId);
         if (head && head.salaryType == "B")
           this.details.totalOtherBenefits += this.benefitsList[i].annualAmount;
       }
@@ -315,12 +316,12 @@ export class EmployeeSalaryComponent implements OnInit {
           this.onSalaryHeadChange(index);
           index++;
         }
-        this.benefitsList = this.salaryList.filter(x => x.salaryTypeShortCode == 'B');
-        this.salaryList = this.salaryList.filter(x => x.salaryTypeShortCode != 'B');
+        this.benefitsList = this.salaryList.filter((x:any)  => x.salaryTypeShortCode == 'B');
+        this.salaryList = this.salaryList.filter((x:any)  => x.salaryTypeShortCode != 'B');
         this.calculateTotals();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while fetching details.");
     });
@@ -343,12 +344,12 @@ export class EmployeeSalaryComponent implements OnInit {
           this.onSalaryHeadChange(index);
           index++;
         }
-        this.benefitsList = this.salaryList.filter(x => x.salaryTypeShortCode == 'B');
-        this.salaryList = this.salaryList.filter(x => x.salaryTypeShortCode != 'B');
+        this.benefitsList = this.salaryList.filter((x:any)  => x.salaryTypeShortCode == 'B');
+        this.salaryList = this.salaryList.filter((x:any)  => x.salaryTypeShortCode != 'B');
         this.calculateTotals();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while fetching details.");
     });
@@ -367,19 +368,19 @@ export class EmployeeSalaryComponent implements OnInit {
         var index = 0;
         for (var item of this.benefitsList) {
           var lineItem = this.benefitsList[index];
-          var head = this.salaryHeads.find(x => x.id == lineItem.salaryHeadId);
+          var head = this.salaryHeads.find((x:any)  => x.id == lineItem.salaryHeadId);
           if (head) {
             this.benefitsList[index].description = head.descriptionInPaySlip;
-            this.benefitsList[index].salaryType = this.headTypes.find(x => x.type == head.salaryType).value;
+            this.benefitsList[index].salaryType = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
             this.benefitsList[index].salaryTypeShortCode = head.salaryType;
-            this.benefitsList[index].frequency = this.frequency.find(x => x.type == head.salaryPayableFrequency).value;
+            this.benefitsList[index].frequency = this.frequency.find((x:any)  => x.type == head.salaryPayableFrequency).value;
           }
           index++;
         }
         this.calculateTotals();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       swal("Error occurred while gettting details.");
       this.details = {};
@@ -396,7 +397,7 @@ export class EmployeeSalaryComponent implements OnInit {
       this.salaryDetails = this.benefitsList;
     }
     else {
-      this.salaryDetails = this.salaryList.filter(x => x.salaryTypeShortCode == type);
+      this.salaryDetails = this.salaryList.filter((x:any)  => x.salaryTypeShortCode == type);
     }
     $("#salaryDetailsModal").modal("show");
   }
@@ -408,12 +409,12 @@ export class EmployeeSalaryComponent implements OnInit {
   onSalaryHeadChange(index) {
     if (index >= 0) {
       var lineItem = this.salaryList[index];
-      var head = this.salaryHeads.find(x => x.id == lineItem.salaryHeadId);
+      var head = this.salaryHeads.find((x:any)  => x.id == lineItem.salaryHeadId);
       if (head) {
         this.salaryList[index].description = head.descriptionInPaySlip;
-        this.salaryList[index].salaryType = this.headTypes.find(x => x.type == head.salaryType).value;
+        this.salaryList[index].salaryType = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
         this.salaryList[index].salaryTypeShortCode = head.salaryType;
-        this.salaryList[index].frequency = this.frequency.find(x => x.type == head.salaryPayableFrequency).value;
+        this.salaryList[index].frequency = this.frequency.find((x:any)  => x.type == head.salaryPayableFrequency).value;
       }
     }
   }
@@ -421,7 +422,7 @@ export class EmployeeSalaryComponent implements OnInit {
   checkDuplicates() {
     var foundDuplicate = false;
     for (var i = 0; i < this.salaryList.length; i++) {
-      if (this.salaryList.findIndex(x => x.salaryHeadId == this.salaryList[i].salaryHeadId) != i) {
+      if (this.salaryList.findIndex((x:any)  => x.salaryHeadId == this.salaryList[i].salaryHeadId) != i) {
         foundDuplicate = true;
       }
     }
@@ -442,13 +443,13 @@ export class EmployeeSalaryComponent implements OnInit {
   getSalaryHeadsList() {
     this.httpService.HRget(APIURLS.HR_EMPLOYEE_GET_SALARY_HEADS).then((data: any) => {
       if (data) {
-        this.salaryHeads = data.sort((a, b) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });
+        this.salaryHeads = data.sort((a:any, b:any) => { if (a.salaryLT > b.salaryLT) return 1; if (a.salaryLT < b.salaryLT) return -1; return 0; });
         for (var head of this.salaryHeads) {
-          head.salaryTypeDescription = this.headTypes.find(x => x.type == head.salaryType).value;
+          head.salaryTypeDescription = this.headTypes.find((x:any)  => x.type == head.salaryType).value;
         }
         this.LoadData();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.salaryHeads = [];
     });
   }

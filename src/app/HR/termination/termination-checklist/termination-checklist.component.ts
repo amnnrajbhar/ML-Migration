@@ -17,14 +17,14 @@ declare var toastr: any;
   providers: [Util]
 })
 export class TerminationChecklistComponent implements OnInit {
-  @ViewChild(NgForm  , { static: false }) checklistForm: NgForm;
-  @Input() terminationId: number;
+  @ViewChild(NgForm  , { static: false }) checklistForm!: NgForm;
+  @Input() terminationId!: number;
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   @Input() actionAllowed: boolean = false;
   
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading = false;
   checklistItemList: any[] = [];
@@ -53,7 +53,8 @@ export class TerminationChecklistComponent implements OnInit {
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     console.log(this.editAllowed);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       if(this.editAllowed)
       {
         this.getDepartments();
@@ -88,7 +89,7 @@ export class TerminationChecklistComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while updating checklist details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving checklist details. Error:' + error);
       });
@@ -106,7 +107,7 @@ export class TerminationChecklistComponent implements OnInit {
           } 
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.errMsg = "Error occurred while fetching details, please check the link.";
       });
@@ -116,9 +117,9 @@ export class TerminationChecklistComponent implements OnInit {
   getDepartments(){
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -180,7 +181,7 @@ export class TerminationChecklistComponent implements OnInit {
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
@@ -191,7 +192,7 @@ export class TerminationChecklistComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#spocEmployeeId").val(ui.item.value);
                   $("#spocEmployeeName").val(ui.item.label);
@@ -201,7 +202,7 @@ export class TerminationChecklistComponent implements OnInit {
                   $("#spocEmployeeName").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#spocEmployeeId").val(ui.item.value);
                   $("#spocEmployeeName").val(ui.item.label);                  
@@ -221,9 +222,9 @@ export class TerminationChecklistComponent implements OnInit {
   }
 
   
-  checklistItemId: number;
-  comments: string;
-  action: string;
+  checklistItemId!: number;
+  comments: string
+  action: string
 
   complete(id){
     this.checklistItemId = id;
@@ -259,7 +260,7 @@ export class TerminationChecklistComponent implements OnInit {
         toastr.error(data.message);
       } else
       toastr.error("Error occurred.");
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }

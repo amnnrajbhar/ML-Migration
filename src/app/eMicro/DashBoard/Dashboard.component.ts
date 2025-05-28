@@ -35,11 +35,11 @@ import { stringify } from 'querystring';
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 
 import * as XLSX from 'xlsx';  
-import * as FileSaver from 'file-saver';
-import { saveAs } from 'file-saver';
+//import * as FileSaver from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
 
 @Component({
   selector: 'app-Dashboard',
@@ -47,20 +47,20 @@ import { ChartDataLabels } from 'chartjs-plugin-datalabels';
   styleUrls: ['./Dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   
-  // @ViewChild(NgForm  , { static: false })dataForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PMNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })BULKNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })FGNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })LCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })OSENGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })PPCNGXPForm: NgForm;
-  // @ViewChild(NgForm  , { static: false })RMForm: NgForm;
+  // @ViewChild(NgForm  , { static: false })dataForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PMNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })BULKNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })FGNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })LCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })OSENGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })PPCNGXPForm!: NgForm;
+  // @ViewChild(NgForm  , { static: false })RMForm!: NgForm;
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
   searchTermMgr = new FormControl();
@@ -84,7 +84,7 @@ export class DashboardComponent implements OnInit {
   isEdit: boolean = false;
   
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   selectedBaseLocation: any = [];
@@ -116,12 +116,12 @@ export class DashboardComponent implements OnInit {
   Creator:boolean=false;
   Review:boolean=false;
   Closure:boolean=false;
-  userid: string;
+  userid: string
   tdseligible:boolean;
 
   storeData: any;  
   jsonData: any;    
-  fileUploaded: File;  
+  fileUploaded!: File;  
   worksheet: any; 
   isEligibleForTds:any;
  // CustomerMastermodeldata = {} as ItemCodeExtension;
@@ -145,7 +145,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
   //  this.baseLocation = this.currentUser.baselocation;
   this.emailid=this.currentUser.email;
   this.filterstatus='Pending';
@@ -203,8 +204,8 @@ remaing:any;
     var filterModel: any = {};
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
       this.from_date = new Date(td.getFullYear(), td.getMonth(), 1);
@@ -239,7 +240,7 @@ remaing:any;
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Count =  {};
     });
@@ -247,7 +248,7 @@ remaing:any;
   }
   chart: any;
  
-  public chartPlugins = [ChartDataLabels];
+ // public chartPlugins = [ChartDataLabels];
   datas: any = [];
   label: any[] = [];
   getchart()
@@ -289,52 +290,52 @@ remaing:any;
             this.completed=this.Count.cCom;
         }
         let name=this.filtertype
-        this.chart = new Chart('linechart', {
+        // this.chart = new Chart('linechart', {
 
-            type: 'bar',
-            data: {
-               labels: ['Created', 'Submitted', 'Inprocess', 'Rejected', 'Completed'],
-              //labels: this.label,
-            //   pieData = [this.Count.cre, this.Count.sub, this.Count.inp, this.Count.rej, this.Count.com];
-            //   pieData1= [this.Count.vCre, this.Count.vSub, this.Count.vInp, this.Count.vRej, this.Count.vCom];
-            //   pieData2=[this.Count.sCre, this.Count.sSub, this.Count.sInp, this.Count.sRej, this.Count.sCom];
-            //   pieData3=[this.Count.cCre, this.Count.cSub, this.Count.cInp, this.Count.cRej, this.Count.cCom];
-              datasets: [
-                  { data :[this.created, this.submitted, this.InProcess, this.rejected,this.completed],label:name,backgroundColor:'#3e95cd'}]
-                  },
-            options: {
-              title: {
-                display: true,
-                text: 'Status'
-              },
-              legend: {
-                display: true
-              },
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    beginAtZero: true,
-                    callback: function (value) { if (Number.isInteger(value)) { return value; } }
-                    //stepSize: 1,
-                  }
-                }]
-              },
-              plugins: {
-                datalabels: {
-                  color: 'black',
-                  font: {
-                    size: 12,
-                    weight: 600
-                  },
-                  offset: 4,
-                  padding: 0,
-                  // formatter: function(value) {
-                  //   return value;
-                  // }
-                }
-              }
-            }
-          }); 
+        //     type: 'bar',
+        //     data: {
+        //        labels: ['Created', 'Submitted', 'Inprocess', 'Rejected', 'Completed'],
+        //       //labels: this.label,
+        //     //   pieData = [this.Count.cre, this.Count.sub, this.Count.inp, this.Count.rej, this.Count.com];
+        //     //   pieData1= [this.Count.vCre, this.Count.vSub, this.Count.vInp, this.Count.vRej, this.Count.vCom];
+        //     //   pieData2=[this.Count.sCre, this.Count.sSub, this.Count.sInp, this.Count.sRej, this.Count.sCom];
+        //     //   pieData3=[this.Count.cCre, this.Count.cSub, this.Count.cInp, this.Count.cRej, this.Count.cCom];
+        //       datasets: [
+        //           { data :[this.created, this.submitted, this.InProcess, this.rejected,this.completed],label:name,backgroundColor:'#3e95cd'}]
+        //           },
+        //     options: {
+        //       title: {
+        //         display: true,
+        //         text: 'Status'
+        //       },
+        //       legend: {
+        //         display: true
+        //       },
+        //       scales: {
+        //         yAxes: [{
+        //           ticks: {
+        //             beginAtZero: true,
+        //             callback: function (value:any) { if (Number.isInteger(value)) { return value; } }
+        //             //stepSize: 1,
+        //           }
+        //         }]
+        //       },
+        //       plugins: {
+        //         datalabels: {
+        //           color: 'black',
+        //           font: {
+        //             size: 12,
+        //             weight: 600
+        //           },
+        //           offset: 4,
+        //           padding: 0,
+        //           // formatter: function(value) {
+        //           //   return value;
+        //           // }
+        //         }
+        //       }
+        //     }
+        //   }); 
     }
     else{
 
@@ -349,98 +350,98 @@ remaing:any;
     lab = "Status"
    
 
-    this.chart = new Chart(document.getElementById("myPieChart"), {
-      plugin:this.chartPlugins,
-      type: 'doughnut',
-      data: {
-        labels: labels1,
-        datasets: [
-          {
-            label: lab,
-            backgroundColor: bckColor,
-            data: pieData
-          }
-        ]
-      },
-      options: {
-        maintainAspectRatio: true,
-        responsive: true,
-        legend: {
-          position: 'right',
-          labels: {
-            padding: 20,
-            boxWidth: 10
-          },
-          onClick: (e) => e.stopPropagation()
-        },
-        plugins: {
-          datalabels: {
-            color: 'white',
-            font: {
-              size: 15,
-              weight: 600
-            },
-            offset: 4,
-            padding: 0,
-          }
-        },
-        title: {
-          display: true,
-          text: 'Status'
-        }
-      }
-    });
+    // this.chart = new Chart(document.getElementById("myPieChart"), {
+    //   plugin:this.chartPlugins,
+    //   type: 'doughnut',
+    //   data: {
+    //     labels: labels1,
+    //     datasets: [
+    //       {
+    //         label: lab,
+    //         backgroundColor: bckColor,
+    //         data: pieData
+    //       }
+    //     ]
+    //   },
+    //   options: {
+    //     maintainAspectRatio: true,
+    //     responsive: true,
+    //     legend: {
+    //       position: 'right',
+    //       labels: {
+    //         padding: 20,
+    //         boxWidth: 10
+    //       },
+    //       onClick: (e) => e.stopPropagation()
+    //     },
+    //     plugins: {
+    //       datalabels: {
+    //         color: 'white',
+    //         font: {
+    //           size: 15,
+    //           weight: 600
+    //         },
+    //         offset: 4,
+    //         padding: 0,
+    //       }
+    //     },
+    //     title: {
+    //       display: true,
+    //       text: 'Status'
+    //     }
+    //   }
+    // });
 
 
-        this.chart = new Chart('linechart', {
+        // this.chart = new Chart('linechart', {
 
-            type: 'bar',
-            data: {
-               labels: ['Created', 'Submitted', 'Inprocess', 'Rejected', 'Completed'],
-              //labels: this.label,
-            //   pieData = [this.Count.cre, this.Count.sub, this.Count.inp, this.Count.rej, this.Count.com];
-            //   pieData1= [this.Count.vCre, this.Count.vSub, this.Count.vInp, this.Count.vRej, this.Count.vCom];
-            //   pieData2=[this.Count.sCre, this.Count.sSub, this.Count.sInp, this.Count.sRej, this.Count.sCom];
-            //   pieData3=[this.Count.cCre, this.Count.cSub, this.Count.cInp, this.Count.cRej, this.Count.cCom];
-              datasets: [
-                  { data :[this.Count.cre, this.Count.sub, this.Count.inp, this.Count.rej, this.Count.com],label:'Item Code Request',backgroundColor:'#3e95cd'},
-                  { data: [this.Count.vCre, this.Count.vSub, this.Count.vInp, this.Count.vRej, this.Count.vCom],label:'Vendor Master',backgroundColor:'#d9534f'},
-                  { data: [this.Count.sCre, this.Count.sSub, this.Count.sInp, this.Count.sRej, this.Count.sCom], label:'Service Master',backgroundColor:'#4e73df'},
-                  { data: [this.Count.cCre, this.Count.cSub, this.Count.cInp, this.Count.cRej, this.Count.cCom], label:'Customer Master',backgroundColor:'#dfb44e'}]
-            },
-            options: {
-              title: {
-                display: true,
-                text: 'Master Wise Status'
-              },
-              legend: {
-                display: true
-              },
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    beginAtZero: true,
-                    callback: function (value) { if (Number.isInteger(value)) { return value; } }
-                    //stepSize: 1,
-                  }
-                }]
-              },
-              plugins: {
-                datalabels: {
-                  color: 'black',
-                  font: {
-                    size: 12,
-                    weight: 600
-                  },
-                  offset: 4,
-                  padding: 0,
-                  // formatter: function(value) {
-                  //   return value;
-                  // }
-                }
-              }
-            }
-          });
+        //     type: 'bar',
+        //     data: {
+        //        labels: ['Created', 'Submitted', 'Inprocess', 'Rejected', 'Completed'],
+        //       //labels: this.label,
+        //     //   pieData = [this.Count.cre, this.Count.sub, this.Count.inp, this.Count.rej, this.Count.com];
+        //     //   pieData1= [this.Count.vCre, this.Count.vSub, this.Count.vInp, this.Count.vRej, this.Count.vCom];
+        //     //   pieData2=[this.Count.sCre, this.Count.sSub, this.Count.sInp, this.Count.sRej, this.Count.sCom];
+        //     //   pieData3=[this.Count.cCre, this.Count.cSub, this.Count.cInp, this.Count.cRej, this.Count.cCom];
+        //       datasets: [
+        //           { data :[this.Count.cre, this.Count.sub, this.Count.inp, this.Count.rej, this.Count.com],label:'Item Code Request',backgroundColor:'#3e95cd'},
+        //           { data: [this.Count.vCre, this.Count.vSub, this.Count.vInp, this.Count.vRej, this.Count.vCom],label:'Vendor Master',backgroundColor:'#d9534f'},
+        //           { data: [this.Count.sCre, this.Count.sSub, this.Count.sInp, this.Count.sRej, this.Count.sCom], label:'Service Master',backgroundColor:'#4e73df'},
+        //           { data: [this.Count.cCre, this.Count.cSub, this.Count.cInp, this.Count.cRej, this.Count.cCom], label:'Customer Master',backgroundColor:'#dfb44e'}]
+        //     },
+        //     options: {
+        //       title: {
+        //         display: true,
+        //         text: 'Master Wise Status'
+        //       },
+        //       legend: {
+        //         display: true
+        //       },
+        //       scales: {
+        //         yAxes: [{
+        //           ticks: {
+        //             beginAtZero: true,
+        //             callback: function (value:any) { if (Number.isInteger(value)) { return value; } }
+        //             //stepSize: 1,
+        //           }
+        //         }]
+        //       },
+        //       plugins: {
+        //         datalabels: {
+        //           color: 'black',
+        //           font: {
+        //             size: 12,
+        //             weight: 600
+        //           },
+        //           offset: 4,
+        //           padding: 0,
+        //           // formatter: function(value) {
+        //           //   return value;
+        //           // }
+        //         }
+        //       }
+        //     }
+        //   });
     }
    
   

@@ -23,15 +23,15 @@ declare var jQuery: any;
 export class SoftSkillComponent implements OnInit {
     
     public tableWidget: any;
-    softskillList: any[];
-    parentList: any[];
-    profileList: any[];
-    assessmentList: any[];
+    softskillList!: any[];
+    parentList!: any[];
+    profileList!: any[];
+    assessmentList!: any[];
     calendarList: any[]=[[]];
     selParentRole: any;
     selAssessment: any;
     selCalendar: any;
-    usrid: number;
+    usrid!: number;
     roleid:number;
     path: string = '';
     softskillItem: SoftSkill = new SoftSkill(0, '','', 0, 0, 0,true);;
@@ -64,7 +64,8 @@ export class SoftSkillComponent implements OnInit {
       this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if(chkaccess == true){
-      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+      //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
       this.usrid = authData.uid;
       this.roleid = authData.roleId;
         this.getSoftSkillList();
@@ -116,20 +117,20 @@ export class SoftSkillComponent implements OnInit {
       if (this.isEdit) {
         this.softskillItem = data;
 
-        // this.parentList = this.softskillList.filter(s => s.isActive != false);
-        this.profileList = this.profileList.filter(s => s.isActive != false);
-        // this.assessmentList = this.assessmentList.filter(s => s.isActive != false);
-        this.calendarList = this.calendarList.filter(s => s.isActive != false);
+        // this.parentList = this.softskillList.filter((s:any) => s.isActive != false);
+        this.profileList = this.profileList.filter((s:any) => s.isActive != false);
+        // this.assessmentList = this.assessmentList.filter((s:any) => s.isActive != false);
+        this.calendarList = this.calendarList.filter((s:any) => s.isActive != false);
         ////console.log(this.softskillItem.fkRoleId);
-        this.selParentRole = this.profileList.find(s => s.role === this.softskillItem.fkRoleId);
-        // this.selAssessment = this.assessmentList.find(s => s.name === this.softskillItem.fkAssesmentId);
-        this.selCalendar = this.calendarList.find(s => s.id === this.softskillItem.fkCalendarId);
+        this.selParentRole = this.profileList.find((s:any) => s.role === this.softskillItem.fkRoleId);
+        // this.selAssessment = this.assessmentList.find((s:any) => s.name === this.softskillItem.fkAssesmentId);
+        this.selCalendar = this.calendarList.find((s:any) => s.id === this.softskillItem.fkCalendarId);
       }
       else {
-        // this.parentList = this.softskillList.filter(s => s.isActive != false);
-        this.profileList = this.profileList.filter(s => s.isActive != false);
-        // this.assessmentList = this.assessmentList.filter(s => s.isActive != false);
-        this.calendarList = this.calendarList.filter(s => s.isActive != false);
+        // this.parentList = this.softskillList.filter((s:any) => s.isActive != false);
+        this.profileList = this.profileList.filter((s:any) => s.isActive != false);
+        // this.assessmentList = this.assessmentList.filter((s:any) => s.isActive != false);
+        this.calendarList = this.calendarList.filter((s:any) => s.isActive != false);
 
         this.softskillItem = new SoftSkill(0, '','', 0, 0, 0,true);;
         this.selParentRole = null;
@@ -162,24 +163,24 @@ export class SoftSkillComponent implements OnInit {
           for(let des of this.softskillList) {
             this.httpService.getById(APIURLS.BR_MASTER_ROLE_API_BYID,des.fkRoleId).then((datam:any) => {
             this.profileItem = datam;
-            this.softskillList.find(s => s.fkRoleId == this.profileItem.id)['fkRoleId'] = this.profileItem.role;
+            this.softskillList.find((s:any) => s.fkRoleId == this.profileItem.id)['fkRoleId'] = this.profileItem.role;
            });  
           }
           //  for(let des of this.softskillList) {
           //   this.httpService.getById(APIURLS.BR_MASTER_ASSESMENT_API,des.fkAssesmentId).then((datam:any) => {
           //   this.assessmentItem = datam;
-          //   this.softskillList.find(s => s.fkAssesmentId === this.assessmentItem.id)['fkAssesmentId'] = this.assessmentItem.name;
+          //   this.softskillList.find((s:any) => s.fkAssesmentId === this.assessmentItem.id)['fkAssesmentId'] = this.assessmentItem.name;
           //  });  
           // }
           //  for(let des of this.softskillList) {
           //   this.httpService.getById(APIURLS.BR_MASTER_CALENDAR_INSERT_API,des.fkCalendarId).then((datam:any) => {
           //   this.calendarItem = datam;
-          //   this.softskillList.find(s => s.fkCalendarId === this.calendarItem.id)['fkCalendarId'] = this.calendarItem.fiscalYear;
+          //   this.softskillList.find((s:any) => s.fkCalendarId === this.calendarItem.id)['fkCalendarId'] = this.calendarItem.fiscalYear;
           //  });  
           // }
           this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.softskillList = [];
       });
@@ -187,7 +188,7 @@ export class SoftSkillComponent implements OnInit {
 
     getCalName(id: number){
       var temp: any;
-      temp = this.calendarList.find(s => s.id == id);
+      temp = this.calendarList.find((s:any) => s.id == id);
       var fiscalname = (typeof temp != 'undefined')? temp.fiscalYear : '';
       return fiscalname;
     }
@@ -202,7 +203,7 @@ export class SoftSkillComponent implements OnInit {
       this.softskillItem.fkCalendarId = this.selCalendar.id;
       let connection: any;
       // debugger;
-      if(!this.softskillList.some(s => s.skills== this.softskillItem.skills && s.fkCalenderId == this.softskillItem.fkCalendarId && s.id != this.softskillItem.id)){
+      if(!this.softskillList.some((s:any) => s.skills== this.softskillItem.skills && s.fkCalenderId == this.softskillItem.fkCalendarId && s.id != this.softskillItem.id)){
       if (!this.isEdit)
          connection = this.httpService.post(APIURLS.BR_MASTER_SOFTSKILL_API, this.softskillItem);
         else
@@ -220,7 +221,7 @@ export class SoftSkillComponent implements OnInit {
          else {
            this.errMsgPop = 'Error saving Softskill data..';
          }
-        }).catch(error => {
+        }).catch((error)=> {
          this.isLoadingPop = false;
          this.errMsgPop = 'Error saving Softskill data..';
         });

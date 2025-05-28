@@ -9,13 +9,13 @@ import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
 import { ExcelService } from '../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+//import * as fs from 'file-saver';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// // import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 
 @Component({
@@ -29,47 +29,50 @@ export class ReportsComponent implements OnInit {
 
 
   public tableWidget: any;
-  filterPIMNo: string;
+  filterPIMNo!: string
   ItemList: LineItem[] = [];
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  filterplant: string;
-  path: string;
-  currentUser: AuthData;
-  filteruser: string;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  filterplant!: string
+  path!: string
+  currentUser!: AuthData;
+  filteruser!: string
   locationList: any[] = [];
   filteredModel: any[] = [];
   materialstatusmodel: any[] = [];
   errMsg: string = "";
   date: any;
   today = new Date();
-  filtermatType: string;
-  filtermatCode: string;
-  filtermatDesc: string;
-  filterbatchNo: string;
-  filtersuppCode: string;
-  filterPONo: string;
-  filterfloor: string;
-  filterrack: string;
-  filterbin: string;
-  filterpalletId: string;
-  filtercustomer: string;
-  filterdeliveryNo: string;
-  filterinvoiceNo: string;
-  filtertype: string;
-  filterstages: string;
-  filterquantity: string;
-  filterspace: string;
-  filterReportType: string;
-  filterType: string;
+  filtermatType!: string
+  filtermatCode!: string
+  filtermatDesc!: string
+  filterbatchNo!: string
+  filtersuppCode!: string
+  filterPONo!: string
+  filterfloor!: string
+  filterrack!: string
+  filterbin!: string
+  filterpalletId!: string
+  filtercustomer!: string
+  filterdeliveryNo!: string
+  filterinvoiceNo!: string
+  filtertype!: string
+  filterstages!: string
+  filterquantity!: string
+  filterspace!: string
+  filterReportType!: string
+  filterType!: string
   dtOptions = {};
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private datePipe: DatePipe
-    , private http: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    , private http: HttpClient) { 
+      // pdfMake.vfs = pdfFonts.pdfMake.vfs;
+     }
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getLocationMaster();
     this.getbase64image();
     this.dtOptions = {
@@ -89,30 +92,58 @@ export class ReportsComponent implements OnInit {
 
 
 
+  // clearFilter() {
+  //   this.filterplant = null;
+  //   this.date = new Date();
+  //   this.filtermatType = null;
+  //   this.filtermatCode = null;
+  //   this.filtermatDesc = null;
+  //   this.filterbatchNo = null;
+  //   this.filteruser = null;
+  //   this.filtersuppCode = null;
+  //   this.filterPIMNo = null;
+  //   this.filterPONo = null;
+  //   this.filterfloor = null;
+  //   this.filterrack = null;
+  //   this.filterbin = null;
+  //   this.filterpalletId = null;
+  //   this.filtercustomer = null;
+  //   this.filterdeliveryNo = null;
+  //   this.filterinvoiceNo = null;
+  //   this.filtertype = null;
+  //   this.filterstages = null;
+  //   this.filterquantity = null;
+  //   this.filterspace = null;
+  //   this.filterReportType = null;
+  //   //this.filterType = null;
+//this.filterType = '';
+  //   this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
+  //   this.to_date = this.today;
+  // }
   clearFilter() {
-    this.filterplant = null;
+    this.filterplant = '';
     this.date = new Date();
-    this.filtermatType = null;
-    this.filtermatCode = null;
-    this.filtermatDesc = null;
-    this.filterbatchNo = null;
-    this.filteruser = null;
-    this.filtersuppCode = null;
-    this.filterPIMNo = null;
-    this.filterPONo = null;
-    this.filterfloor = null;
-    this.filterrack = null;
-    this.filterbin = null;
-    this.filterpalletId = null;
-    this.filtercustomer = null;
-    this.filterdeliveryNo = null;
-    this.filterinvoiceNo = null;
-    this.filtertype = null;
-    this.filterstages = null;
-    this.filterquantity = null;
-    this.filterspace = null;
-    this.filterReportType = null;
-    this.filterType = null;
+    this.filtermatType = '';
+    this.filtermatCode = '';
+    this.filtermatDesc = '';
+    this.filterbatchNo = '';
+    this.filteruser = '';
+    this.filtersuppCode = '';
+    this.filterPIMNo = '';
+    this.filterPONo = '';
+    this.filterfloor = '';
+    this.filterrack = '';
+    this.filterbin = '';
+    this.filterpalletId = '';
+    this.filtercustomer = '';
+    this.filterdeliveryNo = '';
+    this.filterinvoiceNo= '';
+    this.filtertype = '';
+    this.filterstages = '';
+    this.filterquantity = '';
+    this.filterspace = '';
+    this.filterReportType = '';
+    this.filterType = '';
     this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     this.to_date = this.today;
   }
@@ -166,7 +197,7 @@ export class ReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.filteredModel = [];
     });
@@ -207,7 +238,7 @@ export class ReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.filteredModel = [];
     });
@@ -229,7 +260,7 @@ export class ReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.filteredModel = [];
     });
@@ -263,12 +294,12 @@ export class ReportsComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         // this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
-       // this.filterplant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
+        this.locationList = data.filter((x:any) => x.isActive);
+       // this.filterplant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
 
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error) => {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -277,11 +308,12 @@ export class ReportsComponent implements OnInit {
     this.filteredModel = [];
     this.reInitDatatable();
   }
-  GetTypes(typ) {
+  GetTypes(typ: any) {
     //this.clearFilter();
     this.ReportsTypeList1 = [];
-    this.filterType=null;
-    this.ReportsTypeList1 = this.ReportsTypeList.filter(x => x.type == typ);
+    // this.filterType=null;
+        this.filterType='';
+    this.ReportsTypeList1 = this.ReportsTypeList.filter((x:any)  => x.type == typ);
     this.reInitDatatable();
   }
   ReportsTypeList1: any[] = [];
@@ -307,119 +339,120 @@ export class ReportsComponent implements OnInit {
   ];
 
   detailedList: any[] = [];
-  showDetailedView(item) {
+  showDetailedView(item :any) {
     this.detailedList = [];
-    this.detailedList = this.materialstatusmodel.filter(x => x.lineItemNo == item.lineItemNo);
+    this.detailedList = this.materialstatusmodel.filter((x:any)  => x.lineItemNo == item.lineItemNo);
     jQuery('#DetailedModal').modal('show');
   }
 
-  exportInwardSummary() {
-    const title = 'Summary Report';
-    const header = ["SNo", "Plant Code", "Plant Name", "Migo No", "Migo Date", "PIM No", "PIM Date",
-      "Vendor Code", "Vendor Name", "Invoice No", "Invoice Date", "No of Items", "No of Batches", "Total Qty", "Full Qty",
-      "Loose Qty", "No of Shippers", "No Of Pallets"]
+  // exportInwardSummary() {
+  //   const title = 'Summary Report';
+  //   const header = ["SNo", "Plant Code", "Plant Name", "Migo No", "Migo Date", "PIM No", "PIM Date",
+  //     "Vendor Code", "Vendor Name", "Invoice No", "Invoice Date", "No of Items", "No of Batches", "Total Qty", "Full Qty",
+  //     "Loose Qty", "No of Shippers", "No Of Pallets"]
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.filteredModel.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.slNo = index;
-      ts.plantCode = element.plantCode;
-      ts.plantName = element.plantName;
-      ts.docNo = element.docNo;
-      ts.docDate = this.datePipe.transform(element.docDate, 'dd/MM/yyyy HH:mm a');
-      ts.pimNo = element.pimNo;
-      ts.pimDate = this.datePipe.transform(element.pimDate, 'dd/MM/yyyy');
-      ts.vendorCode = element.vendorCode;
-      ts.vendorName = element.vendorName;
-      ts.invoiceNo = element.invoiceNo;
-      ts.invoiceDate = this.datePipe.transform(element.invoiceDate, 'dd/MM/yyyy');
-      ts.noOfItems = element.noOfItems;
-      ts.noOfBatches = element.noOfBatches;
-      ts.totalQty = element.totalQty;
-      ts.fullQty = element.fullQty;
-      ts.looseQty = element.looseQty;
-      ts.noOfShippers = element.noOfShippers;
-      ts.noOfPallets = element.noOfPallets;
-      exportList.push(ts);
+  //   var exportList: any[] = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.filteredModel.forEach((element:any)=> {
 
-    });
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.filterplant;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Summary Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    let subTitleRow = worksheet.addRow(['Summary Report from ' + this.datePipe.transform(this.from_date, 'dd/MM/yyyy') + ' To ' + this.datePipe.transform(this.to_date, 'dd/MM/yyyy')])
-    //Add Image
-    subTitleRow.font = { size: 12, bold: true }
-    worksheet.mergeCells('A1:R1');
-    worksheet.mergeCells('A2:R2');
-    worksheet.mergeCells('A3:R3');
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slNo = index;
+  //     ts.plantCode = element.plantCode;
+  //     ts.plantName = element.plantName;
+  //     ts.docNo = element.docNo;
+  //     ts.docDate = this.datePipe.transform(element.docDate, 'dd/MM/yyyy HH:mm a');
+  //     ts.pimNo = element.pimNo;
+  //     ts.pimDate = this.datePipe.transform(element.pimDate, 'dd/MM/yyyy');
+  //     ts.vendorCode = element.vendorCode;
+  //     ts.vendorName = element.vendorName;
+  //     ts.invoiceNo = element.invoiceNo;
+  //     ts.invoiceDate = this.datePipe.transform(element.invoiceDate, 'dd/MM/yyyy');
+  //     ts.noOfItems = element.noOfItems;
+  //     ts.noOfBatches = element.noOfBatches;
+  //     ts.totalQty = element.totalQty;
+  //     ts.fullQty = element.fullQty;
+  //     ts.looseQty = element.looseQty;
+  //     ts.noOfShippers = element.noOfShippers;
+  //     ts.noOfPallets = element.noOfPallets;
+  //     exportList.push(ts);
 
-    //Blank Row 
-    // worksheet.addRow([]);
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.filterplant;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Summary Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   let subTitleRow = worksheet.addRow(['Summary Report from ' + this.datePipe.transform(this.from_date, 'dd/MM/yyyy') + ' To ' + this.datePipe.transform(this.to_date, 'dd/MM/yyyy')])
+  //   //Add Image
+  //   subTitleRow.font = { size: 12, bold: true }
+  //   worksheet.mergeCells('A1:R1');
+  //   worksheet.mergeCells('A2:R2');
+  //   worksheet.mergeCells('A3:R3');
 
-    // Cell Style : Fill and Border
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    //  worksheet.addRows(data);
-    // Add Data and Conditional Formatting
-    //data.forEach()
+  //   //Blank Row 
+  //   // worksheet.addRow([]);
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    // data.forEach((element) => {
-    //   let eachRow = [];
-    //   header.forEach((headers) => {
-    //     eachRow.push(element.id);
-    //   })   
+  //   // Cell Style : Fill and Border
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   //  worksheet.addRows(data);
+  //   // Add Data and Conditional Formatting
+  //   //data.forEach()
 
-    //   worksheet.addRow(eachRow); 
-    // })
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    // worksheet.getColumn(2).width = 10;
-    // worksheet.getColumn(4).width = 20;
-    // worksheet.getColumn(5).width = 60;
-    // worksheet.getColumn(6).width = 40;
-    // worksheet.getColumn(7).width = 10;    
-    // worksheet.getColumn(8).width = 20;    
-    worksheet.addRow([]);
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   // data.forEach((element) => {
+  //   //   let eachRow = [];
+  //   //   header.forEach((headers) => {
+  //   //     eachRow.push(element.id);
+  //   //   })   
 
-    // pdfMake.createPdf(worksheet).open()
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'SummaryReport.xlsx');
-    })
+  //   //   worksheet.addRow(eachRow); 
+  //   // })
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   // worksheet.getColumn(2).width = 10;
+  //   // worksheet.getColumn(4).width = 20;
+  //   // worksheet.getColumn(5).width = 60;
+  //   // worksheet.getColumn(6).width = 40;
+  //   // worksheet.getColumn(7).width = 10;    
+  //   // worksheet.getColumn(8).width = 20;    
+  //   worksheet.addRow([]);
 
-  }
+  //   // pdfMake.createPdf(worksheet).open()
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'SummaryReport.xlsx');
+  //   })
 
-  image: string;
+  // }
+
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -433,6 +466,8 @@ export class ReportsComponent implements OnInit {
       });
   }
 
+  //v10
+   subType: string = ''; 
   getReportName() {
     var printsection;
     if(this.filterReportType=='Inward Report')
@@ -465,26 +500,43 @@ export class ReportsComponent implements OnInit {
     }
     else if(this.filterReportType=='Inventory Report')
     {
-    switch (this.filterType) {
-      case 'Inventory Report' && 'Summary':
-        printsection = 'Inventory Summary'
-        return printsection;
-      case 'Inventory Report' && 'PalletWise':
-        printsection = 'Inventory PalletWise'
-        return printsection;
-      case 'Inventory Report' && 'ItemWise':
-        printsection = 'Inventory ItemWise'
-        return printsection;
-      case 'Inventory Report' && 'BatchWise':
-        printsection = 'Inventory BatchWise'
-        return printsection;
-      case 'Inventory Report' && 'Bin Transfers':
-        printsection = 'Inventory BinTransfers'
-        return printsection;
-        default:
-        printsection = 'InventoryLedger'
-        return printsection;  
-    }
+    // switch (this.filterType) {
+    //   case 'Inventory Report' && 'Summary':
+    //     printsection = 'Inventory Summary'
+    //     return printsection;
+    //   case 'Inventory Report' && 'PalletWise':
+    //     printsection = 'Inventory PalletWise'
+    //     return printsection;
+    //   case 'Inventory Report' && 'ItemWise':
+    //     printsection = 'Inventory ItemWise'
+    //     return printsection;
+    //   case 'Inventory Report' && 'BatchWise':
+    //     printsection = 'Inventory BatchWise'
+    //     return printsection;
+    //   case 'Inventory Report' && 'Bin Transfers':
+    //     printsection = 'Inventory BinTransfers'
+    //     return printsection;
+    //     default:
+    //     printsection = 'InventoryLedger'
+    //     return printsection;  
+    // }
+    const key = `${this.filterType}-${this.subType}`;
+
+switch (key) {
+  case 'Inventory Report-Summary':
+    return 'Inventory Summary';
+  case 'Inventory Report-PalletWise':
+    return 'Inventory PalletWise';
+  case 'Inventory Report-ItemWise':
+    return 'Inventory ItemWise';
+  case 'Inventory Report-BatchWise':
+    return 'Inventory BatchWise';
+  case 'Inventory Report-Bin Transfers':
+    return 'Inventory BinTransfers';
+  default:
+    return 'InventoryLedger';
+}
+
   }
   else if(this.filterReportType=='User Based Report')
     {
@@ -502,23 +554,32 @@ export class ReportsComponent implements OnInit {
       }
     }
     else{
-      switch (this.filterType) {
-      case 'Space Utilisation Report' && 'Summary':
-        printsection = 'Space Utilisation Summary'
-        return printsection;
+    //   switch (this.filterType) {
+    //   case 'Space Utilisation Report' && 'Summary':
+    //     printsection = 'Space Utilisation Summary'
+    //     return printsection;
 
-      default:
-        printsection = 'Space Utilisation Detailed'
-        return printsection;
-    }
+    //   default:
+    //     printsection = 'Space Utilisation Detailed'
+    //     return printsection;
+    // }
+    const key = `${this.filterType}-${this.subType}`;
+
+switch (key) {
+  case 'Space Utilisation Report-Summary':
+    return 'Space Utilisation Summary';
+ 
+  default:
+    return 'DefaultSection'; 
+}
   }
   }
 
   downloadPdf() {
-    var printsection: string;
+    var printsection: string
     let temp=this.locationList.find(x=>x.code==this.filterplant);
     printsection = this.getReportName();
-    var printContents = document.getElementById(printsection).innerHTML;
+    var printContents = document.getElementById(printsection)!.innerHTML;
     if(temp)
     {
       var OrganisationName = "MICRO LABS LIMITED" + ', ' + temp.code+ '-'+temp.name;
@@ -532,27 +593,27 @@ export class ReportsComponent implements OnInit {
     var now = new Date();
     var jsDate = new Date().toDateString();
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div> 
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      tablebordered: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-    })
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div> 
+  // </div>
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     tablebordered: true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //   })
     var docDefinition = {
       info: {
         title: ReportName,
       },
       content: [
-        htmnikhitml,
+        // htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -570,7 +631,7 @@ export class ReportsComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 60],
       pageOrientation: 'landscape',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage :any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -624,40 +685,41 @@ export class ReportsComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+     //pdfMake.createPdf(docDefinition).open();
   }
   downloadUSERPdf() {
-    var printsection: string;
+    // var printsection: string
     let temp=this.locationList.find(x=>x.code==this.filterplant);
-    printsection = this.getReportName();
-    var printContents = document.getElementById(printsection).innerHTML;
+     // printsection = this.getReportName();
+   const printsection = this.getReportName();
+    var printContents = document.getElementById(printsection)!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + temp.code+ '-'+temp.name;
     var ReportName = printsection.toLocaleUpperCase() + " REPORT"
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate = new Date().toDateString();
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
-    <head>
-    </head>
-    <body>
-    ${printContents}
-    <div> 
-    </div>
-    </body>  
-    </html>`, {
-        tableAutoSize: true,
-        tablebordered: true,
-        headerRows: 1,
-        dontBreakRows: true,
-        keepWithHeaderRows: true,
-      })
+    // var htmnikhitml = htmlToPdfmake(`<html>
+    // <head>
+    // </head>
+    // <body>
+    // ${printContents}
+    // <div> 
+    // </div>
+    // </body>  
+    // </html>`, {
+    //     tableAutoSize: true,
+    //     tablebordered: true,
+    //     headerRows: 1,
+    //     dontBreakRows: true,
+    //     keepWithHeaderRows: true,
+    //   })
       var docDefinition = {
         info: {
           title: ReportName,
         },
         content: [
-          htmnikhitml,
+          // htmnikhitml,
         ],
         defaultStyle: {
           fontSize: 9,
@@ -675,7 +737,7 @@ export class ReportsComponent implements OnInit {
         pageSize: 'A4',
         pageMargins: [40, 100, 40, 60],
         pageOrientation: 'portrait',
-        header: function (currentPage, pageCount) {
+        header: function (currentPage:any, pageCount:any) {
           return {
             // pageMargins: [40, 80, 40, 60],
             style: 'tableExample',
@@ -729,16 +791,19 @@ export class ReportsComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
   downloadSpacePdf()
   {
-    var printsection: string;
+    // var printsection: string
     let temp=this.locationList.find(x=>x.code==this.filterplant);
-    printsection = this.getReportName();
-    var printContents = document.getElementById(printsection).innerHTML;
+    // printsection = this.getReportName();
+        const printsection = this.getReportName();
+    // var printContents = document.getElementById(printsection).innerHTML;
+    const printContents = document.getElementById(printsection)!.innerHTML;
+
     if(temp)
     {
       var OrganisationName = "MICRO LABS LIMITED" + ', ' + temp.code+ '-'+temp.name;
@@ -751,27 +816,27 @@ export class ReportsComponent implements OnInit {
     var now = new Date();
     var jsDate = new Date().toDateString();
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
-    <head>
-    </head>
-    <body>
-    ${printContents}
-    <div> 
-    </div>
-    </body>  
-    </html>`, {
-        tableAutoSize: true,
-        tablebordered: true,
-        headerRows: 1,
-        dontBreakRows: true,
-        keepWithHeaderRows: true,
-      })
+    // var htmnikhitml = htmlToPdfmake(`<html>
+    // <head>
+    // </head>
+    // <body>
+    // ${printContents}
+    // <div> 
+    // </div>
+    // </body>  
+    // </html>`, {
+    //     tableAutoSize: true,
+    //     tablebordered: true,
+    //     headerRows: 1,
+    //     dontBreakRows: true,
+    //     keepWithHeaderRows: true,
+    //   })
       var docDefinition = {
         info: {
           title: ReportName,
         },
         content: [
-          htmnikhitml,
+          // htmnikhitml,
         ],
         defaultStyle: {
           fontSize: 9,
@@ -789,7 +854,7 @@ export class ReportsComponent implements OnInit {
         pageSize: 'A4',
         pageMargins: [40, 100, 40, 60],
         pageOrientation: 'portrait',
-        header: function (currentPage, pageCount) {
+        header: function (currentPage:any, pageCount:any) {
           return {
             // pageMargins: [40, 80, 40, 60],
             style: 'tableExample',
@@ -843,7 +908,7 @@ export class ReportsComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
   getUserBasedReport() {
@@ -890,7 +955,7 @@ export class ReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.filteredModel = [];
     });
@@ -916,42 +981,42 @@ export class ReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoading = false;
       this.filteredModel = [];
     });
   }
 
   dowloadstockpdf() {
-    let temp = this.locationList.find(x => x.code == this.filterplant);
-    var printContents = document.getElementById('stock').innerHTML;
+    let temp = this.locationList.find((x:any)  => x.code == this.filterplant);
+    var printContents = document.getElementById('stock')!.innerHTML;
     var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.filterplant + ' - ' + temp.name;
     var ReportName = "STOCK VERIFICATION REPORT"
     var printedBy = this.currentUser.fullName;
     var now = new Date();
     var jsDate = new Date().toDateString();
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div> 
-  </div>
-  </body>  
-  </html>`, {
-      tableAutoSize: true,
-      tablebordered: true,
-      headerRows: 1,
-      dontBreakRows: true,
-      keepWithHeaderRows: true,
-    })
+  //   var htmnikhitml = htmlToPdfmake(`<html>
+  // <head>
+  // </head>
+  // <body>
+  // ${printContents}
+  // <div> 
+  // </div>
+  // </body>  
+  // </html>`, {
+  //     tableAutoSize: true,
+  //     tablebordered: true,
+  //     headerRows: 1,
+  //     dontBreakRows: true,
+  //     keepWithHeaderRows: true,
+  //   })
     var docDefinition = {
       info: {
         title: ReportName,
       },
       content: [
-        htmnikhitml,
+        // htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -969,7 +1034,7 @@ export class ReportsComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 60],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           // pageMargins: [40, 80, 40, 60],
           style: 'tableExample',
@@ -1023,7 +1088,7 @@ export class ReportsComponent implements OnInit {
       },
 
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 }
 

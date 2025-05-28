@@ -18,10 +18,10 @@ declare var toastr: any;
   providers: [Util]
 })
 export class EmployeeRejoinConfigComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   filterModel: any = {};
   filterData: any = {}
   item: any = {};
@@ -37,7 +37,8 @@ export class EmployeeRejoinConfigComponent implements OnInit {
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.masterService.getPlantList().then((data:any)=>{this.plantList = data;});
     this.masterService.getPayGroupList().then((data:any)=>{this.payGroupList = data;});
     this.masterService.getEmployeeCategoryList().then((data:any)=>{this.employeeCategoryList = data;});
@@ -58,7 +59,7 @@ export class EmployeeRejoinConfigComponent implements OnInit {
     this.httpService.HRpost(APIURLS.HR_EMPLOYEE_REJOIN_CONFIG_GET_BY_FILTER, this.filterModel).then((data: any) => {
       this.filterData = data;      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the list. Error: "+ error);
       this.isLoading = false;      
     });
@@ -101,7 +102,7 @@ export class EmployeeRejoinConfigComponent implements OnInit {
         $("#detailsModal").modal("hide");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error('Error adding details...'+ error);
     })
@@ -126,7 +127,7 @@ export class EmployeeRejoinConfigComponent implements OnInit {
         $("#detailsModal").modal("hide");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error('Error updating details...'+ error);
     })
@@ -154,7 +155,7 @@ export class EmployeeRejoinConfigComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + error);
       });

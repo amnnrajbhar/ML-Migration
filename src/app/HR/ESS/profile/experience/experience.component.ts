@@ -23,12 +23,12 @@ declare var $: any;
   providers:[Util,AppointmentService]
 })
 export class ExperienceComponent implements OnInit {
-  @ViewChild(NgForm , { static: false })   workExperienceForm: NgForm;
-  @Input() employeeId: number;
+  @ViewChild(NgForm , { static: false })   workExperienceForm!: NgForm;
+  @Input() employeeId!: number;
   @Input() profileDetails: TemporaryProfile;
   @Input() editAllowed: boolean ;
-  @Input() profileId: number;
-  @Input() experience: number;
+  @Input() profileId!: number;
+  @Input() experience!: number;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   
@@ -44,7 +44,7 @@ export class ExperienceComponent implements OnInit {
   editIndex: number = -1;
   selectedIndustry: any = null;
   selectedCountry: any = null;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   profileDetailsList: any={};
   profileUpdate = false;
   statusList = [
@@ -66,7 +66,8 @@ export class ExperienceComponent implements OnInit {
  
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getData(this.employeeId);
     }
     if (this.profileId>0)
@@ -84,7 +85,7 @@ export class ExperienceComponent implements OnInit {
   }
  
 
-  getData(id) {
+  getData(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_GET_EXPERIENCE, id).then((data: any) => {
@@ -93,7 +94,7 @@ export class ExperienceComponent implements OnInit {
         this.experienceLists = this.experienceList;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -105,13 +106,13 @@ export class ExperienceComponent implements OnInit {
     this.httpService.HRget(APIURLS.TEMPORARY_EMPLOYEE_PROFILE_GET_DETAILS + "/" + id).then((data: any) => {
       if (data) {
         this.profileDetailsList = data;
-        this.profileDetailsList.experienceDetails = this.profileDetailsList.experienceDetails.filter(x => x.action!="None");
+        this.profileDetailsList.experienceDetails = this.profileDetailsList.experienceDetails.filter((x:any)  => x.action!="None");
         for(var item of this.profileDetailsList.experienceDetails){
           item.statusColor = this.statusList.find(x=>x.type == item.action).color;
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -144,7 +145,7 @@ addAttachments(){
         else
         toastr.error(data.message);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while uploading attachments. Error:' + error);
       });
@@ -200,7 +201,7 @@ addAttachments(){
       toastr.error("To date should be after the from date and before today date.");
         return;
     }
-    if(this.item.currentCompany && this.workList.filter(x=>x.currentCompany == true).length > 0){
+    if(this.item.currentCompany && this.workList.filter((x:any)=>x.currentCompany == true).length > 0){
       toastr.error("Already work experience added for current working company, cannot add one more.");
       return;
     }
@@ -268,7 +269,7 @@ addAttachments(){
       toastr.error("To date should be after the from date and before today date.");
         return;
     }
-    if(this.item.currentCompany && this.workList.filter(x=>x.currentCompany == true).length > 0){
+    if(this.item.currentCompany && this.workList.filter((x:any)=>x.currentCompany == true).length > 0){
       toastr.error("Already work experience added for current working company, cannot add one more.");
       return;
     }

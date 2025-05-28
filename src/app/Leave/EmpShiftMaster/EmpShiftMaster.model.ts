@@ -1,46 +1,46 @@
 export class EmpShiftMaster {
-    id: number;
-    shiftCode: string;
-    shiftName: string;
-    ruleCode: string;
-    nightShift: boolean;
-    deductBreakUp: string;
+    id!: number;
+    shiftCode: string
+    shiftName: string
+    ruleCode: string
+    nightShift!: boolean;
+    deductBreakUp: string
     shiftStartTime: any;
     firstHalfEndTime: any;
     shStartTime: any;
     shiftEndTime: any;
-    totalShiftTime: string;
-    firstBreakStartTime: string;
-    firstBreakEndTime: string;
-    secondBreakStartTime: string;
-    secondBreakEndTime: string;
-    thirdBreakStartTime: string;
-    thirdBreakEndTime: string;
-    date: string;
-    time: string;
-    username: string;
+    totalShiftTime: string
+    firstBreakStartTime: string
+    firstBreakEndTime: string
+    secondBreakStartTime: string
+    secondBreakEndTime: string
+    thirdBreakStartTime: string
+    thirdBreakEndTime: string
+    date: string
+    time: string
+    username: string
     punchStartTime: any;
     punchEndTime: any;
     comeLate: any;
     goEarly: any;
     punchValidTill: any;
-    otFull: number;
-    otHalf: number;
-    loc: string;
-    stxt: string;
-    wfhFlag: number;
-    isActive: boolean;
-    createdOn: string;
-    modifiedOn: string;
-    deletedBy: string;
-    deletedOn: string;
+    otFull!: number;
+    otHalf!: number;
+    loc: string
+    stxt: string
+    wfhFlag!: number;
+    isActive!: boolean;
+    createdOn: string
+    modifiedOn: string
+    deletedBy: string
+    deletedOn: string
     deletedReason: string
     modifiedBy:string;
     createdBy:string;
     shiftGraceTime:any;
     flexiStartTime: any;
-    workHours: string;
-    availFlexiHours: boolean;
-    shiftAllowance: boolean;
-    allowanceAmount: string;
+    workHours: string
+    availFlexiHours!: boolean;
+    shiftAllowance!: boolean;
+    allowanceAmount: string
 }

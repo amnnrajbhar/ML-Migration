@@ -2,8 +2,9 @@
 import { AppComponent } from './../app.component';
 import { APIURLS } from './../shared/api-url';
 import { HttpService } from '../shared/http-service';
-import * as alaSQLSpace from 'alasql';
-import * as _ from "lodash";
+import alasql from 'alasql'; // ✅ Let bundler resolve the correct format
+
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-reports',
@@ -19,7 +20,7 @@ export class ReportsComponent implements OnInit {
   errMsgEnd: string = "";
   isLoading: boolean = false;
   isValidate: boolean = true;
-  repHeaderList: any[];
+  repHeaderList!: any[];
   constructor(private appService: AppComponent, private httpService: HttpService,) { }
 
   ngOnInit() {
@@ -110,7 +111,7 @@ export class ReportsComponent implements OnInit {
                   this.report.hsn_list = _.concat(hsnHeaders, data.hsn_list);
                   this.reportAsExcelExport();
               }
-          }).catch(error => {
+          }).catch((error)=> {
               this.isLoading = false;
               this.report.b2b_list = [];
               this.report.b2cl_list = [];
@@ -123,9 +124,9 @@ export class ReportsComponent implements OnInit {
       this.httpService.get(APIURLS.BR_FORM_DATA_API).then((data: any) => {
           if (data.status == 'SUCCESS') {
               this.repHeaderList = data.formDataList;
-              this.repHeaderList = data.formDataList.find(s => s.subMenuId == '10'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
+              this.repHeaderList = data.formDataList.find((s:any) => s.subMenuId == '10'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
           }
-      }).catch(error => {
+      }).catch((error)=> {
           this.repHeaderList = null;
       });
   }

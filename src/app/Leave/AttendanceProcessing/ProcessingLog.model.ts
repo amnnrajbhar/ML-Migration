@@ -1,30 +1,30 @@
 export class ProcessingLog {
-    id: number;
-    empId: string;
-    empName: string;
-    empLoc: string;
-    processName: string;
-    processLocation: string;
-    processParameter: string;
-    processStatus: string;
+    id!: number;
+    empId: string
+    empName: string
+    empLoc: string
+    processName: string
+    processLocation: string
+    processParameter: string
+    processStatus: string
     startTime: string
     endTime: string
-    lockId: string;
-    date: string;
-    empCount: number;
-    fetchSt: string;
-    fetchEt: string;
-    leaveSt: string;
-    leaveEt: string;
-    punchSt: string;
-    punchEt: string;
-    manualSt: string;
-    manualEt: string;
-    weekSt: string;
-    weekEt: string;
-    repSt: string;
-    repEt: string;
-    startDate: string;
-    endDate: string;
+    lockId: string
+    date: string
+    empCount!: number;
+    fetchSt: string
+    fetchEt: string
+    leaveSt: string
+    leaveEt: string
+    punchSt: string
+    punchEt: string
+    manualSt: string
+    manualEt: string
+    weekSt: string
+    weekEt: string
+    repSt: string
+    repEt: string
+    startDate: string
+    endDate: string
     progress: number
 }

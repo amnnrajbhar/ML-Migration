@@ -19,12 +19,12 @@ declare var $: any;
   styleUrls: ['./workexperience.component.css']
 })
 export class WorkexperienceComponent implements OnInit {
-  @ViewChild(NgForm  , { static: false }) workExperienceForm: NgForm;
-  @Input() appointmentId: number;
-  @Input() offerId: number;
-  @Input() guid: string;
+  @ViewChild(NgForm  , { static: false }) workExperienceForm!: NgForm;
+  @Input() appointmentId!: number;
+  @Input() offerId!: number;
+  @Input() guid: string
   @Input() editAllowed: boolean = true;
-  @Input() experience: number;
+  @Input() experience!: number;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   
@@ -70,12 +70,12 @@ export class WorkexperienceComponent implements OnInit {
 
     conn.then((data: any) => {
       if (data && data.length > 0) {
-        this.workList = data.sort((a, b) => { if (a.fromDate > b.fromDate) return 1; if (a.fromDate < b.fromDate) return -1; return 0; });
+        this.workList = data.sort((a:any, b:any) => { if (a.fromDate > b.fromDate) return 1; if (a.fromDate < b.fromDate) return -1; return 0; });
         this.count = data.length;
         this.dataLoaded.emit("loaded");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details, please check the link.");
       this.workList = [];
@@ -141,7 +141,7 @@ export class WorkexperienceComponent implements OnInit {
       toastr.error("To date should be after the from date and before today date.");
         return;
     }
-    if(this.item.currentCompany && this.workList.filter(x=>x.currentCompany == true).length > 0){
+    if(this.item.currentCompany && this.workList.filter((x:any)=>x.currentCompany == true).length > 0){
       toastr.error("Already work experience added for current working company, cannot add one more.");
       return;
     }
@@ -173,8 +173,8 @@ export class WorkexperienceComponent implements OnInit {
         this.onAddLine();
         toastr.success("Successfully added the details.");
       }
-    }).catch(error => {
-      //console.log(error);
+    }).catch((error)=> {
+      ////console.log(error);
       toastr.error('Error adding details...'+ error);
     })
   }
@@ -219,7 +219,7 @@ export class WorkexperienceComponent implements OnInit {
     if(this.item.toDate != "")
       this.item.toDate = this.util.getFormatedDateTime(this.item.toDate);    
       
-    if(this.item.currentCompany && this.workList.filter(x=>x.currentCompany == true 
+    if(this.item.currentCompany && this.workList.filter((x:any)=>x.currentCompany == true 
       && x.AppointmentWorkExperienceId != this.item.AppointmentWorkExperienceId).length > 0){
         toastr.error("Already work experience added for current working company, cannot add one more.");
       return;
@@ -257,8 +257,8 @@ export class WorkexperienceComponent implements OnInit {
         this.onUpdateLine();
         toastr.success("Successfully updated the details.");
       }
-    }).catch(error => {
-      //console.log(error);
+    }).catch((error)=> {
+      ////console.log(error);
       toastr.error('Error updating details...'+ error);
     })
   }
@@ -293,7 +293,7 @@ export class WorkexperienceComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + error);
       });
@@ -309,20 +309,20 @@ export class WorkexperienceComponent implements OnInit {
 
     conn.then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
       // }
 
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], fileName);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -388,7 +388,7 @@ export class WorkexperienceComponent implements OnInit {
 
     connection.then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
@@ -402,15 +402,15 @@ export class WorkexperienceComponent implements OnInit {
           this.showPdfInViewer(data);
         }
         else{
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
         }        
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -429,14 +429,14 @@ export class WorkexperienceComponent implements OnInit {
     connection.then((data: any) => {
             
       if (data != undefined) {        
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], fileName);
           //const imageFile = new File([data], fileName, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
       }      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }

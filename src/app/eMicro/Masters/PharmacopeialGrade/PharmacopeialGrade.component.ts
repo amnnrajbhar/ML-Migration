@@ -16,7 +16,7 @@ declare var jQuery: any;
 
 export class actionItemModel {
   
-  pharmaGradeDesc: string;
+  pharmaGradeDesc: string
   isActive:boolean;
 }
 
@@ -28,10 +28,10 @@ export class actionItemModel {
 })
 export class PharmaGradeComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) materialForm: NgForm;
+@ViewChild(NgForm, { static: false }) materialForm!: NgForm;
 
   public tableWidget: any;
-  companyId: number;
+  companyId!: number;
   materialList: MaterialMaster[] = [];
   materialItem: MaterialMaster = new MaterialMaster();
 
@@ -40,7 +40,7 @@ export class PharmaGradeComponent implements OnInit {
 
 
   isLoading: boolean = false;
-  entityTabHeader: string;
+  entityTabHeader: string
   errMsg: string = "";
   isLoadingPop: boolean = false;
   errMsgPop: string = "";
@@ -50,8 +50,8 @@ export class PharmaGradeComponent implements OnInit {
   currentUser = {} as AuthData;
 
   oldpharmagrade: PharmaGrade = new PharmaGrade();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
@@ -75,7 +75,8 @@ export class PharmaGradeComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     //if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getpharmagradeList();
    // }
     //else
@@ -115,7 +116,7 @@ export class PharmaGradeComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.materialList = [];
     });
@@ -129,7 +130,7 @@ export class PharmaGradeComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.pharmagradelist = [];
     });
@@ -165,7 +166,7 @@ export class PharmaGradeComponent implements OnInit {
           this.insertAuditLog(this.oldpharmagrade,this.pharmagrade,Id);
           this.getpharmagradeList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Pharma Grade..';
       });
@@ -236,12 +237,12 @@ export class PharmaGradeComponent implements OnInit {
      connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
      connection.then((data: any) => {
        this.isLoadingPop = false;
-     }).catch(() => {
+     }).catch((error) => {
        this.isLoadingPop = false;
      });
    }
    auditLogList: AuditLog[] = [];
-   openAuditLogs(id) {
+   openAuditLogs(id:any) {
      jQuery("#auditModal").modal('show');
      let stringparms = this.masterName + ',' + id;
      this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -250,7 +251,7 @@ export class PharmaGradeComponent implements OnInit {
          this.auditLogList.reverse();
        }
        this.reinitPOUPDatatable();
-     }).catch(() => {
+     }).catch((error) => {
      });
  
    }

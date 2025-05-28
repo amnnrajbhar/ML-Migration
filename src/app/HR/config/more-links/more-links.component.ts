@@ -17,9 +17,9 @@ declare var toastr: any;
   providers: [Util]
 })
 export class MoreLinksComponent implements OnInit {
-  @ViewChild(NgForm , { static: false })  moreLinksForm: NgForm;
+  @ViewChild(NgForm , { static: false })  moreLinksForm!: NgForm;
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   item: any = {};
   itemList: any[] = [];
   count: number = 0;
@@ -31,7 +31,8 @@ export class MoreLinksComponent implements OnInit {
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getData();
   }
 
@@ -43,7 +44,7 @@ export class MoreLinksComponent implements OnInit {
         this.count = data.length;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the list. Error: "+ error);
       this.isLoading = false;      
     });
@@ -68,7 +69,7 @@ export class MoreLinksComponent implements OnInit {
         $("#detailsModal").modal("hide");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error('Error adding details...'+ error);
     })
@@ -89,7 +90,7 @@ export class MoreLinksComponent implements OnInit {
         $("#detailsModal").modal("hide");
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error('Error updating details...'+ error);
     })
@@ -120,7 +121,7 @@ export class MoreLinksComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while deleting the details. Error:' + error);
       });

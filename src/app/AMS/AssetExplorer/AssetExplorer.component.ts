@@ -13,9 +13,9 @@ declare var $: any;
 declare var toastr: any;
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import htmlToPdfmake from 'html-to-pdfmake';
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import htmlToPdfmake from 'html-to-pdfmake';
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { AuditLogAMS } from '../auditlogAMS.model';
 //import { b } from '@angular/core/src/render3';
 
@@ -27,16 +27,16 @@ import { AuditLogAMS } from '../auditlogAMS.model';
 })
 
 export class AssetExplorerComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
 
   public tableWidget: any;
   isLoading: boolean = false;
-  errMsg: string = "";
+  errMsg: string='';
   isLoadingPop: boolean = false;
   isLoadPop: boolean = false;
-  errMsgPop: string = "";
-  errMsgPop1: string = "";
+  errMsgPop: string='';
+  errMsgPop1: string='';
   isEdit: boolean = false;
   path: string = '';
   isSaved: boolean = false;
@@ -47,10 +47,10 @@ export class AssetExplorerComponent implements OnInit {
   location: any;
   locationAllList: any;
   locListCon: any;
-  designationList: any[];
+  designationList!: any[];
   userList: any;
   empListCon: any;
-  baseLocation: number;
+  baseLocation!: number;
   departmentList: any;
   filterempNo: any;
   filterempName: any;
@@ -58,20 +58,20 @@ export class AssetExplorerComponent implements OnInit {
   filterempDept: any;
   filterdesg: any;
   filterdept: any;
-  filterassetNo: string;
-  filterassetNo1: string;
-  filtercategory1: string;
+  filterassetNo!: string;
+  filterassetNo1!: string;
+  filtercategory1!: string;
   filterassetType: any;
-  filtersubCategory1: string;
-  filterbarcode1: string;
-  filtermodel1: string;
-  filterpartNo1: string;
-  filtermanufacturer1: string;
-  filterserialNo1: string;
-  filterprocessor1: string;
-  filterram1: number;
-  filtersize: string;
-  filterhdd1: number;
+  filtersubCategory1!: string;
+  filterbarcode1!: string;
+  filtermodel1!: string;
+  filterpartNo1!: string;
+  filtermanufacturer1!: string;
+  filterserialNo1!: string;
+  filterprocessor1!: string;
+  filterram1!: number;
+  filtersize!: string;
+  filterhdd1!: number;
   assetList: any;
   filteripNo1: any;
   filtergxp1: any;
@@ -81,14 +81,14 @@ export class AssetExplorerComponent implements OnInit {
   softType: any;
   licType: any;
   isSubmitted = false;
-  filterchoice: string;
+  filterchoice!: string;
   filterassetId1: any;
   filterlocation1: any;
   filtercondition: any;
-  dataSource: any[];
-  newDynamic: {};
+  dataSource!: any[];
+  newDynamic!: {};
   dynamicArray: any[] = [];
-  catList1: any[];
+  catList1!: any[];
   monType: any;
   assetstatus: any;
   filterempNo1: any;
@@ -103,10 +103,10 @@ export class AssetExplorerComponent implements OnInit {
   filtercreationFromDate: any;
   filtercreationToDate: any;
   assetDataList: any[] = [];
-  assetNo: string;
-  baselocation: string;
-  filterretirementDate: string;
-  filterretirementReason: string;
+  assetNo!: string;
+  baselocation!: string;
+  filterretirementDate!: string;
+  filterretirementReason!: string;
   year: any;
   showData: boolean = false;
   filterReason: any;
@@ -114,7 +114,9 @@ export class AssetExplorerComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private http: HttpClient,
-    private appServiceDate: AppService, private datePipe: DatePipe, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private appServiceDate: AppService, private datePipe: DatePipe, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -124,7 +126,8 @@ export class AssetExplorerComponent implements OnInit {
   ngOnInit() {
     this.path = this.router.url;
     this.showData = true;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     this.AssetExplorer.pageNo = 1;
     this.AssetExplorer.pageSize = 10;
@@ -139,16 +142,16 @@ export class AssetExplorerComponent implements OnInit {
     this.getbase64image();
   }
 
-  CategoryList: any[];
+  CategoryList!: any[];
   getCatList() {
     this.httpService.amsget(APIURLS.BR_GET_AMS_CAT_MASTER).then((data: any) => {
       if (data.length > 0) {
         this.catList = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.catList.sort((a, b) => { return collator.compare(a.name, b.name) });
+        this.catList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
         this.catList1 = this.catList.filter((item, i, arr) => arr.findIndex((t) => t.catCode === item.catCode) === i);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.catList = [];
     });
   }
@@ -227,14 +230,14 @@ export class AssetExplorerComponent implements OnInit {
         this.sizeList = data;
         console.log(this.sizeList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.sizeList = [];
     });
   }
 
-  getStorageSize(id) {
-    let temp = this.sizeList.find(x => x.storId == id);
+  getStorageSize(id:any) {
+    let temp = this.sizeList.find((x:any)  => x.storId == id);
     return temp ? temp.storTxt : '';
   }
 
@@ -245,14 +248,14 @@ export class AssetExplorerComponent implements OnInit {
         this.softType = data;
         console.log(this.softType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.softType = [];
     });
   }
 
-  getSoftTypename(id) {
-    let temp = this.softType.find(x => x.softId == id);
+  getSoftTypename(id:any) {
+    let temp = this.softType.find((x:any)  => x.softId == id);
     return temp ? temp.softStxt : '';
   }
 
@@ -263,14 +266,14 @@ export class AssetExplorerComponent implements OnInit {
         this.licType = data;
         console.log(this.licType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.licType = [];
     });
   }
 
-  getLicTypename(id) {
-    let temp = this.licType.find(x => x.licId == id);
+  getLicTypename(id:any) {
+    let temp = this.licType.find((x:any)  => x.licId == id);
     return temp ? temp.licStxt : '';
   }
 
@@ -281,7 +284,7 @@ export class AssetExplorerComponent implements OnInit {
         this.monType = data;
         console.log(this.monType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.monType = [];
     });
@@ -293,13 +296,13 @@ export class AssetExplorerComponent implements OnInit {
       if (data.length > 0) {
         this.assStateList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.assStateList = [];
     });
   }
 
-  image: string;
+  image!: string;
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -314,16 +317,16 @@ export class AssetExplorerComponent implements OnInit {
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -392,8 +395,8 @@ export class AssetExplorerComponent implements OnInit {
   getData() {
     this.isLoading = true;
     var filterModel: any = {};
-    filterModel.location = this.filterlocation.map(x => x.code).join();
-    filterModel.category = this.filterassetType.map(x => x).join();
+    filterModel.location = this.filterlocation.map((x:any)  => x.code).join();
+    filterModel.category = this.filterassetType.map((x:any)  => x).join();
     filterModel.usageType = this.filterusageType;
     filterModel.assetState = this.filterassetState;
     filterModel.assetSearchType = this.filtersearchType;
@@ -410,7 +413,7 @@ export class AssetExplorerComponent implements OnInit {
       }
       this.isLoading = false;
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.reInitDatatable();
     });
@@ -431,7 +434,7 @@ export class AssetExplorerComponent implements OnInit {
     this.getCheckedItemList();
   }
 
-  strassetId: string;
+  strassetId!: string;
   checkedRequestList: any[] = [];
   checkedlist: any[] = [];
   getCheckedItemList() {
@@ -463,14 +466,14 @@ export class AssetExplorerComponent implements OnInit {
     this.httpService.getByParam(APIURLS.BR_EMPLOYEEMASTER_ACTIVE_API_GET_BY_ID, id).then((data: any) => {
       if (data.length > 0) {
         this.userList = data;
-        this.empListCon = data.map((i) => {
+        this.empListCon = data.map((i:any) => {
           i.name = i.firstName + '-' + i.employeeId + '-' + i.department +
             '-' + i.designation; return i;
         });
         this.initDatatable();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userList = [];
     });
@@ -485,15 +488,15 @@ export class AssetExplorerComponent implements OnInit {
     }
     var data = this.empListCon;
     $('#empNo').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.employeeId.includes(mtrl));
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.employeeId.includes(mtrl));
+        response(result.map((i:any) => {
           i.label = i.firstName + '-' + i.employeeId + '-' + i.designation + '-' + i.department,
             i.name = i.firstName, i.empNo = i.employeeId, i.designation = i.designation,
             i.department = i.department; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.AddAssetmodel.empNo = ui.item.empNo;
         self.AddAssetmodel.empAd = ui.item.name;
         self.filterdesg = ui.item.designation;
@@ -512,15 +515,15 @@ export class AssetExplorerComponent implements OnInit {
     }
     var data = this.empListCon;
     $('#empNo1').autocomplete({
-      source: function (request, response) {
-        let result = data.filter(x => x.employeeId.includes(mtrl));
-        response(result.map((i) => {
+      source: function (request:any, response:any) {
+        let result = data.filter((x:any)  => x.employeeId.includes(mtrl));
+        response(result.map((i:any) => {
           i.label = i.firstName + '-' + i.employeeId + '-' + i.designation + '-' + i.department,
             i.name = i.firstName + i.lastName, i.empNo = i.employeeId, i.designation = i.designation,
             i.department = i.department; return i;
         }));
       },
-      select: function (event, ui) {
+      select: function (event:any, ui:any) {
         self.filterempNo1 = ui.item.empNo;
         self.filterempName1 = ui.item.name;
         self.filterempDesg1 = ui.item.designation;
@@ -530,24 +533,24 @@ export class AssetExplorerComponent implements OnInit {
     });
   }
 
-  setList(asset) {
+  setList(asset:any) {
     if (asset.length > 5) {
       var self = this;
       var filterModel: any = {};
       $('#assetNo1').autocomplete({
-        source: function (request, response) {
+        source: function (request:any, response:any) {
           filterModel.input = asset;
           let connection = self.httpService.amspost(APIURLS.BR_GET_AMS_ASSET_HARD_DETAILED, filterModel);
           connection.then((data: any) => {
             if (data) {
               let result = data;
               self.assetList = data;
-              response(result.map((i) => { i.label = i.assetNo; return i; }));
+              response(result.map((i:any) => { i.label = i.assetNo; return i; }));
             }
-          }).catch(error => {
+          }).catch((error)=> {
           });
         },
-        select: function (event, ui) {
+        select: function (event:any, ui:any) {
           self.filterassetId1 = ui.item.assetId;
           self.filterlocation1 = ui.item.location;
           self.filtercategory1 = ui.item.category;
@@ -574,21 +577,21 @@ export class AssetExplorerComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
     });
   }
 
-  getDept(id) {
-    let temp = this.departmentList.find(x => x.id == id);
+  getDept(id:any) {
+    let temp = this.departmentList.find((x:any)  => x.id == id);
     return temp ? temp.name : '';
   }
 
@@ -598,7 +601,7 @@ export class AssetExplorerComponent implements OnInit {
     this.newDynamic = { id: this.rowcount, filtersoftType: null, filtersoftName: "", filterlicType: null, filterprodKey: "", filterversion: "", filterexpDate: null };
     this.dynamicArray.push(this.newDynamic);
   }
-  removeRows(item) {
+  removeRows(item:any) {
     if (this.dynamicArray.length > 1) {
       const index = this.dynamicArray.indexOf(item);
       this.dynamicArray.splice(index, 1);
@@ -607,10 +610,10 @@ export class AssetExplorerComponent implements OnInit {
 
   subCategorylist: any[] = []
   GetSubCategory(type) {
-    this.subCategorylist = this.catList.filter(x => x.catCode == type);
+    this.subCategorylist = this.catList.filter((x:any)  => x.catCode == type);
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   AddAssetmodel = {} as AssetExplorer;
   RepAssetmodel = {} as AssetExplorer;
   softwareList: any[] = [];
@@ -632,7 +635,7 @@ export class AssetExplorerComponent implements OnInit {
       this.AddAssetmodel.warrantyExpiration = this.AddAssetmodel.warrantyExpiration ? this.setFormatedDate(this.AddAssetmodel.warrantyExpiration) : null;
       this.AddAssetmodel.hostName = this.AddAssetmodel.assetNo;
       this.AddAssetmodel.installationType = this.AddAssetmodel.replacementType;
-      this.dynamicArray.forEach(mtrl => {
+      this.dynamicArray.forEach((mtrl:any) => {
         let filtermodel: any = {};
         filtermodel.otherSoftwareName = mtrl.filtersoftName;
         filtermodel.softwareType = mtrl.filtersoftType;
@@ -673,7 +676,7 @@ export class AssetExplorerComponent implements OnInit {
         this.AddAssetmodel.serialNo = '';
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error saving Request..';
     });
   }
@@ -685,7 +688,7 @@ export class AssetExplorerComponent implements OnInit {
     let connection = this.httpService.post(APIURLS.BR_AMS_MAIL_FOR_NEW_ASSET, output);
     connection.then((data: any) => {
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error Sending Mail ..';
     });
   }
@@ -698,7 +701,7 @@ export class AssetExplorerComponent implements OnInit {
     let connection = this.httpService.post(APIURLS.BR_AMS_MAIL_FOR_NEW_ASSET, filterModel);
     connection.then((data: any) => {
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error Sending Mail ..';
     });
   }
@@ -709,7 +712,7 @@ export class AssetExplorerComponent implements OnInit {
     let connection: any;
     this.softwareList = [];
     if (!this.isEdit) {
-      let value = this.assetList.find(x => x.assetId == this.filterassetId1);
+      let value = this.assetList.find((x:any)  => x.assetId == this.filterassetId1);
       this.RepAssetmodel = Object.assign({}, value);
       this.RepAssetmodel.assetId = this.filterassetId1;
       this.RepAssetmodel.assetNo = this.AddAssetmodel.assetNo;
@@ -784,7 +787,7 @@ export class AssetExplorerComponent implements OnInit {
         this.RepAssetmodel.empNo = '';
         this.RepAssetmodel.empAd = '';
       }
-      this.dynamicArray.forEach(mtrl => {
+      this.dynamicArray.forEach((mtrl:any) => {
         let filtermodel: any = {};
         filtermodel.otherSoftwareName = mtrl.filtersoftName;
         filtermodel.softwareType = mtrl.filtersoftType;
@@ -812,7 +815,7 @@ export class AssetExplorerComponent implements OnInit {
         });
         this.clearAllEntries();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });
@@ -875,7 +878,7 @@ export class AssetExplorerComponent implements OnInit {
         this.softwareList = data;
         console.log(this.softwareList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.softwareList = [];
     });
   }
@@ -889,14 +892,14 @@ export class AssetExplorerComponent implements OnInit {
         this.appDet = data;
         console.log(this.appDet);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.appDet = [];
     });
   }
 
   onUserActions() {
     if (this.AssetExplorer.assetType == 'Computers') {
-      var printContents = document.getElementById('pdf').innerHTML;
+      var printContents = document.getElementById('pdf')!.innerHTML;
     } else if (this.AssetExplorer.assetType == 'Printers') {
       var printContents = document.getElementById('pdf1').innerHTML;
     } else if (this.AssetExplorer.assetType == 'Network') {
@@ -922,7 +925,7 @@ export class AssetExplorerComponent implements OnInit {
     if (this.appDet.length > 0) {
       var depthead = this.appDet[0].approver_Name + " - " + this.appDet[0].approver_Department;
     }
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -935,13 +938,13 @@ export class AssetExplorerComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Asset Installtion Report',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -959,7 +962,7 @@ export class AssetExplorerComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 100],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           columns: [
             {
@@ -1029,7 +1032,7 @@ export class AssetExplorerComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
   statuslist: any[] = [
@@ -1079,8 +1082,8 @@ export class AssetExplorerComponent implements OnInit {
       return;
     }
     else {
-      this.AssetExplorer.strassetId = this.checkedRequestList.map(x => x.assetId).join();
-      this.AssetExplorer.location = this.filterlocation.map(x => x.code).join();
+      this.AssetExplorer.strassetId = this.checkedRequestList.map((x:any)  => x.assetId).join();
+      this.AssetExplorer.location = this.filterlocation.map((x:any)  => x.code).join();
       this.AssetExplorer.dateOfRetirement = this.setFormatedDate(this.AssetExplorer.dateOfRetirement);
       this.AssetExplorer.retirementReason = this.AssetExplorer.retirementReason;
       this.AssetExplorer.modifiedBy = this.currentUser.employeeId;
@@ -1105,7 +1108,7 @@ export class AssetExplorerComponent implements OnInit {
           this.clearFilter();
           this.isLoading = false;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving status..';
       });
@@ -1137,8 +1140,8 @@ export class AssetExplorerComponent implements OnInit {
   onDisposeAsset() {
     this.errMsg = "";
     let connection: any;
-    this.AssetExplorer.strassetId = this.checkedRequestList.map(x => x.assetId).join();
-    this.AssetExplorer.location = this.filterlocation.map(x => x.code).join();
+    this.AssetExplorer.strassetId = this.checkedRequestList.map((x:any)  => x.assetId).join();
+    this.AssetExplorer.location = this.filterlocation.map((x:any)  => x.code).join();
     this.AssetExplorer.modifiedBy = this.currentUser.employeeId;
     this.AssetExplorer.vendorcity = this.AssetExplorer.vendorcity;
     this.AssetExplorer.vendorcode = this.AssetExplorer.vendorcode;
@@ -1167,7 +1170,7 @@ export class AssetExplorerComponent implements OnInit {
         this.clearFilter();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving status..';
     });
@@ -1213,7 +1216,7 @@ export class AssetExplorerComponent implements OnInit {
     }
     this.errMsg = "";
     let connection: any;
-    this.AssetExplorer.strassetId = this.checkedRequestList.map(x => x.assetId).join();
+    this.AssetExplorer.strassetId = this.checkedRequestList.map((x:any)  => x.assetId).join();
     this.AssetExplorer.empNo = this.filterempNo1;
     this.AssetExplorer.empAd = this.filterempName1;
     this.AssetExplorer.location = this.checkedRequestList[0].location;
@@ -1235,7 +1238,7 @@ export class AssetExplorerComponent implements OnInit {
         this.clearFilterUTU();
         this.closeSaveModal3();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });
@@ -1281,7 +1284,7 @@ export class AssetExplorerComponent implements OnInit {
     this.errMsg = "";
     let connection: any;
     var filterModel: any = {};
-    this.AssetExplorer.strassetId = this.checkedRequestList.map(x => x.assetId).join();
+    this.AssetExplorer.strassetId = this.checkedRequestList.map((x:any)  => x.assetId).join();
     this.AssetExplorer.assetNo = this.filtercurrAssetNo;
     this.AssetExplorer.location = this.filtercurrLocation;
     this.AssetExplorer.newLocation = this.filternewLocation;
@@ -1306,7 +1309,7 @@ export class AssetExplorerComponent implements OnInit {
         this.clearFilterLTL();
         this.closeSaveModal4();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });
@@ -1350,7 +1353,7 @@ export class AssetExplorerComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
   }
 

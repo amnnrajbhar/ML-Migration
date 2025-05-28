@@ -19,17 +19,17 @@ import { FormControl, NgForm } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 import { ExcelService } from '../../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import * as XLSX from 'xlsx';
-import * as pdfMake from "pdfmake/build/pdfmake";
+// import * as pdfMake from "pdfmake/build/pdfmake";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 //import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 //import { filter } from 'rxjs-compat/operator/filter';
 
 
@@ -40,15 +40,15 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
     styleUrls: ['./AdditionandAttrition.component.css']
 })
 export class AdditionandAttritionComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm, { static: false }) userForm: NgForm;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
-  @ViewChild('table', { static: false }) table: ElementRef;
+  @ViewChild('table', { static: false }) table!: ElementRef;
 
-  @ViewChild('dailyreport', { static: false }) dailyreport: ElementRef;
+  @ViewChild('dailyreport', { static: false }) dailyreport!: ElementRef;
 
 
     public tableWidget: any;
@@ -58,7 +58,7 @@ export class AdditionandAttritionComponent implements OnInit {
     departmentList: any[] = [];
     ReportData: any[] = [];
     locationList: any[] = [];
-    isLoading: boolean;
+    isLoading!: boolean;
     StaffCategoryList: any[] = [];
     PayGroupList: any[] = [];
     ReportingGroupList: any[] = [];
@@ -90,12 +90,12 @@ export class AdditionandAttritionComponent implements OnInit {
     path: any;
     StartDate: any = null;
     EndDate: any = null;
-    EmployeeNo: string = null;
+    EmployeeNo: string = ' ';
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
         private http: HttpClient, private https: HttpClient, private route: ActivatedRoute, private excelService: ExcelService,
         private datePipe: DatePipe) {
-        pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    //    pdfMake.vfs = pdfFonts.pdfMake.vfs;
     }
 
     private initDatatable(): void {
@@ -114,7 +114,7 @@ export class AdditionandAttritionComponent implements OnInit {
     }
 
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationAllList.find(e => e.id == id);
         return temp ? temp.name : '';
     }
@@ -126,45 +126,46 @@ export class AdditionandAttritionComponent implements OnInit {
         this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.filterPlant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-                this.locationname = this.filterPlant + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.filterPlant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+                this.locationname = this.filterPlant + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
     plantList: any[] = [];
-    getPlantsassigned(id) {
+    getPlantsassigned(id:any) {
         this.isLoading = true;
         this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
             if (data) {
-                this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+                this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.plantList = [];
         });
     }
 
 
-    getLocationName(id) {
-        let t = this.locationList.find(s => s.id == id);
+    getLocationName(id:any) {
+        let t = this.locationList.find((s:any) => s.id == id);
         return t.code + ' - ' + t.name;
     }
 
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         let today = new Date();
         this.CalenderYear = new Date().getFullYear().toString();
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -180,7 +181,7 @@ export class AdditionandAttritionComponent implements OnInit {
     ClearData() {
         this.filterPlant = null;
         this.filterReportingGroup = null;
-        this.filterMonth = null;
+        this.filterMonth = '';
         this.AttendanceType = null;
         this.StartDate = null;
         this.EndDate = null;
@@ -225,13 +226,13 @@ export class AdditionandAttritionComponent implements OnInit {
             if (data.length > 0) {
                 this.ReportingGroupList = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ReportingGroupList = [];
         });
     }
 
-    exportList: any[];
+    exportList!: any[];
 
     get(apiKey: string): any {
         const promise = new Promise((resolve, reject) => {
@@ -253,7 +254,9 @@ export class AdditionandAttritionComponent implements OnInit {
     }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -303,18 +306,18 @@ export class AdditionandAttritionComponent implements OnInit {
             filterModel.year = this.CalenderYear;
             filterModel.reportType = this.AttendanceType;
             let connection = this.httpService.LApost(APIURLS.GET_MONTHLY_ADDR_ATTR_REPORT, filterModel);
-            connection.then((data) => {
+            connection.then((data:any) => {
                 if (data) {
                     this.AddAttrReport = data;
-                    this.AttritionReport = data.filter(x => x.reportType == 'Attrition');
-                    this.AdditionReport = data.filter(x => x.reportType == 'Addition');
+                    this.AttritionReport = data.filter((x:any)  => x.reportType == 'Attrition');
+                    this.AdditionReport = data.filter((x:any)  => x.reportType == 'Addition');
                     swal({
                         title: "Message",
                         text: "Are you Sure to export..?",
                         icon: "warning",
                         dangerMode: false,
                         buttons: [true, true]
-                    }).then((data) => {
+                    }).then((data:any) => {
                         if (data) {
                             this.printAddAttrreport();
                         }
@@ -360,27 +363,27 @@ export class AdditionandAttritionComponent implements OnInit {
         var now = Date.now();
         var date = this.setFormatedDateTime(now);
         var logo = this.cmpimg;
-        var htmnikhitml = htmlToPdfmake(`<html>
-  <head>
-  </head>
-  <body>
-  ${printContents}
-  <div> 
-  </div>
-  </body>  
-  </html>`, {
-            tableAutoSize: true,
-            tablebordered: true,
-            headerRows: 1,
-            dontBreakRows: true,
-            keepWithHeaderRows: true,
-        })
+//         var htmnikhitml = htmlToPdfmake(`<html>
+//   <head>
+//   </head>
+//   <body>
+//   ${printContents}
+//   <div> 
+//   </div>
+//   </body>  
+//   </html>`, {
+//             tableAutoSize: true,
+//             tablebordered: true,
+//             headerRows: 1,
+//             dontBreakRows: true,
+//             keepWithHeaderRows: true,
+//         })
         var docDefinition = {
             info: {
                 title: "Addition Attrition Report",
             },
             content: [
-                htmnikhitml,
+                //htmnikhitml,
             ],
             defaultStyle: {
                 fontSize: 9,
@@ -398,7 +401,7 @@ export class AdditionandAttritionComponent implements OnInit {
             pageSize: 'A4',
             pageMargins: [40, 110, 40, 60],
             pageOrientation: 'portrait',
-            header: function (currentPage, pageCount) {
+            header: function (currentPage:any, pageCount:any) {
                 return {
                     // pageMargins: [40, 80, 40, 60],
                     style: 'tableExample',
@@ -453,7 +456,7 @@ export class AdditionandAttritionComponent implements OnInit {
             },
 
         };
-        pdfMake.createPdf(docDefinition).open();
+        //pdfMake.createPdf(docDefinition).open();
     }
 
     getbase64image() {

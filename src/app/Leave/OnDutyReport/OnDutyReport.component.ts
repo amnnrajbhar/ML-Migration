@@ -22,13 +22,13 @@ import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { OnDutyDetails } from './OnDutyReport.model';
-import * as moment from 'moment';
-import htmlToPdfmake from 'html-to-pdfmake';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+import moment from 'moment'
+// import htmlToPdfmake from 'html-to-pdfmake';
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 
 declare var ActiveXObject: (type: string) => void;
 
@@ -40,11 +40,11 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./OnDutyReport.component.css']
 })
 export class OnDutyReportComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidgetlv: any;
@@ -60,9 +60,9 @@ export class OnDutyReportComponent implements OnInit {
   locListCon1 = [];
   genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -71,22 +71,22 @@ export class OnDutyReportComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [[]];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   userMasterItem: any = {};
   year: any;
   CalenderYear: string = '';
   CalYear: any;
-  OnDutyType: string = null;
-  StartDate: string = null;
-  EndDate: string = null;
-  Duration1: string = null;
-  Duration2: string = null;
+  OnDutyType: string = ' ';
+  StartDate: string = ' ';
+  EndDate: string = ' ';
+  Duration1: string = ' ';
+  Duration2: string = ' ';
   NoOfDays: number = 0;
-  LvReason: string = null;
+  LvReason: string = ' ';
   personResponsible: any;
   personName: any;
   DetailedReason: string = '';
@@ -100,7 +100,7 @@ export class OnDutyReportComponent implements OnInit {
   toTime: any;
   Plant: any = null;
   ApplyFor: any = null;
-  userId: string = null;
+  userId: string = ' ';
   onType: any;
   location: any;
   strDate: any;
@@ -111,13 +111,15 @@ export class OnDutyReportComponent implements OnInit {
   detReason: any;
   EmployeeNo: any;
   EmployeeNo1: any[] = [];
-  filterPayGroup: string = null;
-  filterDepartment: string = null;
-  filterCategory: string = null;
-  filterappStatus: string = null;
+  filterPayGroup: string = ' ';
+  filterDepartment: string = ' ';
+  filterCategory: string = ' ';
+  filterappStatus: string = ' ';
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private https: HttpClient, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -149,10 +151,11 @@ export class OnDutyReportComponent implements OnInit {
     setTimeout(() => this.initlvDatatable(), 0)
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
     this.year = today.getFullYear();
@@ -177,23 +180,23 @@ export class OnDutyReportComponent implements OnInit {
 
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
   }
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
@@ -202,7 +205,7 @@ export class OnDutyReportComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
@@ -210,7 +213,7 @@ export class OnDutyReportComponent implements OnInit {
 
       }
       //this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
@@ -219,9 +222,11 @@ export class OnDutyReportComponent implements OnInit {
   filterLocation: string = '';
   payGroupList1: any[] = [];
   getPaygroupsBasedOnPlant() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.fkPlantId == this.Plant);
-    this.payGroupList1 = temp ? this.payGroupList.filter(x => x.plant == temp.code) : [];
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.fkPlantId == this.Plant);
+    this.payGroupList1 = temp ? this.payGroupList.filter((x:any)  => x.plant == temp.code) : [];
   }
 
   empCatList: any[] = [];
@@ -231,26 +236,26 @@ export class OnDutyReportComponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
   }
-  GetCat(id) {
-    let temp = this.empCatList.find(x => x.id == id);
+  GetCat(id:any) {
+    let temp = this.empCatList.find((x:any)  => x.id == id);
     return temp ? temp.catltxt : '';
   }
 
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -265,7 +270,7 @@ export class OnDutyReportComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -275,7 +280,7 @@ export class OnDutyReportComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -285,7 +290,7 @@ export class OnDutyReportComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -307,7 +312,7 @@ export class OnDutyReportComponent implements OnInit {
 
   isValid: boolean = false;
   validatedForm: boolean = true;
-  empName: string;
+  empName: string
   upcomingRequests: any[] = [];
 
   GetOnDutyList() {
@@ -329,8 +334,8 @@ export class OnDutyReportComponent implements OnInit {
           this.empName = this.currentUser.fullName;
         }
         else {
-          srchstr.userId = this.EmployeeNo1.map(x => x.id).join();
-          this.empName = this.EmployeeList.find(x => x.employeeId == this.EmployeeNo1[0].id).fullName;
+          srchstr.userId = this.EmployeeNo1.map((x:any)  => x.id).join();
+          this.empName = this.EmployeeList.find((x:any)  => x.employeeId == this.EmployeeNo1[0].id).fullName;
         }
       }
       else {
@@ -347,11 +352,11 @@ export class OnDutyReportComponent implements OnInit {
       this.httpService.LApost(APIURLS.BR_GET_ONDUTY_REQUESTS, srchstr).then((data: any) => {
         if (data) {
           this.OnDutyRequestList = data;
-          this.upcomingRequests = this.OnDutyRequestList.filter(x => new Date(x.startDate) > new Date());
+          this.upcomingRequests = this.OnDutyRequestList.filter((x:any)  => new Date(x.startDate) > new Date());
         }
         this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.OnDutyRequestList = [];
       });
@@ -402,7 +407,8 @@ export class OnDutyReportComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -413,7 +419,7 @@ getHeader(): { headers: HttpHeaders } {
   return { headers };
 }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.https.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -436,89 +442,90 @@ getHeader(): { headers: HttpHeaders } {
       buttons: [true, true]
     }).then((willsave) => {
       if (willsave) {
-        this.onUserActions1();
+       // this.onUserActions1();
       }
     });
   }
 
-  exportList: any[];
-  onUserActions1() {
-    const title = ' Employee On Duty Report';
-    const header = ["SNo", "Request No", "Employee Name", "Employee Number", "Designation", "Role", "Department", "OnDuty Type", "Location", "Request Date", "Start Date", "Start Time", "End Date", "End Time", "Status"]
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.OnDutyRequestList.forEach(item => {
-      index = index + 1;
-      ts = {};
-      ts.slno = index;
-      ts.reqId = item.requestNo;
-      ts.empName = item.empName;
-      ts.userId = item.userId;
-      ts.designation = item.designation;
-      ts.role = item.role;
-      ts.department = item.department;
-      ts.onDutyType = item.onDutyType;
-      ts.location = item.location;
-      ts.submitDate = this.setFormatedDate(item.submitDate);
-      ts.startDate = this.setFormatedDate(item.startDate);
-      ts.startTime = item.startTime;
-      ts.endDate = this.setFormatedDate(item.endDate);
-      ts.endTime = item.endTime;
-      ts.approvelStatus = item.approverStatus;
-      exportList.push(ts);
-    });
-    var OrganisationName = "MICRO LABS LIMITED";
-    const data = exportList;
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Employee OnDuty Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:O1');
-    worksheet.mergeCells('A2:O2');
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  exportList!: any[];
+   //v10
+  // onUserActions1() {
+  //   const title = ' Employee On Duty Report';
+  //   const header = ["SNo", "Request No", "Employee Name", "Employee Number", "Designation", "Role", "Department", "OnDuty Type", "Location", "Request Date", "Start Date", "Start Time", "End Date", "End Time", "Status"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.OnDutyRequestList.forEach((item :any) => {
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slno = index;
+  //     ts.reqId = item.requestNo;
+  //     ts.empName = item.empName;
+  //     ts.userId = item.userId;
+  //     ts.designation = item.designation;
+  //     ts.role = item.role;
+  //     ts.department = item.department;
+  //     ts.onDutyType = item.onDutyType;
+  //     ts.location = item.location;
+  //     ts.submitDate = this.setFormatedDate(item.submitDate);
+  //     ts.startDate = this.setFormatedDate(item.startDate);
+  //     ts.startTime = item.startTime;
+  //     ts.endDate = this.setFormatedDate(item.endDate);
+  //     ts.endTime = item.endTime;
+  //     ts.approvelStatus = item.approverStatus;
+  //     exportList.push(ts);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED";
+  //   const data = exportList;
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Employee OnDuty Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:O1');
+  //   worksheet.mergeCells('A2:O2');
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'Emp_OnDuty_Report.xlsx');
-    });
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'Emp_OnDuty_Report.xlsx');
+  //   });
+  // }
 
   EmployeeList: any[] = [];
   GetReportingEmployeeList() {
     this.httpService.LAgetByParam(APIURLS.GET_EMP_OF_REPORTING, this.currentUser.employeeId).then((data: any) => {
       if (data.length > 0) {
         this.EmployeeList = data;
-        this.empListCon = data.map((i) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
-        this.EmployeeList.sort((a, b) => {
+        this.empListCon = data.map((i:any) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
+        this.EmployeeList.sort((a:any, b:any) => {
           if (a.fullName > b.fullName) return 1;
           if (a.fullName < b.fullName) return -1;
           return 0;
@@ -528,7 +535,7 @@ getHeader(): { headers: HttpHeaders } {
       else {
         this.EmployeeList = [];
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList = [];
     });

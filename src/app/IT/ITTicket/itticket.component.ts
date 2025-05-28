@@ -12,7 +12,8 @@ export class ITTicketComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.EmpId = this.currentUser.employeeId;
   }
 

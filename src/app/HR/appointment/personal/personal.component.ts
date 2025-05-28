@@ -18,15 +18,15 @@ declare var toastr: any;
   providers: [AppointmentService, Util]
 })
 export class PersonalComponent implements OnInit {
-@ViewChild('personalDetailsForm2', { static: false }) private personalDetailsForm2: NgForm;
+@ViewChild('personalDetailsForm2', { static: false }) private personalDetailsForm2!: NgForm;
 
-  @Input() appointmentId: number;
-  @Input() offerId: number;
-  @Input() guid: string;
+  @Input() appointmentId!: number;
+  @Input() offerId!: number;
+  @Input() guid: string
   @Input() editAllowed: boolean = true;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   details:any = {};
   offerDetails:any;
   maritalStatusList: any[] = [];
@@ -83,7 +83,7 @@ export class PersonalComponent implements OnInit {
             this.dataLoaded.emit(data.status);
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
         this.details = {};
@@ -109,7 +109,8 @@ export class PersonalComponent implements OnInit {
     if(this.offerId > 0)
       connection = this.service.postData(APIURLS.CANDIDATE_SAVE_PERSONAL_DETAILS, this.details);
     else{
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));  
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;  
       this.details.modifiedById = this.currentUser.uid;
       connection = this.httpService.HRpost(APIURLS.APPOINTMENT_SAVE_PERSONAL_DETAILS, this.details);
     }
@@ -131,7 +132,7 @@ export class PersonalComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while saving personal details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving personal details. Error:' + error);
       });
@@ -148,7 +149,7 @@ export class PersonalComponent implements OnInit {
         toastr.error("Offer details not found, please check the link.");
 
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error("Error occurred while fetching details, please check the link.");
       });

@@ -21,7 +21,7 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import swal from 'sweetalert';
 import { HolidayMaster } from '../../HolidaysMaster/HolidaysMaster.model';
 import { MatExpansionModule } from '@angular/material/expansion';
-import * as moment from 'moment';
+import moment from 'moment'
 import { ProcessingLog } from './ProcessingLog.model';
 
 declare var ActiveXObject: (type: string) => void;
@@ -34,11 +34,11 @@ declare var ActiveXObject: (type: string) => void;
   styleUrls: ['./AttendanceProcessing.component.css']
 })
 export class AttendanceProcessingComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
   public tableWidget: any;
   public tableWidget1: any;
@@ -55,9 +55,9 @@ export class AttendanceProcessingComponent implements OnInit {
   locListCon1 = [];
   genders: any[] = [{ id: 1, name: 'Male' }, { id: 2, name: 'Female' }];
   titles = [{ type: "Mr." }, { type: "Mrs." }, { type: "Miss." }, { type: "Ms." }, { type: "Dr." }];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   isLoading: boolean = false;
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -66,9 +66,9 @@ export class AttendanceProcessingComponent implements OnInit {
   errMsgPop1: string = "";
   isEdit: boolean = false;
   locationList: any[] = [];
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
-  path: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
+  path!: string
   selectedBaseLocation: any[] = [];
   employeeId: any = null;
   userMasterItem: any = {};
@@ -76,9 +76,9 @@ export class AttendanceProcessingComponent implements OnInit {
 
   CalenderYear: string = '';
   CalYear: any;
-  OnDutyType: string = null;
-  StartDate: string = null;
-  EndDate: string = null;
+  OnDutyType: string = ' ';
+  StartDate: string = ' ';
+  EndDate: string = ' ';
   AttendanceProcessingList: any[] = [];
   Starttime: any;
   EndTime: any;
@@ -89,12 +89,12 @@ export class AttendanceProcessingComponent implements OnInit {
   Plant: any = null;
   SwipeType: any = null;
   EmployeeNo: any;
-  filterPayGroup: string = null;
-  filterDepartment: string = null;
-  filterSubDepartment: string = null;
-  filterReportingGroup: string = null;
-  filterCategory: string = null;
-  filterType: string = null;
+  filterPayGroup: string = ' ';
+  filterDepartment: string = ' ';
+  filterSubDepartment: string = ' ';
+  filterReportingGroup: string = ' ';
+  filterCategory: string = ' ';
+  filterType: string = ' ';
   salarayProcess: boolean = false;
   month: any = null;
 
@@ -118,7 +118,7 @@ export class AttendanceProcessingComponent implements OnInit {
 
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -127,29 +127,30 @@ export class AttendanceProcessingComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.loccode = this.locationAllList.find(x => x.id == this.currentUser.baselocation).code;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.loccode = this.locationAllList.find((x:any)  => x.id == this.currentUser.baselocation).code;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
-  currentUser: AuthData;
+  currentUser!: AuthData;
   date: any;
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     //this.baseLocation = this.currentUser.baselocation;
     this.employeeId = this.currentUser.employeeId;
     let today = new Date();
@@ -179,7 +180,7 @@ export class AttendanceProcessingComponent implements OnInit {
     this.errMsg = "";
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.payGroupList = data.sort((a, b) => {
+        this.payGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
@@ -187,14 +188,14 @@ export class AttendanceProcessingComponent implements OnInit {
 
       }
       //this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.payGroupList = [];
     });
   }
 
-  GetPaYGroup(id) {
-    let temp = this.payGroupList.find(x => x.id == id);
+  GetPaYGroup(id:any) {
+    let temp = this.payGroupList.find((x:any)  => x.id == id);
     return temp ? temp.short_desc : '';
   }
   empCatList: any[] = [];
@@ -204,13 +205,13 @@ export class AttendanceProcessingComponent implements OnInit {
       if (data.length > 0) {
         this.empCatList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCatList = [];
     });
   }
-  GetCat(id) {
-    let temp = this.empCatList.find(x => x.id == id);
+  GetCat(id:any) {
+    let temp = this.empCatList.find((x:any)  => x.id == id);
     return temp ? temp.catltxt : '';
   }
   subDeptList: any[] = [];
@@ -220,24 +221,24 @@ export class AttendanceProcessingComponent implements OnInit {
       if (data.length > 0) {
         this.subDeptList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.subDeptList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.plantList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         this.getpayGroupList();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -245,9 +246,11 @@ export class AttendanceProcessingComponent implements OnInit {
 
   payGroupList1: any[] = [];
   getPaygroupsBasedOnPlant() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.code == this.Plant);
-    this.payGroupList1 = temp ? this.payGroupList.filter(x => x.plant == temp.code) : [];
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.code == this.Plant);
+    this.payGroupList1 = temp ? this.payGroupList.filter((x:any)  => x.plant == temp.code) : [];
   }
 
   ReportingGroupList: any[] = [];
@@ -257,7 +260,7 @@ export class AttendanceProcessingComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -268,13 +271,13 @@ export class AttendanceProcessingComponent implements OnInit {
     this.errMsg = "";
     this.get("DesignationMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.filter(x => x.isActive).sort((a, b) => {
+        this.designationList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.designationList = [];
     });
@@ -283,13 +286,13 @@ export class AttendanceProcessingComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -297,11 +300,14 @@ export class AttendanceProcessingComponent implements OnInit {
   }
   ClearData() {
     this.Plant = null;
-    this.filterPayGroup = null;
-    this.filterCategory = null;
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    this.filterCategory = '';
     this.filterDepartment = null;
     this.filterSubDepartment = null;
-    this.filterType = null;
+    //this.filterType = null;
+this.filterType = '';
   }
 
 
@@ -352,13 +358,13 @@ export class AttendanceProcessingComponent implements OnInit {
       filterModel.empCode = this.EmployeeNo;
       if (this.filterType == '2') {
         filterModel.type = 'BULK';
-        filterModel.empCode = this.checkedRequestList.map(x => x.employeeId).join();
+        filterModel.empCode = this.checkedRequestList.map((x:any)  => x.employeeId).join();
       }
       filterModel.doneBy = this.currentUser.employeeId;
       filterModel.attendanceType = '0';
       this.InsertProcessingLog();
       let connection = this.httpService.LApost(APIURLS.PROCESS_EMP_PLANT_ATTENDANCE, filterModel)
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data) {
           if (data.type == 'E') {
             this.updateProcessingLog("Failed");
@@ -386,7 +392,8 @@ export class AttendanceProcessingComponent implements OnInit {
             this.toDate = '';
             this.filterPayGroup = '';
             this.filterCategory = '';
-            this.filterType = null;
+            //this.filterType = null;
+this.filterType = '';
             this.EmployeeList = [];
           }
         }
@@ -418,7 +425,7 @@ export class AttendanceProcessingComponent implements OnInit {
   ProcessingHistoryData: any[] = [];
   ShowProcessingHistory() {
     let serchstr = this.loccode + '~' + this.CalYear + '~' + this.month;
-    this.httpService.LAgetByParam(APIURLS.GET_ATTENDANCE_PROCESS_HISTORY, serchstr).then((data) => {
+    this.httpService.LAgetByParam(APIURLS.GET_ATTENDANCE_PROCESS_HISTORY, serchstr).then((data:any) => {
       if (data.length > 0) {
         this.ProcessingHistoryData = data.reverse();
       }
@@ -449,7 +456,7 @@ export class AttendanceProcessingComponent implements OnInit {
     processlog.endDate = this.getDateFormate(this.toDate);
     processlog.processStatus = 'In Progress';
     let connection = this.httpService.LApost(APIURLS.INSERT_PROCESSING_LOG, processlog);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
         this.processingHistory = data;
       }
@@ -459,7 +466,7 @@ export class AttendanceProcessingComponent implements OnInit {
   updateProcessingLog(val: string) {
     this.processingHistory.processStatus = val;
     let connection = this.httpService.LAput(APIURLS.INSERT_PROCESSING_LOG, this.processingHistory.id, this.processingHistory);
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data) {
         //this.processingHistory=data;
       }
@@ -503,7 +510,7 @@ export class AttendanceProcessingComponent implements OnInit {
       return;
     }
     let filterModel: any = {};
-    let temp = this.plantList.find(x => x.code == this.Plant);
+    let temp = this.plantList.find((x:any)  => x.code == this.Plant);
     filterModel.baseLocation = temp ? temp.fkPlantId : null;
     filterModel.fkDepartment = this.filterDepartment;
     filterModel.fkPayroll = this.filterPayGroup;
@@ -512,7 +519,7 @@ export class AttendanceProcessingComponent implements OnInit {
     //  filterModel.toDate = this.getDateFormate(this.toDate);
     //filterModel.empCode = this.employeeId;
     let connection = this.httpService.LApost(APIURLS.GET_EMPLOYEES_FOR_ATTENDANCE, filterModel)
-    connection.then((data) => {
+    connection.then((data:any) => {
       if (data.length > 0) {
         this.EmployeeList = data;
       }
@@ -564,7 +571,8 @@ export class AttendanceProcessingComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

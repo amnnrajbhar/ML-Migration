@@ -24,31 +24,31 @@ declare var $: any;
   styleUrls: ['./gateentry.component.css']
 })
 export class GateentryComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   tableWidget: any;
-  path: string;
-  fiscalYear: string;
+  path: string
+  fiscalYear: string
   errMsg: string = "";
   errMsgPop: string = "";
   errMsgModalPop: string = "";
-  isEdit: boolean;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  isLoadingBAPI: boolean;
+  isEdit!: boolean;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  isLoadingBAPI!: boolean;
   gateEntryMModel = {} as GateEntryM;
   gateEntryDModel = {} as GateEntryD;
   gateEntryHeaderModel = {} as GateEntryHeader;
   gateEntryMList: GateEntryM[] = [];
   gateEntryDList: GateEntryD[] = [];
-  pO_No: string;
+  pO_No: string
   qtY_RCVD: any;
   entryDateTime: Date = new Date();
-  userName: string;
+  userName: string
   iN_TIME: any;
-  reason: string;
+  reason: string
   maxDate:Date=new Date();
 
   filteredpolist:GateEntryD[]=[];
@@ -76,7 +76,8 @@ export class GateentryComponent implements OnInit {
     this.fiscalYear = this.getCurrentFinancialYear();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.userName = this.currentUser.fullName;
      // this.getPlantsassigned(this.currentUser.fkEmpId);
       this.getLocationById(this.currentUser.baselocation);
@@ -104,8 +105,8 @@ export class GateentryComponent implements OnInit {
     }
     setTimeout(() => this.initDatatable(), 0)
   }
-  locationName: string;
-  plant: string;
+  locationName: string
+  plant!: string
   plantList:any[]=[];
   location:any[]=[];
   getLocationById(lId: number) {
@@ -119,14 +120,14 @@ export class GateentryComponent implements OnInit {
         this.getAllGateEntries("load");   
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plant = '';
       this.locationName = '';
     });
   }
   baseloc={fkPlantId:0,code:'',name:''}
-  getPlantsassigned(id)
+  getPlantsassigned(id:any)
   {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
@@ -135,7 +136,8 @@ export class GateentryComponent implements OnInit {
         let temp=this.plantList.find(x=>x.fkPlantId == this.currentUser.baselocation);
         if(temp == null || temp == undefined)
         {
-          this.location.forEach(element => {
+          this.location.forEach((element:any)=> {
+
             this.baseloc.fkPlantId=element.id;
             this.baseloc.code=element.code;
             this.baseloc.name=element.name;
@@ -146,7 +148,7 @@ export class GateentryComponent implements OnInit {
      
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -158,10 +160,10 @@ export class GateentryComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_MASTER_LOCATIONGATE_MASTER_ANY_API, this.currentUser.baselocation).then((data: any) => {
       if (data.length > 0) {
         this.locationGateList = data;
-        this.selGateLocation = this.locationGateList.find(x => x.gateNo == '1');
+        this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == '1');
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationGateList = [];
     });
@@ -206,10 +208,10 @@ export class GateentryComponent implements OnInit {
   to_date: any = this.today;
   acknowledge: boolean = false;
   delete: boolean = false;
-  fltrGINO: string;
-  fltrInvoice: string;
+  fltrGINO: string
+  fltrInvoice: string
   fltrPo:string='';
-  fltrSupplier: string;
+  fltrSupplier: string
   getAllGateEntries(msg) {
     this.isLoading = true;
     var genericGateEntryM = {} as GenericGateEntryM;
@@ -239,7 +241,7 @@ export class GateentryComponent implements OnInit {
              filterlist=polist;
             let stDt=new Date(genericGateEntryM.fromdate);
             let edDt=new Date(genericGateEntryM.todate);
-            filterlist=filterlist.filter(x=>new Date(x.createD_DATE)> stDt && new Date(x.createD_DATE) <edDt)
+            filterlist=filterlist.filter((x:any)=>new Date(x.createD_DATE)> stDt && new Date(x.createD_DATE) <edDt)
             this.filteredpolist=filterlist; 
             
             this.gateEntryMList1 = data;
@@ -258,19 +260,20 @@ export class GateentryComponent implements OnInit {
            
             if(this.fltrPo != '')
             {
-              this.gateEntryMList1=this.gateEntryMList1.filter(x=>x.ponumber == this.fltrPo);
+              this.gateEntryMList1=this.gateEntryMList1.filter((x:any)=>x.ponumber == this.fltrPo);
             }            
             this.gateEntryMList=this.gateEntryMList1;
             this.gateEntryMList.reverse();
-            // this.gateEntryMList.forEach(element => {
+            // this.gateEntryMList.forEach((element:any)=> {
+
             //   let temp={} as GateEntryD;
-            //   temp=polist.filter(x=>x.gI_NO == element.gI_NO);
+            //   temp=polist.filter((x:any)=>x.gI_NO == element.gI_NO);
             //   this.filteredpolist.push(temp);              
             // });
           }
           this.reInitDatatable();
           this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoading = false;
           this.gateEntryMList = [];
         });
@@ -279,7 +282,7 @@ export class GateentryComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.gateEntryMList = [];
     });
@@ -335,13 +338,13 @@ export class GateentryComponent implements OnInit {
                   //this.gateEntryHeaderModel = data[0];                
 
                   Object.assign(this.gateEntryHeaderModel,data[0]);
-                  this.gateEntryHeaderModel.geMaterialPO.forEach(mtrl => {
+                  this.gateEntryHeaderModel.geMaterialPO.forEach((mtrl:any) => {
                     mtrl.pO_DATE = data[0].doC_DATE;                    
                     this.gateEntryMaterial1.push(mtrl);
                   });
                   let material:any[]=[];
                   this.gateEntryMaterial1.forEach(ele =>{
-                    let temp =this.filteredpolist.filter(x=>x.pO_NO ==ele.pO_NUMBER && x.linE_ITEM==ele.pO_ITEM && 
+                    let temp =this.filteredpolist.filter((x:any)=>x.pO_NO ==ele.pO_NUMBER && x.linE_ITEM==ele.pO_ITEM && 
                                               x.iteM_CODE == ele.puR_MAT); 
                     if(temp.length <=0)   
                     {
@@ -437,7 +440,7 @@ export class GateentryComponent implements OnInit {
             }
           }
           this.isLoadingBAPI = false;
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingBAPI = false;
           this.gateEntryHeaderModel = {} as GateEntryHeader;
           this.gateEntryMaterial = [];
@@ -445,7 +448,7 @@ export class GateentryComponent implements OnInit {
       }
     }
   }
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {
@@ -462,7 +465,7 @@ export class GateentryComponent implements OnInit {
     this.userForm.form.updateValueAndValidity();
     if (isedit) {
       this.gateEntryMModel = Object.assign({},gateEntryM) ;
-      this.selGateLocation = this.locationGateList.find(x => x.gateNo == this.gateEntryMModel.gI_GATENO);
+      this.selGateLocation = this.locationGateList.find((x:any)  => x.gateNo == this.gateEntryMModel.gI_GATENO);
       this.fiscalYear = this.gateEntryMModel.fiN_YEAR;
       this.gateEntryHeaderModel.vendor = this.gateEntryMModel.lifnr;
       this.gateEntryHeaderModel.venD_NAME = this.gateEntryMModel.namE1;
@@ -472,7 +475,7 @@ export class GateentryComponent implements OnInit {
       this.userName = this.gateEntryMModel.persoN_NAME;
       this.httpService.getById(APIURLS.BR_MASTER_GATEINWARDD_ANY_API, gateEntryM.id).then((data: any) => {
         if (data.length > 0) {
-          data.forEach(mtrl => {
+          data.forEach((mtrl:any) => {
             var geMaterialModel = {} as GateEntryMaterial;
             geMaterialModel.pO_NUMBER = mtrl.pO_NO;
             geMaterialModel.pO_DATE = this.gateEntryMModel.doC_DATE;
@@ -484,7 +487,7 @@ export class GateentryComponent implements OnInit {
             this.gateEntryMaterial.push(geMaterialModel);
           });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         // this.locationGateList = [];
       });
     }
@@ -542,7 +545,7 @@ export class GateentryComponent implements OnInit {
   }
   onSaveEntry() {
     if (!this.isEdit) {
-      let zeroQTYMatList = this.gateEntryMaterial.filter(x => { return x.qtY_RCVD && x.qtY_RCVD>0 });
+      let zeroQTYMatList = this.gateEntryMaterial.filter((x:any)  => { return x.qtY_RCVD && x.qtY_RCVD>0 });
       if (zeroQTYMatList.length==0) {
         swal({
           title: "Message",
@@ -606,7 +609,7 @@ export class GateentryComponent implements OnInit {
     this.gateEntryMModel.isActive = true;
     //Insert Material
     var index = 0;
-    this.gateEntryMaterial.forEach(mtrl => {
+    this.gateEntryMaterial.forEach((mtrl:any) => {
       if (mtrl.qtY_RCVD && mtrl.qtY_RCVD>0) {
         index = index + 1;
         this.gateEntryDModel = {} as GateEntryD;
@@ -637,14 +640,14 @@ export class GateentryComponent implements OnInit {
       if (data == 200 || data.id > 0) {
         this.sendGEPOtoCreateBAPI(data);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error saving Header...';
       this.isLoadingPop = false;
     });
   }
   sendGEPOtoCreateBAPI(model) {
     this.gateEntryMModel= Object.assign({},model);
-    this.gateEntryDList.forEach(x => {
+    this.gateEntryDList.forEach((x:any)  => {
       x.gI_NO = model.gI_NO;
     });
     let rfcCreateGEPO = {} as RFCCreateGEPO;
@@ -689,7 +692,7 @@ export class GateentryComponent implements OnInit {
       }
      // jQuery("#saveModal").modal('show');
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Successfully inserted in gate entry system,Could not connect to SAP';
       this.isLoadingPop = false;
     });
@@ -706,7 +709,7 @@ export class GateentryComponent implements OnInit {
       if (data == 200 || data.id > 0) {
         this.isLoadingPop = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Error update acknowledgement in GEPO Header';
       this.isLoadingPop = false;
     });
@@ -734,7 +737,7 @@ export class GateentryComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.httpService.get(APIURLS.BR_GET_EMPLOYEE_BASED_ON_SEARCHTEXT + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return {
                 label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId, name: item.name, mobile: item.mobileNo,
@@ -747,7 +750,7 @@ export class GateentryComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#persoN_NAME").val(ui.item.name);
                   self.gateEntryMModel.persoN_NAME=ui.item.name;
@@ -756,7 +759,7 @@ export class GateentryComponent implements OnInit {
                   $("#persoN_NAME").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#persoN_NAME").val(ui.item.name);
                   self.gateEntryMModel.persoN_NAME=ui.item.name;
@@ -819,7 +822,7 @@ export class GateentryComponent implements OnInit {
       }
      // jQuery("#saveModal").modal('show');
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsgPop = 'Could not connect to SAP.Please try after sometime or contact to administrator';
       //jQuery("#saveModal").modal('show');
       this.isLoadingPop = false;
@@ -833,7 +836,7 @@ export class GateentryComponent implements OnInit {
       if (data == 200 || data.id > 0) {
         this.isLoadingPop = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Delete PO...';
     });

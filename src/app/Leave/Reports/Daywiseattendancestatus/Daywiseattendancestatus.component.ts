@@ -20,17 +20,17 @@ import { FormControl, NgForm } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 import { ExcelService } from '../../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import * as XLSX from 'xlsx';
-import * as pdfMake from "pdfmake/build/pdfmake";
+// import * as pdfMake from "pdfmake/build/pdfmake";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 //import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
@@ -43,14 +43,14 @@ const EXCEL_EXTENSION = '.xlsx';
   styleUrls: ['./Daywiseattendancestatus.component.css']
 })
 export class DaywiseattendancestatusComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
-@ViewChild('table', { static: false }) table: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
+@ViewChild('table', { static: false }) table!: ElementRef;
 
-@ViewChild('dailyreport', { static: false }) dailyreport: ElementRef;
+@ViewChild('dailyreport', { static: false }) dailyreport!: ElementRef;
 
 
   public tableWidget: any;
@@ -60,7 +60,7 @@ export class DaywiseattendancestatusComponent implements OnInit {
   departmentList: any[] = [];
   ReportData: any[] = [];
   locationList: any[] = [];
-  isLoading: boolean;
+  isLoading!: boolean;
   StaffCategoryList: any[] = [];
   PayGroupList: any[] = [];
   ReportingGroupList: any[] = [];
@@ -97,12 +97,12 @@ export class DaywiseattendancestatusComponent implements OnInit {
   path: any;
   fromDate: any = null;
   toDate: any = null;
-  EmployeeNo: string = null;
+  EmployeeNo: string = ' ';
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private http: HttpClient, private https: HttpClient, private route: ActivatedRoute, private excelService: ExcelService,
     private datePipe: DatePipe) {
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ //   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   }
 
   private initDatatable(): void {
@@ -122,7 +122,7 @@ export class DaywiseattendancestatusComponent implements OnInit {
 
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -132,45 +132,46 @@ export class DaywiseattendancestatusComponent implements OnInit {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.filterPlant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        this.locationname = this.filterPlant + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.filterPlant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        this.locationname = this.filterPlant + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
   }
 
 
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     let today = new Date();
     this.CalenderYear = new Date().getFullYear().toString();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -196,11 +197,13 @@ export class DaywiseattendancestatusComponent implements OnInit {
   ClearData() {
     this.filterPlant = null;
     this.filterStaffcat = null;
-    this.filterPayGroup = null;
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
     this.filterDepartment = null;
     this.filterReportingGroup = null;
-    this.filterMonth = null;
-    this.filterEmployee = null;
+    this.filterMonth = '';
+    this.filterEmployee = '';
     this.AttendanceType = null;
     this.selectedTypeList = null;
     this.ViewType = null;
@@ -266,29 +269,33 @@ export class DaywiseattendancestatusComponent implements OnInit {
   getpayGroupList() {
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.PayGroupList = data.sort((a, b) => {
+        this.PayGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
   }
   payGroupList1: any[] = [];
   getPaygroupsBasedOnPlant() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.code == this.filterPlant);
-    this.payGroupList1 = this.PayGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.code == this.filterPlant);
+    this.payGroupList1 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
   }
 
   payGroupList11: any[] = [];
   getPaygroupsBasedOnPlant1() {
-    this.filterPayGroup = null;
-    let temp = this.locationList.find(x => x.fkPlantId == this.filterPlant);
-    this.payGroupList11 = this.PayGroupList.filter(x => x.plant == temp.code);
+   // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+    let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterPlant);
+    this.payGroupList11 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
   }
 
   getempCatList() {
@@ -296,7 +303,7 @@ export class DaywiseattendancestatusComponent implements OnInit {
       if (data.length > 0) {
         this.StaffCategoryList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.StaffCategoryList = [];
     });
@@ -306,7 +313,7 @@ export class DaywiseattendancestatusComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -320,7 +327,7 @@ export class DaywiseattendancestatusComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
             })
@@ -330,7 +337,7 @@ export class DaywiseattendancestatusComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -340,7 +347,7 @@ export class DaywiseattendancestatusComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -367,17 +374,18 @@ export class DaywiseattendancestatusComponent implements OnInit {
       return;
     }
     let filterModel: any = {};
-    filterModel.baseLocation = this.locationList.find(x => x.code == this.filterPlant).fkPlantId;
+    filterModel.baseLocation = this.locationList.find((x:any)  => x.code == this.filterPlant).fkPlantId;
     filterModel.payGroup = this.filterPayGroup;
     filterModel.category = this.filterStaffcat;
     filterModel.department = this.filterDepartment;
     filterModel.reportingGroup = this.filterReportingGroup;
     this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LIST_FOR_REPORT, filterModel).then((data: any) => {
       this.empListCon = data.table;
-      this.empListCon.forEach(element => {
+      this.empListCon.forEach((element:any)=> {
+
         element.name = element.employeeNo + ' - ' + element.name;
       });
-    }).catch(error => {
+    }).catch((error)=> {
       this.empListCon = [];
       this.isLoading = false;
 
@@ -387,19 +395,19 @@ export class DaywiseattendancestatusComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
     });
   }
-  exportList: any[];
+  exportList!: any[];
 
   get(apiKey: string): any {
     const promise = new Promise((resolve, reject) => {
@@ -421,7 +429,8 @@ export class DaywiseattendancestatusComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -469,7 +478,7 @@ getHeader(): { headers: HttpHeaders } {
       });
       let filterModel: any = {};
       filterModel.plant = this.filterPlant;
-      filterModel.employeeId = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.employeeNo).join(',') : null;
+      filterModel.employeeId = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.employeeNo).join(',') : null;
       filterModel.category = this.filterStaffcat;
       filterModel.reporting = this.filterReportingGroup;
       filterModel.payGroup = this.filterPayGroup;
@@ -479,7 +488,7 @@ getHeader(): { headers: HttpHeaders } {
       filterModel.dept = this.filterDepartment;
       filterModel.typel = this.selectedTypeList;
       let connection = this.httpService.LApost(APIURLS.GET_MONTHLY_DAYWISE_REPORT, filterModel);
-      connection.then((data) => {
+      connection.then((data:any) => {
         if (data.length > 0) {
           this.ReportData = data;
 
@@ -492,7 +501,7 @@ getHeader(): { headers: HttpHeaders } {
           }).then((data1) => {
             if (data1) {
               // this.ExportToExcel();
-              this.generateDayWiseExcel(this.ReportData, Action);
+             // this.generateDayWiseExcel(this.ReportData, Action);
             }
           })
 
@@ -506,107 +515,108 @@ getHeader(): { headers: HttpHeaders } {
 
   }
 
-  generateDayWiseExcel(values, action: string) {
+  // generateDayWiseExcel(values, action: string) {
 
-    //Excel Title, Header, Data
-    let dt = new Date();
-    let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
-    const title = 'Monthly Attendance Report';
+  //   //Excel Title, Header, Data
+  //   let dt = new Date();
+  //   let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
+  //   const title = 'Monthly Attendance Report';
 
-    const header = ["SNo", "Date", "Employee No", "Employee Name", "In",
-      "Out", "Status", "From Date", "To Date",
-      "Department", "Designation", "Remarks", "Pay Group"]
+  //   const header = ["SNo", "Date", "Employee No", "Employee Name", "In",
+  //     "Out", "Status", "From Date", "To Date",
+  //     "Department", "Designation", "Remarks", "Pay Group"]
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.ReportData = values;
-    this.ReportData.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.id = index;
-      ts.date = this.datePipe.transform(element.date,'yyyy-MM-dd');
-      ts.employeeId = element.employeeId;
-      ts.empName = element.empName;
-      ts.inTime = element.inTime,
-      ts.outTime = element.outTime,
-      ts.status = element.status,
-      ts.fromDate = element.fromDate,
-      ts.toDate = element.toDate,
-      ts.department = element.department;
-      ts.designation = element.designation;
-      ts.remarks = element.remarks;
-      ts.payGroup = element.payGroup;
-      exportList.push(ts);
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.ReportData = values;
+  //   this.ReportData.forEach((element:any)=> {
 
-    });
-    let locname = this.locationList.find(x => x.code == this.filterPlant);
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let mon = this.MonthsList.find(x => x.id == this.filterMonth);
-    let worksheet = workbook.addWorksheet('Monthly Attendance Detail Report for the Month of ' + mon.name + '-' + this.CalenderYear);
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:M1');
-    worksheet.mergeCells('A2:M2');
-    worksheet.mergeCells('A3:M3');
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.id = index;
+  //     ts.date = this.datePipe.transform(element.date,'yyyy-MM-dd');
+  //     ts.employeeId = element.employeeId;
+  //     ts.empName = element.empName;
+  //     ts.inTime = element.inTime,
+  //     ts.outTime = element.outTime,
+  //     ts.status = element.status,
+  //     ts.fromDate = element.fromDate,
+  //     ts.toDate = element.toDate,
+  //     ts.department = element.department;
+  //     ts.designation = element.designation;
+  //     ts.remarks = element.remarks;
+  //     ts.payGroup = element.payGroup;
+  //     exportList.push(ts);
 
-    //Blank Row 
-    // worksheet.addRow([]);
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.alignment = { horizontal: 'center' }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    //  worksheet.addRows(data);
-    // Add Data and Conditional Formatting
-    //data.forEach()
+  //   });
+  //   let locname = this.locationList.find((x:any)  => x.code == this.filterPlant);
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let mon = this.MonthsList.find((x:any)  => x.id == this.filterMonth);
+  //   let worksheet = workbook.addWorksheet('Monthly Attendance Detail Report for the Month of ' + mon.name + '-' + this.CalenderYear);
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:M1');
+  //   worksheet.mergeCells('A2:M2');
+  //   worksheet.mergeCells('A3:M3');
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
+  //   //Blank Row 
+  //   // worksheet.addRow([]);
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.alignment = { horizontal: 'center' }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   //  worksheet.addRows(data);
+  //   // Add Data and Conditional Formatting
+  //   //data.forEach()
 
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
 
-    worksheet.addRow([]);
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    if (action == 'Mail') {
-      workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        this.upload(blob, 'MonthlyDaywiseReport.xlsx');
-      })
-    }
-    else {
-      workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        fs.saveAs(blob, 'MonthlyDaywiseReport.xlsx');
-      })
-    }
-    //Generate Excel File with given name
+  //   worksheet.addRow([]);
+
+  //   if (action == 'Mail') {
+  //     workbook.xlsx.writeBuffer().then((data:any) => {
+  //       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //       this.upload(blob, 'MonthlyDaywiseReport.xlsx');
+  //     })
+  //   }
+  //   else {
+  //     workbook.xlsx.writeBuffer().then((data:any) => {
+  //       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //       fs.saveAs(blob, 'MonthlyDaywiseReport.xlsx');
+  //     })
+  //   }
+  //   //Generate Excel File with given name
 
 
-  }
+  // }
 
   GetMonthlyMusterReport(Action: string) {
     if (this.filterPlant == null) {
@@ -646,7 +656,7 @@ getHeader(): { headers: HttpHeaders } {
       let filterModel: any = {};
       filterModel.plant = this.filterPlant;
       filterModel.payGroup = this.filterPayGroup;
-      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.employeeNo).join(',') : null;
+      filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.employeeNo).join(',') : null;
       filterModel.staffCat = this.filterStaffcat;
       filterModel.reporting = this.filterReportingGroup;
       filterModel.payGroup = this.filterPayGroup;
@@ -661,7 +671,7 @@ getHeader(): { headers: HttpHeaders } {
           this.ReportData = data1.table;
           this.exportList = [];
           let index = 0;
-          this.ReportData.forEach(item => {
+          this.ReportData.forEach((item :any) => {
             index = index + 1;
             let exportItem = {
               "SNo": index,
@@ -749,7 +759,7 @@ getHeader(): { headers: HttpHeaders } {
     }
   }
 
-  email: string = null;
+  email: string = ' ';
   upload(blob: Blob, filename: string) {
     swal("Sending Mail....");
     let connection: any;
@@ -772,7 +782,7 @@ getHeader(): { headers: HttpHeaders } {
       else {
         toastr.error("Error uploading file ..");
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg = 'Error uploading file ..';
     });
   }

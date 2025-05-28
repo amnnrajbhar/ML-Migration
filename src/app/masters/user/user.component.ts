@@ -15,19 +15,19 @@ import { Router } from '@angular/router';
 export class UserComponent implements OnInit {
 
     public tableWidget: any;
-    dddivisionList: any[];
-    entityList: any[];
+    dddivisionList!: any[];
+    entityList!: any[];
     selParentRole: any;
     selDepartment: any;
     selProfile: any;
-    roleList: any[];
-    departmentList: any[];
-    profileList: any[];
-    userDivisionList: any[];
-    FilteredDivList: any[];
-    divSelectedItem: any[];
-    entitySelectedItem: any[];
-    userEntityList: any[];
+    roleList!: any[];
+    departmentList!: any[];
+    profileList!: any[];
+    userDivisionList!: any[];
+    FilteredDivList!: any[];
+    divSelectedItem!: any[];
+    entitySelectedItem!: any[];
+    userEntityList!: any[];
     entitySelected=[];
     userList: User[];
     uid: number = 0;
@@ -91,7 +91,7 @@ export class UserComponent implements OnInit {
                 //this.entityList = [];//data.usr_ddentity.ddentityList;
                 this.reInitDatatable();
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.userList = [];
         });
@@ -103,10 +103,10 @@ export class UserComponent implements OnInit {
         if (data.status == 'SUCCESS') {
           this.roleList = data.roleList;
           //this.parentList = data.roleList;
-          //this.roleList.forEach(item => { item.isChecked = false; });
+          //this.roleList.forEach((item :any) => { item.isChecked = false; });
          // this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         //this.isLoading = false;
         this.roleList = [];
       });
@@ -118,10 +118,10 @@ export class UserComponent implements OnInit {
         if (data.status == 'SUCCESS') {
           this.departmentList = data.departmentList;
           //this.parentList = data.roleList;
-          //this.roleList.forEach(item => { item.isChecked = false; });
+          //this.roleList.forEach((item :any) => { item.isChecked = false; });
           //this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
        // this.isLoading = false;
         this.departmentList = [];
       });
@@ -134,10 +134,10 @@ export class UserComponent implements OnInit {
           this.profileList = data.profileList;
           // this.formMainList = data.profileList.pro_formMainList.formMaintenanceList;
           //this.parentList = data.roleList;
-          //this.roleList.forEach(item => { item.isChecked = false; });
+          //this.roleList.forEach((item :any) => { item.isChecked = false; });
          // this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         //this.isLoading = false;
         this.profileList = [];
       });
@@ -152,9 +152,9 @@ export class UserComponent implements OnInit {
         if (this.isEdit) {
             this.userItem = data;
             this.getMappedEntity();
-            this.selParentRole = this.userItem.roleId!=0?this.roleList.find(s => s.id === this.userItem.roleId):null;
-            this.selDepartment = this.userItem.departmentId!=0?(this.departmentList.find(s => s.id === this.userItem.departmentId)):null;
-            this.selProfile = this.userItem.profileId!=0?this.profileList.find(s => s.id === this.userItem.profileId):null;
+            this.selParentRole = this.userItem.roleId!=0?this.roleList.find((s:any) => s.id === this.userItem.roleId):null;
+            this.selDepartment = this.userItem.departmentId!=0?(this.departmentList.find((s:any) => s.id === this.userItem.departmentId)):null;
+            this.selProfile = this.userItem.profileId!=0?this.profileList.find((s:any) => s.id === this.userItem.profileId):null;
             this.userItem.usr_enid = null;
             this.userItem.usr_divid = null;
             
@@ -184,7 +184,7 @@ export class UserComponent implements OnInit {
                 this.dddivisionList.push({ divid: 0, div_code: "All", div_name: "All" });
                 this.dddivisionList.sort(e=>e.divid);
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.dddivisionList = [];
         });
     }
@@ -227,7 +227,7 @@ export class UserComponent implements OnInit {
             else {
               this.errMsgPop = data;
             }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving user data..';
           });
@@ -245,7 +245,7 @@ export class UserComponent implements OnInit {
         }
       else {
         this.userDivisionList = [];
-        this.entitySelected = (this.entityList.filter(e => e.enid == item.enid));
+        this.entitySelected = (this.entityList.filter((e:any) => e.enid == item.enid));
         this.userDivisionList = this.entitySelected;
       }
       this.DisableAdd();
@@ -269,7 +269,7 @@ export class UserComponent implements OnInit {
                 else {
                   this.dddivisionList = null;
                 }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.dddivisionList = [];
                 });
             
@@ -284,13 +284,13 @@ export class UserComponent implements OnInit {
     onDivChange(item: any) {
         if (item.divid == 0 && item.div_code == "0") {
            if (this.userDivisionList != null) {
-               this.FilteredDivList = (this.dddivisionList.filter(e => e.enid == item.enid && e.divid != item.divid));
+               this.FilteredDivList = (this.dddivisionList.filter((e:any) => e.enid == item.enid && e.divid != item.divid));
                this.userDivisionList = this.userDivisionList.filter(e=>e.enid!=item.enid);
                this.userDivisionList=this.userDivisionList.concat(this.FilteredDivList);
               
             }
             else {
-               this.userDivisionList = (this.dddivisionList.filter(e => e.enid == item.enid && e.divid != item.divid));
+               this.userDivisionList = (this.dddivisionList.filter((e:any) => e.enid == item.enid && e.divid != item.divid));
            }
         }
         else if (this.userDivisionList != null) {
@@ -301,7 +301,7 @@ export class UserComponent implements OnInit {
                 }
         }
             else {
-            this.userDivisionList = (this.dddivisionList.filter(e => e.enid == item.enid && e.divid == item.divid));
+            this.userDivisionList = (this.dddivisionList.filter((e:any) => e.enid == item.enid && e.divid == item.divid));
             }
         this.DisableAdd();
     }
@@ -346,11 +346,11 @@ export class UserComponent implements OnInit {
     onDeleteUserDivision(divid: number, enid: number) {
       var dividDel = divid;
       if (dividDel == null || dividDel==undefined) {
-        this.userDivisionList = this.userDivisionList.filter(e => e.enid != enid);
-        //this.entitySelected = this.entitySelected.filter(e => e.enid != enid);
+        this.userDivisionList = this.userDivisionList.filter((e:any) => e.enid != enid);
+        //this.entitySelected = this.entitySelected.filter((e:any) => e.enid != enid);
       }
       else {
-        this.userDivisionList = this.userDivisionList.filter(e => e.divid != divid);
+        this.userDivisionList = this.userDivisionList.filter((e:any) => e.divid != divid);
       }
       this.DisableAdd();
         
@@ -382,7 +382,7 @@ export class UserComponent implements OnInit {
                 
                 //this.userDivisionList.concat(data.userDivisionList);
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.userDivisionList = [];
         });
     }

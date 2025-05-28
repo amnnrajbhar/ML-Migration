@@ -13,13 +13,13 @@ import swal from 'sweetalert';
 import { DatePipe } from '@angular/common';
 declare var jQuery: any;
 declare var $: any;
-import * as moment from 'moment';
+import moment from 'moment'
 import { AuditLogChange } from '../../masters/auditlogchange.model';
 import { AuditLog } from '../../masters/auditlog.model';
 import { EmpShiftMaster } from '../EmpShiftMaster/EmpShiftMaster.model';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 
 
 export class actionItemModel {
@@ -35,21 +35,21 @@ export class actionItemModel {
 
 export class ChangeShiftComponent implements OnInit {
   public tableWidget: any;
-@ViewChild(NgForm, { static: false }) ChangeShiftForm: NgForm;
+@ViewChild(NgForm, { static: false }) ChangeShiftForm!: NgForm;
 
   isLoading: boolean = false;
   errMsg: string = "";
   path: string = '';
-  currentUser: AuthData;
+  currentUser!: AuthData;
   CalenderYear: string = '';
   CalYear: any;
   year: any;
   isEdit: boolean = false;
-  FromDateforCS: string = null;
-  ToDateforCS: string = null;
-  preShift: string = null;
-  updShift: string = null;
-  ReasonforCS: string = null;
+  FromDateforCS: string = ' ';
+  ToDateforCS: string = ' ';
+  preShift: string = ' ';
+  updShift: string = ' ';
+  ReasonforCS: string = ' ';
   errMsgPop: string = "";
   isLoadingPop: boolean = false;
   selectedEmployee: any[] = [];
@@ -57,7 +57,7 @@ export class ChangeShiftComponent implements OnInit {
   EmployeeNo: any = null;
   EmployeeList: any[] = [];
   empListCon = [];
-  filterMonth: string = null;
+  filterMonth: string = ' ';
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router, private http: HttpClient,
     private datePipe: DatePipe) { }
@@ -85,7 +85,8 @@ export class ChangeShiftComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       let today = new Date();
       this.year = today.getFullYear();
       this.CalenderYear = new Date().getFullYear().toString();
@@ -110,32 +111,33 @@ export class ChangeShiftComponent implements OnInit {
   locationList: any[] = [[]];
   ShiftList: EmpShiftMaster[] = [];
   ShiftList1: EmpShiftMaster[] = [];
-  loccode: string;
+  loccode: string
 
   GetShift() {
-    let temp = this.locationList.find(x => x.id == this.currentUser.baselocation)
-    this.ShiftList1 = this.ShiftList.filter(x => x.loc.includes(temp.code));
+    let temp = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation)
+    this.ShiftList1 = this.ShiftList.filter((x:any)  => x.loc.includes(temp.code));
   }
   getShiftMasterList() {
     this.httpService.LAget(APIURLS.BR_GET_ALL_SHIFTS).then((data: any) => {
       if (data.length > 0) {
-        this.ShiftList = data.filter(x => x.isActive == true);
+        this.ShiftList = data.filter((x:any)  => x.isActive == true);
 
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ShiftList = [];
     });
   }
 
   SubmitShiftRequest() {
-    let temp = this.ChangeShiftList.filter(x => x.newShift != null);
+    let temp = this.ChangeShiftList.filter((x:any)  => x.newShift != null);
     if (temp.length <= 0) {
       toastr.error("Please select new shift for atleast one day")
       return;
     }
     else {
-      temp.forEach(element => {
+      temp.forEach((element:any)=> {
+
         this.OnUpdateShift(element);
       });
     }
@@ -148,7 +150,7 @@ export class ChangeShiftComponent implements OnInit {
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId, name: item.fullName };
             })
@@ -158,7 +160,7 @@ export class ChangeShiftComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -169,7 +171,7 @@ export class ChangeShiftComponent implements OnInit {
                   $("#empNo").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#empNo").val(ui.item.value);
                   $("#empNo").val(ui.item.value);
@@ -226,7 +228,8 @@ export class ChangeShiftComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -271,21 +274,21 @@ getHeader(): { headers: HttpHeaders } {
     this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       //this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -318,7 +321,7 @@ getHeader(): { headers: HttpHeaders } {
   }
 
 
-  empName: string;
+  empName: string
   getEmpShiftRequests() {
     if (this.filterMonth == null) {
       toastr.error("Please select Month..!");
@@ -336,7 +339,7 @@ getHeader(): { headers: HttpHeaders } {
       else {
         srchstr.employeeId = this.selectedEmployee[0].id;
         this.getApproversList(srchstr.employeeId);
-        this.empName = this.EmployeeList.find(x => x.employeeId == this.selectedEmployee[0].id).fullName;
+        this.empName = this.EmployeeList.find((x:any)  => x.employeeId == this.selectedEmployee[0].id).fullName;
       }
     }
     else {
@@ -358,11 +361,11 @@ getHeader(): { headers: HttpHeaders } {
     this.httpService.LApost(APIURLS.GET_EMP_SHIFT_DATA, srchstr).then((data: any) => {
       if (data) {
         this.ChangeShiftList = data;
-        //this.upcomingShift = this.ChangeShiftList.filter(x => new Date(x.startDate) > new Date());
+        //this.upcomingShift = this.ChangeShiftList.filter((x:any)  => new Date(x.startDate) > new Date());
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ChangeShiftList = [];
     });
@@ -378,14 +381,14 @@ getHeader(): { headers: HttpHeaders } {
     let connection = this.httpService.LApost(APIURLS.GET_EMP_DETAILS_FOR_OT, val);
     connection.then((data: any) => {
       if (data) {
-        let result = data.filter(x => { return x.employeeId != null });
+        let result = data.filter((x:any)  => { return x.employeeId != null });
         this.EmployeeNo = result[0].employeeId;
         this.Department = result[0].department;
         this.Designation = result[0].designation;
         this.FullName = result[0].fullName;
         this.empName = this.FullName;
       }
-    }).catch(error => {
+    }).catch((error)=> {
     });
   }
 
@@ -393,8 +396,8 @@ getHeader(): { headers: HttpHeaders } {
     this.httpService.LAgetByParam(APIURLS.GET_EMP_OF_REPORTING, this.currentUser.employeeId).then((data: any) => {
       if (data.length > 0) {
         this.EmployeeList = data;
-        this.empListCon = data.map((i) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
-        this.EmployeeList.sort((a, b) => {
+        this.empListCon = data.map((i:any) => { i.name = i.fullName + '-' + i.employeeId, i.id = i.employeeId, i.empName = i.fullName; return i; });
+        this.EmployeeList.sort((a:any, b:any) => {
           if (a.fullName > b.fullName) return 1;
           if (a.fullName < b.fullName) return -1;
           return 0;
@@ -404,7 +407,7 @@ getHeader(): { headers: HttpHeaders } {
       else {
         this.EmployeeList = [];
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList = [];
     });
@@ -416,7 +419,7 @@ getHeader(): { headers: HttpHeaders } {
   upcomingShift: any[] = [];
 
   ApproversList: any[] = [];
-  getApproversList(id) {
+  getApproversList(id:any) {
     this.errMsg = "";
     this.httpService.LAgetByParam(APIURLS.GET_APPROVERS_FOR_EMPLOYEE, id).then((data: any) => {
       if (data) {
@@ -428,7 +431,7 @@ getHeader(): { headers: HttpHeaders } {
         }
         //this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ApproversList = [];
     });
@@ -476,7 +479,7 @@ getHeader(): { headers: HttpHeaders } {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ChangeRequestsList = [];
     });
@@ -522,7 +525,7 @@ getHeader(): { headers: HttpHeaders } {
         });
         this.ClearData();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving Request..';
     });
@@ -541,77 +544,78 @@ getHeader(): { headers: HttpHeaders } {
       buttons: [true, true]
     }).then((willsave) => {
       if (willsave) {
-        this.onUserActions1();
+       // this.onUserActions1();
       }
     });
   }
 
-  exportList: any[];
-  onUserActions1() {
-    const title = ' Employee Shift Report';
-    const header = ["SNo", "Employee Id", "Employee Name", "Department", "Date", "Day", "Status", "Shift Code",
-      "Shift Name", "Shift StartTime", "Shift EndTime"]
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.ChangeShiftList.forEach(item => {
-      index = index + 1;
-      ts = {};
-      ts.slno = index;
-      ts.employeeId = item.employeeId;
-      ts.empName = item.empName;
-      ts.department = item.department;
-      ts.joiningDate = this.setFormatedDate(item.joiningDate);
-      ts.day = item.day;
-      ts.status = item.status;
-      ts.shiftCode = item.shiftCode;
-      ts.shiftname = item.shiftname;
-      ts.shiftstarttime = item.shiftstarttime;
-      ts.shiftendtime = item.shiftendtime;
-      exportList.push(ts);
-    });
-    var OrganisationName = "MICRO LABS LIMITED";
-    const data = exportList;
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Employee_Shift_Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:K1');
-    worksheet.mergeCells('A2:K2');
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  exportList!: any[];
+   //v10
+  // onUserActions1() {
+  //   const title = ' Employee Shift Report';
+  //   const header = ["SNo", "Employee Id", "Employee Name", "Department", "Date", "Day", "Status", "Shift Code",
+  //     "Shift Name", "Shift StartTime", "Shift EndTime"]
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.ChangeShiftList.forEach((item :any) => {
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slno = index;
+  //     ts.employeeId = item.employeeId;
+  //     ts.empName = item.empName;
+  //     ts.department = item.department;
+  //     ts.joiningDate = this.setFormatedDate(item.joiningDate);
+  //     ts.day = item.day;
+  //     ts.status = item.status;
+  //     ts.shiftCode = item.shiftCode;
+  //     ts.shiftname = item.shiftname;
+  //     ts.shiftstarttime = item.shiftstarttime;
+  //     ts.shiftendtime = item.shiftendtime;
+  //     exportList.push(ts);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED";
+  //   const data = exportList;
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Employee_Shift_Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:K1');
+  //   worksheet.mergeCells('A2:K2');
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'Shift_Report.xlsx');
-    });
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'Shift_Report.xlsx');
+  //   });
+  // }
 
 }

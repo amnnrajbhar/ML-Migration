@@ -6,10 +6,10 @@ import { HttpService } from "../../shared/http-service";
 import { AuthData } from "../../auth/auth.model";
 import swal from 'sweetalert';
 declare var jQuery: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe, Time } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from "@angular/common/http";
 import { toBase64String } from "@angular/compiler/src/output/source_map";
 declare var toastr: any;
@@ -25,34 +25,36 @@ export class MonthEndDCApprovalComponent implements OnInit {
 
   public tableWidget: any;
   public tableWidget1: any;
-  isLoading: boolean;
-  isLoadingPop: boolean;
-  plant: string;
-  path: string;
-  currentUser: AuthData;
+  isLoading!: boolean;
+  isLoadingPop!: boolean;
+  plant!: string
+  path!: string
+  currentUser!: AuthData;
   filteredModel: any[] = [];
   errMsg: string = "";
   DCList: any[] = [];
   isMasterSel: boolean = false;
-  CancelType: string;
+  CancelType!: string
   PickedfilteredModel: any[] = [];
-  LineQty: number;
-  RemQty: number;
-  TotalQty: number;
-  TotalFull: number;
-  TotalLoose: number;
+  LineQty!: number;
+  RemQty!: number;
+  TotalQty!: number;
+  TotalFull!: number;
+  TotalLoose!: number;
   locationList: any[] = [];
-  locationname: string;
-  image: string;
-  DCNo: string;
-  gtime: string;
-  slno: number;
+  locationname!: string
+  image!: string
+  DCNo: string
+  gtime!: string
+  slno!: number;
   today = new Date();
-  ApprovalStatus: string;
+  ApprovalStatus: string
   approvedModel: any;
   
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#datatable1');
@@ -117,7 +119,8 @@ export class MonthEndDCApprovalComponent implements OnInit {
 
   ngOnInit(): void {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getLocationMaster();
     this.getbase64image();
   }
@@ -138,13 +141,13 @@ export class MonthEndDCApprovalComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         // this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
-        this.plant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-        this.locationname = this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+        this.locationList = data.filter((x:any)  => x.isActive);
+        this.plant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+        this.locationname = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
 
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });

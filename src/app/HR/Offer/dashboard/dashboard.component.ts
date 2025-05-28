@@ -22,7 +22,7 @@ export class DashboardComponent implements OnInit {
   constructor(private masterService: MasterDataService, private httpService: HttpService,
     private router: Router, private excelService: ExcelService, private dataStore: DataStorageService) { }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   plantList: any[] = [];
   payGroupList: any[] = [];
   employeeCategoryList: any[] = [];
@@ -37,7 +37,8 @@ export class DashboardComponent implements OnInit {
   firstDay : Date;
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.filterModel.pageNo = 1;
     this.filterModel.employeeId = this.currentUser.uid;
@@ -71,8 +72,8 @@ export class DashboardComponent implements OnInit {
     this.filterModel.LocationId = "";
     if(this.filterModel.StateId > 0)
     {
-    var selectedState = this.stateList.find(x => x.id == this.filterModel.StateId);
-      this.locationList = this.locationFullList.filter(x=>x.stateId == selectedState.bland);
+    var selectedState = this.stateList.find((x:any)  => x.id == this.filterModel.StateId);
+      this.locationList = this.locationFullList.filter((x:any)=>x.stateId == selectedState.bland);
       }
     else 
       this.locationList = [];    
@@ -110,7 +111,7 @@ export class DashboardComponent implements OnInit {
     this.httpService.HRpost(APIURLS.OFFER_GET_OFFERS_DASHBOARD_RESULT_BY_FILTER, this.filterModel).then((data: any) => {
       this.filterData = data;       
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   } 

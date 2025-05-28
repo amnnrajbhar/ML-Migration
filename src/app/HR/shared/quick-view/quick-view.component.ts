@@ -13,8 +13,8 @@ import { AuthData } from '../../../auth/auth.model';
   styleUrls: ['./quick-view.component.css']
 })
 export class QuickViewComponent implements OnInit {
-  @Input() employeeId: number;
-  currentUser: AuthData;
+  @Input() employeeId!: number;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   isLoading: boolean = false;
@@ -38,12 +38,13 @@ export class QuickViewComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.GetEmployeeDetails(this.employeeId);
     }
   }
 
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     if(id > 0){
       this.isLoading = true;
       this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -51,10 +52,10 @@ export class QuickViewComponent implements OnInit {
           this.employeeDetails = data;
           this.employeeDetails.dateOfJoining = this.getDateFormate(this.employeeDetails.dateOfJoining);
           this.employeeDetails.fullName = this.employeeDetails.firstName + ' ' + this.employeeDetails.middleName + ' ' + this.employeeDetails.lastName;
-          this.employeeDetails.statusColor = this.statusList.find(x => x.type == data.status).color;
+          this.employeeDetails.statusColor = this.statusList.find((x:any)  => x.type == data.status).color;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
 
       });

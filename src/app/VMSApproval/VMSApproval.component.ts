@@ -15,12 +15,12 @@ import { HttpService } from '../shared/http-service';
 import { Visitor } from '../visitorappointment/visitor.model';
 import { IfStmt } from '@angular/compiler';
 //import { forEach } from '@angular/router/src/utils/collection';
-import * as moment from 'moment';
+import moment from 'moment'
 import { AdditionalVisitor } from './additionvisitor.model';
 import { User } from '../masters/user/user.model';
 import { Subject } from 'rxjs';
 // import { FileSaver }  from 'angular-file-saver';
-// import { saveAs } from 'file-saver';
+// //import { saveAs } from 'file-saver';
 declare var $: any;
 declare var jQuery: any;
 
@@ -37,17 +37,17 @@ interface Belongings {
   encapsulation: ViewEncapsulation.None
 })
 export class VMSApprovalComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
- @ViewChild(NgForm, { static: false }) calendarForm: NgForm;
+ @ViewChild(NgForm, { static: false }) calendarForm!: NgForm;
 
   // myForm = new FormGroup({}) // Instantiating our form
 
-  belongings: Belongings[];
+  belongings!: Belongings[];
 
 
-  visitorTypeList: any[];
+  visitorTypeList!: any[];
   purposeList: any[] = [];
   // searchTerm = new FormControl();
   numberOfPersonsEnt = new FormControl('', [Validators.required, Validators.pattern('[0-9]+'), Validators.min(1)]);
@@ -72,9 +72,9 @@ export class VMSApprovalComponent implements OnInit {
   to_date: any;
   public tableWidget: any;
   addressId: number = 0;
-  competencyList: any[];
-  entityList: any[];
-  designationList: any[];
+  competencyList!: any[];
+  entityList!: any[];
+  designationList!: any[];
   selParentRole: any = [];
 
   uid: number = 0;
@@ -100,7 +100,7 @@ export class VMSApprovalComponent implements OnInit {
   isEdit: boolean = false;
   employeeId: string = "";
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   todayDate: Date = new Date();
   visitorName: string = '';
@@ -109,12 +109,12 @@ export class VMSApprovalComponent implements OnInit {
   private nextWebcam: Subject<boolean | string> = new Subject<boolean | string>();
   showWebcam: boolean = false;
   multipleWebcamsAvailable: boolean = false;
-  seconds: number;
+  seconds!: number;
   finYear = (new Date()).getFullYear();
   value = "hello";
   selectedFiles: any = [];
   fileName: any;
-  imageFile: string;
+  imageFile!: string
   empMList: any = [[]];
   visitorsList: any = [];
   typeOfVisitor: string = 'newvisit';
@@ -127,28 +127,28 @@ export class VMSApprovalComponent implements OnInit {
   selectedBelongings: Belongings[] = [];
   d: Date = new Date();
   outTime = new Date;
-  scannedCode: string;
+  scannedCode!: string
   selectedVisitorType: any;
   selectedPurpose: any;
   othersFlag: boolean = false;
-  dropdownSettings: {};
+  dropdownSettings!: {};
   popupWin: any;
   printContents: any;
   cal_id: any;
   additionalPersons: any[] = [];
   personIds: any = [];
   additionalVisitors: any[] = [[]];
-  personToMeetType: number;
+  personToMeetType!: number;
   recCount: any;
-  loggedUser: number;
+  loggedUser!: number;
   locationId: any = 0;
   LocationMasterList: any[] = [[]];
-  imageBlob: Blob;
+  imageBlob!: Blob;
   visitorId: any;
   visitorId1: any;
-  base64: string;
+  base64!: string
   vid: any;
-  imageFileContent: File;
+  imageFileContent!: File;
   imageFlag: boolean = false;
   empMListCon: any = [];
   empMListCon1: any = [];
@@ -157,10 +157,10 @@ export class VMSApprovalComponent implements OnInit {
   totaltodayvisits = 0;
   pendingbook = 0;
   pendingCheckouts = 0;
-  currentUser: AuthData;
+  currentUser!: AuthData;
 
   length: number = 0;
-  emailMsg1: string;
+  emailMsg1!: string
   // countryCodes:{'name':string,'code':string,'locode':string}[]=
   // [{'name':"Afghanistan", 'code':"93", 'locode':"AF / AFG" }, ["Albania", "355", "AL / ALB"], ["Algeria", "213", "DZ / DZA"], ["American Samoa", "1-684", "AS / ASM"], ["Andorra", "376", "AD / AND"], ["Angola", "244", "AO / AGO"], ["Anguilla", "1-264", "AI / AIA"], ["Antarctica", "672", "AQ / ATA"], ["Antigua and Barbuda", "1-268", "AG / ATG"], ["Argentina", "54", "AR / ARG"], ["Armenia", "374", "AM / ARM"], ["Aruba", "297", "AW / ABW"], ["Australia", "61", "AU / AUS"], ["Austria", "43", "AT / AUT"], ["Azerbaijan", "994", "AZ / AZE"], ["Bahamas", "1-242", "BS / BHS"], ["Bahrain", "973", "BH / BHR"], ["Bangladesh", "880", "BD / BGD"], ["Barbados", "1-246", "BB / BRB"], ["Belarus", "375", "BY / BLR"], ["Belgium", "32", "BE / BEL"], ["Belize", "501", "BZ / BLZ"], ["Benin", "229", "BJ / BEN"], ["Bermuda", "1-441", "BM / BMU"], ["Bhutan", "975", "BT / BTN"], ["Bolivia", "591", "BO / BOL"], ["Bosnia and Herzegovina", "387", "BA / BIH"], ["Botswana", "267", "BW / BWA"], ["Brazil", "55", "BR / BRA"], ["British Indian Ocean Territory", "246", "IO / IOT"], ["British Virgin Islands", "1-284", "VG / VGB"], ["Brunei", "673", "BN / BRN"], ["Bulgaria", "359", "BG / BGR"], ["Burkina Faso", "226", "BF / BFA"], ["Burundi", "257", "BI / BDI"], ["Cambodia", "855", "KH / KHM"], ["Cameroon", "237", "CM / CMR"], ["Canada", "1", "CA / CAN"], ["Cape Verde", "238", "CV / CPV"], ["Cayman Islands", "1-345", "KY / CYM"], ["Central African Republic", "236", "CF / CAF"], ["Chad", "235", "TD / TCD"], ["Chile", "56", "CL / CHL"], ["China", "86", "CN / CHN"], ["Christmas Island", "61", "CX / CXR"], ["Cocos Islands", "61", "CC / CCK"], ["Colombia", "57", "CO / COL"], ["Comoros", "269", "KM / COM"], ["Cook Islands", "682", "CK / COK"], ["Costa Rica", "506", "CR / CRI"], ["Croatia", "385", "HR / HRV"], ["Cuba", "53", "CU / CUB"], ["Curacao", "599", "CW / CUW"], ["Cyprus", "357", "CY / CYP"], ["Czech Republic", "420", "CZ / CZE"], ["Democratic Republic of the Congo", "243", "CD / COD"], ["Denmark", "45", "DK / DNK"], ["Djibouti", "253", "DJ / DJI"], ["Dominica", "1-767", "DM / DMA"], ["Dominican Republic", "1-809", " 1-829", " 1-849", "DO / DOM"], ["East Timor", "670", "TL / TLS"], ["Ecuador", "593", "EC / ECU"], ["Egypt", "20", "EG / EGY"], ["El Salvador", "503", "SV / SLV"], ["Equatorial Guinea", "240", "GQ / GNQ"], ["Eritrea", "291", "ER / ERI"], ["Estonia", "372", "EE / EST"], ["Ethiopia", "251", "ET / ETH"], ["Falkland Islands", "500", "FK / FLK"], ["Faroe Islands", "298", "FO / FRO"], ["Fiji", "679", "FJ / FJI"], ["Finland", "358", "FI / FIN"], ["France", "33", "FR / FRA"], ["French Polynesia", "689", "PF / PYF"], ["Gabon", "241", "GA / GAB"], ["Gambia", "220", "GM / GMB"], ["Georgia", "995", "GE / GEO"], ["Germany", "49", "DE / DEU"], ["Ghana", "233", "GH / GHA"], ["Gibraltar", "350", "GI / GIB"], ["Greece", "30", "GR / GRC"], ["Greenland", "299", "GL / GRL"], ["Grenada", "1-473", "GD / GRD"], ["Guam", "1-671", "GU / GUM"], ["Guatemala", "502", "GT / GTM"], ["Guernsey", "44-1481", "GG / GGY"], ["Guinea", "224", "GN / GIN"], ["Guinea-Bissau", "245", "GW / GNB"], ["Guyana", "592", "GY / GUY"], ["Haiti", "509", "HT / HTI"], ["Honduras", "504", "HN / HND"], ["Hong Kong", "852", "HK / HKG"], ["Hungary", "36", "HU / HUN"], ["Iceland", "354", "IS / ISL"], ["India", "91", "IN / IND"], ["Indonesia", "62", "ID / IDN"], ["Iran", "98", "IR / IRN"], ["Iraq", "964", "IQ / IRQ"], ["Ireland", "353", "IE / IRL"], ["Isle of Man", "44-1624", "IM / IMN"], ["Israel", "972", "IL / ISR"], ["Italy", "39", "IT / ITA"], ["Ivory Coast", "225", "CI / CIV"], ["Jamaica", "1-876", "JM / JAM"], ["Japan", "81", "JP / JPN"], ["Jersey", "44-1534", "JE / JEY"], ["Jordan", "962", "JO / JOR"], ["Kazakhstan", "7", "KZ / KAZ"], ["Kenya", "254", "KE / KEN"], ["Kiribati", "686", "KI / KIR"], ["Kosovo", "383", "XK / XKX"], ["Kuwait", "965", "KW / KWT"], ["Kyrgyzstan", "996", "KG / KGZ"], ["Laos", "856", "LA / LAO"], ["Latvia", "371", "LV / LVA"], ["Lebanon", "961", "LB / LBN"], ["Lesotho", "266", "LS / LSO"], ["Liberia", "231", "LR / LBR"], ["Libya", "218", "LY / LBY"], ["Liechtenstein", "423", "LI / LIE"], ["Lithuania", "370", "LT / LTU"], ["Luxembourg", "352", "LU / LUX"], ["Macau", "853", "MO / MAC"], ["Macedonia", "389", "MK / MKD"], ["Madagascar", "261", "MG / MDG"], ["Malawi", "265", "MW / MWI"], ["Malaysia", "60", "MY / MYS"], ["Maldives", "960", "MV / MDV"], ["Mali", "223", "ML / MLI"], ["Malta", "356", "MT / MLT"], ["Marshall Islands", "692", "MH / MHL"], ["Mauritania", "222", "MR / MRT"], ["Mauritius", "230", "MU / MUS"], ["Mayotte", "262", "YT / MYT"], ["Mexico", "52", "MX / MEX"], ["Micronesia", "691", "FM / FSM"], ["Moldova", "373", "MD / MDA"], ["Monaco", "377", "MC / MCO"], ["Mongolia", "976", "MN / MNG"], ["Montenegro", "382", "ME / MNE"], ["Montserrat", "1-664", "MS / MSR"], ["Morocco", "212", "MA / MAR"], ["Mozambique", "258", "MZ / MOZ"], ["Myanmar", "95", "MM / MMR"], ["Namibia", "264", "NA / NAM"], ["Nauru", "674", "NR / NRU"], ["Nepal", "977", "NP / NPL"], ["Netherlands", "31", "NL / NLD"], ["Netherlands Antilles", "599", "AN / ANT"], ["New Caledonia", "687", "NC / NCL"], ["New Zealand", "64", "NZ / NZL"], ["Nicaragua", "505", "NI / NIC"], ["Niger", "227", "NE / NER"], ["Nigeria", "234", "NG / NGA"], ["Niue", "683", "NU / NIU"], ["North Korea", "850", "KP / PRK"], ["Northern Mariana Islands", "1-670", "MP / MNP"], ["Norway", "47", "NO / NOR"], ["Oman", "968", "OM / OMN"], ["Pakistan", "92", "PK / PAK"], ["Palau", "680", "PW / PLW"], ["Palestine", "970", "PS / PSE"], ["Panama", "507", "PA / PAN"], ["Papua New Guinea", "675", "PG / PNG"], ["Paraguay", "595", "PY / PRY"], ["Peru", "51", "PE / PER"], ["Philippines", "63", "PH / PHL"], ["Pitcairn", "64", "PN / PCN"], ["Poland", "48", "PL / POL"], ["Portugal", "351", "PT / PRT"], ["Puerto Rico", "1-787", " 1-939", "PR / PRI"], ["Qatar", "974", "QA / QAT"], ["Republic of the Congo", "242", "CG / COG"], ["Reunion", "262", "RE / REU"], ["Romania", "40", "RO / ROU"], ["Russia", "7", "RU / RUS"], ["Rwanda", "250", "RW / RWA"], ["Saint Barthelemy", "590", "BL / BLM"], ["Saint Helena", "290", "SH / SHN"], ["Saint Kitts and Nevis", "1-869", "KN / KNA"], ["Saint Lucia", "1-758", "LC / LCA"], ["Saint Martin", "590", "MF / MAF"], ["Saint Pierre and Miquelon", "508", "PM / SPM"], ["Saint Vincent and the Grenadines", "1-784", "VC / VCT"], ["Samoa", "685", "WS / WSM"], ["San Marino", "378", "SM / SMR"], ["Sao Tome and Principe", "239", "ST / STP"], ["Saudi Arabia", "966", "SA / SAU"], ["Senegal", "221", "SN / SEN"], ["Serbia", "381", "RS / SRB"], ["Seychelles", "248", "SC / SYC"], ["Sierra Leone", "232", "SL / SLE"], ["Singapore", "65", "SG / SGP"], ["Sint Maarten", "1-721", "SX / SXM"], ["Slovakia", "421", "SK / SVK"], ["Slovenia", "386", "SI / SVN"], ["Solomon Islands", "677", "SB / SLB"], ["Somalia", "252", "SO / SOM"], ["South Africa", "27", "ZA / ZAF"], ["South Korea", "82", "KR / KOR"], ["South Sudan", "211", "SS / SSD"], ["Spain", "34", "ES / ESP"], ["Sri Lanka", "94", "LK / LKA"], ["Sudan", "249", "SD / SDN"], ["Suriname", "597", "SR / SUR"], ["Svalbard and Jan Mayen", "47", "SJ / SJM"], ["Swaziland", "268", "SZ / SWZ"], ["Sweden", "46", "SE / SWE"], ["Switzerland", "41", "CH / CHE"], ["Syria", "963", "SY / SYR"], ["Taiwan", "886", "TW / TWN"], ["Tajikistan", "992", "TJ / TJK"], ["Tanzania", "255", "TZ / TZA"], ["Thailand", "66", "TH / THA"], ["Togo", "228", "TG / TGO"], ["Tokelau", "690", "TK / TKL"], ["Tonga", "676", "TO / TON"], ["Trinidad and Tobago", "1-868", "TT / TTO"], ["Tunisia", "216", "TN / TUN"], ["Turkey", "90", "TR / TUR"], ["Turkmenistan", "993", "TM / TKM"], ["Turks and Caicos Islands", "1-649", "TC / TCA"], ["Tuvalu", "688", "TV / TUV"], ["U.S. Virgin Islands", "1-340", "VI / VIR"], ["Uganda", "256", "UG / UGA"], ["Ukraine", "380", "UA / UKR"], ["United Arab Emirates", "971", "AE / ARE"], ["United Kingdom", "44", "GB / GBR"], ["United States", "1", "US / USA"], ["Uruguay", "598", "UY / URY"], ["Uzbekistan", "998", "UZ / UZB"], ["Vanuatu", "678", "VU / VUT"], ["Vatican", "379", "VA / VAT"], ["Venezuela", "58", "VE / VEN"], ["Vietnam", "84", "VN / VNM"], ["Wallis and Futuna", "681", "WF / WLF"], ["Western Sahara", "212", "EH / ESH"], ["Yemen", "967", "YE / YEM"], ["Zambia", "260", "ZM / ZMB"], ["Zimbabwe", "263", "ZW / ZWE"] ];
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
@@ -198,13 +198,13 @@ export class VMSApprovalComponent implements OnInit {
   getVisitorTypeList() {
     this.httpService.get(APIURLS.BR_MASTER_VISITOR_TYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.visitorTypeList = data.filter(x => x.isActive).sort((a, b) => {
+        this.visitorTypeList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.visitor_Type > b.visitor_Type) return 1;
           if (a.visitor_Type < b.visitor_Type) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.visitorTypeList = [];
     });
@@ -213,32 +213,32 @@ export class VMSApprovalComponent implements OnInit {
   getPurposeList() {
     this.httpService.get(APIURLS.BR_MASTER_VISITOR_PURPOSE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.purposeList = data.filter(x => x.isActive).sort((a, b) => {
+        this.purposeList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.purpose > b.purpose) return 1;
           if (a.purpose < b.purpose) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.purposeList = [];
     });
   }
 
-  getPurpose(id) {
-    let temp = this.purposeList.find(s => s.id == id);
+  getPurpose(id:any) {
+    let temp = this.purposeList.find((s:any) => s.id == id);
     return temp ? temp.purpose : '';
   }
   getBelongingsList() {
     this.httpService.get(APIURLS.BR_MASTER_VISITOR_BELONGINGS_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.belongings = data.filter(x => x.checked).sort((a, b) => {
+        this.belongings = data.filter((x:any)  => x.checked).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.belongings = [];
       this.isLoading = false;
     });
@@ -258,7 +258,8 @@ export class VMSApprovalComponent implements OnInit {
     let Url = this.router.url;
     this.path = '/' + Url.split('/')[1];
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
-    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+    //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
       this.currentUser = authData;
       this.loggedUser = authData.uid;
       this.route.paramMap.subscribe((params: ParamMap) => {
@@ -297,7 +298,7 @@ export class VMSApprovalComponent implements OnInit {
       
       this.getVisitorsList();
   }
-  addDays(date, daysToAdd) {
+  addDays(date:any, daysToAdd:any) {
     var _24HoursInMilliseconds = 86400000;
     return new Date(date.getTime() + daysToAdd * _24HoursInMilliseconds);
   };
@@ -310,8 +311,8 @@ export class VMSApprovalComponent implements OnInit {
     var threemonthAgo = this.addDays(now, - 30 * 1);
     let td = new Date();
     let StartMnDate, EndMnDate;
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     StartMnDate = this.getFormatedDate(threemonthAgo);
     let formatedtodaydate: string = this.getFormatedDate(td);
     formatedTOdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" +
@@ -331,17 +332,17 @@ export class VMSApprovalComponent implements OnInit {
             }
           }
         }
-        this.totaltodayvisits = this.todaysvisitorsList.filter(e => e.fromTime != null).length;
-        this.pendingbook = this.todaysvisitorsList.filter(e => e.isPreShedualled == true && e.isCancelled == false).length;
-        this.pendingCheckouts = visitors.filter(e => e.fromTime != null && e.toTime == null && e.isActive == true).length;
-        this.todayCheckouts = this.todaysvisitorsList.filter(e => e.toTime != null).length;
+        this.totaltodayvisits = this.todaysvisitorsList.filter((e:any) => e.fromTime != null).length;
+        this.pendingbook = this.todaysvisitorsList.filter((e:any) => e.isPreShedualled == true && e.isCancelled == false).length;
+        this.pendingCheckouts = visitors.filter((e:any) => e.fromTime != null && e.toTime == null && e.isActive == true).length;
+        this.todayCheckouts = this.todaysvisitorsList.filter((e:any) => e.toTime != null).length;
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
-  bookAppointment(ch) {
+  bookAppointment(ch:any) {
     this.isLoading = true;
     this.typeOfVisitor = ch;
     let td = new Date();
@@ -369,18 +370,18 @@ export class VMSApprovalComponent implements OnInit {
       if (data.length > 0) {
         this.LocationMasterList = data;
         // console.log(this.LocationMasterList);
-        let code = this.LocationMasterList.find(x => x.id == this.currentUser.baselocation).code;
+        let code = this.LocationMasterList.find((x:any)  => x.id == this.currentUser.baselocation).code;
         this.getApproversDetails(code);
       }
       //this.reInitDatatable(); Commented By shyam bOra
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.LocationMasterList = [];
     });
   }
 
-  getLocation(id) {
-    let lo = this.LocationMasterList.find(s => s.id == id);
+  getLocation(id:any) {
+    let lo = this.LocationMasterList.find((s:any) => s.id == id);
     return lo ? lo.code + '-' + lo.name : '';
   }
 
@@ -390,7 +391,7 @@ export class VMSApprovalComponent implements OnInit {
       if (data.length > 0) {
         this.additionalVisitors = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.additionalVisitors = [];
     });
@@ -404,7 +405,7 @@ export class VMSApprovalComponent implements OnInit {
         this.designationList = data;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.designationList = [];
     });
@@ -442,13 +443,13 @@ export class VMSApprovalComponent implements OnInit {
     return true;
   }
 
-  getApproversDetails(code) {
+  getApproversDetails(code:any) {
     this.httpService.getByParam(APIURLS.BR_GET_VMS_APPROVERS, code + ", ," + this.currentUser.employeeId).then((data: any) => {
       // this.isLoading = false;
       if (data.length > 0) {
         this.Approverslist = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.Approverslist = [];
     });
@@ -458,28 +459,28 @@ export class VMSApprovalComponent implements OnInit {
     // console.log(id);
     if (this.person.length == 0)
       this.showTable = false;
-    if (id != 0 && this.personIds.find(s => s == id)) this.deletedPersonIds.push(id);
+    if (id != 0 && this.personIds.find((s:any) => s == id)) this.deletedPersonIds.push(id);
     this.person.splice(position, 1);
     this.recCount--;
     // console.log(this.person.length);
     // this.getTotalWeightageNextYr();
   }
 
-  getFormatedDate(d) {
+  getFormatedDate(d:any) {
     let fd = new Date(d);
     let formateddate = fd.getFullYear() + "-" + ("00" + (fd.getMonth() + 1)).slice(-2) + "-" +
       ("00" + fd.getDate()).slice(-2);
     // return new Date(fd.getFullYear(),fd.getMonth(),fd.getDate());
     return formateddate;
   }
-  getNewFormatedDate(d) {
+  getNewFormatedDate(d:any) {
     let fd = new Date(d);
     let formateddate = ("00" + (fd.getMonth() + 1)).slice(-2) + "/" +
       ("00" + fd.getDate()).slice(-2) + "/" + fd.getFullYear();
     // return new Date(fd.getFullYear(),fd.getMonth(),fd.getDate());
     return formateddate;
   }
-  getTimeFormat(time) {
+  getTimeFormat(time:any) {
     return moment('1970-01-01 ' + time);
   }
 
@@ -514,7 +515,7 @@ export class VMSApprovalComponent implements OnInit {
       + ',' + ',' + ",";
     this.httpService.post(APIURLS.GET_VISITOR_FOR_APPROVAL, model).then((data: any) => {
       if (data) {
-        this.visitorsList1 = data.filter(x => x.temp13 == 'Pending For Approval.');
+        this.visitorsList1 = data.filter((x:any)  => x.temp13 == 'Pending For Approval.');
         this.visitorsList = [];
 
         this.visitorsList = this.visitorsList1;
@@ -523,7 +524,7 @@ export class VMSApprovalComponent implements OnInit {
         this.isVisitorListLoading = false;
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.visitorsList = [];
       this.visitorsList1 = [];
@@ -536,7 +537,7 @@ export class VMSApprovalComponent implements OnInit {
     return obj == null;
   }
 
-  keyPressNumber(evt) {
+  keyPressNumber(evt:any) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     if (charCode > 32 && (charCode < 48 || charCode > 57)) {
@@ -570,15 +571,16 @@ export class VMSApprovalComponent implements OnInit {
     this.httpService.getById(APIURLS.BR_EMPLOYEEMASTER_GETBY_ANY_API, this.currentUser.baselocation).then((data: any) => {
       // this.isLoading = false;
       if (data.length > 0) {
-        this.empMList = data.filter(x => x.isActive);
+        this.empMList = data.filter((x:any)  => x.isActive);
         // console.log(this.empMList);
         this.employeeList = data;
         // console.log(this.employeeList);
-        this.locationId = this.empMList.find(s => s.employeeId == this.currentUser.employeeId).baseLocation;
+        this.locationId = this.empMList.find((s:any) => s.employeeId == this.currentUser.employeeId).baseLocation;
         // console.log(this.locationId);
         // var empMList = [[]];
-        //this.empMList = this.empMList.filter(s => s.isActive && s.baseLocation == this.locationId);
-        this.empMList.forEach(element => {
+        //this.empMList = this.empMList.filter((s:any) => s.isActive && s.baseLocation == this.locationId);
+        this.empMList.forEach((element:any)=> {
+
           var t = { 'id': 0, 'name': '' };
           t.id = element.id;
           let middleName = this.isEmpty(element.middleName.trim()) ? ' ' : ' ' + element.middleName + ' ';
@@ -596,7 +598,7 @@ export class VMSApprovalComponent implements OnInit {
       }
       this.getVisitorsList();
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empMList = [];
     });
@@ -606,7 +608,7 @@ export class VMSApprovalComponent implements OnInit {
     this.autocompleteTrigger._onChange('');
     this.autocompleteTrigger.openPanel();
   }
-  printSetup(user) {
+  printSetup(user:any) {
     // debugger;
     this.printItem = user;
     jQuery("#aModal").modal('hide');
@@ -675,19 +677,19 @@ export class VMSApprovalComponent implements OnInit {
   }
 
 
-  getDesignation(id) {
+  getDesignation(id:any) {
     // console.log(id);
-    return this.designationList.find(s => s.id === id).name;
+    return this.designationList.find((s:any) => s.id === id).name;
   }
 
   getStatus(mobile) {
-    return this.visitorsList.some(s => s.mobile == mobile && s.isActive == true);
+    return this.visitorsList.some((s:any) => s.mobile == mobile && s.isActive == true);
   }
 
 
   endDateTime = new Date();
 
-  checkOut(user) {
+  checkOut(user:any) {
     // debugger;
     this.calendarForm.form.markAsPristine();
     this.calendarForm.form.markAsUntouched();
@@ -705,7 +707,7 @@ export class VMSApprovalComponent implements OnInit {
     this.isLoadingPop = false;
     jQuery("#checkoutModal").modal('show');
   }
-  barCode: string;
+  barCode!: string
   modalCheckout() {
     this.calendarForm.form.markAsPristine();
     this.calendarForm.form.markAsUntouched();
@@ -714,7 +716,7 @@ export class VMSApprovalComponent implements OnInit {
     let searchStr = this.locationId + ',,,,,,,,,';
     this.httpService.getByParam(APIURLS.BR_MASTER_VISITOR_BYPARAM_API, searchStr).then((data: any) => {
       if (data) {
-        let item = data.map((i) => { i.barcode = i.id + '' + i.mobile; return i; }).filter(s => s.fromTime != null && s.toTime == null && s.isActive == true && s.barcode == this.barCode);
+        let item = data.map((i:any) => { i.barcode = i.id + '' + i.mobile; return i; }).filter((s:any) => s.fromTime != null && s.toTime == null && s.isActive == true && s.barcode == this.barCode);
         if (item.length > 0) {
           this.calendarItem = item[0];
           this.scannedCode = this.barCode;
@@ -740,7 +742,7 @@ export class VMSApprovalComponent implements OnInit {
         }
       }
       this.isLoadingPop = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -806,7 +808,7 @@ export class VMSApprovalComponent implements OnInit {
             this.barCode = '';
             // this.router.navigateByUrl('welcome-page');
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.isLoading = false;
           this.errMsgPop = 'Error saving Appointment data..';
@@ -842,14 +844,14 @@ export class VMSApprovalComponent implements OnInit {
       });
     }
   }
-  checkValue(event) {
+  checkValue(event:any) {
     // console.log('value'+event.target.value);
     if (event.target.value <= 0)
       return false;
     else
       return true;
   }
-  typeChange(val) {
+  typeChange(val:any) {
     if (val == "2") {
       this.selParentRole = null;
     }
@@ -904,11 +906,11 @@ export class VMSApprovalComponent implements OnInit {
         ("00" + (this.d.getMinutes())).slice(-2) + ":" +
         ("00" + this.d.getSeconds()).slice(-2);
 
-      this.calendarItem.temp2 = this.selectedBelongings.map(x => x.name).join();
+      this.calendarItem.temp2 = this.selectedBelongings.map((x:any)  => x.name).join();
       this.calendarItem.fkVisitorType = this.selectedVisitorType.id;
       this.calendarItem.fkVisitorPurpose = this.selectedPurpose.id;
       if (this.personToMeetType == 1) {
-        let tem = this.empMList.find(s => s.id == this.selParentRole);
+        let tem = this.empMList.find((s:any) => s.id == this.selParentRole);
         this.calendarItem.fkEmployeeId = tem.employeeId;
         this.calendarItem.temp8 = tem.baseLocation;
 
@@ -943,11 +945,11 @@ export class VMSApprovalComponent implements OnInit {
       this.calendarItem.numberOfPerson = this.calendarItem.numberOfPerson <= 0 ? 1 : this.calendarItem.numberOfPerson;
       var checkAlready = false, otherCheckAlready = true;
       // if (this.personToMeetType == 1)
-      //   checkAlready = this.visitorsList.find(s => s.mobile == this.calendarItem.mobile && s.id != this.calendarItem.id && s.isActive == true);
+      //   checkAlready = this.visitorsList.find((s:any) => s.mobile == this.calendarItem.mobile && s.id != this.calendarItem.id && s.isActive == true);
       // else
       //   checkAlready = false;
       if (!this.isEdit)
-        checkAlready = this.todaysvisitorsList.find(s => s.mobile == this.calendarItem.mobile && s.isActive == true);
+        checkAlready = this.todaysvisitorsList.find((s:any) => s.mobile == this.calendarItem.mobile && s.isActive == true);
 
       if (!checkAlready) {
         if (this.isEdit) {
@@ -990,7 +992,7 @@ export class VMSApprovalComponent implements OnInit {
                 // nextY.id = des.id;
                 nextY.mobile = des.phone;
                 nextY.email = des.email;
-                let createupdateflag = this.personIds.some(s => s == des.id);
+                let createupdateflag = this.personIds.some((s:any) => s == des.id);
                 if (createupdateflag) {
                   nextY.id = des.id;
                   connection = this.httpService.put(APIURLS.BR_MASTER_ADDITIONAL_VISITOR_POST_API, this.cal_id, nextY);
@@ -1000,8 +1002,9 @@ export class VMSApprovalComponent implements OnInit {
               }
 
               if (this.deletedPersonIds.length > 0) {
-                this.deletedPersonIds.forEach(element => {
-                  let findOldIdNext = this.deletedPersonIds.some(s => s == element);
+                this.deletedPersonIds.forEach((element:any)=> {
+
+                  let findOldIdNext = this.deletedPersonIds.some((s:any) => s == element);
                   if (findOldIdNext)
                     connection = this.httpService.delete(APIURLS.BR_MASTER_ADDITIONAL_VISITOR_POST_API, element);
                 });
@@ -1019,7 +1022,7 @@ export class VMSApprovalComponent implements OnInit {
             jQuery("#saveModal").modal('show');
             // this.getVisitorsList();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving Visitor Entry...';
         });
@@ -1042,7 +1045,8 @@ export class VMSApprovalComponent implements OnInit {
 
   }
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -1086,7 +1090,7 @@ getHeader(): { headers: HttpHeaders } {
         this.barCode = '';
         // this.router.navigateByUrl('welcome-page');
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.isLoading = false;
       this.errMsgPop = 'Error closing entry..';
@@ -1142,7 +1146,7 @@ getHeader(): { headers: HttpHeaders } {
           this.barCode = '';
           // this.router.navigateByUrl('welcome-page');
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.isLoading = false;
         this.errMsgPop = 'Error closing entry..';
@@ -1156,7 +1160,8 @@ getHeader(): { headers: HttpHeaders } {
   }
 
   OnReject() {
-    this.checkedRequestList.forEach(element => {
+    this.checkedRequestList.forEach((element:any)=> {
+
       this.calendarItem = Object.assign({}, element);
       //this.calendarItem.isActive=false;
       this.calendarItem.temp13 = 'Rejected';
@@ -1175,7 +1180,7 @@ getHeader(): { headers: HttpHeaders } {
           this.barCode = '';
           // this.router.navigateByUrl('welcome-page');
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.isLoading = false;
         this.errMsgPop = 'Error closing entry..';
@@ -1190,25 +1195,27 @@ getHeader(): { headers: HttpHeaders } {
 
   }
   updateRejectedHistory() {
-    this.checkedRequestList.forEach(element => {
+    this.checkedRequestList.forEach((element:any)=> {
+
       let model: any = {};
       model.requestNo = element.id;
       model.requestStatus = "Rejected";
       model.comments = "Rejected";
       model.actualApprover = this.currentUser.employeeId;
-      model.priority = this.Approverslist.find(x => x.approverId == this.currentUser.employeeId).sequence;
+      model.priority = this.Approverslist.find((x:any)  => x.approverId == this.currentUser.employeeId).sequence;
       model.requestType = "Visitor";
       let connection = this.httpService.put(APIURLS.BR_UPDATE_HISTORY, element.id, model);
     });
   }
   updateHistory() {
-    this.checkedRequestList.forEach(element => {
+    this.checkedRequestList.forEach((element:any)=> {
+
       let model: any = {};
       model.requestNo = element.id;
       model.requestStatus = "Approved";
       model.comments = "Mass Approved";
       model.actualApprover = this.currentUser.employeeId;
-      model.priority = this.Approverslist.find(x => x.approverId == this.currentUser.employeeId).sequence;
+      model.priority = this.Approverslist.find((x:any)  => x.approverId == this.currentUser.employeeId).sequence;
       model.requestType = "Visitor";
       let connection = this.httpService.put(APIURLS.BR_UPDATE_HISTORY, element.id, model);
     });

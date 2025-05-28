@@ -16,14 +16,14 @@ import { Router } from '@angular/router';
 export class ResolveComplaintComponent implements OnInit {
 
   public tableWidget: any;
-  divisionList: any[];
+  divisionList!: any[];
   selDiv: any;
   feedbackList: Feedback[];
   feedbackItem: Feedback = new Feedback(0, 0, 0, '', '', '', '', '', false);;
   isLoading: boolean = false;
-  resHeaderList: any[];
-  resTableHeaderList: any[];
-  divisionTabHeader: string;
+  resHeaderList!: any[];
+  resTableHeaderList!: any[];
+  divisionTabHeader: string
   errMsg: string = "";
   todayDate: Date = new Date();
   isLoadingPop: boolean = false;
@@ -104,7 +104,7 @@ export class ResolveComplaintComponent implements OnInit {
           });}*/
         this.reInitDatatable();
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.feedbackList = [];
     });
@@ -128,13 +128,13 @@ export class ResolveComplaintComponent implements OnInit {
     if (this.isEdit) {
       this.feedbackItem = data;
       // console.log(this.feedbackItem);
-      // this.resolveStatus = this.fullStatus.find(s => s.id == this.feedbackItem.isActive);;
-      // this.resolveStatus = this.fullStatus.find(s => s.id === this.feedbackItem.isActive);
+      // this.resolveStatus = this.fullStatus.find((s:any) => s.id == this.feedbackItem.isActive);;
+      // this.resolveStatus = this.fullStatus.find((s:any) => s.id === this.feedbackItem.isActive);
       //console.log('Resolution status:'+this.resolveStatus.id);
-      let name = this.employeeList.find(s => s.id === this.feedbackItem.fkEmpId);
+      let name = this.employeeList.find((s:any) => s.id === this.feedbackItem.fkEmpId);
       this.empName = (typeof name != 'undefined')?name.firstName + ' '+name.lastName :'';
-      this.selDiv = this.employeeList.find(s => s.id == this.feedbackItem.fkEmpId);
-      this.resolveStatus = this.fullStatus.find(s => s.id === this.feedbackItem.isActive);
+      this.selDiv = this.employeeList.find((s:any) => s.id == this.feedbackItem.fkEmpId);
+      this.resolveStatus = this.fullStatus.find((s:any) => s.id === this.feedbackItem.isActive);
 
     //console.log(this.selDiv);
     jQuery("#myModal").modal('show');
@@ -154,7 +154,7 @@ export class ResolveComplaintComponent implements OnInit {
               this.employeeList = data;
               //this.reInitDatatable();
             }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoading = false;
             this.employeeList = [];
           });
@@ -191,7 +191,7 @@ export class ResolveComplaintComponent implements OnInit {
       // else {
       //   this.errMsgPop = data;
       // }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error resolving complaint..';
     });
@@ -200,11 +200,11 @@ export class ResolveComplaintComponent implements OnInit {
   //     this.httpService.get(APIURLS.BR_FORM_DATA_API).then((data: any) => {
   //         if (data.status == 'SUCCESS') {
   //             this.resHeaderList = data.formDataList;
-  //             this.resHeaderList = data.formDataList.find(s => s.subMenuId == '16'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
+  //             this.resHeaderList = data.formDataList.find((s:any) => s.subMenuId == '16'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
   //             this.resTableHeaderList = _.filter(data.formDataList, function (obj) { if (obj.subMenuId == '16') return obj; });
   //             this.divisionTabHeader = _.map(this.resTableHeaderList, 'field1');
   //         }
-  //     }).catch(error => {
+  //     }).catch((error)=> {
   //         this.resHeaderList = null;
   //     });
   // }

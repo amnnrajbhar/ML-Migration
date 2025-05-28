@@ -29,11 +29,11 @@ export class NewOfferComponent implements OnInit {
  @ViewChild(ChecklistComponent, { static: false }) checklistDetails: ChecklistComponent;
 @ViewChild(OfferSalaryComponent, { static: false }) offerSalaryComponent: OfferSalaryComponent;
 @ViewChild(AdditionalInfoComponent, { static: false }) additionalInfoComponent: AdditionalInfoComponent;
-@ViewChild('replacingEmployeeNo', { static: false }) replacingEmployeeNoEle: ElementRef;
+@ViewChild('replacingEmployeeNo', { static: false }) replacingEmployeeNoEle!: ElementRef;
 @ViewChild(AttachmentsComponent, { static: false }) attachmentDetails: AttachmentsComponent;
 
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -66,9 +66,9 @@ export class NewOfferComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {      
+    }).catch(()=> {      
       this.plantList = [];
     });
   }
@@ -79,10 +79,10 @@ export class NewOfferComponent implements OnInit {
     if (this.selectedPlant.id > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.selectedPlant.id).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
         this.getSignatories();
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -96,10 +96,10 @@ export class NewOfferComponent implements OnInit {
       this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/" + this.selectedPlant.id + "/" + this.newOffer.payGroupId)
         .then((data: any) => {
           if (data.length > 0) {
-            this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+            this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
           }
           this.getSignatories();
-        }).catch(error => {
+        }).catch((error)=> {
           this.employeeCategoryList = [];
         });
     }
@@ -112,9 +112,9 @@ export class NewOfferComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationList = [];
     });
   }
@@ -124,9 +124,9 @@ export class NewOfferComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -135,9 +135,9 @@ export class NewOfferComponent implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -146,9 +146,9 @@ departmentList:any[]=[];
 getDepartments(){
   this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
     if (data.length > 0) {
-      this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+      this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
     }
-  }).catch(error => {
+  }).catch((error)=> {
     this.departmentList = [];
   });
 }
@@ -157,9 +157,9 @@ qualificationList: any[] = [];
 getQualifications(){
   this.httpService.HRget(APIURLS.EDUCATION_C_M_API_GETALL).then((data: any) => {
     if (data.length > 0) {
-      this.qualificationList = data.sort((a, b) => { if (a.educationCourse > b.educationCourse) return 1; if (a.educationCourse < b.educationCourse) return -1; return 0; });
+      this.qualificationList = data.sort((a:any, b:any) => { if (a.educationCourse > b.educationCourse) return 1; if (a.educationCourse < b.educationCourse) return -1; return 0; });
     }
-  }).catch(error => {
+  }).catch((error)=> {
     this.qualificationList = [];
   });
 }
@@ -170,9 +170,9 @@ getSignatories(){
     this.httpService.HRget(APIURLS.OFFER_GET_SIGNATORIES + "/" + this.selectedPlant.id + "/" + this.newOffer.payGroupId +"/"+this.newOffer.employeeCategoryId)
     .then((data: any) => {
       if (data.length > 0 && this.signatoryList.length == 0) {
-        this.signatoryList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.signatoryList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.signatoryList = [];
     });
   }
@@ -188,7 +188,8 @@ replacingEmployeeDetails: any = {};
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.isLoading = true;
       this.getAllDropDownValues();
       this.isLoading = false;      
@@ -237,13 +238,13 @@ replacingEmployeeDetails: any = {};
 
     if(this.newOffer.countryId > 0){
       var country = this.countryList.find(x=>x.id == this.newOffer.countryId);
-      this.stateList = this.stateFullList.filter(x => x.land1 == country.land1);
+      this.stateList = this.stateFullList.filter((x:any)  => x.land1 == country.land1);
     }   
   }
 
   onStateChange() {
     this.newOffer.locationId = "";
-    this.locationList = this.locationFullList.filter(x => x.stateId == this.newOffer.locationStateId);
+    this.locationList = this.locationFullList.filter((x:any)  => x.stateId == this.newOffer.locationStateId);
   }
 
   onEmployeeCategoryChange(){
@@ -349,7 +350,7 @@ replacingEmployeeDetails: any = {};
         this.errMsgModalPop = 'Error occured while saving Offer Details. Error:' + err;
         toastr.error(this.errMsgModalPop);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         this.errMsgModalPop = 'Error occured while saving Offer Details. Error:' + error;
         toastr.error(this.errMsgModalPop);
@@ -390,7 +391,7 @@ replacingEmployeeDetails: any = {};
         this.errMsgModalPop = 'Error occured while checking salary range. Error:' + err;
         toastr.error(this.errMsgModalPop);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         this.errMsgModalPop = 'Error occured while checking salary range. Error:' + error;
         toastr.error(this.errMsgModalPop);
@@ -424,7 +425,7 @@ replacingEmployeeDetails: any = {};
       }else
         toastr.error("Error occurred.");
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });    
@@ -447,7 +448,7 @@ replacingEmployeeDetails: any = {};
         }else
         toastr.error("Error occurred.");
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });    
@@ -493,7 +494,7 @@ replacingEmployeeDetails: any = {};
         else
         toastr.error(data.message);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         this.errMsgModalPop = 'Error occured while uploading attachments. Error:' + error;
         toastr.error(this.errMsgModalPop);
@@ -581,7 +582,7 @@ showNext(){
       if ($event.timeStamp - this.lastApprovingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
@@ -592,7 +593,7 @@ showNext(){
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManagerId").val(ui.item.value);
                   $("#approvingManager").val(ui.item.label);
@@ -602,7 +603,7 @@ showNext(){
                   $("#approvingManager").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvingManagerId").val(ui.item.value);
                   $("#approvingManager").val(ui.item.label);
@@ -629,7 +630,7 @@ showNext(){
       if ($event.timeStamp - this.lastReportingkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
@@ -640,7 +641,7 @@ showNext(){
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -650,7 +651,7 @@ showNext(){
                   $("#reportingManager").val('');
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#reportingManagerId").val(ui.item.value);
                   $("#reportingManager").val(ui.item.label);
@@ -677,7 +678,7 @@ showNext(){
       if ($event.timeStamp - this.lastkeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_ALL_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.employeeName + " ("+item.employeeId+")", value: item };
@@ -688,7 +689,7 @@ showNext(){
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#replacingEmployeeName").val(ui.item.label);
                   $("#replacingEmployeeId").val(ui.item.value.id);   
@@ -700,7 +701,7 @@ showNext(){
                   $("#replacingEmployeeNo").val('');     
                 }                  
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#replacingEmployeeName").val(ui.item.label);
                   $("#replacingEmployeeId").val(ui.item.value.id);
@@ -730,8 +731,8 @@ showNext(){
       this.httpService.HRget(APIURLS.OFFER_GET_REPLACING_EMPLOYEE_DETAILS + "/" + empNo)
       .then((data: any) => {
         this.replacingEmployeeDetails = data;
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
       });
     }
     else{

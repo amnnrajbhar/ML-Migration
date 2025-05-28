@@ -19,10 +19,10 @@ declare var toastr: any;
   providers: [Util]
 })
 export class AllowanceMasterComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) detailsForm: NgForm;
+@ViewChild(NgForm, { static: false }) detailsForm!: NgForm;
 
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   filterModel: any = {};
   filterData: any = {}
   item: any = {};
@@ -37,7 +37,8 @@ export class AllowanceMasterComponent implements OnInit {
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;  
     this.filterModel.metro = "";
     this.getListData();
@@ -53,7 +54,7 @@ export class AllowanceMasterComponent implements OnInit {
     this.httpService.HRpost(APIURLS.BR_GET_ALLOWANCE_LIST_BY_FILTER, this.filterModel).then((data: any) => {
       this.filterData = data;      
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error("Error while fetching the list. Error: "+ error);
       this.isLoading = false;      
     });
@@ -96,7 +97,7 @@ export class AllowanceMasterComponent implements OnInit {
         this.getData();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error('Error adding details...'+ error);
     })
@@ -123,7 +124,7 @@ export class AllowanceMasterComponent implements OnInit {
         this.getData();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error('Error updating details...'+ error);
     })
@@ -178,7 +179,7 @@ export class AllowanceMasterComponent implements OnInit {
       this.filterModel.export = false;
       var exportList = [];
       let index = 0;
-      data.list.forEach(item => {
+      data.list.forEach((item :any) => {
         index = index + 1;
         let exportItem = {
           "SNo": index,
@@ -205,7 +206,7 @@ export class AllowanceMasterComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'AllowanceMaster_List');
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.filterModel.export = false;
       swal('Error occurred while fetching data.');

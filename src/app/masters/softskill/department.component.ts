@@ -19,8 +19,8 @@ declare var jQuery: any;
 export class SoftSkillComponent implements OnInit {
     
     public tableWidget: any;
-    depList: any[];
-    parentList: any[];
+    depList!: any[];
+    parentList!: any[];
     selParentRole: any;
     depItem: Department = new Department(0, '','', '', 0, 0,'',true);;
     isLoading: boolean = false;
@@ -59,11 +59,11 @@ export class SoftSkillComponent implements OnInit {
       this.isLoadingPop = false;
       if (this.isEdit) {
         this.depItem = data;
-        this.parentList = this.depList.filter(s => s.isActive != false);
-        this.selParentRole = this.depList.find(s => s.id === this.depItem.fkProfileId);
+        this.parentList = this.depList.filter((s:any) => s.isActive != false);
+        this.selParentRole = this.depList.find((s:any) => s.id === this.depItem.fkProfileId);
       }
       else {
-        this.parentList = this.depList.filter(s => s.isActive != false);;
+        this.parentList = this.depList.filter((s:any) => s.isActive != false);;
         this.depItem = new Department(0, '','', '', 0,0,'', true);
         this.selParentRole = null;
       }
@@ -88,25 +88,27 @@ export class SoftSkillComponent implements OnInit {
         if (data.length >0) {
           this.depList = data;
           
-// this.depList.forEach(element => {
+// this.depList.forEach((element:any)=> {
+
 //             element.parentName = '';
-//             element.parentName = this.depList.find(x => x.id == element.fkParentId)['name'];
+//             element.parentName = this.depList.find((x:any)  => x.id == element.fkParentId)['name'];
 //           });
 
-          // this.depList.forEach(item =>{item.name = (this.depList.find(x => x.id == item.fkParentId)['name'])});
+          // this.depList.forEach(item =>{item.name = (this.depList.find((x:any)  => x.id == item.fkParentId)['name'])});
         
           // var depListUpdated = [];
-          // this.depList.forEach(element => {
+          // this.depList.forEach((element:any)=> {
+
           //   element.parentName = '';
-          //   element.parentName = this.depList.find(x => x.id == element.fkParentId)['name'];
+          //   element.parentName = this.depList.find((x:any)  => x.id == element.fkParentId)['name'];
           //   depListUpdated.push(element);
           // });
           // this.depList = depListUpdated;
           //this.parentList = data.roleList;
-          //this.roleList.forEach(item => { item.isChecked = false; });
+          //this.roleList.forEach((item :any) => { item.isChecked = false; });
           this.reInitDatatable();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.depList = [];
       });
@@ -156,7 +158,7 @@ export class SoftSkillComponent implements OnInit {
          else {
            this.errMsgPop = 'Error saving department data..';
          }
-        }).catch(error => {
+        }).catch((error)=> {
          this.isLoadingPop = false;
          this.errMsgPop = 'Error saving department data..';
         });
@@ -186,7 +188,7 @@ export class SoftSkillComponent implements OnInit {
     //         else 
     //           this.errMsgPop = data;
             
-    //       }).catch(error => {
+    //       }).catch((error)=> {
     //         this.isLoadingPop = false;
     //         this.errMsgPop = 'Error saving department data..';
     //       });

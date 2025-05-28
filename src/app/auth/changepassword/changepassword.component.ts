@@ -14,25 +14,26 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./changepassword.component.css']
 })
 export class ChangepasswordComponent implements OnInit {
- @ViewChild(NgForm, { static: false }) sbuForm: NgForm;
+ @ViewChild(NgForm, { static: false }) sbuForm!: NgForm;
   newPassword: string = "";
   confirmPassword: string = "";
-  mismatch: boolean;
-  currentUser: AuthData;
+  mismatch!: boolean;
+  currentUser!: AuthData;
   urlPath: string = '';
   userMasterItem: UserMaster = new UserMaster(0, 0, '', '', '', '', 0, '', '', '', '', 0, 0, 0, 0, 0,'');
-  isLoading: boolean;
+  isLoading!: boolean;
   errMsgPop: string="";
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
            ) { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.httpService.getById(APIURLS.BR_MASTER_USERMASTER_API, this.currentUser.uid).then((data: any) => {
       if (data.id > 0) {
         this.userMasterItem = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.userMasterItem = null;
     });
   }
@@ -80,7 +81,7 @@ export class ChangepasswordComponent implements OnInit {
             }
           });
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errMsgPop = "Password not updated...";
         this.isLoading = false;
       });

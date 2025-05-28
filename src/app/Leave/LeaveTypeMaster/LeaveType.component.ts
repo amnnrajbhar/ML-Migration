@@ -12,9 +12,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as _ from "lodash";
 declare var jQuery: any;
 export class actionItemModel {
-  description: string;
-  id: number;
-  uname: string;
+  description: string
+  id!: number;
+  uname: string
 }
 @Component({
   selector: 'app-LeaveType',
@@ -23,7 +23,7 @@ export class actionItemModel {
 })
 export class LeaveTypecomponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) leaveForm: NgForm;
+@ViewChild(NgForm, { static: false }) leaveForm!: NgForm;
 
   public tableWidget: any;
   leavetypeItem: LeaveType = new LeaveType();
@@ -38,8 +38,8 @@ export class LeaveTypecomponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldleavetypeItem: LeaveType = new LeaveType();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   leavetypeList: any;
   id: any;
   checkdup: any;
@@ -66,7 +66,8 @@ export class LeaveTypecomponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getLeaveTypeList();
     }
     else
@@ -83,7 +84,7 @@ export class LeaveTypecomponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.leaveTypeList = [];
     });
@@ -127,7 +128,7 @@ export class LeaveTypecomponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-    this.checkdup = this.leaveTypeList.find(x => x.lvType == this.leavetypeItem.lvType && x.lvTypeid == this.leavetypeItem.lvTypeid && x.lvShrt == this.leavetypeItem.lvShrt)
+    this.checkdup = this.leaveTypeList.find((x:any)  => x.lvType == this.leavetypeItem.lvType && x.lvTypeid == this.leavetypeItem.lvTypeid && x.lvShrt == this.leavetypeItem.lvShrt)
     if (this.checkdup != null) {
       this.isLoadingPop = false;
       swal({
@@ -159,7 +160,7 @@ export class LeaveTypecomponent implements OnInit {
         }
         else
           this.errMsgPop = data;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving department data..';
       });
@@ -190,7 +191,7 @@ export class LeaveTypecomponent implements OnInit {
             jQuery("#saveModal").modal('show');
             this.getLeaveTypeList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting LeaveType..';
         });
@@ -217,7 +218,8 @@ export class LeaveTypecomponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

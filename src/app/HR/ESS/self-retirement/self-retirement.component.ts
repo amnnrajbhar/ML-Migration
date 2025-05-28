@@ -18,7 +18,7 @@ declare var toastr: any;
   styleUrls: ['./self-retirement.component.css']
 })
 export class SelfRetirementComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   retirementDetails= {} as any;
   retirementId: any;
@@ -29,13 +29,14 @@ export class SelfRetirementComponent implements OnInit {
     private location: Location) { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.GetRetirementDetailsById(this.currentUser.hrEmployeeId);
     this.GetEmployeeRetirementDate(this.currentUser.hrEmployeeId);
     this.employeeId = this.currentUser.hrEmployeeId;
   }
 
-  GetRetirementDetailsById(id) {
+  GetRetirementDetailsById(id:any) {
     this.isLoading = true;
 
     this.httpService.HRgetById(APIURLS.RETIREMENT_DETAILS_BY_EMPLOYEE_ID, id).then((data: any) => {
@@ -46,13 +47,13 @@ export class SelfRetirementComponent implements OnInit {
          
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }
 
   
-GetEmployeeRetirementDate(id) {
+GetEmployeeRetirementDate(id:any) {
   this.isLoading = true;
  // this.isVisible=false;
   this.httpService.HRgetById(APIURLS.RETIREMENT_EMPLOYEE_GET_DATE, id).then((data: any) => {
@@ -61,7 +62,7 @@ GetEmployeeRetirementDate(id) {
       this.retirementDetails.retirementClosureDate = data.retirementClosureDate;    
     }
     this.isLoading = false;
-  }).catch(error => {
+  }).catch((error)=> {
     this.isLoading = false;
 
   });
@@ -107,7 +108,7 @@ GetEmployeeRetirementDate(id) {
           this.isLoading = false;
           toastr.error('Error occured while saving retirement details. Error:' + err);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while saving retirement details. Error:' + error);
         });
@@ -130,7 +131,7 @@ GetEmployeeRetirementDate(id) {
       }else
         toastr.error("Error occurred.");
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });    

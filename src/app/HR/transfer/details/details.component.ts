@@ -21,7 +21,7 @@ declare var toastr: any;
 })
 export class DetailsComponent implements OnInit {
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   transferId: any;
   urlPath: string = '';
@@ -94,7 +94,8 @@ export class DetailsComponent implements OnInit {
       this.filterModel.noticePeriod=null;
       this.isTransfer = true;
 
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;  
       this.transferId = this.route.snapshot.paramMap.get('id2')!;  
       this.approvalType = this.route.snapshot.paramMap.get('id3')!;  
@@ -125,9 +126,9 @@ export class DetailsComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_PLANT_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -136,7 +137,7 @@ export class DetailsComponent implements OnInit {
     this.filterModel.payGroupId = "";
     if(this.filterModel.plantId > 0){
       let plant = this.plantList.find(x=>x.id == this.filterModel.plantId);
-      this.payGroupList = this.payGroupFullList.filter(x=>x.plant ==  plant.code);
+      this.payGroupList = this.payGroupFullList.filter((x:any)=>x.plant ==  plant.code);
     }
     else{
       this.payGroupList = [];
@@ -149,9 +150,9 @@ export class DetailsComponent implements OnInit {
   getPayGroupList() {    
     this.httpService.HRget(APIURLS.OFFER_PAYGROUP_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.payGroupFullList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+        this.payGroupFullList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.payGroupFullList = [];
     });
   }
@@ -161,9 +162,9 @@ export class DetailsComponent implements OnInit {
     this.httpService.HRget(APIURLS.OFFER_EMPLOYEE_CATEGORY_ALL_API)
       .then((data: any) => {
         if (data.length > 0) {
-          this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+          this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.employeeCategoryList = [];
       });   
   }
@@ -173,14 +174,14 @@ export class DetailsComponent implements OnInit {
   getLocation() {
     this.httpService.HRget(APIURLS.OFFER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.locationFullList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.locationFullList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
         if(this.filterModel.stateId > 0){
-          var selectedState = this.stateList.find(x => x.id == this.filterModel.stateId);
+          var selectedState = this.stateList.find((x:any)  => x.id == this.filterModel.stateId);
           if (selectedState)
-            this.locationList = this.locationFullList.filter(x => x.stateId == selectedState.bland);
+            this.locationList = this.locationFullList.filter((x:any)  => x.stateId == selectedState.bland);
         }
     }
-    }).catch(error => {
+    }).catch((error)=> {
       this.locationFullList = [];
     });
   }
@@ -190,9 +191,9 @@ export class DetailsComponent implements OnInit {
   getState() {
     this.httpService.HRget(APIURLS.OFFER_STATE_GET_BY_COUNTRY + "/IN").then((data: any) => {
       if (data.length > 0) {
-        this.stateList = data.sort((a, b) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
+        this.stateList = data.sort((a:any, b:any) => { if (a.bezei > b.bezei) return 1; if (a.bezei < b.bezei) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.stateList = [];
     });
   }
@@ -201,9 +202,9 @@ export class DetailsComponent implements OnInit {
   getDesignation() {
     this.httpService.HRget(APIURLS.BR_DESIGNATION_HR_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.sort((a, b) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
+        this.designationList = data.sort((a:any, b:any) => { if (a.name > b.name) return 1; if (a.name < b.name) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.designationList = [];
     });
   }
@@ -212,9 +213,9 @@ export class DetailsComponent implements OnInit {
   getRole() {
     this.httpService.HRget(APIURLS.OFFER_ROLE_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a, b) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
+        this.roleList = data.sort((a:any, b:any) => { if (a.role_ltxt > b.role_ltxt) return 1; if (a.role_ltxt < b.role_ltxt) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
     });
   }
@@ -223,9 +224,9 @@ export class DetailsComponent implements OnInit {
   getDepartments() {
     this.httpService.HRget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.sort((a, b) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
+        this.departmentList = data.sort((a:any, b:any) => { if (a.description > b.description) return 1; if (a.description < b.description) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
     });
   }
@@ -235,11 +236,11 @@ export class DetailsComponent implements OnInit {
   getSubDepartments() {
     this.httpService.HRget(APIURLS.APPOINTMENT_GET_SUB_DEPARTMENTS).then((data: any) => {
       if (data.length > 0) {
-        this.subDepartmentFullList = data.sort((a, b) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
+        this.subDepartmentFullList = data.sort((a:any, b:any) => { if (a.sdptidLtxt > b.sdptidLtxt) return 1; if (a.sdptidLtxt < b.sdptidLtxt) return -1; return 0; });
         if(this.filterModel.departmentId > 0)
-          this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.filterModel.departmentId);
+          this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.filterModel.departmentId);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.subDepartmentFullList = [];
     });
   }
@@ -252,7 +253,7 @@ export class DetailsComponent implements OnInit {
       if ($event.timeStamp - this.lastRequestorEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -262,7 +263,7 @@ export class DetailsComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#requestedById").val(ui.item.value);
                   $("#requestedByName").val(ui.item.label);                  
@@ -273,7 +274,7 @@ export class DetailsComponent implements OnInit {
                   $("#requestedByName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#requestedById").val(ui.item.value);
                   $("#requestedByName").val(ui.item.label);
@@ -301,7 +302,7 @@ export class DetailsComponent implements OnInit {
       if ($event.timeStamp - this.lastApproverEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -311,7 +312,7 @@ export class DetailsComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvedById").val(ui.item.value);
                   $("#approvedByName").val(ui.item.label);
@@ -322,7 +323,7 @@ export class DetailsComponent implements OnInit {
                   $("#approvedByName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#approvedById").val(ui.item.value);
                   $("#approvedByName").val(ui.item.label);
@@ -349,7 +350,7 @@ export class DetailsComponent implements OnInit {
       if ($event.timeStamp - this.lastrmEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -359,7 +360,7 @@ export class DetailsComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#rmId").val(ui.item.value);
                   $("#rmName").val(ui.item.label);
@@ -370,7 +371,7 @@ export class DetailsComponent implements OnInit {
                   $("#rmName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#rmId").val(ui.item.value);
                   $("#rmName").val(ui.item.label);
@@ -397,7 +398,7 @@ export class DetailsComponent implements OnInit {
       if ($event.timeStamp - this.lastHodEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -407,7 +408,7 @@ export class DetailsComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#hodId").val(ui.item.value);
                   $("#hodName").val(ui.item.label);
@@ -418,7 +419,7 @@ export class DetailsComponent implements OnInit {
                   $("#hodName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#hodId").val(ui.item.value);
                   $("#hodName").val(ui.item.label);
@@ -445,7 +446,7 @@ export class DetailsComponent implements OnInit {
       if ($event.timeStamp - this.lastApproverEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -455,7 +456,7 @@ export class DetailsComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#destinationSpocId").val(ui.item.value);
                   $("#destinationSpocName").val(ui.item.label);
@@ -465,7 +466,7 @@ export class DetailsComponent implements OnInit {
                   $("#destinationSpocName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#destinationSpocId").val(ui.item.value);
                   $("#destinationSpocName").val(ui.item.label);
@@ -492,7 +493,7 @@ export class DetailsComponent implements OnInit {
       if ($event.timeStamp - this.lastVacantEmployeeEmployeekeydown > 400) {
         this.httpService.HRget(APIURLS.HR_EMPLOYEEMASTER_GET_LIST + "/" + text).then((data: any) => {
           if (data.length > 0) {
-            var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+            var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
             })
@@ -502,7 +503,7 @@ export class DetailsComponent implements OnInit {
                 "ui-autocomplete": "highlight",
                 "ui-menu-item": "list-group-item"
               },
-              change: function (event, ui) {
+              change: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#destinationVacantPositionEmployeeId").val(ui.item.value);
                   $("#destinationVacantPositionEmployeeName").val(ui.item.label);
@@ -512,7 +513,7 @@ export class DetailsComponent implements OnInit {
                   $("#destinationVacantPositionEmployeeName").val('');
                 }
               },
-              select: function (event, ui) {
+              select: function (event:any, ui:any) {
                 if (ui.item) {
                   $("#destinationVacantPositionEmployeeId").val(ui.item.value);
                   $("#destinationVacantPositionEmployeeName").val(ui.item.label);
@@ -531,7 +532,7 @@ export class DetailsComponent implements OnInit {
     }
   }
 
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     this.isLoading = true;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
       if (data) {
@@ -561,14 +562,14 @@ export class DetailsComponent implements OnInit {
       }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
   }
 
   
-  GetTransferDetailsByEmpId(id) {
+  GetTransferDetailsByEmpId(id:any) {
     this.isLoading = true;
     this.httpService.HRget(APIURLS.HR_TRANSFER_STATUS_GET_BYEMPID+"/"+id).then((data: any) => {
       if (data) {
@@ -603,14 +604,14 @@ export class DetailsComponent implements OnInit {
          }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });
   }
 
   
-  GetTransferDetailsById(id) {
+  GetTransferDetailsById(id:any) {
     this.isLoading = true;
     this.httpService.HRget(APIURLS.HR_TRANSFER_STATUS_GET_BY_ID+"/"+id).then((data: any) => {
       if (data) {
@@ -645,7 +646,7 @@ export class DetailsComponent implements OnInit {
          }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });
@@ -665,48 +666,48 @@ export class DetailsComponent implements OnInit {
     this.filterModel.requestedByName = data.requestedByName;
     this.filterModel.approvedByName = data.approvedByName;
     this.jobChangeDetailsList = data.jobChangeDetailsList;
-    if (this.jobChangeDetailsList.find(x => x.type == "Role") != null)
-      this.filterModel.roleId = this.jobChangeDetailsList.find(x => x.type == "Role").newValueId;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "Role") != null)
+      this.filterModel.roleId = this.jobChangeDetailsList.find((x:any)  => x.type == "Role").newValueId;
 
-    if (this.jobChangeDetailsList.find(x => x.type == "Designation") != null)
-      this.filterModel.designationId = this.jobChangeDetailsList.find(x => x.type == "Designation").newValueId;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "Designation") != null)
+      this.filterModel.designationId = this.jobChangeDetailsList.find((x:any)  => x.type == "Designation").newValueId;
 
-    if (this.jobChangeDetailsList.find(x => x.type == "Department") != null)
-      this.filterModel.departmentId = this.jobChangeDetailsList.find(x => x.type == "Department").newValueId;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "Department") != null)
+      this.filterModel.departmentId = this.jobChangeDetailsList.find((x:any)  => x.type == "Department").newValueId;
     this.getSubDepartments();
 
-    this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.filterModel.departmentId);
-    if (this.jobChangeDetailsList.find(x => x.type == "SubDepartment") != null)
-      this.filterModel.subDepartmentId = this.jobChangeDetailsList.find(x => x.type == "SubDepartment").newValueId;
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.filterModel.departmentId);
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "SubDepartment") != null)
+      this.filterModel.subDepartmentId = this.jobChangeDetailsList.find((x:any)  => x.type == "SubDepartment").newValueId;
 
-    if (this.jobChangeDetailsList.find(x => x.type == "Plant") != null)
-      this.filterModel.plantId = this.jobChangeDetailsList.find(x => x.type == "Plant").newValueId;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "Plant") != null)
+      this.filterModel.plantId = this.jobChangeDetailsList.find((x:any)  => x.type == "Plant").newValueId;
 
-    if (this.jobChangeDetailsList.find(x => x.type == "PayGroup") != null)
-      this.filterModel.payGroupId = this.jobChangeDetailsList.find(x => x.type == "PayGroup").newValueId;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "PayGroup") != null)
+      this.filterModel.payGroupId = this.jobChangeDetailsList.find((x:any)  => x.type == "PayGroup").newValueId;
 
-    if (this.jobChangeDetailsList.find(x => x.type == "State") != null)
-      this.filterModel.stateId = this.jobChangeDetailsList.find(x => x.type == "State").newValueId;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "State") != null)
+      this.filterModel.stateId = this.jobChangeDetailsList.find((x:any)  => x.type == "State").newValueId;
     this.getLocation();
 
-    var selectedState = this.stateList.find(x => x.id == this.filterModel.stateId);
+    var selectedState = this.stateList.find((x:any)  => x.id == this.filterModel.stateId);
     if (selectedState)
-      this.locationList = this.locationFullList.filter(x => x.stateId == selectedState.bland);
+      this.locationList = this.locationFullList.filter((x:any)  => x.stateId == selectedState.bland);
 
-    if (this.jobChangeDetailsList.find(x => x.type == "Location") != null)
-      this.filterModel.locationId = this.jobChangeDetailsList.find(x => x.type == "Location").newValueId;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "Location") != null)
+      this.filterModel.locationId = this.jobChangeDetailsList.find((x:any)  => x.type == "Location").newValueId;
 
-    if (this.jobChangeDetailsList.find(x => x.type == "StaffCategory") != null)
-      this.filterModel.employeeCategoryId = this.jobChangeDetailsList.find(x => x.type == "StaffCategory").newValueId;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "StaffCategory") != null)
+      this.filterModel.employeeCategoryId = this.jobChangeDetailsList.find((x:any)  => x.type == "StaffCategory").newValueId;
 
-    if (this.jobChangeDetailsList.find(x => x.type == "HOD") != null) {
-      this.filterModel.hodId = this.jobChangeDetailsList.find(x => x.type == "HOD").newValueId;
-      this.filterModel.hodName = this.jobChangeDetailsList.find(x => x.type == "HOD").oldValueText;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "HOD") != null) {
+      this.filterModel.hodId = this.jobChangeDetailsList.find((x:any)  => x.type == "HOD").newValueId;
+      this.filterModel.hodName = this.jobChangeDetailsList.find((x:any)  => x.type == "HOD").oldValueText;
     }
 
-    if (this.jobChangeDetailsList.find(x => x.type == "RM") != null) {
-      this.filterModel.rmId = this.jobChangeDetailsList.find(x => x.type == "RM").newValueId;
-      this.filterModel.rmName = this.jobChangeDetailsList.find(x => x.type == "RM").oldValueText;
+    if (this.jobChangeDetailsList.find((x:any)  => x.type == "RM") != null) {
+      this.filterModel.rmId = this.jobChangeDetailsList.find((x:any)  => x.type == "RM").newValueId;
+      this.filterModel.rmName = this.jobChangeDetailsList.find((x:any)  => x.type == "RM").oldValueText;
     }
   }
 
@@ -764,8 +765,8 @@ export class DetailsComponent implements OnInit {
         toastr.error("Please select a new Plant"); return;
       }
       if (this.filterModel.plantId > 0) {
-        if (this.plantList.find(x => x.id == this.filterModel.plantId) != null) {
-          this.selectedPlantText = this.plantList.find(x => x.id == 
+        if (this.plantList.find((x:any)  => x.id == this.filterModel.plantId) != null) {
+          this.selectedPlantText = this.plantList.find((x:any)  => x.id == 
             this.filterModel.plantId).name;
         }
         jobChangeDetail = {} as JobChangeDetails;
@@ -779,8 +780,8 @@ export class DetailsComponent implements OnInit {
         toastr.error("Please select a new Pay Group"); return;
       }
       if (this.filterModel.payGroupId > 0) {
-        if (this.payGroupList.find(x => x.id == this.filterModel.payGroupId) != null) {
-          this.selectedPaygroupText = this.payGroupList.find(x => x.id == 
+        if (this.payGroupList.find((x:any)  => x.id == this.filterModel.payGroupId) != null) {
+          this.selectedPaygroupText = this.payGroupList.find((x:any)  => x.id == 
             this.filterModel.payGroupId).printName;
         }
         jobChangeDetail = {} as JobChangeDetails;
@@ -794,8 +795,8 @@ export class DetailsComponent implements OnInit {
         toastr.error("Please select a new State"); return;
       }
       if (this.filterModel.stateId > 0) {
-        if (this.stateList.find(x => x.id == this.filterModel.stateId) != null) {
-          this.selectedStateText = this.stateList.find(x => x.id == 
+        if (this.stateList.find((x:any)  => x.id == this.filterModel.stateId) != null) {
+          this.selectedStateText = this.stateList.find((x:any)  => x.id == 
             this.filterModel.stateId).bezei;
         }
         jobChangeDetail = {} as JobChangeDetails;
@@ -809,8 +810,8 @@ export class DetailsComponent implements OnInit {
         toastr.error("Please select a new Location"); return;
       }
       if (this.filterModel.locationId > 0) {
-        if (this.locationList.find(x => x.id == this.filterModel.locationId) != null) {
-          this.selectedLocationText = this.locationFullList.find(x => x.id == 
+        if (this.locationList.find((x:any)  => x.id == this.filterModel.locationId) != null) {
+          this.selectedLocationText = this.locationFullList.find((x:any)  => x.id == 
             this.filterModel.locationId).name;
         }
         jobChangeDetail = {} as JobChangeDetails;
@@ -824,8 +825,8 @@ export class DetailsComponent implements OnInit {
         toastr.error("Please select a new Department"); return;
       }
       if (this.filterModel.departmentId > 0) {
-        if (this.departmentList.find(x => x.id == this.filterModel.departmentId) != null) {
-          this.selectedDepartmentText = this.departmentList.find(x => x.id == 
+        if (this.departmentList.find((x:any)  => x.id == this.filterModel.departmentId) != null) {
+          this.selectedDepartmentText = this.departmentList.find((x:any)  => x.id == 
             this.filterModel.departmentId).description;
         }
         jobChangeDetail = {} as JobChangeDetails;
@@ -836,7 +837,7 @@ export class DetailsComponent implements OnInit {
         this.jobChangeDetailsList.push(jobChangeDetail);
       }
       if (this.filterModel.subDepartmentId > 0) {
-        this.selectedSubDepartmentText = this.subDepartmentList.find(x => x.id == this.filterModel.subDepartmentId).sdptidLtxt;
+        this.selectedSubDepartmentText = this.subDepartmentList.find((x:any)  => x.id == this.filterModel.subDepartmentId).sdptidLtxt;
         jobChangeDetail = {} as JobChangeDetails;
         jobChangeDetail.type = "SubDepartment";
         jobChangeDetail.oldValueText = this.employeeDetails.subDepartmentName;
@@ -884,8 +885,8 @@ export class DetailsComponent implements OnInit {
       if (this.filterModel.employeeCategoryId <= 0 || this.filterModel.employeeCategoryId == null || this.filterModel.employeeCategoryId == "") {
         toastr.error("Please select a new Employee Category"); return;
       }
-      if (this.employeeCategoryList.find(x => x.id == this.filterModel.employeeCategoryId) != null) {
-        this.selectedStaffCategoryText = this.employeeCategoryList.find(x => x.id == 
+      if (this.employeeCategoryList.find((x:any)  => x.id == this.filterModel.employeeCategoryId) != null) {
+        this.selectedStaffCategoryText = this.employeeCategoryList.find((x:any)  => x.id == 
           this.filterModel.employeeCategoryId).catltxt;
       }
       jobChangeDetail = {} as JobChangeDetails;
@@ -899,8 +900,8 @@ export class DetailsComponent implements OnInit {
       if (this.filterModel.designationId <= 0 || this.filterModel.designationId == null || this.filterModel.designationId == "") {
         toastr.error("Please select a new Designation"); return;
       }
-      if (this.designationList.find(x => x.id == this.filterModel.designationId) != null) {
-        this.selectedDesignationText = this.designationList.find(x => x.id == 
+      if (this.designationList.find((x:any)  => x.id == this.filterModel.designationId) != null) {
+        this.selectedDesignationText = this.designationList.find((x:any)  => x.id == 
           this.filterModel.designationId).name;
         }
       jobChangeDetail = {} as JobChangeDetails;
@@ -914,8 +915,8 @@ export class DetailsComponent implements OnInit {
       if (this.filterModel.roleId <= 0 || this.filterModel.roleId == null || this.filterModel.roleId == "") {
         toastr.error("Please select a new Role"); return;
       }
-      if (this.roleList.find(x => x.id == this.filterModel.roleId) != null) {
-        this.selectedRoleText = this.roleList.find(x => x.id == 
+      if (this.roleList.find((x:any)  => x.id == this.filterModel.roleId) != null) {
+        this.selectedRoleText = this.roleList.find((x:any)  => x.id == 
           this.filterModel.roleId).role_ltxt;
         }
       var jobChangeDetail = {} as JobChangeDetails;
@@ -945,14 +946,14 @@ export class DetailsComponent implements OnInit {
         this.isLoading = false;
         toastr.error('Error occured while saving Details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving Details. Error:' + error);
       });
   }
 
   
-  submitForApproval(id) {
+  submitForApproval(id:any) {
     this.isLoading = true;
     var request: any = {};
     request.transferId = id;
@@ -970,7 +971,7 @@ export class DetailsComponent implements OnInit {
           toastr.error("Error occurred while submitting.");
 
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         toastr.error(error);
       });
@@ -1000,7 +1001,7 @@ export class DetailsComponent implements OnInit {
           else
           toastr.error(data.message);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while uploading attachments. Error:' + error);
         });
@@ -1020,13 +1021,13 @@ export class DetailsComponent implements OnInit {
   }
 
   onStateChange(event: any) {
-    var selectedState = this.stateList.find(x => x.id == this.filterModel.stateId);
+    var selectedState = this.stateList.find((x:any)  => x.id == this.filterModel.stateId);
     if (selectedState)
-      this.locationList = this.locationFullList.filter(x => x.stateId == selectedState.bland);
+      this.locationList = this.locationFullList.filter((x:any)  => x.stateId == selectedState.bland);
   }
 
   onDepartmentChange(event: any) {
-    this.subDepartmentList = this.subDepartmentFullList.filter(x => x.departmentId == this.filterModel.departmentId);
+    this.subDepartmentList = this.subDepartmentFullList.filter((x:any)  => x.departmentId == this.filterModel.departmentId);
   }
 
   onPayGroupChange(event: any) {

@@ -9,10 +9,10 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import swal from 'sweetalert';
 declare var $: any;
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient,HttpClientModule } from '@angular/common/http';
 import { OfferDetails } from '../models/offerdetails.model';
 
@@ -23,7 +23,7 @@ import { OfferDetails } from '../models/offerdetails.model';
 })
 export class PrintOfferComponent implements OnInit {
   offerId: any;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -34,13 +34,16 @@ export class PrintOfferComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute, 
-    private http: HttpClient) { pdfMake.vfs = pdfFonts.pdfMake.vfs;}
+    private http: HttpClient) { 
+//pdfMake.vfs = pdfFonts.pdfMake.vfs;
+}
 
   ngOnInit() {
     this.urlPath = this.router.url;
       var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
       if (chkaccess == true) {
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         this.offerId = this.route.snapshot.paramMap.get('id')!;
         this.LoadOfferDetails(this.offerId);
         this.getbase64image();
@@ -56,7 +59,7 @@ export class PrintOfferComponent implements OnInit {
           this.GetSignatoryDetails();
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.offerDetails = null;
     });
@@ -76,7 +79,7 @@ export class PrintOfferComponent implements OnInit {
               }});
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.signatory = {};
     });
@@ -127,7 +130,7 @@ export class PrintOfferComponent implements OnInit {
   }
 
   download(){
-   this.createPDF().open();
+  // this.createPDF().open();
   }
 
   createPDF(){
@@ -136,7 +139,7 @@ export class PrintOfferComponent implements OnInit {
     var address = "REGD. & CORPORATE OFFICE: # 31, RACE COURSE ROAD, BENGALURU 560 001, KARNATAKA, INDIA";
     var contactInfo = "Tel. : +91- 80-2237 0451- 57 Fax : +91-80-2237 0463 CIN: U24232KA1973PLC002d01 Website: www.microlabsltd.com Email : info@microlabs.in";
     var logo = this.image;
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -149,14 +152,14 @@ export class PrintOfferComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    });
+    })*/;
     var docDefinition = {
       info: {
         title:'Offer Letter',
         },
       
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 10,
@@ -176,7 +179,7 @@ export class PrintOfferComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 100, 40, 10],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {          
           columns: [
             {
@@ -196,7 +199,9 @@ export class PrintOfferComponent implements OnInit {
         }
       },
     };
-    return pdfMake.createPdf(docDefinition);
+
+   // return pdfMake.createPdf(docDefinition);
+   return null;
   }
 
   sendEmail(){
@@ -212,23 +217,23 @@ export class PrintOfferComponent implements OnInit {
       request.submittedByName = this.currentUser.fullName;
       request.emailId = this.offerDetails.personalEmailId;
 
-      this.createPDF().getBase64((encodedString) => {
-        if (encodedString) {
-          request.attachment = encodedString;
-          swal("Sending email...");
-          this.httpService.HRpost(APIURLS.OFFER_DETAILS_SEND_EMAIL, request).then((data: any) => {
-            if (data == 200 || data.success) {
-              swal("Successfully emailed the offer letter to the candidate.");
-            } else if (!data.success) {
-              swal(data.message);
-            } else
-              swal("Error occurred.");
-          }
-          ).catch(error => {
-            swal(error);
-          });
-        }
-      });
+      // this.createPDF().getBase64((encodedString) => {
+      //   if (encodedString) {
+      //     request.attachment = encodedString;
+      //     swal("Sending email...");
+      //     this.httpService.HRpost(APIURLS.OFFER_DETAILS_SEND_EMAIL, request).then((data: any) => {
+      //       if (data == 200 || data.success) {
+      //         swal("Successfully emailed the offer letter to the candidate.");
+      //       } else if (!data.success) {
+      //         swal(data.message);
+      //       } else
+      //         swal("Error occurred.");
+      //     }
+      //     ).catch((error)=> {
+      //       swal(error);
+      //     });
+      //   }
+      // });
     }
   }
 

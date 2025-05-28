@@ -30,7 +30,7 @@ export class ApproveComponent implements OnInit {
   currentTab: string = "details";
   tabIndex: number = 0;
   tabsList: string[] = ["details", "jobchange", "salarychange","attachment", "history" ];
-  currentUser: AuthData;
+  currentUser!: AuthData;
   isLoading: boolean = false;
   urlPath: string = '';
   errMsg: string = "";
@@ -82,7 +82,8 @@ export class ApproveComponent implements OnInit {
     if (chkaccess == true) {
       this.employeeConfirmationId = this.route.snapshot.paramMap.get('id')!;
       this.taskId = this.route.snapshot.paramMap.get('id2')!;
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.util.canApproveTask(this.taskId, this.currentUser.uid);
       this.isLoading = true;
       this.loadDetails();   
@@ -107,33 +108,33 @@ export class ApproveComponent implements OnInit {
         this.GetEmployeeDetails(data.employeeId);
         if(this.confirmationDetails.headDetails && this.confirmationDetails.headDetails.length > 0){
           for(var item of this.confirmationDetails.headDetails){            
-            item.salaryTypeName = this.headTypes.find(x => x.type == item.salaryType).value;
-            item.frequencyName = this.frequency.find(x => x.type == item.frequency).value;
+            item.salaryTypeName = this.headTypes.find((x:any)  => x.type == item.salaryType).value;
+            item.frequencyName = this.frequency.find((x:any)  => x.type == item.frequency).value;
           }
-          this.monthlyComponents = this.confirmationDetails.headDetails.filter(x=>x.salaryType=="I" && x.frequency == "M");
-          this.reimbursementComponents = this.confirmationDetails.headDetails.filter(x=>x.salaryType=="R");          
-          this.annualComponents = this.confirmationDetails.headDetails.filter(x=>x.salaryType!="V" && x.frequency == "A");
-          this.variableComponents = this.confirmationDetails.headDetails.filter(x=>x.salaryType =="V");
-          this.onetimeComponents = this.confirmationDetails.headDetails.filter(x=>x.salaryType =="O" && x.frequency == "O");
+          this.monthlyComponents = this.confirmationDetails.headDetails.filter((x:any)=>x.salaryType=="I" && x.frequency == "M");
+          this.reimbursementComponents = this.confirmationDetails.headDetails.filter((x:any)=>x.salaryType=="R");          
+          this.annualComponents = this.confirmationDetails.headDetails.filter((x:any)=>x.salaryType!="V" && x.frequency == "A");
+          this.variableComponents = this.confirmationDetails.headDetails.filter((x:any)=>x.salaryType =="V");
+          this.onetimeComponents = this.confirmationDetails.headDetails.filter((x:any)=>x.salaryType =="O" && x.frequency == "O");
           this.calculateTotals();
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
 
   
   
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     this.isLoading = true;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
       if (data) {
         this.employeeDetails = data;        
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -156,7 +157,7 @@ export class ApproveComponent implements OnInit {
             this.location.back();
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error("Error occured.");
       });
     }
@@ -184,7 +185,7 @@ export class ApproveComponent implements OnInit {
             this.location.back();
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error(error);
       });
     }

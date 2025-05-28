@@ -20,7 +20,7 @@ declare var toastr: any;
 export class PrintExitInterviewComponent implements OnInit {
 
   resignationId: any = 0;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   isLoading = false;
   questions: any[] = [];
@@ -28,9 +28,9 @@ export class PrintExitInterviewComponent implements OnInit {
   errMsg: string = "";
   isAnswered = false;
   isDeclared = false;
-  DateLastWorkingDay: string;
-  ResignationDate: string;
-  JoiningDate: string;
+  DateLastWorkingDay: string
+  ResignationDate: string
+  JoiningDate: string
 
   constructor(private appService: AppComponent, private httpService: HttpService,
     private router: Router, private appServiceDate: AppService, private route: ActivatedRoute,
@@ -40,7 +40,8 @@ export class PrintExitInterviewComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));     
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;     
       this.resignationId = this.route.snapshot.paramMap.get('id')!;
       this.GetData();
       this.GetResignationDetailsById();
@@ -54,11 +55,11 @@ export class PrintExitInterviewComponent implements OnInit {
       this.httpService.HRget(APIURLS.RESIGNATION_GET_EXIT_INTERVIEW_ANSWERS+"/"+ this.resignationId).then((data: any) => {
         if (data) {
           this.questions = data;
-          this.isAnswered = (data.filter(x=>x.answer != "" && x.answer != null && x.answer != undefined).length > 0);          
+          this.isAnswered = (data.filter((x:any)=>x.answer != "" && x.answer != null && x.answer != undefined).length > 0);          
           this.isDeclared = this.isAnswered;
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.errMsg = "Error occurred while fetching details, please check the link.";
       });
@@ -80,7 +81,7 @@ export class PrintExitInterviewComponent implements OnInit {
         this.JoiningDate = this.getDateFormate(this.resignationDetails.dateOfJoining);
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg = error;
       this.isLoading = false;
     });

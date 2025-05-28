@@ -24,9 +24,9 @@ export class LogComplaintComponent implements OnInit {
     feedbackItem: Feedback = new Feedback(0, 0, 0, '', '', '', '', '', false);;
     empItem: any;//Employee = this.empItem = new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true, 0,0);
     isLoading: boolean = false;
-    comHeaderList: any[];
-    comTableHeaderList: any[];
-    divisionTabHeader: string;
+    comHeaderList!: any[];
+    comTableHeaderList!: any[];
+    divisionTabHeader: string
     errMsg: string = "";
     todayDate: Date = new Date();
     isLoadingPop: boolean = false;
@@ -57,7 +57,8 @@ export class LogComplaintComponent implements OnInit {
       this.path = this.router.url;
       var chkaccess = this.appService.validateUrlBasedAccess(this.path);
       if(chkaccess == true){
-        let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+        //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
         this.userid = authData.uid;
         this.getCompHeaders();
         this.getComplaintMasterList();
@@ -88,7 +89,7 @@ export class LogComplaintComponent implements OnInit {
         if (data.length>0) {
           this.feedbackList = data;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.feedbackList = [];
       });
@@ -109,7 +110,7 @@ export class LogComplaintComponent implements OnInit {
       if (this.isEdit) {
         this.feedbackItem = data;
         ////console.log(this.empItem);
-        this.selDiv = this.employeeList.find(s => s.id === this.feedbackItem.fkEmpId);;
+        this.selDiv = this.employeeList.find((s:any) => s.id === this.feedbackItem.fkEmpId);;
         ////console.log(this.selDiv);
       }
       else {
@@ -125,7 +126,7 @@ export class LogComplaintComponent implements OnInit {
                 this.employeeList = data;
                 //this.reInitDatatable();
               }
-            }).catch(error => {
+            }).catch((error)=> {
               this.isLoading = false;
               this.employeeList = [];
             });
@@ -155,7 +156,7 @@ export class LogComplaintComponent implements OnInit {
  jQuery("#saveModal").modal('show');
           this.getComplaintMasterList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error logging complaint..';
       });
@@ -164,11 +165,11 @@ export class LogComplaintComponent implements OnInit {
         this.httpService.get(APIURLS.BR_FORM_DATA_API).then((data: any) => {
             if (data.length>0) {
                 this.comHeaderList = data;
-                this.comHeaderList = data.find(s => s.subMenuId == '15'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
+                this.comHeaderList = data.find((s:any) => s.subMenuId == '15'); //_.filter(data.formData, function (obj) { if (obj.name == 'Entity') return obj; });
                 this.comTableHeaderList = _.filter(data.formDataList, function (obj) { if (obj.subMenuId == '15') return obj; });
                 this.divisionTabHeader = _.map(this.comTableHeaderList, 'field1');
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.comHeaderList = null;
         });
     }

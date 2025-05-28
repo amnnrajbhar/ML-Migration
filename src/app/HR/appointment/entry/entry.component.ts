@@ -52,7 +52,7 @@ export class EntryComponent implements OnInit {
   confirmSubmit: boolean = false;
   completedTabIndex: number = 0;
   currentTab:string = "personal";
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   errMsg: string = "";
   errMsgModalPop: string = "";
@@ -90,7 +90,7 @@ export class EntryComponent implements OnInit {
         else{
           this.LoadOfferDetails();    
         }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error("Error occurred while fetching details.");
     });
@@ -115,7 +115,7 @@ export class EntryComponent implements OnInit {
         this.errMsg = "Offer details not found, please check the link.";
 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.errMsg = "Error occurred while fetching details, please check the link.";
       this.offerDetails = {} as OfferDetails;
@@ -219,7 +219,7 @@ onSubmit(){
       this.errMsgModalPop = 'Error occured while submitting the details. Error:' + err;
       toastr.error(this.errMsgModalPop);
     })
-    .catch(error => {
+    .catch((error)=> {
       this.isLoading = false;
       this.errMsgModalPop = 'Error occured while submitting the details. Error:' + error;
       toastr.error(this.errMsgModalPop);

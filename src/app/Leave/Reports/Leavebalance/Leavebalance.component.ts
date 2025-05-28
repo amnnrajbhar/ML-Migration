@@ -20,17 +20,17 @@ import { FormControl, NgForm } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 import { ExcelService } from '../../../shared/excel-service';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import * as XLSX from 'xlsx';
-import * as pdfMake from "pdfmake/build/pdfmake";
+// import * as pdfMake from "pdfmake/build/pdfmake";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 //import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 
 
 
@@ -40,15 +40,15 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
     styleUrls: ['./Leavebalance.component.css']
 })
 export class LeavebalanceComponent implements OnInit {
-    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-  @ViewChild(NgForm, { static: false }) userForm: NgForm;
+    @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
 
-@ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+@ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
 
-  @ViewChild('table', { static: false }) table: ElementRef;
+  @ViewChild('table', { static: false }) table!: ElementRef;
 
-  @ViewChild('dailyreport', { static: false }) dailyreport: ElementRef;
+  @ViewChild('dailyreport', { static: false }) dailyreport!: ElementRef;
 
 
     public tableWidget: any;
@@ -58,7 +58,7 @@ export class LeavebalanceComponent implements OnInit {
     departmentList: any[] = [];
     ReportData: any[] = [];
     locationList: any[] = [];
-    isLoading: boolean;
+    isLoading!: boolean;
     StaffCategoryList: any[] = [];
     PayGroupList: any[] = [];
     ReportingGroupList: any[] = [];
@@ -94,12 +94,12 @@ export class LeavebalanceComponent implements OnInit {
     path: any;
     fromDate: any = null;
     toDate: any = null;
-    EmployeeNo: string = null;
+    EmployeeNo: string = ' ';
 
     constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
         private http: HttpClient, private https: HttpClient, private route: ActivatedRoute, private excelService: ExcelService,
         private datePipe: DatePipe) {
-        pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    //    pdfMake.vfs = pdfFonts.pdfMake.vfs;
     }
 
     private initDatatable(): void {
@@ -119,7 +119,7 @@ export class LeavebalanceComponent implements OnInit {
 
 
     locationAllList: any[] = [[]];
-    getLocation(id) {
+    getLocation(id:any) {
         let temp = this.locationAllList.find(e => e.id == id);
         return temp ? temp.name : '';
     }
@@ -129,45 +129,46 @@ export class LeavebalanceComponent implements OnInit {
         this.httpService.LAget(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
             if (data.length > 0) {
                 this.locationAllList = data;
-                this.locationList = data.filter(x => x.isActive);
+                this.locationList = data.filter((x:any)  => x.isActive);
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-                this.filterPlant = this.locationList.find(x => x.id == this.currentUser.baselocation).code;
-                this.locationname = this.filterPlant + '-' + this.locationList.find(x => x.id == this.currentUser.baselocation).name;
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+                this.filterPlant = this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).code;
+                this.locationname = this.filterPlant + '-' + this.locationList.find((x:any)  => x.id == this.currentUser.baselocation).name;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.locationList = [];
         });
     }
 
     plantList: any[] = [];
-    getPlantsassigned(id) {
+    getPlantsassigned(id:any) {
         this.isLoading = true;
         this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
             if (data) {
-                this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+                this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
                 let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-                this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
+                this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
             }
             this.isLoading = false;
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.plantList = [];
         });
     }
 
 
-    getLocationName(id) {
-        let t = this.locationList.find(s => s.id == id);
+    getLocationName(id:any) {
+        let t = this.locationList.find((s:any) => s.id == id);
         return t.code + ' - ' + t.name;
     }
 
 
-    currentUser: AuthData;
+    currentUser!: AuthData;
     ngOnInit() {
         this.path = this.router.url;
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+     const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
         let today = new Date();
         this.CalenderYear = new Date().getFullYear().toString();
         var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -193,11 +194,13 @@ export class LeavebalanceComponent implements OnInit {
     ClearData() {
         this.filterPlant = null;
         this.filterStaffcat = null;
-        this.filterPayGroup = null;
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
         this.filterDepartment = null;
         this.filterReportingGroup = null;
-        this.filterMonth = null;
-        this.filterEmployee = null;
+        this.filterMonth = '';
+        this.filterEmployee = '';
         this.AttendanceType = null;
         this.ViewType = null;
         this.Type = null;
@@ -261,29 +264,33 @@ export class LeavebalanceComponent implements OnInit {
     getpayGroupList() {
         this.get("PayGroupMaster/GetAll").then((data: any) => {
             if (data.length > 0) {
-                this.PayGroupList = data.sort((a, b) => {
+                this.PayGroupList = data.sort((a:any, b:any) => {
                     if (a.short_desc > b.short_desc) return 1;
                     if (a.short_desc < b.short_desc) return -1;
                     return 0;
                 });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.PayGroupList = [];
         });
     }
     payGroupList1: any[] = [];
     getPaygroupsBasedOnPlant() {
-        this.filterPayGroup = null;
-        let temp = this.locationList.find(x => x.code == this.filterPlant);
-        this.payGroupList1 = this.PayGroupList.filter(x => x.plant == temp.code);
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+        let temp = this.locationList.find((x:any)  => x.code == this.filterPlant);
+        this.payGroupList1 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
     }
 
     payGroupList11: any[] = [];
     getPaygroupsBasedOnPlant1() {
-        this.filterPayGroup = null;
-        let temp = this.locationList.find(x => x.fkPlantId == this.filterPlant);
-        this.payGroupList11 = this.PayGroupList.filter(x => x.plant == temp.code);
+       // this.filterPayGroup = null;
+  this.filterPayGroup = '';
+
+        let temp = this.locationList.find((x:any)  => x.fkPlantId == this.filterPlant);
+        this.payGroupList11 = this.PayGroupList.filter((x:any)  => x.plant == temp.code);
     }
 
     getempCatList() {
@@ -291,7 +298,7 @@ export class LeavebalanceComponent implements OnInit {
             if (data.length > 0) {
                 this.StaffCategoryList = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.StaffCategoryList = [];
         });
@@ -301,7 +308,7 @@ export class LeavebalanceComponent implements OnInit {
             if (data.length > 0) {
                 this.ReportingGroupList = data;
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.isLoading = false;
             this.ReportingGroupList = [];
         });
@@ -315,7 +322,7 @@ export class LeavebalanceComponent implements OnInit {
             if ($event.timeStamp - this.lastReportingkeydown > 400) {
                 this.get("EmployeeMaster/GetEmployeesList/" + text).then((data: any) => {
                     if (data.length > 0) {
-                        var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
+                        var sortedList = data.sort((a:any, b:any) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
                         var list = $.map(sortedList, function (item) {
                             return { label: item.fullName + " (" + item.employeeId + ")", value: item.employeeId };
                         })
@@ -325,7 +332,7 @@ export class LeavebalanceComponent implements OnInit {
                                 "ui-autocomplete": "highlight",
                                 "ui-menu-item": "list-group-item"
                             },
-                            change: function (event, ui) {
+                            change: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#empNo").val(ui.item.value);
                                     $("#empNo").val(ui.item.value);
@@ -335,7 +342,7 @@ export class LeavebalanceComponent implements OnInit {
                                     $("#empNo").val('');
                                 }
                             },
-                            select: function (event, ui) {
+                            select: function (event:any, ui:any) {
                                 if (ui.item) {
                                     $("#empNo").val(ui.item.value);
                                     $("#empNo").val(ui.item.value);
@@ -367,17 +374,18 @@ export class LeavebalanceComponent implements OnInit {
             return;
         }
         let filterModel: any = {};
-        filterModel.baseLocation = this.locationList.find(x => x.code == this.filterPlant).fkPlantId;
+        filterModel.baseLocation = this.locationList.find((x:any)  => x.code == this.filterPlant).fkPlantId;
         filterModel.payGroup = this.filterPayGroup;
         filterModel.category = this.filterStaffcat;
         filterModel.department = this.filterDepartment;
         filterModel.reportingGroup = this.filterReportingGroup;
         this.httpService.LApost(APIURLS.BR_GET_EMPLOYEE_LIST_FOR_REPORT, filterModel).then((data: any) => {
             this.empListCon = data.table;
-            this.empListCon.forEach(element => {
+            this.empListCon.forEach((element:any)=> {
+
                 element.name = element.employeeNo + ' - ' + element.name;
             });
-        }).catch(error => {
+        }).catch((error)=> {
             this.empListCon = [];
             this.isLoading = false;
         });
@@ -386,19 +394,19 @@ export class LeavebalanceComponent implements OnInit {
     getDepartList() {
         this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
             if (data.length > 0) {
-                this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+                this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
                     if (a.name > b.name) return 1;
                     if (a.name < b.name) return -1;
                     return 0;
                 });
             }
-        }).catch(error => {
+        }).catch((error)=> {
             this.departmentList = [];
             this.isLoading = false;
 
         });
     }
-    exportList: any[];
+    exportList!: any[];
 
     get(apiKey: string): any {
         const promise = new Promise((resolve, reject) => {
@@ -420,7 +428,9 @@ export class LeavebalanceComponent implements OnInit {
     }
 
    getHeader(): { headers: HttpHeaders } {
-  const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //const authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+const authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',
@@ -440,7 +450,7 @@ export class LeavebalanceComponent implements OnInit {
             this.isLoading = true;
             let filterModel: any = {};
             filterModel.plant = this.filterPlant;
-            filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map(x => x.employeeNo).join(',') : null;
+            filterModel.pernr = this.selectedEmployeeList.length > 0 ? this.selectedEmployeeList.map((x:any)  => x.employeeNo).join(',') : null;
             filterModel.staffCat = this.filterStaffcat;
             filterModel.reporting = this.filterReportingGroup;
             filterModel.payGroup = this.filterPayGroup;
@@ -449,7 +459,7 @@ export class LeavebalanceComponent implements OnInit {
             filterModel.Year = this.CalenderYear;
             filterModel.dept = this.filterDepartment;
             let connection = this.httpService.LApost(APIURLS.GET_YEARLY_LEAVE_REPORT, filterModel);
-            connection.then((data) => {
+            connection.then((data:any) => {
                 if (data) {
                     this.ReportData = data.table;                    
                 }
@@ -461,137 +471,139 @@ export class LeavebalanceComponent implements OnInit {
         }
     }
 
-    generateExcel() {
+    //v10
+    // generateExcel() {
 
-        //Excel Title, Header, Data
-        let dt = new Date();
-        let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
-        const title = 'Leave Balance Report for the year : ' + this.CalenderYear;
-        const header1 = ["", "", "", "", "",
-            "Casual Leave", "", "",
-            "Sick Leave", "", "",
-            "Earned Leave", "", "",
-            "Total", "", "", "Previous Year", "", "",]
-        const header = ["SNo", "Employee Id", "Employee Name", "Department", "Designation",
-            "Opening", "Availed", "Closing",
-            "Opening", "Availed", "Closing",
-            "Opening", "Availed", "Closing",
-            "Opening", "Availed", "Closing",
-            "Opening", "Availed", "Closing"]
+    //     //Excel Title, Header, Data
+    //     let dt = new Date();
+    //     let date = dt.getFullYear() + '_' + (dt.getMonth() + 1) + '_' + dt.getDay();
+    //     const title = 'Leave Balance Report for the year : ' + this.CalenderYear;
+    //     const header1 = ["", "", "", "", "",
+    //         "Casual Leave", "", "",
+    //         "Sick Leave", "", "",
+    //         "Earned Leave", "", "",
+    //         "Total", "", "", "Previous Year", "", "",]
+    //     const header = ["SNo", "Employee Id", "Employee Name", "Department", "Designation",
+    //         "Opening", "Availed", "Closing",
+    //         "Opening", "Availed", "Closing",
+    //         "Opening", "Availed", "Closing",
+    //         "Opening", "Availed", "Closing",
+    //         "Opening", "Availed", "Closing"]
 
-        var exportList = [];
-        var ts: any = {};
-        let index = 0;
-        this.ReportData.forEach(element => {
-            index = index + 1;
-            ts = {};
-            ts.id = index;
-            ts.pernr = element.pernr;
-            ts.empFullName = element.fullName;
-            ts.department = element.department;
-            ts.designation = element.designation;
-            ts.cl_open = element.cl_open;
-            ts.cl_avail = element.cl_avail;
-            ts.cl_close = element.cl_close;
-            ts.sl_open = element.sl_open;
-            ts.sl_avail = element.sl_avail;
-            ts.sl_close = element.sl_close;
-            ts.el_open = element.el_open;
-            ts.el_avail = element.el_avail;
-            ts.el_close = element.el_close;
-            ts.tot_open = element.tot_open;
-            ts.tot_availed = element.tot_availed;
-            ts.tot_close = element.tot_close;
-            ts.prev_open = element.prev_open;
-            ts.prev_availed = element.prev_availed;
-            ts.prev_close = element.prev_close;
-            exportList.push(ts);
+    //     var exportList = [];
+    //     var ts: any = {};
+    //     let index = 0;
+    //     this.ReportData.forEach((element:any)=> {
 
-        });
-        let locname = this.locationList.find(x => x.code == this.filterPlant);
-        var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
-        const data = exportList;
-        //Create workbook and worksheet
-        let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-        let worksheet = workbook.addWorksheet('Yearly Leave Balance Report for the year : ' + this.CalenderYear);
-        //Add Row and formatting
-        var head = worksheet.addRow([OrganisationName]);
-        head.font = { size: 16, bold: true }
-        head.alignment = { horizontal: 'center' }
-        let titleRow = worksheet.addRow([title]);
-        titleRow.font = { size: 16, bold: true }
-        titleRow.alignment = { horizontal: 'center' }
-        //let subTitleRow = worksheet.addRow(['Yearly Leave Balance Report']);
-        //subTitleRow.font = { size: 16, bold: true }
-        // subTitleRow.alignment = { horizontal: 'center' }
-        //Add Image
-        // subTitleRow.font = { size: 12, bold: true }
-        worksheet.mergeCells('A1:N1');
-        worksheet.mergeCells('A2:N2');
-        worksheet.mergeCells('A3:N3');
+    //         index = index + 1;
+    //         ts = {};
+    //         ts.id = index;
+    //         ts.pernr = element.pernr;
+    //         ts.empFullName = element.fullName;
+    //         ts.department = element.department;
+    //         ts.designation = element.designation;
+    //         ts.cl_open = element.cl_open;
+    //         ts.cl_avail = element.cl_avail;
+    //         ts.cl_close = element.cl_close;
+    //         ts.sl_open = element.sl_open;
+    //         ts.sl_avail = element.sl_avail;
+    //         ts.sl_close = element.sl_close;
+    //         ts.el_open = element.el_open;
+    //         ts.el_avail = element.el_avail;
+    //         ts.el_close = element.el_close;
+    //         ts.tot_open = element.tot_open;
+    //         ts.tot_availed = element.tot_availed;
+    //         ts.tot_close = element.tot_close;
+    //         ts.prev_open = element.prev_open;
+    //         ts.prev_availed = element.prev_availed;
+    //         ts.prev_close = element.prev_close;
+    //         exportList.push(ts);
 
-        //Blank Row 
-        // worksheet.addRow([]);
-        //Add Header Row
-        let headerRow1 = worksheet.addRow(header1);
-        let headerRow = worksheet.addRow(header);
-        // // Cell Style : Fill and Border
-        // worksheet.mergeCells('A4:A5');
-        // worksheet.mergeCells('B4:B5');
-        // worksheet.mergeCells('C4:C5');
-        // worksheet.mergeCells('D4:D5');
-        worksheet.mergeCells('F4:H4');
-        worksheet.mergeCells('I4:K4');
-        worksheet.mergeCells('L4:N4');
-        worksheet.mergeCells('O4:Q4');
-        worksheet.mergeCells('R4:T4');
+    //     });
+    //     let locname = this.locationList.find((x:any)  => x.code == this.filterPlant);
+    //     var OrganisationName = "MICRO LABS LIMITED" + ', ' + locname.code + '-' + locname.name;
+    //     const data = exportList;
+    //     //Create workbook and worksheet
+    //     //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+    //     let worksheet = workbook.addWorksheet('Yearly Leave Balance Report for the year : ' + this.CalenderYear);
+    //     //Add Row and formatting
+    //     var head = worksheet.addRow([OrganisationName]);
+    //     head.font = { size: 16, bold: true }
+    //     head.alignment = { horizontal: 'center' }
+    //     let titleRow = worksheet.addRow([title]);
+    //     titleRow.font = { size: 16, bold: true }
+    //     titleRow.alignment = { horizontal: 'center' }
+    //     //let subTitleRow = worksheet.addRow(['Yearly Leave Balance Report']);
+    //     //subTitleRow.font = { size: 16, bold: true }
+    //     // subTitleRow.alignment = { horizontal: 'center' }
+    //     //Add Image
+    //     // subTitleRow.font = { size: 12, bold: true }
+    //     worksheet.mergeCells('A1:N1');
+    //     worksheet.mergeCells('A2:N2');
+    //     worksheet.mergeCells('A3:N3');
 
-        headerRow1.eachCell((cell, number) => {
-            cell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'FFFFFF00' },
-                bgColor: { argb: 'FF0000FF' }
-            }
-            cell.alignment = { horizontal: 'center' }
-            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
-        headerRow.eachCell((cell, number) => {
-            cell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'FFFFFF00' },
-                bgColor: { argb: 'FF0000FF' }
-            }
-            cell.alignment = { horizontal: 'center' }
-            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
-        //  worksheet.addRows(data);
-        // Add Data and Conditional Formatting
-        //data.forEach()
+    //     //Blank Row 
+    //     // worksheet.addRow([]);
+    //     //Add Header Row
+    //     let headerRow1 = worksheet.addRow(header1);
+    //     let headerRow = worksheet.addRow(header);
+    //     // // Cell Style : Fill and Border
+    //     // worksheet.mergeCells('A4:A5');
+    //     // worksheet.mergeCells('B4:B5');
+    //     // worksheet.mergeCells('C4:C5');
+    //     // worksheet.mergeCells('D4:D5');
+    //     worksheet.mergeCells('F4:H4');
+    //     worksheet.mergeCells('I4:K4');
+    //     worksheet.mergeCells('L4:N4');
+    //     worksheet.mergeCells('O4:Q4');
+    //     worksheet.mergeCells('R4:T4');
 
-        for (let x1 of data) {
-            let x2 = Object.keys(x1);
-            let temp = []
-            for (let y of x2) {
-                temp.push(x1[y])
-            }
-            worksheet.addRow(temp)
-        }
+    //     headerRow1.eachCell((cell, number) => {
+    //         cell.fill = {
+    //             type: 'pattern',
+    //             pattern: 'solid',
+    //             fgColor: { argb: 'FFFFFF00' },
+    //             bgColor: { argb: 'FF0000FF' }
+    //         }
+    //         cell.alignment = { horizontal: 'center' }
+    //         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+    //     })
+    //     headerRow.eachCell((cell, number) => {
+    //         cell.fill = {
+    //             type: 'pattern',
+    //             pattern: 'solid',
+    //             fgColor: { argb: 'FFFFFF00' },
+    //             bgColor: { argb: 'FF0000FF' }
+    //         }
+    //         cell.alignment = { horizontal: 'center' }
+    //         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+    //     })
+    //     //  worksheet.addRows(data);
+    //     // Add Data and Conditional Formatting
+    //     //data.forEach()
 
-        worksheet.eachRow((cell, number) => {
-            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
+    //     for (let x1 of data) {
+    //         let x2 = Object.keys(x1);
+    //         let temp = []
+    //         for (let y of x2) {
+    //             temp.push(x1[y])
+    //         }
+    //         worksheet.addRow(temp)
+    //     }
 
-        worksheet.addRow([]);
+    //     worksheet.eachRow((cell, number) => {
+    //         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+    //     })
 
-        //Generate Excel File with given name
-        workbook.xlsx.writeBuffer().then((data) => {
-            let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            fs.saveAs(blob, 'LeaveBalanceReport.xlsx');
-        })
+    //     worksheet.addRow([]);
 
-    }
+    //     //Generate Excel File with given name
+    //     workbook.xlsx.writeBuffer().then((data:any) => {
+    //         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    //         fs.saveAs(blob, 'LeaveBalanceReport.xlsx');
+    //     })
+
+    // }
 
 
     setFormatedDateTime(date: any) {

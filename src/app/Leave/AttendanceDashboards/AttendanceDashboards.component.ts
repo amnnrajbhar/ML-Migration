@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Lightbox } from 'ngx-lightbox';
 declare var jQuery: any;
-import { Chart } from 'chart.js';
-import { ChartDataLabels } from 'chartjs-plugin-datalabels';
+//import { Chart } from 'chart.js';
+//import { ChartDataLabels } from 'chartjs-plugin-datalabels';
 import * as _ from "lodash";
 import { AuthData } from '../../auth/auth.model';
 import { AppComponent } from '../../app.component';
@@ -16,7 +16,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ExcelService } from '../../shared/excel-service';
 declare var $: any;
 import swal from 'sweetalert';
-import * as moment from 'moment';
+import moment from 'moment'
 //import { debug } from 'util';
 
 
@@ -29,10 +29,10 @@ export class AttendanceDashboardsComponent implements OnInit {
   todayDate = new Date();
   today: Date = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), this.todayDate.getDate());
   tableWidget: any;
-  errMsg: string;
+  errMsg: string
   location: any;
-  usrid: number;
-  path: string;
+  usrid!: number;
+  path!: string
   locationList: any[] = [];
   errMsgPop = '';
   myDate = new Date();
@@ -41,22 +41,22 @@ export class AttendanceDashboardsComponent implements OnInit {
   //today report filter
   fromDate = '';
   toDate = '';
-  empData: AuthData;
-  isLoading: boolean;
+  empData!: AuthData;
+  isLoading!: boolean;
 
-  filterPlant: string = null;
-  filterPaygroup: string = null;
-  filterCategory: string = null;
-  filterDepartment: string = null;
-  filterSubdept: string = null;
-  filterReporting: string = null;
+  filterPlant: string = ' ';
+  filterPaygroup: string = ' ';
+  filterCategory: string = ' ';
+  filterDepartment: string = ' ';
+  filterSubdept: string = ' ';
+  filterReporting: string = ' ';
   StaffCategoryList: any[] = [];
   PayGroupList: any[] = [];
   ReportingGroupList: any[] = [];
   subdepartmentList: any[] = [];
   departmentList: any[] = [];
 
-  public chartPlugins = [ChartDataLabels];
+ // public chartPlugins = [ChartDataLabels];
   employeeList: any[] = [];
   typeofCount: any;
 
@@ -78,7 +78,8 @@ export class AttendanceDashboardsComponent implements OnInit {
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     // console.log('Access:'+chkaccess);
     if (chkaccess == true) {
-      let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+      //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
       // console.log(authData);
       this.usrid = authData.uid;
       this.empData = authData;
@@ -99,7 +100,7 @@ export class AttendanceDashboardsComponent implements OnInit {
   }
 
 
-  getFormatedDate(d) {
+  getFormatedDate(d:any) {
     let fd = new Date(d);
     let formateddate = fd.getFullYear() + "-" + ("00" + (fd.getMonth() + 1)).slice(-2) + "-" +
       ("00" + fd.getDate()).slice(-2);
@@ -138,8 +139,8 @@ export class AttendanceDashboardsComponent implements OnInit {
     this.TotemployeesOnOD = 0;
     this.TotemployeesOnLeave = 0;
     this.TotabsentEmployees = 0;
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     let filterModel: any = {};
 
     if (this.from_date == '' || this.from_date == null) {
@@ -153,7 +154,7 @@ export class AttendanceDashboardsComponent implements OnInit {
       this.from_date = new Date(fd.getFullYear(), fd.getMonth(), fd.getDate());
 
     }
-    filterModel.plant = this.locationList.find(x => x.code == this.filterPlant).fkPlantId;
+    filterModel.plant = this.locationList.find((x:any)  => x.code == this.filterPlant).fkPlantId;
     filterModel.payGroup = this.filterPaygroup;
     filterModel.department = this.filterDepartment;
     filterModel.reporting = this.filterReporting;
@@ -167,7 +168,8 @@ export class AttendanceDashboardsComponent implements OnInit {
         this.TotemployeesOnOD = +data[0].employeesOnOD;
         this.TotemployeesOnLeave = +data[0].employeesOnLeave;
         this.TotabsentEmployees = +data[0].absentEmployees;
-        // this.ShiftDashboardData.forEach(element => {
+        // this.ShiftDashboardData.forEach((element:any)=> {
+
         //   this.TotavailableEmpCount = this.TotavailableEmpCount + +element.availableEmpCount;
         //   this.TotpresentEmployees = this.TotpresentEmployees + +element.presentEmployees;
         //   this.TotemployeesOnOD = this.TotemployeesOnOD + +element.employeesOnOD;
@@ -192,7 +194,7 @@ export class AttendanceDashboardsComponent implements OnInit {
       this.isLoading = false;
       this.reInitDatatable();
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ShiftDashboardData = [];
     });
@@ -202,7 +204,7 @@ export class AttendanceDashboardsComponent implements OnInit {
     this.from_date = null;
     this.filterPlant = null;
     this.filterPaygroup = null;
-    this.filterCategory = null;
+    this.filterCategory = '';
     this.filterReporting = null;
     this.ShiftDashboardData = [];
     this.TotavailableEmpCount = 0;
@@ -212,20 +214,20 @@ export class AttendanceDashboardsComponent implements OnInit {
     this.TotabsentEmployees = 0;
   }
 
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.locationList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.locationList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        let temp = this.locationList.find(x => x.fkPlantId == this.empData.baselocation);
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        let temp = this.locationList.find((x:any)  => x.fkPlantId == this.empData.baselocation);
         this.filterPlant = temp.code;
         // this.filterReport();
 
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -259,13 +261,13 @@ export class AttendanceDashboardsComponent implements OnInit {
     setTimeout(() => this.initDatatable(), 0)
   }
 
-  addDays(date, daysToAdd) {
+  addDays(date:any, daysToAdd:any) {
     var _24HoursInMilliseconds = 86400000;
     return new Date(date.getTime() + daysToAdd * _24HoursInMilliseconds);
   };
 
-  getLocationName(id) {
-    let temp = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let temp = this.locationList.find((s:any) => s.id == id);
     return temp ? temp.name : '';
   }
 
@@ -278,7 +280,7 @@ export class AttendanceDashboardsComponent implements OnInit {
         //this.filterReport();
       }
 
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.locationList = [];
     });
@@ -286,13 +288,13 @@ export class AttendanceDashboardsComponent implements OnInit {
   getpayGroupList() {
     this.get("PayGroupMaster/GetAll").then((data: any) => {
       if (data.length > 0) {
-        this.PayGroupList = data.sort((a, b) => {
+        this.PayGroupList = data.sort((a:any, b:any) => {
           if (a.short_desc > b.short_desc) return 1;
           if (a.short_desc < b.short_desc) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
@@ -302,7 +304,7 @@ export class AttendanceDashboardsComponent implements OnInit {
       if (data.length > 0) {
         this.StaffCategoryList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.StaffCategoryList = [];
     });
@@ -312,7 +314,7 @@ export class AttendanceDashboardsComponent implements OnInit {
       if (data.length > 0) {
         this.ReportingGroupList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.ReportingGroupList = [];
     });
@@ -320,19 +322,19 @@ export class AttendanceDashboardsComponent implements OnInit {
   getDepartList() {
     this.httpService.LAget(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
     });
   }
-  getTimeFormat(time) {
+  getTimeFormat(time:any) {
     return moment('1970-01-01 ' + time);
   }
 
@@ -413,7 +415,7 @@ export class AttendanceDashboardsComponent implements OnInit {
         this.ShowAbsent = false;
       }
       let filterModel: any = {};
-      filterModel.plant = this.locationList.find(x => x.code == this.filterPlant).fkPlantId;
+      filterModel.plant = this.locationList.find((x:any)  => x.code == this.filterPlant).fkPlantId;
       filterModel.payGroup = this.filterPaygroup;
       filterModel.empCat = this.filterCategory;
       filterModel.department = this.filterDepartment;
@@ -424,7 +426,7 @@ export class AttendanceDashboardsComponent implements OnInit {
         if (data.length > 0) {
           this.employeeList = data;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.employeeList = [];
       });
       jQuery("#myModal").modal('show');
@@ -432,7 +434,8 @@ export class AttendanceDashboardsComponent implements OnInit {
   }
 
 getHeader(): { headers: HttpHeaders } {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   const headers = new HttpHeaders({
     'Accept': 'application/json',

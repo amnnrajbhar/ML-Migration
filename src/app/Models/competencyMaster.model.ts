@@ -1,9 +1,9 @@
 export class CompetencyMaster {
-    id: number;
-    name: string;
+    id!: number;
+    name: string
     fkHeadEmpId: number | null;
     fkSbuId: number | null;
-    description: string;
+    description: string
     fkParentId: number | null;
     createdBy: number | null;
     createdDate: string | null;

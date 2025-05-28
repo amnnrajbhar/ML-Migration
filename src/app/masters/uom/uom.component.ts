@@ -12,8 +12,8 @@ import { AuthData } from '../../auth/auth.model';
 import { AuditLogChange } from '../auditlogchange.model';
 import { AuditLog } from '../auditlog.model';
 export class actionItemModel {
-  uom: string;
-  description: string;
+  uom: string
+  description: string
 }
 @Component({
   selector: 'app-uom',
@@ -21,7 +21,7 @@ export class actionItemModel {
   styleUrls: ['./uom.component.css']
 })
 export class UomComponent implements OnInit {
-@ViewChild(NgForm, { static: false }) uomForm: NgForm;
+@ViewChild(NgForm, { static: false }) uomForm!: NgForm;
 
   errMsg: string = "";
   isLoadingPop: boolean = false;
@@ -35,8 +35,8 @@ export class UomComponent implements OnInit {
   isLoading: boolean = false;
   currentUser = {} as AuthData;
   olduomItem: UOM = new UOM();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
   private initDatatable(): void {
@@ -57,7 +57,8 @@ export class UomComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getUOMMasterList();
     }
     else
@@ -71,11 +72,11 @@ export class UomComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_UOM_MASTER_ALL_API).then((data: any) => {
       this.isLoading = true;
       if (data.length > 0) {
-        this.uomMasterList = data.filter(x=>x.isActive);
+        this.uomMasterList = data.filter((x:any)=>x.isActive);
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.uomMasterList = [];
     });
@@ -99,7 +100,7 @@ export class UomComponent implements OnInit {
   onSaveUOM(status: boolean) {
     this.errMsg = "";
     let connection: any;
-    if (!this.uomMasterList.some(s => s.uom.trim().toLowerCase() === this.uomItem.uom.trim().toLowerCase() && s.id != this.uomItem.id)) {
+    if (!this.uomMasterList.some((s:any) => s.uom.trim().toLowerCase() === this.uomItem.uom.trim().toLowerCase() && s.id != this.uomItem.id)) {
       if (!this.isEdit)
       {
         this.auditType="Create";
@@ -126,7 +127,7 @@ export class UomComponent implements OnInit {
           this.insertAuditLog(this.olduomItem, this.uomItem, Id);
           this.getUOMMasterList();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving UOM data..';
       });
@@ -162,7 +163,7 @@ export class UomComponent implements OnInit {
             this.insertAuditLog(this.uomItem,this.olduomItem,this.uomItem.id);
             this.getUOMMasterList();
           }
-        }).catch(() => {
+        }).catch((error) => {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting UOM..';
         });
@@ -231,12 +232,12 @@ export class UomComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -245,7 +246,7 @@ export class UomComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

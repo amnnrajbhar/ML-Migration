@@ -13,9 +13,9 @@ export class ResignationListReportFilter {
     selectedOption: any;   
     selectedGroup: any;    
     selectedShortFallDays: any;
-    name: string;
-    resignationId: string;
-    employeeId: number;
+    name: string
+    resignationId: string
+    employeeId!: number;
     pageNo:number;
     pageSize:number;
     export:boolean;

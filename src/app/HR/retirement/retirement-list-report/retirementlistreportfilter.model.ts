@@ -12,8 +12,8 @@ export class RetirementListReportFilter {
     selectedTodate: any;
     selectedOption: any;   
     selectedGroup: any;    
-    name: string;
-    employeeId: number;
+    name: string
+    employeeId!: number;
     pageNo:number;
     pageSize:number;
     export:boolean;

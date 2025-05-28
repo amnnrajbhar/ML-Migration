@@ -23,10 +23,10 @@ declare var $: any;
   providers:[Util,AppointmentService]
 })
 export class LanguagesComponent implements OnInit {
-  @Input() employeeId: number;
+  @Input() employeeId!: number;
   @Input() profileDetails: TemporaryProfile;
   @Input() editAllowed: boolean ;
-  @Input() profileId: number;
+  @Input() profileId!: number;
   @Output() dataSaved: EventEmitter<any> =   new EventEmitter();
   @Output() dataLoaded: EventEmitter<any> =   new EventEmitter();
   languageList: any[] = [];
@@ -34,7 +34,7 @@ export class LanguagesComponent implements OnInit {
   languageTypes: any[] = [];
   count: number = 0;
   isLoading: boolean = false;
-  currentUser: AuthData;
+  currentUser!: AuthData;
   objectType: string = "Employee Profile";
   profileDetailsList: any={};
   profileUpdate = false;
@@ -53,7 +53,8 @@ export class LanguagesComponent implements OnInit {
 
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getData(this.employeeId);
     }
 
@@ -79,7 +80,7 @@ export class LanguagesComponent implements OnInit {
   }
 
 
-  getData(id) {
+  getData(id:any) {
     this.isLoading = true;
   
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_GET_LANGUAGE, id).then((data: any) => {
@@ -88,7 +89,7 @@ export class LanguagesComponent implements OnInit {
         this.count = data.length;
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -100,13 +101,13 @@ export class LanguagesComponent implements OnInit {
     this.httpService.HRget(APIURLS.TEMPORARY_EMPLOYEE_PROFILE_GET_DETAILS + "/" + id).then((data: any) => {
       if (data) {
         this.profileDetailsList = data;
-        //this.profileDetailsList.languageDetails = this.profileDetailsList.languageDetails.filter(x => x.action!="None");
+        //this.profileDetailsList.languageDetails = this.profileDetailsList.languageDetails.filter((x:any)  => x.action!="None");
         // for(var item of this.profileDetailsList.languageDetails){
         //   item.statusColor = this.statusList.find(x=>x.type == item.action).color;
         // }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -126,7 +127,7 @@ export class LanguagesComponent implements OnInit {
         toastr.error(data.message); 
       }else
       toastr.error("Error occurred while submitting.");
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });    
 }

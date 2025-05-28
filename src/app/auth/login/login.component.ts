@@ -17,7 +17,7 @@ declare var jQuery: any;
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  returnUrl: string;
+  returnUrl: string
   userList: Employee[];
   loginData = { username: '', password: '', tenantId: 1 };
   isLoading: boolean = false;
@@ -170,7 +170,7 @@ export class LoginComponent implements OnInit {
   //     //       this.errMsg1 = data;
   //     //       this.emailMsg1 = '';
   //     //   }
-  //     // }).catch(error => {
+  //     // }).catch((error)=> {
   //     //   this.isLoading = false;
   //     //   this.errMsg1 = error.message;
   //     //   this.emailMsg1 = '';
@@ -200,7 +200,7 @@ export class LoginComponent implements OnInit {
       //       this.errMsg1 = data;
       //       this.emailMsg1 = '';
       //   }
-      // }).catch(error => {
+      // }).catch((error)=> {
       //   this.isLoading = false;
       //   this.errMsg1 = error.message;
       //   this.emailMsg1 = '';
@@ -219,13 +219,13 @@ export class LoginComponent implements OnInit {
       filterModel.activity='LOGIN';
     //  filterModel.ipAddress=res.ip;
 
-      this.httpService.post(APIURLS.BR_UPDATE_USER_LOG, filterModel).then((data) => {
+      this.httpService.post(APIURLS.BR_UPDATE_USER_LOG, filterModel).then((data:any) => {
         if(data.length>0)
         {
           
         }
       }).catch((error)=>{
-        console.log(error);
+        //console.log(error);
       });
     //  });    
   }

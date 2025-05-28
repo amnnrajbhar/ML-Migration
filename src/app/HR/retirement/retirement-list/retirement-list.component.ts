@@ -16,18 +16,18 @@ declare var toastr: any;
 })
 export class RetirementListComponent implements OnInit {
   id: number = 0;
-  action: string;
+  action: string
   isLoading: boolean = false;
   plantList: any[] = [];
   payGroupList: any[] = [];
   employeeCategoryList: any[] = [];
   filterData: any = {};
-  currentUser: AuthData;
+  currentUser!: AuthData;
   from_date: any = null;
   to_date: any = null;
   oneMonthFromNow: Date;
   name:string="";
-  comments: string;
+  comments: string
   retirementList1: any[] = [];
   departmentList: any[] = [];
   statusList1 = [
@@ -52,7 +52,8 @@ export class RetirementListComponent implements OnInit {
      }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.filterModel.pageSize = 10;
     this.oneMonthFromNow = new Date();
     this.oneMonthFromNow.setMonth(this.oneMonthFromNow.getMonth()+1);
@@ -68,9 +69,9 @@ export class RetirementListComponent implements OnInit {
   getPlantList() {
     this.httpService.HRget(APIURLS.OFFER_GET_PLANTS_ASSIGNED + "/" + this.currentUser.uid).then((data: any) => {
       if (data.length > 0) {
-        this.plantList = data.sort((a, b) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
+        this.plantList = data.sort((a:any, b:any) => { if (a.code > b.code) return 1; if (a.code < b.code) return -1; return 0; });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.plantList = [];
     });
   }
@@ -81,9 +82,9 @@ export class RetirementListComponent implements OnInit {
     if (this.selectedPlant.id > 0) {
       this.httpService.HRget(APIURLS.OFFER_GET_PAY_GROUPS_ASSIGNED + "/" + this.currentUser.uid + "/" + this.selectedPlant.id).then((data: any) => {
         if (data.length > 0) {
-          this.payGroupList = data.sort((a, b) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
+          this.payGroupList = data.sort((a:any, b:any) => { if (a.long_Desc > b.long_Desc) return 1; if (a.long_Desc < b.long_Desc) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.payGroupList = [];
       });
     }
@@ -98,9 +99,9 @@ export class RetirementListComponent implements OnInit {
     this.httpService.HRget(APIURLS.OFFER_GET_EMP_CATEGORIES_ASSIGNED + "/" + this.currentUser.uid + "/0/0")
       .then((data: any) => {
         if (data.length > 0) {
-          this.employeeCategoryList = data.sort((a, b) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
+          this.employeeCategoryList = data.sort((a:any, b:any) => { if (a.catltxt > b.catltxt) return 1; if (a.catltxt < b.catltxt) return -1; return 0; });;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.employeeCategoryList = [];
       });
   }
@@ -163,7 +164,7 @@ export class RetirementListComponent implements OnInit {
       }
       
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;      
     });
   }
@@ -199,7 +200,7 @@ export class RetirementListComponent implements OnInit {
       this.filterModel.export = false;
       var exportList=[];
       let index=0;
-      this.retirementList1.forEach(item => {
+      this.retirementList1.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No":index,
@@ -224,14 +225,14 @@ export class RetirementListComponent implements OnInit {
       });
       this.excelService.exportAsExcelFile(exportList, 'Retirement_List'); 
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;   
       this.filterModel.export = false;
       toastr.error('Error occurred while fetching data.');   
       return;
     });    
   }
-  submitForApproval(id) {
+  submitForApproval(id:any) {
     if (confirm("Are you sure you want to submit this for approval?")) {
       var request: any = {};
       request.employeeRetirementId = id;
@@ -247,7 +248,7 @@ export class RetirementListComponent implements OnInit {
             toastr.error(data.message);
           } else
           toastr.error("Error occurred.");
-        }).catch(error => {
+        }).catch((error)=> {
           toastr.error(error);
         });
     }

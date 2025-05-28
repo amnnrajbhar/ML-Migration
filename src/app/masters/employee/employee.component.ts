@@ -24,24 +24,24 @@ import { AuditLogChange } from '../auditlogchange.model';
 import swal from 'sweetalert';
 
 export class actionItemModel {
-  employeeId: string;
-  firstName: string;
+  employeeId: string
+  firstName: string
   middleName: string
-  lastName: string;
-  email: string;
-  baseLocation: string;
-  department: string;
-  profile: string;
-  designation: string;
-  employee_type: string;
-  role: string;
-  manager: string;
-  permanent_Address: string;
-  phone_Number: string;
-  current_Address: string;
-  emergency_Contact_Name: string;
-  emergency_Contact_Number: string;
-  isActive: boolean;
+  lastName: string
+  email: string
+  baseLocation: string
+  department: string
+  profile: string
+  designation: string
+  employee_type: string
+  role: string
+  manager: string
+  permanent_Address: string
+  phone_Number: string
+  current_Address: string
+  emergency_Contact_Name: string
+  emergency_Contact_Number: string
+  isActive!: boolean;
 
   
 
@@ -53,8 +53,8 @@ export class actionItemModel {
   styleUrls: ['./employee.component.css']
 })
 export class EmployeeComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
@@ -78,18 +78,18 @@ export class EmployeeComponent implements OnInit {
   projectList: any[] = [];
   userDivisionList: any[] = [];
   FilteredDivList: any[] = [];
-  divSelectedItem: any[];
-  entitySelectedItem: any[];
-  userEntityList: any[];
+  divSelectedItem!: any[];
+  entitySelectedItem!: any[];
+  userEntityList!: any[];
   entitySelected = [];
   userList: Employee[];
   empListCon = [];
   empListCon1 = [];
   locListCon = [];
   locListCon1 = [];
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   uid: number = 0;
   userItem: Employee = new Employee(0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', '', '', 0, '', '', 0, '', 0, '', true, 0, 0, 0);
   addressItem: EmployeeAddress = new EmployeeAddress(0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', true,0);
@@ -112,7 +112,7 @@ export class EmployeeComponent implements OnInit {
   payrollNtest: any;
   employeeId: string = "";
   formData: FormData = new FormData();
-  file: File; successMsg: string = "";
+  file!: File; successMsg: string = "";
   path: string = '';
   locationList: any[] = [[]];
   selectedBaseLocation: any = [];
@@ -124,8 +124,8 @@ export class EmployeeComponent implements OnInit {
   selectedRepManager = [];
   olduserItem: Employee = new Employee(0, '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', '', '', 0, '', '', 0, '', 0, '', true, 0, 0, 0);// For aduit log
   oldaddressItem: EmployeeAddress = new EmployeeAddress(0, 0, '', '', '', '', '', '', '', '', '', '', '', '', '', true,0);
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
   private initDatatable(): void {
@@ -143,9 +143,9 @@ export class EmployeeComponent implements OnInit {
     setTimeout(() => this.initDatatable(), 0)
   }
 
-  getDesignation(id) {
+  getDesignation(id:any) {
     // console.log(id);
-    return this.designationList.find(s => s.id === id).name;
+    return this.designationList.find((s:any) => s.id === id).name;
   }
   dropdownSettings1 = {
     singleSelection: true,
@@ -154,7 +154,7 @@ export class EmployeeComponent implements OnInit {
     allowSearchFilter: true
   };
   locationAllList: any[] = [[]];
-  getLocation(id) {
+  getLocation(id:any) {
     let temp = this.locationAllList.find(e => e.id == id);
     return temp ? temp.name : '';
   }
@@ -162,13 +162,13 @@ export class EmployeeComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-        this.locationList.sort((a,b)=>{return collator.compare(a.code,b.code)});
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a,b)=>{return collator.compare(a.code,b.code)});
+        this.locationList.sort((a:any,b:any)=>{return collator.compare(a.code,b.code)});
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any,b:any)=>{return collator.compare(a.code,b.code)});
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
@@ -176,8 +176,8 @@ export class EmployeeComponent implements OnInit {
   onSelectAll() {
   
   }
-  getLocationName(id) {
-    let t = this.locationList.find(s => s.id == id);
+  getLocationName(id:any) {
+    let t = this.locationList.find((s:any) => s.id == id);
     return t.code + ' - ' + t.name;
   }
 
@@ -214,10 +214,11 @@ export class EmployeeComponent implements OnInit {
     if (str.length == 0) return true;
     else return false;
   }
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.baseLocation = this.currentUser.baselocation;
     this.from_date=new Date();
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -245,7 +246,7 @@ export class EmployeeComponent implements OnInit {
         this.projectList = data;
       }
       // this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.projectList = [];
     });
@@ -255,13 +256,13 @@ export class EmployeeComponent implements OnInit {
     this.errMsg = "";
     this.httpService.get(APIURLS.BR_DESIGNATION_API).then((data: any) => {
       if (data.length > 0) {
-        this.designationList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.designationList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
           if(a.name > b.name) return 1;
           if(a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.designationList = [];
     });
@@ -272,12 +273,12 @@ export class EmployeeComponent implements OnInit {
     this.httpService.get(APIURLS.BR_EMPLOYEEMASTER_API_GET).then((data: any) => {
       if (data.length > 0) {
         this.userList = data;
-        this.empListCon = data.map((i) => { i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
-        this.userList = this.userList.filter(x => +x.baseLocation == this.baseLocation);
+        this.empListCon = data.map((i:any) => { i.name = i.firstName + ' ' + i.middleName + ' ' + i.lastName + '-' + i.employeeId + '-' + i.designation; return i; });
+        this.userList = this.userList.filter((x:any)  => +x.baseLocation == this.baseLocation);
         this.reInitDatatable();
         this.isLoading = false;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.userList = [];
     });
@@ -288,7 +289,7 @@ export class EmployeeComponent implements OnInit {
       if (data.length > 0) {
         this.entityList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.entityList = [];
       this.isLoading = false;
 
@@ -297,13 +298,13 @@ export class EmployeeComponent implements OnInit {
   getDivisionList() {
     this.httpService.get(APIURLS.BR_COMPETENCY).then((data: any) => {
       if (data.length > 0) {
-        this.competencyList = data.sort((a,b)=>{
+        this.competencyList = data.sort((a:any,b:any)=>{
           if(a.name > b.name) return 1;
           if(a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.competencyList = [];
       this.isLoading = false;
 
@@ -312,13 +313,13 @@ export class EmployeeComponent implements OnInit {
   getRoleList() {
     this.httpService.get(APIURLS.BR_MASTER_ROLE_API).then((data: any) => {
       if (data.length > 0) {
-        this.roleList = data.sort((a,b)=>{
+        this.roleList = data.sort((a:any,b:any)=>{
           if(a.role > b.role) return 1;
           if(a.role < b.role) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.roleList = [];
       this.isLoading = false;
 
@@ -327,13 +328,13 @@ export class EmployeeComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a,b)=>{
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any,b:any)=>{
           if(a.name > b.name) return 1;
           if(a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -343,18 +344,18 @@ export class EmployeeComponent implements OnInit {
   getProfileList() {
     this.httpService.get(APIURLS.BR_MASTER_PROFILE_API).then((data: any) => {
       if (data.length > 0) {
-        this.profileList = data.sort((a,b)=>{
+        this.profileList = data.sort((a:any,b:any)=>{
           if(a.name > b.name) return 1;
           if(a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.profileList = [];
     });
   }
   managerWarning: boolean = false;
-  lastManager: string;
+  lastManager: string
   onAddUser(isEdit: boolean, data: Employee) {
     this.isLoadingPop = true;
     this.userForm.form.markAsPristine();
@@ -371,29 +372,29 @@ export class EmployeeComponent implements OnInit {
     this.baseLocationnotfirst = true;
     this.isLoadingPop = true;
     this.managerWarning = false;
-    this.empListCon1 = this.empListCon.filter(x => x.isActive);
-    this.locListCon1 = this.locListCon.filter(x => x.isActive);
+    this.empListCon1 = this.empListCon.filter((x:any)  => x.isActive);
+    this.locListCon1 = this.locListCon.filter((x:any)  => x.isActive);
     $('#myTab a[href="#tab-sumTot"]').tab('show');
     if (this.isEdit) {
       this.olduserItem = Object.assign({}, data);
       this.userItem = Object.assign({}, data);
-      this.SelempDesignation = this.designationList.find(s => s.id === this.userItem.fkDesignation);
-      this.selProfile = this.profileList.find(s => s.id == this.userItem.fkProfileId);
-      this.selManager = this.empListCon1.filter(s => s.id == this.userItem.fkManager);
+      this.SelempDesignation = this.designationList.find((s:any) => s.id === this.userItem.fkDesignation);
+      this.selProfile = this.profileList.find((s:any) => s.id == this.userItem.fkProfileId);
+      this.selManager = this.empListCon1.filter((s:any) => s.id == this.userItem.fkManager);
       if (this.selManager.length == 0) {
         this.managerWarning = true;
-        let managerData = this.empListCon.filter(s => s.id == this.userItem.fkManager);
+        let managerData = this.empListCon.filter((s:any) => s.id == this.userItem.fkManager);
         if(managerData.length !=0)
         {
           this.lastManager = managerData[0].name;
         }        
       }
-      this.selReportingManager = this.empListCon1.filter(s => s.id == this.userItem.fkReportingManager);
-      this.selectedBaseLocation = this.locListCon1.filter(s => s.id == this.userItem.baseLocation);
-      this.selParentRole = this.roleList.find(s => s.id == this.userItem.fkRoleId);
-      this.selDepartment = this.userItem.fkDepartment != 0 ? (this.departmentList.find(s => s.id === this.userItem.fkDepartment)) : null;
-      this.selApprovalTemp = this.userItem.fkApprovalTemplateId != 0 ? (this.AapprovalTempList.find(s => s.id === this.userItem.fkApprovalTemplateId)) : null;
-      this.SelCompetency = this.competencyList.find(s => s.id === this.userItem.fkCompetency);
+      this.selReportingManager = this.empListCon1.filter((s:any) => s.id == this.userItem.fkReportingManager);
+      this.selectedBaseLocation = this.locListCon1.filter((s:any) => s.id == this.userItem.baseLocation);
+      this.selParentRole = this.roleList.find((s:any) => s.id == this.userItem.fkRoleId);
+      this.selDepartment = this.userItem.fkDepartment != 0 ? (this.departmentList.find((s:any) => s.id === this.userItem.fkDepartment)) : null;
+      this.selApprovalTemp = this.userItem.fkApprovalTemplateId != 0 ? (this.AapprovalTempList.find((s:any) => s.id === this.userItem.fkApprovalTemplateId)) : null;
+      this.SelCompetency = this.competencyList.find((s:any) => s.id === this.userItem.fkCompetency);
       this.userItem.id = data.id;
       if(this.userItem.joiningDate !=null)
       {
@@ -406,7 +407,7 @@ export class EmployeeComponent implements OnInit {
           this.addressItem = data;
           this.oldaddressItem = Object.assign({}, data);
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.addressItem = null;
       });
@@ -415,7 +416,7 @@ export class EmployeeComponent implements OnInit {
         if (data.id > 0) {
           this.userMasterItem = data;
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
         this.userMasterItem = null;
       });
@@ -448,7 +449,7 @@ export class EmployeeComponent implements OnInit {
 
   validateForm() {
     this.validatedForm = true;
-    let validId = this.userList.some(s => s.employeeId == this.userItem.employeeId && s.id != this.userItem.id);
+    let validId = this.userList.some((s:any) => s.employeeId == this.userItem.employeeId && s.id != this.userItem.id);
     if (validId) {
       this.isLoadingPop = false;
       this.validatedForm = false;
@@ -458,10 +459,10 @@ export class EmployeeComponent implements OnInit {
   }
   onSaveUser(status: boolean) {
     this.validateForm();
-    let employees = this.userList.filter(s => s.fkManager == this.userItem.id);
+    let employees = this.userList.filter((s:any) => s.fkManager == this.userItem.id);
     let noAdmins = false;
     if (!this.userItem.isActive && this.selProfile.id == 1 && this.isEdit) {
-      let admincount = this.userList.filter(s => s.fkProfileId == 1 && s.isActive && s.employeeId != this.userItem.employeeId).length;
+      let admincount = this.userList.filter((s:any) => s.fkProfileId == 1 && s.isActive && s.employeeId != this.userItem.employeeId).length;
       noAdmins = admincount > 0 ? false : true;
     }
 
@@ -470,7 +471,7 @@ export class EmployeeComponent implements OnInit {
     }
     else if (employees.length > 0 && !this.userItem.isActive) {
       var employeeList='';
-      employees.forEach(x => {
+      employees.forEach((x:any)  => {
         employeeList+='\n'+x.firstName+' '+x.lastName+'('+x.employeeId+')';
       });
       swal({
@@ -516,7 +517,7 @@ export class EmployeeComponent implements OnInit {
     this.userItem.fkParentId = this.userItem.fkReportingManager;
     this.userItem.fkProfileId = this.selProfile.id;
     this.userItem.fkRoleId = this.selParentRole.id;
-    this.userItem.designation = this.designationList.find(s => s.id === this.userItem.fkDesignation)['name'];
+    this.userItem.designation = this.designationList.find((s:any) => s.id === this.userItem.fkDesignation)['name'];
     //following columns are dummy columns. We are setting to value 1.
     this.userMasterItem.fkCompanyId = 1;
     this.userItem.fkParentIdCount = 1;
@@ -567,18 +568,18 @@ export class EmployeeComponent implements OnInit {
                     this.insertAuditLog(this.olduserItem, this.userItem, data.id);
                     this.getUserMasterList();
                   }
-                }).catch(error => {
+                }).catch((error)=> {
                   this.isLoadingPop = false;
                   this.errMsgPop = 'Error saving user master data..';
                 });
               }
-            }).catch(error => {
+            }).catch((error)=> {
               this.isLoadingPop = false;
               this.errMsgPop = 'Error saving user master data..';
             });
 
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving user address data..';
         });
@@ -610,22 +611,22 @@ export class EmployeeComponent implements OnInit {
                         this.insertAuditLog(this.olduserItem, this.userItem, this.userItem.id);
                         this.getUserMasterList();
                       }
-                    }).catch(error => {
+                    }).catch((error)=> {
                       this.isLoadingPop = false;
                       this.errMsgPop = 'Error saving user master data..';
                     });
                   }
-                }).catch(error => {
+                }).catch((error)=> {
                   this.isLoadingPop = false;
                   this.errMsgPop = 'Error saving user master data..';
                 });
               }
-            }).catch(error => {
+            }).catch((error)=> {
               this.isLoadingPop = false;
               this.errMsgPop = 'Error saving user details data..';
             });
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error saving user master put data..';
         });
@@ -638,7 +639,7 @@ export class EmployeeComponent implements OnInit {
     }
   }
 
-  baseLocation: number;
+  baseLocation!: number;
   onSelect(locId) {
     this.baseLocation = locId;
     this.getUserMasterList();
@@ -655,10 +656,10 @@ export class EmployeeComponent implements OnInit {
     oldObject.lastName = oldObj.lastName;
     oldObject.email = oldObj.email;
     oldObject.baseLocation = oldObj.baseLocation ? this.getLocationName(oldObj.baseLocation) : null;
-    oldObject.department = oldObj.fkDepartment ? this.departmentList.find(s => s.id === oldObj.fkDepartment).name : null;
-    oldObject.designation = oldObj.fkDesignation ? this.designationList.find(s => s.id === oldObj.fkDesignation).name : null;
-    oldObject.profile = oldObj.fkProfileId ? this.profileList.find(s => s.id === oldObj.fkProfileId).name : null;
-    oldObject.employee_type = oldObj.fkCompetency ? this.competencyList.find(s => s.id === oldObj.fkCompetency).name : null;
+    oldObject.department = oldObj.fkDepartment ? this.departmentList.find((s:any) => s.id === oldObj.fkDepartment).name : null;
+    oldObject.designation = oldObj.fkDesignation ? this.designationList.find((s:any) => s.id === oldObj.fkDesignation).name : null;
+    oldObject.profile = oldObj.fkProfileId ? this.profileList.find((s:any) => s.id === oldObj.fkProfileId).name : null;
+    oldObject.employee_type = oldObj.fkCompetency ? this.competencyList.find((s:any) => s.id === oldObj.fkCompetency).name : null;
     oldObject.role = oldObj.fkRoleId ? this.roleList.find(e => e.id == oldObj.fkRoleId).role : null;
     oldObject.manager = oldObj.fkManager ? this.empListCon1.find(e => e.id == oldObj.fkManager).name : null;
     oldObject.isActive = oldObj.isActive;
@@ -674,10 +675,10 @@ export class EmployeeComponent implements OnInit {
     newObject.lastName = newObj.lastName;
     newObject.email = newObj.email;
     newObject.baseLocation = newObj.baseLocation ? this.getLocationName(newObj.baseLocation) : null;
-    newObject.department = newObj.fkDepartment ? this.departmentList.find(s => s.id === newObj.fkDepartment).name : null;
-    newObject.designation = newObj.fkDesignation ? this.designationList.find(s => s.id === newObj.fkDesignation).name : null;
-    newObject.profile = newObj.fkProfileId ? this.profileList.find(s => s.id === newObj.fkProfileId).name : null;
-    newObject.employee_type = newObj.fkCompetency ? this.competencyList.find(s => s.id === newObj.fkCompetency).name : null;
+    newObject.department = newObj.fkDepartment ? this.departmentList.find((s:any) => s.id === newObj.fkDepartment).name : null;
+    newObject.designation = newObj.fkDesignation ? this.designationList.find((s:any) => s.id === newObj.fkDesignation).name : null;
+    newObject.profile = newObj.fkProfileId ? this.profileList.find((s:any) => s.id === newObj.fkProfileId).name : null;
+    newObject.employee_type = newObj.fkCompetency ? this.competencyList.find((s:any) => s.id === newObj.fkCompetency).name : null;
     newObject.role = newObj.fkRoleId ? this.roleList.find(e => e.id == newObj.fkRoleId).role : null;
     newObject.manager = newObj.fkManager ? this.empListCon1.find(e => e.id == newObj.fkManager).name : null;
     newObject.isActive = newObj.isActive;
@@ -728,12 +729,12 @@ export class EmployeeComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -742,7 +743,7 @@ export class EmployeeComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

@@ -14,8 +14,8 @@ import * as _ from "lodash";
 declare var jQuery: any;
 declare var $: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 @Component({
   selector: 'app-guesthouse-facilities',
@@ -24,7 +24,7 @@ export class actionItemModel {
 })
 export class GuesthouseFacilitiesComponent implements OnInit {
 
-@ViewChild(NgForm, { static: false }) meetingroomForm: NgForm;
+@ViewChild(NgForm, { static: false }) meetingroomForm!: NgForm;
 
   currentUser = {} as AuthData;
   urlPath: string = '';
@@ -34,15 +34,15 @@ export class GuesthouseFacilitiesComponent implements OnInit {
   errMsgModalPop: string = "";
   isLoadingPop: boolean = false;
 
-  isLoading: boolean;
+  isLoading!: boolean;
   
   roomFacilityModel = {} as RoomFacility;
   roomsFacilityList: RoomFacility[] = [];
   tableWidget: any;
   type: string = "GuestHouse";
   oldroomFacilityModel: RoomFacility = new RoomFacility();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private appServiceDate: AppService, private route: ActivatedRoute) { }
 
@@ -50,7 +50,8 @@ export class GuesthouseFacilitiesComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getRoomFacilities();
     }
 
@@ -77,10 +78,10 @@ export class GuesthouseFacilitiesComponent implements OnInit {
   getRoomFacilities() {
     this.httpService.get(APIURLS.BR_MASTER_ROOM_FACILITY_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.roomsFacilityList = data.filter(x => x.type == this.type && x.isActive);
+        this.roomsFacilityList = data.filter((x:any)  => x.type == this.type && x.isActive);
       }
       this.reInitDatatable();
-    }).catch(error => {
+    }).catch((error)=> {
       this.roomsFacilityList = [];
     });
   }
@@ -133,7 +134,7 @@ export class GuesthouseFacilitiesComponent implements OnInit {
           this.insertAuditLog(this.oldroomFacilityModel, this.roomFacilityModel, Id);
           this.getRoomFacilities();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving Facility..';
       });
@@ -166,7 +167,7 @@ export class GuesthouseFacilitiesComponent implements OnInit {
             this.insertAuditLog(this.roomFacilityModel, this.oldroomFacilityModel, this.roomFacilityModel.id);
             this.getRoomFacilities();
           }
-        }).catch(error => {
+        }).catch((error)=> {
           this.isLoadingPop = false;
           this.errMsgPop = 'Error deleting Facility..';
         });
@@ -232,12 +233,12 @@ export class GuesthouseFacilitiesComponent implements OnInit {
     connection = this.httpService.post(APIURLS.BR_AUDITLOG_API, auditlog);
     connection.then((data: any) => {
       this.isLoadingPop = false;
-    }).catch(() => {
+    }).catch((error) => {
       this.isLoadingPop = false;
     });
   }
   auditLogList: AuditLog[] = [];
-  openAuditLogs(id) {
+  openAuditLogs(id:any) {
     jQuery("#auditModal").modal('show');
     let stringparms = this.masterName + ',' + id;
     this.httpService.getByParam(APIURLS.BR_AUDITLOG_GetBYPARAM_API, stringparms).then((data: any) => {
@@ -246,7 +247,7 @@ export class GuesthouseFacilitiesComponent implements OnInit {
         this.auditLogList.reverse();
       }
       this.reinitPOUPDatatable();
-    }).catch(() => {
+    }).catch((error) => {
     });
 
   }

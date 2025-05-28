@@ -21,8 +21,8 @@ import { WorkFlowApprovers } from '../Masters/WorkFlowApprovers/WorkFlowApprover
 import { ItemCodeRequest } from '../ItemCodeCreation/ItemCodeCreation.model';
 
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
-import { saveAs } from 'file-saver';
+//import * as FileSaver from 'file-saver';
+//import { saveAs } from 'file-saver';
 declare var require: any;
 
 @Component({
@@ -31,7 +31,7 @@ declare var require: any;
   styleUrls: ['./ItemCodeModification.component.css']
 })
 export class ItemCodeModificationComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
   
   searchTermBaseLoc = new FormControl();
   public filteredItemsBaseLoc = [];
@@ -63,18 +63,19 @@ export class ItemCodeModificationComponent implements OnInit {
   ItemCodeModificationModel = {} as ItemCodeModification;
 
   ItemCodeModificationlist: ItemCodeModification[] = [];
-  materialtype: string;
-  comments: string;
-  filterMaterialCode: string = null;
+  materialtype!: string
+  comments: string
+  filterMaterialCode: string = ' ';
   filterstatus: string = "Pending";
-  filterlocation: string = null;
-  filterrequest: string = null;
+  filterlocation: string = ' ';
+  filterrequest: string = ' ';
   today = new Date();
   from_date: any = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
   to_date: any = this.today;
   ItemCodeModificationFilter: ItemCodeModification[] = [];
-  emailid: string;
-  requestdate: Date;
+  emailid!: string
+
+  requestdate!: Date;
   Approver1: boolean = false;
   Approverid1: string = "";
   Approverid2: string = "";
@@ -82,12 +83,12 @@ export class ItemCodeModificationComponent implements OnInit {
   Creator: boolean = false;
   Review: boolean = false;
   Closure: boolean = false;
-  userid: string;
+  userid: string
 
 
   storeData: any;
   jsonData: any;
-  fileUploaded: File;
+  fileUploaded!: File;
   worksheet: any;
 
   ItemCodeModificationModeldata = {} as ItemCodeModification;
@@ -111,7 +112,8 @@ export class ItemCodeModificationComponent implements OnInit {
 
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.emailid = this.currentUser.email;
     this.userid = this.currentUser.employeeId;
     this.ItemCodeModificationModel.requestedBy = this.currentUser.employeeId + ' - ' + this.currentUser.fullName
@@ -173,13 +175,15 @@ export class ItemCodeModificationComponent implements OnInit {
     this.from_date = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() - 30);
     this.to_date = this.today;
     this.filterMaterialCode = null;
-    this.filterlocation = null;
-    this.filterstatus = null;
+   // this.filterlocation = null;
+ this.filterlocation = '';
+  // this.filterstatus = null;
+  this.filterstatus = '';
     this.filterrequest = null;
 
   }
 
-  getloc(loc) {
+  getloc(loc:any) {
     let loccode = loc.keyValue.split('~');
     return loccode ? loccode[0] : '';
   }
@@ -198,11 +202,11 @@ export class ItemCodeModificationComponent implements OnInit {
     //     this.ItemCodeModificationModel.materialShortName=itemData.materialShortName;
     //     this.ItemCodeModificationModel.materialLongName=itemData.materialLongName;
 
-    //     this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+    //     this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
     //     let empid = this.currentUser.employeeId
     //     let empName = this.currentUser.fullName;
       
-    //     let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+    //     let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
     //       x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
     //       x.parllelApprover3 == empid || x.parllelApprover4 == empid);
 
@@ -212,7 +216,7 @@ export class ItemCodeModificationComponent implements OnInit {
     //       this.Review = true;
     //       this.Aprlpriority = Appr1.priority;
     //     }
-    //     let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+    //     let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
     //       x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
     //       x.parllelApprover3 == empid || x.parllelApprover4 == empid);
     //     if (Appr2 != null || Appr2 != undefined) {
@@ -222,7 +226,7 @@ export class ItemCodeModificationComponent implements OnInit {
     //       this.Review = true;
     //       this.Aprlpriority = Appr2.priority;
     //     }
-    //     let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+    //     let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
     //       x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
     //       x.parllelApprover3 == empid || x.parllelApprover4 == empid);
     //     if (Appr3 != null || Appr3 != undefined) {
@@ -248,7 +252,7 @@ export class ItemCodeModificationComponent implements OnInit {
 
 
     //     this.transactionslist.forEach((ad) => {
-    //       let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority);
+    //       let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority);
     //       if (temp != undefined) {
     //         if (ad.transactionType == 1) {
     //           if (temp.role == 'Creator') {
@@ -261,7 +265,7 @@ export class ItemCodeModificationComponent implements OnInit {
     //             ad.status = 'Approved'
     //           }
     //           else {
-    //             ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+    //             ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
     //           }
     //         }
     //         else if (ad.transactionType == 3 || ad.transactionType == 4) {
@@ -278,7 +282,7 @@ export class ItemCodeModificationComponent implements OnInit {
 
     //     });
     //     this.Approverslist.forEach((ad) => {
-    //       let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority);
+    //       let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority);
     //       if (temp1 == undefined) {
     //         let trans = {} as Transactions;
     //         trans.doneBy = ad.approverId;
@@ -290,12 +294,12 @@ export class ItemCodeModificationComponent implements OnInit {
     //       }
 
     //     });
-    //     this.Approverslist = this.Approverslist.sort((a, b) => {
+    //     this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
     //       if (a.priority > b.priority) return 1;
     //       if (a.priority < b.priority) return -1;
     //       return 0;
     //     });
-    //     this.transactionslist = this.transactionslist.sort((a, b) => {
+    //     this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
     //       if (a.doneOn > b.doneOn) return 1;
     //       if (a.doneOn < b.doneOn) return -1;
     //       return 0;
@@ -314,8 +318,8 @@ export class ItemCodeModificationComponent implements OnInit {
     //   }
         
     //   this.isLoading = false;
-    // }).catch(error => {
-    //   console.log(error);
+    // }).catch((error)=> {
+    //   //console.log(error);
     //   this.isLoading = false;
     //   this.Approverslist = [];
     // });
@@ -338,28 +342,28 @@ export class ItemCodeModificationComponent implements OnInit {
         this.ItemCodeModificationModel.materialShortName = itemData.materialShortName;
         this.ItemCodeModificationModel.materialLongName = itemData.materialLongName;
 
-        this.Approverslist = this.Approverslist.filter(x => x.isActive == true);
+        this.Approverslist = this.Approverslist.filter((x:any)  => x.isActive == true);
         let empid = this.currentUser.employeeId;
 
-        this.Approverslist = this.Approverslist.sort((a, b) => {
+        this.Approverslist = this.Approverslist.sort((a:any, b:any) => {
           if (a.priority > b.priority) return 1;
           if (a.priority < b.priority) return -1;
           return 0;
         });
 
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.approvalPriority > b.approvalPriority) return 1;
           if (a.approvalPriority < b.approvalPriority) return -1;
           return 0;
         });
 
-        this.transactionslist = this.transactionslist.sort((a, b) => {
+        this.transactionslist = this.transactionslist.sort((a:any, b:any) => {
           if (a.doneOn > b.doneOn) return 1;
           if (a.doneOn < b.doneOn) return -1;
           return 0;
         });
       
-        // let Appr1 = this.Approverslist.find(x => x.priority == 1 && x.approverId == empid ||
+        // let Appr1 = this.Approverslist.find((x:any)  => x.priority == 1 && x.approverId == empid ||
         //   x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
         //   x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         // if (Appr1 != null || Appr1 != undefined) {
@@ -369,7 +373,7 @@ export class ItemCodeModificationComponent implements OnInit {
         //   this.Aprlpriority = Appr1.priority;
         // }
 
-        // let Appr2 = this.Approverslist.find(x => x.priority == 2 && x.approverId == empid ||
+        // let Appr2 = this.Approverslist.find((x:any)  => x.priority == 2 && x.approverId == empid ||
         //   x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
         //   x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         // if (Appr2 != null || Appr2 != undefined) {
@@ -380,7 +384,7 @@ export class ItemCodeModificationComponent implements OnInit {
         //   this.Aprlpriority = Appr2.priority;
         // }
 
-        // let Appr3 = this.Approverslist.find(x => x.approverId == empid ||
+        // let Appr3 = this.Approverslist.find((x:any)  => x.approverId == empid ||
         //   x.parllelApprover1 == empid || x.parllelApprover2 == empid ||
         //   x.parllelApprover3 == empid || x.parllelApprover4 == empid);
         // if (Appr3 != null || Appr3 != undefined) {
@@ -405,7 +409,7 @@ export class ItemCodeModificationComponent implements OnInit {
         // }
 
         this.transactionslist.forEach(ad => {
-          let temp = this.Approverslist.find(x => x.priority == ad.approvalPriority);
+          let temp = this.Approverslist.find((x:any)  => x.priority == ad.approvalPriority);
           if (temp != undefined) {
             if (ad.transactionType == 1) {
               if (temp.role == 'Creator') {
@@ -418,7 +422,7 @@ export class ItemCodeModificationComponent implements OnInit {
                 ad.status = 'Approved'
               }
               else {
-                ad.status = this.approverstatuslist.find(x => x.id == ad.approvalPriority).name;
+                ad.status = this.approverstatuslist.find((x:any)  => x.id == ad.approvalPriority).name;
               }
             }
             else if (ad.transactionType == 3 || ad.transactionType == 4) {
@@ -436,7 +440,7 @@ export class ItemCodeModificationComponent implements OnInit {
         // console.log(this.transactionslist);
 
         // this.Approverslist.forEach(ad => {
-        //   let temp1 = this.transactionslist.find(x => x.approvalPriority == ad.priority);
+        //   let temp1 = this.transactionslist.find((x:any)  => x.approvalPriority == ad.priority);
         //   if (temp1 == undefined) {
         //     let trans = {} as Transactions;
         //     trans.doneBy = ad.approverId;
@@ -474,7 +478,8 @@ export class ItemCodeModificationComponent implements OnInit {
           } as WorkFlowApprovers;
 
           // Add the approver transaction entries
-          this.Approverslist.forEach(element => {
+          this.Approverslist.forEach((element:any)=> {
+
             let transaction = {
               doneBy: element.approverId,
               approvalPriority: element.priority,
@@ -492,7 +497,8 @@ export class ItemCodeModificationComponent implements OnInit {
           let pendingPriority = !this.ItemCodeModificationModel.status ? 1 : this.ItemCodeModificationModel.status == "Reverted" ? this.transactionslist[this.transactionslist.length - 1].approvalPriority - 1 
             : this.transactionslist[this.transactionslist.length - 1].approvalPriority + 1;
 
-          this.Approverslist.forEach(element => {
+          this.Approverslist.forEach((element:any)=> {
+
             if (element.priority >= pendingPriority) {
               let transaction = {
                 doneBy: element.approverId,
@@ -568,8 +574,8 @@ export class ItemCodeModificationComponent implements OnInit {
         
       this.isLoading = false;
       this.isApproversLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.isApproversLoading = false;
       this.Approverslist = [];
@@ -584,11 +590,11 @@ export class ItemCodeModificationComponent implements OnInit {
     this.httpService.get(APIURLS.BR_ITEMCODE_REQUEST_GET_CODES_API).then((data: any) => {
       if (data.length > 0) {
         this.ItemcodesList = data;
-        this.ItemcodesListCon = data.map((x) => { x.name1 = x.sapCodeNo + '-' + x.materialShortName;x.sapCodeNo=x.sapCodeNo; return x; });
+        this.ItemcodesListCon = data.map((x:any) => { x.name1 = x.sapCodeNo + '-' + x.materialShortName;x.sapCodeNo=x.sapCodeNo; return x; });
        
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.ItemcodesList = [];
     });
@@ -622,8 +628,8 @@ export class ItemCodeModificationComponent implements OnInit {
   getAllEntries() {
     this.isLoading = true;
     let td = new Date();
-    let formatedFROMdate: string;
-    let formatedTOdate: string;
+    let formatedFROMdate: string
+    let formatedTOdate: string
     var filterModel: any = {};
     if (this.from_date == '' || this.from_date == null) {
       formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -662,8 +668,8 @@ export class ItemCodeModificationComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.ItemCodeModificationFilter = [];
     });
@@ -675,22 +681,22 @@ export class ItemCodeModificationComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
         this.Plantcode=this.locationList.find(x=>x.id== this.currentUser.baselocation).code;
 
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngAfterViewInit() {
     this.initDatatable();
   }
@@ -708,12 +714,12 @@ export class ItemCodeModificationComponent implements OnInit {
     this.isLoading = true;
     this.httpService.get(APIURLS.BR_MASTER_MATERIALTYPE_ALL_API).then((data: any) => {
       if (data.length > 0) {
-        this.materialList = data.filter(x => x.isActive);
+        this.materialList = data.filter((x:any)  => x.isActive);
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.materialList = [];
     });
@@ -725,12 +731,12 @@ export class ItemCodeModificationComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.materialgroupList = data;
-        //this.materialgroupList = data.filter(x => x.stxt != null);
+        //this.materialgroupList = data.filter((x:any)  => x.stxt != null);
       }
       // this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.materialgroupList = [];
     });
@@ -744,7 +750,7 @@ export class ItemCodeModificationComponent implements OnInit {
       this.isLoading = true;
       if (data.length > 0) {
         this.transactionslist = data;
-        this.transactionslist = this.transactionslist.filter(x => x.processType == 'Item Code Modification' && x.approvalPriority != null);
+        this.transactionslist = this.transactionslist.filter((x:any)  => x.processType == 'Item Code Modification' && x.approvalPriority != null);
         //this.transactionslist.reverse();
       }
       //this.reInitDatatable();
@@ -755,8 +761,8 @@ export class ItemCodeModificationComponent implements OnInit {
       
       this.isLoading = false;
       this.isTransactionsLoading = false;
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoading = false;
       this.isTransactionsLoading = false;
       this.transactionslist = [];
@@ -766,9 +772,9 @@ export class ItemCodeModificationComponent implements OnInit {
 
   Approverslist: any[] = [];
   creatorid:boolean;
-  Aprlpriority: number;
+  Aprlpriority!: number;
   view: boolean = false;
-  empId: string;
+  empId: string
   onClickNewRequest(isedit: boolean, ItemCodeModification: ItemCodeModification, isprint: boolean, value: string) {
     this.isEdit = isedit;
     this.isLoadingPop = false;
@@ -798,7 +804,7 @@ export class ItemCodeModificationComponent implements OnInit {
           this.attachments=ItemCodeModification.attachments.split(',');
         }
   
-        this.attachments.filter(x=>x.name != null || undefined)
+        this.attachments.filter((x:any)=>x.name != null || undefined)
         this.SelectedCode=ItemCodeModification.itemCode;
   
         this.ItemCodeModificationModel = Object.assign({}, ItemCodeModification);
@@ -834,7 +840,7 @@ export class ItemCodeModificationComponent implements OnInit {
 
   isValid: boolean = false;
   validatedForm: boolean = true;
-  onSaveEntry(status) {
+  onSaveEntry(status:any) {
     this.errMsg = "";
     let connection: any;
     if (this.Approverslist.length == 0) {
@@ -868,7 +874,7 @@ export class ItemCodeModificationComponent implements OnInit {
           
         }
 
-        this.ItemCodeModificationModel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+        this.ItemCodeModificationModel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
         this.ItemCodeModificationModel.status = status == "Submit" ? "Submitted" : "Created";
         
         connection = this.httpService.post(APIURLS.BR_ITEMCODE_MODIFICATION_INSERT_API, this.ItemCodeModificationModel);
@@ -889,8 +895,8 @@ export class ItemCodeModificationComponent implements OnInit {
           this.getAllEntries();
           this.resetForm();
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoadingPop = false;
         this.errMsgPop = 'Error Saving Request: ' + error;
       });
@@ -911,7 +917,7 @@ export class ItemCodeModificationComponent implements OnInit {
       }
     }
 
-    this.ItemCodeModificationModel.pendingApprover = this.Approverslist.find(x => x.priority == 1).approverId;
+    this.ItemCodeModificationModel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == 1).approverId;
     this.ItemCodeModificationModel.status = "Submitted";
 
     console.log(this.ItemCodeModificationModel);
@@ -928,27 +934,27 @@ export class ItemCodeModificationComponent implements OnInit {
         this.Inserttransactions(this.ItemCodeModificationModel, 0);
         this.resetForm();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = 'Error Submitting Request ' + this.ItemCodeModificationModel.requestNo + ": " + error;
     });
   }
   Role:any;
-  onreview(status) {
+  onreview(status:any) {
     this.errMsg = "";
     // let uid = this.currentUser.employeeId;
     if (status == "Rejected") {
-      // let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+      // let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
       //   || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
       this.ItemCodeModificationModel.pendingApprover = '';
       this.priority = this.currentApprover.priority;
     }
     else {
-      // let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+      // let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
       //   || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
       this.Role = this.currentApprover.role;
-      this.ItemCodeModificationModel.pendingApprover = this.Approverslist.find(x => x.priority == this.currentApprover.priority + 1).approverId;
+      this.ItemCodeModificationModel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == this.currentApprover.priority + 1).approverId;
       this.priority = this.currentApprover.priority;
     }
 
@@ -983,18 +989,18 @@ export class ItemCodeModificationComponent implements OnInit {
         this.getAllEntries();
         this.resetForm();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = status == "Rejected" ? "Error Rejecting Request " + this.ItemCodeModificationModel.requestNo + ": " + error : "Error Reviewing Request " + this.ItemCodeModificationModel.requestNo + ": " + error;
     });
   }
 
-  onRevertRequest(status) {
+ onRevertRequest(status:any) {
     this.errMsg = "";
     if (status == "ReverttoInitiator") {
       // let usid = this.currentUser.employeeId;
-      // let user = this.Approverslist.find(x => x.approverId == usid || x.parllelApprover1 == usid || x.parllelApprover2 == usid
+      // let user = this.Approverslist.find((x:any)  => x.approverId == usid || x.parllelApprover1 == usid || x.parllelApprover2 == usid
       //   || x.parllelApprover3 == usid || x.parllelApprover4 == usid);
 
       this.ItemCodeModificationModel.pendingApprover = this.ItemCodeModificationModel.createdBy;
@@ -1003,10 +1009,10 @@ export class ItemCodeModificationComponent implements OnInit {
     }
     else {
       // let uid = this.ItemCodeModificationModel.modifiedBy;
-      // let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+      // let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
       //   || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-      this.ItemCodeModificationModel.pendingApprover = this.Approverslist.find(x => x.priority == this.currentApprover.priority - 1).approverId;
+      this.ItemCodeModificationModel.pendingApprover = this.Approverslist.find((x:any)  => x.priority == this.currentApprover.priority - 1).approverId;
       this.priority = this.currentApprover.priority;
       this.ItemCodeModificationModel.status = "Reverted";
     }
@@ -1029,8 +1035,8 @@ export class ItemCodeModificationComponent implements OnInit {
         this.Inserttransactions(this.ItemCodeModificationModel, id)
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Reverting Request " + this.ItemCodeModificationModel.requestNo + ": " + error;
     });
@@ -1040,10 +1046,10 @@ export class ItemCodeModificationComponent implements OnInit {
     this.errMsg = "";
     // let uid = this.currentUser.employeeId;
 
-    // let user = this.Approverslist.find(x => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
+    // let user = this.Approverslist.find((x:any)  => x.approverId == uid || x.parllelApprover1 == uid || x.parllelApprover2 == uid
     //   || x.parllelApprover3 == uid || x.parllelApprover4 == uid);
 
-    let temp = this.Approverslist.find(x => x.priority == this.currentApprover.priority + 1);
+    let temp = this.Approverslist.find((x:any)  => x.priority == this.currentApprover.priority + 1);
     if (temp != null || temp != undefined) {
       this.ItemCodeModificationModel.pendingApprover = temp.approverId;
       this.ItemCodeModificationModel.status = "InProcess";
@@ -1075,14 +1081,14 @@ export class ItemCodeModificationComponent implements OnInit {
         this.getAllEntries();
         this.resetForm();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Modifying Item Code: " + error;
     });
 
   }
-  priority: number;
+  priority!: number;
   oncloserequest() {
     this.errMsg = "";
 
@@ -1103,8 +1109,8 @@ export class ItemCodeModificationComponent implements OnInit {
         this.sendMail("Created", this.ItemCodeModificationModel)
         this.getAllEntries();
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = "Error Closing Request: " + error;
     });
@@ -1119,8 +1125,8 @@ export class ItemCodeModificationComponent implements OnInit {
     this.transactions.transactionType = id;
     this.transactions.processType = "Item Code Modification";
     
-    this.httpService.post(APIURLS.BR_ITEMCODE_APPROVAL_TRANSACTIONS_POST_API, this.transactions).catch(error => {
-      console.log(error);
+    this.httpService.post(APIURLS.BR_ITEMCODE_APPROVAL_TRANSACTIONS_POST_API, this.transactions).catch((error)=> {
+      //console.log(error);
     });
   }
 
@@ -1130,8 +1136,8 @@ export class ItemCodeModificationComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error in sending mail: ' + error;
     });
 
@@ -1143,8 +1149,8 @@ export class ItemCodeModificationComponent implements OnInit {
     connection.then((data: any) => {
       if (data == 200) {
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error in sending mail: ' + error;
     });
 
@@ -1154,7 +1160,7 @@ export class ItemCodeModificationComponent implements OnInit {
   fileToUpload: File | null = null;
   File: File | null = null;
   files:File[]=[]
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   formData: FormData = new FormData();
 
   handleFileInput(files: FileList) {
@@ -1175,7 +1181,7 @@ export class ItemCodeModificationComponent implements OnInit {
     }   
   }
   
-  ReadAsBase64(file): Promise<any> {
+  ReadAsBase64(file:any): Promise<any> {
     const reader = new FileReader();
     const fileValue = new Promise((resolve, reject) => {
       reader.addEventListener('load', () => {
@@ -1194,7 +1200,7 @@ export class ItemCodeModificationComponent implements OnInit {
 
     return fileValue;
   }
-  id: string;
+  id: string
   uploadfile() {
     // debugger;
     // this.id='VM001';
@@ -1210,8 +1216,8 @@ export class ItemCodeModificationComponent implements OnInit {
         // console.log('copied file to server')
         //this.imageFlag = true;
       }
-    }).catch(error => {
-      console.log(error);
+    }).catch((error)=> {
+      //console.log(error);
       this.errMsgPop = 'Error uploading file: ' + error;
     });
 
@@ -1265,17 +1271,17 @@ export class ItemCodeModificationComponent implements OnInit {
     if (value.length > 0) {
       this.httpService.getFile(APIURLS.BR_FILEDOWNLOAD_API, reqNo, value).then((data: any) => {
         // console.log(data);
-        // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+        // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
           if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data],value, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
 
 
         }
-      }).catch(error => {
-        console.log(error);
+      }).catch((error)=> {
+        //console.log(error);
         this.isLoading = false;
       });
 
@@ -1322,8 +1328,8 @@ export class ItemCodeModificationComponent implements OnInit {
           buttons: [false, true]
         });
       }
-    }).catch(error => {
-    console.log(error);
+    }).catch((error)=> {
+    //console.log(error);
       this.isLoadingPop = false;
       this.errMsgPop = 'Error deleting file: ' + error;
     });
@@ -1341,10 +1347,10 @@ export class ItemCodeModificationComponent implements OnInit {
     // console.log(filename);
     if (this.fileslist.length > 0) {
       var data=this.fileslist1.find(x=>x.name==name);
-          var FileSaver = require('file-saver');
+         // var FileSaver = require('file-saver');
           const imageFile = new File([data], name, { type: 'application/doc' });
           // console.log(imageFile);
-          FileSaver.saveAs(imageFile);
+      //      FileSaver.saveAs(imageFile);
     }
   }
 }

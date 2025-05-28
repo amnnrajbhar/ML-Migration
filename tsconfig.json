@@ -1,48 +1,12 @@
-{
-  "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "es2015",
-    "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "skipLibCheck": true,
-    "allowJs": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "paths": {
-      "ng-pick-datetime": ["./node_modules/@busacca/ng-pick-datetime"]
-    }
-  },
-  "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
-    "enableResourceInlining": true,
-    "preserveWhitespaces": false
-  }
-}
-
+//v9
 // {
 //   "compilerOptions": {
 //     "baseUrl": "./",
 //     "outDir": "./dist/out-tsc",
-//     "forceConsistentCasingInFileNames": false,
-//     "strict": false,
-//     "noImplicitReturns": false,
-//     "noFallthroughCasesInSwitch": false,
+//     "forceConsistentCasingInFileNames": true,
+//     "strict": true,
+//     "noImplicitReturns": true,
+//     "noFallthroughCasesInSwitch": true,
 //     "sourceMap": true,
 //     "declaration": false,
 //     "downlevelIteration": true,
@@ -62,39 +26,69 @@
 //     ],
 //     "paths": {
 //       "ng-pick-datetime": ["./node_modules/@busacca/ng-pick-datetime"]
-//     },
-//     "noImplicitAny": false,
-//     "noImplicitThis": false,
-//     // "suppressImplicitAnyIndexErrors": true,
-//     "noUnusedLocals": false,
-//     "noUnusedParameters": false,
-//     // "noImplicitOverride": false,
-//     // "noPropertyAccessFromIndexSignature": false,
-//     // "useUnknownInCatchVariables": false,
-//     // "noStrictGenericChecks": true,
-//     // "suppressExcessPropertyErrors": true,
-//     "allowSyntheticDefaultImports": true,
-//     "esModuleInterop": true,
-//     "allowUnreachableCode": true,
-//     "allowUnusedLabels": true,
-//     // "exactOptionalPropertyTypes": false,
-//     // "noUncheckedIndexedAccess": false
+//     }
 //   },
 //   "angularCompilerOptions": {
-//     "fullTemplateTypeCheck": false,
-//     "strictInjectionParameters": false,
+//     "fullTemplateTypeCheck": true,
+//     "strictInjectionParameters": true,
 //     "enableResourceInlining": true,
-//     "preserveWhitespaces": false,
-//     "strictTemplates": false,
-//     "strictInputAccessModifiers": false,
-//     "strictInputTypes": false,
-//     "strictNullInputTypes": false,
-//     "strictAttributeTypes": false,
-//     "strictSafeNavigationTypes": false,
-//     "strictDomLocalRefTypes": false,
-//     "strictOutputEventTypes": false,
-//     "strictDomEventTypes": false,
-//     "strictContextGenerics": false,
-//     "strictLiteralTypes": false
+//     "preserveWhitespaces": false
 //   }
 // }
+
+//v10
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": false,
+    "strict": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "es2020",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "allowJs": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "paths": {
+      "ng-pick-datetime": ["./node_modules/@busacca/ng-pick-datetime"]
+    },
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "allowUnreachableCode": true,
+    "allowUnusedLabels": true,
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": false,
+    "strictInjectionParameters": false,
+    "enableResourceInlining": true,
+    "preserveWhitespaces": false,
+    "strictTemplates": false,
+    "strictInputAccessModifiers": false,
+    "strictInputTypes": false,
+    "strictNullInputTypes": false,
+    "strictAttributeTypes": false,
+    "strictSafeNavigationTypes": false,
+    "strictDomLocalRefTypes": false,
+    "strictOutputEventTypes": false,
+    "strictDomEventTypes": false,
+    "strictContextGenerics": false,
+    "strictLiteralTypes": false
+  }
+}

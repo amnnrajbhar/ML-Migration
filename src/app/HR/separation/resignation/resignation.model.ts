@@ -53,7 +53,7 @@ export interface Resignation{
     isFieldStaff: boolean;
 
     shortfallDays:number;
-    settlementType: string;
+    settlementType: string
     paymode:string;
     payAmount: number;
 

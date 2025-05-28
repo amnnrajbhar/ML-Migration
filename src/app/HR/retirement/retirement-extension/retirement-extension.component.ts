@@ -12,7 +12,7 @@ import { setActionValue } from 'sweetalert/typings/modules/state';
 import { AuthData } from '../../../auth/auth.model';
 import { RetirementListFilter } from '../retirement-list/retirementlistfiltermodel';
 import { MOMENT } from 'angular-calendar';
-import * as moment from 'moment';
+import moment from 'moment'
 declare var $: any;
 declare var toastr: any;
 
@@ -23,7 +23,7 @@ declare var toastr: any;
   providers:[Util]
 })
 export class RetirementExtensionComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   employeeId: any;
   retirementId: any;
   urlPath: string = '';
@@ -63,7 +63,8 @@ export class RetirementExtensionComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.employeeId = this.route.snapshot.paramMap.get('id')!;  
       this.retirementDetails.hodApproval=true;
       this.retirementDetails.reportingManagerApproval=true;
@@ -91,7 +92,7 @@ getExtensionDate(event :any)
   this.applicableDate=new Date(this.applicableDate);
   this.retirementDetails.extensionEndDate=this.applicableDate;
 }
-  GetEmployeeDetails(id) {
+  GetEmployeeDetails(id:any) {
     this.isLoading = true;
    // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.HR_EMPLOYEE_DETAILS_API, id).then((data: any) => {
@@ -103,13 +104,13 @@ getExtensionDate(event :any)
         //this.GetRetirementDetailsById(this.employeeId);    
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
   }
 
-GetEmployeeRetirementDate(id) {
+GetEmployeeRetirementDate(id:any) {
     this.isLoading = true;
    // this.isVisible=false;
     this.httpService.HRgetById(APIURLS.RETIREMENT_EMPLOYEE_GET_DATE, id).then((data: any) => {
@@ -128,13 +129,13 @@ GetEmployeeRetirementDate(id) {
         this.GetRetirementDetailsById(this.employeeId);      
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
 
     });
   }
 
-  GetRetirementDetailsById(id) {
+  GetRetirementDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible=true;
     this.httpService.HRget(APIURLS.RETIREMENT_STATUS_GET_BYEMPID+"/"+id).then((data: any) => {
@@ -156,7 +157,7 @@ GetEmployeeRetirementDate(id) {
          
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }
@@ -228,7 +229,7 @@ GetEmployeeRetirementDate(id) {
         this.isLoading = false;
         toastr.error('Error occured while saving retirement details. Error:' + err);
       })
-      .catch(error => {
+      .catch((error)=> {
         this.isLoading = false;
         toastr.error('Error occured while saving retirement details. Error:' + error);
       });
@@ -256,7 +257,7 @@ GetEmployeeRetirementDate(id) {
       }else
         toastr.error("Error occurred.");
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       toastr.error(error);
     });    

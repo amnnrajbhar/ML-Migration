@@ -1,5 +1,5 @@
 export class AuditLogChange {
-  fieldname: string;
-  oldvalue: string;
-  newvalue: string;
+  fieldname: string
+  oldvalue: string
+  newvalue: string
 }

@@ -17,7 +17,7 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 import swal from 'sweetalert';
 import { EssTemplates } from './EssTemplates.model';
-import * as moment from 'moment';
+import moment from 'moment'
 import { HttpClient } from '@angular/common/http';
 
 declare var ActiveXObject: (type: string) => void;
@@ -29,10 +29,10 @@ declare var ActiveXObject: (type: string) => void;
 })
 
 export class EssTemplatesComponent implements OnInit {
-  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger: MatAutocompleteTrigger;
-@ViewChild(NgForm, { static: false }) userForm: NgForm;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) autocompleteTrigger!: MatAutocompleteTrigger;
+@ViewChild(NgForm, { static: false }) userForm!: NgForm;
 
-  @ViewChild('myInput', { static: false }) myInputVariable: ElementRef;
+  @ViewChild('myInput', { static: false }) myInputVariable!: ElementRef;
   public tableWidget: any;
   public tableWidgetlv: any;
   isLoading: boolean = false;
@@ -42,17 +42,17 @@ export class EssTemplatesComponent implements OnInit {
   errMsgPop: string = "";
   errMsgPop1: string = "";
   isEdit: boolean = false;
-  path: string;
+  path!: string
   employeeId: any = null;
   userMasterItem: any = {};
-  submitting: boolean;
-  isSubmitting: boolean;
+  submitting!: boolean;
+  isSubmitting!: boolean;
   snackBar: any;
-  isShowFileUpload: boolean;
-  UserId: string;
+  isShowFileUpload!: boolean;
+  UserId: string
   DescriptionList: any;
-  attachments: any[];
-  filtertype: string;
+  attachments!: any[];
+  filtertype: string
   id:number;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
@@ -73,10 +73,11 @@ export class EssTemplatesComponent implements OnInit {
     setTimeout(() => this.initDatatable(), 0)
   }
     
-  currentUser: AuthData;
+  currentUser!: AuthData;
   ngOnInit() {
     this.path = this.router.url;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.employeeId = this.currentUser.employeeId;
     this.getDescription();
      var chkaccess = this.appService.validateUrlBasedAccess(this.path);
@@ -93,7 +94,7 @@ getDescription() {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.DescriptionList = [];
     });
@@ -104,20 +105,20 @@ getDescription() {
     var name=id+','+description;
     this.httpService.getFile(APIURLS.BR_GET_ESS_ATTACHMENTS,id,description).then((data: any) => {
       // console.log(data);
-      // let temp_name = this.visitorsList1.find(s => s.id == id).name;
+      // let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
       // if(data){
       //   var downloadURL = URL.createObjectURL(data);
       //   window.open(downloadURL);
       // }
   
       if (data != undefined) {
-        var FileSaver = require('file-saver');
+       // var FileSaver = require('file-saver');
         const imageFile = new File([data], description);
         //const imageFile = new File([data], fileName, { type: 'application/doc' });
         // console.log(imageFile);
-        FileSaver.saveAs(imageFile);
+    //      FileSaver.saveAs(imageFile);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -127,14 +128,14 @@ getDescription() {
   //   if (description.length > 0) {
   //     this.httpService.getFile1(APIURLS.BR_GET_ESS_ATTACHMENTS, id,description).then((data: any) => {
   //       // console.log(data);
-  //       //  let temp_name = this.visitorsList1.find(s => s.id == id).name;
+  //       //  let temp_name = this.visitorsList1.find((s:any) => s.id == id).name;
   //       if (data != undefined) {
-  //         var FileSaver = require('file-saver');
+  //        // var FileSaver = require('file-saver');
   //         const imageFile = new File([data], name, { type: 'application/doc' });
   //         // console.log(imageFile);
-  //         FileSaver.saveAs(imageFile);
+  //     //      FileSaver.saveAs(imageFile);
   //       }
-  //     }).catch(error => {
+  //     }).catch((error)=> {
   //       this.isLoading = false;
   //     });
   //   } else {

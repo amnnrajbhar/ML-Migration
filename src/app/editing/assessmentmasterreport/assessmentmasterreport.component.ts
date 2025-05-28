@@ -57,7 +57,7 @@ export class AssessmentmasterreportComponent implements OnInit {
   visitorsList: any[]=[];
   mgrEmpList: any[] = [];
   EmployeeList: any[]=[];
-  usrid: number;
+  usrid!: number;
   BellCurveManagerRatingList: any[]=[];
   tableWidget1: any;
   visitorsFilteredList1: any[]=[];
@@ -82,7 +82,8 @@ export class AssessmentmasterreportComponent implements OnInit {
 
 
 ngOnInit() {
-  let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+  //let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+let authData: AuthData = JSON.parse(localStorage.getItem('currentUser') || '{}');
   this.usrid = authData.uid;
   this.getDesignationMasterList();
 }
@@ -143,12 +144,12 @@ getDesignationMasterList(){
           // for(let des of this.designationList) {
           //   this.httpService.getById(APIURLS.BR_MASTER_BELLCURVE_API,this.usrid).then((datam:any) => {
           //   this.desgList = datam;
-          //   this.designationList.find(s => s.fkParentId === this.desgList.id)['fkParentId'] = this.desgList.name;
+          //   this.designationList.find((s:any) => s.fkParentId === this.desgList.id)['fkParentId'] = this.desgList.name;
           //  });
           // }
           this.reInitDatatable();
       }
-  }).catch(error => {
+  }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList = [];
   });
@@ -184,7 +185,7 @@ dashboardRefresh(){
   // this.visitorsList = this.visitorsFilteredList;
   this.reInitVisitorDatatable();
 }
-}).catch(error => {
+}).catch((error)=> {
 // this.isLoading = false;
 this.visitorsFilteredList = [];
 this.visitorsFilteredList1 = [];
@@ -220,7 +221,7 @@ console.log(data);
                     this.isLoading = false;
                   }});
     }
-}).catch(error => {
+}).catch((error)=> {
     this.isLoading = false;
     this.visitorsList = [];
 });

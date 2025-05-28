@@ -7,14 +7,14 @@ import { HttpService } from '../../shared/http-service';
 import { AuthData } from '../../auth/auth.model';
 import { FormControl } from '@angular/forms';
 import { AssetReports } from './AssetReports.model';
-import * as ExcelJS from "exceljs/dist/exceljs.min.js";
+//import * as ExcelJS from "exceljs/dist/exceljs.min.js";
 import * as ExcelProper from "exceljs";
-import * as fs from 'file-saver';
+//import * as fs from 'file-saver';
 import swal from 'sweetalert';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import * as pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import { DatePipe } from '@angular/common';
-import htmlToPdfmake from 'html-to-pdfmake';
+// import htmlToPdfmake from 'html-to-pdfmake';
 import { HttpClient } from '@angular/common/http';
 import { DataSource } from '@angular/cdk/collections';
 declare var $: any;
@@ -30,7 +30,7 @@ export class AssetReportsComponent implements OnInit {
 @ViewChild('filterForm', { static: false }) filterForm: any;
 
   searchTerm = new FormControl();
-  currentUser: AuthData;
+  currentUser!: AuthData;
   public tableWidget: any;
   dashboard: any = {};
   isLoading: boolean = false;
@@ -53,7 +53,7 @@ export class AssetReportsComponent implements OnInit {
   locListCon: any;
   dashboardlocation: any;
   AssetReports = {} as AssetReports;
-  catCode: any[];
+  catCode!: any[];
   departmentList: any;
   dashboardcatCode: any;
   filteredModel: any;
@@ -74,11 +74,14 @@ export class AssetReportsComponent implements OnInit {
   to_date: any = this.today;
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
-    private http: HttpClient, private datePipe: DatePipe, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private http: HttpClient, private datePipe: DatePipe, private route: ActivatedRoute) {
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ }
 
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+ const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     this.getCatList();
     this.getAssetStateList();
     this.getLocationMaster();
@@ -95,29 +98,29 @@ export class AssetReportsComponent implements OnInit {
     this.httpService.get(APIURLS.BR_MASTER_LOCATION_MASTER_ALL_API).then((data: any) => {
       if (data.length > 0) {
         this.locationAllList = data;
-        this.locationList = data.filter(x => x.isActive);
+        this.locationList = data.filter((x:any)  => x.isActive);
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.locationList.sort((a, b) => { return collator.compare(a.code, b.code) });
-        this.locListCon = data.map((x) => { x.name1 = x.code + '-' + x.name; return x; });
-        this.locListCon.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.locationList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
+        this.locListCon = data.map((x:any) => { x.name1 = x.code + '-' + x.name; return x; });
+        this.locListCon.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.locationList = [];
     });
   }
 
   plantList: any[] = [];
-  getPlantsassigned(id) {
+  getPlantsassigned(id:any) {
     this.isLoading = true;
     this.httpService.getById(APIURLS.BR_MASTER_USER_PLANT_MAINT_API_ANY, id).then((data: any) => {
       if (data) {
-        this.plantList = data.filter(x => { return x.isActive; }).map((i) => { i.location = i.code + '-' + i.name; return i; });;
+        this.plantList = data.filter((x:any)  => { return x.isActive; }).map((i:any) => { i.location = i.code + '-' + i.name; return i; });;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.plantList.sort((a, b) => { return collator.compare(a.code, b.code) });
+        this.plantList.sort((a:any, b:any) => { return collator.compare(a.code, b.code) });
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.plantList = [];
     });
@@ -164,10 +167,10 @@ export class AssetReportsComponent implements OnInit {
       if (data.length > 0) {
         this.catList = data;
         let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-        this.catList.sort((a, b) => { return collator.compare(a.name, b.name) });
+        this.catList.sort((a:any, b:any) => { return collator.compare(a.name, b.name) });
         this.catList1 = this.catList.filter((item, i, arr) => arr.findIndex((t) => t.catCode === item.catCode) === i);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.catList = [];
     });
   }
@@ -175,13 +178,13 @@ export class AssetReportsComponent implements OnInit {
   getDepartList() {
     this.httpService.get(APIURLS.BR_MASTER_DEPARTMENT_API).then((data: any) => {
       if (data.length > 0) {
-        this.departmentList = data.filter(x => x.isActive).sort((a, b) => {
+        this.departmentList = data.filter((x:any)  => x.isActive).sort((a:any, b:any) => {
           if (a.name > b.name) return 1;
           if (a.name < b.name) return -1;
           return 0;
         });
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.departmentList = [];
       this.isLoading = false;
 
@@ -193,7 +196,7 @@ export class AssetReportsComponent implements OnInit {
       if (data.length > 0) {
         this.assStateList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.assStateList = [];
     });
   }
@@ -203,13 +206,13 @@ export class AssetReportsComponent implements OnInit {
       if (data.length > 0) {
         this.assStateList = data;
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.assStateList = [];
     });
   }
 
-  getAssetState(id) {
-    let temp = this.assStateList.find(x => x.id == id);
+  getAssetState(id:any) {
+    let temp = this.assStateList.find((x:any)  => x.id == id);
     return temp ? temp.status : '';
   }
 
@@ -240,14 +243,14 @@ export class AssetReportsComponent implements OnInit {
         this.sizeList = data;
         console.log(this.sizeList);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       // this.isLoading = false;
       this.sizeList = [];
     });
   }
 
-  getStorageSize(id) {
-    let temp = this.sizeList.find(x => x.storId == id);
+  getStorageSize(id:any) {
+    let temp = this.sizeList.find((x:any)  => x.storId == id);
     return temp ? temp.storTxt : '';
   }
 
@@ -258,19 +261,19 @@ export class AssetReportsComponent implements OnInit {
         this.monType = data;
         console.log(this.monType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.monType = [];
     });
   }
 
-  getMonitorType(id) {
-    let temp = this.monType.find(x => x.id == id);
+  getMonitorType(id:any) {
+    let temp = this.monType.find((x:any)  => x.id == id);
     return temp ? temp.type : '';
   }
 
   subCategorylist: any[] = []
   GetSubCategory(type) {
-    this.subCategorylist = this.catList.filter(x => x.catCode == type);
+    this.subCategorylist = this.catList.filter((x:any)  => x.catCode == type);
   }
 
   getSoftType() {
@@ -280,13 +283,13 @@ export class AssetReportsComponent implements OnInit {
         this.softType = data;
         console.log(this.softType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.softType = [];
     });
   }
 
-  getSoftTypename(id) {
-    let temp = this.softType.find(x => x.softId == id);
+  getSoftTypename(id:any) {
+    let temp = this.softType.find((x:any)  => x.softId == id);
     return temp ? temp.softStxt : '';
   }
 
@@ -297,17 +300,17 @@ export class AssetReportsComponent implements OnInit {
         this.licType = data;
         console.log(this.licType);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.licType = [];
     });
   }
 
-  getLicTypename(id) {
-    let temp = this.licType.find(x => x.licId == id);
+  getLicTypename(id:any) {
+    let temp = this.licType.find((x:any)  => x.licId == id);
     return temp ? temp.licStxt : '';
   }
 
-  image: string;
+  image!: string
   getbase64image() {
     this.http.get('../../assets/dist/img/micrologo.png', { responseType: 'blob' })
       .subscribe(blob => {
@@ -363,7 +366,7 @@ export class AssetReportsComponent implements OnInit {
         this.appDet = data;
         console.log(this.appDet);
       }
-    }).catch(error => {
+    }).catch((error)=> {
       this.appDet = [];
     });
   }
@@ -372,7 +375,7 @@ export class AssetReportsComponent implements OnInit {
   onUserActions1() {
 
     if (this.dashboardcatCode == 'Computers') {
-      var printContents = document.getElementById('pdf').innerHTML;
+      var printContents = document.getElementById('pdf')!.innerHTML;
     } else if (this.dashboardcatCode == 'Printers') {
       var printContents = document.getElementById('pdf1').innerHTML;
     } else if (this.dashboardcatCode == 'Network') {
@@ -398,7 +401,7 @@ export class AssetReportsComponent implements OnInit {
     if (this.appDet.length > 0) {
       var depthead = this.appDet[0].approver_Name + " - " + this.appDet[0].approver_Department;
     }
-    var htmnikhitml = htmlToPdfmake(`<html>
+    /*var htmnikhitml = htmlToPdfmake(`<html>
   <head>
   </head>
   <body>
@@ -411,13 +414,13 @@ export class AssetReportsComponent implements OnInit {
       headerRows: 1,
       dontBreakRows: true,
       keepWithHeaderRows: true,
-    })
+    })*/
     var docDefinition = {
       info: {
         title: 'Asset Installtion Report',
       },
       content: [
-        htmnikhitml,
+     //   htmnikhitml,
       ],
       defaultStyle: {
         fontSize: 9,
@@ -435,7 +438,7 @@ export class AssetReportsComponent implements OnInit {
       pageSize: 'A4',
       pageMargins: [40, 90, 40, 100],
       pageOrientation: 'portrait',
-      header: function (currentPage, pageCount) {
+      header: function (currentPage:any, pageCount:any) {
         return {
           columns: [
             {
@@ -505,7 +508,7 @@ export class AssetReportsComponent implements OnInit {
         }
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    //pdfMake.createPdf(docDefinition).open();
   }
 
 
@@ -524,7 +527,7 @@ export class AssetReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -539,8 +542,8 @@ export class AssetReportsComponent implements OnInit {
     else {
       this.isLoading = true;
       let td = new Date();
-      let formatedFROMdate: string;
-      let formatedTOdate: string;
+      let formatedFROMdate: string
+      let formatedTOdate: string
       var filterModel: any = {};
       if (this.from_date == '' || this.from_date == null) {
         formatedFROMdate = td.getFullYear() + "-" + ("00" + (td.getMonth() + 1)).slice(-2) + "-" + "01";
@@ -579,7 +582,7 @@ export class AssetReportsComponent implements OnInit {
         }
         this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     }
@@ -599,7 +602,7 @@ export class AssetReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
 
@@ -619,7 +622,7 @@ export class AssetReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
@@ -641,7 +644,7 @@ export class AssetReportsComponent implements OnInit {
         }
         this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     }
@@ -664,7 +667,7 @@ export class AssetReportsComponent implements OnInit {
         }
         this.reInitDatatable();
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoading = false;
       });
     }
@@ -697,7 +700,7 @@ export class AssetReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.assetList = [];
     });
@@ -718,613 +721,624 @@ export class AssetReportsComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
     });
   }
 
 
   // USED TO DOWNLOAD HARDWARE DETAILED REPORT
-  exportHardwareDetailed() {
-    const title = ' Asset Hardware Detailed Report';
-    const header = ["Sl No", "Asset ID", "Category", "Location", "Asset No", "Host Name", "Emp Name", "EmpNo", "Department", "Com Dept", "Com floor", "Bar Code", "Model", "Manufacturer",
-      "Part No", "Serial No", "Processor", "RAM", "Ram size", "HDD", "Size type", "Config", "Gxp Applicable", "IP Address", "Monitor Type", "Make", "Size", "Keyboard", "Mouse",
-      "Usage Type", "InstName", "InstType", "Version", "Software", "OperatingSystem", "Sw Version", "ProductKey", "AssetState", "NatureofActivities", "PONumber", "PODate", "InvoiceNumber",
-      "InvoiceDate", "SupplierName", "Value", "WarrantyExpiration", "PreventiveMaintenace", "InstallationDate", "InstallationType", "Created by", "Created date", "Modified by", "Modified date",
-      "Other Software Name", "Other version", "Other product key", "Other Expiry on", "Remarks", "Date of Issue", "Ppm", "Machine Life", "Cpp", "Asset Type", "EmpAd", "Replacement Type",
-      "ViewStatusApprover", "StatusApprovedDate", "ReportViewStatus", "VendorCode", "VendorCity", "VendorName"]
+   //v10
+  // exportHardwareDetailed() {
+  //   const title = ' Asset Hardware Detailed Report';
+  //   const header = ["Sl No", "Asset ID", "Category", "Location", "Asset No", "Host Name", "Emp Name", "EmpNo", "Department", "Com Dept", "Com floor", "Bar Code", "Model", "Manufacturer",
+  //     "Part No", "Serial No", "Processor", "RAM", "Ram size", "HDD", "Size type", "Config", "Gxp Applicable", "IP Address", "Monitor Type", "Make", "Size", "Keyboard", "Mouse",
+  //     "Usage Type", "InstName", "InstType", "Version", "Software", "OperatingSystem", "Sw Version", "ProductKey", "AssetState", "NatureofActivities", "PONumber", "PODate", "InvoiceNumber",
+  //     "InvoiceDate", "SupplierName", "Value", "WarrantyExpiration", "PreventiveMaintenace", "InstallationDate", "InstallationType", "Created by", "Created date", "Modified by", "Modified date",
+  //     "Other Software Name", "Other version", "Other product key", "Other Expiry on", "Remarks", "Date of Issue", "Ppm", "Machine Life", "Cpp", "Asset Type", "EmpAd", "Replacement Type",
+  //     "ViewStatusApprover", "StatusApprovedDate", "ReportViewStatus", "VendorCode", "VendorCity", "VendorName"]
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.assetList.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.slNo = index;
-      ts.assetId = element.assetId;
-      ts.category = element.category;
-      ts.location = element.location;
-      ts.assetNo = element.assetNo;
-      ts.hostName = element.hostName;
-      ts.empName = element.empName;
-      ts.empNo = element.empNo;
-      ts.empdept = element.department;
-      ts.comDept = element.comDept;
-      ts.comFloor = element.comFloor;
-      ts.barcode = element.barcode;
-      ts.model = element.model;
-      ts.manufacturer = element.manufacturer;
-      ts.partNo = element.partNo;
-      ts.serailNo = element.serialNo;
-      ts.processor = element.processor;
-      ts.ram = element.ram;
-      ts.ramSize = element.ramSize;
-      ts.hdd = element.hdd;
-      ts.sizeType = element.sizeType;
-      ts.config = element.config;
-      ts.Gxp = element.gxPApplicable;
-      ts.ipAdress = element.ipAddress;
-      ts.monitorType = element.monitorType;
-      ts.make = element.make;
-      ts.size = element.size;
-      ts.keyboard = element.keyboard;
-      ts.mouse = element.mouse;
-      ts.usagetype = element.usageType;
-      ts.instName = element.instName;
-      ts.instType = element.instType;
-      ts.version = element.version;
-      ts.software = element.software;
-      ts.operationSystem = element.operatingSystem;
-      ts.swVersion = element.swVersion;
-      ts.productKey = element.productKey;
-      ts.assetstate = element.assetState;
-      ts.natureofActivities = element.natureofActivities;
-      ts.ponumber = element.ponumber;
-      ts.podate = element.podate;
-      ts.invoiceNumber = element.invoiceNumber;
-      ts.invoiceDate = element.invoiceDate;
-      ts.supplierName = element.supplierName;
-      ts.value = element.value;
-      ts.warrantyExpiration = element.warrantyExpiration;
-      ts.preventiveMaintenace = element.preventiveMaintenace;
-      ts.installationDate = element.installationDate;
-      ts.installationType = element.installationType;
-      ts.createdBy = element.createdBy;
-      ts.createdDate = element.createdDate;
-      ts.modifiedBy = element.modifiedBy;
-      ts.modifiedDate = element.modifiedDate;
-      ts.otherSoftwareName = element.otherSoftwareName;
-      ts.otherVersion = element.otherVersion;
-      ts.otherProductKey = element.otherProductKey;
-      ts.otherExpiryOn = element.otherExpiryOn;
-      ts.remarks = element.remarks;
-      ts.dateOfIssue = element.dateOfIssue;
-      ts.ppm = element.ppm;
-      ts.machineLife = element.machineLife;
-      ts.cpp = element.cpp;
-      ts.assetType = element.assetType;
-      ts.empAd = element.empAd;
-      ts.replacementType = element.replacementType;
-      ts.viewStatusApprover = element.viewStatusApprover;
-      ts.statusApprovedDate = element.statusApprovedDate;
-      ts.reportViewStatus = element.reportViewStatus;
-      ts.vendorCode = element.vendorCode;
-      ts.vendorCity = element.vendorCity;
-      ts.vendorName = element.vendorName;
-      exportList.push(ts);
-    });
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Summary Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'left' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'left' }
-    worksheet.mergeCells('A1:BS1');
-    worksheet.mergeCells('A2:BS2');
-    worksheet.mergeCells('A3:BS3');
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.assetList.forEach((element:any)=> {
 
-    //Blank Row 
-    worksheet.addRow([]);
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slNo = index;
+  //     ts.assetId = element.assetId;
+  //     ts.category = element.category;
+  //     ts.location = element.location;
+  //     ts.assetNo = element.assetNo;
+  //     ts.hostName = element.hostName;
+  //     ts.empName = element.empName;
+  //     ts.empNo = element.empNo;
+  //     ts.empdept = element.department;
+  //     ts.comDept = element.comDept;
+  //     ts.comFloor = element.comFloor;
+  //     ts.barcode = element.barcode;
+  //     ts.model = element.model;
+  //     ts.manufacturer = element.manufacturer;
+  //     ts.partNo = element.partNo;
+  //     ts.serailNo = element.serialNo;
+  //     ts.processor = element.processor;
+  //     ts.ram = element.ram;
+  //     ts.ramSize = element.ramSize;
+  //     ts.hdd = element.hdd;
+  //     ts.sizeType = element.sizeType;
+  //     ts.config = element.config;
+  //     ts.Gxp = element.gxPApplicable;
+  //     ts.ipAdress = element.ipAddress;
+  //     ts.monitorType = element.monitorType;
+  //     ts.make = element.make;
+  //     ts.size = element.size;
+  //     ts.keyboard = element.keyboard;
+  //     ts.mouse = element.mouse;
+  //     ts.usagetype = element.usageType;
+  //     ts.instName = element.instName;
+  //     ts.instType = element.instType;
+  //     ts.version = element.version;
+  //     ts.software = element.software;
+  //     ts.operationSystem = element.operatingSystem;
+  //     ts.swVersion = element.swVersion;
+  //     ts.productKey = element.productKey;
+  //     ts.assetstate = element.assetState;
+  //     ts.natureofActivities = element.natureofActivities;
+  //     ts.ponumber = element.ponumber;
+  //     ts.podate = element.podate;
+  //     ts.invoiceNumber = element.invoiceNumber;
+  //     ts.invoiceDate = element.invoiceDate;
+  //     ts.supplierName = element.supplierName;
+  //     ts.value = element.value;
+  //     ts.warrantyExpiration = element.warrantyExpiration;
+  //     ts.preventiveMaintenace = element.preventiveMaintenace;
+  //     ts.installationDate = element.installationDate;
+  //     ts.installationType = element.installationType;
+  //     ts.createdBy = element.createdBy;
+  //     ts.createdDate = element.createdDate;
+  //     ts.modifiedBy = element.modifiedBy;
+  //     ts.modifiedDate = element.modifiedDate;
+  //     ts.otherSoftwareName = element.otherSoftwareName;
+  //     ts.otherVersion = element.otherVersion;
+  //     ts.otherProductKey = element.otherProductKey;
+  //     ts.otherExpiryOn = element.otherExpiryOn;
+  //     ts.remarks = element.remarks;
+  //     ts.dateOfIssue = element.dateOfIssue;
+  //     ts.ppm = element.ppm;
+  //     ts.machineLife = element.machineLife;
+  //     ts.cpp = element.cpp;
+  //     ts.assetType = element.assetType;
+  //     ts.empAd = element.empAd;
+  //     ts.replacementType = element.replacementType;
+  //     ts.viewStatusApprover = element.viewStatusApprover;
+  //     ts.statusApprovedDate = element.statusApprovedDate;
+  //     ts.reportViewStatus = element.reportViewStatus;
+  //     ts.vendorCode = element.vendorCode;
+  //     ts.vendorCity = element.vendorCity;
+  //     ts.vendorName = element.vendorName;
+  //     exportList.push(ts);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Summary Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'left' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'left' }
+  //   worksheet.mergeCells('A1:BS1');
+  //   worksheet.mergeCells('A2:BS2');
+  //   worksheet.mergeCells('A3:BS3');
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   //Blank Row 
+  //   worksheet.addRow([]);
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'HardwareDetailedReport.xlsx');
-    })
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'HardwareDetailedReport.xlsx');
+  //   })
+
+  // }
 
 
   // USED TO DOWNLOAD ASSET DISPOSED REPORT
-  exportAssetDisposed() {
-    const title = ' Disposed Asset Report';
-    const header = ["Sl No", "Asset ID", "Category", "Location", "Asset No", "Host Name", "Emp Name", "EmpNo", "Department", "Com Dept", "Com floor", "Bar Code", "Model", "Manufacturer",
-      "Part No", "Serial No", "Processor", "RAM", "Ram size", "HDD", "Size type", "Config", "Gxp Applicable", "IP Address", "Monitor Type", "Make", "Size", "Keyboard", "Mouse",
-      "Usage Type", "InstName", "InstType", "Version", "Software", "OperatingSystem", "Sw Version", "ProductKey", "AssetState", "NatureofActivities", "PONumber", "PODate", "InvoiceNumber",
-      "InvoiceDate", "SupplierName", "Value", "WarrantyExpiration", "PreventiveMaintenace", "InstallationDate", "InstallationType", "Created by", "Created date", "Disposed by", "Disposed date",
-      "VendorCode", "VendorCity", "VendorName", "Date of Issue", "Ppm", "Machine Life", "Cpp", "Asset Type", "EmpAd", "Replacement Type",
-      "ViewStatusApprover", "StatusApprovedDate", "ReportViewStatus"]
+   //v10
+  // exportAssetDisposed() {
+  //   const title = ' Disposed Asset Report';
+  //   const header = ["Sl No", "Asset ID", "Category", "Location", "Asset No", "Host Name", "Emp Name", "EmpNo", "Department", "Com Dept", "Com floor", "Bar Code", "Model", "Manufacturer",
+  //     "Part No", "Serial No", "Processor", "RAM", "Ram size", "HDD", "Size type", "Config", "Gxp Applicable", "IP Address", "Monitor Type", "Make", "Size", "Keyboard", "Mouse",
+  //     "Usage Type", "InstName", "InstType", "Version", "Software", "OperatingSystem", "Sw Version", "ProductKey", "AssetState", "NatureofActivities", "PONumber", "PODate", "InvoiceNumber",
+  //     "InvoiceDate", "SupplierName", "Value", "WarrantyExpiration", "PreventiveMaintenace", "InstallationDate", "InstallationType", "Created by", "Created date", "Disposed by", "Disposed date",
+  //     "VendorCode", "VendorCity", "VendorName", "Date of Issue", "Ppm", "Machine Life", "Cpp", "Asset Type", "EmpAd", "Replacement Type",
+  //     "ViewStatusApprover", "StatusApprovedDate", "ReportViewStatus"]
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.assetList.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.slNo = index;
-      ts.assetId = element.assetId;
-      ts.category = element.category;
-      ts.location = element.location;
-      ts.assetNo = element.assetNo;
-      ts.hostName = element.hostName;
-      ts.empName = element.empName;
-      ts.empNo = element.empNo;
-      ts.empdept = element.department;
-      ts.comDept = element.comDept;
-      ts.comFloor = element.comFloor;
-      ts.barcode = element.barcode;
-      ts.model = element.model;
-      ts.manufacturer = element.manufacturer;
-      ts.partNo = element.partNo;
-      ts.serailNo = element.serialNo;
-      ts.processor = element.processor;
-      ts.ram = element.ram;
-      ts.ramSize = element.ramSize;
-      ts.hdd = element.hdd;
-      ts.sizeType = element.sizeType;
-      ts.config = element.config;
-      ts.Gxp = element.gxPApplicable;
-      ts.ipAdress = element.ipAddress;
-      ts.monitorType = element.monitorType;
-      ts.make = element.make;
-      ts.size = element.size;
-      ts.keyboard = element.keyboard;
-      ts.mouse = element.mouse;
-      ts.usagetype = element.usageType;
-      ts.instName = element.instName;
-      ts.instType = element.instType;
-      ts.version = element.version;
-      ts.software = element.software;
-      ts.operationSystem = element.operatingSystem;
-      ts.swVersion = element.swVersion;
-      ts.productKey = element.productKey;
-      ts.assetstate = element.assetState;
-      ts.natureofActivities = element.natureofActivities;
-      ts.ponumber = element.ponumber;
-      ts.podate = element.podate;
-      ts.invoiceNumber = element.invoiceNumber;
-      ts.invoiceDate = element.invoiceDate;
-      ts.supplierName = element.supplierName;
-      ts.value = element.value;
-      ts.warrantyExpiration = element.warrantyExpiration;
-      ts.preventiveMaintenace = element.preventiveMaintenace;
-      ts.installationDate = element.installationDate;
-      ts.installationType = element.installationType;
-      ts.createdBy = element.createdBy;
-      ts.createdDate = element.createdDate;
-      ts.modifiedBy = element.modifiedBy;
-      ts.modifiedDate = element.modifiedDate;
-      ts.vendorCode = element.vendorCode;
-      ts.vendorCity = element.vendorCity;
-      ts.vendorName = element.vendorName;
-      ts.dateOfIssue = element.dateOfIssue;
-      ts.ppm = element.ppm;
-      ts.machineLife = element.machineLife;
-      ts.cpp = element.cpp;
-      ts.assetType = element.assetType;
-      ts.empAd = element.empAd;
-      ts.replacementType = element.replacementType;
-      ts.viewStatusApprover = element.viewStatusApprover;
-      ts.statusApprovedDate = element.statusApprovedDate;
-      ts.reportViewStatus = element.reportViewStatus;
-      exportList.push(ts);
-    });
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Disposed Asset Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:BS1');
-    worksheet.mergeCells('A2:BS2');
-    worksheet.mergeCells('A3:BS3');
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.assetList.forEach((element:any)=> {
 
-    //Blank Row 
-    worksheet.addRow([]);
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slNo = index;
+  //     ts.assetId = element.assetId;
+  //     ts.category = element.category;
+  //     ts.location = element.location;
+  //     ts.assetNo = element.assetNo;
+  //     ts.hostName = element.hostName;
+  //     ts.empName = element.empName;
+  //     ts.empNo = element.empNo;
+  //     ts.empdept = element.department;
+  //     ts.comDept = element.comDept;
+  //     ts.comFloor = element.comFloor;
+  //     ts.barcode = element.barcode;
+  //     ts.model = element.model;
+  //     ts.manufacturer = element.manufacturer;
+  //     ts.partNo = element.partNo;
+  //     ts.serailNo = element.serialNo;
+  //     ts.processor = element.processor;
+  //     ts.ram = element.ram;
+  //     ts.ramSize = element.ramSize;
+  //     ts.hdd = element.hdd;
+  //     ts.sizeType = element.sizeType;
+  //     ts.config = element.config;
+  //     ts.Gxp = element.gxPApplicable;
+  //     ts.ipAdress = element.ipAddress;
+  //     ts.monitorType = element.monitorType;
+  //     ts.make = element.make;
+  //     ts.size = element.size;
+  //     ts.keyboard = element.keyboard;
+  //     ts.mouse = element.mouse;
+  //     ts.usagetype = element.usageType;
+  //     ts.instName = element.instName;
+  //     ts.instType = element.instType;
+  //     ts.version = element.version;
+  //     ts.software = element.software;
+  //     ts.operationSystem = element.operatingSystem;
+  //     ts.swVersion = element.swVersion;
+  //     ts.productKey = element.productKey;
+  //     ts.assetstate = element.assetState;
+  //     ts.natureofActivities = element.natureofActivities;
+  //     ts.ponumber = element.ponumber;
+  //     ts.podate = element.podate;
+  //     ts.invoiceNumber = element.invoiceNumber;
+  //     ts.invoiceDate = element.invoiceDate;
+  //     ts.supplierName = element.supplierName;
+  //     ts.value = element.value;
+  //     ts.warrantyExpiration = element.warrantyExpiration;
+  //     ts.preventiveMaintenace = element.preventiveMaintenace;
+  //     ts.installationDate = element.installationDate;
+  //     ts.installationType = element.installationType;
+  //     ts.createdBy = element.createdBy;
+  //     ts.createdDate = element.createdDate;
+  //     ts.modifiedBy = element.modifiedBy;
+  //     ts.modifiedDate = element.modifiedDate;
+  //     ts.vendorCode = element.vendorCode;
+  //     ts.vendorCity = element.vendorCity;
+  //     ts.vendorName = element.vendorName;
+  //     ts.dateOfIssue = element.dateOfIssue;
+  //     ts.ppm = element.ppm;
+  //     ts.machineLife = element.machineLife;
+  //     ts.cpp = element.cpp;
+  //     ts.assetType = element.assetType;
+  //     ts.empAd = element.empAd;
+  //     ts.replacementType = element.replacementType;
+  //     ts.viewStatusApprover = element.viewStatusApprover;
+  //     ts.statusApprovedDate = element.statusApprovedDate;
+  //     ts.reportViewStatus = element.reportViewStatus;
+  //     exportList.push(ts);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Disposed Asset Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:BS1');
+  //   worksheet.mergeCells('A2:BS2');
+  //   worksheet.mergeCells('A3:BS3');
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   //Blank Row 
+  //   worksheet.addRow([]);
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'DisposedAssetReport.xlsx');
-    })
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
 
-  }
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'DisposedAssetReport.xlsx');
+  //   })
+
+  // }
 
 
   //USED TO DOWNLOAD SOFTWARE DETAILED REPORT
-  exportSoftwareDetailed() {
+   //v10
+  // exportSoftwareDetailed() {
 
-    const title = ' Asset Software Detailed Report';
-    const header = ["Sl No", "Asset No", "Location", "Department", "Software Type", "License Type", "Software Name", "Software Version ", "Product Key ", "Expires On"]
+  //   const title = ' Asset Software Detailed Report';
+  //   const header = ["Sl No", "Asset No", "Location", "Department", "Software Type", "License Type", "Software Name", "Software Version ", "Product Key ", "Expires On"]
 
-    var exportList = [];
-    var ts: any = {};
-    let index = 0;
-    this.assetList.forEach(element => {
-      index = index + 1;
-      ts = {};
-      ts.slNo = index;
-      ts.assetNo = element.assetNo;
-      ts.location = element.location;
-      ts.empdept = element.department;
-      ts.softwareType = element.softwareType;
-      ts.licenseType = element.licenseType;
-      ts.otherSoftwareName = element.otherSoftwareName;
-      ts.otherVersion = element.otherVersion;
-      ts.otherProductKey = element.otherProductKey;
-      ts.otherExpiryOn = element.otherExpiryOn;
-      exportList.push(ts);
+  //   var exportList = [];
+  //   var ts: any = {};
+  //   let index = 0;
+  //   this.assetList.forEach((element:any)=> {
 
-    });
-    var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
-    const data = exportList;
-    //Create workbook and worksheet
-    let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-    let worksheet = workbook.addWorksheet('Summary Report');
-    //Add Row and formatting
-    var head = worksheet.addRow([OrganisationName]);
-    head.font = { size: 16, bold: true }
-    head.alignment = { horizontal: 'center' }
-    let titleRow = worksheet.addRow([title]);
-    titleRow.font = { size: 16, bold: true }
-    titleRow.alignment = { horizontal: 'center' }
-    worksheet.mergeCells('A1:R1');
-    worksheet.mergeCells('A2:R2');
-    worksheet.mergeCells('A3:R3');
+  //     index = index + 1;
+  //     ts = {};
+  //     ts.slNo = index;
+  //     ts.assetNo = element.assetNo;
+  //     ts.location = element.location;
+  //     ts.empdept = element.department;
+  //     ts.softwareType = element.softwareType;
+  //     ts.licenseType = element.licenseType;
+  //     ts.otherSoftwareName = element.otherSoftwareName;
+  //     ts.otherVersion = element.otherVersion;
+  //     ts.otherProductKey = element.otherProductKey;
+  //     ts.otherExpiryOn = element.otherExpiryOn;
+  //     exportList.push(ts);
 
-    //Blank Row 
-    worksheet.addRow([]);
-    //Add Header Row
-    let headerRow = worksheet.addRow(header);
+  //   });
+  //   var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
+  //   const data = exportList;
+  //   //Create workbook and worksheet
+  //   //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //   let worksheet = workbook.addWorksheet('Summary Report');
+  //   //Add Row and formatting
+  //   var head = worksheet.addRow([OrganisationName]);
+  //   head.font = { size: 16, bold: true }
+  //   head.alignment = { horizontal: 'center' }
+  //   let titleRow = worksheet.addRow([title]);
+  //   titleRow.font = { size: 16, bold: true }
+  //   titleRow.alignment = { horizontal: 'center' }
+  //   worksheet.mergeCells('A1:R1');
+  //   worksheet.mergeCells('A2:R2');
+  //   worksheet.mergeCells('A3:R3');
 
-    headerRow.eachCell((cell, number) => {
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFFFFF00' },
-        bgColor: { argb: 'FF0000FF' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+  //   //Blank Row 
+  //   worksheet.addRow([]);
+  //   //Add Header Row
+  //   let headerRow = worksheet.addRow(header);
 
-    for (let x1 of data) {
-      let x2 = Object.keys(x1);
-      let temp = []
-      for (let y of x2) {
-        temp.push(x1[y])
-      }
-      worksheet.addRow(temp)
-    }
-    worksheet.eachRow((cell, number) => {
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
-    worksheet.addRow([]);
-    workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fs.saveAs(blob, 'SoftwareDetailedReport.xlsx');
-    })
-  }
+  //   headerRow.eachCell((cell, number) => {
+  //     cell.fill = {
+  //       type: 'pattern',
+  //       pattern: 'solid',
+  //       fgColor: { argb: 'FFFFFF00' },
+  //       bgColor: { argb: 'FF0000FF' }
+  //     }
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+
+  //   for (let x1 of data) {
+  //     let x2 = Object.keys(x1);
+  //     let temp = []
+  //     for (let y of x2) {
+  //       temp.push(x1[y])
+  //     }
+  //     worksheet.addRow(temp)
+  //   }
+  //   worksheet.eachRow((cell, number) => {
+  //     cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //   })
+  //   worksheet.addRow([]);
+  //   workbook.xlsx.writeBuffer().then((data:any) => {
+  //     let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //     fs.saveAs(blob, 'SoftwareDetailedReport.xlsx');
+  //   })
+  // }
 
 
   // USED TO DOWNLOAD ASSET LOG REPORT (HARDWARE)
-  exportAssetHardwareReport() {
-    swal({
-      title: "Message",
-      text: "Are you sure to print?",
-      icon: "warning",
-      dangerMode: false,
-      buttons: [true, true]
-    }).then((willsave) => {
-      if (willsave) {
-        const title = ' Asset Hardware Report';
-        const header = ["Sl No", "Asset ID", "Category", "Location", "Asset No", "Host Name", "Emp Name", "EmpNo", "Department", "Com Dept", "Com floor", "Bar Code", "Model", "Manufacturer",
-          "Part No", "Serial No", "Processor", "RAM", "Ram size", "HDD", "Size type", "Config", "Gxp Applicable", "IP Address", "Monitor Type", "Make", "Size", "Keyboard", "Mouse",
-          "Usage Type", "InstName", "InstType", "Version", "Software", "OperatingSystem", "Sw Version", "ProductKey", "AssetState", "NatureofActivities", "PONumber", "PODate", "InvoiceNumber",
-          "InvoiceDate", "SupplierName", "Value", "WarrantyExpiration", "PreventiveMaintenace", "InstallationDate", "InstallationType", "Created by", "Created date", "Modified by", "Modified date",
-          "Other Software Name", "Other version", "Other product key", "Other Expiry on", "Remarks", "Date of Issue", "Ppm", "Machine Life", "Cpp", "Asset Type", "EmpAd", "Replacement Type",
-          "ViewStatusApprover", "StatusApprovedDate", "ReportViewStatus", "VendorCode", "VendorCity", "VendorName"]
+   //v10
+  // exportAssetHardwareReport() {
+  //   swal({
+  //     title: "Message",
+  //     text: "Are you sure to print?",
+  //     icon: "warning",
+  //     dangerMode: false,
+  //     buttons: [true, true]
+  //   }).then((willsave) => {
+  //     if (willsave) {
+  //       const title = ' Asset Hardware Report';
+  //       const header = ["Sl No", "Asset ID", "Category", "Location", "Asset No", "Host Name", "Emp Name", "EmpNo", "Department", "Com Dept", "Com floor", "Bar Code", "Model", "Manufacturer",
+  //         "Part No", "Serial No", "Processor", "RAM", "Ram size", "HDD", "Size type", "Config", "Gxp Applicable", "IP Address", "Monitor Type", "Make", "Size", "Keyboard", "Mouse",
+  //         "Usage Type", "InstName", "InstType", "Version", "Software", "OperatingSystem", "Sw Version", "ProductKey", "AssetState", "NatureofActivities", "PONumber", "PODate", "InvoiceNumber",
+  //         "InvoiceDate", "SupplierName", "Value", "WarrantyExpiration", "PreventiveMaintenace", "InstallationDate", "InstallationType", "Created by", "Created date", "Modified by", "Modified date",
+  //         "Other Software Name", "Other version", "Other product key", "Other Expiry on", "Remarks", "Date of Issue", "Ppm", "Machine Life", "Cpp", "Asset Type", "EmpAd", "Replacement Type",
+  //         "ViewStatusApprover", "StatusApprovedDate", "ReportViewStatus", "VendorCode", "VendorCity", "VendorName"]
 
-        var exportList = [];
-        var ts: any = {};
-        let index = 0;
-        this.assetList.forEach(element => {
-          index = index + 1;
-          ts = {};
-          ts.slNo = index;
-          ts.assetId = element.assetId;
-          ts.category = element.category;
-          ts.location = element.location;
-          ts.assetNo = element.assetNo;
-          ts.hostName = element.hostName;
-          ts.empName = element.empName;
-          ts.empNo = element.empNo;
-          ts.empdept = element.department;
-          ts.comDept = element.comDept;
-          ts.comFloor = element.comFloor;
-          ts.barcode = element.barcode;
-          ts.model = element.model;
-          ts.manufacturer = element.manufacturer;
-          ts.partNo = element.partNo;
-          ts.serailNo = element.serialNo;
-          ts.processor = element.processor;
-          ts.ram = element.ram;
-          ts.ramSize = element.ramSize;
-          ts.hdd = element.hdd;
-          ts.sizeType = element.sizeType;
-          ts.config = element.config;
-          ts.Gxp = element.gxPApplicable;
-          ts.ipAdress = element.ipAddress;
-          ts.monitorType = element.monitorType;
-          ts.make = element.make;
-          ts.size = element.size;
-          ts.keyboard = element.keyboard;
-          ts.mouse = element.mouse;
-          ts.usagetype = element.usageType;
-          ts.instName = element.instName;
-          ts.instType = element.instType;
-          ts.version = element.version;
-          ts.software = element.software;
-          ts.operationSystem = element.operatingSystem;
-          ts.swVersion = element.swVersion;
-          ts.productKey = element.productKey;
-          ts.assetstate = element.assetState;
-          ts.natureofActivities = element.natureofActivities;
-          ts.ponumber = element.ponumber;
-          ts.podate = element.podate;
-          ts.invoiceNumber = element.invoiceNumber;
-          ts.invoiceDate = element.invoiceDate;
-          ts.supplierName = element.supplierName;
-          ts.value = element.value;
-          ts.warrantyExpiration = element.warrantyExpiration;
-          ts.preventiveMaintenace = element.preventiveMaintenace;
-          ts.installationDate = element.installationDate;
-          ts.installationType = element.installationType;
-          ts.createdBy = element.createdBy;
-          ts.createdDate = element.createdDate;
-          ts.modifiedBy = element.modifiedBy;
-          ts.modifiedDate = element.modifiedDate;
-          ts.otherSoftwareName = element.otherSoftwareName;
-          ts.otherVersion = element.otherVersion;
-          ts.otherProductKey = element.otherProductKey;
-          ts.otherExpiryOn = element.otherExpiryOn;
-          ts.remarks = element.remarks;
-          ts.dateOfIssue = element.dateOfIssue;
-          ts.ppm = element.ppm;
-          ts.machineLife = element.machineLife;
-          ts.cpp = element.cpp;
-          ts.assetType = element.assetType;
-          ts.empAd = element.empAd;
-          ts.replacementType = element.replacementType;
-          ts.viewStatusApprover = element.viewStatusApprover;
-          ts.statusApprovedDate = element.statusApprovedDate;
-          ts.reportViewStatus = element.reportViewStatus;
-          ts.vendorCode = element.vendorCode;
-          ts.vendorCity = element.vendorCity;
-          ts.vendorName = element.vendorName;
-          exportList.push(ts);
-        });
-        var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
-        const data = exportList;
-        //Create workbook and worksheet
-        let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-        let worksheet = workbook.addWorksheet('Summary Report');
-        //Add Row and formatting
-        var head = worksheet.addRow([OrganisationName]);
-        head.font = { size: 16, bold: true }
-        head.alignment = { horizontal: 'left' }
-        let titleRow = worksheet.addRow([title]);
-        titleRow.font = { size: 16, bold: true }
-        titleRow.alignment = { horizontal: 'left' }
-        worksheet.mergeCells('A1:BS1');
-        worksheet.mergeCells('A2:BS2');
-        worksheet.mergeCells('A3:BS3');
+  //       var exportList = [];
+  //       var ts: any = {};
+  //       let index = 0;
+  //       this.assetList.forEach((element:any)=> {
 
-        //Blank Row 
-        worksheet.addRow([]);
-        //Add Header Row
-        let headerRow = worksheet.addRow(header);
+  //         index = index + 1;
+  //         ts = {};
+  //         ts.slNo = index;
+  //         ts.assetId = element.assetId;
+  //         ts.category = element.category;
+  //         ts.location = element.location;
+  //         ts.assetNo = element.assetNo;
+  //         ts.hostName = element.hostName;
+  //         ts.empName = element.empName;
+  //         ts.empNo = element.empNo;
+  //         ts.empdept = element.department;
+  //         ts.comDept = element.comDept;
+  //         ts.comFloor = element.comFloor;
+  //         ts.barcode = element.barcode;
+  //         ts.model = element.model;
+  //         ts.manufacturer = element.manufacturer;
+  //         ts.partNo = element.partNo;
+  //         ts.serailNo = element.serialNo;
+  //         ts.processor = element.processor;
+  //         ts.ram = element.ram;
+  //         ts.ramSize = element.ramSize;
+  //         ts.hdd = element.hdd;
+  //         ts.sizeType = element.sizeType;
+  //         ts.config = element.config;
+  //         ts.Gxp = element.gxPApplicable;
+  //         ts.ipAdress = element.ipAddress;
+  //         ts.monitorType = element.monitorType;
+  //         ts.make = element.make;
+  //         ts.size = element.size;
+  //         ts.keyboard = element.keyboard;
+  //         ts.mouse = element.mouse;
+  //         ts.usagetype = element.usageType;
+  //         ts.instName = element.instName;
+  //         ts.instType = element.instType;
+  //         ts.version = element.version;
+  //         ts.software = element.software;
+  //         ts.operationSystem = element.operatingSystem;
+  //         ts.swVersion = element.swVersion;
+  //         ts.productKey = element.productKey;
+  //         ts.assetstate = element.assetState;
+  //         ts.natureofActivities = element.natureofActivities;
+  //         ts.ponumber = element.ponumber;
+  //         ts.podate = element.podate;
+  //         ts.invoiceNumber = element.invoiceNumber;
+  //         ts.invoiceDate = element.invoiceDate;
+  //         ts.supplierName = element.supplierName;
+  //         ts.value = element.value;
+  //         ts.warrantyExpiration = element.warrantyExpiration;
+  //         ts.preventiveMaintenace = element.preventiveMaintenace;
+  //         ts.installationDate = element.installationDate;
+  //         ts.installationType = element.installationType;
+  //         ts.createdBy = element.createdBy;
+  //         ts.createdDate = element.createdDate;
+  //         ts.modifiedBy = element.modifiedBy;
+  //         ts.modifiedDate = element.modifiedDate;
+  //         ts.otherSoftwareName = element.otherSoftwareName;
+  //         ts.otherVersion = element.otherVersion;
+  //         ts.otherProductKey = element.otherProductKey;
+  //         ts.otherExpiryOn = element.otherExpiryOn;
+  //         ts.remarks = element.remarks;
+  //         ts.dateOfIssue = element.dateOfIssue;
+  //         ts.ppm = element.ppm;
+  //         ts.machineLife = element.machineLife;
+  //         ts.cpp = element.cpp;
+  //         ts.assetType = element.assetType;
+  //         ts.empAd = element.empAd;
+  //         ts.replacementType = element.replacementType;
+  //         ts.viewStatusApprover = element.viewStatusApprover;
+  //         ts.statusApprovedDate = element.statusApprovedDate;
+  //         ts.reportViewStatus = element.reportViewStatus;
+  //         ts.vendorCode = element.vendorCode;
+  //         ts.vendorCity = element.vendorCity;
+  //         ts.vendorName = element.vendorName;
+  //         exportList.push(ts);
+  //       });
+  //       var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
+  //       const data = exportList;
+  //       //Create workbook and worksheet
+  //       //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //       let worksheet = workbook.addWorksheet('Summary Report');
+  //       //Add Row and formatting
+  //       var head = worksheet.addRow([OrganisationName]);
+  //       head.font = { size: 16, bold: true }
+  //       head.alignment = { horizontal: 'left' }
+  //       let titleRow = worksheet.addRow([title]);
+  //       titleRow.font = { size: 16, bold: true }
+  //       titleRow.alignment = { horizontal: 'left' }
+  //       worksheet.mergeCells('A1:BS1');
+  //       worksheet.mergeCells('A2:BS2');
+  //       worksheet.mergeCells('A3:BS3');
 
-        headerRow.eachCell((cell, number) => {
-          cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFFFFF00' },
-            bgColor: { argb: 'FF0000FF' }
-          }
-          cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
+  //       //Blank Row 
+  //       worksheet.addRow([]);
+  //       //Add Header Row
+  //       let headerRow = worksheet.addRow(header);
 
-        for (let x1 of data) {
-          let x2 = Object.keys(x1);
-          let temp = []
-          for (let y of x2) {
-            temp.push(x1[y])
-          }
-          worksheet.addRow(temp)
-        }
-        worksheet.eachRow((cell, number) => {
-          cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
-        worksheet.addRow([]);
-        workbook.xlsx.writeBuffer().then((data) => {
-          let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          fs.saveAs(blob, 'Asset Hardware Report.xlsx');
+  //       headerRow.eachCell((cell, number) => {
+  //         cell.fill = {
+  //           type: 'pattern',
+  //           pattern: 'solid',
+  //           fgColor: { argb: 'FFFFFF00' },
+  //           bgColor: { argb: 'FF0000FF' }
+  //         }
+  //         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //       })
 
-        })
-      }
+  //       for (let x1 of data) {
+  //         let x2 = Object.keys(x1);
+  //         let temp = []
+  //         for (let y of x2) {
+  //           temp.push(x1[y])
+  //         }
+  //         worksheet.addRow(temp)
+  //       }
+  //       worksheet.eachRow((cell, number) => {
+  //         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //       })
+  //       worksheet.addRow([]);
+  //       workbook.xlsx.writeBuffer().then((data:any) => {
+  //         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //         fs.saveAs(blob, 'Asset Hardware Report.xlsx');
 
-    });
-  }
+  //       })
+  //     }
+
+  //   });
+  // }
 
 
 
   // USED TO DOWNLOAD ASSET LOG REPORT (SOFTWARE)
-  exportAssetSoftwareReport() {
-    swal({
-      title: "Message",
-      text: "Are you sure to print?",
-      icon: "warning",
-      dangerMode: false,
-      buttons: [true, true]
-    }).then((willsave) => {
-      if (willsave) {
-        const title = ' Asset Software Report';
-        const header = ["Sl No", "Asset Id", "Asset No", "Location", "Software Type", "License Type", "Software Name", "Software Version ", "Product Key ", "Expires On"]
+   //v10
+  // exportAssetSoftwareReport() {
+  //   swal({
+  //     title: "Message",
+  //     text: "Are you sure to print?",
+  //     icon: "warning",
+  //     dangerMode: false,
+  //     buttons: [true, true]
+  //   }).then((willsave) => {
+  //     if (willsave) {
+  //       const title = ' Asset Software Report';
+  //       const header = ["Sl No", "Asset Id", "Asset No", "Location", "Software Type", "License Type", "Software Name", "Software Version ", "Product Key ", "Expires On"]
 
-        var exportList = [];
-        var ts: any = {};
-        let index = 0;
-        this.assetList.forEach(element => {
-          index = index + 1;
-          ts = {};
-          ts.slNo = index;
-          ts.assetId = element.assetId;
-          ts.assetNo = element.assetNo;
-          ts.location = element.location;
-          ts.softwareType = element.softwareType;
-          ts.licenseType = element.licenseType;
-          ts.otherSoftwareName = element.otherSoftwareName;
-          ts.otherVersion = element.otherVersion;
-          ts.otherProductKey = element.otherProductKey;
-          ts.otherExpiryOn = element.otherExpiryOn;
-          exportList.push(ts);
+  //       var exportList = [];
+  //       var ts: any = {};
+  //       let index = 0;
+  //       this.assetList.forEach((element:any)=> {
 
-        });
-        var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
-        const data = exportList;
-        //Create workbook and worksheet
-        let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
-        let worksheet = workbook.addWorksheet('Summary Report');
-        //Add Row and formatting
-        var head = worksheet.addRow([OrganisationName]);
-        head.font = { size: 16, bold: true }
-        head.alignment = { horizontal: 'center' }
-        let titleRow = worksheet.addRow([title]);
-        titleRow.font = { size: 16, bold: true }
-        titleRow.alignment = { horizontal: 'center' }
-        worksheet.mergeCells('A1:R1');
-        worksheet.mergeCells('A2:R2');
-        worksheet.mergeCells('A3:R3');
+  //         index = index + 1;
+  //         ts = {};
+  //         ts.slNo = index;
+  //         ts.assetId = element.assetId;
+  //         ts.assetNo = element.assetNo;
+  //         ts.location = element.location;
+  //         ts.softwareType = element.softwareType;
+  //         ts.licenseType = element.licenseType;
+  //         ts.otherSoftwareName = element.otherSoftwareName;
+  //         ts.otherVersion = element.otherVersion;
+  //         ts.otherProductKey = element.otherProductKey;
+  //         ts.otherExpiryOn = element.otherExpiryOn;
+  //         exportList.push(ts);
 
-        //Blank Row 
-        worksheet.addRow([]);
-        //Add Header Row
-        let headerRow = worksheet.addRow(header);
+  //       });
+  //       var OrganisationName = "MICRO LABS LIMITED" + ', ' + this.dashboardlocation;
+  //       const data = exportList;
+  //       //Create workbook and worksheet
+  //       //let workbook: ExcelProper.Workbook = new ExcelJS.Workbook();
+  //       let worksheet = workbook.addWorksheet('Summary Report');
+  //       //Add Row and formatting
+  //       var head = worksheet.addRow([OrganisationName]);
+  //       head.font = { size: 16, bold: true }
+  //       head.alignment = { horizontal: 'center' }
+  //       let titleRow = worksheet.addRow([title]);
+  //       titleRow.font = { size: 16, bold: true }
+  //       titleRow.alignment = { horizontal: 'center' }
+  //       worksheet.mergeCells('A1:R1');
+  //       worksheet.mergeCells('A2:R2');
+  //       worksheet.mergeCells('A3:R3');
 
-        headerRow.eachCell((cell, number) => {
-          cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFFFFF00' },
-            bgColor: { argb: 'FF0000FF' }
-          }
-          cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
+  //       //Blank Row 
+  //       worksheet.addRow([]);
+  //       //Add Header Row
+  //       let headerRow = worksheet.addRow(header);
 
-        for (let x1 of data) {
-          let x2 = Object.keys(x1);
-          let temp = []
-          for (let y of x2) {
-            temp.push(x1[y])
-          }
-          worksheet.addRow(temp)
-        }
-        worksheet.eachRow((cell, number) => {
-          cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-        })
-        worksheet.addRow([]);
-        workbook.xlsx.writeBuffer().then((data) => {
-          let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          fs.saveAs(blob, 'Asset Software Report.xlsx');
+  //       headerRow.eachCell((cell, number) => {
+  //         cell.fill = {
+  //           type: 'pattern',
+  //           pattern: 'solid',
+  //           fgColor: { argb: 'FFFFFF00' },
+  //           bgColor: { argb: 'FF0000FF' }
+  //         }
+  //         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //       })
 
-        });
-      }
-    });
-  }
+  //       for (let x1 of data) {
+  //         let x2 = Object.keys(x1);
+  //         let temp = []
+  //         for (let y of x2) {
+  //           temp.push(x1[y])
+  //         }
+  //         worksheet.addRow(temp)
+  //       }
+  //       worksheet.eachRow((cell, number) => {
+  //         cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+  //       })
+  //       worksheet.addRow([]);
+  //       workbook.xlsx.writeBuffer().then((data:any) => {
+  //         let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  //         fs.saveAs(blob, 'Asset Software Report.xlsx');
+
+  //       });
+  //     }
+  //   });
+  // }
 
 
   approveAsset() {
     this.errMsg = "";
     let connection: any;
-    this.checkedRequestList.forEach(element => {
-      let value = this.assetList.find(x => x.assetId == element.assetId);
+    this.checkedRequestList.forEach((element:any)=> {
+
+      let value = this.assetList.find((x:any)  => x.assetId == element.assetId);
       this.AssetReports = Object.assign({}, value);
       this.AssetReports.viewStatusApprover = this.currentUser.employeeId;
       this.AssetReports.reportViewStatus = 1;
       this.AssetReports.softwares = null;
-      this.AssetReports.sizeType = this.AssetReports.sizeType ? this.sizeList.find(x => x.storTxt == this.AssetReports.sizeType).storId : '';
-      this.AssetReports.ramSize = this.AssetReports.ramSize ? this.sizeList.find(x => x.storTxt == this.AssetReports.ramSize).storId : '';
-      this.AssetReports.assetState = this.AssetReports.assetState ? this.assStateList.find(x => x.status == this.AssetReports.assetState).id : '';
-      this.AssetReports.comDept = this.AssetReports.comDept ? this.departmentList.find(x => x.name == this.AssetReports.comDept).id : '';
-      this.AssetReports.monitorType = this.AssetReports.monitorType ? this.monType.find(x => x.type == this.AssetReports.monitorType).id : '';
+      this.AssetReports.sizeType = this.AssetReports.sizeType ? this.sizeList.find((x:any)  => x.storTxt == this.AssetReports.sizeType).storId : '';
+      this.AssetReports.ramSize = this.AssetReports.ramSize ? this.sizeList.find((x:any)  => x.storTxt == this.AssetReports.ramSize).storId : '';
+      this.AssetReports.assetState = this.AssetReports.assetState ? this.assStateList.find((x:any)  => x.status == this.AssetReports.assetState).id : '';
+      this.AssetReports.comDept = this.AssetReports.comDept ? this.departmentList.find((x:any)  => x.name == this.AssetReports.comDept).id : '';
+      this.AssetReports.monitorType = this.AssetReports.monitorType ? this.monType.find((x:any)  => x.type == this.AssetReports.monitorType).id : '';
       this.AssetReports.statusApprovedDate = new Date();
       connection = this.httpService.amsput(APIURLS.BR_GET_AMS_ASSET_DATA, this.AssetReports.assetId, this.AssetReports);
     }),
@@ -1340,7 +1354,7 @@ export class AssetReportsComponent implements OnInit {
           });
           this.clearFilter();
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error approving Asset..';
       });

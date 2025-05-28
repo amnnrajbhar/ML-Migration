@@ -16,7 +16,7 @@ declare var toastr: any;
   styleUrls: ['./pending-list.component.css']
 })
 export class PendingListComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   urlPath: string = '';
   myTasks: any[] = [];
   isLoading: boolean = false;
@@ -25,7 +25,7 @@ export class PendingListComponent implements OnInit {
   selectedPayGroup: any= "";
   selectedEmpCategory: any= "";
   taskId: number = 0;
-  comments: string;
+  comments: string
   types = [{type:"Transfer Approval"}];
   plantList: any[] = [];
   payGroupList: any[] = [];
@@ -38,7 +38,8 @@ export class PendingListComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));     
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;     
       this.LoadDropDowns();
       this.LoadMyPendingTasks();
     }
@@ -53,9 +54,9 @@ LoadDropDowns(){
 getPlantList() {
   this.httpService.HRget(APIURLS.OFFER_PLANT_MASTER_ALL_API).then((data: any) => {
     if (data.length > 0) {
-      this.plantList = data.filter(x=> x.isActive).sort((a,b)=>{if(a.code > b.code) return 1; if(a.code < b.code) return -1; return 0;});
+      this.plantList = data.filter((x:any)=> x.isActive).sort((a:any,b:any)=>{if(a.code > b.code) return 1; if(a.code < b.code) return -1; return 0;});
     }
-  }).catch(error => {
+  }).catch((error)=> {
     this.plantList = [];
   });
 }
@@ -63,9 +64,9 @@ getPlantList() {
 getPayGroupList() {
   this.httpService.HRget(APIURLS.OFFER_PAYGROUP_MASTER_ALL_API).then((data: any) => {
     if (data.length > 0) {
-      this.payGroupList = data.sort((a,b)=>{if(a.long_Desc > b.long_Desc) return 1; if(a.long_Desc < b.long_Desc) return -1; return 0;});
+      this.payGroupList = data.sort((a:any,b:any)=>{if(a.long_Desc > b.long_Desc) return 1; if(a.long_Desc < b.long_Desc) return -1; return 0;});
     }
-  }).catch(error => {
+  }).catch((error)=> {
     this.payGroupList = [];
   });
 }
@@ -73,9 +74,9 @@ getPayGroupList() {
 getEmployeeCategoryList() {
   this.httpService.HRget(APIURLS.OFFER_EMPLOYEE_CATEGORY_ALL_API).then((data: any) => {
     if (data.length > 0) {
-      this.empCategoryList = data.sort((a,b)=>{if(a.catltxt > b.catltxt) return 1; if(a.catltxt < b.catltxt) return -1; return 0;});
+      this.empCategoryList = data.sort((a:any,b:any)=>{if(a.catltxt > b.catltxt) return 1; if(a.catltxt < b.catltxt) return -1; return 0;});
     }
-  }).catch(error => {
+  }).catch((error)=> {
     this.empCategoryList = [];
   });
 }
@@ -95,7 +96,7 @@ getEmployeeCategoryList() {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.myTasks = [];
     });
@@ -107,7 +108,7 @@ getEmployeeCategoryList() {
   }
 
   approveBulk(){
-    var selectedList = this.myTasks.filter(x => x.selected);
+    var selectedList = this.myTasks.filter((x:any)  => x.selected);
     if(selectedList.length <= 0)
     {
       toastr.error("Please select at least one task to approve.");
@@ -127,7 +128,7 @@ getEmployeeCategoryList() {
             this.errorCount++;
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         this.errorCount++;
       });
     }
@@ -163,7 +164,7 @@ getEmployeeCategoryList() {
             this.LoadMyPendingTasks();
           }
         }
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error("Error occured.");
       });
     }
@@ -197,7 +198,7 @@ getEmployeeCategoryList() {
           this.LoadMyPendingTasks();
         }
       }
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
     });
   }
@@ -207,7 +208,7 @@ getEmployeeCategoryList() {
    
       var exportList=[];
       let index=0;
-      this.myTasks.forEach(item => {
+      this.myTasks.forEach((item :any) => {
         index=index+1;
         let exportItem={
           "Sl No": index,

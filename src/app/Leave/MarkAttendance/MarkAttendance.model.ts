@@ -1,6 +1,6 @@
 export class MarkAttendance {
-  reqBy: string;
-  Month: string;
-  Year: string;
+  reqBy: string
+  Month: string
+  Year: string
 
 }

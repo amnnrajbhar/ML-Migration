@@ -24,28 +24,28 @@ export class GateentrysearchComponent implements OnInit {
 
   public tableWidget: any;
   addressId: number = 0;
-  competencyList: any[];
-  entityList: any[];
-  designationList: any[];
+  competencyList!: any[];
+  entityList!: any[];
+  designationList!: any[];
   selParentRole: any;
   selDepartment: any;
   selApprovalTemp: any;
   selProfile: any; selManager: any;selReportingManager: any;
-  roleList: any[];
-  departmentList: any[];
-  AapprovalTempList: any[];
-  profileList: any[]; managerList: any; reporting_managerList: any;
-  projectList: any[];
-  userDivisionList: any[];
-  FilteredDivList: any[];
-  divSelectedItem: any[];
-  entitySelectedItem: any[];
-  userEntityList: any[];
+  roleList!: any[];
+  departmentList!: any[];
+  AapprovalTempList!: any[];
+  profileList!: any[]; managerList: any; reporting_managerList: any;
+  projectList!: any[];
+  userDivisionList!: any[];
+  FilteredDivList!: any[];
+  divSelectedItem!: any[];
+  entitySelectedItem!: any[];
+  userEntityList!: any[];
   entitySelected=[];
   userList:any[] = [] ;
-  addressList: any[];
-  empOtherDetailList: any[];
-  employeePayrollList: any[];
+  addressList!: any[];
+  empOtherDetailList!: any[];
+  employeePayrollList!: any[];
   uid: number = 0;
   userItem: Employee = new Employee(0,	'',	'',	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	'',	'',	'',	'',	'',	'',	'',	0,	'',	'',	0,	'',	0,	'',true,0,0,0);
   addressItem: EmployeeAddress = new EmployeeAddress(0,	0,'',	'',	'',	'',	'',	'',	'',	'',	'',	'',	'',	'',	'', true,0);
@@ -68,7 +68,7 @@ export class GateentrysearchComponent implements OnInit {
   payrollNtest: any;
   employeeId:string ="";
   formData: FormData = new FormData();
-  file: File;successMsg: string = "";
+  file!: File;successMsg: string = "";
   path:string = '';
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router) { }
 
@@ -190,7 +190,7 @@ setjoiningDate(endD: any) {
   //       if (data.length > 0) {
   //           this.projectList = data;
   //       }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //       this.isLoading = false;
   //       this.projectList = [];
   //   });
@@ -204,7 +204,7 @@ setjoiningDate(endD: any) {
   //       if (data.length > 0) {
   //           this.designationList = data;
   //       }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //       this.isLoading = false;
   //       this.designationList = [];
   //   });
@@ -222,7 +222,7 @@ setjoiningDate(endD: any) {
             this.reInitDatatable();
            
           }
-      }).catch(error => {
+      }).catch((error)=> {
           this.isLoading = false;
           this.userList = [];
       });
@@ -233,7 +233,7 @@ setjoiningDate(endD: any) {
   //     if (data.length>0) {
   //       this.entityList = data;
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.entityList = [];
   //   });
   // }
@@ -242,7 +242,7 @@ setjoiningDate(endD: any) {
   //     if (data.length>0) {
   //       this.competencyList = data;
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //       this.competencyList = [];
   //   });
   // }
@@ -251,7 +251,7 @@ setjoiningDate(endD: any) {
   //     if (data.length>0) {
   //       this.roleList = data;
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.roleList = [];
   //   });
   // }
@@ -260,7 +260,7 @@ setjoiningDate(endD: any) {
   //    if (data.length>0)  {
   //       this.departmentList = data;
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.departmentList = [];
   //   });
   // }
@@ -269,7 +269,7 @@ setjoiningDate(endD: any) {
   //    if (data.length>0)  {
   //       this.AapprovalTempList = data;
   //     }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //     this.AapprovalTempList = [];
   //   });
   // }
@@ -279,7 +279,7 @@ setjoiningDate(endD: any) {
   //   if (data.length>0)  {
   //       this.profileList = data;
   //    }
-  //   }).catch(error => {
+  //   }).catch((error)=> {
   //       this.profileList = [];
   //   });
   // }
@@ -291,17 +291,17 @@ setjoiningDate(endD: any) {
       this.isLoadingPop = false;
       if (this.isEdit) {
           this.userItem = data;
-          this.SelempDesignation = this.designationList.find(s => s.id === this.userItem.fkDesignation);
-          this.SelempSBUList = this.entityList.find(s => s.id === this.userItem.fkSbuId);
-          this.selProfile = this.profileList.find(s => s.id == this.userItem.fkProfileId);
-          this.selManager = this.managerList.find(s => s.id == this.userItem.fkManager);
+          this.SelempDesignation = this.designationList.find((s:any) => s.id === this.userItem.fkDesignation);
+          this.SelempSBUList = this.entityList.find((s:any) => s.id === this.userItem.fkSbuId);
+          this.selProfile = this.profileList.find((s:any) => s.id == this.userItem.fkProfileId);
+          this.selManager = this.managerList.find((s:any) => s.id == this.userItem.fkManager);
           this.selReportingManager = this.reporting_managerList.find(s=> s.id == this.userItem.fkReportingManager);
           // this.selReportingManager = this.selManager;
           this.selParentRole = this.roleList.find(s=>s.id == this.userItem.fkRoleId);
-          this.selDepartment = this.userItem.fkDepartment!=0?(this.departmentList.find(s => s.id === this.userItem.fkDepartment)):null;
-          this.selApprovalTemp = this.userItem.fkApprovalTemplateId!=0?(this.AapprovalTempList.find(s => s.id === this.userItem.fkApprovalTemplateId)):null;
-          this.SelCompetency = this.competencyList.find(s => s.id === this.userItem.fkCompetency);
-          this.SelProject = this.projectList.find(s => s.id === this.userItem.fkProjectId);
+          this.selDepartment = this.userItem.fkDepartment!=0?(this.departmentList.find((s:any) => s.id === this.userItem.fkDepartment)):null;
+          this.selApprovalTemp = this.userItem.fkApprovalTemplateId!=0?(this.AapprovalTempList.find((s:any) => s.id === this.userItem.fkApprovalTemplateId)):null;
+          this.SelCompetency = this.competencyList.find((s:any) => s.id === this.userItem.fkCompetency);
+          this.SelProject = this.projectList.find((s:any) => s.id === this.userItem.fkProjectId);
           this.userItem.id = data.id;
           this.employeeId = this.userItem.employeeId;
           this.httpService.getById(APIURLS.BR_MASTER_EMPLOYEEADDRESS_API, this.userItem.fkAddressId).then((data: any) => {
@@ -309,7 +309,7 @@ setjoiningDate(endD: any) {
             if (data.id > 0) {
                 this.addressItem = data;
             }
-            }).catch(error => {
+            }).catch((error)=> {
                 this.isLoading = false;
                 this.addressItem = null;
             });
@@ -319,7 +319,7 @@ setjoiningDate(endD: any) {
               if (data.id > 0) {
                   this.empOtherDetailsItem = data;
               }
-              }).catch(error => {
+              }).catch((error)=> {
                   this.isLoading = false;
                   this.empOtherDetailsItem = null;
               });
@@ -330,7 +330,7 @@ setjoiningDate(endD: any) {
                     // this.userMasterItem.id = data.id;
                     ////console.log(this.userMasterItem.password);
                 }
-                }).catch(error => {
+                }).catch((error)=> {
                     this.isLoading = false;
                     this.userMasterItem = null;
                 });
@@ -340,7 +340,7 @@ setjoiningDate(endD: any) {
                       this.employeePayrollItem = data;
                       // this.userMasterItem.id = data.id;
                   }
-                  }).catch(error => {
+                  }).catch((error)=> {
                       this.isLoading = false;
                       this.employeePayrollList = null;
                   });
@@ -367,8 +367,8 @@ validatedForm: boolean = true;
 validateForm(){
 // debugger;
 this.validatedForm = true;
-let validId = this.userList.some(s => s.employeeId == this.userItem.employeeId && s.id != this.userItem.id);
-let validEmail = this.userList.some(s => s.email == this.userItem.email && s.id != this.userItem.id )
+let validId = this.userList.some((s:any) => s.employeeId == this.userItem.employeeId && s.id != this.userItem.id);
+let validEmail = this.userList.some((s:any) => s.email == this.userItem.email && s.id != this.userItem.id )
 if(validId){
   this.isLoadingPop = false;
   this.validatedForm = false;
@@ -420,7 +420,7 @@ this.userItem.fkParentIdCount = 1;
 this.userItem.interviwer = 1;
 this.userItem.fkProfileId = this.selProfile.id;
 this.userItem.fkRoleId = this.selParentRole.id;
-this.userItem.designation = this.designationList.find(s => s.id === this.userItem.fkDesignation)['name'];
+this.userItem.designation = this.designationList.find((s:any) => s.id === this.userItem.fkDesignation)['name'];
 this.userMasterItem.fkCompanyId = 1;
 let connection: any;
 // debugger;
@@ -473,7 +473,7 @@ if(this.validatedForm){
     // else {
     //     this.errMsgPop = data;
     // }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving user master data..';
     });
@@ -485,7 +485,7 @@ if(this.validatedForm){
       // else {
       //   this.errMsgPop = data_emp.message;
       // }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving user master data..';
     });
@@ -495,7 +495,7 @@ if(this.validatedForm){
             // else {
             //   this.errMsgPop = datapayroll.message;
             // }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving payroll details data..';
           });
@@ -505,7 +505,7 @@ if(this.validatedForm){
             // else {
             //   this.errMsgPop = dataother.message;
             // }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving user other details data..';
           });
@@ -515,7 +515,7 @@ if(this.validatedForm){
       // else {
       //   this.errMsgPop = dataaddress.message;
       // }
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving user address data..';
     });
@@ -559,7 +559,7 @@ if(this.validatedForm){
         // else {
         //   this.errMsgPop = data;
         // }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving user master data..';
       });
@@ -567,7 +567,7 @@ if(this.validatedForm){
         // else {
         //   this.errMsgPop = data;
         // }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving user master data..';
       });
@@ -575,7 +575,7 @@ if(this.validatedForm){
         // else {
         //   this.errMsgPop = data;
         // }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving user data..';
       });
@@ -583,7 +583,7 @@ if(this.validatedForm){
             // else {
             //   this.errMsgPop = data;
             // }
-          }).catch(error => {
+          }).catch((error)=> {
             this.isLoadingPop = false;
             this.errMsgPop = 'Error saving user details data..';
           });
@@ -591,7 +591,7 @@ if(this.validatedForm){
         // else {
         //   this.errMsgPop = data;
         // }
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving user master put data..';
       });
@@ -636,7 +636,7 @@ uploadCustInv() {
       if (data==200) {
         
       }
-  }).catch(error => {
+  }).catch((error)=> {
      
        this.errMsg = 'Error uploading file ..';
   });

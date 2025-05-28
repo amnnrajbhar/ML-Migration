@@ -23,7 +23,7 @@ declare var require: any;
   providers: [Util]
 })
 export class ViewPendingTerminationComponent implements OnInit {
-  currentUser: AuthData;
+  currentUser!: AuthData;
   terminationId: any;
   approverId: any;
   employeeId: any;
@@ -36,16 +36,16 @@ export class ViewPendingTerminationComponent implements OnInit {
   //terminationDetails:any={}; //= {} as Termination;
   terminationDetails = {} as Termination;
   employeeDetails: any = {};
-  TerminationDate: string;
+  TerminationDate: string
   currentTab: string = "details";
   tabIndex: number = 0;
   tabsList: string[] = ["details", "attachments", "history"];
   objectType: string = "Termination";
   fileList: any[] = [];
   taskId: number = 0;
-  comments: string;
+  comments: string
   reason: string = "";
-  noticePeriod: string;
+  noticePeriod: string
   files: any[] = [];
 
   constructor(private appService: AppComponent, private httpService: HttpService,
@@ -56,7 +56,8 @@ export class ViewPendingTerminationComponent implements OnInit {
     this.urlPath = this.router.url;
     var chkaccess = true;//this.appService.validateUrlBasedAccess(this.urlPath);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.terminationId = this.route.snapshot.paramMap.get('id1')!;
       this.approverId = this.currentUser.uid;
       this.taskId = Number(this.route.snapshot.paramMap.get('id2')!);
@@ -66,7 +67,7 @@ export class ViewPendingTerminationComponent implements OnInit {
     }
   }
 
-  GetTerminationDetailsById(id) {
+  GetTerminationDetailsById(id:any) {
     this.isLoading = true;
     this.isVisible = true;
 
@@ -83,7 +84,7 @@ export class ViewPendingTerminationComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.errMsg = error;
     });
   }
@@ -123,7 +124,7 @@ export class ViewPendingTerminationComponent implements OnInit {
           this.isLoading = false;
           toastr.error('Error occured while editing termination details. Error:' + err);
         })
-        .catch(error => {
+        .catch((error)=> {
           this.isLoading = false;
           toastr.error('Error occured while editing termination details. Error:' + error);
         });
@@ -150,7 +151,7 @@ export class ViewPendingTerminationComponent implements OnInit {
           }
         }
         this.isLoading = false;
-      }).catch(error => {
+      }).catch((error)=> {
         toastr.error("Error occured.");
         this.isLoading = false;
       });
@@ -181,7 +182,7 @@ export class ViewPendingTerminationComponent implements OnInit {
         }
       }
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       toastr.error(error);
       this.isLoading = false;
     });

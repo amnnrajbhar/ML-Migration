@@ -10,8 +10,8 @@ import swal from 'sweetalert';
 import * as _ from "lodash";
 declare var jQuery: any;
 export class actionItemModel {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 @Component({
   selector: 'app-PPCMaster',
@@ -20,16 +20,16 @@ export class actionItemModel {
 })
 export class PPCMasterComponent implements OnInit {
   searchTerm: FormControl = new FormControl();
-@ViewChild(NgForm, { static: false }) desigForm: NgForm;
+@ViewChild(NgForm, { static: false }) desigForm!: NgForm;
 
   public filteredItems = [];
 
   public tableWidget: any;
   selParentId: any;
-  PPCMasterList: any[];
+  PPCMasterList!: any[];
   PPCMasterList1: any = [];
   desgList: any;
-  parentList: any[];
+  parentList!: any[];
   selParentRole: any = [];
   selParentRoleList: any;
   requiredField: boolean = true;
@@ -45,8 +45,8 @@ export class PPCMasterComponent implements OnInit {
   notFirst = true;
   currentUser = {} as AuthData;
   oldPPCMasterItem: PPCMaster = new PPCMaster();// For aduit log
-  auditType: string;// set ActionTypes: Create,Update,Delete
-  aduitpurpose: string;
+  auditType: string// set ActionTypes: Create,Update,Delete
+  aduitpurpose: string
   constructor(private httpService: HttpService, private router: Router, private appService: AppComponent) { }
 
   private initDatatable(): void {
@@ -67,7 +67,8 @@ export class PPCMasterComponent implements OnInit {
     this.path = this.router.url;
     var chkaccess = this.appService.validateUrlBasedAccess(this.path);
     if (chkaccess == true) {
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const storedUser = localStorage.getItem('currentUser');
+this.currentUser = storedUser ? JSON.parse(storedUser) : null;
       this.getPPCMasterMasterList();
       this.getEmployeeCatList();
       this.getEmployeeList();
@@ -98,7 +99,7 @@ export class PPCMasterComponent implements OnInit {
       }
       //this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.EmployeeList = [];
     });
@@ -112,7 +113,7 @@ export class PPCMasterComponent implements OnInit {
       }
       //  this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.empCategoryList = [];
     });
@@ -127,7 +128,7 @@ export class PPCMasterComponent implements OnInit {
       }
       //  this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PayGroupList = [];
     });
@@ -141,29 +142,29 @@ export class PPCMasterComponent implements OnInit {
       }
       //  this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PlantList = [];
     });
   }
 
-  getempid(id) {
-    let temp = this.EmployeeList.find(x => x.id == id);
+  getempid(id:any) {
+    let temp = this.EmployeeList.find((x:any)  => x.id == id);
     return temp ? temp.employeeId + ' - ' + temp.firstName + ' ' + temp.middleName + ' ' + temp.lastName : '';
 
   }
-  getplant(id) {
-    let temp = this.PlantList.find(x => x.id == id);
+  getplant(id:any) {
+    let temp = this.PlantList.find((x:any)  => x.id == id);
     return temp ? temp.code : '';
 
   }
-  getpaygroup(id) {
-    let temp = this.PayGroupList.find(x => x.id == id);
+  getpaygroup(id:any) {
+    let temp = this.PayGroupList.find((x:any)  => x.id == id);
     return temp ? temp.short_desc : '';
 
   }
-  getcat(id) {
-    let temp = this.empCategoryList.find(x => x.id == id);
+  getcat(id:any) {
+    let temp = this.empCategoryList.find((x:any)  => x.id == id);
     return temp ? temp.catltxt : '';
 
   }
@@ -176,7 +177,7 @@ export class PPCMasterComponent implements OnInit {
       }
       this.reInitDatatable();
       this.isLoading = false;
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoading = false;
       this.PPCMasterList = [];
     });
@@ -209,7 +210,7 @@ export class PPCMasterComponent implements OnInit {
     this.errMsgPop = "";
     this.isLoadingPop = true;
     let connection: any;
-    if (!this.PPCMasterList.some(s => s.plantId == this.PPCMasterItem.plantId && s.payGroupId == this.PPCMasterItem.payGroupId
+    if (!this.PPCMasterList.some((s:any) => s.plantId == this.PPCMasterItem.plantId && s.payGroupId == this.PPCMasterItem.payGroupId
       && s.employeeCategoryId == this.PPCMasterItem.employeeCategoryId && s.employeeId == this.PPCMasterItem.employeeId)) {
       if (!this.isEdit) {
         this.auditType = "Create";
@@ -239,7 +240,7 @@ export class PPCMasterComponent implements OnInit {
         else
           this.errMsgPop = data;
 
-      }).catch(error => {
+      }).catch((error)=> {
         this.isLoadingPop = false;
         this.errMsgPop = 'Error saving mapping..';
       });
@@ -274,7 +275,7 @@ export class PPCMasterComponent implements OnInit {
       else
         this.errMsgPop = data;
 
-    }).catch(error => {
+    }).catch((error)=> {
       this.isLoadingPop = false;
       this.errMsgPop = 'Error saving mapping..';
     });
@@ -307,7 +308,7 @@ export class PPCMasterComponent implements OnInit {
   //          // this.insertAuditLog(this.PPCMasterItem,this.oldPPCMasterItem,this.PPCMasterItem.id);
   //           this.getDesignationMasterList();
   //         }
-  //       }).catch(() => {
+  //       }).catch((error) => {
   //         this.isLoadingPop = false;
   //         this.errMsgPop = 'Error deleting Designation..';
   //       });
