@@ -53,6 +53,8 @@ export class SelectEmployeeComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else 
+              return { label: item.employeeId, value: item.id };
             })
             $('#employeeName').autocomplete({
               source: list,

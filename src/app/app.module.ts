@@ -14,7 +14,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { InitPageComponent } from './initiallogin/initpage.component';
 import { AppService } from './shared/app.service';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { SchedulerModule } from 'angular-calendar-scheduler';
+//import { SchedulerModule } from 'angular-calendar-scheduler';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 // import { MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatRadioModule, MatTooltipModule, MatSelectModule } from '@angular/material';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -156,7 +156,7 @@ export const MY_MOMENT_FORMATS = {
       provide: DateAdapter,
       useFactory: adapterFactory
     }),
-    SchedulerModule.forRoot({ locale: 'en', headerDateFormat: 'daysRange' }),
+    //SchedulerModule.forRoot({ locale: 'en', headerDateFormat: 'daysRange' }),
 
   ],
   providers: [AuthService, AuthGuard, HttpService, ExcelService, AppService,

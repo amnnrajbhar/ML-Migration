@@ -66,7 +66,7 @@ export class DivreportComponent implements OnInit {
           rows: { 1: { style: { Font: { Color: "#FF0077" } } } },
       };
       var opts = [{ sheetid: 'Invoice', headers: false }];
-      var res = alasql('SELECT INTO XLSX("report_export_' + new Date().getTime() + '.xlsx",?) FROM ?', [opts, [this.report.invoice_list]]);
+      var res = alasql.default('SELECT INTO XLSX("report_export_' + new Date().getTime() + '.xlsx",?) FROM ?', [opts, [this.report.invoice_list]]);
       this.isLoading = false;
   }
 

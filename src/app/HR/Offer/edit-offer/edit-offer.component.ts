@@ -649,7 +649,8 @@ showNext(){
             var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
-              return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+                return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+              return null;
             })
             $('#approvingManager').autocomplete({
               source: list,
@@ -743,7 +744,10 @@ showNext(){
           if (data.length > 0) {
             var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
-              return { label: item.employeeName + " ("+item.employeeId+")", value: item };
+              if (item.employeeName != null && item.employeeId != null) {
+                return { label: item.employeeName + " ("+item.employeeId+")", value: item };
+              }
+              return null;
             })
             $('#replacingEmployeeName').autocomplete({
               source: list,

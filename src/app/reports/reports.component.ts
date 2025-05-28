@@ -39,7 +39,7 @@ export class ReportsComponent implements OnInit {
           rows: { 1: { style: { Font: { Color: "#FF0077" } } } },
       };
       var opts = [{ sheetid: 'b2b', headers: false }, { sheetid: 'b2cl', headers: false }, { sheetid: 'b2cs', headers: false }, { sheetid: 'hsn', headers: false }];
-      var res = alasql('SELECT INTO XLSX("report_export_' + new Date().getTime()+'.xlsx",?) FROM ?', [opts, [this.report.b2b_list, this.report.b2cl_list, this.report.b2cs_list, this.report.hsn_list]]);
+      var res = (alasql as any).default('SELECT INTO XLSX("report_export_' + new Date().getTime()+'.xlsx",?) FROM ?', [opts, [this.report.b2b_list, this.report.b2cl_list, this.report.b2cs_list, this.report.hsn_list]]);
       this.isLoading = false;
   }
   validateForm() {

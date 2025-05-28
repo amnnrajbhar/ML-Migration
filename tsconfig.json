@@ -1,45 +1,127 @@
+// {
+//   "compileOnSave": false,
+//   "compilerOptions": {
+//     "baseUrl": "./",
+//     "outDir": "./dist/out-tsc",
+//     "sourceMap": true,
+//     "declaration": false,
+//     "downlevelIteration": true,
+//     "moduleResolution": "node",
+//     "emitDecoratorMetadata": true,
+//     "experimentalDecorators": true,
+//     "importHelpers": true,
+//     "module": "esnext",
+//     "target": "es5",
+//     "skipLibCheck": true,
+//     "noImplicitAny": false,
+//     "strictNullChecks": false,
+//     "strict": false,
+//     "noImplicitThis": false,
+//     "allowJs": true,
+//     "typeRoots": [
+//       "node_modules/@types"
+//     ],
+//     "lib": [
+//       "es2017",
+//       "dom"
+//     ],
+//     "paths": {
+//       "ng-pick-datetime": ["./node_modules/ng-pick-datetime"]
+//     }
+//   },
+//   "include": [
+//     "src/**/*"
+//   ],
+//   "exclude": [
+//     "node_modules",
+//     "dist"
+//   ],
+//   "angularCompilerOptions": {
+//     "enableIvy": false,
+//     "fullTemplateTypeCheck": false,
+//     "strictInjectionParameters": false,
+//     "disableTypeScriptVersionCheck": true
+//   }
+// }
+// {
+//   "compileOnSave": false,
+//   "compilerOptions": {
+//     "baseUrl": "./",
+//     "outDir": "./dist/out-tsc",
+//     "sourceMap": true,
+//     "declaration": false,
+//     "downlevelIteration": true,
+//     "moduleResolution": "node",
+//     "emitDecoratorMetadata": true,
+//     "experimentalDecorators": true,
+//     "importHelpers": true,
+//     "module": "esnext",
+//     "target": "es2020", // <--- CHANGE THIS LINE
+//     "skipLibCheck": true,
+//     "noImplicitAny": false,
+//     "strictNullChecks": false,
+//     "strict": false,
+//     "noImplicitThis": false,
+//     "allowJs": true,
+//     "typeRoots": [
+//       "node_modules/@types"
+//     ],
+//     "lib": [
+//       "es2017",
+//       "dom"
+//     ],
+//     "paths": {
+//       "ng-pick-datetime": ["./node_modules/ng-pick-datetime"]
+//     }
+//   },
+//   "include": [
+//     "src/**/*"
+//   ],
+//   "exclude": [
+//     "node_modules",
+//     "dist"
+//   ],
+//   "angularCompilerOptions": {
+//     "enableIvy": false, // Note: Ivy is the default rendering engine since Angular 9. Disabling it might cause issues with newer libraries.
+//     "fullTemplateTypeCheck": false,
+//     "strictInjectionParameters": false,
+//     "disableTypeScriptVersionCheck": true
+//   }
+// }
+
 {
-  "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
     "importHelpers": true,
-    "module": "esnext",
-    "target": "es5",
+    "target": "es2015",
+    "module": "es2020",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
     "skipLibCheck": true,
-    "noImplicitAny": false,
-    "strictNullChecks": false,
-    "strict": false,
-    "noImplicitThis": false,
     "allowJs": true,
     "typeRoots": [
       "node_modules/@types"
     ],
-    "lib": [
-      "es2017",
-      "dom"
-    ],
     "paths": {
-      "ng-pick-datetime": ["./node_modules/ng-pick-datetime"]
+      "ng-pick-datetime": ["./node_modules/@busacca/ng-pick-datetime"]
     }
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
   "angularCompilerOptions": {
-    "enableIvy": false,
     "fullTemplateTypeCheck": false,
     "strictInjectionParameters": false,
-    "disableTypeScriptVersionCheck": true
+    "enableResourceInlining": true,
+    "preserveWhitespaces": false
   }
 }

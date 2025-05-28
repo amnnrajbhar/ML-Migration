@@ -204,6 +204,7 @@ export class RecallComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if (item.fullName != null)
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
+              return null;
             })
             $('#newReportingManager').autocomplete({
               source: list,
