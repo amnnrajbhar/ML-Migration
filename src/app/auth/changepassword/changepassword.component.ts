@@ -39,6 +39,7 @@ export class ChangepasswordComponent implements OnInit {
     });
   }
   updatePassword() {
+    debugger;
     let connection: any;
     var pass:any[]=[];
     pass=this.userMasterItem.lastPassword!=null?this.userMasterItem.lastPassword.split(','):[];

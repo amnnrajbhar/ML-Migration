@@ -4,7 +4,7 @@ declare var toastr: any;
 import { AppComponent } from '../../app.component';
 import { HttpService } from '../../shared/http-service';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'; import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
 import 'rxjs/Rx';
 // //import { HttpClient } from '@angular/common/http';
 declare var jQuery: any;
@@ -103,7 +103,7 @@ export class EsicSickLeaveComponent implements OnInit {
 
   constructor(private appService: AppComponent, private httpService: HttpService, private router: Router,
     private http: HttpClient,
- private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
+    private https: HttpClient, private route: ActivatedRoute) { pdfMake.vfs = pdfFonts.pdfMake.vfs; }
 
   private initDatatable(): void {
     let exampleId: any = jQuery('#userTable');
@@ -639,7 +639,7 @@ export class EsicSickLeaveComponent implements OnInit {
       });
     }
   }
-  
+
   sendMail(data) {
     data.typ = 'Apply Leave';
     if (this.ApplyFor == "Others") {
@@ -736,15 +736,15 @@ export class EsicSickLeaveComponent implements OnInit {
     return promise;
   }
 
-   getHeader(): any {
-let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
-        const headers = new HttpHeaders({
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + authData.token
-        });
-        return { headers: headers };
-}
+  getHeader(): any {
+    let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + authData.token
+    });
+    return { headers: headers };
+  }
 
   minSick: any;
   minCasual: any;
@@ -836,6 +836,9 @@ let authData: AuthData = JSON.parse(localStorage.getItem('currentUser'));
     var totaldays = (second - first) / (1000 * 60 * 60 * 24);
     if (totaldays <= 0) {
       return "";
+    }
+    else {
+      return null;
     }
 
     //daydiff

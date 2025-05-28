@@ -434,7 +434,8 @@ export class OfficialComponent implements OnInit {
             var sortedList = data.sort((a, b) => { if (a.fullName > b.fullName) return 1; if (a.fullName < b.fullName) return -1; return 0; });
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
-              return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+                return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+              return null;
             })
             $('#reportingManager').autocomplete({
               source: list,

@@ -7,6 +7,13 @@
     "baseUrl": "",
     "types": []
   },
+  "files": [
+    "main.ts",
+    "polyfills.ts",
+    // Add these explicitly if include isn't working for them
+    "app/eMicro/CodeCreatorsSummaryReport/CodeCreatorsSummaryReport-Routing.module.ts",
+    "app/eMicro/DashBoard/Dashboard-Routing.module.ts"
+  ],
   "exclude": [
     "test.ts",
     "**/*.spec.ts"
@@ -15,4 +22,3 @@
     "**/*.ts"
   ]
 }
-

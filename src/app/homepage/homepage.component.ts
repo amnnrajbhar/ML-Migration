@@ -49,8 +49,8 @@ export class HomepageComponent implements OnInit {
     if (this.reloadflag == 1) {
       $('#calendar').datepicker();
       this.getTopAnnouncements();
-      this.getBirthdaysAndAnniversaries();
-      this.getNewJoiners();
+      //this.getBirthdaysAndAnniversaries();
+      //this.getNewJoiners();
       this.getMoreLinks();
       this.getSocialLinks();
       this.getUIDcount();

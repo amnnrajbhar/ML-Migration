@@ -553,6 +553,8 @@ export class OnDutyRequestComponent implements OnInit {
         this.OnDutyRequestList = this.OnDutyRequestList.sort((a, b) => {
           if (a.requestNo < b.requestNo) return 1;
           if (a.requestNo > b.requestNo) return -1;
+          else
+                return null;
         });
         this.upcomingRequests = this.OnDutyRequestList.filter(x => new Date(x.startDate) > new Date() && (x.approverStatus == 'Pending' || x.approverStatus == 'In Process' || x.approverStatus == 'Approved'));
       }
