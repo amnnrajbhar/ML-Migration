@@ -31,10 +31,6 @@
               "src/assets/plugins/iCheck/all.css",
               "src/assets/plugins/select2/select2.min.css",
               "node_modules/ngx-lightbox/lightbox.css",
-              "node_modules/ionicons-npm/css/ionicons.min.css",
-              "node_modules/angular-calendar/css/angular-calendar.css",
-              "node_modules/timepicker/jquery.timepicker.min.css",
-              "node_modules/toastr/build/toastr.min.css",
               "src/assets/plugins/datepicker/bootstrap-datepicker.min.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/styles.css"
@@ -57,8 +53,6 @@
               "src/assets/plugins/select2/select2.full.min.js",
               "node_modules/alasql/dist/alasql.min.js",
               "node_modules/xlsx/dist/xlsx.core.min.js",
-              "node_modules/timepicker/jquery.timepicker.min.js",
-              "node_modules/toastr/build/toastr.min.js",
               "src/assets/plugins/datepicker/bootstrap-datepicker.js"
             ]
           },
