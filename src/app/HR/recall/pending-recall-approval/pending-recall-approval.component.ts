@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm, FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Recall } from '../recall/recall.model';
-import { JobChangeDetails } from '../recall/jobChangeDetails.Model';
+// import { JobChangeDetails } from '../recall/jobChangeDetails.Model';
 import { EmployeeSalaryComponent } from '../employee-salary/employee-salary.component';
 import { ReadonlyemployeeSalaryComponent } from '../readonlyemployee-salary/readonlyemployee-salary.component';
 import { CompleteTaskRequest } from '../../pending-tasks/completeTaskRequest.model';

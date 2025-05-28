@@ -584,6 +584,8 @@ showNext(){
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else  
+              return { label: item.employeeId, value: item.id };
             })
             $('#approvingManager').autocomplete({
               source: list,
@@ -632,6 +634,8 @@ showNext(){
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else 
+              return { label: item.employeeId, value: item.id };
             })
             $('#reportingManager').autocomplete({
               source: list,
@@ -680,6 +684,8 @@ showNext(){
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.employeeName + " ("+item.employeeId+")", value: item };
+            else 
+              return { label: item.employeeId, value: item }; 
             })
             $('#replacingEmployeeName').autocomplete({
               source: list,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CompleteRecallTaskRequest } from './completeRecallTaskRequest.model';
+import { CompleteRecallTaskRequest } from './CompleteRecallTaskRequest.model';
 import { AuthData } from '../../../auth/auth.model';
 import { HttpService } from '../../../shared/http-service';
 import { APIURLS } from '../../../shared/api-url';

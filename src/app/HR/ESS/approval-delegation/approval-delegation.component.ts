@@ -135,6 +135,8 @@ export class ApprovalDelegationComponent implements OnInit {
             var list = $.map(sortedList, function (item) {
               if (item.fullName != null)
                 return { label: item.fullName + " (" + item.employeeId + ")", value: item.id };
+              else 
+              return null;
             })
             $('#delegatedToName').autocomplete({
               source: list,

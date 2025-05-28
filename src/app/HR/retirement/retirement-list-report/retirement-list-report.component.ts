@@ -4,7 +4,7 @@ import { APIURLS } from '../../../shared/api-url';
 import { Router, RouterModule } from '@angular/router';
 import { ExcelService } from '../../../shared/excel-service';
 import { AuthData } from '../../../auth/auth.model';
-import { RetirementListReportFilter } from './RetirementListReportFilter.model';
+import { RetirementListReportFilter } from './retirementlistreportfilter.model';
 import swal from 'sweetalert';
 import { DataStorageService } from '../../Services/data-storage.service';
 import { MasterDataService } from '../../Services/masterdata.service';

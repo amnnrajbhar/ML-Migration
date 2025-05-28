@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CompleteRetirementTaskRequest } from './completeRetirementTaskRequest.model';
+import { CompleteRetirementTaskRequest } from './CompleteRetirementTaskRequest.model';
 import { AuthData } from '../../../auth/auth.model';
 import { HttpService } from '../../../shared/http-service';
 import { APIURLS } from '../../../shared/api-url';

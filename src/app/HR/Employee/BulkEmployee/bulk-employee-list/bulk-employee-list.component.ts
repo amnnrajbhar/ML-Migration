@@ -347,6 +347,7 @@ export class BulkEmployeeListComponent  implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else return null;
             })
             $('#txtApprovingManager').autocomplete({
               source: list,
@@ -394,6 +395,7 @@ export class BulkEmployeeListComponent  implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else return null;
             })
             $('#txtAutoApprovingManager').autocomplete({
               source: list,
@@ -445,6 +447,7 @@ export class BulkEmployeeListComponent  implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else return null;
             })
             $('#reportingManager').autocomplete({
               source: list,
@@ -492,6 +495,7 @@ export class BulkEmployeeListComponent  implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else return null;
             })
             $('#txtReportingManager').autocomplete({
               source: list,
@@ -539,6 +543,7 @@ export class BulkEmployeeListComponent  implements OnInit {
             var list = $.map(sortedList, function (item) {
               if(item.fullName != null)
               return { label: item.fullName + " ("+item.employeeId+")", value: item.id };
+            else return null;
             })
             $('#txtAutoReportingManager').autocomplete({
               source: list,
