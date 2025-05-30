@@ -622,13 +622,25 @@ getSAPFile(apiKey: string, id: string, filename: string): Promise<Blob> {
                     },
                     err => {
                         //  //console.log(err.json());
-                        reject(err.json());
+                        reject(err.error);
                     }
                 );
 
         });
         return promise;
     }
+//     HRget(apiKey: string): any {
+//     const promise = new Promise((resolve, reject) => {
+//         this.http.get(APIURLS.BR_BASE_HR_URL + apiKey, this.getHeader())
+//             .toPromise()
+//             .then(
+//                 res => resolve(res),
+//                 err => reject(err.error) // ✅ Correct way to get error body
+//             );
+//     });
+//     return promise;
+// }
+
     HRgetByParam(apiKey: string, searchStr: String): any {
         const promise = new Promise((resolve, reject) => {
             this.http.get(APIURLS.BR_BASE_HR_URL + apiKey + "?include=" + searchStr, this.getHeader())

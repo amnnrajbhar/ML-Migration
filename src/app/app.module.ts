@@ -70,6 +70,9 @@ import { PPCMasterComponent } from './HR/PPCMaster/PPCMaster.component';
 import { AllowanceMappingComponent } from './HR/AllowanceMapping/AllowanceMapping.component';
 import { HomepageComponent } from './homepage/homepage.component';
 
+import { MatDatepickerModule } from '@angular/material/datepicker';
+  import { MatMomentDateModule,MAT_MOMENT_DATE_ADAPTER_OPTIONS  } from '@angular/material-moment-adapter';
+import { MatNativeDateModule } from '@angular/material/core';
 // Format custom
 export const MY_MOMENT_FORMATS = {
   parseInput: 'DD/MM/YYYY LT',
@@ -149,6 +152,12 @@ export const MY_MOMENT_FORMATS = {
     // OwlDateTimeModule,
     // OwlNativeDateTimeModule,
     // OwlMomentDateTimeModule,
+
+
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatMomentDateModule,
+  
     NgMultiSelectDropDownModule.forRoot(),
 
 

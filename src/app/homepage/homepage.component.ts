@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthData } from '../auth/auth.model';
 import { HttpService } from '../shared/http-service';
@@ -6,6 +6,8 @@ import { APIURLS } from '../shared/api-url';
 import { SafeHtmlPipe } from '../HR/Services/safe-html.pipe';
 import { Pipe, PipeTransform } from "@angular/core";
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatCalendar } from '@angular/material/datepicker';
+
 declare var $: any;
 declare var toastr: any;
 
@@ -14,7 +16,7 @@ declare var toastr: any;
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
 })
-export class HomepageComponent implements OnInit {
+export class HomepageComponent implements OnInit  {
   isLoading: boolean = false;
   currentUser!: AuthData;
   announcements: any[] = [];
@@ -48,20 +50,30 @@ export class HomepageComponent implements OnInit {
  const storedUser = localStorage.getItem('currentUser');
 this.currentUser = storedUser ? JSON.parse(storedUser) : null;
     if (this.reloadflag == 1) {
-      $('#calendar').datepicker();
-      //v10
+
+
+      // $('#calendar').datepicker(); place to mat-calendar
       // this.getTopAnnouncements();
       // this.getBirthdaysAndAnniversaries();
-      this.getNewJoiners();
-      this.getMoreLinks();
-      this.getSocialLinks();
-      this.getUIDcount();
+      // this.getNewJoiners();
+      // this.getMoreLinks();
+      // this.getSocialLinks();
+      // this.getUIDcount();
       //  this.getAlerts();
       this.reloadflag = 0
     }
 
   }
-
+  
+  selectedDate = new Date();
+  
+  get activeDate(): Date {
+    const today = new Date();
+    const lastDayPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+    const lastWeekStart = new Date(lastDayPrevMonth);
+    lastWeekStart.setDate(lastDayPrevMonth.getDate() - 6); // Go back 6 days
+    return lastWeekStart;
+  }
   getTopAnnouncements() {
     this.isLoading = true;
     this.httpService.HRget(APIURLS.HR_ANNOUNCEMENT_GET_ALL_ACTIVE_ANNOUNCEMENTS).then((data: any) => {

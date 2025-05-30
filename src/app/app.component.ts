@@ -172,10 +172,10 @@ this.currentUser = storedUser ? JSON.parse(storedUser) : null;
 
       // this.httpService.get(APIURLS.BR_MASTER_PROFILEFORMMAIN_API).then((data: any) => {
         this.httpService.getByParam(APIURLS.BR_MASTER_GETFORMSFROMPROFILES, param).then((data: any) => {
-       console.log(data)
+   
           if (data.length > 0) {
-          debugger;
-          console.log(data)
+          
+      
           let collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
           this.urlList = data.sort((a:any, b:any) => { return collator.compare(a.subMenuId, b.subMenuId) });
           this.urlList.sort((a:any, b:any) => { return collator.compare(a.menuId, b.menuId)});

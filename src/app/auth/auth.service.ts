@@ -66,8 +66,9 @@ export class AuthService {
       this.authData = new AuthData(false, 0, '', '', '', '','', [], '', false, 0, 0, true, '','',0, 0,'','','',false,0,0,'',0,0,'','','','',0,0, []);
   }
 
-  
+
   isAuthenticated() {
+
     if (this.authData.isAuth) {
       return true;
     }

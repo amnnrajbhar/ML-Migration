@@ -17,3 +17,128 @@ font-size: 16px;
     color: grey;
     border-radius: 5px;
 }
+/* ::ng-deep .mat-calendar-header {
+  height: 40px; 
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  font-size: 14px;
+}
+
+::ng-deep .mat-calendar-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px; 
+} */
+/* Put these styles in your global styles.scss file.
+   If using a component's SCSS, you MUST use ::ng-deep for all rules below.
+   Be aware that ::ng-deep is deprecated. */
+
+/* Basic calendar sizing */
+.mat-calendar {
+  width: 100%;
+  max-width: 280px; /* Adjust if your container is smaller than 300px */
+}
+
+/* 1. Force 6-week display: Make rows fill available height */
+.mat-calendar-body-cell-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Make this container take full height of the mat-calendar-body */
+}
+
+.mat-calendar-body-week {
+  flex: 1; /* Make each week row take equal available space */
+  display: flex; /* Make cells within the week also flex */
+  align-items: center; /* Center cell content vertically */
+  justify-content: space-around; /* Distribute cells horizontally */
+  min-height: 0; /* Reset min-height if it interferes */
+  padding: 0; /* Remove padding from week rows */
+}
+
+/* 2. Compact all elements to fit within 250px height */
+
+/* Reduce overall calendar padding */
+.mat-calendar-content {
+  padding: 0 !important;
+  flex-grow: 1; /* Allow content to grow to fill space */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Reduce padding/height of the header (month/year navigation) */
+.mat-calendar-header {
+  padding: 4px 4px 0px 4px !important;
+  min-height: 30px !important;
+  box-sizing: border-box; /* Include padding in height calculation */
+}
+
+.mat-calendar-controls {
+  margin: 0 !important;
+}
+
+.mat-calendar-period-button {
+  font-size: 13px !important;
+  line-height: 30px !important;
+}
+
+.mat-calendar-arrow {
+  padding: 0 4px !important;
+  height: 30px !important;
+  width: 30px !important;
+}
+
+/* Reduce padding/height of weekday headers (Su, Mo, Tu...) */
+.mat-calendar-table-header th {
+  padding-bottom: 2px !important;
+  font-size: 11px !important;
+  height: 20px !important;
+  box-sizing: border-box; /* Include padding in height calculation */
+}
+
+/* Aggressively reduce individual day cell size and padding */
+.mat-calendar-body-cell {
+  flex: 1; /* Make each day cell take equal width within the week */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 !important; /* Remove cell padding */
+  box-sizing: border-box; /* Include padding in height calculation */
+}
+
+.mat-calendar-body-cell-content {
+  width: 28px !important; /* Very small cell width */
+  height: 28px !important; /* Very small cell height */
+  line-height: 28px !important; /* Center text vertically */
+  font-size: 11px !important; /* Smallest font for dates */
+  margin: 0 !important; /* Remove external margins */
+  box-sizing: border-box; /* Include padding/border in height calculation */
+}
+
+/* Reduce padding around the entire body of the calendar (the grid of days) */
+.mat-calendar-body {
+  padding: 0 2px 2px 2px !important;
+  flex-grow: 1; /* Allow the body to grow and fill available space */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure selected date circle is small enough */
+.mat-calendar-body-selected {
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
+  font-size: 11px !important;
+}
+
+/* Remove month name label from the grid rows */
+.mat-calendar-body-month-label {
+  display: none !important;
+}
+
+/* Safeguard for disabled dates (they should be visible, just faded) */
+.mat-calendar-body-disabled {
+  opacity: 0.5 !important;
+  color: rgba(0, 0, 0, 0.54) !important;
+}
